@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>${serviceId.uppercase} :: ${serviceName} :: DB Migration</name>
+
+    <artifactId>bogenliga-db-migration</artifactId>
+
+    <parent>
+        <groupId>app.bogenliga</groupId>
+        <artifactId>bogenliga</artifactId>
+        <version>1.0.0</version>
+
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- database migration configuration -->
+    <profiles>
+        <profile>
+            <id>LOCAL</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <environment>LOCAL</environment>
+            </properties>
+        </profile>
+
+        <!-- add profiles with properties for each environment, e.g. TEST, INT, PROD -->
+        <!-- see ./buildprofiles/${environment}-config.properties -->
+    </profiles>
+
+    <build>
+        <plugins>
+            <!-- read database config from property files -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>./buildprofiles/${environment}-config.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- database migration -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>9.4-1205-jdbc4</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <placeholderReplacement>false</placeholderReplacement>
+                    <outOfOrder>false</outOfOrder>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                    <!-- resolved by the profile properties -->
+                    <url>${database.url}</url>
+                    <user>${database.user}</user>
+                    <password>${database.password}</password>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration/all</location>
+
+                        <!-- modify initial data for the selected profile environment -->
+                        <location>filesystem:src/main/resources/db/migration/${environment}</location>
+                    </locations>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
