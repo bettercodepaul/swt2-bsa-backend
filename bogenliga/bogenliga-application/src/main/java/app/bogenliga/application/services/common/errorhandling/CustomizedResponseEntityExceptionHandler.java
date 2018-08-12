@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import app.bogenliga.application.business.EntityNotFoundException;
+import app.bogenliga.application.common.errorhandling.exception.EntityNotFoundException;
 
 /**
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -27,27 +27,30 @@ import app.bogenliga.application.business.EntityNotFoundException;
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status,
-                                                                  WebRequest request) {
-        List<ErrorDTO> errors = new ArrayList<>();
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.add(new ErrorDTO(error.getField() + " = " + error.getRejectedValue() + " -> " + error.getField() + " " + error.getDefaultMessage()));
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
+                                                                  final HttpHeaders headers, final HttpStatus status,
+                                                                  final WebRequest request) {
+        final List<ErrorDTO> errors = new ArrayList<>();
+        for (final FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.add(new ErrorDTO(
+                    error.getField() + " = " + error.getRejectedValue() + " -> " + error.getField() + " " + error.getDefaultMessage()));
         }
-        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+        for (final ObjectError error : ex.getBindingResult().getGlobalErrors()) {
             errors.add(new ErrorDTO(error.getObjectName() + ": " + error.getDefaultMessage()));
         }
 
 
-        ApiError apiError =
+        final ApiError apiError =
                 new ApiError(HttpStatus.BAD_REQUEST, errors);
         return handleExceptionInternal(
                 ex, apiError, headers, apiError.getStatus(), request);
     }
 
+
     @ExceptionHandler(EntityNotFoundException.class)
-    public final ResponseEntity<ApiError> handleUserNotFoundException(EntityNotFoundException ex, WebRequest request) {
-        ErrorDTO errorDetails = new ErrorDTO(ex.getMessage());
+    public final ResponseEntity<ApiError> handleUserNotFoundException(final EntityNotFoundException ex,
+                                                                      final WebRequest request) {
+        final ErrorDTO errorDetails = new ErrorDTO(ex.getMessage());
         return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, errorDetails), HttpStatus.NOT_FOUND);
     }
 }

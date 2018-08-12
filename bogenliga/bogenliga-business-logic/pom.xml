@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,15 +14,92 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.4.RELEASE</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
+
+        <log4j2.version>2.9.1</log4j2.version>
+        <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>app.bogenliga</groupId>
+            <artifactId>bogenliga-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- LOGGING -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.7</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <!-- http://mapstruct.org -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${org.mapstruct.version}</version>
+            <!-- IntelliJ does not pick up the processor if it is not in the dependencies.
+             There is already an open issue for IntelliJ see https://youtrack.jetbrains.com/issue/IDEA-150621
+            -->
+            <!--
+            <scope>provided</scope>
+       -->
+
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.6.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -32,10 +109,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.6.2</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -47,18 +131,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.4</version>
-                </plugin>
-
-                <!-- dependency check -->
-                <plugin>
-                    <groupId>org.owasp</groupId>
-                    <artifactId>dependency-check-maven</artifactId>
-                    <version>1.4.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M1</version>
                 </plugin>
 
                 <!-- basic maven and tooling plugins -->
@@ -96,75 +168,6 @@
 
         <plugins>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>analyze-dep</id>
-                        <goals>
-                            <goal>analyze-only</goal>
-                        </goals>
-                        <configuration>
-                            <failOnWarning>true</failOnWarning>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <plugin>
-                <!-- enforce plugin versions -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>de.skuzzle.enforcer</groupId>
-                        <artifactId>restrict-imports-enforcer-rule</artifactId>
-                        <version>0.8.0</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>enforce-plugin-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requirePluginVersions>
-                                    <additionalPlugins>
-                                        <additionalPlugin>org.codehaus.mojo:versions-maven-plugin</additionalPlugin>
-                                    </additionalPlugins>
-                                    <unCheckedPluginList>
-                                        org.apache.maven.plugins:maven-enforcer-plugin,
-                                        org.apache.maven.plugins:maven-idea-plugin,
-                                    </unCheckedPluginList>
-                                </requirePluginVersions>
-                                <banDuplicatePomDependencyVersions/>
-                                <requireUpperBoundDeps/>
-                                <restrictImports implementation="de.skuzzle.enforcer.restrictimports.RestrictImports">
-                                    <includeTestCode>true</includeTestCode>
-                                    <reason>We do not use JUnit4</reason>
-                                    <bannedImport>org.junit.*</bannedImport>
-                                </restrictImports>
-                                <restrictImports implementation="de.skuzzle.enforcer.restrictimports.RestrictImports">
-                                    <reason>We do not use javax.inject.Singleton but javax.ejb.Singleton!</reason>
-                                    <bannedImport>javax.inject.Singleton</bannedImport>
-                                </restrictImports>
-                                <restrictImports implementation="de.skuzzle.enforcer.restrictimports.RestrictImports">
-                                    <reason>We do not use HttpStatus code but Response.Status ones!</reason>
-                                    <bannedImport>org.glassfish.grizzly.http.util.*</bannedImport>
-                                </restrictImports>
-                                <restrictImports implementation="de.skuzzle.enforcer.restrictimports.RestrictImports">
-                                    <reason>We do not use junit assertions code but assertj ones!</reason>
-                                    <bannedImport>org.junit.jupiter.api.Assertions</bannedImport>
-                                </restrictImports>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
