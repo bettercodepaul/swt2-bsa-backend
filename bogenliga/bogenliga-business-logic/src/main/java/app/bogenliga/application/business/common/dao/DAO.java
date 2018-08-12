@@ -4,10 +4,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.dbutils.QueryRunner;
 import org.slf4j.Logger;
-import app.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
+import org.springframework.stereotype.Repository;
+import app.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import app.bogenliga.application.common.component.dao.DataAccessObject;
 import app.bogenliga.application.common.database.tx.PostgresqlTransactionManager;
 import app.bogenliga.application.common.database.tx.TransactionManager;
@@ -21,31 +21,18 @@ import app.bogenliga.application.common.utils.SQL;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  * @see <a href="https://www.baeldung.com/apache-commons-dbutils">A Guide to Apache Commons DbUtils</a>
  */
+@Repository
 public abstract class DAO implements DataAccessObject {
 
     protected final QueryRunner run = new QueryRunner();
-    private final Logger __logger;
-    private final Map<String, String> __columnToFieldMapping;
     private final TransactionManager transactionManager;
 
 
     /**
      * Initialize the transaction manager to provide a database connection
      */
-    public DAO(final Logger logger) {
+    public DAO() {
         transactionManager = new PostgresqlTransactionManager();
-        __logger = logger;
-        __columnToFieldMapping = Collections.emptyMap();
-    }
-
-
-    /**
-     * Initialize the transaction manager to provide a database connection
-     */
-    public DAO(final Logger logger, final Map<String, String> columnToFieldMapping) {
-        transactionManager = new PostgresqlTransactionManager();
-        __logger = logger;
-        __columnToFieldMapping = columnToFieldMapping;
     }
 
 
@@ -54,23 +41,28 @@ public abstract class DAO implements DataAccessObject {
     }
 
 
-    protected <T> T selectSingleEntity(final Class<T> businessEnityClass, final String sqlQuery,
+    protected <T> T selectSingleEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                       final String sqlQuery,
                                        final Object... params) {
         try {
-            return run.query(getConnection(), logSQL(__logger, sqlQuery, params),
-                    new BasicBeanHandler<>(businessEnityClass, __columnToFieldMapping), params);
+            return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
+                    new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
+                            businessEntityConfiguration.getColumnToFieldMapping()), params);
         } catch (final SQLException e) {
             throw new TechnicalException(e);
         }
     }
 
 
-    protected <T> List<T> selectEntityList(final Class<T> businessEnityClass, final String sqlQuery,
+    protected <T> List<T> selectEntityList(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                           final String sqlQuery,
                                            final Object... params) {
         List<T> businessEntityList = null;
         try {
-            businessEntityList = run.query(getConnection(), logSQL(__logger, sqlQuery, params),
-                    new BasicBeanListHandler<>(businessEnityClass, __columnToFieldMapping), params);
+            businessEntityList = run.query(getConnection(),
+                    logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
+                    new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
+                            businessEntityConfiguration.getColumnToFieldMapping()), params);
         } catch (final SQLException e) {
             throw new TechnicalException(e);
         }
@@ -80,23 +72,23 @@ public abstract class DAO implements DataAccessObject {
     }
 
 
-    protected <T> ConfigurationBE insertEntity(final T insertBusinessEntity) {
-        return insertEntity(insertBusinessEntity, null);
-    }
-
-
-    protected <T> ConfigurationBE insertEntity(final T insertBusinessEntity, final String tableName) {
+    protected <T> T insertEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                 final T insertBusinessEntity) {
         final QueryRunner run = new QueryRunner();
-        final SQL.SQLWithParameter sql = SQL.insertSQL(insertBusinessEntity, tableName, __columnToFieldMapping);
+        final SQL.SQLWithParameter sql = SQL.insertSQL(insertBusinessEntity, businessEntityConfiguration.getTable(),
+                businessEntityConfiguration.getColumnToFieldMapping());
         final Object[] id;
 
-        ConfigurationBE businessEntityAfterInsert = null;
+        T businessEntityAfterInsert = null;
         try {
             transactionManager.begin();
 
-            businessEntityAfterInsert = run.insert(getConnection(), logSQL(__logger, sql.sql, sql.parameter),
+            businessEntityAfterInsert = run.insert(getConnection(),
+                    logSQL(businessEntityConfiguration.getLogger(), sql.sql, sql.parameter),
                     new BasicBeanHandler<>(
-                            ConfigurationBE.class, __columnToFieldMapping), sql.parameter);
+                            businessEntityConfiguration.getBusinessEntity(),
+                            businessEntityConfiguration.getColumnToFieldMapping()),
+                    sql.parameter);
 
             transactionManager.commit();
         } catch (final SQLException e) {
@@ -106,42 +98,37 @@ public abstract class DAO implements DataAccessObject {
             transactionManager.release();
         }
 
-
         return businessEntityAfterInsert;
     }
 
 
-    public <T> void updateEntity(final T updateBusinessEntity) {
-        updateEntity(updateBusinessEntity, null, null);
+    public <T> void updateEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                 final T updateBusinessEntity, final String fieldSelector) {
+        final SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
+                fieldSelector,
+                businessEntityConfiguration.getColumnToFieldMapping());
+        runUpdate(businessEntityConfiguration, sql);
     }
 
 
-    public <T> void updateEntity(final T updateBusinessEntity, final String tableName, final String fieldSelector) {
-        final SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, tableName, fieldSelector,
-                __columnToFieldMapping);
-        runUpdate(sql);
+    public <T> void deleteEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                 final T deleteBusinessEntity, final String fieldSelector) {
+        final SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, businessEntityConfiguration.getTable(),
+                fieldSelector,
+                businessEntityConfiguration.getColumnToFieldMapping());
+        runUpdate(businessEntityConfiguration, sql);
     }
 
 
-    public <T> void deleteEntity(final T deleteBusinessEntity) {
-        deleteEntity(deleteBusinessEntity, null, null);
-    }
-
-
-    public <T> void deleteEntity(final T deleteBusinessEntity, final String tableName, final String fieldSelector) {
-        final SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, tableName, fieldSelector,
-                __columnToFieldMapping);
-        runUpdate(sql);
-    }
-
-
-    private void runUpdate(final SQL.SQLWithParameter sql) {
+    private <T> void runUpdate(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                               final SQL.SQLWithParameter sql) {
         final QueryRunner run = new QueryRunner();
 
         try {
             transactionManager.begin();
 
-            run.update(getConnection(), logSQL(__logger, sql.sql, sql.parameter), sql.parameter);
+            run.update(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sql.sql, sql.parameter),
+                    sql.parameter);
 
             transactionManager.commit();
 

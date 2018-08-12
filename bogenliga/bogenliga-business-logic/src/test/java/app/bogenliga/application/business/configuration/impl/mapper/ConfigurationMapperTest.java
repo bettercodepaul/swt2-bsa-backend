@@ -39,7 +39,7 @@ public class ConfigurationMapperTest {
         configurationVO.setKey(KEY);
         configurationVO.setValue(VALUE);
 
-        final ConfigurationBE actual = ConfigurationMapper.toBe.apply(configurationVO);
+        final ConfigurationBE actual = ConfigurationMapper.toBE.apply(configurationVO);
 
         assertThat(actual.getConfigurationKey()).isEqualTo(KEY);
         assertThat(actual.getConfigurationValue()).isEqualTo(VALUE);

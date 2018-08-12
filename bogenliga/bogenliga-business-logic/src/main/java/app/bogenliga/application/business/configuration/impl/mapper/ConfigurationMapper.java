@@ -20,7 +20,7 @@ public interface ConfigurationMapper extends ValueObjectMapper {
         return new ConfigurationVO(key, value);
     };
 
-    public static Function<ConfigurationVO, ConfigurationBE> toBe = (vo) -> {
+    public static Function<ConfigurationVO, ConfigurationBE> toBE = (vo) -> {
         String key = vo.getKey();
         String value = vo.getValue();
 

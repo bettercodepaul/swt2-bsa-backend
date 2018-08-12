@@ -7,6 +7,12 @@ import app.bogenliga.application.common.errorhandling.exception.InvalidArgumentE
  * I perform precondition checks.
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see <a href="https://en.wikipedia.org/wiki/Fail-fast">Wikipedia - Fail-fast</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Design_by_contract">Wikipedia - Design by contract</a>
+ * @see <a href="https://docs.oracle.com/cd/E19683-01/806-7930/assert-13/index.html">
+ * Preconditions, Postconditions, and Class Invariants</a>
+ * @see <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html">
+ * Programming With Assertions</a>
  */
 public final class Preconditions {
 
