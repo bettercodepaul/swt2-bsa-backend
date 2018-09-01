@@ -43,6 +43,9 @@ script:
 - cd ../bogenliga-common
 - mvn cobertura:cobertura
 
+after_script:
+- ./check_sonar_quality_gate.sh
+
 after_success:
 # upload reports to https://codecov.io
 # uses CODECOV_TOKEN environment variable
