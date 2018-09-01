@@ -2,6 +2,9 @@ package online.bogenliga.application.services.v1.hello;
 
 import online.bogenliga.application.common.service.types.DataTransferObject;
 
+/**
+ * @deprecated Remove REST service version dummy
+ */
 @Deprecated
 public class Greeting implements DataTransferObject {
 

@@ -17,8 +17,11 @@ public class ConfigurationBE implements BusinessEntity {
     private String configurationValue;
 
 
+    /**
+     * Constructor
+     */
     public ConfigurationBE() {
-
+        // empty constructor
     }
 
 

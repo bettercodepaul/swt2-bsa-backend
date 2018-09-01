@@ -15,6 +15,7 @@ import online.bogenliga.application.services.v2.hello.HelloWorldServiceV2;
  *
  * @see <a href="https://spring.io/guides/gs/actuator-service/">
  * Building a RESTful Web Service with Spring Boot Actuator</a>
+ * @deprecated Remove REST service version dummy
  */
 @Deprecated
 @RestController
@@ -22,7 +23,7 @@ public class HelloWorldServiceV1 implements ServiceFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloWorldServiceV2.class);
 
-    private static final String template = "Hello, %s!";
+    private static final String TEMPLATE = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
 
@@ -32,7 +33,7 @@ public class HelloWorldServiceV1 implements ServiceFacade {
             @RequestParam(name = "name", required = false, defaultValue = "Stranger") final String name) {
         logger.info("HelloWorldServiceV1#sayHello() invoked with name '{}'", name);
 
-        return new Greeting(counter.incrementAndGet(), String.format(template, name));
+        return new Greeting(counter.incrementAndGet(), String.format(TEMPLATE, name));
     }
 
 }

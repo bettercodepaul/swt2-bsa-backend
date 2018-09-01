@@ -23,6 +23,9 @@ public class ConfigurationDAO extends DAO {
 
     // table name in the database
     private static final String TABLE = "t_configuration";
+    // business entity parameter names
+    private static final String CONFIGURATION_BE_KEY = "configurationKey";
+    private static final String CONFIGURATION_BE_VALUE = "configurationValue";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<ConfigurationBE> CONFIG = new BusinessEntityConfiguration<>(
@@ -43,8 +46,8 @@ public class ConfigurationDAO extends DAO {
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
-        columnsToFieldsMap.put("configuration_key", "configurationKey");
-        columnsToFieldsMap.put("configuration_value", "configurationValue");
+        columnsToFieldsMap.put("configuration_key", CONFIGURATION_BE_KEY);
+        columnsToFieldsMap.put("configuration_value", CONFIGURATION_BE_VALUE);
         return columnsToFieldsMap;
     }
 
@@ -73,12 +76,12 @@ public class ConfigurationDAO extends DAO {
 
 
     public void update(final ConfigurationBE configurationBE) {
-        updateEntity(CONFIG, configurationBE, "configurationKey");
+        updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 
 
     public void delete(final ConfigurationBE configurationBE) {
-        deleteEntity(CONFIG, configurationBE, "configurationKey");
+        deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 }
 

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
  * Helper-Klasse um fuer komplexe SQL Spalten-Eindeutigkeit herzustellen, indem
@@ -73,7 +74,7 @@ public final class SQL {
             }
 
         } catch (final SecurityException | IllegalArgumentException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
 
         return mapping;
@@ -119,14 +120,14 @@ public final class SQL {
 
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
 
         sql.append(values);
         sql.append(");");
 
-        sqlWithParameter.sql = sql.toString();
-        sqlWithParameter.parameter = para.toArray();
+        sqlWithParameter.setSql(sql.toString());
+        sqlWithParameter.setParameter(para.toArray());
 
         return sqlWithParameter;
     }
@@ -139,20 +140,11 @@ public final class SQL {
                                                       final Field[] fields)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         boolean first = true;
-        String suffix;
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
-
-                if (boolean.class.isAssignableFrom(field.getType())
-                        || Boolean.class.isAssignableFrom(field.getType())) {
-                    suffix = "is";
-                } else {
-                    suffix = "get";
-                }
-
-                final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
+                final String getterName = retrieveGetterName(field, fName);
                 final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
                 Object value = getter.invoke(insertObj);
 
@@ -176,6 +168,19 @@ public final class SQL {
                 para.add(value);
             }
         }
+    }
+
+
+    private static String retrieveGetterName(final Field field, final String fName) {
+        final String suffix;
+        if (boolean.class.isAssignableFrom(field.getType())
+                || Boolean.class.isAssignableFrom(field.getType())) {
+            suffix = "is";
+        } else {
+            suffix = "get";
+        }
+
+        return suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
     }
 
 
@@ -227,7 +232,7 @@ public final class SQL {
             idValue = appendFieldsToUpdateStatement(updateObj, fieldSelector, columnToFieldMapping, sql, para, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
 
         sql.append(" WHERE ");
@@ -239,8 +244,8 @@ public final class SQL {
         sql.append(" = ?;");
         para.add(idValue);
 
-        sqlWithParameter.sql = sql.toString();
-        sqlWithParameter.parameter = para.toArray();
+        sqlWithParameter.setSql(sql.toString());
+        sqlWithParameter.setParameter(para.toArray());
 
         return sqlWithParameter;
     }
@@ -254,18 +259,10 @@ public final class SQL {
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         boolean first = true;
         Object idValue = null;
-        String suffix;
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
-                if (boolean.class.isAssignableFrom(field.getType())
-                        || Boolean.class.isAssignableFrom(field.getType())) {
-                    suffix = "is";
-                } else {
-                    suffix = "get";
-                }
-
-                final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
+                final String getterName = retrieveGetterName(field, fName);
                 final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
                 Object value = getter.invoke(updateObj);
 
@@ -321,7 +318,7 @@ public final class SQL {
             idValue = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
 
         sql.append(" WHERE ");
@@ -333,8 +330,8 @@ public final class SQL {
         sql.append(" = ?;");
         para.add(idValue);
 
-        sqlWithParameter.sql = sql.toString();
-        sqlWithParameter.parameter = para.toArray();
+        sqlWithParameter.setSql(sql.toString());
+        sqlWithParameter.setParameter(para.toArray());
 
         return sqlWithParameter;
     }
@@ -344,27 +341,18 @@ public final class SQL {
                                                         final Field[] fields)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object idValue = null;
-        String suffix;
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
                 if (fName.equals("id") || fName.equals(fieldSelector)) {
 
-                    if (boolean.class.isAssignableFrom(field.getType())
-                            || Boolean.class.isAssignableFrom(field.getType())) {
-                        suffix = "is";
-                    } else {
-                        suffix = "get";
-                    }
-
-                    final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
+                    final String getterName = retrieveGetterName(field, fName);
                     final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
                     final Object value = getter.invoke(updateObj);
 
                     if (fName.equals("id") || fName.equals(fieldSelector)) {
                         idValue = value;
-                        continue;
                     }
                 }
             }
@@ -394,7 +382,7 @@ public final class SQL {
         }
 
 
-        public void setSql(final String sql) {
+        void setSql(final String sql) {
             this.sql = sql;
         }
 
@@ -404,7 +392,7 @@ public final class SQL {
         }
 
 
-        public void setParameter(final Object[] parameter) {
+        void setParameter(final Object[] parameter) {
             this.parameter = parameter;
         }
     }

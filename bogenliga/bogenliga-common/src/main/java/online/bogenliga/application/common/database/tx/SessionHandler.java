@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SessionHandler {
+public final class SessionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(SessionHandler.class);
 
     private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(HashMap::new);
@@ -18,6 +18,17 @@ public class SessionHandler {
     private static final String UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_CONNECTION =
             "unexpected empty ThreadLocal for Connection";
     private static final String THREAD_LOCAL_NOT_INITIALIZED = "ThreadLocal not initialized.";
+    private static final String UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_USER_ID = "unexpected empty ThreadLocal for userId";
+    private static final String UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_USER_INFOS =
+            "unexpected empty ThreadLocal for UserInfos";
+
+
+    /**
+     * Constructor
+     */
+    private SessionHandler() {
+        // empty private constructor
+    }
 
 
     /**
@@ -30,9 +41,7 @@ public class SessionHandler {
 
         final Connection connection;
 
-        if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException(UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_CONNECTION);
-        } else if (THREAD_LOCAL.get().get(CONNECTION) == null) {
+        if (THREAD_LOCAL.get() == null || THREAD_LOCAL.get().get(CONNECTION) == null) {
             throw new IllegalStateException(UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_CONNECTION);
         }
 
@@ -48,11 +57,11 @@ public class SessionHandler {
      *
      * @param connection the connection types set in ThreadLocal
      */
-    public static void setConnection(final Connection connection) {
+    static void setConnection(final Connection connection) {
         LOG.debug("Set new connection in ThreadLocal.");
 
         if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException("ThreadLocal not initialized.");
+            throw new IllegalStateException(THREAD_LOCAL_NOT_INITIALIZED);
         } else if (THREAD_LOCAL.get().containsKey(CONNECTION)) {
             LOG.warn("Found unexpected connection in ThreadLocal, will be removed and overwritten by new one.");
             THREAD_LOCAL.get().remove(CONNECTION);
@@ -65,7 +74,7 @@ public class SessionHandler {
     /**
      * Remove the connection from ThreadLocal.
      */
-    public static void removeConnection() {
+    static void removeConnection() {
         LOG.debug("Remove connection from ThreadLocal.");
 
         if (THREAD_LOCAL.get() == null) {
@@ -83,7 +92,7 @@ public class SessionHandler {
      *
      * @return true, if transaction on connection is active, false else
      */
-    public static Boolean isActive() {
+    static Boolean isActive() {
         if (THREAD_LOCAL.get() == null
                 || THREAD_LOCAL.get().get(IS_ACTIVE) == null) {
             return false;
@@ -98,7 +107,7 @@ public class SessionHandler {
      *
      * @param active true, if transaction on connection is active, false else
      */
-    public static void setIsActive(final Boolean active) {
+    static void setIsActive(final Boolean active) {
         if (THREAD_LOCAL.get() == null) {
             throw new IllegalStateException(THREAD_LOCAL_NOT_INITIALIZED);
         }
@@ -113,12 +122,9 @@ public class SessionHandler {
      * @return caller userId.
      */
     public static Long getUserId() {
-        if (THREAD_LOCAL.get() == null) {
+        if (THREAD_LOCAL.get() == null || THREAD_LOCAL.get().get(USER_ID) == null) {
             throw new IllegalStateException(
-                    "unexpected empty ThreadLocal for userId");
-        } else if (THREAD_LOCAL.get().get(USER_ID) == null) {
-            throw new IllegalStateException(
-                    "unexpected empty ThreadLocal for userId");
+                    UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_USER_ID);
         }
 
         return (Long) THREAD_LOCAL.get().get(USER_ID);
@@ -146,8 +152,7 @@ public class SessionHandler {
      */
     public static Object getUserInfo() {
         if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException(
-                    "unexpected empty ThreadLocal for UserInfos");
+            throw new IllegalStateException(UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_USER_INFOS);
         }
 
         // could be null!

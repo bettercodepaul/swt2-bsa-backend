@@ -29,7 +29,7 @@ public final class Preconditions {
      * @return the non-null reference that was validated
      * @throws InvalidArgumentException if {@code reference} is null
      */
-    public static <T> T checkNotNull(final T reference, final String errorMessage) throws InvalidArgumentException {
+    public static <T> T checkNotNull(final T reference, final String errorMessage) {
         if (reference == null) {
             throw new InvalidArgumentException(errorMessage);
         }
@@ -46,8 +46,7 @@ public final class Preconditions {
      * @return the non-null String that was validated
      * @throws InvalidArgumentException if {@code parameter} is null or empty
      */
-    public static String checkNotNullOrEmpty(final String parameter, final String errorMessage)
-            throws InvalidArgumentException {
+    public static String checkNotNullOrEmpty(final String parameter, final String errorMessage) {
         if (parameter == null || parameter.length() == 0) {
             throw new InvalidArgumentException(errorMessage);
         }
@@ -64,8 +63,7 @@ public final class Preconditions {
      * @return the non-empty byte array that was validated
      * @throws InvalidArgumentException if {@code parameter} is null or empty
      */
-    public static byte[] checkNotEmpty(final byte[] parameter, final String errorMessage)
-            throws InvalidArgumentException {
+    public static byte[] checkNotEmpty(final byte[] parameter, final String errorMessage) {
         if (parameter == null || parameter.length == 0) {
             throw new InvalidArgumentException(errorMessage);
         }
@@ -82,8 +80,8 @@ public final class Preconditions {
      * @return the non-null reference that was validated
      * @throws InvalidArgumentException if {@code reference} is null or empty
      */
-    public static Collection<?> checkNotNullOrEmpty(final Collection<?> reference, final String errorMessage)
-            throws InvalidArgumentException {
+    public static Collection<? extends Class> checkNotNullOrEmpty(final Collection<? extends Class> reference,
+                                                                  final String errorMessage) {
         if (reference == null || reference.isEmpty()) {
             throw new InvalidArgumentException(errorMessage);
         }
@@ -100,7 +98,7 @@ public final class Preconditions {
      * @throws InvalidArgumentException if {@code expression} is false
      */
     public static void checkArgument(final boolean expression,
-                                     final String errorMessage) throws InvalidArgumentException {
+                                     final String errorMessage) {
         if (!expression) {
             throw new InvalidArgumentException(errorMessage);
         }

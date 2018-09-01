@@ -44,7 +44,6 @@ public class PostgresqlTransactionManager implements TransactionManager {
             final DatabaseMetaData databaseMetaData = connection.getMetaData();
             final String databaseInfo = databaseMetaData.getDatabaseProductName()
                     + databaseMetaData.getDatabaseProductVersion();
-            connection.close();
             LOG.info("Datasource {} found and registered.", databaseInfo);
         }
     }

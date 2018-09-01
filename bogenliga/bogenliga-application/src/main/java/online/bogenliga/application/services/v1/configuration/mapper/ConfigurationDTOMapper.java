@@ -13,14 +13,14 @@ import online.bogenliga.application.services.v1.configuration.model.Configuratio
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
  */
-public interface ConfigurationDTOMapper extends DataTransferObjectMapper {
+public final class ConfigurationDTOMapper implements DataTransferObjectMapper {
 
     /**
      * I map the {@link ConfigurationVO} object to the {@link ConfigurationDTO} object
      */
-    public static Function<ConfigurationVO, ConfigurationDTO> toDTO = (vo) -> {
-        String key = vo.getKey();
-        String value = vo.getValue();
+    public static final Function<ConfigurationVO, ConfigurationDTO> toDTO = vo -> {
+        final String key = vo.getKey();
+        final String value = vo.getValue();
 
         return new ConfigurationDTO(key, value);
     };
@@ -28,9 +28,9 @@ public interface ConfigurationDTOMapper extends DataTransferObjectMapper {
     /**
      * I map the {@link ConfigurationDTO} object to the {@link ConfigurationVO} object
      */
-    public static Function<ConfigurationDTO, ConfigurationVO> toVO = (dto) -> {
-        String key = dto.getKey();
-        String value = dto.getValue();
+    public static final Function<ConfigurationDTO, ConfigurationVO> toVO = dto -> {
+        final String key = dto.getKey();
+        final String value = dto.getValue();
 
         return new ConfigurationVO(key, value);
     };
