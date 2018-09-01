@@ -1,6 +1,13 @@
 language: java
 jdk:
 - oraclejdk8
+git:
+  depth: false
+  submodules: false
+branches:
+  only:
+  - master
+  - /^release-.*$/
 addons:
   sonarcloud:
     organization: "andre-lehnert-github" # the key of the org (https://sonarcloud.io/account/organizations)
