@@ -42,7 +42,6 @@ script:
 - mvn cobertura:cobertura
 - cd ../bogenliga-common
 - mvn cobertura:cobertura
-- ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-common/target/site/cobertura
 
 after_success:
 # upload reports to https://codecov.io
@@ -50,13 +49,18 @@ after_success:
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/site/cobertura/coverage.xml
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-business-logic/target/site/cobertura/coverage.xml
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-common/target/site/cobertura/coverage.xml
+- cd ../bogenliga-application
+- mvn clean heroku:deploy
 
 deploy:
   provider: heroku
   api_key:
     secure: $HEROKU_API_KEY
   app: bogenliga-online
+  skip_cleanup: true
   on:
     repo: andre-lehnert/mock-backend
+  run:
+  - "ls"
 
 
