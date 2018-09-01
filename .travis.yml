@@ -38,14 +38,10 @@ script:
 - mvn cobertura:cobertura
 - ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target
 - ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/cobertura
-- ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-business-logic/target
-- ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-common/target
 after_success:
 # uses CODECOV_TOKEN environment variable
-- bash <(curl -s https://codecov.io/bash)
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga
-- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target
-- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/cobertura
+- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/cobertura/cobertura.ser
 
 
 
