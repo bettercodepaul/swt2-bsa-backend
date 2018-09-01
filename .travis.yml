@@ -41,10 +41,8 @@ script:
 - ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-common/target
 after_success:
 # uses CODECOV_TOKEN environment variable
+- bash <(curl -s https://codecov.io/bash)
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga
-- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application
-- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-business-logic
-- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-common
 
 
 
