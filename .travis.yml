@@ -19,9 +19,14 @@ addons:
       secure: $SONAR_CLOUD_KEY # travis ci environment variable with the sonar cloud token (https://sonarcloud.io/account/security/)
 install: true
 script:
+- ls -l
 - cd bogenliga # change to project directory
-- ./mvnw clean install # maven build with unit tests
+- mvn clean install # maven build with unit tests
+- mvn cobertura:cobertura
+- ls -l
 - ../sonar-scanner # other script steps might be done before running the actual analysis
+after_success:
+- bash <(curl -s https://codecov.io/bash)
 
 
 

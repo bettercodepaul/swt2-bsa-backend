@@ -91,6 +91,20 @@
                     <version>3.0.0-M1</version>
                 </plugin>
 
+                <!-- code coverage -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.7</version>
+                    <configuration>
+                        <formats>
+                            <format>html</format>
+                            <format>xml</format>
+                        </formats>
+                        <check/>
+                    </configuration>
+                </plugin>
+
                 <!-- basic maven and tooling plugins -->
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
@@ -165,6 +179,10 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
 
             <plugin>
                 <!-- enforce plugin versions -->
