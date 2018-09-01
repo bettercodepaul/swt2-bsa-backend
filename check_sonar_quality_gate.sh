@@ -7,6 +7,8 @@ quality_gate_result=$(curl -s "https://sonarcloud.io/api/qualitygates/project_st
 
 echo "Result: $quality_gate_result"
 
+exit_code = 0
+
 if echo "$quality_gate_result" | grep -q ERROR; then
     echo "Found ERROR! Quality gate failure"
     exit 1
