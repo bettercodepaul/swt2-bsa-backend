@@ -24,6 +24,9 @@
 
         <org.postgresql.postgresql.version>9.4-1205-jdbc4</org.postgresql.postgresql.version>
         <org.flywaydb.flyway-maven-plugin.version>4.2.0</org.flywaydb.flyway-maven-plugin.version>
+
+        <downloadSources>true</downloadSources>
+        <downloadJavadocs>true</downloadJavadocs>
     </properties>
 
     <packaging>pom</packaging>
@@ -105,6 +108,29 @@
                     </configuration>
                 </plugin>
 
+                <!-- download sources and javadoc -->
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.10</version>
+                    <executions>
+                        <execution>
+                            <id>download-sources</id>
+                            <goals>
+                                <goal>sources</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>download-javadoc</id>
+                            <configuration>
+                                <classifier>javadoc</classifier>
+                            </configuration>
+                            <goals>
+                                <goal>resolve</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <!-- basic maven and tooling plugins -->
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
@@ -182,6 +208,11 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
             </plugin>
 
             <plugin>
