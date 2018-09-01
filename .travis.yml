@@ -50,7 +50,7 @@ after_success:
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-business-logic/target/site/cobertura/coverage.xml
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-common/target/site/cobertura/coverage.xml
 - cd ../bogenliga-application
-- mvn clean heroku:deploy
+- mvn heroku:deploy-only
 
 deploy:
   provider: heroku
