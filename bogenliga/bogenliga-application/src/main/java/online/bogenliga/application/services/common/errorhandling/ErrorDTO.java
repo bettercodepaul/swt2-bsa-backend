@@ -8,13 +8,14 @@ package online.bogenliga.application.services.common.errorhandling;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class ErrorDTO {
-        private String message;
+    private final String message;
 
-        public ErrorDTO(String message) {
-            super();
 
-            this.message = message;
-        }
+    public ErrorDTO(final String message) {
+        super();
+
+        this.message = message;
+    }
 
 
     public String getMessage() {

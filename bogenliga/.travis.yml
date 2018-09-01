@@ -1,0 +1,12 @@
+language: java
+jdk:
+- oraclejdk8
+addons:
+  sonarcloud:
+    organization: "andre-lehnert-github" # the key of the org (https://sonarcloud.io/account/organizations)
+    token:
+      secure: $SONAR_CLOUD_KEY # travis ci environment variable with the sonar cloud token (https://sonarcloud.io/account/security/)
+script:
+# other script steps might be done before running the actual analysis
+- sonar-scanner
+

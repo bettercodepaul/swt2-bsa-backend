@@ -74,7 +74,7 @@ public class SQL {
                 }
             }
 
-        } catch (SecurityException | IllegalArgumentException e) {
+        } catch (final SecurityException | IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
 
@@ -156,7 +156,7 @@ public class SQL {
                     para.add(value);
                 }
             }
-        } catch (SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
+        } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
@@ -253,7 +253,7 @@ public class SQL {
                     para.add(value);
                 }
             }
-        } catch (SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
+        } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
@@ -326,7 +326,7 @@ public class SQL {
                     }
                 }
             }
-        } catch (SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
+        } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new RuntimeException(e);
         }

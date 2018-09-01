@@ -13,16 +13,18 @@ import org.springframework.http.HttpStatus;
  */
 public class ApiError {
 
-    private HttpStatus status;
-    private List<ErrorDTO> errors;
+    private final HttpStatus status;
+    private final List<ErrorDTO> errors;
 
-    public ApiError(HttpStatus status, List<ErrorDTO> errors) {
+
+    public ApiError(final HttpStatus status, final List<ErrorDTO> errors) {
         super();
         this.status = status;
         this.errors = errors;
     }
 
-    public ApiError(HttpStatus status, ErrorDTO error) {
+
+    public ApiError(final HttpStatus status, final ErrorDTO error) {
         super();
         this.status = status;
         errors = Arrays.asList(error);
