@@ -6,5 +6,6 @@ bin/
 build/
 .idea
 *.iml
-*/target/*
+*/target
 */logs/*
+
