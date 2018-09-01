@@ -1,5 +1,4 @@
-[![codecov](https://codecov.io/gh/andre-lehnert/mock-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/andre-lehnert/mock-backend)
-
+[![Build Status](https://travis-ci.org/andre-lehnert/mock-backend.svg?branch=master)](https://travis-ci.org/andre-lehnert/mock-backend) [![codecov](https://codecov.io/gh/andre-lehnert/mock-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/andre-lehnert/mock-backend)
 
 # Bogenliga Online Application
 
