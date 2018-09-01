@@ -18,7 +18,8 @@ public class ServiceLoaderConfigurationManager extends DefaultConfigurationManag
     /**
      * Create a new {@link ServiceLoaderConfigurationManager}.
      */
-    public ServiceLoaderConfigurationManager() {
+    ServiceLoaderConfigurationManager() {
+        // empty default constructor
     }
 
 

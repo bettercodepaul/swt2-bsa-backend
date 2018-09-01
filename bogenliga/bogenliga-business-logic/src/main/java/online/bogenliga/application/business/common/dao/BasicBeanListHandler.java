@@ -5,12 +5,15 @@ import java.util.Map;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import online.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 
 /**
- * I map the {@link ResultSet} to a {@link ConfigurationBE} list
+ * I map the {@link ResultSet} to a business entity list
+ *
+ * I handle the mapping between table column names and the bean parameter names.
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see BeanListHandler
+ * @see ResultSet
  */
 class BasicBeanListHandler<T> extends BeanListHandler<T> {
 

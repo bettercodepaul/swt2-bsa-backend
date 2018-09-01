@@ -11,16 +11,16 @@ import online.bogenliga.application.common.component.mapping.ValueObjectMapper;
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
  */
-public interface ConfigurationMapper extends ValueObjectMapper {
+public class ConfigurationMapper implements ValueObjectMapper {
 
-    public static Function<ConfigurationBE, ConfigurationVO> toVO = (be) -> {
+    public static Function<ConfigurationBE, ConfigurationVO> toVO = be -> {
         String key = be.getConfigurationKey();
         String value = be.getConfigurationValue();
 
         return new ConfigurationVO(key, value);
     };
 
-    public static Function<ConfigurationVO, ConfigurationBE> toBE = (vo) -> {
+    public static Function<ConfigurationVO, ConfigurationBE> toBE = vo -> {
         String key = vo.getKey();
         String value = vo.getValue();
 

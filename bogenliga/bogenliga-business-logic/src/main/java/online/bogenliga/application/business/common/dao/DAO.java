@@ -9,10 +9,10 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Repository;
 import online.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import online.bogenliga.application.common.component.dao.DataAccessObject;
+import online.bogenliga.application.common.database.SQL;
 import online.bogenliga.application.common.database.tx.PostgresqlTransactionManager;
 import online.bogenliga.application.common.database.tx.TransactionManager;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
-import online.bogenliga.application.common.utils.SQL;
 
 
 /**
@@ -74,21 +74,19 @@ public abstract class DAO implements DataAccessObject {
 
     protected <T> T insertEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
                                  final T insertBusinessEntity) {
-        final QueryRunner run = new QueryRunner();
         final SQL.SQLWithParameter sql = SQL.insertSQL(insertBusinessEntity, businessEntityConfiguration.getTable(),
                 businessEntityConfiguration.getColumnToFieldMapping());
-        final Object[] id;
 
         T businessEntityAfterInsert = null;
         try {
             transactionManager.begin();
 
             businessEntityAfterInsert = run.insert(getConnection(),
-                    logSQL(businessEntityConfiguration.getLogger(), sql.sql, sql.parameter),
+                    logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
                     new BasicBeanHandler<>(
                             businessEntityConfiguration.getBusinessEntity(),
                             businessEntityConfiguration.getColumnToFieldMapping()),
-                    sql.parameter);
+                    sql.getParameter());
 
             transactionManager.commit();
         } catch (final SQLException e) {
@@ -122,13 +120,12 @@ public abstract class DAO implements DataAccessObject {
 
     private <T> void runUpdate(final BusinessEntityConfiguration<T> businessEntityConfiguration,
                                final SQL.SQLWithParameter sql) {
-        final QueryRunner run = new QueryRunner();
-
         try {
             transactionManager.begin();
 
-            run.update(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sql.sql, sql.parameter),
-                    sql.parameter);
+            run.update(getConnection(),
+                    logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
+                    sql.getParameter());
 
             transactionManager.commit();
 

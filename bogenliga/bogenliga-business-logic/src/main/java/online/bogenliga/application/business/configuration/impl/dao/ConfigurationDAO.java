@@ -25,7 +25,7 @@ public class ConfigurationDAO extends DAO {
     private static final String TABLE = "t_configuration";
 
     // wrap all specific config parameters
-    private final static BusinessEntityConfiguration<ConfigurationBE> CONFIG = new BusinessEntityConfiguration<>(
+    private static final BusinessEntityConfiguration<ConfigurationBE> CONFIG = new BusinessEntityConfiguration<>(
             ConfigurationBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
     /*
      * SQL queries

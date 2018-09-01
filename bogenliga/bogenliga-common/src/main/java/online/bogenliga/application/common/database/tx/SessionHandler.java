@@ -9,17 +9,15 @@ import org.slf4j.LoggerFactory;
 public class SessionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(SessionHandler.class);
 
-    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = new ThreadLocal<Map<String, Object>>() {
-        @Override
-        protected Map<String, Object> initialValue() {
-            return new HashMap<>();
-        }
-    };
+    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(HashMap::new);
 
     private static final String CONNECTION = "CONNECTION";
     private static final String IS_ACTIVE = "IS_ACTIVE";
     private static final String USER_ID = "USER_ID";
     private static final String USER_INFO = "USER_INFO";
+    private static final String UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_CONNECTION =
+            "unexpected empty ThreadLocal for Connection";
+    private static final String THREAD_LOCAL_NOT_INITIALIZED = "ThreadLocal not initialized.";
 
 
     /**
@@ -27,17 +25,15 @@ public class SessionHandler {
      *
      * @return the connection bound types the caller thread.
      */
-    public static Connection getConnection() {
+    static Connection getConnection() {
         LOG.debug("Get connection from ThreadLocal.");
 
         final Connection connection;
 
         if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException(
-                    "unexpected empty ThreadLocal for Connection");
+            throw new IllegalStateException(UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_CONNECTION);
         } else if (THREAD_LOCAL.get().get(CONNECTION) == null) {
-            throw new IllegalStateException(
-                    "unexpected empty ThreadLocal for Connection");
+            throw new IllegalStateException(UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_CONNECTION);
         }
 
         connection = (Connection) THREAD_LOCAL.get().get(CONNECTION);
@@ -73,8 +69,8 @@ public class SessionHandler {
         LOG.debug("Remove connection from ThreadLocal.");
 
         if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException("ThreadLocal not initialized.");
-        } else if (THREAD_LOCAL.get().containsKey(CONNECTION)) {
+            throw new IllegalStateException(THREAD_LOCAL_NOT_INITIALIZED);
+        } else {
             THREAD_LOCAL.get().remove(CONNECTION);
         }
 
@@ -104,7 +100,7 @@ public class SessionHandler {
      */
     public static void setIsActive(final Boolean active) {
         if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException("ThreadLocal not initialized.");
+            throw new IllegalStateException(THREAD_LOCAL_NOT_INITIALIZED);
         }
 
         THREAD_LOCAL.get().put(IS_ACTIVE, active);
@@ -136,7 +132,7 @@ public class SessionHandler {
      */
     public static void setUserId(final Long userId) {
         if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException("ThreadLocal not initialized.");
+            throw new IllegalStateException(THREAD_LOCAL_NOT_INITIALIZED);
         }
 
         THREAD_LOCAL.get().put(USER_ID, userId);
@@ -155,7 +151,7 @@ public class SessionHandler {
         }
 
         // could be null!
-        return (Object) THREAD_LOCAL.get().get(USER_INFO);
+        return THREAD_LOCAL.get().get(USER_INFO);
     }
 
 
@@ -166,7 +162,7 @@ public class SessionHandler {
      */
     public static void setUserInfo(final Object userInfos) {
         if (THREAD_LOCAL.get() == null) {
-            throw new IllegalStateException("ThreadLocal not initialized.");
+            throw new IllegalStateException(THREAD_LOCAL_NOT_INITIALIZED);
         }
 
         THREAD_LOCAL.get().put(USER_INFO, userInfos);

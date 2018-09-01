@@ -3,18 +3,21 @@ package online.bogenliga.application.business.configuration.api.types;
 import online.bogenliga.application.common.component.types.ValueObject;
 
 /**
- * TODO [AL] class documentation
+ * I contain the values of the configuration business entity.
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see ValueObject
  */
 public class ConfigurationVO implements ValueObject {
-
     private String key;
     private String value;
 
 
+    /**
+     * Constructor
+     */
     public ConfigurationVO() {
-
+        // empty constructor
     }
 
 

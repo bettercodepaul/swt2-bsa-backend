@@ -5,7 +5,10 @@ import online.bogenliga.application.common.service.types.DataTransferObject;
 /**
  * I´m the data transfer object of the configuration.
  *
+ * I define the payload for the external REST interface of the configuration business entity.
+ *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see DataTransferObject
  */
 public class ConfigurationDTO implements DataTransferObject {
     private String key;
@@ -16,7 +19,7 @@ public class ConfigurationDTO implements DataTransferObject {
      * Constructor
      */
     public ConfigurationDTO() {
-
+        // empty constructor
     }
 
 

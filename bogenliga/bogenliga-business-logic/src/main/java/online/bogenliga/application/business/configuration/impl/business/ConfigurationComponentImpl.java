@@ -19,6 +19,10 @@ import online.bogenliga.application.common.validation.Preconditions;
 @Component
 public class ConfigurationComponentImpl implements ConfigurationComponent {
 
+    private static final String PRECONDITION_MSG_CONFIGURATION = "ConfigurationVO must not be null";
+    private static final String PRECONDITION_MSG_CONFIGURATION_KEY = "ConfigurationVO key must not be null or empty";
+    private static final String PRECONDITION_MSG_CONFIGURATION_VALUE = "ConfigurationVO value must not be null";
+    
     private final ConfigurationDAO configurationDAO;
 
 
@@ -44,7 +48,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
     @Override
     public ConfigurationVO findByKey(final String key) {
-        Preconditions.checkNotNullOrEmpty(key, "Configuration key must not be null or empty");
+        Preconditions.checkNotNullOrEmpty(key, PRECONDITION_MSG_CONFIGURATION_KEY);
 
         return ConfigurationMapper.toVO.apply(configurationDAO.findByKey(key));
     }
@@ -52,10 +56,10 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
     @Override
     public ConfigurationVO create(final ConfigurationVO configurationVO) {
-        Preconditions.checkNotNull(configurationVO, "ConfigurationVO must not be null");
-        Preconditions.checkNotNullOrEmpty(configurationVO.getKey(), "ConfigurationVO key must not be null or empty");
+        Preconditions.checkNotNull(configurationVO, PRECONDITION_MSG_CONFIGURATION);
+        Preconditions.checkNotNullOrEmpty(configurationVO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
         Preconditions.checkNotNull(configurationVO.getValue(),
-                "ConfigurationVO value must not be null");
+                PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationVO);
         return ConfigurationMapper.toVO.apply(configurationDAO.create(configurationBE));
@@ -64,10 +68,10 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
     @Override
     public void update(final ConfigurationVO configurationVO) {
-        Preconditions.checkNotNull(configurationVO, "ConfigurationVO must not be null");
-        Preconditions.checkNotNullOrEmpty(configurationVO.getKey(), "ConfigurationVO key must not be null or empty");
+        Preconditions.checkNotNull(configurationVO, PRECONDITION_MSG_CONFIGURATION);
+        Preconditions.checkNotNullOrEmpty(configurationVO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
         Preconditions.checkNotNull(configurationVO.getValue(),
-                "ConfigurationVO value must not be null");
+                PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationVO);
         configurationDAO.update(configurationBE);
@@ -76,8 +80,8 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
     @Override
     public void delete(final ConfigurationVO configurationVO) {
-        Preconditions.checkNotNull(configurationVO, "ConfigurationVO must not be null");
-        Preconditions.checkNotNullOrEmpty(configurationVO.getKey(), "ConfigurationVO key must not be null or empty");
+        Preconditions.checkNotNull(configurationVO, PRECONDITION_MSG_CONFIGURATION);
+        Preconditions.checkNotNullOrEmpty(configurationVO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationVO);
         configurationDAO.delete(configurationBE);

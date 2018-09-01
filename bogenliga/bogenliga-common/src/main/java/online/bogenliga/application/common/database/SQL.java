@@ -1,4 +1,4 @@
-package online.bogenliga.application.common.utils;
+package online.bogenliga.application.common.database;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author Alexander Jost
  */
-public class SQL {
+public final class SQL {
     /**
      * Erzeugt aus allen Feldern der uebergebene Klasse, die nicht als transient
      * deklariert sind, einen eindeutigen Namen durch Voranstellen des
@@ -26,14 +26,13 @@ public class SQL {
      * @param clazz Klasse, fuer die kommaseparierte Feldnamen erzeugt werden
      * @return kommaseparierte Liste der eindeutigen Feldnamen
      */
-    public static final String uniqueSelect(final Class clazz) {
+    public static String uniqueSelect(final Class clazz) {
         boolean first = true;
         final String suffix = clazz.getSimpleName();
         final StringBuilder builder = new StringBuilder();
         final Field[] fields = clazz.getDeclaredFields();
 
-        for (int i = 0; i < fields.length; i++) {
-            final Field field = fields[i];
+        for (final Field field : fields) {
             if (isMappableField(field)) {
                 if (first) {
                     first = false;
@@ -58,15 +57,14 @@ public class SQL {
      * @return Mapping zwischen eindeutigem Spaltennamen und zugehoerigem
      * Attributnamen
      */
-    public static final Map<String, String> getColumnMapping(final Class clazz) {
-        final Map<String, String> mapping = new HashMap();
+    public static Map<String, String> getColumnMapping(final Class clazz) {
+        final HashMap mapping = new HashMap();
 
         try {
 
             final Field[] fields = clazz.getDeclaredFields();
 
-            for (int i = 0; i < fields.length; i++) {
-                final Field field = fields[i];
+            for (final Field field : fields) {
                 if (isMappableField(field)) {
                     final String fName = field.getName();
                     final String sqlName = clazz.getSimpleName() + "_" + fName;
@@ -90,13 +88,13 @@ public class SQL {
      * @param insertObj Object, fuer das das Statement gebaut wird
      * @return INSERT SQL und zugehoerige Parameterliste
      */
-    public static final SQLWithParameter insertSQL(final Object insertObj) {
+    public static SQLWithParameter insertSQL(final Object insertObj) {
         return insertSQL(insertObj, null, Collections.emptyMap());
     }
 
 
-    public static final SQLWithParameter insertSQL(final Object insertObj, final String tableName,
-                                                   final Map<String, String> columnToFieldMapping) {
+    public static SQLWithParameter insertSQL(final Object insertObj, final String tableName,
+                                             final Map<String, String> columnToFieldMapping) {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
         final StringBuilder values = new StringBuilder();
@@ -119,8 +117,7 @@ public class SQL {
             sql.append(" (");
             final Field[] fields = insertObj.getClass().getDeclaredFields();
 
-            for (int i = 0; i < fields.length; i++) {
-                final Field field = fields[i];
+            for (final Field field : fields) {
                 if (isMappableField(field)) {
                     final String fName = field.getName();
 
@@ -190,14 +187,14 @@ public class SQL {
      * @param updateObj Object, fuer das das Statement gebaut wird
      * @return UPDATE SQL und zugehoerige Parameterliste
      */
-    public static final SQLWithParameter updateSQL(final Object updateObj) {
+    public static SQLWithParameter updateSQL(final Object updateObj) {
         return updateSQL(updateObj, null, null, Collections.emptyMap());
     }
 
 
-    public static final SQLWithParameter updateSQL(final Object updateObj, final String tableName,
-                                                   final String fieldSelector,
-                                                   final Map<String, String> columnToFieldMapping) {
+    public static SQLWithParameter updateSQL(final Object updateObj, final String tableName,
+                                             final String fieldSelector,
+                                             final Map<String, String> columnToFieldMapping) {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
         final List<Object> para = new ArrayList<>();
@@ -219,8 +216,7 @@ public class SQL {
             sql.append(" SET ");
             final Field[] fields = updateObj.getClass().getDeclaredFields();
 
-            for (int i = 0; i < fields.length; i++) {
-                final Field field = fields[i];
+            for (final Field field : fields) {
                 if (isMappableField(field)) {
                     final String fName = field.getName();
                     if (boolean.class.isAssignableFrom(field.getType())
@@ -274,14 +270,14 @@ public class SQL {
     }
 
 
-    public static final SQLWithParameter deleteSQL(final Object updateObj) {
+    public static SQLWithParameter deleteSQL(final Object updateObj) {
         return deleteSQL(updateObj, null, null, null);
     }
 
 
-    public static final SQLWithParameter deleteSQL(final Object updateObj, final String tableName,
-                                                   final String fieldSelector,
-                                                   final Map<String, String> columnToFieldMapping) {
+    public static SQLWithParameter deleteSQL(final Object updateObj, final String tableName,
+                                             final String fieldSelector,
+                                             final Map<String, String> columnToFieldMapping) {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
         final List<Object> para = new ArrayList<>();
@@ -301,8 +297,7 @@ public class SQL {
 
             final Field[] fields = updateObj.getClass().getDeclaredFields();
 
-            for (int i = 0; i < fields.length; i++) {
-                final Field field = fields[i];
+            for (final Field field : fields) {
                 if (isMappableField(field)) {
                     final String fName = field.getName();
 
@@ -359,8 +354,28 @@ public class SQL {
 
 
     public class SQLWithParameter {
-        public String sql;
-        public Object[] parameter;
+        private String sql;
+        private Object[] parameter;
+
+
+        public String getSql() {
+            return sql;
+        }
+
+
+        public void setSql(final String sql) {
+            this.sql = sql;
+        }
+
+
+        public Object[] getParameter() {
+            return parameter;
+        }
+
+
+        public void setParameter(final Object[] parameter) {
+            this.parameter = parameter;
+        }
     }
 
 }

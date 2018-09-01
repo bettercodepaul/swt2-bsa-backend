@@ -8,9 +8,13 @@ import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 
 /**
- * TODO [AL] class documentation
+ * I´m a generic {@link BeanHandler} class to map the {@link ResultSet} to a java bean.
+ *
+ * I handle the mapping between table column names and the bean parameter names.
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see BeanHandler
+ * @see ResultSet
  */
 public class BasicBeanHandler<T> extends BeanHandler<T> {
 

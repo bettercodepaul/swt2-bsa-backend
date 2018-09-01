@@ -12,7 +12,7 @@ import online.bogenliga.application.common.errorhandling.exception.TechnicalExce
 public class PostgresqlTransactionManager implements TransactionManager {
     private static final Logger LOG = LoggerFactory
             .getLogger(PostgresqlTransactionManager.class);
-    private static DataSource ds;
+    private final DataSource ds;
 
 
     public PostgresqlTransactionManager() {
@@ -30,16 +30,22 @@ public class PostgresqlTransactionManager implements TransactionManager {
             postgresqlDatasource.setPassword("swt2");
 
 
-            ds = (DataSource) postgresqlDatasource;
+            ds = postgresqlDatasource;
 
-            final Connection connection = ds.getConnection();
+            testConnection();
+        } catch (final SQLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+
+    private void testConnection() throws SQLException {
+        try (final Connection connection = ds.getConnection()) {
             final DatabaseMetaData databaseMetaData = connection.getMetaData();
             final String databaseInfo = databaseMetaData.getDatabaseProductName()
                     + databaseMetaData.getDatabaseProductVersion();
             connection.close();
             LOG.info("Datasource {} found and registered.", databaseInfo);
-        } catch (final SQLException e) {
-            throw new TechnicalException(e);
         }
     }
 
@@ -53,20 +59,19 @@ public class PostgresqlTransactionManager implements TransactionManager {
     @Override
     public void begin() {
         LOG.debug("Starting transaction.");
-        final Connection connection;
 
-        try {
-            connection = ds.getConnection();
+        try (final Connection connection = ds.getConnection()) {
             connection.setAutoCommit(false);
             connection
                     .setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+            SessionHandler.setConnection(connection);
+            SessionHandler.setIsActive(true);
+
             LOG.debug("Created new connection from Datasource.");
         } catch (final SQLException e) {
             throw new TechnicalException(e);
         }
-
-        SessionHandler.setConnection(connection);
-        SessionHandler.setIsActive(true);
     }
 
 
