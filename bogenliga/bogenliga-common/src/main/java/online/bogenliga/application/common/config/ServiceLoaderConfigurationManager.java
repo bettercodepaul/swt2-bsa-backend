@@ -5,7 +5,7 @@ package online.bogenliga.application.common.config;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
-import online.bogenliga.application.common.utils.ArgumentChecker;
+import online.bogenliga.application.common.validation.Preconditions;
 
 
 /**
@@ -28,7 +28,7 @@ public class ServiceLoaderConfigurationManager extends DefaultConfigurationManag
      */
     @Override
     public <C extends Configuration> boolean hasConfiguration(final Class<C> configuration) {
-        ArgumentChecker.checkNotNull(configuration, "configuration");
+        Preconditions.checkNotNull(configuration, "configuration");
         if (super.hasConfiguration(configuration)) {
             return true;
         } else {
@@ -50,7 +50,7 @@ public class ServiceLoaderConfigurationManager extends DefaultConfigurationManag
      */
     @Override
     protected <C extends Configuration> C getConfigurationInt(final Class<C> configuration) {
-        ArgumentChecker.checkNotNull(configuration, "configuration");
+        Preconditions.checkNotNull(configuration, "configuration");
         C impl = super.getConfigurationInt(configuration);
         if (impl == null) {
             // Load configuration implementation using ServiceLoader (once)

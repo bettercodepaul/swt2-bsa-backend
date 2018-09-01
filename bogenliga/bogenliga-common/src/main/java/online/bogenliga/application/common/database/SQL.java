@@ -99,8 +99,6 @@ public final class SQL {
         final StringBuilder sql = new StringBuilder();
         final StringBuilder values = new StringBuilder();
         final List<Object> para = new ArrayList<>();
-        boolean first = true;
-        String suffix;
 
         sql.append("INSERT INTO ");
         values.append(") VALUES (");
@@ -117,42 +115,8 @@ public final class SQL {
             sql.append(" (");
             final Field[] fields = insertObj.getClass().getDeclaredFields();
 
-            for (final Field field : fields) {
-                if (isMappableField(field)) {
-                    final String fName = field.getName();
+            appendFieldsToInsertStatement(insertObj, columnToFieldMapping, sql, values, para, fields);
 
-
-                    if (boolean.class.isAssignableFrom(field.getType())
-                            || Boolean.class.isAssignableFrom(field.getType())) {
-                        suffix = "is";
-                    } else {
-                        suffix = "get";
-                    }
-
-                    final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
-                    final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
-                    Object value = getter.invoke(insertObj);
-
-                    if (fName.equals("id")) {
-                        continue;
-                    } else if (value != null && value.getClass().isEnum()) {
-                        value = ((Enum) value).name();
-                    }
-
-                    if (first) {
-                        first = false;
-                    } else {
-                        sql.append(", ");
-                        values.append(", ");
-                    }
-
-                    final String columnName = resolveColumName(fName, columnToFieldMapping);
-
-                    sql.append(columnName);
-                    values.append("?");
-                    para.add(value);
-                }
-            }
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -165,6 +129,53 @@ public final class SQL {
         sqlWithParameter.parameter = para.toArray();
 
         return sqlWithParameter;
+    }
+
+
+    private static void appendFieldsToInsertStatement(final Object insertObj,
+                                                      final Map<String, String> columnToFieldMapping,
+                                                      final StringBuilder sql, final StringBuilder values,
+                                                      final List<Object> para,
+                                                      final Field[] fields)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        boolean first = true;
+        String suffix;
+        for (final Field field : fields) {
+            if (isMappableField(field)) {
+                final String fName = field.getName();
+
+
+                if (boolean.class.isAssignableFrom(field.getType())
+                        || Boolean.class.isAssignableFrom(field.getType())) {
+                    suffix = "is";
+                } else {
+                    suffix = "get";
+                }
+
+                final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
+                final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
+                Object value = getter.invoke(insertObj);
+
+                if (fName.equals("id")) {
+                    continue;
+                } else if (value != null && value.getClass().isEnum()) {
+                    value = ((Enum) value).name();
+                }
+
+                if (first) {
+                    first = false;
+                } else {
+                    sql.append(", ");
+                    values.append(", ");
+                }
+
+                final String columnName = resolveColumName(fName, columnToFieldMapping);
+
+                sql.append(columnName);
+                values.append("?");
+                para.add(value);
+            }
+        }
     }
 
 
@@ -198,10 +209,7 @@ public final class SQL {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
         final List<Object> para = new ArrayList<>();
-        boolean first = true;
-        String suffix;
-        Object idValue = null;
-
+        final Object idValue;
         sql.append("UPDATE ");
 
         try {
@@ -216,39 +224,7 @@ public final class SQL {
             sql.append(" SET ");
             final Field[] fields = updateObj.getClass().getDeclaredFields();
 
-            for (final Field field : fields) {
-                if (isMappableField(field)) {
-                    final String fName = field.getName();
-                    if (boolean.class.isAssignableFrom(field.getType())
-                            || Boolean.class.isAssignableFrom(field.getType())) {
-                        suffix = "is";
-                    } else {
-                        suffix = "get";
-                    }
-
-                    final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
-                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
-                    Object value = getter.invoke(updateObj);
-
-                    if (fName.equals("id") || fName.equals(fieldSelector)) {
-                        idValue = value;
-                        continue;
-                    } else if (value != null && value.getClass().isEnum()) {
-                        value = ((Enum) value).name();
-                    }
-
-                    if (first) {
-                        first = false;
-                    } else {
-                        sql.append(", ");
-                    }
-
-                    final String columnName = resolveColumName(fName, columnToFieldMapping);
-
-                    sql.append(columnName).append("=").append("?");
-                    para.add(value);
-                }
-            }
+            idValue = appendFieldsToUpdateStatement(updateObj, fieldSelector, columnToFieldMapping, sql, para, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -267,6 +243,52 @@ public final class SQL {
         sqlWithParameter.parameter = para.toArray();
 
         return sqlWithParameter;
+    }
+
+
+    private static Object appendFieldsToUpdateStatement(final Object updateObj, final String fieldSelector,
+                                                        final Map<String, String> columnToFieldMapping,
+                                                        final StringBuilder sql,
+                                                        final List<Object> para,
+                                                        final Field[] fields)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        boolean first = true;
+        Object idValue = null;
+        String suffix;
+        for (final Field field : fields) {
+            if (isMappableField(field)) {
+                final String fName = field.getName();
+                if (boolean.class.isAssignableFrom(field.getType())
+                        || Boolean.class.isAssignableFrom(field.getType())) {
+                    suffix = "is";
+                } else {
+                    suffix = "get";
+                }
+
+                final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
+                final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                Object value = getter.invoke(updateObj);
+
+                if (fName.equals("id") || fName.equals(fieldSelector)) {
+                    idValue = value;
+                    continue;
+                } else if (value != null && value.getClass().isEnum()) {
+                    value = ((Enum) value).name();
+                }
+
+                if (first) {
+                    first = false;
+                } else {
+                    sql.append(", ");
+                }
+
+                final String columnName = resolveColumName(fName, columnToFieldMapping);
+
+                sql.append(columnName).append("=").append("?");
+                para.add(value);
+            }
+        }
+        return idValue;
     }
 
 
@@ -281,8 +303,7 @@ public final class SQL {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
         final List<Object> para = new ArrayList<>();
-        String suffix;
-        Object idValue = null;
+        final Object idValue;
 
         sql.append("DELETE FROM ");
 
@@ -297,30 +318,7 @@ public final class SQL {
 
             final Field[] fields = updateObj.getClass().getDeclaredFields();
 
-            for (final Field field : fields) {
-                if (isMappableField(field)) {
-                    final String fName = field.getName();
-
-                    if (fName.equals("id") || fName.equals(fieldSelector)) {
-
-                        if (boolean.class.isAssignableFrom(field.getType())
-                                || Boolean.class.isAssignableFrom(field.getType())) {
-                            suffix = "is";
-                        } else {
-                            suffix = "get";
-                        }
-
-                        final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
-                        final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
-                        final Object value = getter.invoke(updateObj);
-
-                        if (fName.equals("id") || fName.equals(fieldSelector)) {
-                            idValue = value;
-                            continue;
-                        }
-                    }
-                }
-            }
+            idValue = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -339,6 +337,39 @@ public final class SQL {
         sqlWithParameter.parameter = para.toArray();
 
         return sqlWithParameter;
+    }
+
+
+    private static Object appendFieldsToDeleteStatement(final Object updateObj, final String fieldSelector,
+                                                        final Field[] fields)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Object idValue = null;
+        String suffix;
+        for (final Field field : fields) {
+            if (isMappableField(field)) {
+                final String fName = field.getName();
+
+                if (fName.equals("id") || fName.equals(fieldSelector)) {
+
+                    if (boolean.class.isAssignableFrom(field.getType())
+                            || Boolean.class.isAssignableFrom(field.getType())) {
+                        suffix = "is";
+                    } else {
+                        suffix = "get";
+                    }
+
+                    final String getterName = suffix + fName.substring(0, 1).toUpperCase() + fName.substring(1);
+                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                    final Object value = getter.invoke(updateObj);
+
+                    if (fName.equals("id") || fName.equals(fieldSelector)) {
+                        idValue = value;
+                        continue;
+                    }
+                }
+            }
+        }
+        return idValue;
     }
 
 

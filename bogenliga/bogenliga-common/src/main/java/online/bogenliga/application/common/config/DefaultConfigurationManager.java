@@ -3,7 +3,7 @@ package online.bogenliga.application.common.config;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import online.bogenliga.application.common.utils.ArgumentChecker;
+import online.bogenliga.application.common.validation.Preconditions;
 
 
 /**
@@ -14,6 +14,8 @@ import online.bogenliga.application.common.utils.ArgumentChecker;
  */
 public class DefaultConfigurationManager implements ConfigurationManager {
 
+    private static final String CONFIGURATION_CLASS = "configuration class must not be null";
+
     /**
      * Map of key ({@link Configuration}) to {@link Configuration} implementation.
      */
@@ -23,7 +25,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
     /**
      * Creates a new {@link DefaultConfigurationManager}.
      */
-    public DefaultConfigurationManager() {
+    DefaultConfigurationManager() {
         super();
     }
 
@@ -34,8 +36,8 @@ public class DefaultConfigurationManager implements ConfigurationManager {
     @SuppressWarnings("unchecked")
     @Override
     public <C extends Configuration> void addConfiguration(final Class<C> configuration, final C implementation) {
-        ArgumentChecker.checkNotNull(configuration, "configuration");
-        ArgumentChecker.checkNotNull(implementation, "implementation");
+        Preconditions.checkNotNull(configuration, CONFIGURATION_CLASS);
+        Preconditions.checkNotNull(implementation, "implementation");
         configImplementations.put((Class<Configuration>) configuration, implementation);
     }
 
@@ -45,7 +47,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
      */
     @Override
     public <C extends Configuration> boolean hasConfiguration(final Class<C> configuration) {
-        ArgumentChecker.checkNotNull(configuration, "configuration class");
+        Preconditions.checkNotNull(configuration, CONFIGURATION_CLASS);
         return (getConfigurationInt(configuration) != null);
     }
 
@@ -56,10 +58,10 @@ public class DefaultConfigurationManager implements ConfigurationManager {
     @Override
     @SuppressWarnings("unchecked")
     public <C extends Configuration> C getConfiguration(final Class<C> configuration) {
-        ArgumentChecker.checkNotNull(configuration, "configuration class");
-        final Configuration configurationInstance = getConfigurationInt(configuration);
+        Preconditions.checkNotNull(configuration, CONFIGURATION_CLASS);
+        final C configurationInstance = getConfigurationInt(configuration);
         if (configurationInstance != null) {
-            return (C) configurationInstance;
+            return configurationInstance;
         } else {
             // not found
             throw new NoSuchElementException(
@@ -77,7 +79,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
      */
     @SuppressWarnings("unchecked")
     protected <C extends Configuration> C getConfigurationInt(final Class<C> configuration) {
-        ArgumentChecker.checkNotNull(configuration, "configuration");
+        Preconditions.checkNotNull(configuration, CONFIGURATION_CLASS);
         if (this.configImplementations.containsKey(configuration)) {
             return (C) this.configImplementations.get(configuration);
         } else {
@@ -91,9 +93,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
      */
     @Override
     public void removeConfiguration(final Class<? extends Configuration> configurationClass) {
-        ArgumentChecker.checkNotNull(configurationClass, "The key class must not be null");
-        if (this.configImplementations.containsKey(configurationClass)) {
-            this.configImplementations.remove(configurationClass);
-        }
+        Preconditions.checkNotNull(configurationClass, "The key class must not be null");
+        this.configImplementations.remove(configurationClass);
     }
 }
