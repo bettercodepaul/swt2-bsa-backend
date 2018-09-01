@@ -1,32 +1,44 @@
 language: java
+
 jdk:
 - oraclejdk8
+
 sudo: enabled
+install: true
+
 git:
   depth: false
   submodules: false
+
 cache:
   directories:
-  - $HOME/.m2 # cache maven dependencies
+  - '$HOME/.m2/repository' # cache maven dependencies
+  - '$HOME/.sonar/cache' # cache sonar dependencies
+
 branches:
   only:
   - master
   - /^release-.*$/
+
 addons:
+  # static code analysis dashboard
   sonarcloud:
-    organization: "andre-lehnert-github" # the key of the org (https://sonarcloud.io/account/organizations)
+    # travis ci environment variable with the key of the org (https://sonarcloud.io/account/organizations)
+    organization: $SONAR_CLOUD_ORG
     token:
-      secure: $SONAR_CLOUD_KEY # travis ci environment variable with the sonar cloud token (https://sonarcloud.io/account/security/)
-install: true
+      # travis ci environment variable with the sonar cloud token (https://sonarcloud.io/account/security/)
+      secure: $SONAR_CLOUD_KEY
+
 script:
-- ls -l
-- cd bogenliga # change to project directory
-- mvn clean install # maven build with unit tests
+# change to project directory
+- cd bogenliga
+# the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+# maven plugin to generate the code coverage report for https://codecov.io
 - mvn cobertura:cobertura
-- ls -l
-- ../sonar-scanner # other script steps might be done before running the actual analysis
+
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash) # uses CODECOV_TOKEN environment variable
 
 
 
