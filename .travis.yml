@@ -1,6 +1,7 @@
 language: java
 jdk:
 - oraclejdk8
+sudo: enabled
 git:
   depth: false
   submodules: false
@@ -20,7 +21,7 @@ install: true
 script:
 - cd bogenliga # change to project directory
 - ./mvnw clean install # maven build with unit tests
-- sonar-scanner # other script steps might be done before running the actual analysis
+- ../sonar-scanner # other script steps might be done before running the actual analysis
 
 
 
