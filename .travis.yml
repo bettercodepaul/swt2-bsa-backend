@@ -35,13 +35,17 @@ script:
 # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
 - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 # maven plugin to generate the code coverage report for https://codecov.io
+- cd bogenliga-application
 - mvn cobertura:cobertura
 - ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target
 - ls -l /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/cobertura
 after_success:
 # uses CODECOV_TOKEN environment variable
+- bash <(curl -s https://codecov.io/bash)
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga
-- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/cobertura/cobertura.ser
+- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application
+- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/site/cobertura
+- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/site/cobertura/coverage.xml
 
 
 

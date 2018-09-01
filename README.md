@@ -1,4 +1,7 @@
-# Bogenliga Application
+[![codecov](https://codecov.io/gh/andre-lehnert/mock-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/andre-lehnert/mock-backend)
+
+
+# Bogenliga Online Application
 
 This repository can be used for a basic working Spring Boot application
 
