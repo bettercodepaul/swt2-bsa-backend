@@ -4,6 +4,9 @@ jdk:
 git:
   depth: false
   submodules: false
+cache:
+  directories:
+  - $HOME/.m2 # cache maven dependencies
 branches:
   only:
   - master
@@ -13,7 +16,12 @@ addons:
     organization: "andre-lehnert-github" # the key of the org (https://sonarcloud.io/account/organizations)
     token:
       secure: $SONAR_CLOUD_KEY # travis ci environment variable with the sonar cloud token (https://sonarcloud.io/account/security/)
+install: true
 script:
-# other script steps might be done before running the actual analysis
-- sonar-scanner
+- cd bogenliga # change to project directory
+- ./mvnw clean install # maven build with unit tests
+- sonar-scanner # other script steps might be done before running the actual analysis
+
+
+
 
