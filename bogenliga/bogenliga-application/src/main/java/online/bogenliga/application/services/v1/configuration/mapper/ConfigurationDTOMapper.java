@@ -16,6 +16,14 @@ import online.bogenliga.application.services.v1.configuration.model.Configuratio
 public final class ConfigurationDTOMapper implements DataTransferObjectMapper {
 
     /**
+     * Constructor
+     */
+    private ConfigurationDTOMapper() {
+        // empty private constructor
+    }
+
+
+    /**
      * I map the {@link ConfigurationVO} object to the {@link ConfigurationDTO} object
      */
     public static final Function<ConfigurationVO, ConfigurationDTO> toDTO = vo -> {
