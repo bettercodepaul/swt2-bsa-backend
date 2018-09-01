@@ -9,7 +9,7 @@
     <artifactId>bogenliga-db-migration</artifactId>
 
     <parent>
-        <groupId>app.bogenliga</groupId>
+        <groupId>online.bogenliga</groupId>
         <artifactId>bogenliga</artifactId>
         <version>1.0.0</version>
 

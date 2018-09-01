@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>app.bogenliga</groupId>
+    <groupId>online.bogenliga</groupId>
     <artifactId>bogenliga</artifactId>
     <version>1.0.0</version>
 
     <name>${serviceId.uppercase} :: ${serviceName}</name>
-    <description>Bogenliga Application</description>
+    <description>Bogenliga Online</description>
 
     <modules>
         <module>./bogenliga-application</module>
@@ -18,9 +18,9 @@
     </modules>
 
     <properties>
-        <serviceId.lowercase>bla</serviceId.lowercase>
-        <serviceId.uppercase>BLA</serviceId.uppercase>
-        <serviceName>Bogenliga</serviceName>
+        <serviceId.lowercase>blo</serviceId.lowercase>
+        <serviceId.uppercase>BLO</serviceId.uppercase>
+        <serviceName>Bogenliga Online</serviceName>
 
         <org.postgresql.postgresql.version>9.4-1205-jdbc4</org.postgresql.postgresql.version>
         <org.flywaydb.flyway-maven-plugin.version>4.2.0</org.flywaydb.flyway-maven-plugin.version>
