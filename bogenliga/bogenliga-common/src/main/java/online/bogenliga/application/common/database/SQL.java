@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -18,67 +17,6 @@ import online.bogenliga.application.common.errorhandling.exception.TechnicalExce
  * @author Alexander Jost
  */
 public final class SQL {
-    /**
-     * Erzeugt aus allen Feldern der uebergebene Klasse, die nicht als transient
-     * deklariert sind, einen eindeutigen Namen durch Voranstellen des
-     * Klassennamens. Als Trennzeichen wird _ verwendet. Die Felder werden durch
-     * ein Komma getrennt in einen String uebertragen.
-     *
-     * @param clazz Klasse, fuer die kommaseparierte Feldnamen erzeugt werden
-     * @return kommaseparierte Liste der eindeutigen Feldnamen
-     */
-    public static String uniqueSelect(final Class clazz) {
-        boolean first = true;
-        final String suffix = clazz.getSimpleName();
-        final StringBuilder builder = new StringBuilder();
-        final Field[] fields = clazz.getDeclaredFields();
-
-        for (final Field field : fields) {
-            if (isMappableField(field)) {
-                if (first) {
-                    first = false;
-                } else {
-                    builder.append(", ");
-                }
-
-                builder.append(suffix).append(".").append(field.getName()).append(" as ").append(suffix).append("_")
-                        .append(field.getName());
-            }
-        }
-        return builder.toString();
-    }
-
-
-    /**
-     * Erzeugt eine Map, um aus einem ResultSet die eindeutigen Felder den
-     * zugehoerigen Attributen in der Klasse zuordnen zu koennen. Als transient
-     * deklarierte Felder werden nicht betrachtet.
-     *
-     * @param clazz Klasse, für die das Mapping erzeugt werden soll
-     * @return Mapping zwischen eindeutigem Spaltennamen und zugehoerigem
-     * Attributnamen
-     */
-    public static Map<String, String> getColumnMapping(final Class clazz) {
-        final HashMap mapping = new HashMap();
-
-        try {
-
-            final Field[] fields = clazz.getDeclaredFields();
-
-            for (final Field field : fields) {
-                if (isMappableField(field)) {
-                    final String fName = field.getName();
-                    final String sqlName = clazz.getSimpleName() + "_" + fName;
-                    mapping.put(sqlName, fName);
-                }
-            }
-
-        } catch (final SecurityException | IllegalArgumentException e) {
-            throw new TechnicalException(e);
-        }
-
-        return mapping;
-    }
 
 
     /**
@@ -341,19 +279,30 @@ public final class SQL {
                                                         final Field[] fields)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Object idValue = null;
+
+        String identifier = "id";
+        if (fieldSelector != null && !fieldSelector.equals(identifier)) {
+            identifier = fieldSelector;
+        }
+
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
-                if (fName.equals("id") || fName.equals(fieldSelector)) {
+
+                if (fName.equals(identifier)) {
 
                     final String getterName = retrieveGetterName(field, fName);
                     final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
-                    final Object value = getter.invoke(updateObj);
 
-                    if (fName.equals("id") || fName.equals(fieldSelector)) {
-                        idValue = value;
+                    Object value = getter.invoke(updateObj);
+
+                    if (value != null && value.getClass().isEnum()) {
+                        value = ((Enum) value).name();
                     }
+
+                    idValue = value;
+
                 }
             }
         }
