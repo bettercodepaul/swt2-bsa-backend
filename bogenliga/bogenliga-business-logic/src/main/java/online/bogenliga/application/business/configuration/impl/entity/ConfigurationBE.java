@@ -7,7 +7,7 @@ package online.bogenliga.application.business.configuration.impl.entity;
 import online.bogenliga.application.common.component.entity.BusinessEntity;
 
 /**
- * TODO [AL] class documentation
+ * I represent a configuration table row as business entity
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
