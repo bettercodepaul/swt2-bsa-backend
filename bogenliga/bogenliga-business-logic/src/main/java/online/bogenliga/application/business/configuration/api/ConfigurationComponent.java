@@ -44,8 +44,9 @@ public interface ConfigurationComponent extends ComponentFacade {
      * I update an existing configuration. The configuration is identified by the key.
      *
      * @param configurationVO to update an existing configuration value
+     * @return persisted version of the configuration
      */
-    void update(ConfigurationVO configurationVO);
+    ConfigurationVO update(ConfigurationVO configurationVO);
 
 
     /**

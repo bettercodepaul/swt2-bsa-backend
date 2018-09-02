@@ -25,6 +25,18 @@ public class ConfigurationBE implements BusinessEntity {
     }
 
 
+    /*
+     * generated
+     */
+    @Override
+    public String toString() {
+        return "ConfigurationBE{" +
+                "configurationKey='" + configurationKey + '\'' +
+                ", configurationValue='" + configurationValue + '\'' +
+                '}';
+    }
+
+
     public String getConfigurationKey() {
         return configurationKey;
     }

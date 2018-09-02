@@ -1,4 +1,4 @@
-package online.bogenliga.application.business.common.dao;
+package online.bogenliga.application.common.component.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

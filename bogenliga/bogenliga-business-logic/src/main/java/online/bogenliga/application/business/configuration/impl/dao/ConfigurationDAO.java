@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import online.bogenliga.application.business.common.dao.DAO;
 import online.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import online.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import online.bogenliga.application.common.component.dao.DAO;
+import online.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the configuration entity in the database.
@@ -16,7 +18,7 @@ import online.bogenliga.application.common.component.dao.BusinessEntityConfigura
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link DAO} methods
  */
 @Repository
-public class ConfigurationDAO extends DAO {
+public class ConfigurationDAO implements DataAccessObject {
 
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationDAO.class);
@@ -33,7 +35,6 @@ public class ConfigurationDAO extends DAO {
     /*
      * SQL queries
      */
-    // @formatter:off
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM t_configuration";
@@ -41,6 +42,19 @@ public class ConfigurationDAO extends DAO {
             "SELECT * "
                     + " FROM t_configuration "
                     + " WHERE configuration_key = ?";
+
+    private final DAO dao;
+
+
+    /**
+     * Initialize the transaction manager to provide a database connection
+     *
+     * @param dao
+     */
+    @Autowired
+    public ConfigurationDAO(final DAO dao) {
+        this.dao = dao;
+    }
 
 
     // table column label mapping to the business entity parameter names
@@ -52,36 +66,33 @@ public class ConfigurationDAO extends DAO {
     }
 
 
-    // @formatter:on
-
-
     /**
      * I return all configuration entries in the database.
      *
      * @return list of {@link ConfigurationBE} or an empty list if no result found
      */
     public List<ConfigurationBE> findAll() {
-        return selectEntityList(CONFIG, FIND_ALL);
+        return dao.selectEntityList(CONFIG, FIND_ALL);
     }
 
 
     public ConfigurationBE findByKey(final String key) {
-        return selectSingleEntity(CONFIG, FIND_BY_KEY, key);
+        return dao.selectSingleEntity(CONFIG, FIND_BY_KEY, key);
     }
 
 
     public ConfigurationBE create(final ConfigurationBE configurationBE) {
-        return insertEntity(CONFIG, configurationBE);
+        return dao.insertEntity(CONFIG, configurationBE);
     }
 
 
-    public void update(final ConfigurationBE configurationBE) {
-        updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
+    public ConfigurationBE update(final ConfigurationBE configurationBE) {
+        return dao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY, FIND_BY_KEY);
     }
 
 
     public void delete(final ConfigurationBE configurationBE) {
-        deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
+        dao.deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 }
 

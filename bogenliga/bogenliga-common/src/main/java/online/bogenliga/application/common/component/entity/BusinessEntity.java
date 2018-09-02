@@ -8,4 +8,7 @@ import java.io.Serializable;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public interface BusinessEntity extends Serializable {
+
+    @Override
+    String toString();
 }

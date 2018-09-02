@@ -1,4 +1,4 @@
-package online.bogenliga.application.business.common.dao;
+package online.bogenliga.application.common.component.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -6,12 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import online.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
-import online.bogenliga.application.common.component.dao.DataAccessObject;
 import online.bogenliga.application.common.database.SQL;
-import online.bogenliga.application.common.database.tx.PostgresqlTransactionManager;
 import online.bogenliga.application.common.database.tx.TransactionManager;
+import online.bogenliga.application.common.errorhandling.exception.BusinessException;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 
@@ -22,28 +21,26 @@ import online.bogenliga.application.common.errorhandling.exception.TechnicalExce
  * @see <a href="https://www.baeldung.com/apache-commons-dbutils">A Guide to Apache Commons DbUtils</a>
  */
 @Repository
-public abstract class DAO implements DataAccessObject {
+public class DAO implements DataAccessObject {
 
-    protected final QueryRunner run = new QueryRunner();
+    private final QueryRunner run = new QueryRunner();
     private final TransactionManager transactionManager;
 
 
-    /**
-     * Initialize the transaction manager to provide a database connection
-     */
-    public DAO() {
-        transactionManager = new PostgresqlTransactionManager();
+    @Autowired
+    public DAO(final TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
 
-    protected final Connection getConnection() {
+    private Connection getConnection() {
         return transactionManager.getConnection();
     }
 
 
-    protected <T> T selectSingleEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                                       final String sqlQuery,
-                                       final Object... params) {
+    public <T> T selectSingleEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                    final String sqlQuery,
+                                    final Object... params) {
         try {
             return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
                     new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
@@ -54,9 +51,9 @@ public abstract class DAO implements DataAccessObject {
     }
 
 
-    protected <T> List<T> selectEntityList(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                                           final String sqlQuery,
-                                           final Object... params) {
+    public <T> List<T> selectEntityList(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                        final String sqlQuery,
+                                        final Object... params) {
         List<T> businessEntityList = null;
         try {
             businessEntityList = run.query(getConnection(),
@@ -72,8 +69,8 @@ public abstract class DAO implements DataAccessObject {
     }
 
 
-    protected <T> T insertEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                                 final T insertBusinessEntity) {
+    public <T> T insertEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                              final T insertBusinessEntity) {
         final SQL.SQLWithParameter sql = SQL.insertSQL(insertBusinessEntity, businessEntityConfiguration.getTable(),
                 businessEntityConfiguration.getColumnToFieldMapping());
 
@@ -100,12 +97,57 @@ public abstract class DAO implements DataAccessObject {
     }
 
 
-    public <T> void updateEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                                 final T updateBusinessEntity, final String fieldSelector) {
+    public <T> int updateEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                final T updateBusinessEntity, final String fieldSelector) {
         final SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
-        runUpdate(businessEntityConfiguration, sql);
+
+        return runUpdate(businessEntityConfiguration, sql);
+    }
+
+
+    public <T> T updateEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                              final T updateBusinessEntity, final String fieldSelector, final String singleSelectSql) {
+        final SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
+                fieldSelector,
+                businessEntityConfiguration.getColumnToFieldMapping());
+
+        T businessEntityAfterUpdate;
+
+        try {
+            transactionManager.begin();
+
+            final int affectedRows = run.update(getConnection(),
+                    logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
+                    sql.getParameter());
+
+            if (affectedRows == 1) {
+                businessEntityAfterUpdate = selectSingleEntity(businessEntityConfiguration, singleSelectSql,
+                        fieldSelector);
+
+                transactionManager.commit();
+
+            } else if (affectedRows == 0) {
+                transactionManager.rollback();
+
+                throw new BusinessException(String.format("Update of business entity '%s' does not affect any row",
+                        updateBusinessEntity.toString()));
+            } else {
+                transactionManager.rollback();
+
+                throw new BusinessException(String.format("Update of business entity '%s' affected %d rows",
+                        updateBusinessEntity.toString(), affectedRows));
+            }
+
+        } catch (final SQLException e) {
+            transactionManager.rollback();
+            throw new TechnicalException(e);
+        } finally {
+            transactionManager.release();
+        }
+
+        return businessEntityAfterUpdate;
     }
 
 
@@ -114,16 +156,22 @@ public abstract class DAO implements DataAccessObject {
         final SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
-        runUpdate(businessEntityConfiguration, sql);
+        final int affectedRows = runUpdate(businessEntityConfiguration, sql);
+
+        if (affectedRows != 1) {
+            throw new BusinessException(String.format("Deletion of business entity '%s' does affect %d rows",
+                    deleteBusinessEntity.toString(), affectedRows));
+        }
     }
 
 
-    private <T> void runUpdate(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                               final SQL.SQLWithParameter sql) {
+    private <T> int runUpdate(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                              final SQL.SQLWithParameter sql) {
+        int affectedRows = 0;
         try {
             transactionManager.begin();
 
-            run.update(getConnection(),
+            affectedRows = run.update(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
                     sql.getParameter());
 
@@ -135,6 +183,8 @@ public abstract class DAO implements DataAccessObject {
         } finally {
             transactionManager.release();
         }
+
+        return affectedRows;
     }
 
 

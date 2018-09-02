@@ -1,4 +1,4 @@
-package online.bogenliga.application.business.common.dao;
+package online.bogenliga.application.common.component.dao;
 
 import java.sql.ResultSet;
 import java.util.Map;
@@ -15,7 +15,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
  * @see BeanListHandler
  * @see ResultSet
  */
-class BasicBeanListHandler<T> extends BeanListHandler<T> {
+public class BasicBeanListHandler<T> extends BeanListHandler<T> {
 
     /**
      * ResultSet mapping with custom business entity parameter names

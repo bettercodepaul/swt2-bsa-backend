@@ -7,11 +7,13 @@ import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
+@Service
 public class PostgresqlTransactionManager implements TransactionManager {
-    private static final Logger LOG = LoggerFactory
-            .getLogger(PostgresqlTransactionManager.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(PostgresqlTransactionManager.class);
     private final DataSource ds;
 
 
@@ -58,19 +60,19 @@ public class PostgresqlTransactionManager implements TransactionManager {
     @Override
     public void begin() {
         LOG.debug("Starting transaction.");
+        final Connection connection;
 
-        try (final Connection connection = ds.getConnection()) {
+        try {
+            connection = ds.getConnection();
             connection.setAutoCommit(false);
-            connection
-                    .setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
-            SessionHandler.setConnection(connection);
-            SessionHandler.setIsActive(true);
-
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             LOG.debug("Created new connection from Datasource.");
         } catch (final SQLException e) {
             throw new TechnicalException(e);
         }
+
+        SessionHandler.setConnection(connection);
+        SessionHandler.setIsActive(true);
     }
 
 
@@ -129,7 +131,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
     @Override
     public Connection getConnection() {
         if (!isActive()) {
-            LOG.info("Call types getConnection() without active transaction. Start transaction automatically...");
+            LOG.debug("Call types getConnection() without active transaction. Start transaction automatically...");
             begin();
         }
 

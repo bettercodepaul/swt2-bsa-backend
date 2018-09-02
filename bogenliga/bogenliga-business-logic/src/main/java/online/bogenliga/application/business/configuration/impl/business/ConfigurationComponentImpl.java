@@ -22,7 +22,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
     private static final String PRECONDITION_MSG_CONFIGURATION = "ConfigurationVO must not be null";
     private static final String PRECONDITION_MSG_CONFIGURATION_KEY = "ConfigurationVO key must not be null or empty";
     private static final String PRECONDITION_MSG_CONFIGURATION_VALUE = "ConfigurationVO value must not be null";
-    
+
     private final ConfigurationDAO configurationDAO;
 
 
@@ -67,14 +67,14 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
 
     @Override
-    public void update(final ConfigurationVO configurationVO) {
+    public ConfigurationVO update(final ConfigurationVO configurationVO) {
         Preconditions.checkNotNull(configurationVO, PRECONDITION_MSG_CONFIGURATION);
         Preconditions.checkNotNullOrEmpty(configurationVO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
         Preconditions.checkNotNull(configurationVO.getValue(),
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationVO);
-        configurationDAO.update(configurationBE);
+        return ConfigurationMapper.toVO.apply(configurationDAO.update(configurationBE));
     }
 
 
