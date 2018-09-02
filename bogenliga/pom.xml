@@ -213,6 +213,13 @@
                     <quiet>true</quiet>
                     <encoding>UTF-8</encoding>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>5.0.3</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
