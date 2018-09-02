@@ -49,6 +49,7 @@ public class SQLTest {
 
     private static Map<String, String> createFieldMapping() {
         final Map<String, String> fieldMapping = new HashMap<>();
+        fieldMapping.put(TABLE_FIELD_ID, "id");
         fieldMapping.put(TABLE_FIELD_NAME, "name");
         fieldMapping.put(TABLE_FIELD_ACTIVE, "active");
         fieldMapping.put(TABLE_FIELD_NUMBER, "number");
@@ -157,6 +158,33 @@ public class SQLTest {
 
 
     @Test
+    public void updateSQL_withCustomFieldMapping_withIdFieldSelector() {
+        // prepare test data
+        // configure mocks
+        // call test method
+        // define custom WHERE selector TABLE_FIELD_STATE
+        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, "id", FIELD_MAPPING);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getSql())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo(
+                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
+                                TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_NUMBER, TABLE_FIELD_STATE,
+                                TABLE_FIELD_ID));
+        assertThat(actual.getParameter())
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(5)
+                .contains(NAME, ACTIVE, NUMBER, STATE.name(), ID);
+
+        // verify invocations
+    }
+
+
+    @Test
     public void deleteSQL() {
         // prepare test data
         // configure mocks
@@ -226,6 +254,32 @@ public class SQLTest {
                 .isNotEmpty()
                 .hasSize(1)
                 .contains(NUMBER);
+
+        // verify invocations
+    }
+
+
+    @Test
+    public void deleteSQL_withCustomFieldMapping_withIdFieldSelector() {
+        // prepare test data
+        // configure mocks
+        // call test method
+        // define custom WHERE selector "id"
+        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT, TABLE_NAME, "id", FIELD_MAPPING);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getSql())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo(
+                        String.format("DELETE FROM %s WHERE %s = ?;",
+                                TABLE_NAME, TABLE_FIELD_ID));
+        assertThat(actual.getParameter())
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1)
+                .contains(ID);
 
         // verify invocations
     }
