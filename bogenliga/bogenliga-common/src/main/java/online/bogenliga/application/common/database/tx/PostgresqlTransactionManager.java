@@ -45,6 +45,11 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
+    PostgresqlTransactionManager(final DataSource ds) {
+        this.ds = ds;
+    }
+
+
     private void testConnection() throws SQLException {
         try (final Connection connection = ds.getConnection()) {
             final DatabaseMetaData databaseMetaData = connection.getMetaData();
