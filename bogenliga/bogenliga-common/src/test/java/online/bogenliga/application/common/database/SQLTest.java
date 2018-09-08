@@ -21,6 +21,7 @@ public class SQLTest {
     private static final long ID = 123L;
     private static final String NAME = "value";
     private static final boolean ACTIVE = true;
+    private static final Boolean READY = true;
     private static final int NUMBER = 5;
     private static final TestEnum STATE = TestEnum.TEST;
 
@@ -28,6 +29,7 @@ public class SQLTest {
     private static final String TABLE_FIELD_ID = "pk";
     private static final String TABLE_FIELD_NAME = "name";
     private static final String TABLE_FIELD_ACTIVE = "is_active";
+    private static final String TABLE_FIELD_READY = "ready";
     private static final String TABLE_FIELD_NUMBER = "quantity";
     private static final String TABLE_FIELD_STATE = "entity_state";
 
@@ -41,6 +43,7 @@ public class SQLTest {
         input.setId(ID);
         input.setName(NAME);
         input.setActive(ACTIVE);
+        input.setReady(READY);
         input.setNumber(NUMBER);
         input.setState(STATE);
         return input;
@@ -52,6 +55,7 @@ public class SQLTest {
         fieldMapping.put(TABLE_FIELD_ID, "id");
         fieldMapping.put(TABLE_FIELD_NAME, "name");
         fieldMapping.put(TABLE_FIELD_ACTIVE, "active");
+        fieldMapping.put(TABLE_FIELD_READY, "ready");
         fieldMapping.put(TABLE_FIELD_NUMBER, "number");
         fieldMapping.put(TABLE_FIELD_STATE, "state");
         return fieldMapping;
@@ -70,12 +74,12 @@ public class SQLTest {
         assertThat(actual.getSql())
                 .isNotNull()
                 .isNotEmpty()
-                .isEqualTo("INSERT INTO TestBE (name, active, number, state) VALUES (?, ?, ?, ?);");
+                .isEqualTo("INSERT INTO TestBE (name, active, ready, number, state) VALUES (?, ?, ?, ?, ?);");
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(4)
-                .contains(NAME, ACTIVE, NUMBER, STATE.name());
+                .hasSize(5)
+                .contains(NAME, ACTIVE, READY, NUMBER, STATE.name(), READY);
 
         // verify invocations
     }
@@ -94,14 +98,14 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("INSERT INTO %s (%s, %s, %s, %s) VALUES (?, ?, ?, ?);",
-                                TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_NUMBER,
+                        String.format("INSERT INTO %s (%s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?);",
+                                TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
                                 TABLE_FIELD_STATE));
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(4)
-                .contains(NAME, ACTIVE, NUMBER, STATE.name());
+                .hasSize(5)
+                .contains(NAME, ACTIVE, READY, NUMBER, STATE.name());
 
         // verify invocations
     }
@@ -119,12 +123,12 @@ public class SQLTest {
         assertThat(actual.getSql())
                 .isNotNull()
                 .isNotEmpty()
-                .isEqualTo("UPDATE TestBE SET name=?, active=?, number=?, state=? WHERE id = ?;");
+                .isEqualTo("UPDATE TestBE SET name=?, active=?, ready=?, number=?, state=? WHERE id = ?;");
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(5)
-                .contains(NAME, ACTIVE, NUMBER, STATE.name(), ID);
+                .hasSize(6)
+                .contains(NAME, ACTIVE, READY, NUMBER, STATE.name(), ID);
 
         // verify invocations
     }
@@ -144,14 +148,14 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
-                                TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_NUMBER, TABLE_FIELD_STATE,
-                                TABLE_FIELD_STATE));
+                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
+                                TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
+                                TABLE_FIELD_STATE, TABLE_FIELD_STATE));
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(5)
-                .contains(NAME, ACTIVE, NUMBER, STATE.name(), STATE.name());
+                .hasSize(6)
+                .contains(NAME, ACTIVE, READY, NUMBER, STATE.name(), STATE.name());
 
         // verify invocations
     }
@@ -171,14 +175,41 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
+                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
+                                TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
+                                TABLE_FIELD_STATE, TABLE_FIELD_ID));
+        assertThat(actual.getParameter())
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(6)
+                .contains(NAME, ACTIVE, READY, NUMBER, STATE.name(), ID);
+
+        // verify invocations
+    }
+
+
+    @Test
+    public void updateSQL_withCustomFieldMapping_withOtherFieldSelector() {
+        // prepare test data
+        // configure mocks
+        // call test method
+        // define custom WHERE selector TABLE_FIELD_STATE
+        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, "name", FIELD_MAPPING);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getSql())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo(
                         String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
-                                TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_NUMBER, TABLE_FIELD_STATE,
-                                TABLE_FIELD_ID));
+                                TABLE_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
+                                TABLE_FIELD_STATE, TABLE_FIELD_NAME));
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(5)
-                .contains(NAME, ACTIVE, NUMBER, STATE.name(), ID);
+                .contains(ACTIVE, READY, NUMBER, STATE.name(), NAME);
 
         // verify invocations
     }

@@ -4,14 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import online.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
-import online.bogenliga.application.common.component.dao.DAO;
+import online.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -27,18 +25,17 @@ import static org.mockito.Mockito.*;
  * @see <a href="http://www.vogella.com/tutorials/Mockito/article.html">Using Mockito with JUnit 4</a>
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
-public class ConfigurationDAOTest {
+public class ConfigurationBasicDAOTest {
 
     private static final String KEY = "key";
     private static final String VALUE = "value";
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private DAO dao;
+    private BasicDAO basicDao;
     @InjectMocks
     private ConfigurationDAO underTest;
-    @Captor
-    private ArgumentCaptor<ConfigurationBE> configurationBEArgumentCaptor;
 
 
     @Test
@@ -49,7 +46,7 @@ public class ConfigurationDAOTest {
         expectedBE.setConfigurationValue(VALUE);
 
         // configure mocks
-        when(dao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
         final List<ConfigurationBE> actual = underTest.findAll();
@@ -68,7 +65,7 @@ public class ConfigurationDAOTest {
                 .isEqualTo(expectedBE.getConfigurationValue());
 
         // verify invocations
-        verify(dao).selectEntityList(any(), any(), any());
+        verify(basicDao).selectEntityList(any(), any(), any());
 
 
     }
@@ -82,7 +79,7 @@ public class ConfigurationDAOTest {
         expectedBE.setConfigurationValue(VALUE);
 
         // configure mocks
-        when(dao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
         // call test method
         final ConfigurationBE actual = underTest.findByKey(KEY);
@@ -96,7 +93,7 @@ public class ConfigurationDAOTest {
                 .isEqualTo(expectedBE.getConfigurationValue());
 
         // verify invocations
-        verify(dao).selectSingleEntity(any(), any(), any());
+        verify(basicDao).selectSingleEntity(any(), any(), any());
     }
 
 
@@ -108,7 +105,7 @@ public class ConfigurationDAOTest {
         input.setConfigurationValue(VALUE);
 
         // configure mocks
-        when(dao.insertEntity(any(), any())).thenReturn(input);
+        when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
         final ConfigurationBE actual = underTest.create(input);
@@ -122,7 +119,7 @@ public class ConfigurationDAOTest {
                 .isEqualTo(input.getConfigurationValue());
 
         // verify invocations
-        verify(dao).insertEntity(any(), eq(input));
+        verify(basicDao).insertEntity(any(), eq(input));
     }
 
 
@@ -134,7 +131,7 @@ public class ConfigurationDAOTest {
         input.setConfigurationValue(VALUE);
 
         // configure mocks
-        when(dao.updateEntity(any(), any(), any(), any())).thenReturn(input);
+        when(basicDao.updateEntity(any(), any(), any(), any())).thenReturn(input);
 
         // call test method
         final ConfigurationBE actual = underTest.update(input);
@@ -148,7 +145,7 @@ public class ConfigurationDAOTest {
                 .isEqualTo(input.getConfigurationValue());
 
         // verify invocations
-        verify(dao).updateEntity(any(), eq(input), any(), any());
+        verify(basicDao).updateEntity(any(), eq(input), any(), any());
     }
 
 
@@ -167,6 +164,6 @@ public class ConfigurationDAOTest {
         // assert result
 
         // verify invocations
-        verify(dao).deleteEntity(any(), eq(input), any());
+        verify(basicDao).deleteEntity(any(), eq(input), any());
     }
 }

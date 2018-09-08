@@ -5,7 +5,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 
 /**
- * TODO [AL] class documentation
+ * I contain the configuration for the business entity mapping between database table and java object.
+ *
+ * The configuration is used by the {@link BasicDAO} to perform the "object-relational-mapping".
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -17,6 +19,14 @@ public class BusinessEntityConfiguration<T> {
     private final Logger logger;
 
 
+    /**
+     * Constructor with mandatory parameter
+     *
+     * @param businessEntity       to configure
+     * @param table                to map a custom table name
+     * @param columnToFieldMapping to map custom column names
+     * @param logger               to log the generated SQL query
+     */
     public BusinessEntityConfiguration(final Class<T> businessEntity, final String table,
                                        final Map<String, String> columnToFieldMapping, final Logger logger) {
         this.businessEntity = businessEntity;
@@ -26,22 +36,22 @@ public class BusinessEntityConfiguration<T> {
     }
 
 
-    public Class<T> getBusinessEntity() {
+    Class<T> getBusinessEntity() {
         return businessEntity;
     }
 
 
-    public String getTable() {
+    String getTable() {
         return table;
     }
 
 
-    public Map<String, String> getColumnToFieldMapping() {
+    Map<String, String> getColumnToFieldMapping() {
         return Collections.unmodifiableMap(columnToFieldMapping);
     }
 
 
-    public Logger getLogger() {
+    Logger getLogger() {
         return logger;
     }
 }

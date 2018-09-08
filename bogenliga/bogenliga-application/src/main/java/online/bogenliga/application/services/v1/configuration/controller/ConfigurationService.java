@@ -165,7 +165,7 @@ public class ConfigurationService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@RequestBody final ConfigurationDTO configurationDTO) {
+    public ConfigurationDTO update(@RequestBody final ConfigurationDTO configurationDTO) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
@@ -174,7 +174,8 @@ public class ConfigurationService implements ServiceFacade {
                 configurationDTO.getValue());
 
         final ConfigurationVO newConfigurationVO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
-        configurationComponent.update(newConfigurationVO);
+        final ConfigurationVO updatedConfigurationVO = configurationComponent.update(newConfigurationVO);
+        return ConfigurationDTOMapper.toDTO.apply(updatedConfigurationVO);
     }
 
 

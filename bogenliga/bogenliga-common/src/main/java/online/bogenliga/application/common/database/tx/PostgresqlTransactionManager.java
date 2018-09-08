@@ -7,10 +7,16 @@ import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
-@Service
+/**
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see <a href="https://www.baeldung.com/properties-with-spring">Properties with Spring and Spring Boot</a>
+ */
+@Profile({"LOCAL", "INT", "PROD"})
+@Service("TransactionManager")
 public class PostgresqlTransactionManager implements TransactionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostgresqlTransactionManager.class);
@@ -19,7 +25,6 @@ public class PostgresqlTransactionManager implements TransactionManager {
 
     public PostgresqlTransactionManager() {
         try {
-
             final PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
             // The value `localhost` means the Postgres cluster running locally on the same machine.
             postgresqlDatasource.setServerName("localhost");
@@ -31,11 +36,10 @@ public class PostgresqlTransactionManager implements TransactionManager {
             postgresqlDatasource.setUser("swt2");
             postgresqlDatasource.setPassword("swt2");
 
-
             ds = postgresqlDatasource;
 
             testConnection();
-        } catch (final SQLException e) {
+        } catch (final SQLException | NullPointerException e) {
             throw new TechnicalException(e);
         }
     }

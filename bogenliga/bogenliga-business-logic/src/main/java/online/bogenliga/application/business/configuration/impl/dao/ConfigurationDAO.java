@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import online.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
+import online.bogenliga.application.common.component.dao.BasicDAO;
 import online.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
-import online.bogenliga.application.common.component.dao.DAO;
 import online.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the configuration entity in the database.
  *
- * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link DAO} methods
+ * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  */
 @Repository
 public class ConfigurationDAO implements DataAccessObject {
@@ -43,17 +43,17 @@ public class ConfigurationDAO implements DataAccessObject {
                     + " FROM t_configuration "
                     + " WHERE configuration_key = ?";
 
-    private final DAO dao;
+    private final BasicDAO basicDao;
 
 
     /**
      * Initialize the transaction manager to provide a database connection
      *
-     * @param dao
+     * @param basicDao
      */
     @Autowired
-    public ConfigurationDAO(final DAO dao) {
-        this.dao = dao;
+    public ConfigurationDAO(final BasicDAO basicDao) {
+        this.basicDao = basicDao;
     }
 
 
@@ -72,27 +72,27 @@ public class ConfigurationDAO implements DataAccessObject {
      * @return list of {@link ConfigurationBE} or an empty list if no result found
      */
     public List<ConfigurationBE> findAll() {
-        return dao.selectEntityList(CONFIG, FIND_ALL);
+        return basicDao.selectEntityList(CONFIG, FIND_ALL);
     }
 
 
     public ConfigurationBE findByKey(final String key) {
-        return dao.selectSingleEntity(CONFIG, FIND_BY_KEY, key);
+        return basicDao.selectSingleEntity(CONFIG, FIND_BY_KEY, key);
     }
 
 
     public ConfigurationBE create(final ConfigurationBE configurationBE) {
-        return dao.insertEntity(CONFIG, configurationBE);
+        return basicDao.insertEntity(CONFIG, configurationBE);
     }
 
 
     public ConfigurationBE update(final ConfigurationBE configurationBE) {
-        return dao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY, FIND_BY_KEY);
+        return basicDao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY, FIND_BY_KEY);
     }
 
 
     public void delete(final ConfigurationBE configurationBE) {
-        dao.deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
+        basicDao.deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 }
 

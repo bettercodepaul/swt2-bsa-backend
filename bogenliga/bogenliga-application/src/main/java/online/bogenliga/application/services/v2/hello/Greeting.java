@@ -8,8 +8,13 @@ import online.bogenliga.application.common.service.types.DataTransferObject;
 @Deprecated
 public class Greeting implements DataTransferObject {
 
-    private final long id;
-    private final String content;
+    private long id;
+    private String content;
+
+
+    public Greeting() {
+
+    }
 
 
     public Greeting(final long id, final String content) {
@@ -27,4 +32,13 @@ public class Greeting implements DataTransferObject {
         return content;
     }
 
+
+    public void setId(final long id) {
+        this.id = id;
+    }
+
+
+    public void setContent(final String content) {
+        this.content = content;
+    }
 }

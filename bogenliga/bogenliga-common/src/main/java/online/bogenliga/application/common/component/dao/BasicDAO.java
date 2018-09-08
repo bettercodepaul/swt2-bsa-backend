@@ -21,14 +21,14 @@ import online.bogenliga.application.common.errorhandling.exception.TechnicalExce
  * @see <a href="https://www.baeldung.com/apache-commons-dbutils">A Guide to Apache Commons DbUtils</a>
  */
 @Repository
-public class DAO implements DataAccessObject {
+public class BasicDAO implements DataAccessObject {
 
     private final QueryRunner run = new QueryRunner();
     private final TransactionManager transactionManager;
 
 
     @Autowired
-    public DAO(final TransactionManager transactionManager) {
+    public BasicDAO(final TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 

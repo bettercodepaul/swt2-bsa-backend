@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import online.bogenliga.application.common.service.ServiceFacade;
 import online.bogenliga.application.services.v2.hello.HelloWorldServiceV2;
@@ -28,7 +27,6 @@ public class HelloWorldServiceV1 implements ServiceFacade {
 
 
     @GetMapping("v1/hello-world")
-    @ResponseBody
     public Greeting sayHello(
             @RequestParam(name = "name", required = false, defaultValue = "Stranger") final String name) {
         logger.info("HelloWorldServiceV1#sayHello() invoked with name '{}'", name);

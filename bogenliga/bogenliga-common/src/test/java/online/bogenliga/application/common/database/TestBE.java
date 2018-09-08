@@ -8,6 +8,7 @@ public class TestBE {
     private long id;
     private String name;
     private boolean active;
+    private Boolean ready;
     private int number;
     private TestEnum state;
 
@@ -59,5 +60,15 @@ public class TestBE {
 
     public void setActive(final boolean active) {
         this.active = active;
+    }
+
+
+    public Boolean isReady() {
+        return ready;
+    }
+
+
+    public void setReady(final Boolean ready) {
+        this.ready = ready;
     }
 }
