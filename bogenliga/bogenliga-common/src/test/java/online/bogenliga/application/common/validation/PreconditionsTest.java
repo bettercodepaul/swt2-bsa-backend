@@ -71,16 +71,6 @@ public class PreconditionsTest {
 
 
     @Test
-    public void checkNotEmpty_withNullByteArray_shouldThrowException() {
-        final byte[] input = null;
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> Preconditions.checkNotEmpty(input, MESSAGE))
-                .withMessageContaining(MESSAGE)
-                .withNoCause();
-    }
-
-
-    @Test
     public void checkArgument_withFalse_shouldThrowException() {
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> Preconditions.checkArgument(1 > 2, MESSAGE))

@@ -1,6 +1,5 @@
 package online.bogenliga.application.common.validation;
 
-import java.util.Collection;
 import online.bogenliga.application.common.errorhandling.exception.InvalidArgumentException;
 
 /**
@@ -52,41 +51,6 @@ public final class Preconditions {
         }
 
         return parameter;
-    }
-
-
-    /**
-     * Ensures that a byte array passed as a parameter to the calling method is not null or empty.
-     *
-     * @param parameter    an object reference
-     * @param errorMessage the exception message to use if the check fails
-     * @return the non-empty byte array that was validated
-     * @throws InvalidArgumentException if {@code parameter} is null or empty
-     */
-    public static byte[] checkNotEmpty(final byte[] parameter, final String errorMessage) {
-        if (parameter == null || parameter.length == 0) {
-            throw new InvalidArgumentException(errorMessage);
-        }
-
-        return parameter;
-    }
-
-
-    /**
-     * Ensures that a Collection reference passed as a parameter to the calling method is not null or empty.
-     *
-     * @param reference    an object reference
-     * @param errorMessage the exception message to use if the check fails
-     * @return the non-null reference that was validated
-     * @throws InvalidArgumentException if {@code reference} is null or empty
-     */
-    public static Collection<? extends Class> checkNotNullOrEmpty(final Collection<? extends Class> reference,
-                                                                  final String errorMessage) {
-        if (reference == null || reference.isEmpty()) {
-            throw new InvalidArgumentException(errorMessage);
-        }
-
-        return reference;
     }
 
 

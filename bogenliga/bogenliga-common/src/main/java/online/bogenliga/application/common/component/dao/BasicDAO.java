@@ -33,11 +33,26 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
+    /**
+     * Provide database connection
+     *
+     * @return {@link Connection}
+     */
     private Connection getConnection() {
         return transactionManager.getConnection();
     }
 
 
+    /**
+     * I return a single {@link online.bogenliga.application.common.component.entity.BusinessEntity} for the given
+     * sql query.
+     *
+     * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the "
+     *                                    object-relational" mapping between the business entity and the database table.
+     * @param sqlQuery                    to request the business entity
+     * @param params                      The parameter is used to identify the single business entity.
+     * @return instance of the business entity which is defined in the {@code businessEntityConfiguration}
+     */
     public <T> T selectSingleEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
                                     final String sqlQuery,
                                     final Object... params) {

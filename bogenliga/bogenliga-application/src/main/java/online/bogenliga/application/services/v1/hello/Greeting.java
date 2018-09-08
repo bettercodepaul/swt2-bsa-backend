@@ -3,6 +3,8 @@ package online.bogenliga.application.services.v1.hello;
 import online.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
+ * i´m a dummy {@link DataTransferObject} for the hello world example
+ *
  * @deprecated Remove REST service version dummy
  */
 @Deprecated
@@ -12,11 +14,17 @@ public class Greeting implements DataTransferObject {
     private String content;
 
 
+    /**
+     * Default constructor
+     */
     public Greeting() {
 
     }
 
 
+    /**
+     * Constructor with mandatory parameters
+     */
     public Greeting(final long id, final String content) {
         this.id = id;
         this.content = content;
