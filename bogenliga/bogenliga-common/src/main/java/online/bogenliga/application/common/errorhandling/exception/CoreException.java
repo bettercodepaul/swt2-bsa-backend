@@ -29,11 +29,11 @@ abstract class CoreException extends RuntimeException implements
      * @param message   error message
      */
     CoreException(final ErrorCode errorCode, final String message) {
-        super(errorCode.getValue() + ":" + message);
+        super(errorCode.getValue() + ": " + message);
         this.errorCode = errorCode;
         this.parameters = new String[0];
 
-        logger.debug(errorCode.getValue() + ":" + message);
+        logger.debug("{}: {}", errorCode.getValue(), message);
     }
 
 
@@ -73,12 +73,11 @@ abstract class CoreException extends RuntimeException implements
      */
     CoreException(final ErrorCode errorCode, final String message, final Throwable cause,
                   final boolean enableSuppression, final boolean writableStackTrace) {
-        super(errorCode.getValue() + ":" + message + System.lineSeparator() + stacktrace2String(cause),
+        super(errorCode.getValue() + ": " + message + System.lineSeparator() + stacktrace2String(cause),
                 null, enableSuppression, writableStackTrace);
         this.errorCode = errorCode;
         this.parameters = new String[0];
-
-        logger.debug(errorCode.getValue() + ":" + message + System.lineSeparator() + stacktrace2String(cause));
+        logger.debug("{}: {}{}{}", errorCode.getValue(), message, System.lineSeparator(), stacktrace2String(cause));
     }
 
 
@@ -90,12 +89,11 @@ abstract class CoreException extends RuntimeException implements
      * @param param     error parameter to be logged and displayed with the error code
      */
     CoreException(final ErrorCode errorCode, final String message, final Object... param) {
-        super(errorCode.getValue() + ":" + message);
+        super(errorCode.getValue() + ": " + message);
         this.errorCode = errorCode;
         this.parameters = objectParametersToStringArray(param);
 
-        logger.debug(errorCode.getValue() + " with Parameter [" + String.join(",", this.parameters) + "]:"
-                + message);
+        logger.debug("{} with Parameter [{}]: {}", errorCode.getValue(), String.join(",", this.parameters), message);
     }
 
 
@@ -124,30 +122,6 @@ abstract class CoreException extends RuntimeException implements
     }
 
 
-    /**
-     * CoreException
-     *
-     * @param errorCode          specifies the detailed error
-     * @param message            error message
-     * @param param              error parameter to be logged and displayed with the error code
-     * @param cause              error cause
-     * @param enableSuppression  whether or not suppression is enabled
-     *                           or disabled
-     * @param writableStackTrace whether or not the stack trace should
-     *                           be writable
-     */
-    CoreException(final ErrorCode errorCode, final String message, final Throwable cause,
-                  final boolean enableSuppression, final boolean writableStackTrace, final Object... param) {
-        super(errorCode.getValue() + ":" + message + System.lineSeparator() + stacktrace2String(cause),
-                null, enableSuppression, writableStackTrace);
-        this.errorCode = errorCode;
-        this.parameters = objectParametersToStringArray(param);
-
-        logger.debug(errorCode.getValue() + " with Parameter [" + String.join(",", this.parameters) + "]:"
-                + message + System.lineSeparator() + stacktrace2String(cause));
-    }
-
-
     public ErrorCode getErrorCode() {
         return errorCode;
     }
@@ -158,8 +132,9 @@ abstract class CoreException extends RuntimeException implements
     }
 
 
-    private static String[] objectParametersToStringArray(final Object[] param) {
-        return Arrays.copyOf(param, param.length, String[].class);
+    private static String[] objectParametersToStringArray(final Object... param) {
+//        return Arrays.copyOf(param, param.length, String[].class);
+        return Arrays.stream(param).map(String::valueOf).toArray(String[]::new);
     }
 
 

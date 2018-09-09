@@ -101,22 +101,4 @@ public class BusinessException extends CoreException {
                              final Object... param) {
         super(errorCode, message, cause, param);
     }
-
-
-    /**
-     * BusinessException
-     *
-     * @param errorCode          specifies the detailed error
-     * @param message            error message
-     * @param param              error parameter to be logged and displayed with the error code
-     * @param cause              error cause
-     * @param enableSuppression  whether or not suppression is enabled
-     *                           or disabled
-     * @param writableStackTrace whether or not the stack trace should
-     *                           be writable
-     */
-    public BusinessException(final ErrorCode errorCode, final String message, final Throwable cause,
-                             final boolean enableSuppression, final boolean writableStackTrace, final Object... param) {
-        super(errorCode, message, cause, enableSuppression, writableStackTrace, param);
-    }
 }
