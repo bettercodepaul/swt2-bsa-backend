@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/andre-lehnert/mock-backend.svg?branch=master)](https://travis-ci.org/andre-lehnert/mock-backend)
 [![sonarcloud](https://sonarcloud.io/api/project_badges/measure?project=online.bogenliga%3Abogenliga&metric=alert_status)](https://sonarcloud.io/dashboard?id=online.bogenliga%3Abogenliga)
 [![sonarcloud_cov](https://sonarcloud.io/api/project_badges/measure?project=online.bogenliga%3Abogenliga&metric=coverage)](https://sonarcloud.io/dashboard?id=online.bogenliga%3Abogenliga)
-[![codecov](https://codecov.io/gh/andre-lehnert/mock-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/andre-lehnert/mock-backend)
 
 
 # Bogenliga Online Application
