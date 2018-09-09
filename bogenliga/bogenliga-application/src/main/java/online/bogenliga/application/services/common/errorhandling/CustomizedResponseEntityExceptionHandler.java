@@ -39,7 +39,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             errors.add(new ErrorDTO(error.getObjectName() + ": " + error.getDefaultMessage()));
         }
 
-
         final ApiError apiError =
                 new ApiError(HttpStatus.BAD_REQUEST, errors);
         return handleExceptionInternal(
