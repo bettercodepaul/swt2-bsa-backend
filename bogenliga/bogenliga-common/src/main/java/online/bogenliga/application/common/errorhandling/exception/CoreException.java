@@ -77,7 +77,10 @@ abstract class CoreException extends RuntimeException implements
                 null, enableSuppression, writableStackTrace);
         this.errorCode = errorCode;
         this.parameters = new String[0];
-        logger.debug("{}: {}{}{}", errorCode.getValue(), message, System.lineSeparator(), stacktrace2String(cause));
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("{}: {}{}{}", errorCode.getValue(), message, System.lineSeparator(), stacktrace2String(cause));
+        }
     }
 
 
@@ -93,7 +96,10 @@ abstract class CoreException extends RuntimeException implements
         this.errorCode = errorCode;
         this.parameters = objectParametersToStringArray(param);
 
-        logger.debug("{} with Parameter [{}]: {}", errorCode.getValue(), String.join(",", this.parameters), message);
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} with Parameter [{}]: {}", errorCode.getValue(), String.join(",", this.parameters),
+                    message);
+        }
     }
 
 
@@ -133,14 +139,17 @@ abstract class CoreException extends RuntimeException implements
 
 
     private static String[] objectParametersToStringArray(final Object... param) {
-//        return Arrays.copyOf(param, param.length, String[].class);
         return Arrays.stream(param).map(String::valueOf).toArray(String[]::new);
     }
 
 
     private static String stacktrace2String(final Throwable e) {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        e.printStackTrace(new PrintStream(stream));
-        return new String(stream.toByteArray());
+        if (e != null) {
+            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(stream));
+            return new String(stream.toByteArray());
+        } else {
+            return "[no stacktrace found]";
+        }
     }
 }

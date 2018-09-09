@@ -2,6 +2,7 @@ package online.bogenliga.application.common.errorhandling.exception;
 
 import org.junit.Test;
 import online.bogenliga.application.common.errorhandling.ErrorCode;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
@@ -67,6 +68,9 @@ public class TechnicalExceptionTest {
                 .withMessageContaining(MESSAGE)
                 .withMessageContaining(ErrorCode.UNDEFINED.toString())
                 .withNoCause();
+
+        assertThat(e.getErrorCode()).isEqualTo(ErrorCode.UNDEFINED);
+        assertThat(e.getParameters()).isNotNull();
     }
 
 
@@ -76,6 +80,9 @@ public class TechnicalExceptionTest {
                         () -> assertThrowException(e))
                 .withMessageContaining(ErrorCode.UNDEFINED.toString())
                 .withNoCause();
+
+        assertThat(e.getErrorCode()).isEqualTo(ErrorCode.UNDEFINED);
+        assertThat(e.getParameters()).isNotNull();
     }
 
 
