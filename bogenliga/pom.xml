@@ -3,6 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- ROOT POM - Artifact -->
     <groupId>online.bogenliga</groupId>
     <artifactId>bogenliga</artifactId>
     <version>1.0.0</version>
@@ -10,6 +11,7 @@
     <name>${serviceId.uppercase} :: ${serviceName}</name>
     <description>Bogenliga Online</description>
 
+    <!-- Application modules -->
     <modules>
         <module>./bogenliga-application</module>
         <module>./bogenliga-business-logic</module>
@@ -33,13 +35,15 @@
 
     <packaging>pom</packaging>
 
-
+    <!-- DEPENDENCIES -->
+    <!-- Spring Boot uses a "parent module" to configure the Spring dependencies -->
     <dependencyManagement>
         <dependencies>
 
         </dependencies>
     </dependencyManagement>
 
+    <!-- BUILD CONFIGURATION -->
     <build>
         <pluginManagement>
             <plugins>

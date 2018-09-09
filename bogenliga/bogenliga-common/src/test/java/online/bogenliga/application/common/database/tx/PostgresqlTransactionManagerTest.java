@@ -1,6 +1,7 @@
 package online.bogenliga.application.common.database.tx;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.junit.Before;
@@ -368,5 +369,65 @@ public class PostgresqlTransactionManagerTest {
         // verify invocations
         verify(connection).setAutoCommit(false);
         verify(connection).setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+
+    @Test
+    public void getConnection_withActiveSession_shouldCreateNewTransaction() throws SQLException {
+        // prepare test data
+        SessionHandler.setIsActive(true);
+
+        // configure mocks
+        when(dataSource.getConnection()).thenReturn(connection);
+
+        // call test method
+        final Connection actual = underTest.getConnection();
+
+        assertThat(actual).isNotNull();
+
+        // assert result
+
+        // verify invocations
+        verify(connection).setAutoCommit(false);
+        verify(connection).setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+
+    @Test
+    public void testConnection() throws SQLException {
+        // prepare test data
+        final DatabaseMetaData databaseMetaData = mock(DatabaseMetaData.class);
+        final String database = "myDB";
+        final String version = "1.2.3";
+
+        // configure mocks
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.getMetaData()).thenReturn(databaseMetaData);
+        when(databaseMetaData.getDatabaseProductName()).thenReturn(database);
+        when(databaseMetaData.getDatabaseProductVersion()).thenReturn(version);
+
+        // call test method
+        underTest.testConnection();
+
+        // assert result
+
+        // verify invocations
+        verify(connection).getMetaData();
+    }
+
+
+    @Test
+    public void testConnection_withConnectionProblem_shouldThrowException() throws SQLException {
+        // prepare test data
+        // configure mocks
+        doThrow(SQLException.class).when(dataSource).getConnection();
+
+        // call test method
+
+        assertThatExceptionOfType(SQLException.class)
+                .isThrownBy(() -> underTest.testConnection());
+
+        // assert result
+        // verify invocations
     }
 }

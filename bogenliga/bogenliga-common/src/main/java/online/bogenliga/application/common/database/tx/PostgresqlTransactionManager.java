@@ -23,6 +23,11 @@ public class PostgresqlTransactionManager implements TransactionManager {
     private final DataSource ds;
 
 
+    /**
+     * Constructor
+     *
+     * Initialize and test database connection
+     */
     public PostgresqlTransactionManager() {
         try {
             final PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
@@ -45,12 +50,24 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
-    PostgresqlTransactionManager(final DataSource ds) {
-        this.ds = ds;
+    /**
+     * Package-private constructor with all dependencies
+     *
+     * @param dataSource with the database connection
+     */
+    PostgresqlTransactionManager(final DataSource dataSource) {
+        this.ds = dataSource;
     }
 
 
-    private void testConnection() throws SQLException {
+    /**
+     * Initial database connection check
+     *
+     * Access database information
+     *
+     * @throws SQLException if the database information could not be accessed
+     */
+    void testConnection() throws SQLException {
         try (final Connection connection = ds.getConnection()) {
             final DatabaseMetaData databaseMetaData = connection.getMetaData();
             final String databaseInfo = databaseMetaData.getDatabaseProductName()
@@ -66,6 +83,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
+    /**
+     * Start transaction
+     */
     @Override
     public void begin() {
         LOG.debug("Starting transaction.");
@@ -102,6 +122,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
+    /**
+     * Commit all changes and close transaction
+     */
     @Override
     public void commit() {
         if (isActive()) {
@@ -119,6 +142,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
+    /**
+     * Release database connection and rollback all uncommited changes
+     */
     @Override
     public void release() {
         try {
@@ -137,6 +163,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
+    /**
+     * @return connection with active transaction
+     */
     @Override
     public Connection getConnection() {
         if (!isActive()) {
