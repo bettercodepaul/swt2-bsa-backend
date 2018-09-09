@@ -231,7 +231,7 @@ public class BasicDAO implements DataAccessObject {
                         updateBusinessEntity.toString(), affectedRows));
             }
 
-        } catch (final SQLException e) {
+        } catch (final SQLException | TechnicalException e) {
             transactionManager.rollback();
             throw new TechnicalException(e);
         } finally {

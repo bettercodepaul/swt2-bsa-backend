@@ -18,7 +18,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.slf4j.Logger;
 import online.bogenliga.application.common.database.tx.PostgresqlTransactionManager;
+import online.bogenliga.application.common.errorhandling.exception.BusinessException;
+import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 /**
@@ -106,6 +109,30 @@ public class BasicDAOTest {
 
 
     @Test
+    public void selectSingleEntity_withSQLError_shouldThrowException() throws SQLException {
+        // prepare test data
+
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        doThrow(SQLException.class).when(queryRunner).query(
+                eq(connection),
+                anyString(),
+                any(),
+                eq(PARAMETER));
+
+        // call test method
+        assertThatExceptionOfType(TechnicalException.class)
+                .isThrownBy(() -> underTest.selectSingleEntity(createConfig(logger), SQL_QUERY_WITH_PARAMETER,
+                        PARAMETER));
+        // assert result
+
+        // verify invocations
+        verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanHandler.class),
+                eq(PARAMETER));
+    }
+
+
+    @Test
     public void selectEntityList() throws SQLException {
         // prepare test data
         final TestBE expected = new TestBE();
@@ -136,6 +163,56 @@ public class BasicDAOTest {
         assertThat(actualBE.getId()).isEqualTo(expected.getId());
         assertThat(actualBE.getName()).isEqualTo(expected.getName());
 
+        // verify invocations
+        verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanListHandler.class),
+                eq(PARAMETER));
+    }
+
+
+    @Test
+    public void selectEntityList_withoutResult_shouldReturnEmptyList() throws SQLException {
+        // prepare test data
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        when(queryRunner.query(
+                eq(connection),
+                anyString(),
+                any(),
+                eq(PARAMETER)))
+                .thenReturn(null);
+
+        // call test method
+        final List<TestBE> actual = underTest.selectEntityList(createConfig(logger), SQL_QUERY_WITH_PARAMETER,
+                PARAMETER);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isEmpty();
+
+        // verify invocations
+        verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanListHandler.class),
+                eq(PARAMETER));
+    }
+
+
+    @Test
+    public void selectEntityList_withSQLError_shouldThrowException() throws SQLException {
+        // prepare test data
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        doThrow(SQLException.class).when(queryRunner).query(
+                eq(connection),
+                anyString(),
+                any(),
+                eq(PARAMETER));
+
+        // call test method
+        assertThatExceptionOfType(TechnicalException.class)
+                .isThrownBy(() -> underTest.selectEntityList(createConfig(logger), SQL_QUERY_WITH_PARAMETER,
+                        PARAMETER));
+
+        // assert result
         // verify invocations
         verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanListHandler.class),
                 eq(PARAMETER));
@@ -186,6 +263,45 @@ public class BasicDAOTest {
 
 
     @Test
+    public void insertEntity_withSQLError_shouldThrowException() throws SQLException {
+        // prepare test data
+        final TestBE expected = new TestBE();
+        expected.setId(ID);
+        expected.setName(NAME);
+
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        doThrow(SQLException.class).when(queryRunner).insert(
+                eq(connection),
+                anyString(),
+                any(),
+                anyString());
+
+        // call test method
+        assertThatExceptionOfType(TechnicalException.class)
+                .isThrownBy(() -> underTest.insertEntity(createConfig(logger), expected));
+
+        // assert result
+        // verify invocations
+        verify(transactionManager).begin();
+        verify(transactionManager).release();
+        verify(transactionManager).rollback();
+
+        verify(queryRunner).insert(eq(connection), stringArgumentCaptor.capture(),
+                any(BasicBeanHandler.class),
+                eq(NAME));
+
+        final String query = stringArgumentCaptor.getValue();
+
+        assertThat(query)
+                .contains("INSERT INTO")
+                .contains(TABLE_NAME)
+                .contains(TABLE_COLUMN_NAME)
+                .contains("VALUES");
+    }
+
+
+    @Test
     public void updateEntities() throws SQLException {
         // prepare test data
         final TestBE expected = new TestBE();
@@ -212,6 +328,45 @@ public class BasicDAOTest {
         // verify invocations
         verify(transactionManager).begin();
         verify(transactionManager).commit();
+        verify(transactionManager).release();
+
+        verify(queryRunner).update(eq(connection), stringArgumentCaptor.capture(),
+                eq(NAME), eq(ID));
+
+        final String query = stringArgumentCaptor.getValue();
+
+        assertThat(query)
+                .contains("UPDATE")
+                .contains(TABLE_NAME)
+                .contains(TABLE_NAME)
+                .contains(TABLE_COLUMN_ID)
+                .contains("WHERE");
+    }
+
+
+    @Test
+    public void updateEntities_withSQLError_shouldThrowException() throws SQLException {
+        // prepare test data
+        final TestBE expected = new TestBE();
+        expected.setId(ID);
+        expected.setName(NAME);
+
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        doThrow(SQLException.class).when(queryRunner).update(
+                eq(connection),
+                anyString(),
+                any(),
+                any());
+
+        // call test method
+        assertThatExceptionOfType(TechnicalException.class)
+                .isThrownBy(() -> underTest.updateEntities(createConfig(logger), expected, BE_PARAMETER_ID));
+
+        // assert result
+        // verify invocations
+        verify(transactionManager).begin();
+        verify(transactionManager).rollback();
         verify(transactionManager).release();
 
         verify(queryRunner).update(eq(connection), stringArgumentCaptor.capture(),
@@ -285,6 +440,112 @@ public class BasicDAOTest {
 
 
     @Test
+    public void updateEntity_withSQLError_shouldThrowException() throws SQLException {
+        // prepare test data
+        final TestBE expected = new TestBE();
+        expected.setId(ID);
+        expected.setName(NAME);
+
+        final int affectedRows = 1;
+
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        when(queryRunner.update(
+                eq(connection),
+                anyString(),
+                any(),
+                any()))
+                .thenReturn(affectedRows);
+        doThrow(SQLException.class).when(queryRunner).query(
+                eq(connection),
+                anyString(),
+                any(),
+                any(Object.class));
+
+
+        // call test method
+        assertThatExceptionOfType(TechnicalException.class)
+                .isThrownBy(() -> underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID,
+                        SQL_QUERY_WITH_PARAMETER));
+
+        // assert result
+        // verify invocations
+        verify(transactionManager).begin();
+        verify(transactionManager).rollback();
+        verify(transactionManager).release();
+
+        verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanHandler.class),
+                eq(ID));
+
+        verify(queryRunner).update(eq(connection), stringArgumentCaptor.capture(),
+                eq(NAME), eq(ID));
+
+        final String query = stringArgumentCaptor.getValue();
+
+        assertThat(query)
+                .contains("UPDATE")
+                .contains(TABLE_NAME)
+                .contains(TABLE_NAME)
+                .contains(TABLE_COLUMN_ID)
+                .contains("WHERE");
+    }
+
+
+    @Test
+    public void updateEntity_withoutAffectedRows_shouldThrowException() throws SQLException {
+        assertAffectedRowsOnUpdate(0, "does not affect any row");
+    }
+
+
+    @Test
+    public void updateEntity_withNAffectedRows_shouldThrowException() throws SQLException {
+        assertAffectedRowsOnUpdate(5, "affected 5 row");
+    }
+
+
+    private void assertAffectedRowsOnUpdate(final int affectedRows, final String errorMessage) throws SQLException {
+        // prepare test data
+        final TestBE expected = new TestBE();
+        expected.setId(ID);
+        expected.setName(NAME);
+
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        when(queryRunner.update(
+                eq(connection),
+                anyString(),
+                any(),
+                any()))
+                .thenReturn(affectedRows);
+
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID,
+                        SQL_QUERY_WITH_PARAMETER))
+                .withMessageContaining(errorMessage);
+
+        // assert result
+        // verify invocations
+        verify(transactionManager).begin();
+        verify(transactionManager).rollback();
+        verify(transactionManager).release();
+
+        verify(queryRunner).update(eq(connection), stringArgumentCaptor.capture(),
+                eq(NAME), eq(ID));
+
+        final String query = stringArgumentCaptor.getValue();
+
+        assertThat(query)
+                .contains("UPDATE")
+                .contains(TABLE_NAME)
+                .contains(TABLE_NAME)
+                .contains(TABLE_COLUMN_ID)
+                .contains("WHERE");
+    }
+
+
+    @Test
     public void deleteEntity() throws SQLException {
         // prepare test data
         final TestBE expected = new TestBE();
@@ -309,6 +570,72 @@ public class BasicDAOTest {
         // verify invocations
         verify(transactionManager).begin();
         verify(transactionManager).commit();
+        verify(transactionManager).release();
+    }
+
+
+    @Test
+    public void deleteEntity_withSQLError_shouldThrowException() throws SQLException {
+        // prepare test data
+        final TestBE expected = new TestBE();
+        expected.setId(ID);
+        expected.setName(NAME);
+
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        doThrow(SQLException.class).when(queryRunner).update(
+                eq(connection),
+                anyString(),
+                any());
+
+        // call test method
+        assertThatExceptionOfType(TechnicalException.class)
+                .isThrownBy(() -> underTest.deleteEntity(createConfig(logger), expected, BE_PARAMETER_ID));
+
+        // assert result
+
+        // verify invocations
+        verify(transactionManager).begin();
+        verify(transactionManager).rollback();
+        verify(transactionManager).release();
+    }
+
+
+    @Test
+    public void deleteEntity_withoutAffectedRow_shouldThrowException() throws SQLException {
+        assertAffectedRowsOnDelete(0, "does affect 0 rows");
+    }
+
+
+    @Test
+    public void deleteEntity_withNAffectedRow_shouldThrowException() throws SQLException {
+        assertAffectedRowsOnDelete(6, "does affect 6 rows");
+    }
+
+
+    private void assertAffectedRowsOnDelete(final int affectedRows, final String errorMessage) throws SQLException {
+        // prepare test data
+        final TestBE expected = new TestBE();
+        expected.setId(ID);
+        expected.setName(NAME);
+
+        // configure mocks
+        when(transactionManager.getConnection()).thenReturn(connection);
+        when(queryRunner.update(
+                eq(connection),
+                anyString(),
+                any())).thenReturn(affectedRows);
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.deleteEntity(createConfig(logger), expected, BE_PARAMETER_ID))
+                .withMessageContaining(errorMessage);
+
+        // assert result
+
+        // verify invocations
+        verify(transactionManager).begin();
+        verify(transactionManager).rollback();
         verify(transactionManager).release();
     }
 
