@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
-public class BusinessExceptionTest {
+public class TechnicalExceptionTest {
 
     private static final String MESSAGE = "message";
     private static final String PARAM1 = "param1";
@@ -17,46 +17,46 @@ public class BusinessExceptionTest {
 
     @Test
     public void testExceptionConstructor() {
-        assertExceptionWithMessage(new BusinessException(ErrorCode.UNDEFINED, MESSAGE));
+        assertExceptionWithMessage(new TechnicalException(ErrorCode.UNDEFINED, MESSAGE));
     }
 
 
     @Test
     public void testExceptionConstructor_withCause() {
-        assertExceptionWithMessage(new BusinessException(ErrorCode.UNDEFINED, MESSAGE, new NullPointerException()));
+        assertExceptionWithMessage(new TechnicalException(ErrorCode.UNDEFINED, MESSAGE, new NullPointerException()));
     }
 
 
     @Test
     public void testExceptionConstructor_withoutMessage_withCause() {
-        assertExceptionWithoutMessage(new BusinessException(ErrorCode.UNDEFINED, new NullPointerException()));
+        assertExceptionWithoutMessage(new TechnicalException(ErrorCode.UNDEFINED, new NullPointerException()));
     }
 
 
     @Test
     public void testExceptionConstructor_withParam() {
-        assertExceptionWithMessage(new BusinessException(ErrorCode.UNDEFINED, MESSAGE, PARAM1, PARAM2));
+        assertExceptionWithMessage(new TechnicalException(ErrorCode.UNDEFINED, MESSAGE, PARAM1, PARAM2));
     }
 
 
     @Test
     public void testExceptionConstructor_withCause_withParam() {
         assertExceptionWithMessage(
-                new BusinessException(ErrorCode.UNDEFINED, MESSAGE, new NullPointerException(), PARAM1, PARAM2));
+                new TechnicalException(ErrorCode.UNDEFINED, MESSAGE, new NullPointerException(), PARAM1, PARAM2));
     }
 
 
     @Test
     public void testExceptionConstructor_withoutMessage_withCause_withParam() {
         assertExceptionWithoutMessage(
-                new BusinessException(ErrorCode.UNDEFINED, new NullPointerException(), PARAM1, PARAM2));
+                new TechnicalException(ErrorCode.UNDEFINED, new NullPointerException(), PARAM1, PARAM2));
     }
 
 
     @Test
     public void testExceptionConstructor_withCause_withConfigs() {
         assertExceptionWithMessage(
-                new BusinessException(ErrorCode.UNDEFINED, MESSAGE, new NullPointerException(), true, true));
+                new TechnicalException(ErrorCode.UNDEFINED, MESSAGE, new NullPointerException(), true, true));
     }
 
 
