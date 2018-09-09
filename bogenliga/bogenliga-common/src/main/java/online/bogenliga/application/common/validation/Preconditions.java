@@ -1,6 +1,7 @@
 package online.bogenliga.application.common.validation;
 
-import online.bogenliga.application.common.errorhandling.exception.InvalidArgumentException;
+import online.bogenliga.application.common.errorhandling.ErrorCode;
+import online.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
  * I perform precondition checks.
@@ -26,11 +27,11 @@ public final class Preconditions {
      * @param reference    an object reference
      * @param errorMessage the exception message to use if the check fails
      * @return the non-null reference that was validated
-     * @throws InvalidArgumentException if {@code reference} is null
+     * @throws BusinessException if {@code reference} is null
      */
     public static <T> T checkNotNull(final T reference, final String errorMessage) {
         if (reference == null) {
-            throw new InvalidArgumentException(errorMessage);
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, errorMessage);
         }
 
         return reference;
@@ -43,11 +44,11 @@ public final class Preconditions {
      * @param parameter    an object reference
      * @param errorMessage the exception message to use if the check fails
      * @return the non-null String that was validated
-     * @throws InvalidArgumentException if {@code parameter} is null or empty
+     * @throws BusinessException if {@code parameter} is null or empty
      */
     public static String checkNotNullOrEmpty(final String parameter, final String errorMessage) {
         if (parameter == null || parameter.length() == 0) {
-            throw new InvalidArgumentException(errorMessage);
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, errorMessage);
         }
 
         return parameter;
@@ -59,12 +60,12 @@ public final class Preconditions {
      *
      * @param expression   a boolean expression
      * @param errorMessage the exception message to use if the check fails
-     * @throws InvalidArgumentException if {@code expression} is false
+     * @throws BusinessException if {@code expression} is false
      */
     public static void checkArgument(final boolean expression,
                                      final String errorMessage) {
         if (!expression) {
-            throw new InvalidArgumentException(errorMessage);
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR, errorMessage);
         }
     }
 }
