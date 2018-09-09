@@ -13,8 +13,8 @@ public class ErrorCodeTest {
     public void checkErrorCodes() {
         assertThat(ErrorCode.fromValue("EXTERNAL_SERVICE_ERROR"))
                 .isEqualTo(ErrorCode.EXTERNAL_SERVICE_ERROR);
-        assertThat(ErrorCode.fromValue("SQL_ERROR"))
-                .isEqualTo(ErrorCode.SQL_ERROR);
+        assertThat(ErrorCode.fromValue("DATABASE_ERROR"))
+                .isEqualTo(ErrorCode.DATABASE_ERROR);
         assertThat(ErrorCode.fromValue("INTERNAL_ERROR"))
                 .isEqualTo(ErrorCode.INTERNAL_ERROR);
         assertThat(ErrorCode.fromValue("UNEXPECTED_ERROR"))

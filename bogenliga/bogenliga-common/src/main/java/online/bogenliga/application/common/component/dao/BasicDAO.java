@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import online.bogenliga.application.common.database.SQL;
 import online.bogenliga.application.common.database.tx.TransactionManager;
+import online.bogenliga.application.common.errorhandling.ErrorCode;
 import online.bogenliga.application.common.errorhandling.exception.BusinessException;
+import online.bogenliga.application.common.errorhandling.exception.InvalidArgumentException;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 
@@ -71,7 +73,7 @@ public class BasicDAO implements DataAccessObject {
                     new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
                             businessEntityConfiguration.getColumnToFieldMapping()), params);
         } catch (final SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
     }
 
@@ -98,7 +100,7 @@ public class BasicDAO implements DataAccessObject {
                     new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
                             businessEntityConfiguration.getColumnToFieldMapping()), params);
         } catch (final SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
 
         return businessEntityList == null ? Collections.emptyList() : businessEntityList;
@@ -136,7 +138,7 @@ public class BasicDAO implements DataAccessObject {
             transactionManager.commit();
         } catch (final SQLException e) {
             transactionManager.rollback();
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
             transactionManager.release();
         }
@@ -173,7 +175,7 @@ public class BasicDAO implements DataAccessObject {
             return affectedRows;
         } catch (final SQLException e) {
             transactionManager.rollback();
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
             transactionManager.release();
         }
@@ -222,18 +224,19 @@ public class BasicDAO implements DataAccessObject {
             } else if (affectedRows == 0) {
                 transactionManager.rollback();
 
-                throw new BusinessException(String.format("Update of business entity '%s' does not affect any row",
-                        updateBusinessEntity.toString()));
+                throw new InvalidArgumentException(
+                        String.format("Update of business entity '%s' does not affect any row",
+                                updateBusinessEntity.toString()));
             } else {
                 transactionManager.rollback();
 
-                throw new BusinessException(String.format("Update of business entity '%s' affected %d rows",
+                throw new InvalidArgumentException(String.format("Update of business entity '%s' affected %d rows",
                         updateBusinessEntity.toString(), affectedRows));
             }
 
         } catch (final SQLException | TechnicalException e) {
             transactionManager.rollback();
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
             transactionManager.release();
         }
@@ -268,12 +271,12 @@ public class BasicDAO implements DataAccessObject {
             } else {
                 transactionManager.rollback();
 
-                throw new BusinessException(String.format("Deletion of business entity '%s' does affect %d rows",
+                throw new InvalidArgumentException(String.format("Deletion of business entity '%s' does affect %d rows",
                         deleteBusinessEntity.toString(), affectedRows));
             }
         } catch (final SQLException e) {
             transactionManager.rollback();
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
             transactionManager.release();
         }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import online.bogenliga.application.common.errorhandling.ErrorCode;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
@@ -74,7 +75,7 @@ public final class SQL {
 
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
 
         sql.append(values);
@@ -142,7 +143,7 @@ public final class SQL {
             idValue = appendFieldsToUpdateStatement(updateObj, fieldSelector, columnToFieldMapping, sql, para, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
 
         sql.append(" WHERE ");
@@ -214,7 +215,7 @@ public final class SQL {
             idValue = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
 
         sql.append(" WHERE ");

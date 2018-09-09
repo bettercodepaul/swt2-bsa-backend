@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import online.bogenliga.application.common.errorhandling.ErrorCode;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
@@ -45,7 +46,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
 
             testConnection();
         } catch (final SQLException | NullPointerException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
         }
     }
 
@@ -97,7 +98,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             LOG.debug("Created new connection from Datasource.");
         } catch (final SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
         }
 
         SessionHandler.setConnection(connection);
@@ -112,7 +113,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
                 SessionHandler.getConnection().rollback();
                 LOG.debug("Rollback transaction.");
             } catch (final SQLException e) {
-                throw new TechnicalException(e);
+                throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
             } finally {
                 SessionHandler.setIsActive(false);
             }
@@ -132,7 +133,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
                 SessionHandler.getConnection().commit();
                 LOG.debug("Commit transaction.");
             } catch (final SQLException e) {
-                throw new TechnicalException(e);
+                throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
             } finally {
                 SessionHandler.setIsActive(false);
             }
@@ -156,7 +157,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
             SessionHandler.getConnection().close();
             LOG.debug("Release connection.");
         } catch (final SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
         } finally {
             SessionHandler.removeConnection();
         }
