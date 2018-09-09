@@ -285,6 +285,33 @@ public class PostgresqlTransactionManagerTest {
 
 
     @Test
+    public void release_withSession_withError_shouldThrowException2() throws SQLException {
+        // prepare test data
+        SessionHandler.removeConnection();
+
+        // configure mocks
+        when(dataSource.getConnection()).thenReturn(connection);
+        doThrow(SQLException.class).when(connection).close();
+
+        // call test method
+        underTest.begin();
+
+        assertThat(SessionHandler.isActive()).isTrue();
+
+        assertThatExceptionOfType(TechnicalException.class)
+                .isThrownBy(() -> underTest.release());
+
+        // assert result
+        assertThat(SessionHandler.isActive()).isFalse();
+
+        // verify invocations
+        verify(connection).setAutoCommit(false);
+        verify(connection).setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        verify(connection).close();
+    }
+
+
+    @Test
     public void release_withoutSession_shouldThrowException() {
         // prepare test data
         SessionHandler.removeConnection();
@@ -306,6 +333,27 @@ public class PostgresqlTransactionManagerTest {
     @Test
     public void getConnection() throws SQLException {
         // prepare test data
+
+        // configure mocks
+        when(dataSource.getConnection()).thenReturn(connection);
+
+        // call test method
+        final Connection actual = underTest.getConnection();
+
+        assertThat(actual).isNotNull();
+
+        // assert result
+
+        // verify invocations
+        verify(connection).setAutoCommit(false);
+        verify(connection).setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+
+    @Test
+    public void getConnection_withoutSession_shouldNotCreateNewTransaction() throws SQLException {
+        // prepare test data
+        SessionHandler.setIsActive(false);
 
         // configure mocks
         when(dataSource.getConnection()).thenReturn(connection);

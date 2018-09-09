@@ -45,12 +45,13 @@ public class BasicDAO implements DataAccessObject {
 
     /**
      * I return a single {@link online.bogenliga.application.common.component.entity.BusinessEntity} for the given
-     * sql query.
+     * sql SELECT query.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the "
      *                                    object-relational" mapping between the business entity and the database table.
      * @param sqlQuery                    to request the business entity
-     * @param params                      The parameter is used to identify the single business entity.
+     * @param params                      The parameter(s) are used to identify the single business entity
+     *                                    in the WHERE clause.
      * @return instance of the business entity which is defined in the {@code businessEntityConfiguration}
      */
     public <T> T selectSingleEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
@@ -66,10 +67,22 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
+    /**
+     * I return a list of {@link online.bogenliga.application.common.component.entity.BusinessEntity} for the given
+     * sql SELECT query.
+     *
+     * The instance of the business entity is defined in the {@code businessEntityConfiguration}
+     *
+     * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
+     *                                    "object-relational" mapping between the business entity and the database table
+     * @param sqlQuery                    to request the list of business entities
+     * @param params                      The parameter(s) are used to select the business entities in the WHERE clause
+     * @return list of business entities
+     */
     public <T> List<T> selectEntityList(final BusinessEntityConfiguration<T> businessEntityConfiguration,
                                         final String sqlQuery,
                                         final Object... params) {
-        List<T> businessEntityList = null;
+        final List<T> businessEntityList;
         try {
             businessEntityList = run.query(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
@@ -89,7 +102,7 @@ public class BasicDAO implements DataAccessObject {
         final SQL.SQLWithParameter sql = SQL.insertSQL(insertBusinessEntity, businessEntityConfiguration.getTable(),
                 businessEntityConfiguration.getColumnToFieldMapping());
 
-        T businessEntityAfterInsert = null;
+        T businessEntityAfterInsert;
         try {
             transactionManager.begin();
 
@@ -203,6 +216,13 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
+    /**
+     * I log the sql query with the given logger instance and return the query to the query runner.
+     *
+     * @param logger specific {@link DataAccessObject} logger to log the logging message source in the log output
+     * @param sql    query to log
+     * @return sql query
+     */
     protected final String logSQL(final Logger logger, final String sql) {
         if (logger.isInfoEnabled()) {
             logger.info(sql);
@@ -211,10 +231,18 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
-    protected final String logSQL(final Logger logger, final String sql, final Object... para) {
+    /**
+     * I log the sql query with the given logger instance and return the query to the query runner.
+     *
+     * @param logger            specific {@link DataAccessObject} logger to log the logging message source in the log output
+     * @param sql               query with ?-parameters to log
+     * @param sqlQueryParameter the ?-parameters are replaced with the {@code sqlQueryParameter}
+     * @return sql query with parameters
+     */
+    protected final String logSQL(final Logger logger, final String sql, final Object... sqlQueryParameter) {
         if (logger.isInfoEnabled()) {
             final String formatString = sql.replace("?", "%s");
-            logger.info(String.format(formatString, para));
+            logger.info(String.format(formatString, sqlQueryParameter));
         }
         return sql;
     }
