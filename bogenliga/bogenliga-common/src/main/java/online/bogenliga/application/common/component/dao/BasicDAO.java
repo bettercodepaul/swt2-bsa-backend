@@ -23,13 +23,22 @@ import online.bogenliga.application.common.errorhandling.exception.TechnicalExce
 @Repository
 public class BasicDAO implements DataAccessObject {
 
-    private final QueryRunner run = new QueryRunner();
+    private QueryRunner run = new QueryRunner();
     private final TransactionManager transactionManager;
 
 
     @Autowired
     public BasicDAO(final TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
+    }
+
+
+    /**
+     * Package-protected constructor with all dependencies
+     */
+    BasicDAO(final TransactionManager transactionManager, final QueryRunner queryRunner) {
+        this.transactionManager = transactionManager;
+        this.run = queryRunner;
     }
 
 
@@ -97,6 +106,17 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
+    /**
+     * I persist a single {@link online.bogenliga.application.common.component.entity.BusinessEntity}
+     *
+     * Encapsulate the INSERT query into a transaction.
+     *
+     * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
+     *                                    "object-relational" mapping between the business entity and the database table
+     * @param insertBusinessEntity        business entity to persist
+     *                                    the INSERT sql query is automatically generated
+     * @return instance of the persisted business entity
+     */
     public <T> T insertEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
                               final T insertBusinessEntity) {
         final SQL.SQLWithParameter sql = SQL.insertSQL(insertBusinessEntity, businessEntityConfiguration.getTable(),
@@ -125,16 +145,56 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
-    public <T> int updateEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                                final T updateBusinessEntity, final String fieldSelector) {
+    /**
+     * I update one or more {@link online.bogenliga.application.common.component.entity.BusinessEntity} objects
+     * in the database.
+     *
+     * Encapsulate the UPDATE query into a transaction.
+     *
+     * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
+     *                                    "object-relational" mapping between the business entity and the database table
+     * @param updateBusinessEntity        business entity to persist
+     *                                    the UPDATE sql query is automatically generated
+     * @param fieldSelector               to identify the target table rows in the WHERE clause
+     * @return number of modified table rows
+     */
+    public <T> int updateEntities(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                                  final T updateBusinessEntity, final String fieldSelector) {
         final SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
+        try {
+            transactionManager.begin();
 
-        return runUpdate(businessEntityConfiguration, sql);
+            final int affectedRows = runUpdate(businessEntityConfiguration, sql);
+
+            transactionManager.commit();
+
+            return affectedRows;
+        } catch (final SQLException e) {
+            transactionManager.rollback();
+            throw new TechnicalException(e);
+        } finally {
+            transactionManager.release();
+        }
     }
 
 
+    /**
+     * I update a single {@link online.bogenliga.application.common.component.entity.BusinessEntity} object
+     * in the database.
+     *
+     * Encapsulate the UPDATE and SELECT query into a transaction.
+     *
+     * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
+     *                                    "object-relational" mapping between the business entity and the database table
+     * @param updateBusinessEntity        business entity to persist
+     *                                    the UPDATE sql query is automatically generated
+     * @param fieldSelector               to identify the target table row in the WHERE clause
+     * @param singleSelectSql             to select the modified business entity after the update
+     * @return instance of the updated business entity
+     * @throws BusinessException if no or more than 1 row is affected by the update
+     */
     public <T> T updateEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
                               final T updateBusinessEntity, final String fieldSelector, final String singleSelectSql) {
         final SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
@@ -151,8 +211,11 @@ public class BasicDAO implements DataAccessObject {
                     sql.getParameter());
 
             if (affectedRows == 1) {
+                // last parameter := identifier for the update query
+                final Object fieldSelectorValue = sql.getParameter()[sql.getParameter().length - 1];
+
                 businessEntityAfterUpdate = selectSingleEntity(businessEntityConfiguration, singleSelectSql,
-                        fieldSelector);
+                        fieldSelectorValue);
 
                 transactionManager.commit();
 
@@ -179,38 +242,51 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
+    /**
+     * I delete a single {@link online.bogenliga.application.common.component.entity.BusinessEntity} object
+     * from the database.
+     *
+     * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
+     *                                    "object-relational" mapping between the business entity and the database table
+     * @param deleteBusinessEntity        business entity to delete
+     *                                    the DELETE sql query is automatically generated
+     * @param fieldSelector               to identify the target table row in the WHERE clause
+     * @throws BusinessException if no or more than 1 row is affected by the delete.
+     */
     public <T> void deleteEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
                                  final T deleteBusinessEntity, final String fieldSelector) {
         final SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
-        final int affectedRows = runUpdate(businessEntityConfiguration, sql);
-
-        if (affectedRows != 1) {
-            throw new BusinessException(String.format("Deletion of business entity '%s' does affect %d rows",
-                    deleteBusinessEntity.toString(), affectedRows));
-        }
-    }
-
-
-    private <T> int runUpdate(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                              final SQL.SQLWithParameter sql) {
-        int affectedRows = 0;
         try {
             transactionManager.begin();
 
-            affectedRows = run.update(getConnection(),
-                    logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
-                    sql.getParameter());
+            final int affectedRows = runUpdate(businessEntityConfiguration, sql);
 
-            transactionManager.commit();
+            if (affectedRows == 1) {
+                transactionManager.commit();
+            } else {
+                transactionManager.rollback();
 
+                throw new BusinessException(String.format("Deletion of business entity '%s' does affect %d rows",
+                        deleteBusinessEntity.toString(), affectedRows));
+            }
         } catch (final SQLException e) {
             transactionManager.rollback();
             throw new TechnicalException(e);
         } finally {
             transactionManager.release();
         }
+    }
+
+
+    private <T> int runUpdate(final BusinessEntityConfiguration<T> businessEntityConfiguration,
+                              final SQL.SQLWithParameter sql) throws SQLException {
+        int affectedRows = 0;
+
+        affectedRows = run.update(getConnection(),
+                logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
+                sql.getParameter());
 
         return affectedRows;
     }

@@ -6,18 +6,22 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class SessionHandler {
+/**
+ * I save session information for the current thread.
+ *
+ * Handle database connection and support the transaction management.
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ */
+final class SessionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(SessionHandler.class);
 
     private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(HashMap::new);
 
     private static final String CONNECTION = "CONNECTION";
     private static final String IS_ACTIVE = "IS_ACTIVE";
-    private static final String USER_ID = "USER_ID";
-    private static final String USER_INFO = "USER_INFO";
     private static final String UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_CONNECTION =
             "unexpected empty ThreadLocal for Connection";
-    private static final String UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_USER_ID = "unexpected empty ThreadLocal for userId";
 
 
     /**
@@ -98,59 +102,5 @@ public final class SessionHandler {
      */
     static void setIsActive(final Boolean active) {
         THREAD_LOCAL.get().put(IS_ACTIVE, active);
-    }
-
-
-    /**
-     * Return the caller userId which is associated with the thread.
-     *
-     * @return caller userId.
-     */
-    public static Long getUserId() {
-        if (THREAD_LOCAL.get().get(USER_ID) == null) {
-            throw new IllegalStateException(UNEXPECTED_EMPTY_THREAD_LOCAL_FOR_USER_ID);
-        }
-
-        return (Long) THREAD_LOCAL.get().get(USER_ID);
-    }
-
-
-    /**
-     * Set client caller userId in ThreadLocal.
-     *
-     * @param userId the caller userId
-     */
-    public static void setUserId(final Long userId) {
-        THREAD_LOCAL.get().put(USER_ID, userId);
-    }
-
-
-    /**
-     * Return the caller UserInfos which is associated with the thread.
-     *
-     * @return caller UserInfos or null.
-     */
-    public static Object getUserInfo() {
-        // could be null!
-        return THREAD_LOCAL.get().get(USER_INFO);
-    }
-
-
-    /**
-     * Set client caller UserInfos in ThreadLocal.
-     *
-     * @param userInfos the caller UserInfos
-     */
-    public static void setUserInfo(final Object userInfos) {
-        THREAD_LOCAL.get().put(USER_INFO, userInfos);
-    }
-
-
-    /**
-     * Remove the UserID and UserInfos from ThreadLocal.
-     */
-    public static void releaseUserInfos() {
-        THREAD_LOCAL.get().remove(USER_ID);
-        THREAD_LOCAL.get().remove(USER_INFO);
     }
 }
