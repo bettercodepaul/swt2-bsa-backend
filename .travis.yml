@@ -44,11 +44,11 @@ script:
 - mvn cobertura:cobertura
 - cd ../bogenliga-common
 - mvn cobertura:cobertura
+
+after_success:
 # upload reports to https://codecov.io
 # uses CODECOV_TOKEN environment variable
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/site/cobertura/coverage.xml
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-business-logic/target/site/cobertura/coverage.xml
 - bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-common/target/site/cobertura/coverage.xml
-
-after_success:
 
