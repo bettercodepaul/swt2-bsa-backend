@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import online.bogenliga.application.common.errorhandling.exception.EntityNotFoundException;
+import online.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -46,8 +46,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     }
 
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public final ResponseEntity<ApiError> handleUserNotFoundException(final EntityNotFoundException ex,
+    @ExceptionHandler(BusinessException.class)
+    public final ResponseEntity<ApiError> handleUserNotFoundException(final BusinessException ex,
                                                                       final WebRequest request) {
         final ErrorDTO errorDetails = new ErrorDTO(ex.getMessage());
         return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, errorDetails), HttpStatus.NOT_FOUND);
