@@ -388,8 +388,6 @@ public class PostgresqlTransactionManagerTest {
         // assert result
 
         // verify invocations
-        verify(connection).setAutoCommit(false);
-        verify(connection).setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
     }
 
 
