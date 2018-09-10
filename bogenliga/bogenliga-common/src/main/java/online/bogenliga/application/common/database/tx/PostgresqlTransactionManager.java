@@ -7,8 +7,10 @@ import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import online.bogenliga.application.common.configuration.DatabaseConfiguration;
 import online.bogenliga.application.common.errorhandling.ErrorCode;
 import online.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
@@ -21,7 +23,8 @@ import online.bogenliga.application.common.errorhandling.exception.TechnicalExce
 public class PostgresqlTransactionManager implements TransactionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostgresqlTransactionManager.class);
-    private final DataSource ds;
+    private DataSource ds;
+    private DatabaseConfiguration databaseConfiguration;
 
 
     /**
@@ -29,25 +32,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
      *
      * Initialize and test database connection
      */
-    public PostgresqlTransactionManager() {
-        try {
-            final PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
-            // The value `localhost` means the Postgres cluster running locally on the same machine.
-            postgresqlDatasource.setServerName("localhost");
-            // A connection to Postgres must be made to a specific database rather than to the server as a whole.
-            // You likely have an initial database created named `public`.
-            postgresqlDatasource.setDatabaseName("swt2");
-            // Or use the super-user 'postgres' for user name if you installed Postgres with defaults and
-            // have not yet created user(s) for your application.
-            postgresqlDatasource.setUser("swt2");
-            postgresqlDatasource.setPassword("swt2");
-
-            ds = postgresqlDatasource;
-
-            testConnection();
-        } catch (final SQLException | NullPointerException e) {
-            throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
-        }
+    @Autowired
+    public PostgresqlTransactionManager(final DatabaseConfiguration databaseConfiguration) {
+        this.databaseConfiguration = databaseConfiguration;
     }
 
 
@@ -61,6 +48,38 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
+    private DataSource getDataSource() {
+        if (ds == null) {
+            try {
+                LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
+                        databaseConfiguration.getHost(), databaseConfiguration.getPort(),
+                        databaseConfiguration.getDatabaseName(), databaseConfiguration.getUser(),
+                        databaseConfiguration.getPassword().length());
+
+                final PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
+                // The value `localhost` means the Postgres cluster running locally on the same machine.
+                postgresqlDatasource.setServerName(databaseConfiguration.getHost());
+                postgresqlDatasource.setPortNumber(databaseConfiguration.getPort());
+                // A connection to Postgres must be made to a specific database rather than to the server as a whole.
+                // You likely have an initial database created named `public`.
+                postgresqlDatasource.setDatabaseName(databaseConfiguration.getDatabaseName());
+                // Or use the super-user 'postgres' for user name if you installed Postgres with defaults and
+                // have not yet created user(s) for your application.
+                postgresqlDatasource.setUser(databaseConfiguration.getUser());
+                postgresqlDatasource.setPassword(databaseConfiguration.getPassword());
+
+                ds = postgresqlDatasource;
+
+                testConnection();
+            } catch (final SQLException | NullPointerException e) {
+                throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
+            }
+        }
+
+        return ds;
+    }
+
+
     /**
      * Initial database connection check
      *
@@ -69,11 +88,10 @@ public class PostgresqlTransactionManager implements TransactionManager {
      * @throws SQLException if the database information could not be accessed
      */
     void testConnection() throws SQLException {
-        try (final Connection connection = ds.getConnection()) {
+        try (final Connection connection = getDataSource().getConnection()) {
             final DatabaseMetaData databaseMetaData = connection.getMetaData();
-            final String databaseInfo = databaseMetaData.getDatabaseProductName()
-                    + databaseMetaData.getDatabaseProductVersion();
-            LOG.info("Datasource {} found and registered.", databaseInfo);
+            LOG.info("Datasource {} {} found and registered.", databaseMetaData.getDatabaseProductName(),
+                    databaseMetaData.getDatabaseProductVersion());
         }
     }
 
@@ -93,7 +111,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
         final Connection connection;
 
         try {
-            connection = ds.getConnection();
+            connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             LOG.debug("Created new connection from Datasource.");
