@@ -211,10 +211,10 @@ public class BasicDAO implements DataAccessObject {
                     logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
                     sql.getParameter());
 
-            if (affectedRows == 1) {
-                // last parameter := identifier for the update query
-                final Object fieldSelectorValue = sql.getParameter()[sql.getParameter().length - 1];
+            // last parameter := identifier for the update query
+            final Object fieldSelectorValue = sql.getParameter()[sql.getParameter().length - 1];
 
+            if (affectedRows == 1) {
                 businessEntityAfterUpdate = selectSingleEntity(businessEntityConfiguration, singleSelectSql,
                         fieldSelectorValue);
 
@@ -225,13 +225,13 @@ public class BasicDAO implements DataAccessObject {
 
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' does not affect any row",
-                                updateBusinessEntity.toString()));
+                                updateBusinessEntity.toString()), fieldSelectorValue);
             } else {
                 transactionManager.rollback();
 
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' affected %d rows",
-                                updateBusinessEntity.toString(), affectedRows));
+                                updateBusinessEntity.toString(), affectedRows), fieldSelectorValue);
             }
 
         } catch (final SQLException | TechnicalException e) {
@@ -266,6 +266,9 @@ public class BasicDAO implements DataAccessObject {
 
             final int affectedRows = runUpdate(businessEntityConfiguration, sql);
 
+            // last parameter := identifier for the update query
+            final Object fieldSelectorValue = sql.getParameter()[sql.getParameter().length - 1];
+
             if (affectedRows == 1) {
                 transactionManager.commit();
             } else {
@@ -273,7 +276,7 @@ public class BasicDAO implements DataAccessObject {
 
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Deletion of business entity '%s' does affect %d rows",
-                                deleteBusinessEntity.toString(), affectedRows));
+                                deleteBusinessEntity.toString(), affectedRows), fieldSelectorValue);
             }
         } catch (final SQLException e) {
             transactionManager.rollback();

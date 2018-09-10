@@ -9,6 +9,8 @@ import online.bogenliga.application.business.configuration.api.types.Configurati
 import online.bogenliga.application.business.configuration.impl.dao.ConfigurationDAO;
 import online.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import online.bogenliga.application.business.configuration.impl.mapper.ConfigurationMapper;
+import online.bogenliga.application.common.errorhandling.ErrorCode;
+import online.bogenliga.application.common.errorhandling.exception.BusinessException;
 import online.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -50,7 +52,14 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
     public ConfigurationVO findByKey(final String key) {
         Preconditions.checkNotNullOrEmpty(key, PRECONDITION_MSG_CONFIGURATION_KEY);
 
-        return ConfigurationMapper.toVO.apply(configurationDAO.findByKey(key));
+        ConfigurationBE result = configurationDAO.findByKey(key);
+
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for key '%s'", key));
+        }
+
+        return ConfigurationMapper.toVO.apply(result);
     }
 
 
