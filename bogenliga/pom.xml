@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- ROOT POM - Artifact -->
-    <groupId>online.bogenliga</groupId>
+    <groupId>de.bogenliga</groupId>
     <artifactId>bogenliga</artifactId>
     <version>1.0.0</version>
 
     <name>${serviceId.uppercase} :: ${serviceName}</name>
-    <description>Bogenliga Online</description>
+    <description>Bogenliga Application</description>
 
     <!-- Application modules -->
     <modules>
@@ -20,9 +20,9 @@
     </modules>
 
     <properties>
-        <serviceId.lowercase>blo</serviceId.lowercase>
-        <serviceId.uppercase>BLO</serviceId.uppercase>
-        <serviceName>Bogenliga Online</serviceName>
+        <serviceId.lowercase>bla</serviceId.lowercase>
+        <serviceId.uppercase>BLA</serviceId.uppercase>
+        <serviceName>Bogenliga Application</serviceName>
 
         <org.postgresql.postgresql.version>9.4-1205-jdbc4</org.postgresql.postgresql.version>
         <org.flywaydb.flyway-maven-plugin.version>4.2.0</org.flywaydb.flyway-maven-plugin.version>

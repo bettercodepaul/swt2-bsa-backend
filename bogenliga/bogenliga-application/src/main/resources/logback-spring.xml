@@ -38,7 +38,7 @@
         <appender-ref ref="Console"/>
     </root>
 
-    <logger name="online.bogenliga.application" level="trace" additivity="false">
+    <logger name="de.bogenliga.application" level="trace" additivity="false">
         <appender-ref ref="Console"/>
     </logger>
 

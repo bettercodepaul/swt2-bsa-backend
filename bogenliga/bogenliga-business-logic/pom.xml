@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>BLO :: Bogenliga Online :: Business Logic</name>
+    <name>BLA :: Bogenliga Application :: Business Logic</name>
 
-    <groupId>online.bogenliga</groupId>
+    <groupId>de.bogenliga</groupId>
     <artifactId>bogenliga-business-logic</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -24,7 +24,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>online.bogenliga</groupId>
+            <groupId>de.bogenliga</groupId>
             <artifactId>bogenliga-common</artifactId>
             <version>${project.version}</version>
         </dependency>
