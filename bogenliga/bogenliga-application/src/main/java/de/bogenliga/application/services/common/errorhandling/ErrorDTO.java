@@ -24,7 +24,7 @@ public class ErrorDTO {
      * @param param        optional parameter to describe the error cause
      * @param errorMessage optional errorMessage of the exception (can be removed in a later version of the project)
      */
-    public ErrorDTO(final ErrorCode errorCode, final String[] param, final String errorMessage) {
+    ErrorDTO(final ErrorCode errorCode, final String[] param, final String errorMessage) {
         this.errorCode = errorCode;
         this.param = param;
         this.errorMessage = errorMessage;
@@ -37,7 +37,7 @@ public class ErrorDTO {
      * @param errorCode    to identify the specific error and translate the error on the user interface
      * @param errorMessage optional errorMessage of the exception (can be removed in a later version of the project)
      */
-    public ErrorDTO(final ErrorCode errorCode, final String errorMessage) {
+    ErrorDTO(final ErrorCode errorCode, final String errorMessage) {
         this.errorCode = errorCode;
         this.param = new String[0];
         this.errorMessage = errorMessage;
@@ -49,7 +49,7 @@ public class ErrorDTO {
      *
      * @param errorCode to identify the specific error and translate the error on the user interface
      */
-    public ErrorDTO(final ErrorCode errorCode) {
+    ErrorDTO(final ErrorCode errorCode) {
         this.errorCode = errorCode;
         this.param = new String[0];
         this.errorMessage = null;
