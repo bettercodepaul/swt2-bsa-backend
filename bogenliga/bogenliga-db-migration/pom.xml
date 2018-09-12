@@ -25,6 +25,10 @@
             </activation>
             <properties>
                 <environment>LOCAL</environment>
+                <!-- WORKAROUND: move configuration to the buildprofile files -->
+                <database.url>jdbc:postgresql://localhost:5432/swt2</database.url>
+                <database.user>swt2</database.user>
+                <database.password>swt2</database.password>
             </properties>
         </profile>
 
@@ -33,6 +37,7 @@
     </profiles>
 
     <build>
+
         <plugins>
             <!-- read database config from property files -->
             <plugin>
@@ -46,7 +51,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>./buildprofiles/${environment}-config.properties</file>
+                                <file>${basedir}/buildprofiles/${environment}-config.properties</file>
                             </files>
                         </configuration>
                     </execution>
