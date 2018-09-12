@@ -1,9 +1,11 @@
-[![Build Status](https://travis-ci.org/andre-lehnert/mock-backend.svg?branch=master)](https://travis-ci.org/andre-lehnert/mock-backend)
-[![sonarcloud](https://sonarcloud.io/api/project_badges/measure?project=online.bogenliga%3Abogenliga&metric=alert_status)](https://sonarcloud.io/dashboard?id=online.bogenliga%3Abogenliga)
-[![sonarcloud_cov](https://sonarcloud.io/api/project_badges/measure?project=online.bogenliga%3Abogenliga&metric=coverage)](https://sonarcloud.io/dashboard?id=online.bogenliga%3Abogenliga)
+[![Build Status](https://travis-ci.org/exxcellent/swt2-bsa-backend.svg?branch=master)](https://travis-ci.org/exxcellent/swt2-bsa-backend)
+[![sonarcloud](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
+[![sonarcloud_cov](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=coverage)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
 
 
-# Bogenliga Online Application
+# Bogenliga Application
+
+tbd 
 
 This repository can be used for a basic working Spring Boot application
 
