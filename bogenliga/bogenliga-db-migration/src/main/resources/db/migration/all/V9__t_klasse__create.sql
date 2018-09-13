@@ -27,7 +27,7 @@ CREATE TABLE klasse (
 
   -- primary key (pk)
   -- scheme: pk_{column name}
-  CONSTRAINT pk_region_id PRIMARY KEY (region_id),
+  CONSTRAINT pk_klasse_id PRIMARY KEY (klasse_id),
 
   -- unique constraint (uc)
   -- scheme: uc_{column name}
