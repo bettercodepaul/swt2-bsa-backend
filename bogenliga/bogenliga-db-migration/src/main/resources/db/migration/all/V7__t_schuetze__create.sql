@@ -23,9 +23,9 @@ CREATE TABLE schuetze (
   schuetze_vorname          VARCHAR(200)    NOT NULL,
   schuetze_nachname         VARCHAR(200)    NOT NULL,
   schuetze_jahrgang         DECIMAL(4,0)    NOT NULL, -- YYYY allowed
-  schuetze_nationalitaet    VARCHAR(5)      NOT NULL, -- TODO Welches Format? ISO XXX?
+  schuetze_nationalitaet    VARCHAR(5)      NOT NULL, -- TODO Format in User Storei gem. ISO festelegen und prüfen
   schuetze_mitgliedsnummer  VARCHAR(200)    NOT NULL,
-  schuetze_email            VARCHAR(200)    NOT NULL, -- TODO Haben wir in der Produktion für alle Schützen die E-Mails? Oder sollte es erstmal Nullable sein?
+  schuetze_email            VARCHAR(200)    NULL,
   schuetze_verein_id        DECIMAL(19,0)   NOT NULL, --Fremdschluessel zum Verein
 
   -- primary key (pk)

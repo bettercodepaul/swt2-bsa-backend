@@ -33,7 +33,7 @@ CREATE TABLE region (
   -- unique constraint (uc)
   -- scheme: uc_{column name}
   CONSTRAINT uc_region_name UNIQUE (region_name),
-  CONSTRAINT uc_region_kuerzel UNIQUE (region_name, region_kuerzel), --TODO Kürzel nicht unique?
+  CONSTRAINT uc_region_kuerzel UNIQUE (region_kuerzel),
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}

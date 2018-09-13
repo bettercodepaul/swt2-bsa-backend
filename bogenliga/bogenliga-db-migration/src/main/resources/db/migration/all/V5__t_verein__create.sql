@@ -30,8 +30,9 @@ CREATE TABLE verein (
 
   -- unique constraint (uc)
   -- scheme: uc_{column name}
+  CONSTRAINT uc_verein_name UNIQUE (verein_name),
+
   CONSTRAINT uc_verein_dsb_identifier UNIQUE (verein_dsb_identifier),
-  -- TODO unique Vereinsname? CONSTRAINT uc_verein_name UNIQUE (verein_name),
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
