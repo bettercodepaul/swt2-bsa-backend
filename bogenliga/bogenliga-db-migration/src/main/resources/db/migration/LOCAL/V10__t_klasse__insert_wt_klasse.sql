@@ -15,5 +15,6 @@ VALUES
 (11,'Master w' ,50 ,65 ,13),
 (12,'Senioren' ,66 ,Null ,14),
 (13,'Senioren weibl.' ,66 ,Null ,15)
+(14,'unbestimmt' ,0 ,Null ,16)
 ;
 
