@@ -19,7 +19,7 @@ CREATE SEQUENCE sq_klasse_id START WITH 1000 INCREMENT BY 1;
  **/
 -- TODO Kann auch Verband heißen. Siehe V4 Testdaten
 CREATE TABLE klasse (
-  klasse_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_region_id'), -- DECIMAL(19,0) = unsigned long
+  klasse_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_klasse_id'), -- DECIMAL(19,0) = unsigned long
   klasse_name           VARCHAR(200)  NOT NULL, -- gem. Vorgaben DSB
   klasse_alter_min      DECIMAL(2,0)  NOT NULL,
   klasse_alter_max      DECIMAL(2,0)  NOT NULL,
