@@ -8,9 +8,9 @@ VALUES
   (5, 'Kreis Stuttgart',                    'KR S',     'KREIS', 3),
   (6, 'Kreis Ludwigsburg',                  'KR LB',    'KREIS', 4),
   (7, 'Kreis Welzheim',                     'KR WZ',    'KREIS', 8),
-  (8, 'Bezirk Welzheim',                    'BZ LB',    'BEZIRK', 1),
+  (8, 'Bezirk Welzheim',                    'BZ WZ',    'BEZIRK', 1),
   (9, 'Bezirk Baden',                       'BZ BA',    'BEZIRK', 2),
   (10, 'Kreis Baden-Baden',                 'KR B-B',   'KREIS', 9),
-  (11, 'Kreis Nürtingen',                   'KR LB',    'KREIS', 8),
-  (12, 'Bezirk Nürtingen',                  'BZ LB',    'BEZIRK', 1)
+  (11, 'Kreis Nürtingen',                   'KR NT',    'KREIS', 8),
+  (12, 'Bezirk Nürtingen',                  'BZ NT',    'BEZIRK', 1)
 ;
