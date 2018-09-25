@@ -1,12 +1,13 @@
-INSERT INTO ligatablle ( -- Recurve Ligen
+INSERT INTO ligatabelle ( -- Recurve Ligen
   ligatabelle_veranstaltung_id,
   ligatabelle_wettkampf_tag,
   ligatabelle_mannschaft_id,
-  igatabelle_tabellenplatz,
+  ligatabelle_tabellenplatz,
   ligatabelle_matchpkt,
   ligatabelle_matchpkt_gegen,
   ligatabelle_satzpkt,
   ligatabelle_satzpkt_gegen
+  )
 VALUES
 (0, 0, 101, 1, 0,0,0,0),-- initial
 (0, 0, 102, 2, 0,0,0,0),
@@ -23,7 +24,7 @@ VALUES
 (0, 1, 101, 5, 6,8,28,34),
 (0, 1, 106, 6, 6,8,22,30),
 (0, 1, 108, 7, 4,10,23,37),
-(0, 1, 104, 8, 0,14,15,43),
+(0, 1, 104, 8, 0,14,15,43)
 ;
 
 

@@ -27,6 +27,6 @@ CREATE TABLE wettkampftyp (
 
   -- unique constraint (uc)
   -- scheme: uc_{column name}
-  CONSTRAINT uc_wettkampftyp_name UNIQUE (wettkampftyp_name),
+  CONSTRAINT uc_wettkampftyp_name UNIQUE (wettkampftyp_name)
 
 );

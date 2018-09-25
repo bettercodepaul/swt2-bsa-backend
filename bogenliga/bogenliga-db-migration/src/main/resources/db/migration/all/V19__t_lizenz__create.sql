@@ -37,7 +37,7 @@ CREATE TABLE Lizenz (
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
   CONSTRAINT fk_lizenz_schuetze FOREIGN KEY (lizenz_schuetze_id) REFERENCES schuetze (schuetze_id)
-    ON DELETE CASCADE -- das Löschen eines Schuetzen löscht auch dessen Lizenzen
+    ON DELETE CASCADE, -- das Löschen eines Schuetzen löscht auch dessen Lizenzen
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}

@@ -24,7 +24,7 @@ CREATE TABLE ligatabelle (
   ligatabelle_satzpkt_gegen          DECIMAL(4,0) NOT NULL, -- Summe aller gegnerischen Satzpunkte
 
 
-  CONSTRAINT uc_ligatabelle UNIQUE (ligatabelle_veranstaltung_id, ligatabelle_wettkampf_tag, mannschaft_id),
+  CONSTRAINT uc_ligatabelle UNIQUE (ligatabelle_veranstaltung_id, ligatabelle_wettkampf_tag, ligatabelle_mannschaft_id),
 
 
    -- foreign key (fk)

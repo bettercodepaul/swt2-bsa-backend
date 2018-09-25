@@ -19,16 +19,16 @@ CREATE TABLE passe (
   passe_match_nr           DECIMAL(1,0),
   passe_mannschaft_id      DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zur mannschaft
   passe_schuetze_id        DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zum Schuetzen
-  passe_ringzahl_pfeil1    DECIMAL(2,0) -- die geschossenen Ringe
-  passe_ringzahl_pfeil2    DECIMAL(2,0) -- die geschossenen Ringe
-  passe_ringzahl_pfeil3    DECIMAL(2,0) -- die geschossenen Ringe
-  passe_ringzahl_pfeil4    DECIMAL(2,0) -- die geschossenen Ringe
-  passe_ringzahl_pfeil5    DECIMAL(2,0) -- die geschossenen Ringe
-  passe_ringzahl_pfeil6    DECIMAL(2,0) -- die geschossenen Ringe
+  passe_ringzahl_pfeil1    DECIMAL(2,0), -- die geschossenen Ringe
+  passe_ringzahl_pfeil2    DECIMAL(2,0), -- die geschossenen Ringe
+  passe_ringzahl_pfeil3    DECIMAL(2,0), -- die geschossenen Ringe
+  passe_ringzahl_pfeil4    DECIMAL(2,0), -- die geschossenen Ringe
+  passe_ringzahl_pfeil5    DECIMAL(2,0), -- die geschossenen Ringe
+  passe_ringzahl_pfeil6    DECIMAL(2,0), -- die geschossenen Ringe
 
   -- primary key (pk)
   -- scheme: pk_{column name}
-  CONSTRAINT pk_passe PRIMARY KEY (passe_lfdnr, passe_pfeilnummer, passe_wettkampf_id),
+  --CONSTRAINT pk_passe PRIMARY KEY (passe_lfdnr, passe_pfeilnummer, passe_wettkampf_id), TODO PK prüfen -> passe_pfeilnummer existiert nicht?
 
 
    -- foreign key (fk)

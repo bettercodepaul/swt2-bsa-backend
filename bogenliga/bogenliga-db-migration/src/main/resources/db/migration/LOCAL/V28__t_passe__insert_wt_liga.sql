@@ -1,15 +1,15 @@
 INSERT INTO passe (
-  passe_lfdnr              DECIMAL(4,0),
-  passe_wettkampf_id       DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zum Wettkampf
-  passe_match_nr           DECIMAL(1,0),
-  passe_mannschaft_id      DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zur mannschaft
-  passe_schuetze_id        DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zum Schuetzen
-  passe_ringzahl_pfeil1    DECIMAL(2,0), -- die geschossenen Ringe
-  passe_ringzahl_pfeil2    DECIMAL(2,0), -- die geschossenen Ringe
-  passe_ringzahl_pfeil3    DECIMAL(2,0), -- die geschossenen Ringe
-  passe_ringzahl_pfeil4    DECIMAL(2,0), -- die geschossenen Ringe
-  passe_ringzahl_pfeil5    DECIMAL(2,0), -- die geschossenen Ringe
-  passe_ringzahl_pfeil6    DECIMAL(2,0) -- die geschossenen Ringe
+  passe_lfdnr,
+  passe_wettkampf_id,
+  passe_match_nr,
+  passe_mannschaft_id,
+  passe_schuetze_id,
+  passe_ringzahl_pfeil1,
+  passe_ringzahl_pfeil2,
+  passe_ringzahl_pfeil3,
+  passe_ringzahl_pfeil4,
+  passe_ringzahl_pfeil5,
+  passe_ringzahl_pfeil6
   )
 VALUES
   (1, 30, 1, 101, 28, 9,9,NULL,NULL,NULL,NULL),
@@ -120,7 +120,7 @@ VALUES
   (3, 30, 1, 108, 127, 10,6,NULL,NULL,NULL,NULL),
   (4, 30, 1, 108, 180, 10,8,NULL,NULL,NULL,NULL),
   (4, 30, 1, 108, 220, 10,8,NULL,NULL,NULL,NULL),
-  (4, 30, 1, 108, 127, 10,9,NULL,NULL,NULL,NULL),
+  (4, 30, 1, 108, 127, 10,9,NULL,NULL,NULL,NULL)
 ;
 
 /*

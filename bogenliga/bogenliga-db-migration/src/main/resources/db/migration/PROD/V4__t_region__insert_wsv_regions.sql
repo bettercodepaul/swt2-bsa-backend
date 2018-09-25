@@ -7,10 +7,10 @@ VALUES
   (4, 'Bezirk Ludwigsburg',                 'BZ LB',    'BEZIRKSVERBAND', 1),
   (5, 'Kreis Stuttgart',                    'KR S',     'KREISVERBAND', 3),
   (6, 'Kreis Ludwigsburg',                  'KR LB',    'KREISVERBAND', 4), -- TODO kein unique Kürzel?
-  (7, 'Kreis Welzheim',                     'KR LB',    'KREISVERBAND', 8), -- TODO kein unique Kürzel?
-  (8, 'Bezirk Welzheim',                    'BZ LB',    'BEZIRKSVERBAND', 1),
+  (7, 'Kreis Welzheim',                     'KR WZ',    'KREISVERBAND', 8), -- TODO kein unique Kürzel?
+  (8, 'Bezirk Welzheim',                    'BZ WZ',    'BEZIRKSVERBAND', 1),
   (9, 'Bezirk Baden',                       'BZ BA',    'BEZIRKSVERBAND', 2),
   (10, 'Kreis Baden-Baden',                 'KR B-B',   'KREISVERBAND', 9),
-  (11, 'Kreis Nürtingen',                   'KR LB',    'KREISVERBAND', 8),
-  (12, 'Bezirk Nürtingen',                  'BZ LB',    'BEZIRKSVERBAND', 1)
+  (11, 'Kreis Nürtingen',                   'KR NT',    'KREISVERBAND', 8),
+  (12, 'Bezirk Nürtingen',                  'BZ NT',    'BEZIRKSVERBAND', 1)
 ;

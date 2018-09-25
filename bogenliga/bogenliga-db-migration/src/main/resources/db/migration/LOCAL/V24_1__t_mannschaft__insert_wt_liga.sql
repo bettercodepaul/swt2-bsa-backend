@@ -1,10 +1,10 @@
 INSERT INTO mannschaft (
   mannschaft_id,
-  verein_id,
+  mannschaft_verein_id,
   mannschaft_nummer,
   mannschaft_sportleiter,
   mannschaft_sportleiter_email,
-  veranstaltung_id)
+  mannschaft_veranstaltung_id)
 VALUES
   (101, 0, 1, 'Gero Stetten','g.s@bogenliga.de', 0),
   (102, 1, 1, 'Dirk Schwieber', 'd.s@bogenliga.de', 0),

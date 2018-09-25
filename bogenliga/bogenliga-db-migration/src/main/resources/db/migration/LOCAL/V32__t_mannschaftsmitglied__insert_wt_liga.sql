@@ -1,7 +1,8 @@
-INSERT INTO schuetze_in_mannschaft (
-  mannschaft_id,
-  schuetze_id,
-  schuetze_eingesetzt)
+INSERT INTO mannschaftsmitglied (
+  mannschaftsmitglied_mannschaft_id,
+  mannschaftsmitglied_schuetze_id,
+  mannschaftsmitglied_schuetze_eingesetzt
+  )
 VALUES
   (101, 28, 1),
   (101, 31, 1),
@@ -14,7 +15,7 @@ VALUES
 
   (103, 30, 0),
   (103, 32, 0),
-  (103, 40, 0),
+  (103, 48, 0),
   (103, 71, 1),
   (103, 80, 1),
   (103, 103, 1),

@@ -8,9 +8,9 @@ INSERT INTO lizenz (
 VALUES
 
 (0, 'WT1234567', 1, 71, 'Liga', 0),
-(0, 'WT12340007', 1, 103, 'Liga', 0),
-(0, '0012348990', 1, 450, 'Liga', 0),
-(0, '12345899', 1, 441, 'Kampfrichter', NULL),
-(0, '1234589001', 1, 442, 'Kampfrichter', NULL),
-(0, '123458910', 1, 450, 'Kampfrichter', NULL)
+(1, 'WT12340007', 1, 103, 'Liga', 0),
+(2, '0012348990', 1, 450, 'Liga', 0),
+(3, '12345899', 1, 441, 'Kampfrichter', NULL),
+(4, '1234589001', 1, 442, 'Kampfrichter', NULL),
+(5, '123458910', 1, 450, 'Kampfrichter', NULL)
 ;

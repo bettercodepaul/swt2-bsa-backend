@@ -25,8 +25,8 @@ CREATE TABLE schuetze (
   schuetze_jahrgang         DECIMAL(4,0)    NOT NULL, -- YYYY allowed
   schuetze_nationalitaet    VARCHAR(5)      NOT NULL, -- TODO Format in User Storei gem. ISO festelegen und prüfen
   schuetze_mitgliedsnummer  VARCHAR(200)    NOT NULL,
-  schuetze_email            VARCHAR(200)    NULL,
   schuetze_verein_id        DECIMAL(19,0)   NOT NULL, --Fremdschluessel zum Verein
+  schuetze_benutzer_id      DECIMAL(19,0)   NOT NULL,
 
   -- primary key (pk)
   -- scheme: pk_{column name}
@@ -35,7 +35,10 @@ CREATE TABLE schuetze (
   -- unique constraint (uc)
   -- scheme: uc_{column name}
   CONSTRAINT uc_schuetze_mitgliedsnummer UNIQUE (schuetze_mitgliedsnummer),
-  CONSTRAINT uc_schuetze_email UNIQUE (schuetze_email),
+
+  -- foreign key (fk)
+  -- schema: fk_{current table name}_{foreign key origin table name}
+  CONSTRAINT fk_schuetze_benutzer_id FOREIGN KEY (schuetze_benutzer_id) REFERENCES benutzer (benutzer_id),
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
