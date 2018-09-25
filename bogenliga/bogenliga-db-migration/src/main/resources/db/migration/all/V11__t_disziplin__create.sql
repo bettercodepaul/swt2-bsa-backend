@@ -14,8 +14,7 @@
 CREATE SEQUENCE sq_disziplin_id START WITH 1000 INCREMENT BY 1;
 
 /**
- * Eine Klasse dient der defintion von Gruppen gleichen Alters - relevant ist der Jahrgang
- * und daraus resultierend das Alter des Schützen.
+ * Eine Klasse dient der defintion Typen für welche die gleichen Anforderung bzgl. der eingesetzen Sportgeräte gelten.
  **/
 -- TODO Kann auch Verband heißen. Siehe V4 Testdaten
 CREATE TABLE disziplin (
