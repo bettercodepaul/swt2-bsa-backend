@@ -15,7 +15,7 @@ CREATE SEQUENCE sq_mannschaft_id START WITH 1000 INCREMENT BY 1;
 
 /**
  * Einen Mannschaft legt die gemeldeten Schützen für eine Liga oder einen Wettkampf fest
- * aktuell werden die Anzahl der Schuetzen nicht limitiert
+ * aktuell werden die Anzahl der dsb_mitgliedn nicht limitiert
  * Mannschaften bestehen i.d.R. aus Vereinsname und Nummer
  * die Nummer wird durch die Rangfolge der Ligen definiert, in der höchsten Liga ist die Mannschaft 1
  **/

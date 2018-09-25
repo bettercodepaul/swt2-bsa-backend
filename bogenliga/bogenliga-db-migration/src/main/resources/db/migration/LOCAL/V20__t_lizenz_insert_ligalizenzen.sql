@@ -2,7 +2,7 @@ INSERT INTO lizenz (
     lizenz_id,
     lizenz_nummer,
     lizenz_region_id,
-    lizenz_schuetze_id,
+    lizenz_dsb_mitglied_id,
     lizenz_typ,
     lizenz_disziplin_id)
 VALUES

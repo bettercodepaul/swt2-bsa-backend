@@ -1,7 +1,7 @@
 INSERT INTO mannschaftsmitglied (
   mannschaftsmitglied_mannschaft_id,
-  mannschaftsmitglied_schuetze_id,
-  mannschaftsmitglied_schuetze_eingesetzt
+  mannschaftsmitglied_dsb_mitglied_id,
+  mannschaftsmitglied_dsb_mitglied_eingesetzt
   )
 VALUES
   (101, 28, 1),

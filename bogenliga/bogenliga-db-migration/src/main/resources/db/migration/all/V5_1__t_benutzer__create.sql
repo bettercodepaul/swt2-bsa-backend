@@ -18,7 +18,7 @@ CREATE SEQUENCE sq_benutzer_id START WITH 1000 INCREMENT BY 1;
 CREATE TABLE benutzer (
   benutzer_id               DECIMAL(19,0)   NOT NULL    DEFAULT nextval('sq_benutzer_id'), -- DECIMAL(19,0) = unsigned long
   benutzer_email            VARCHAR(200)    NOT NULL,
-  benutzer_salt            VARCHAR(200)    NOT NULL, -- TODO salt + pw gehasht speichern
+  benutzer_salt            VARCHAR(200)    NOT NULL, -- TODO uuid für salt verwenden (in java uuid.generate)
   benutzer_password            VARCHAR(200)    NOT NULL,
 
   -- primary key (pk)

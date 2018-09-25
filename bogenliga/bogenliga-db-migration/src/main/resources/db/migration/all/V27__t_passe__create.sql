@@ -11,14 +11,14 @@
 
 /**
  * Eine Klasse dient der erfassung der Ergebnisse im Wettkampf
- * wir erwarten entweder 2,3 oder 6 Pfeilwerte für einen Schuetzen
+ * wir erwarten entweder 2,3 oder 6 Pfeilwerte für einen dsb_mitgliedn
  **/
 CREATE TABLE passe (
   passe_lfdnr              DECIMAL(4,0),
   passe_wettkampf_id       DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zum Wettkampf
   passe_match_nr           DECIMAL(1,0),
   passe_mannschaft_id      DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zur mannschaft
-  passe_schuetze_id        DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zum Schuetzen
+  passe_dsb_mitglied_id        DECIMAL(19,0) NOT NULL, --Fremdschlüsselbezug zum dsb_mitgliedn
   passe_ringzahl_pfeil1    DECIMAL(2,0), -- die geschossenen Ringe
   passe_ringzahl_pfeil2    DECIMAL(2,0), -- die geschossenen Ringe
   passe_ringzahl_pfeil3    DECIMAL(2,0), -- die geschossenen Ringe
@@ -37,6 +37,6 @@ CREATE TABLE passe (
     ON DELETE CASCADE, -- das Löschen eines wettkampfs löscht auch die zugehörigen Passen
   CONSTRAINT fk_passe_mannschaft FOREIGN KEY (passe_mannschaft_id) REFERENCES mannschaft (mannschaft_id)
     ON DELETE CASCADE, -- das Löschen einer Mannschaft löscht auch dessen Pfeilwerte
-  CONSTRAINT fk_passe_schuetze FOREIGN KEY (passe_schuetze_id) REFERENCES schuetze (schuetze_id)
-    ON DELETE CASCADE -- das Löschen eines Schuetzen löscht auch dessen Pfeilwerte
+  CONSTRAINT fk_passe_dsb_mitglied FOREIGN KEY (passe_dsb_mitglied_id) REFERENCES dsb_mitglied (dsb_mitglied_id)
+    ON DELETE CASCADE -- das Löschen eines dsb_mitgliedn löscht auch dessen Pfeilwerte
 );

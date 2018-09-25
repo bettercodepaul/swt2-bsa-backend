@@ -24,7 +24,7 @@ CREATE TABLE Lizenz (
   lizenz_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_lizenz_id'), -- DECIMAL(19,0) = unsigned long
   lizenz_nummer        VARCHAR(200)  NOT NULL, --fachliche Lizenz-Nummer für Anzeige und Druck
   lizenz_region_id        DECIMAL(19,0) NOT NULL , --Lizenz ausgebender Landeverband oder DSB
-  lizenz_schuetze_id        DECIMAL(19,0)   NOT NULL, --Fremdschluessel zum Schuetzen
+  lizenz_dsb_mitglied_id        DECIMAL(19,0)   NOT NULL, --Fremdschluessel zum dsb_mitgliedn
   lizenz_typ            VARCHAR(200)  NOT NULL, -- aktuell nur Liga oder Kampfrichter
   lizenz_disziplin_id        DECIMAL(19,0)   NULL, --Fremdschluessel zur Disziplin, nur für Liga
 
@@ -36,8 +36,8 @@ CREATE TABLE Lizenz (
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
-  CONSTRAINT fk_lizenz_schuetze FOREIGN KEY (lizenz_schuetze_id) REFERENCES schuetze (schuetze_id)
-    ON DELETE CASCADE, -- das Löschen eines Schuetzen löscht auch dessen Lizenzen
+  CONSTRAINT fk_lizenz_dsb_mitglied FOREIGN KEY (lizenz_dsb_mitglied_id) REFERENCES dsb_mitglied (dsb_mitglied_id)
+    ON DELETE CASCADE, -- das Löschen eines dsb_mitgliedn löscht auch dessen Lizenzen
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}

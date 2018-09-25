@@ -3,7 +3,7 @@ INSERT INTO passe (
   passe_wettkampf_id,
   passe_match_nr,
   passe_mannschaft_id,
-  passe_schuetze_id,
+  passe_dsb_mitglied_id,
   passe_ringzahl_pfeil1,
   passe_ringzahl_pfeil2,
   passe_ringzahl_pfeil3,

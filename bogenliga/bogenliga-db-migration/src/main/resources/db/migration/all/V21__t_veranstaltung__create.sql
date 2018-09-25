@@ -43,6 +43,6 @@ CREATE TABLE veranstaltung (
     ON DELETE CASCADE, -- das Löschen eines wettkampftyps löscht auch die zugehörigen veranstaltungen
 
   CONSTRAINT fk_veranstaltung_veranstaltung FOREIGN KEY (veranstaltung_id) REFERENCES veranstaltung (veranstaltung_id)
-   ON DELETE SET NULL -- das Loeschen einer Region wuerde alle Vereine und deren Schuetzen entfernen
+   ON DELETE SET NULL -- das Loeschen einer Region wuerde alle Vereine und deren dsb_mitgliedn entfernen
 
 );
