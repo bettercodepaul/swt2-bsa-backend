@@ -24,6 +24,16 @@ CREATE TABLE verein (
   verein_dsb_identifier VARCHAR(200)    NOT NULL, -- fachlicher Schluessel: Identifikator beim DBS
   verein_region_id      DECIMAL(19,0)   NOT NULL, -- Fremdschluessel zur Regionszuordnung auf Ebene "Kreis"
 
+  -- technical columns to track the lifecycle of each row
+  -- the "_by" columns references a "benutzer_id" without foreign key constraint
+  -- the "_at_utc" columns using the timestamp with the UTC timezone
+  -- the version number is automatically incremented by UPDATE queries to detect optimistic concurrency problems
+  created_at_utc        TIMESTAMP        NOT NULL    DEFAULT (now() AT TIME ZONE 'utc'),
+  created_by            DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+  last_modified_at_utc  TIMESTAMP        NULL        DEFAULT NULL,
+  last_modified_by      DECIMAL(19,0)    NULL        DEFAULT NULL,
+  version               DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+
   -- primary key (pk)
   -- scheme: pk_{column name}
   CONSTRAINT pk_verein_id PRIMARY KEY (verein_id),
@@ -40,3 +50,9 @@ CREATE TABLE verein (
     ON DELETE SET NULL -- das Loeschen einer Region wuerde alle Vereine und deren dsb_mitgliedn entfernen
 );
 
+-- define a trigger of each UPDATE statement on this table to increment the version of the affected row automatically
+-- we do not need to implement the "autoincrement" of the version programmatically
+-- the procedure is defined in V0__row_version_update.sql
+CREATE TRIGGER tr_verein_update_version
+  BEFORE UPDATE ON verein
+  FOR EACH ROW EXECUTE PROCEDURE update_row_version();

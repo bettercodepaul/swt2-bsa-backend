@@ -33,6 +33,17 @@ CREATE TABLE veranstaltung (
 -- TODO Referenz zum User statt "ligaleiter-texte"
 
 
+  -- technical columns to track the lifecycle of each row
+  -- the "_by" columns references a "benutzer_id" without foreign key constraint
+  -- the "_at_utc" columns using the timestamp with the UTC timezone
+  -- the version number is automatically incremented by UPDATE queries to detect optimistic concurrency problems
+  created_at_utc        TIMESTAMP        NOT NULL    DEFAULT (now() AT TIME ZONE 'utc'),
+  created_by            DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+  last_modified_at_utc  TIMESTAMP        NULL        DEFAULT NULL,
+  last_modified_by      DECIMAL(19,0)    NULL        DEFAULT NULL,
+  version               DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+
+
   -- primary key (pk)
   -- scheme: pk_{column name}
   CONSTRAINT pk_veranstaltung_id PRIMARY KEY (veranstaltung_id),
@@ -46,3 +57,10 @@ CREATE TABLE veranstaltung (
    ON DELETE SET NULL -- das Loeschen einer Region wuerde alle Vereine und deren dsb_mitgliedn entfernen
 
 );
+
+-- define a trigger of each UPDATE statement on this table to increment the version of the affected row automatically
+-- we do not need to implement the "autoincrement" of the version programmatically
+-- the procedure is defined in V0__row_version_update.sql
+CREATE TRIGGER tr_veranstaltung_update_version
+  BEFORE UPDATE ON veranstaltung
+  FOR EACH ROW EXECUTE PROCEDURE update_row_version();

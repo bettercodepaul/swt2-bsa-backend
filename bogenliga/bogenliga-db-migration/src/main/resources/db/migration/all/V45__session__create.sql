@@ -12,8 +12,7 @@
 CREATE TABLE session (
   session_benutzer_id   DECIMAL(19,0)   NOT NULL, -- DECIMAL(19,0) = unsigned long
   session_token         VARCHAR(200)    NULL,
-  session_timestamp     VARCHAR(200)    NULL,
-  session_ip            VARCHAR(200)    NOT NULL,
+  session_timestamp     TIMESTAMP       NOT NULL    DEFAULT (now() AT TIME ZONE 'utc'),
 
   -- unique constraint (uc)
   -- scheme: uc_{column name}

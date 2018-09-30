@@ -1,12 +1,19 @@
+/*
+ * general conventions:
+ * - lower case
+ * - use "_"
+ * - use table name for column prefixes
+ *
+ * example:
+ * table name = "user"
+ * column prefix = "user_"
+ */
+
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_liga_id START WITH 1000 INCREMENT BY 1;
-
-CREATE TABLE liga (
-  liga_id               DECIMAL(19,0)   NOT NULL    DEFAULT nextval('sq_liga_id'), -- DECIMAL(19,0) = unsigned long
-  liga_region_id        DECIMAL(19,0)   NOT NULL, --Fremdschluessel zur Region
-  liga_name             VARCHAR(200)    NOT NULL,
-  liga_uebergeordnet    DECIMAL(19,0)   NULL,  -- Verweis auf die uebergeordnete Liga - bei Bundesliga (ganz oben) leer
+CREATE TABLE benutzer_rolle (
+  benutzer_rolle_benutzer_id        DECIMAL(19,0)  NOT NULL,
+  benutzer_rolle_rolle_id           DECIMAL(19,0)  NOT NULL,
 
 
   -- technical columns to track the lifecycle of each row
@@ -20,26 +27,13 @@ CREATE TABLE liga (
   version               DECIMAL(19,0)    NOT NULL    DEFAULT 0,
 
 
-  -- primary key (pk)
-  -- scheme: pk_{column name}
-  CONSTRAINT pk_liga_id PRIMARY KEY (liga_id),
-
-  -- unique constraint (uc)
-  -- scheme: uc_{column name}
-  CONSTRAINT uc_liga_name UNIQUE (liga_name),
-
-  -- foreign key (fk)
-  -- schema: fk_{current table name}_{foreign key origin table name}
-  CONSTRAINT fk_liga_region FOREIGN KEY (liga_region_id) REFERENCES region (region_id)
-    ON DELETE CASCADE,
-  CONSTRAINT fk_liga_liga FOREIGN KEY (liga_uebergeordnet) REFERENCES liga (liga_id)
-    ON DELETE CASCADE
+  CONSTRAINT fk_benutzer_rolle_benutzer FOREIGN KEY (benutzer_rolle_benutzer_id) REFERENCES benutzer (benutzer_id),
+  CONSTRAINT fk_benutzer_rolle_rolle FOREIGN KEY (benutzer_rolle_rolle_id) REFERENCES rolle (rolle_id)
 );
-
 
 -- define a trigger of each UPDATE statement on this table to increment the version of the affected row automatically
 -- we do not need to implement the "autoincrement" of the version programmatically
 -- the procedure is defined in V0__row_version_update.sql
-CREATE TRIGGER tr_liga_update_version
-  BEFORE UPDATE ON liga
+CREATE TRIGGER tr_benutzer_rolle_update_version
+  BEFORE UPDATE ON benutzer_rolle
   FOR EACH ROW EXECUTE PROCEDURE update_row_version();

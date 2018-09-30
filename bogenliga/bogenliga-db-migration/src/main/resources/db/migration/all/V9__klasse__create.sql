@@ -13,6 +13,18 @@ CREATE TABLE klasse (
   klasse_alter_max      DECIMAL(3,0)  NOT NULL,
   klasse_nr             DECIMAL(2,0)  NOT NULL, -- Nummer der Klasse im DSB
 
+
+  -- technical columns to track the lifecycle of each row
+  -- the "_by" columns references a "benutzer_id" without foreign key constraint
+  -- the "_at_utc" columns using the timestamp with the UTC timezone
+  -- the version number is automatically incremented by UPDATE queries to detect optimistic concurrency problems
+  created_at_utc        TIMESTAMP        NOT NULL    DEFAULT (now() AT TIME ZONE 'utc'),
+  created_by            DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+  last_modified_at_utc  TIMESTAMP        NULL        DEFAULT NULL,
+  last_modified_by      DECIMAL(19,0)    NULL        DEFAULT NULL,
+  version               DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+
+
   -- primary key (pk)
   -- scheme: pk_{column name}
   CONSTRAINT pk_klasse_id PRIMARY KEY (klasse_id),
@@ -23,3 +35,10 @@ CREATE TABLE klasse (
   CONSTRAINT uc_klasse_nr UNIQUE (klasse_nr)
 
 );
+
+-- define a trigger of each UPDATE statement on this table to increment the version of the affected row automatically
+-- we do not need to implement the "autoincrement" of the version programmatically
+-- the procedure is defined in V0__row_version_update.sql
+CREATE TRIGGER tr_klasse_update_version
+  BEFORE UPDATE ON klasse
+  FOR EACH ROW EXECUTE PROCEDURE update_row_version();
