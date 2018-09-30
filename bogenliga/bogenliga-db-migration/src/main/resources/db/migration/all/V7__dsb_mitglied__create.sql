@@ -1,15 +1,3 @@
-/*
- * general conventions:
- * - lower case
- * - use "_"
- * - use table name for column prefixes
- *
- * example:
- * table name = "user"
- * column prefix = "user_"
- */
-
-
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
 CREATE SEQUENCE sq_dsb_mitglied_id START WITH 1000 INCREMENT BY 1;

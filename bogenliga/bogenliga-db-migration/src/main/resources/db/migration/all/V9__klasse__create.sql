@@ -1,28 +1,16 @@
-/*
- * general conventions:
- * - lower case
- * - use "_"
- * - use table name for column prefixes
- *
- * example:
- * table name = "user"
- * column prefix = "user_"
- */
-
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
 CREATE SEQUENCE sq_klasse_id START WITH 1000 INCREMENT BY 1;
 
 /**
- * Eine Klasse dient der defintion von Gruppen gleichen Alters - relevant ist der Jahrgang
- * und daraus resultierend das Alter des Schützen.
+ * Eine Klasse dient der Defintion von Gruppen gleichen Alters
+ * Relevant ist der Jahrgang und das daraus resultierende Alter des Schützen.
  **/
--- TODO Kann auch Verband heißen. Siehe V4 Testdaten
 CREATE TABLE klasse (
   klasse_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_klasse_id'), -- DECIMAL(19,0) = unsigned long
   klasse_name           VARCHAR(200)  NOT NULL, -- gem. Vorgaben DSB
   klasse_alter_min      DECIMAL(2,0)  NOT NULL,
-  klasse_alter_max      DECIMAL(2,0)  NOT NULL,
+  klasse_alter_max      DECIMAL(3,0)  NOT NULL,
   klasse_nr             DECIMAL(2,0)  NOT NULL, -- Nummer der Klasse im DSB
 
   -- primary key (pk)

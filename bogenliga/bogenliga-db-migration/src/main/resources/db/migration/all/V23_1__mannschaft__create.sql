@@ -1,14 +1,3 @@
-/*
- * general conventions:
- * - lower case
- * - use "_"
- * - use table name for column prefixes
- *
- * example:
- * table name = "user"
- * column prefix = "user_"
- */
-
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
 CREATE SEQUENCE sq_mannschaft_id START WITH 1000 INCREMENT BY 1;
@@ -21,12 +10,12 @@ CREATE SEQUENCE sq_mannschaft_id START WITH 1000 INCREMENT BY 1;
  **/
 
 CREATE TABLE mannschaft (
-  mannschaft_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_mannschaft_id'), -- DECIMAL(19,0) = unsigned long
-  mannschaft_verein_id                 DECIMAL(19,0) NOT NULL,
-  mannschaft_nummer         DECIMAL(2,0) NOT NULL,
-  mannschaft_sportleiter    VARCHAR(200)  NOT NULL, -- der Ansprechpartner, Meldende der Mannschaft
+  mannschaft_id                 DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_mannschaft_id'), -- DECIMAL(19,0) = unsigned long
+  mannschaft_verein_id          DECIMAL(19,0) NOT NULL,
+  mannschaft_nummer             DECIMAL(2,0) NOT NULL,
+  mannschaft_sportleiter        VARCHAR(200)  NOT NULL, -- der Ansprechpartner, Meldende der Mannschaft
   mannschaft_sportleiter_email  VARCHAR(200)  NOT NULL, -- email des Ansprechpartners
-  mannschaft_veranstaltung_id          DECIMAL(19,0) NOT NULL,
+  mannschaft_veranstaltung_id   DECIMAL(19,0) NOT NULL,
 
 
   -- primary key (pk)

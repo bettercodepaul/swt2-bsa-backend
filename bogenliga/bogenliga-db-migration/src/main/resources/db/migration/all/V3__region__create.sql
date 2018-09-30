@@ -18,7 +18,6 @@ CREATE SEQUENCE sq_region_id START WITH 1000 INCREMENT BY 1;
  * Regionen sind hierarisch in einer Baumstruktur eingeordnet.
  * Der DSB bildet den Root-Knoten.
  **/
--- TODO Kann auch Verband heißen. Siehe V4 Testdaten
 CREATE TABLE region (
   region_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_region_id'), -- DECIMAL(19,0) = unsigned long
   region_name           VARCHAR(200)  NOT NULL,

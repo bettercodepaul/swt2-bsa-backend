@@ -11,17 +11,18 @@
 
 
 /**
- * Zuordnung von Schptzen zu Mannnschaften
- * es ist zu unterscheiden ob ein dsb_mitglied für eine Mannschaft gemeldet wurde
- * und ob er in dieser Mannschaft wirklich eingesetz wurde
+ * Zuordnung von Schützen zu Mannnschaften
+
+ * Es ist zu unterscheiden ob ein dsb_mitglied für eine Mannschaft gemeldet wurde
+ * und ob er in dieser Mannschaft wirklich eingesetzt wurde.
  * ein dsb_mitglied kann in mehreren Mannschaften gemeldet sein und auch in diesen eingesetzt werden.
  * genauere Prüfung erfolgt fachlich bei der Zuordnung
  **/
 
 CREATE TABLE mannschaftsmitglied (
-  mannschaftsmitglied_mannschaft_id             DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_lizenz_id'), -- DECIMAL(19,0) = unsigned long
+  mannschaftsmitglied_mannschaft_id                 DECIMAL(19,0) NOT NULL,
   mannschaftsmitglied_dsb_mitglied_id               DECIMAL(19,0) NOT NULL,
-  mannschaftsmitglied_dsb_mitglied_eingesetzt       DECIMAL (1,0) NOT NULL, -- 0= kein Einsatz, 1= Einsatz/ hat geschossen
+  mannschaftsmitglied_dsb_mitglied_eingesetzt       BOOLEAN       NOT NULL, -- false= kein Einsatz, true= Einsatz/ hat geschossen
 
    -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
@@ -31,7 +32,7 @@ CREATE TABLE mannschaftsmitglied (
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
   CONSTRAINT fk_mannschaftsmitglied_dsb_mitglied FOREIGN KEY (mannschaftsmitglied_dsb_mitglied_id) REFERENCES dsb_mitglied (dsb_mitglied_id)
-    ON DELETE CASCADE -- das Löschen eines dsb_mitgliedn löscht auch die Zuordnung des dsb_mitgliedn zu Mannschaften
+    ON DELETE CASCADE -- das Löschen eines dsb_mitglieds löscht auch die Zuordnung des dsb_mitglieds zu Mannschaften
 
 );
 

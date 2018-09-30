@@ -6,7 +6,7 @@ VALUES
 (2,'WA im Freien'),
 (3,'WA in der Halle'),
 (4,'WA Stern Turnier'),
-(5,'Feeldbogen'),
-(6, '3D Turnier')
+(5,'Feldbogen'),
+(6,'3D Turnier')
 ;
 
