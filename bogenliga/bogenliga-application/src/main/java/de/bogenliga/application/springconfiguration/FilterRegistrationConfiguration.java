@@ -16,7 +16,7 @@ public class FilterRegistrationConfiguration {
     // uncomment this and comment the @Component in the filter class definition to register only for a url pattern
     @Bean
     public FilterRegistrationBean<RequestResponseLoggingFilter> loggingFilter() {
-        FilterRegistrationBean<RequestResponseLoggingFilter> registrationBean = new FilterRegistrationBean<>();
+        final FilterRegistrationBean<RequestResponseLoggingFilter> registrationBean = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(new RequestResponseLoggingFilter());
 

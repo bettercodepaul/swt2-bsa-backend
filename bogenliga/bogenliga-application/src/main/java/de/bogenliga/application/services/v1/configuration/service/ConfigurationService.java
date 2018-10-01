@@ -6,7 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -33,7 +38,7 @@ import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO
 @RequestMapping("v1/configuration")
 public class ConfigurationService implements ServiceFacade {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigurationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationService.class);
 
     /*
      * Business components
@@ -78,8 +83,6 @@ public class ConfigurationService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ConfigurationDTO> findAll() {
-        logger.debug("Receive 'findAll' request");
-
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
         return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -104,7 +107,7 @@ public class ConfigurationService implements ServiceFacade {
     public ConfigurationDTO findByKey(@PathVariable("key") final String key) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 
-        logger.debug("Receive 'findByKey' request with key '{}'", key);
+        LOG.debug("Receive 'findByKey' request with key '{}'", key);
 
         final ConfigurationDO configurationDO = configurationComponent.findByKey(key);
         return ConfigurationDTOMapper.toDTO.apply(configurationDO);
@@ -139,7 +142,7 @@ public class ConfigurationService implements ServiceFacade {
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
 
-        logger.debug("Receive 'create' request with key '{}' and value '{}'", configurationDTO.getKey(),
+        LOG.debug("Receive 'create' request with key '{}' and value '{}'", configurationDTO.getKey(),
                 configurationDTO.getValue());
 
         final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
@@ -167,7 +170,7 @@ public class ConfigurationService implements ServiceFacade {
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
 
-        logger.debug("Receive 'update' request with key '{}' and value '{}'", configurationDTO.getKey(),
+        LOG.debug("Receive 'update' request with key '{}' and value '{}'", configurationDTO.getKey(),
                 configurationDTO.getValue());
 
         final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
@@ -186,7 +189,7 @@ public class ConfigurationService implements ServiceFacade {
     public void delete(@PathVariable("key") final String key) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 
-        logger.debug("Receive 'delete' request with key '{}'", key);
+        LOG.debug("Receive 'delete' request with key '{}'", key);
 
         // allow value == null, the value will be ignored
         final ConfigurationDO configurationDO = new ConfigurationDO(key, null);

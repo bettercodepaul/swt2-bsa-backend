@@ -20,6 +20,7 @@ import org.springframework.core.annotation.Order;
  * I log the called REST resource and the response code for the request.
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see <a href="https://www.baeldung.com/spring-boot-add-filter">How to Define a Spring Boot Filter?</a>
  */
 // @Component // activate the filter globally
 // The filter is registered by the {@link FilterRegistrationConfiguration} for specific url pattern
@@ -36,10 +37,10 @@ public class RequestResponseLoggingFilter implements Filter {
 
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
+        final HttpServletRequest req = (HttpServletRequest) request;
+        final HttpServletResponse res = (HttpServletResponse) response;
 
         LOG.debug("Receive {}: {}", req.getMethod(), req.getRequestURI());
 
