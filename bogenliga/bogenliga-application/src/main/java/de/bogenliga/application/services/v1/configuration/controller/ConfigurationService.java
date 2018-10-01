@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
-import de.bogenliga.application.business.configuration.api.types.ConfigurationVO;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.configuration.mapper.ConfigurationDTOMapper;
@@ -80,8 +80,8 @@ public class ConfigurationService implements ServiceFacade {
     public List<ConfigurationDTO> findAll() {
         logger.debug("Receive 'findAll' request");
 
-        final List<ConfigurationVO> configurationVOList = configurationComponent.findAll();
-        return configurationVOList.stream().map(ConfigurationDTOMapper.toDTO).collect(Collectors.toList());
+        final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
+        return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -106,8 +106,8 @@ public class ConfigurationService implements ServiceFacade {
 
         logger.debug("Receive 'findByKey' request with key '{}'", key);
 
-        final ConfigurationVO configurationVO = configurationComponent.findByKey(key);
-        return ConfigurationDTOMapper.toDTO.apply(configurationVO);
+        final ConfigurationDO configurationDO = configurationComponent.findByKey(key);
+        return ConfigurationDTOMapper.toDTO.apply(configurationDO);
     }
 
 
@@ -142,9 +142,9 @@ public class ConfigurationService implements ServiceFacade {
         logger.debug("Receive 'create' request with key '{}' and value '{}'", configurationDTO.getKey(),
                 configurationDTO.getValue());
 
-        final ConfigurationVO newConfigurationVO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
-        final ConfigurationVO savedConfigurationVO = configurationComponent.create(newConfigurationVO);
-        return ConfigurationDTOMapper.toDTO.apply(savedConfigurationVO);
+        final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
+        final ConfigurationDO savedConfigurationDO = configurationComponent.create(newConfigurationDO);
+        return ConfigurationDTOMapper.toDTO.apply(savedConfigurationDO);
     }
 
 
@@ -170,9 +170,9 @@ public class ConfigurationService implements ServiceFacade {
         logger.debug("Receive 'update' request with key '{}' and value '{}'", configurationDTO.getKey(),
                 configurationDTO.getValue());
 
-        final ConfigurationVO newConfigurationVO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
-        final ConfigurationVO updatedConfigurationVO = configurationComponent.update(newConfigurationVO);
-        return ConfigurationDTOMapper.toDTO.apply(updatedConfigurationVO);
+        final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
+        final ConfigurationDO updatedConfigurationDO = configurationComponent.update(newConfigurationDO);
+        return ConfigurationDTOMapper.toDTO.apply(updatedConfigurationDO);
     }
 
 
@@ -189,7 +189,7 @@ public class ConfigurationService implements ServiceFacade {
         logger.debug("Receive 'delete' request with key '{}'", key);
 
         // allow value == null, the value will be ignored
-        final ConfigurationVO configurationVO = new ConfigurationVO(key, null);
-        configurationComponent.delete(configurationVO);
+        final ConfigurationDO configurationDO = new ConfigurationDO(key, null);
+        configurationComponent.delete(configurationDO);
     }
 }

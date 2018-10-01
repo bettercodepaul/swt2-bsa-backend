@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
-import de.bogenliga.application.business.configuration.api.types.ConfigurationVO;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -42,20 +42,20 @@ public class ConfigurationServiceTest {
     private ConfigurationService underTest;
 
     @Captor
-    private ArgumentCaptor<ConfigurationVO> configurationVOArgumentCaptor;
+    private ArgumentCaptor<ConfigurationDO> configurationVOArgumentCaptor;
 
 
     @Test
     public void findAll() {
         // prepare test data
-        final ConfigurationVO configurationVO = new ConfigurationVO();
-        configurationVO.setKey(KEY);
-        configurationVO.setValue(VALUE);
+        final ConfigurationDO configurationDO = new ConfigurationDO();
+        configurationDO.setKey(KEY);
+        configurationDO.setValue(VALUE);
 
-        final List<ConfigurationVO> configurationVOList = Collections.singletonList(configurationVO);
+        final List<ConfigurationDO> configurationDOList = Collections.singletonList(configurationDO);
 
         // configure mocks
-        when(configurationComponent.findAll()).thenReturn(configurationVOList);
+        when(configurationComponent.findAll()).thenReturn(configurationDOList);
 
         // call test method
         final List<ConfigurationDTO> actual = underTest.findAll();
@@ -68,8 +68,8 @@ public class ConfigurationServiceTest {
         final ConfigurationDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getKey()).isEqualTo(configurationVO.getKey());
-        assertThat(actualDTO.getValue()).isEqualTo(configurationVO.getValue());
+        assertThat(actualDTO.getKey()).isEqualTo(configurationDO.getKey());
+        assertThat(actualDTO.getValue()).isEqualTo(configurationDO.getValue());
 
         // verify invocations
         verify(configurationComponent).findAll();
@@ -79,20 +79,20 @@ public class ConfigurationServiceTest {
     @Test
     public void findByKey() {
         // prepare test data
-        final ConfigurationVO configurationVO = new ConfigurationVO();
-        configurationVO.setKey(KEY);
-        configurationVO.setValue(VALUE);
+        final ConfigurationDO configurationDO = new ConfigurationDO();
+        configurationDO.setKey(KEY);
+        configurationDO.setValue(VALUE);
 
         // configure mocks
-        when(configurationComponent.findByKey(any())).thenReturn(configurationVO);
+        when(configurationComponent.findByKey(any())).thenReturn(configurationDO);
 
         // call test method
         final ConfigurationDTO actual = underTest.findByKey(KEY);
 
         // assert result
         assertThat(actual).isNotNull();
-        assertThat(actual.getKey()).isEqualTo(configurationVO.getKey());
-        assertThat(actual.getValue()).isEqualTo(configurationVO.getValue());
+        assertThat(actual.getKey()).isEqualTo(configurationDO.getKey());
+        assertThat(actual.getValue()).isEqualTo(configurationDO.getValue());
 
         // verify invocations
         verify(configurationComponent).findByKey(KEY);
@@ -106,7 +106,7 @@ public class ConfigurationServiceTest {
         input.setKey(KEY);
         input.setValue(VALUE);
 
-        final ConfigurationVO expected = new ConfigurationVO();
+        final ConfigurationDO expected = new ConfigurationDO();
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
 
@@ -124,7 +124,7 @@ public class ConfigurationServiceTest {
         // verify invocations
         verify(configurationComponent).create(configurationVOArgumentCaptor.capture());
 
-        final ConfigurationVO createdConfiguration = configurationVOArgumentCaptor.getValue();
+        final ConfigurationDO createdConfiguration = configurationVOArgumentCaptor.getValue();
 
         assertThat(createdConfiguration).isNotNull();
         assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
@@ -139,7 +139,7 @@ public class ConfigurationServiceTest {
         input.setKey(KEY);
         input.setValue(VALUE);
 
-        final ConfigurationVO expected = new ConfigurationVO();
+        final ConfigurationDO expected = new ConfigurationDO();
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
 
@@ -157,7 +157,7 @@ public class ConfigurationServiceTest {
         // verify invocations
         verify(configurationComponent).update(configurationVOArgumentCaptor.capture());
 
-        final ConfigurationVO updatedConfiguration = configurationVOArgumentCaptor.getValue();
+        final ConfigurationDO updatedConfiguration = configurationVOArgumentCaptor.getValue();
 
         assertThat(updatedConfiguration).isNotNull();
         assertThat(updatedConfiguration.getKey()).isEqualTo(input.getKey());
@@ -168,7 +168,7 @@ public class ConfigurationServiceTest {
     @Test
     public void delete() {
         // prepare test data
-        final ConfigurationVO expected = new ConfigurationVO();
+        final ConfigurationDO expected = new ConfigurationDO();
         expected.setKey(KEY);
 
         // configure mocks
@@ -181,7 +181,7 @@ public class ConfigurationServiceTest {
         // verify invocations
         verify(configurationComponent).delete(configurationVOArgumentCaptor.capture());
 
-        final ConfigurationVO deletedConfiguration = configurationVOArgumentCaptor.getValue();
+        final ConfigurationDO deletedConfiguration = configurationVOArgumentCaptor.getValue();
 
         assertThat(deletedConfiguration).isNotNull();
         assertThat(deletedConfiguration.getKey()).isEqualTo(expected.getKey());

@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.configuration.api.types.ConfigurationVO;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.configuration.impl.dao.ConfigurationDAO;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -55,7 +55,7 @@ public class ConfigurationComponentImplTest {
         when(configurationDAO.findAll()).thenReturn(expectedBEList);
 
         // call test method
-        final List<ConfigurationVO> actual = underTest.findAll();
+        final List<ConfigurationDO> actual = underTest.findAll();
 
         // assert result
         assertThat(actual)
@@ -86,7 +86,7 @@ public class ConfigurationComponentImplTest {
         when(configurationDAO.findByKey(anyString())).thenReturn(expectedBE);
 
         // call test method
-        final ConfigurationVO actual = underTest.findByKey(KEY);
+        final ConfigurationDO actual = underTest.findByKey(KEY);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -142,7 +142,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void create() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(KEY);
         input.setValue(VALUE);
 
@@ -154,7 +154,7 @@ public class ConfigurationComponentImplTest {
         when(configurationDAO.create(any(ConfigurationBE.class))).thenReturn(expectedBE);
 
         // call test method
-        final ConfigurationVO actual = underTest.create(input);
+        final ConfigurationDO actual = underTest.create(input);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -187,7 +187,7 @@ public class ConfigurationComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(null))
-                .withMessageContaining("ConfigurationVO")
+                .withMessageContaining("ConfigurationDO")
                 .withNoCause();
 
         // assert result
@@ -200,7 +200,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void create_withoutKey_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(null);
         input.setValue(VALUE);
 
@@ -222,7 +222,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void create_withEmptyKey_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey("");
         input.setValue(VALUE);
 
@@ -244,7 +244,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void create_withoutValue_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(KEY);
         input.setValue(null);
 
@@ -266,7 +266,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void update() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(KEY);
         input.setValue(VALUE);
 
@@ -278,7 +278,7 @@ public class ConfigurationComponentImplTest {
         when(configurationDAO.update(any(ConfigurationBE.class))).thenReturn(expectedBE);
 
         // call test method
-        final ConfigurationVO actual = underTest.update(input);
+        final ConfigurationDO actual = underTest.update(input);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -311,7 +311,7 @@ public class ConfigurationComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.update(null))
-                .withMessageContaining("ConfigurationVO")
+                .withMessageContaining("ConfigurationDO")
                 .withNoCause();
 
         // assert result
@@ -324,7 +324,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void update_withoutKey_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(null);
         input.setValue(VALUE);
 
@@ -346,7 +346,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void update_withEmptyKey_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey("");
         input.setValue(VALUE);
 
@@ -368,7 +368,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void update_withoutValue_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(KEY);
         input.setValue(null);
 
@@ -390,7 +390,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void delete() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(KEY);
         input.setValue(VALUE);
 
@@ -426,7 +426,7 @@ public class ConfigurationComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.delete(null))
-                .withMessageContaining("ConfigurationVO")
+                .withMessageContaining("ConfigurationDO")
                 .withNoCause();
 
         // assert result
@@ -439,7 +439,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void delete_withoutKey_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey(null);
         input.setValue(VALUE);
 
@@ -461,7 +461,7 @@ public class ConfigurationComponentImplTest {
     @Test
     public void delete_withEmptyKey_shouldThrowException() {
         // prepare test data
-        final ConfigurationVO input = new ConfigurationVO();
+        final ConfigurationDO input = new ConfigurationDO();
         input.setKey("");
         input.setValue(VALUE);
 

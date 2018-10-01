@@ -1,14 +1,14 @@
 package de.bogenliga.application.business.configuration.api.types;
 
-import de.bogenliga.application.common.component.types.ValueObject;
+import de.bogenliga.application.common.component.types.DataObject;
 
 /**
- * I contain the values of the configuration business entity.
+ * I contain the data of the configuration business entity.
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- * @see ValueObject
+ * @see DataObject
  */
-public class ConfigurationVO implements ValueObject {
+public class ConfigurationDO implements DataObject {
     private String key;
     private String value;
 
@@ -16,12 +16,12 @@ public class ConfigurationVO implements ValueObject {
     /**
      * Constructor
      */
-    public ConfigurationVO() {
+    public ConfigurationDO() {
         // empty constructor
     }
 
 
-    public ConfigurationVO(final String key, final String value) {
+    public ConfigurationDO(final String key, final String value) {
         this.key = key;
         this.value = value;
     }

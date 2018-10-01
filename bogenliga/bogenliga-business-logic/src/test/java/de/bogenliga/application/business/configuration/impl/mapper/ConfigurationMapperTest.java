@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.configuration.impl.mapper;
 
 import org.junit.Test;
-import de.bogenliga.application.business.configuration.api.types.ConfigurationVO;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +26,7 @@ public class ConfigurationMapperTest {
         configurationBE.setConfigurationKey(KEY);
         configurationBE.setConfigurationValue(VALUE);
 
-        final ConfigurationVO actual = ConfigurationMapper.toVO.apply(configurationBE);
+        final ConfigurationDO actual = ConfigurationMapper.toVO.apply(configurationBE);
 
         assertThat(actual.getKey()).isEqualTo(KEY);
         assertThat(actual.getValue()).isEqualTo(VALUE);
@@ -35,11 +35,11 @@ public class ConfigurationMapperTest {
 
     @Test
     public void toBE() throws Exception {
-        final ConfigurationVO configurationVO = new ConfigurationVO();
-        configurationVO.setKey(KEY);
-        configurationVO.setValue(VALUE);
+        final ConfigurationDO configurationDO = new ConfigurationDO();
+        configurationDO.setKey(KEY);
+        configurationDO.setValue(VALUE);
 
-        final ConfigurationBE actual = ConfigurationMapper.toBE.apply(configurationVO);
+        final ConfigurationBE actual = ConfigurationMapper.toBE.apply(configurationDO);
 
         assertThat(actual.getConfigurationKey()).isEqualTo(KEY);
         assertThat(actual.getConfigurationValue()).isEqualTo(VALUE);
