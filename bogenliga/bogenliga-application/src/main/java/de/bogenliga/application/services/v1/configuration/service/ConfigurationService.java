@@ -1,4 +1,4 @@
-package de.bogenliga.application.services.v1.configuration.controller;
+package de.bogenliga.application.services.v1.configuration.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
