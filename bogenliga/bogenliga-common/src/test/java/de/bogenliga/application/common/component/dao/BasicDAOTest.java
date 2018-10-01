@@ -39,7 +39,7 @@ public class BasicDAOTest {
     private static final String BE_PARAMETER_ID = "id";
     private static final String BE_PARAMETER_NAME = "name";
 
-    private static final String SQL_QUERY_WITH_PARAMETER = "DUMMY SQL QUERY WITH PARAMETER ?;";
+    private static final String SQL_QUERY_WITH_PARAMETER = "SELECT table_id, table_name FROM table WHERE table_id = ?;";
     private static final String SQL_QUERY = "DUMMY SQL QUERY;";
     private static final String PARAMETER = "parameter";
 
@@ -410,8 +410,7 @@ public class BasicDAOTest {
 
 
         // call test method
-        final TestBE actual = underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID,
-                SQL_QUERY_WITH_PARAMETER);
+        final TestBE actual = underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -466,8 +465,7 @@ public class BasicDAOTest {
 
         // call test method
         assertThatExceptionOfType(TechnicalException.class)
-                .isThrownBy(() -> underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID,
-                        SQL_QUERY_WITH_PARAMETER));
+                .isThrownBy(() -> underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID));
 
         // assert result
         // verify invocations
@@ -522,8 +520,7 @@ public class BasicDAOTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID,
-                        SQL_QUERY_WITH_PARAMETER))
+                .isThrownBy(() -> underTest.updateEntity(createConfig(logger), expected, BE_PARAMETER_ID))
                 .withMessageContaining(errorMessage);
 
         // assert result

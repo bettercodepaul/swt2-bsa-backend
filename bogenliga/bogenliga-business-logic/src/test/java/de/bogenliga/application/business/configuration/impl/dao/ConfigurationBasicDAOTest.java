@@ -131,7 +131,7 @@ public class ConfigurationBasicDAOTest {
         input.setConfigurationValue(VALUE);
 
         // configure mocks
-        when(basicDao.updateEntity(any(), any(), any(), any())).thenReturn(input);
+        when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
         final ConfigurationBE actual = underTest.update(input);
@@ -145,7 +145,7 @@ public class ConfigurationBasicDAOTest {
                 .isEqualTo(input.getConfigurationValue());
 
         // verify invocations
-        verify(basicDao).updateEntity(any(), eq(input), any(), any());
+        verify(basicDao).updateEntity(any(), eq(input), any());
     }
 
 

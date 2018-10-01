@@ -20,6 +20,100 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 public final class SQL {
 
 
+    public static final String VERSION = "version";
+
+
+    /**
+     * Baut ein SELECT version FROM table_name WHERE <fieldSelector> = ?; aus dem uebergebenen
+     * Object.
+     * Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
+     *
+     * @param selectObj Object, fuer das das Statement gebaut wird
+     * @param tableName Tabellenname, falls abweichend vom Object-Namen
+     * @param fieldSelector Selektor für eine Zeile, falls abweichend von "id"
+     * @param columnToFieldMapping Mapping zwischen Object-Parameternamen und Tabellen-Spaltennamen
+     * @return SELECT SQL und zugehoerige Parameterliste
+     */
+    public static SQLWithParameter selectSQL(final Object selectObj, final String tableName,
+                                             final String fieldSelector,
+                                             final Map<String, String> columnToFieldMapping) {
+        final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
+        final StringBuilder sql = new StringBuilder();
+        final List<Object> para = new ArrayList<>();
+
+        sql.append("SELECT ");
+
+        try {
+            final Field[] fields = selectObj.getClass().getDeclaredFields();
+
+            Object idValue = appendFieldsToSelectStatement(selectObj, fieldSelector, columnToFieldMapping, sql,
+                    fields);
+
+            sql.append(" FROM ");
+
+            final String tName = selectObj.getClass().getSimpleName();
+
+            if (tableName != null) {
+                sql.append(tableName);
+            } else {
+                sql.append(tName);
+            }
+
+            sql.append(" WHERE ");
+
+            if (fieldSelector != null) {
+                sql.append(resolveColumName(fieldSelector, columnToFieldMapping));
+            } else {
+                sql.append("id");
+            }
+            sql.append(" = ?;");
+            para.add(idValue);
+
+        } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
+                | InvocationTargetException e) {
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+        }
+
+        sqlWithParameter.setSql(sql.toString());
+        sqlWithParameter.setParameter(para.toArray());
+
+        return sqlWithParameter;
+    }
+
+
+    private static Object appendFieldsToSelectStatement(Object selectObj, String fieldSelector,
+                                                        Map<String, String> columnToFieldMapping,
+                                                        StringBuilder sql,
+                                                        Field[] fields)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        boolean first = true;
+        Object idValue = null;
+        for (final Field field : fields) {
+            if (isMappableField(field)) {
+                final String fName = field.getName();
+                final String getterName = retrieveGetterName(field, fName);
+                final Method getter = selectObj.getClass().getDeclaredMethod(getterName);
+                Object value = getter.invoke(selectObj);
+
+                if (fName.equals("id") || fName.equals(fieldSelector)) {
+                    idValue = value;
+                }
+
+                if (first) {
+                    first = false;
+                } else {
+                    sql.append(", ");
+                }
+
+                final String columnName = resolveColumName(fName, columnToFieldMapping);
+
+                sql.append(columnName);
+            }
+        }
+        return idValue;
+    }
+
+
     /**
      * Baut ein INSERT INTO table_name (column1, column2, column3,...) VALUES (?, ?, ?,...); aus dem uebergebenen
      * Object.
@@ -256,28 +350,30 @@ public final class SQL {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
-                final String getterName = retrieveGetterName(field, fName);
-                final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
-                Object value = getter.invoke(insertObj);
+                if (!VERSION.equals(fName)) {
+                    final String getterName = retrieveGetterName(field, fName);
+                    final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
+                    Object value = getter.invoke(insertObj);
 
-                if (fName.equals("id")) {
-                    continue;
-                } else if (value != null && value.getClass().isEnum()) {
-                    value = ((Enum) value).name();
+                    if (fName.equals("id")) {
+                        continue;
+                    } else if (value != null && value.getClass().isEnum()) {
+                        value = ((Enum) value).name();
+                    }
+
+                    if (first) {
+                        first = false;
+                    } else {
+                        sql.append(", ");
+                        values.append(", ");
+                    }
+
+                    final String columnName = resolveColumName(fName, columnToFieldMapping);
+
+                    sql.append(columnName);
+                    values.append("?");
+                    para.add(value);
                 }
-
-                if (first) {
-                    first = false;
-                } else {
-                    sql.append(", ");
-                    values.append(", ");
-                }
-
-                final String columnName = resolveColumName(fName, columnToFieldMapping);
-
-                sql.append(columnName);
-                values.append("?");
-                para.add(value);
             }
         }
     }
@@ -318,27 +414,30 @@ public final class SQL {
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
-                final String getterName = retrieveGetterName(field, fName);
-                final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
-                Object value = getter.invoke(updateObj);
 
-                if (fName.equals("id") || fName.equals(fieldSelector)) {
-                    idValue = value;
-                    continue;
-                } else if (value != null && value.getClass().isEnum()) {
-                    value = ((Enum) value).name();
+                if (!VERSION.equals(fName)) {
+                    final String getterName = retrieveGetterName(field, fName);
+                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                    Object value = getter.invoke(updateObj);
+
+                    if (fName.equals("id") || fName.equals(fieldSelector)) {
+                        idValue = value;
+                        continue;
+                    } else if (value != null && value.getClass().isEnum()) {
+                        value = ((Enum) value).name();
+                    }
+
+                    if (first) {
+                        first = false;
+                    } else {
+                        sql.append(", ");
+                    }
+
+                    final String columnName = resolveColumName(fName, columnToFieldMapping);
+
+                    sql.append(columnName).append("=").append("?");
+                    para.add(value);
                 }
-
-                if (first) {
-                    first = false;
-                } else {
-                    sql.append(", ");
-                }
-
-                final String columnName = resolveColumName(fName, columnToFieldMapping);
-
-                sql.append(columnName).append("=").append("?");
-                para.add(value);
             }
         }
         return idValue;
@@ -359,20 +458,21 @@ public final class SQL {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
+                if (!VERSION.equals(fName)) {
+                    if (fName.equals(identifier)) {
 
-                if (fName.equals(identifier)) {
+                        final String getterName = retrieveGetterName(field, fName);
+                        final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
 
-                    final String getterName = retrieveGetterName(field, fName);
-                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                        Object value = getter.invoke(updateObj);
 
-                    Object value = getter.invoke(updateObj);
+                        if (value != null && value.getClass().isEnum()) {
+                            value = ((Enum) value).name();
+                        }
 
-                    if (value != null && value.getClass().isEnum()) {
-                        value = ((Enum) value).name();
+                        idValue = value;
+
                     }
-
-                    idValue = value;
-
                 }
             }
         }

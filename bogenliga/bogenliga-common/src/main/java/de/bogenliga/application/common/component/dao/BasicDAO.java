@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
+import de.bogenliga.application.common.component.entity.VersionedBusinessEntity;
 import de.bogenliga.application.common.database.SQL;
 import de.bogenliga.application.common.database.tx.TransactionManager;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -181,6 +182,39 @@ public class BasicDAO implements DataAccessObject {
         }
     }
 
+    /**
+     * I update a single {@link VersionedBusinessEntity} object
+     * in the database.
+     *
+     * I validate the version of the given object and detect concurrent modification conflicts.
+     *
+     * I encapsulate the UPDATE and SELECT query into a transaction.
+     *
+     * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
+     *                                    "object-relational" mapping between the business entity and the database table
+     * @param updateBusinessEntity        business entity with a version field to persist
+     *                                    the UPDATE sql query is automatically generated
+     * @param fieldSelector               to identify the target table row in the WHERE clause
+     * @return instance of the updated business entity
+     * @throws BusinessException if no or more than 1 row is affected by the update
+     */
+    public <T extends VersionedBusinessEntity> T updateVersionedEntity(final BusinessEntityConfiguration<T>
+                                                                               businessEntityConfiguration,
+                                                                       final T updateBusinessEntity,
+                                                                       final String fieldSelector) {
+        // check concurrent modification
+        final SQL.SQLWithParameter selectSql = SQL.selectSQL(updateBusinessEntity,
+                businessEntityConfiguration.getTable(), fieldSelector,
+                businessEntityConfiguration.getColumnToFieldMapping());
+
+        T objectBeforeUpdate = selectSingleEntity(businessEntityConfiguration, selectSql.getSql(), selectSql.getParameter());
+
+        if (objectBeforeUpdate.getVersion() != updateBusinessEntity.getVersion()) {
+            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "The business entity was modified by an other user.");
+        } // else: do update
+
+        return updateEntity(businessEntityConfiguration, updateBusinessEntity, fieldSelector);
+    }
 
     /**
      * I update a single {@link BusinessEntity} object
@@ -193,12 +227,11 @@ public class BasicDAO implements DataAccessObject {
      * @param updateBusinessEntity        business entity to persist
      *                                    the UPDATE sql query is automatically generated
      * @param fieldSelector               to identify the target table row in the WHERE clause
-     * @param singleSelectSql             to select the modified business entity after the update
      * @return instance of the updated business entity
      * @throws BusinessException if no or more than 1 row is affected by the update
      */
     public <T> T updateEntity(final BusinessEntityConfiguration<T> businessEntityConfiguration,
-                              final T updateBusinessEntity, final String fieldSelector, final String singleSelectSql) {
+                              final T updateBusinessEntity, final String fieldSelector) {
         final SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
@@ -212,12 +245,15 @@ public class BasicDAO implements DataAccessObject {
                     logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
                     sql.getParameter());
 
-            // last parameter := identifier for the update query
-            final Object fieldSelectorValue = sql.getParameter()[sql.getParameter().length - 1];
+
+            final SQL.SQLWithParameter selectSql = SQL.selectSQL(updateBusinessEntity,
+                    businessEntityConfiguration.getTable(), fieldSelector,
+                    businessEntityConfiguration.getColumnToFieldMapping());
 
             if (affectedRows == 1) {
-                businessEntityAfterUpdate = selectSingleEntity(businessEntityConfiguration, singleSelectSql,
-                        fieldSelectorValue);
+
+                businessEntityAfterUpdate = selectSingleEntity(businessEntityConfiguration, selectSql.getSql(),
+                        selectSql.getParameter());
 
                 transactionManager.commit();
 
@@ -226,16 +262,16 @@ public class BasicDAO implements DataAccessObject {
 
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' does not affect any row",
-                                updateBusinessEntity.toString()), fieldSelectorValue);
+                                updateBusinessEntity.toString()), selectSql.getParameter()[0]);
             } else {
                 transactionManager.rollback();
 
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' affected %d rows",
-                                updateBusinessEntity.toString(), affectedRows), fieldSelectorValue);
+                                updateBusinessEntity.toString(), affectedRows), selectSql.getParameter()[0]);
             }
 
-        } catch (final SQLException | TechnicalException e) {
+        } catch (final SQLException | TechnicalException | IndexOutOfBoundsException e) {
             transactionManager.rollback();
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {

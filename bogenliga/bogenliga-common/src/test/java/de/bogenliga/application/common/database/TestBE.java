@@ -11,6 +11,7 @@ public class TestBE {
     private Boolean ready;
     private int number;
     private TestEnum state;
+    private int version;
 
 
     public long getId() {
@@ -70,5 +71,15 @@ public class TestBE {
 
     public void setReady(final Boolean ready) {
         this.ready = ready;
+    }
+
+
+    public int getVersion() {
+        return version;
+    }
+
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

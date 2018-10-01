@@ -63,6 +63,29 @@ public class SQLTest {
 
 
     @Test
+    public void selectSQL() {
+        // prepare test data
+        // configure mocks
+        // call test method
+        final SQL.SQLWithParameter actual = SQL.selectSQL(INPUT, TABLE_NAME, "id", FIELD_MAPPING);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getSql())
+                .isNotNull()
+                .isNotEmpty()
+                .isEqualTo("SELECT pk, name, is_active, ready, quantity, entity_state, version FROM test_table WHERE pk = ?;");
+        assertThat(actual.getParameter())
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1)
+                .contains(ID);
+
+        // verify invocations
+    }
+
+
+    @Test
     public void insertSQL_withIdParameter_shouldIgnorePrimaryKey() {
         // prepare test data
         // configure mocks

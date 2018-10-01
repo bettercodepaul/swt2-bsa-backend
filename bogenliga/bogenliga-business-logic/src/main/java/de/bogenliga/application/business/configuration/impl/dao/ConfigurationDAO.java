@@ -87,7 +87,7 @@ public class ConfigurationDAO implements DataAccessObject {
 
 
     public ConfigurationBE update(final ConfigurationBE configurationBE) {
-        return basicDao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY, FIND_BY_KEY);
+        return basicDao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 
 
