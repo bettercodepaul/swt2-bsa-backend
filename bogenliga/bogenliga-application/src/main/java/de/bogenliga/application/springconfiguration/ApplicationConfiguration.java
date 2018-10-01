@@ -1,4 +1,4 @@
-package de.bogenliga.application.config;
+package de.bogenliga.application.springconfiguration;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

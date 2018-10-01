@@ -1,4 +1,4 @@
-package de.bogenliga.application.config;
+package de.bogenliga.application.springconfiguration;
 
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
