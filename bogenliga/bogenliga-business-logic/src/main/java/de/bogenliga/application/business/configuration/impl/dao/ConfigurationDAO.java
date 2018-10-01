@@ -24,10 +24,13 @@ public class ConfigurationDAO implements DataAccessObject {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationDAO.class);
 
     // table name in the database
-    private static final String TABLE = "t_configuration";
+    private static final String TABLE = "configuration";
     // business entity parameter names
     private static final String CONFIGURATION_BE_KEY = "configurationKey";
     private static final String CONFIGURATION_BE_VALUE = "configurationValue";
+
+    private static final String CONFIGURATION_TABLE_KEY = "configuration_key";
+    private static final String CONFIGURATION_TABLE_VALUE = "configuration_value";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<ConfigurationBE> CONFIG = new BusinessEntityConfiguration<>(
@@ -37,10 +40,10 @@ public class ConfigurationDAO implements DataAccessObject {
      */
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM t_configuration";
+                    + " FROM configuration";
     private static final String FIND_BY_KEY =
             "SELECT * "
-                    + " FROM t_configuration "
+                    + " FROM configuration "
                     + " WHERE configuration_key = ?";
 
     private final BasicDAO basicDao;
@@ -60,8 +63,8 @@ public class ConfigurationDAO implements DataAccessObject {
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
-        columnsToFieldsMap.put("configuration_key", CONFIGURATION_BE_KEY);
-        columnsToFieldsMap.put("configuration_value", CONFIGURATION_BE_VALUE);
+        columnsToFieldsMap.put(CONFIGURATION_TABLE_KEY, CONFIGURATION_BE_KEY);
+        columnsToFieldsMap.put(CONFIGURATION_TABLE_VALUE, CONFIGURATION_BE_VALUE);
         return columnsToFieldsMap;
     }
 
