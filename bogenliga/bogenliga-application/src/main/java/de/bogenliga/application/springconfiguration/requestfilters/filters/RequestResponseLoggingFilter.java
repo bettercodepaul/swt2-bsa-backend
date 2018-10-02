@@ -1,4 +1,4 @@
-package de.bogenliga.application.springconfiguration.requestfilters;
+package de.bogenliga.application.springconfiguration.requestfilters.filters;
 
 import java.io.IOException;
 import javax.servlet.Filter;
@@ -32,7 +32,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        LOG.info("Initializing filter: {}", this);
+        LOG.info("Initializing filter: {}", getClass().getCanonicalName());
     }
 
 
@@ -53,6 +53,6 @@ public class RequestResponseLoggingFilter implements Filter {
 
     @Override
     public void destroy() {
-        LOG.warn("Destructing filter: {}", this);
+        LOG.warn("Destructing filter: {}", getClass().getCanonicalName());
     }
 }
