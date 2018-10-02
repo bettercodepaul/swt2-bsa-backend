@@ -1,9 +1,10 @@
-package de.bogenliga.application.springconfiguration.aop;
+package de.bogenliga.application.springconfiguration.security.permissions;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,8 +20,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.services.v1.user.model.UserRole;
-import de.bogenliga.application.springconfiguration.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
  * TODO [AL] class documentation
@@ -29,14 +30,14 @@ import de.bogenliga.application.springconfiguration.JwtTokenProvider;
  */
 @Aspect
 @Component
-public class RequiresRoleAspect {
-    private static final Logger LOG = LoggerFactory.getLogger(RequiresRoleAspect.class);
+public class RequiresPermissionAspect {
+    private static final Logger LOG = LoggerFactory.getLogger(RequiresPermissionAspect.class);
 
     private final JwtTokenProvider jwtTokenProvider;
 
 
     @Autowired
-    public RequiresRoleAspect(final JwtTokenProvider jwtTokenProvider) {
+    public RequiresPermissionAspect(final JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -47,15 +48,15 @@ public class RequiresRoleAspect {
     }
 
 
-    @Around("@annotation(RequiresRole)")
-    public Object logExecutionTime(final ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("@annotation(de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission)")
+    public Object checkPermission(final ProceedingJoinPoint joinPoint) throws Throwable {
 
-        List<UserRole> requiredRoles = new ArrayList<>();
+        List<UserPermission> requiredPermissions = new ArrayList<>();
 
-        // get roles from annotation
-        if (getCurrentMethod(joinPoint).isAnnotationPresent(RequiresRole.class)) {
-            final UserRole[] roles = getCurrentMethod(joinPoint).getAnnotation(RequiresRole.class).value();
-            requiredRoles = Arrays.asList(roles);
+        // get permissions from annotation
+        if (getCurrentMethod(joinPoint).isAnnotationPresent(RequiresPermission.class)) {
+            final UserPermission[] roles = getCurrentMethod(joinPoint).getAnnotation(RequiresPermission.class).value();
+            requiredPermissions = Arrays.asList(roles);
         }
 
         // get current http request from thread
@@ -70,16 +71,20 @@ public class RequiresRoleAspect {
             if (request != null) {
                 // parse json web token with roles
                 final String jwt = JwtTokenProvider.resolveToken(request);
-                final String username = jwtTokenProvider.getUsername(jwt);
-                final List<UserRole> userRoles = jwtTokenProvider.getRoles(jwt);
 
-                // verify all jwt roles are part of the required roles
-                if (!userRoles.containsAll(requiredRoles)) {
-                    final String requiredRolesString = String.join(", ", requiredRoles.stream()
-                            .map(UserRole::name)
-                            .collect(Collectors.toList()));
+                // custom permission check
+                final String username = jwtTokenProvider.getUsername(jwt);
+                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+                // verify all jwt permissions are part of the required permissions
+                if (!userPermissions.containsAll(requiredPermissions)) {
+                    final List<String> requiredPermissionStrings = requiredPermissions.stream()
+                            .map(UserPermission::name)
+                            .collect(Collectors.toList());
+                    final String joinedRequiredPermissions = String.join(", ", requiredPermissionStrings);
                     throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
-                            String.format("User '%s' has not all required roles [%s]", username, requiredRolesString));
+                            String.format("User '%s' has not all required permissions [%s]", username,
+                                    joinedRequiredPermissions), requiredPermissionStrings.toArray());
                 }
             }
 

@@ -1,10 +1,10 @@
-package de.bogenliga.application.springconfiguration.aop;
+package de.bogenliga.application.springconfiguration.security.permissions;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import de.bogenliga.application.services.v1.user.model.UserRole;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
  * TODO [AL] class documentation
@@ -13,6 +13,6 @@ import de.bogenliga.application.services.v1.user.model.UserRole;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequiresRole {
-    UserRole[] value();
+public @interface RequiresPermission {
+    UserPermission[] value();
 }

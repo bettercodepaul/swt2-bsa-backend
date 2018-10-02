@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.user.model;
 
-import java.util.List;
+import java.util.Set;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
  * TODO [AL] class documentation
@@ -10,9 +11,9 @@ import java.util.List;
 public class UserDTO {
 
     private int id;
-    private String username;
+    private int version;
     private String email;
-    private List<UserRole> roles;
+    private Set<UserPermission> permissions;
 
 
     public int getId() {
@@ -22,16 +23,6 @@ public class UserDTO {
 
     public void setId(final int id) {
         this.id = id;
-    }
-
-
-    public String getUsername() {
-        return username;
-    }
-
-
-    public void setUsername(final String username) {
-        this.username = username;
     }
 
 
@@ -45,12 +36,12 @@ public class UserDTO {
     }
 
 
-    public List<UserRole> getRoles() {
-        return roles;
+    public Set<UserPermission> getPermissions() {
+        return permissions;
     }
 
 
-    public void setRoles(final List<UserRole> roles) {
-        this.roles = roles;
+    public void setPermissions(final Set<UserPermission> permissions) {
+        this.permissions = permissions;
     }
 }

@@ -1,9 +1,9 @@
-package de.bogenliga.application.springconfiguration;
+package de.bogenliga.application.springconfiguration.requestfilters;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import de.bogenliga.application.springconfiguration.requestfilters.RequestResponseLoggingFilter;
+import de.bogenliga.application.springconfiguration.requestfilters.filters.RequestResponseLoggingFilter;
 
 /**
  * TODO [AL] class documentation

@@ -1,7 +1,6 @@
-package de.bogenliga.application.springconfiguration;
+package de.bogenliga.application.springconfiguration.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,29 +9,28 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenFilterConfigurer;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 
+/**
+ * I configure the Spring Security to protect REST resources against unauthorized requests.
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    private final CustomAuthenticationProvider authProvider;
+    private final UserAuthenticationProvider authProvider;
 
 
     @Autowired
     public WebSecurityConfiguration(final JwtTokenProvider jwtTokenProvider,
-                                    final CustomAuthenticationProvider authProvider) {
+                                    final UserAuthenticationProvider authProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.authProvider = authProvider;
-    }
-
-
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
     }
 
 
@@ -43,7 +41,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+
+    @Override
     public void configure(final WebSecurity web) throws Exception {
+        // allow unauthorized access to
         web.ignoring()
                 .antMatchers("/v2/hello-world")
                 .and()
@@ -55,7 +60,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();
 
@@ -65,21 +69,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Entry points
         http.authorizeRequests()
                 .antMatchers("/v1/user/signin").permitAll()
-                // Disallow everything else..
+                // Disallow everything else...
                 .anyRequest().authenticated();
-
 
         // Apply JWT
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
         // Optional, if you want to test the API from a browser
         // http.httpBasic();
-    }
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
     }
 
 }

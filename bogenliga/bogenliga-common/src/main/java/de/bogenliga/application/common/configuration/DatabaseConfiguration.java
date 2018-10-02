@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * I contain the type-safed values of the application properties with the prefix "database."
+ * I contain the type-safe values of the application properties with the prefix "database."
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */

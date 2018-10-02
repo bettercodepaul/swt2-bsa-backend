@@ -18,6 +18,8 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.configuration.mapper.ConfigurationDTOMapper;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
@@ -82,6 +84,7 @@ public class ConfigurationService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<ConfigurationDTO> findAll() {
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
         return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).collect(Collectors.toList());
@@ -104,6 +107,7 @@ public class ConfigurationService implements ServiceFacade {
      * @return list of {@link ConfigurationDTO} as JSON
      */
     @RequestMapping(value = "{key}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ConfigurationDTO findByKey(@PathVariable("key") final String key) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 
@@ -137,6 +141,7 @@ public class ConfigurationService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission({UserPermission.CAN_MODIFY_SYSTEMDATEN, UserPermission.CAN_MODIFY_SPORTJAHR, UserPermission.CAN_MODIFY_STAMMDATEN})
     public ConfigurationDTO create(@RequestBody final ConfigurationDTO configurationDTO) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
@@ -165,6 +170,7 @@ public class ConfigurationService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public ConfigurationDTO update(@RequestBody final ConfigurationDTO configurationDTO) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
@@ -186,6 +192,7 @@ public class ConfigurationService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/configuration/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @RequestMapping(value = "{key}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public void delete(@PathVariable("key") final String key) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 

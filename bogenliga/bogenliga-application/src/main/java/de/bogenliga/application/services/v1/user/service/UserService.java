@@ -6,8 +6,6 @@ package de.bogenliga.application.services.v1.user.service;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +22,8 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.services.v1.user.model.UserDTO;
-import de.bogenliga.application.services.v1.user.model.UserRole;
-import de.bogenliga.application.springconfiguration.JwtTokenProvider;
-import de.bogenliga.application.springconfiguration.WebSecurityConfiguration;
-import de.bogenliga.application.springconfiguration.aop.RequiresRole;
+import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
@@ -72,8 +68,8 @@ public class UserService implements ServiceFacade {
             @RequestParam final String username,
             @RequestParam final String password) {
         try {
-            final Authentication authentication = webSecurityConfiguration.authenticationManagerBean().authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password));
+            final Authentication authentication = webSecurityConfiguration.authenticationManagerBean()
+                    .authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
             LOG.info("Authentification: principal = {}, credentials = {}, authorities = {}",
                     authentication.getPrincipal(), authentication.getCredentials(), authentication.getAuthorities());
@@ -93,24 +89,12 @@ public class UserService implements ServiceFacade {
             method = RequestMethod.GET,
             value = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresRole(UserRole.ROLE_ADMIN)
     public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
         final UserDTO userDTO = new UserDTO();
 
         final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
-        userDTO.setUsername(jwtTokenProvider.getUsername(jwt));
-        final Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-
-        jwtTokenProvider.getRoles(jwt);
-
-        final List<UserRole> roles = authentication.getAuthorities().stream()
-                .map(authority -> (UserRole) authority).collect(
-                        Collectors.toList());
-
-        userDTO.setRoles(roles);
-
-
-        LOG.info("Auth: {}", authentication.toString());
+        userDTO.setEmail(jwtTokenProvider.getUsername(jwt));
+        userDTO.setPermissions(jwtTokenProvider.getPermissions(jwt));
 
         return userDTO;
     }
