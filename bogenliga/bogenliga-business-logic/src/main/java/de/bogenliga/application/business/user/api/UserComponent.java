@@ -1,9 +1,8 @@
 package de.bogenliga.application.business.user.api;
 
-import de.bogenliga.application.business.user.api.types.UserVO;
-import de.bogenliga.application.common.component.ComponentFacade;
-
 import java.util.List;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.common.component.ComponentFacade;
 
 public interface UserComponent extends ComponentFacade {
 
@@ -13,7 +12,7 @@ public interface UserComponent extends ComponentFacade {
      * @return list of all user user in the database;
      * empty list, if no user is found
      */
-    List<UserVO> findAll();
+    List<UserDO> findAll();
 
 
     /**
@@ -23,31 +22,60 @@ public interface UserComponent extends ComponentFacade {
      * @return single user entry with the given id;
      * null, if no user is found
      */
-    UserVO findById(int id);
+    UserDO findById(int id);
 
+    /**
+     * Return a user entry with the given id.
+     *
+     * @param email of the user
+     *
+     * @return single user entry with the given email; null, if no user is found
+     */
+    UserDO findByEmail(String email);
 
     /**
      * Create a new user in the database.
      *
-     * @param userVO new user
+     * @param userDO new user
      * @return persisted version of the user
      */
-    UserVO create(UserVO userVO);
+    UserDO create(UserDO userDO);
 
 
     /**
      * Update an existing user. The user is identified by the id.
      *
-     * @param userVO existing userVO to update
+     * @param userDO existing userDO to update
      * @return persisted version of the user
      */
-    UserVO update(UserVO userVO);
+    UserDO update(UserDO userDO);
 
 
     /**
      * Delete an existing user. The user is identified by the id.
      *
-     * @param userVO user to delete
+     * @param userDO user to delete
      */
-    void delete(UserVO userVO);
+    void delete(UserDO userDO);
+
+    /**
+     * Sign in an user with an email address and a password.
+     * <p>
+     * The password will be hashed and checked with the stored password from the database.
+     *
+     * @param email    the email address is used as unique login name
+     * @param password of the user
+     *
+     * @return the user with permissions, if the user exists and the password is correct
+     */
+    UserDO signin(String email, String password);
+
+    /**
+     * Identifies technical user, e.g. the SYSTEM user
+     *
+     * @param userDO to be checked
+     *
+     * @return true, if the user is a technical user
+     */
+    boolean isTechnicalUser(UserDO userDO);
 }

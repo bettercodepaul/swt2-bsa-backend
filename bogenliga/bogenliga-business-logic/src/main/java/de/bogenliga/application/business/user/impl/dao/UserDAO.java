@@ -1,17 +1,16 @@
 package de.bogenliga.application.business.user.impl.dao;
 
-import de.bogenliga.application.business.user.impl.entity.UserBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
-import de.bogenliga.application.common.component.dao.DataAccessObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the user entity in the database.
@@ -33,6 +32,11 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_BE_SALT = "userSalt";
     private static final String USER_BE_PASSWORD = "userPassword";
 
+    private static final String USER_TABLE_ID = "benutzer_id";
+    private static final String USER_TABLE_EMAIL = "benutzer_email";
+    private static final String USER_TABLE_SALT = "benutzer_salt";
+    private static final String USER_TABLE_PASSWORD = "benutzer_password";
+
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserBE> USER = new BusinessEntityConfiguration<>(
             UserBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
@@ -41,12 +45,17 @@ public class UserDAO implements DataAccessObject {
      */
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM t_benutzer";
+                    + " FROM benutzer";
 
     private static final String FIND_BY_ID =
             "SELECT * "
-                    + " FROM t_benutzer "
+                    + " FROM benutzer "
                     + " WHERE benutzer_id = ?";
+
+    private static final String FIND_BY_EMAIL =
+            "SELECT * "
+                    + " FROM benutzer "
+                    + " WHERE benutzer_email = ?";
 
     private final BasicDAO basicDao;
 
@@ -54,7 +63,7 @@ public class UserDAO implements DataAccessObject {
     /**
      * Initialize the transaction manager to provide a database connection
      *
-     * @param basicDao
+     * @param basicDao to handle the commonly used database operations
      */
     @Autowired
     public UserDAO(final BasicDAO basicDao) {
@@ -66,10 +75,14 @@ public class UserDAO implements DataAccessObject {
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
-        columnsToFieldsMap.put("benutzer_id", USER_BE_ID);
-        columnsToFieldsMap.put("benutzer_email", USER_BE_EMAIL);
-        columnsToFieldsMap.put("benutzer_salt", USER_BE_SALT);
-        columnsToFieldsMap.put("benutzer_password", USER_BE_PASSWORD);
+        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
+        columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
+        columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
+        columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
+
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
         return columnsToFieldsMap;
     }
 
@@ -83,17 +96,23 @@ public class UserDAO implements DataAccessObject {
     }
 
 
+    public UserBE findByEmail(final String email) {
+        return basicDao.selectSingleEntity(USER, FIND_BY_EMAIL, email);
+    }
+
     public UserBE create(final UserBE configurationBE) {
         return basicDao.insertEntity(USER, configurationBE);
     }
 
 
     public UserBE update(final UserBE configurationBE) {
-        return basicDao.updateEntity(USER, configurationBE, USER_BE_ID, FIND_BY_ID);
+        return basicDao.updateEntity(USER, configurationBE, USER_BE_ID);
     }
 
 
     public void delete(final UserBE configurationBE) {
         basicDao.deleteEntity(USER, configurationBE, USER_BE_ID);
     }
+
+
 }

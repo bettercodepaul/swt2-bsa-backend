@@ -20,7 +20,7 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 public final class SQL {
 
 
-    public static final String VERSION = "version";
+    private static final String VERSION = "version";
 
 
     /**
@@ -46,7 +46,7 @@ public final class SQL {
         try {
             final Field[] fields = selectObj.getClass().getDeclaredFields();
 
-            Object idValue = appendFieldsToSelectStatement(selectObj, fieldSelector, columnToFieldMapping, sql,
+            final Object idValue = appendFieldsToSelectStatement(selectObj, fieldSelector, columnToFieldMapping, sql,
                     fields);
 
             sql.append(" FROM ");
@@ -81,10 +81,10 @@ public final class SQL {
     }
 
 
-    private static Object appendFieldsToSelectStatement(Object selectObj, String fieldSelector,
-                                                        Map<String, String> columnToFieldMapping,
-                                                        StringBuilder sql,
-                                                        Field[] fields)
+    private static Object appendFieldsToSelectStatement(final Object selectObj, final String fieldSelector,
+                                                        final Map<String, String> columnToFieldMapping,
+                                                        final StringBuilder sql,
+                                                        final Field[] fields)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         boolean first = true;
         Object idValue = null;
@@ -93,7 +93,7 @@ public final class SQL {
                 final String fName = field.getName();
                 final String getterName = retrieveGetterName(field, fName);
                 final Method getter = selectObj.getClass().getDeclaredMethod(getterName);
-                Object value = getter.invoke(selectObj);
+                final Object value = getter.invoke(selectObj);
 
                 if (fName.equals("id") || fName.equals(fieldSelector)) {
                     idValue = value;

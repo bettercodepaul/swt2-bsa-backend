@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
@@ -24,6 +28,14 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserAuthenticationProvider.class);
 
+    private final UserComponent userComponent;
+
+
+    @Autowired
+    public UserAuthenticationProvider(final UserComponent userComponent) {
+        this.userComponent = userComponent;
+    }
+
 
     @Override
     public Authentication authenticate(final Authentication authentication)
@@ -31,6 +43,16 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
+
+        try {
+            UserDO userDO = userComponent.signin(username, password);
+
+            LOG.info("Signin with user: {}", userDO.toString());
+
+        } catch (BusinessException e) {
+            return null;
+        }
+
 
         // TODO remove static code
         if (shouldAuthenticateAgainstDatabase(username, password)) {
