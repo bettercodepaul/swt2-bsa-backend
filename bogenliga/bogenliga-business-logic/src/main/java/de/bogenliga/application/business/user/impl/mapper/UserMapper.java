@@ -4,13 +4,16 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 
 public class UserMapper implements ValueObjectMapper {
-    public static final Function<UserBE, UserDO> toVO = be -> {
+    public static final Function<UserBE, UserDO> toUserDO = be -> {
 
         final long id = be.getUserId();
         final String email = be.getUserEmail();
@@ -30,7 +33,14 @@ public class UserMapper implements ValueObjectMapper {
         return new UserDO(id, email, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
-    public static final Function<UserDO, UserBE> toBE = vo -> {
+    public static final BiFunction<UserBE, List<String>, UserWithPermissionsDO> toUserWithPermissionsDO =
+            (be, permissions) -> {
+                UserDO userDO = toUserDO.apply(be);
+
+                return new UserWithPermissionsDO(userDO, permissions);
+            };
+
+    public static final Function<UserDO, UserBE> toUserBE = vo -> {
 
         OffsetDateTime createdAtUtc = vo.getCreatedAtUtc();
         OffsetDateTime lastModifiedAtUtc = vo.getLastModifiedAtUtc();

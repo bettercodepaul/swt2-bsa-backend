@@ -1,8 +1,8 @@
 package de.bogenliga.application.springconfiguration.security.authentication;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
@@ -43,50 +42,21 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
+        final List<UserPermission> permissions;
 
         try {
-            UserDO userDO = userComponent.signin(username, password);
+            final UserWithPermissionsDO userDO = userComponent.signIn(username, password);
 
             LOG.info("Signin with user: {}", userDO.toString());
 
-        } catch (BusinessException e) {
-            return null;
-        }
-
-
-        // TODO remove static code
-        if (shouldAuthenticateAgainstDatabase(username, password)) {
-
-            final List<UserPermission> permissions;
-            if (username.equals("ADMIN")) {
-                permissions = Arrays.asList(
-                        UserPermission.CAN_MODIFY_STAMMDATEN,
-                        UserPermission.CAN_MODIFY_WETTKAMPF,
-                        UserPermission.CAN_MODIFY_WETTKAMPF,
-                        UserPermission.CAN_MODIFY_SYSTEMDATEN,
-
-                        UserPermission.CAN_READ_STAMMDATEN,
-                        UserPermission.CAN_READ_WETTKAMPF,
-                        UserPermission.CAN_READ_SPORTJAHR,
-                        UserPermission.CAN_READ_SYSTEMDATEN
-                );
-            } else {
-                permissions = Arrays.asList(
-                        UserPermission.CAN_READ_STAMMDATEN,
-                        UserPermission.CAN_READ_WETTKAMPF,
-                        UserPermission.CAN_READ_SPORTJAHR,
-                        UserPermission.CAN_READ_SYSTEMDATEN
-                );
-            }
-
-            LOG.info("Authenticate user {} with password {} and permissions [{}]", username, password, permissions);
-
-
-            // TODO get UserDO as principal
+            permissions = userDO.getPermissions().stream().map(UserPermission::fromValue).collect(
+                    Collectors.toList());
 
             return new UsernamePasswordAuthenticationToken(
-                    username, password, permissions);
-        } else {
+                    userDO.getEmail(), "", permissions);
+
+        } catch (final RuntimeException e) { // NOSONAR
+            LOG.warn("An unexpected error occured", e);
             return null;
         }
     }
@@ -113,14 +83,5 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         LOG.trace("Create placeholder for authentication. Username = {}", username);
 
         return new UsernamePasswordAuthenticationToken(username, "", userPermissions);
-    }
-
-
-    private boolean shouldAuthenticateAgainstDatabase(final String email, final String password) {
-        // TODO implement check
-
-
-        // TODO return UserDO
-        return true;
     }
 }

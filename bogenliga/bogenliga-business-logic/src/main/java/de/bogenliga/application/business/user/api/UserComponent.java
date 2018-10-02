@@ -2,6 +2,7 @@ package de.bogenliga.application.business.user.api;
 
 import java.util.List;
 import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
 public interface UserComponent extends ComponentFacade {
@@ -68,7 +69,7 @@ public interface UserComponent extends ComponentFacade {
      *
      * @return the user with permissions, if the user exists and the password is correct
      */
-    UserDO signin(String email, String password);
+    UserWithPermissionsDO signIn(String email, String password);
 
     /**
      * Identifies technical user, e.g. the SYSTEM user

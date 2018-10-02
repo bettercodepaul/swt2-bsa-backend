@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.user.impl.businessactivity.PasswordHashingBA;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.user.impl.businessactivity.SignInBA;
 import de.bogenliga.application.business.user.impl.businessactivity.TechnicalUserBA;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
@@ -22,32 +23,31 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PASSWORD = "UserDO password must not be null or empty";
-
     private final UserDAO userDAO;
+    private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
-    private final PasswordHashingBA passwordHashingBA;
 
     /**
      * Constructor
      *
      * dependency injection with {@link Autowired}
-     *  @param userDAO to access the database and return user representations
+     * @param userDAO to access the database and return user representations
+     * @param signInBA to sign in users
      * @param technicalUserBA to handle all technical user operations
-     * @param passwordHashingBA to handle the password and salt generation
      */
     @Autowired
     public UserComponentImpl(final UserDAO userDAO,
-                             final TechnicalUserBA technicalUserBA,
-                             final PasswordHashingBA passwordHashingBA) {
+                             final SignInBA signInBA,
+                             final TechnicalUserBA technicalUserBA) {
         this.userDAO = userDAO;
+        this.signInBA = signInBA;
         this.technicalUserBA = technicalUserBA;
-        this.passwordHashingBA = passwordHashingBA;
     }
 
     @Override
     public List<UserDO> findAll() {
         final List<UserBE> userBEList = userDAO.findAll();
-        return userBEList.stream().map(UserMapper.toVO).collect(Collectors.toList());
+        return userBEList.stream().map(UserMapper.toUserDO).collect(Collectors.toList());
     }
 
     @Override
@@ -66,7 +66,7 @@ public class UserComponentImpl implements UserComponent {
                     String.format("No result found for ID '%s'", id));
         }
 
-        return UserMapper.toVO.apply(result);
+        return UserMapper.toUserDO.apply(result);
     }
 
 
@@ -81,7 +81,7 @@ public class UserComponentImpl implements UserComponent {
                     String.format("No result found for email '%s'", email));
         }
 
-        return UserMapper.toVO.apply(result);
+        return UserMapper.toUserDO.apply(result);
     }
 
 
@@ -89,8 +89,8 @@ public class UserComponentImpl implements UserComponent {
     public UserDO create(final UserDO userDO) {
         checkUserDO(userDO);
 
-        final UserBE userBE = UserMapper.toBE.apply(userDO);
-        return UserMapper.toVO.apply(userDAO.create(userBE));
+        final UserBE userBE = UserMapper.toUserBE.apply(userDO);
+        return UserMapper.toUserDO.apply(userDAO.create(userBE));
     }
 
 
@@ -98,8 +98,8 @@ public class UserComponentImpl implements UserComponent {
     public UserDO update(final UserDO userDO) {
         checkUserDO(userDO);
 
-        final UserBE userBE = UserMapper.toBE.apply(userDO);
-        return UserMapper.toVO.apply(userDAO.update(userBE));
+        final UserBE userBE = UserMapper.toUserBE.apply(userDO);
+        return UserMapper.toUserDO.apply(userDAO.update(userBE));
     }
 
 
@@ -107,34 +107,18 @@ public class UserComponentImpl implements UserComponent {
     public void delete(final UserDO userDO) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
 
-        final UserBE userBE = UserMapper.toBE.apply(userDO);
+        final UserBE userBE = UserMapper.toUserBE.apply(userDO);
         userDAO.delete(userBE);
 
     }
 
 
     @Override
-    public UserDO signin(final String email, final String password) {
+    public UserWithPermissionsDO signIn(final String email, final String password) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
 
-        // TODO check lock
-
-        // get user from database
-        final UserBE existingUser = userDAO.findByEmail(email);
-        if (existingUser == null) {
-            throw new BusinessException(ErrorCode.INVALID_LOGIN_CREDENTIALS, "Invalid login");
-        }
-
-        // check password
-        final String hashedPassword = passwordHashingBA.calculateHash(password, existingUser.getUserSalt());
-
-        if (hashedPassword.equals(existingUser.getUserPassword())) {
-            // authenticated
-            return UserMapper.toVO.apply(existingUser);
-        } else {
-            throw new BusinessException(ErrorCode.INVALID_LOGIN_CREDENTIALS, "Invalid login");
-        }
+        return signInBA.signInUser(email, password);
     }
 
 
