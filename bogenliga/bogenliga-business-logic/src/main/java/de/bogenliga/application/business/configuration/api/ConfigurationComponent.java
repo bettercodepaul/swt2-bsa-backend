@@ -16,7 +16,7 @@ public interface ConfigurationComponent extends ComponentFacade {
      * I return all configuration entries.
      *
      * @return list of all configuration entries in the database;
-     * empty list, if not configuration is found
+     * empty list, if no configuration is found
      */
     List<ConfigurationVO> findAll();
 
