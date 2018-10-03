@@ -68,6 +68,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Entry points
         http.authorizeRequests()
                 .antMatchers("/v1/user/signin").permitAll()
+                .antMatchers("/v1/*").permitAll() // TODO allow all in pupose of the failing angular application
                 // Disallow everything else...
                 .anyRequest().authenticated();
 
