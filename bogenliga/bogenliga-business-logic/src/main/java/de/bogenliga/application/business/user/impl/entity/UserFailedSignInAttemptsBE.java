@@ -2,14 +2,14 @@ package de.bogenliga.application.business.user.impl.entity;
 
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 
-public class UserFailedLoginAttemptsBE implements BusinessEntity {
+public class UserFailedSignInAttemptsBE implements BusinessEntity {
     private static final long serialVersionUID = -1560862619093862110L;
 
     private long userId;
     private int failedLoginAttempts;
 
 
-    public UserFailedLoginAttemptsBE() {
+    public UserFailedSignInAttemptsBE() {
         // empty constructor
     }
 

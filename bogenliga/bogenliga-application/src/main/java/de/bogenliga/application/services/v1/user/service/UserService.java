@@ -16,15 +16,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
+import de.bogenliga.application.services.v1.user.model.UserCredentialsDTO;
 import de.bogenliga.application.services.v1.user.model.UserDTO;
 import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
@@ -68,31 +70,36 @@ public class UserService implements ServiceFacade {
     @RequestMapping(
             method = RequestMethod.POST,
             value = "/signin",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity login(
-            @RequestParam final String username,
-            @RequestParam final String password) {
+    public ResponseEntity login(@RequestBody final UserCredentialsDTO credentials) {
+        Preconditions.checkNotNull(credentials, "Credentials must not be null");
+        Preconditions.checkNotNullOrEmpty(credentials.getUsername(), "Username must not be null or empty");
+        Preconditions.checkNotNullOrEmpty(credentials.getPassword(), "Password must not be null or empty");
+
+        ErrorDTO errorDetails = null;
         try {
             final Authentication authentication = webSecurityConfiguration.authenticationManagerBean()
-                    .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+                    .authenticate(new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
 
             if (authentication.isAuthenticated()) {
-                LOG.info("Authentification: principal = {}, credentials = {}, authorities = {}",
-                        authentication.getPrincipal(), authentication.getCredentials(),
-                        authentication.getAuthorities());
-
                 // create payload
                 final UserWithPermissionsDO userWithPermissionsDO = (UserWithPermissionsDO) authentication.getPrincipal();
                 final UserSignInDTO userSignInDTO = UserDTOMapper.toUserSignInDTO.apply(userWithPermissionsDO);
                 userSignInDTO.setJwt(jwtTokenProvider.createToken(authentication));
 
                 return ResponseEntity.status(HttpStatus.OK).body(userSignInDTO);
+            } else {
+                if (authentication.getDetails() != null) {
+                    errorDetails = (ErrorDTO) authentication.getDetails();
+                }
             }
-        } catch (final Exception e) {
-            LOG.warn("An error occured while SignIn of user {}", username, e);
+        } catch (final Exception e) { // NOSONAR
+            LOG.warn("An error occured while SignIn of user {}", credentials.getUsername(), e);
         }
 
-        final ErrorDTO errorDetails = new ErrorDTO(ErrorCode.INVALID_LOGIN_CREDENTIALS, "Sign in failed");
+        // return error details from authentication or a default error
+        errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
         return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 

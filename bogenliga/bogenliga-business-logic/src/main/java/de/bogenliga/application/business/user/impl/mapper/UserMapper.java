@@ -1,9 +1,7 @@
 package de.bogenliga.application.business.user.impl.mapper;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -11,6 +9,7 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
+import de.bogenliga.application.common.time.DateProvider;
 
 public class UserMapper implements ValueObjectMapper {
     public static final Function<UserBE, UserDO> toUserDO = be -> {
@@ -19,16 +18,12 @@ public class UserMapper implements ValueObjectMapper {
         final String email = be.getUserEmail();
 
         // technical parameter
-        Timestamp createdAtUtcTimestamp = be.getCreatedAtUtc();
         long createdByUserId = be.getCreatedByUserId();
-        Timestamp lastModifiedAtUtcTimestamp = be.getLastModifiedAtUtc();
         long lastModifiedByUserId = be.getLastModifiedByUserId();
         long version = be.getVersion();
 
-        OffsetDateTime createdAtUtc = createdAtUtcTimestamp == null ? null :
-                OffsetDateTime.ofInstant(Instant.ofEpochMilli(createdAtUtcTimestamp.getTime()), ZoneId.of("UTC"));
-        OffsetDateTime lastModifiedAtUtc = lastModifiedAtUtcTimestamp == null ? null :
-                OffsetDateTime.ofInstant(Instant.ofEpochMilli(lastModifiedAtUtcTimestamp.getTime()), ZoneId.of("UTC"));
+        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
+        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new UserDO(id, email, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
@@ -42,12 +37,8 @@ public class UserMapper implements ValueObjectMapper {
 
     public static final Function<UserDO, UserBE> toUserBE = vo -> {
 
-        OffsetDateTime createdAtUtc = vo.getCreatedAtUtc();
-        OffsetDateTime lastModifiedAtUtc = vo.getLastModifiedAtUtc();
-        Timestamp createdAtUtcTimestamp = Timestamp.valueOf(
-                createdAtUtc.atZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
-        Timestamp lastModifiedAtUtcTimestamp = Timestamp.valueOf(
-                lastModifiedAtUtc.atZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getCreatedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getLastModifiedAtUtc());
 
         UserBE userBE = new UserBE();
         userBE.setUserId(vo.getId());

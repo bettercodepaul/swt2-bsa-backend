@@ -10,10 +10,13 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
- * TODO [AL] class documentation
+ * I generate the password hash value with a given plain text password and the salt of the user.
+ *
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  *
+ * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/security/MessageDigest.html">
+ *     Java Class MessageDigest</a>
  * @see <a href="https://crackstation.net/hashing-security.htm">Salted Password Hashing - Doing it Right</a>
  */
 @Component
@@ -23,8 +26,8 @@ public class PasswordHashingBA {
     private static final String SHA_512 = "SHA-512";
 
 
-    private String convertBytesToHex(byte[] bytes) {
-        String generatedPassword;
+    private String convertBytesToHex(final byte[] bytes) {
+        final String generatedPassword;
         final StringBuilder sb = new StringBuilder();
         for (final byte aByte : bytes) {
             sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
@@ -68,7 +71,7 @@ public class PasswordHashingBA {
             final byte[] randomSeed = new byte[100];
             random.nextBytes(randomSeed);
 
-            byte[] uniqueSeed = UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8);
+            final byte[] uniqueSeed = UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8);
 
             final MessageDigest md = MessageDigest.getInstance(SHA_512);
             md.update(randomSeed);

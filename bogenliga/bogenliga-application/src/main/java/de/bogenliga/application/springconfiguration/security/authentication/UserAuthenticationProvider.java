@@ -13,6 +13,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
@@ -44,6 +47,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         final String password = authentication.getCredentials().toString();
         final List<UserPermission> permissions;
 
+        ErrorDTO errorDTO = null;
         try {
             final UserWithPermissionsDO userDO = userComponent.signIn(username, password);
 
@@ -55,15 +59,18 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
                 return new UsernamePasswordAuthenticationToken(
                         userDO, "", permissions);
             }
+        } catch (final BusinessException e) {
+            errorDTO = new ErrorDTO(e.getErrorCode(), e.getParameters(), e.getMessage());
         } catch (final RuntimeException e) { // NOSONAR
             LOG.warn("An unexpected error occured", e);
             // null will be returned
+            errorDTO = new ErrorDTO(ErrorCode.UNEXPECTED_ERROR, e.getMessage());
         }
 
         LOG.info("No auth. Return not authenticated");
-        final Authentication invalidAuth = new UsernamePasswordAuthenticationToken(null, null);
+        final UsernamePasswordAuthenticationToken invalidAuth = new UsernamePasswordAuthenticationToken(null, null);
         invalidAuth.setAuthenticated(false);
-
+        invalidAuth.setDetails(errorDTO);
         return invalidAuth;
     }
 
