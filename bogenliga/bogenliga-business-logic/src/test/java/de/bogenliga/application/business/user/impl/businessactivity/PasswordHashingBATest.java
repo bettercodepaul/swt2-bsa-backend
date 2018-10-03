@@ -27,8 +27,7 @@ public class PasswordHashingBATest {
 
     @Test
     public void calculateHash() {
-        final String actual = underTest.calculateHash("swt2",
-                "7e287c3b7f9f8a7193f007347d7fc784a647536892bd35fc7daee318917aa7544dff21b6454e56786cf8b9263df89811c3bf14309e04025d6b8e369240f61746");
+        final String actual = underTest.calculateHash(PASSWORD, SALT);
 
         assertThat(actual)
                 .hasSize(EXPECTED_SIZE)
@@ -60,7 +59,7 @@ public class PasswordHashingBATest {
     public void generateSalt() {
         final String actual = underTest.generateSalt();
 
-        assertThat(actual).hasSize(EXPECTED_SIZE).isEqualTo("");
+        assertThat(actual).hasSize(EXPECTED_SIZE);
 
         final String other = underTest.generateSalt();
 
