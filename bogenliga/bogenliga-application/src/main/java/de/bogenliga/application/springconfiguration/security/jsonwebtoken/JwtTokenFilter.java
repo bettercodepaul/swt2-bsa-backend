@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -36,12 +37,21 @@ public class JwtTokenFilter extends GenericFilterBean {
         final String token = JwtTokenProvider.resolveToken((HttpServletRequest) req);
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
+            // TODO check reverted tokens, e.g. user changed password -> database request required ...
+
             final Authentication auth = jwtTokenProvider.getAuthentication(token);
             // authenticate against Spring Security
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // auto refresh expiration time of the token
+            // increment refresh counter
+            String refreshedToken = jwtTokenProvider.refreshToken(token);
+            ((HttpServletResponse) res).addHeader("Authorization", "Bearer " + refreshedToken);
         }
 
         filterChain.doFilter(req, res);
+
+
     }
 
 }

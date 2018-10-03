@@ -43,6 +43,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtTokenProvider {
 
+    private static final String REFRESH_COUNTER = "refreshCounter";
     private static final String USER_INFO = "usr";
     private static final String USER_INFO_VERSION = "version";
     private static final String USER_INFO_ID = "id";
@@ -54,6 +55,7 @@ public class JwtTokenProvider {
     // defined in resources/application-<PROFILE>.properties
     private long validityInMilliseconds;
     private String secretKey;
+    private int maxTokenRefresh;
 
 
     @Autowired
@@ -75,21 +77,6 @@ public class JwtTokenProvider {
     }
 
 
-    public String createToken(final Authentication authentication) {
-        final UserWithPermissionsDO userWithPermissionsDO = ((UserWithPermissionsDO) authentication.getPrincipal());
-        final List<UserPermission> permissions = authentication.getAuthorities().stream()
-                .map(authority -> (UserPermission) authority)
-                .collect(Collectors.toList());
-
-        return createToken(userWithPermissionsDO, permissions);
-    }
-
-
-    public Authentication getAuthentication(final String token) {
-        return userAuthenticationProvider.createAuthenticationPlaceholder(getUsername(token), getPermissions(token));
-    }
-
-
     public String getUsername(final String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
@@ -105,7 +92,7 @@ public class JwtTokenProvider {
                 USER_INFO);
 
         if (userInfo instanceof Map) {
-            final Map<String, String> userInfoMap = (Map<String, String>) userInfo;
+            final Map<String, String> userInfoMap = (HashMap<String, String>) userInfo;
 
             final long id = Long.parseLong(userInfoMap.get(USER_INFO_ID));
             final long version = Long.parseLong(userInfoMap.get(USER_INFO_VERSION));
@@ -126,7 +113,6 @@ public class JwtTokenProvider {
         try {
             final Object permissions = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get(AUTH);
 
-
             if (permissions instanceof ArrayList) {
                 final List<String> permissionStringList = (ArrayList<String>) permissions;
                 userPermissions = permissionStringList.stream()
@@ -142,24 +128,26 @@ public class JwtTokenProvider {
     }
 
 
-    public boolean validateToken(final String token) {
-        try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
-        } catch (final JwtException | IllegalArgumentException e) {
-            LOG.warn("Received invalid JWT token with error message: {}", e.getMessage());
-            // send 403 "Forbidden"
-            return false;
-        }
+    public String createToken(final Authentication authentication) {
+        final UserWithPermissionsDO userWithPermissionsDO = ((UserWithPermissionsDO) authentication.getPrincipal());
+        final Set<UserPermission> permissions = authentication.getAuthorities().stream()
+                .map(authority -> (UserPermission) authority)
+                .collect(Collectors.toSet());
+
+        return createToken(userWithPermissionsDO, permissions);
     }
 
 
     private String createToken(final UserWithPermissionsDO userWithPermissionsDO,
-                               final List<UserPermission> permissions) {
-        final String username = userWithPermissionsDO.getEmail();
-        final String version = String.valueOf(userWithPermissionsDO.getVersion());
-        final String id = String.valueOf(userWithPermissionsDO.getId());
+                               final Set<UserPermission> permissions) {
+        return createToken(userWithPermissionsDO.getEmail(), userWithPermissionsDO.getId(),
+                userWithPermissionsDO.getVersion(), permissions, 0);
+    }
 
+
+    private String createToken(final String username, final long id, final long version,
+                               final Set<UserPermission> permissions,
+                               final int refreshCounter) {
         // subject
         final Claims claims = Jwts.claims().setSubject(username);
 
@@ -170,10 +158,13 @@ public class JwtTokenProvider {
 
         // add user info
         final Map<String, String> userInfo = new HashMap<>();
-        userInfo.put(USER_INFO_VERSION, version);
-        userInfo.put(USER_INFO_ID, id);
+        userInfo.put(USER_INFO_VERSION, String.valueOf(version));
+        userInfo.put(USER_INFO_ID, String.valueOf(id));
 
         claims.put(USER_INFO, userInfo);
+
+        // add refresh counter
+        claims.put(REFRESH_COUNTER, refreshCounter);
 
         // expiration time
         final Date now = new Date();
@@ -188,10 +179,69 @@ public class JwtTokenProvider {
     }
 
 
+    Authentication getAuthentication(final String token) {
+        return userAuthenticationProvider.createAuthenticationPlaceholder(getUsername(token), getPermissions(token));
+    }
+
+
+    boolean validateToken(final String token) {
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (final JwtException | IllegalArgumentException e) {
+            LOG.warn("Received invalid JWT token with error message: {}", e.getMessage());
+            // send 403 "Forbidden"
+            return false;
+        }
+    }
+
+
+    String refreshToken(final String token) {
+
+        final long remainingTimeInMilliSeconds = getRemainingValidityTime(token);
+        int refreshCounter = getRefreshCounter(token);
+
+        LOG.trace("Refresh token ? refreshCounter = {} and remainingTime = {} s", refreshCounter,
+                (remainingTimeInMilliSeconds / 1000));
+
+        // check, if refresh necessary and possible
+        // expiration reached (last 90 %) and refresh allowed -> refresh
+        if (refreshCounter < maxTokenRefresh && remainingTimeInMilliSeconds < (validityInMilliseconds * 0.9)) {
+
+            final UserSignInDTO userSignInDTO = resolveUserSignInDTO(token);
+            refreshCounter++;
+
+            LOG.trace("Token refreshed. Please use the new token");
+
+            return createToken(userSignInDTO.getEmail(), userSignInDTO.getId(), userSignInDTO.getVersion(),
+                    userSignInDTO.getPermissions(), refreshCounter);
+        } else {
+            return token;
+        }
+    }
+
+
+    int getRefreshCounter(final String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                .get(REFRESH_COUNTER, Integer.class);
+    }
+
+
+    long getRemainingValidityTime(final String token) {
+
+        final Date expirationDate = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(
+                token).getBody().getExpiration();
+        final Date now = new Date();
+
+        return expirationDate.getTime() - now.getTime();
+    }
+
+
     @PostConstruct
     protected void init() {
         validityInMilliseconds = securityJsonWebTokenConfiguration.getExpiration();
         secretKey = Base64.getEncoder().encodeToString(securityJsonWebTokenConfiguration.getSecret().getBytes());
+        maxTokenRefresh = securityJsonWebTokenConfiguration.getRefresh();
     }
 
 

@@ -14,10 +14,11 @@ public class SecurityJsonWebTokenConfiguration {
 
     private static final long DEFAULT_EXPIRATION_TIME = 3600000; // ms
     private static final String DEFAULT_SECRET = "default-secret-key";
+    private static final int DEFAULT_REFRESH_COUNT = 3; // x times
 
     private String secret;
     private long expiration; // ms
-
+    private int refresh;
 
     public String getSecret() {
         return secret == null ? DEFAULT_SECRET : secret;
@@ -36,5 +37,15 @@ public class SecurityJsonWebTokenConfiguration {
 
     public void setExpiration(final long expiration) {
         this.expiration = expiration;
+    }
+
+
+    public int getRefresh() {
+        return refresh <= 0 ? DEFAULT_REFRESH_COUNT : refresh;
+    }
+
+
+    public void setRefresh(final int refresh) {
+        this.refresh = refresh;
     }
 }
