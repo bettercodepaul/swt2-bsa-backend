@@ -18,7 +18,7 @@ public final class ConfigurationMapper implements ValueObjectMapper {
     /**
      * Converts a {@link ConfigurationBE} to a {@link ConfigurationDO}
      */
-    public static final Function<ConfigurationBE, ConfigurationDO> toVO = be -> {
+    public static final Function<ConfigurationBE, ConfigurationDO> toDO = be -> {
         final String key = be.getConfigurationKey();
         final String value = be.getConfigurationValue();
 

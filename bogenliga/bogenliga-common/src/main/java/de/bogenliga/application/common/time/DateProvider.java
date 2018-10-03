@@ -1,7 +1,6 @@
 package de.bogenliga.application.common.time;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -58,6 +57,6 @@ public final class DateProvider {
      * @return OffsetDateTime with UTC timezone
      */
     public static OffsetDateTime convertTimestamp(final Timestamp timestamp) {
-        return timestamp == null ? null : OffsetDateTime.ofInstant(Instant.ofEpochMilli(timestamp.getTime()), UTC);
+        return timestamp == null ? null : OffsetDateTime.of(timestamp.toLocalDateTime(), ZoneOffset.UTC);
     }
 }

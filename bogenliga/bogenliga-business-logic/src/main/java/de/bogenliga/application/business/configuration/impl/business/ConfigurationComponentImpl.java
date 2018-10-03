@@ -44,7 +44,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
     @Override
     public List<ConfigurationDO> findAll() {
         final List<ConfigurationBE> configurationBEList = configurationDAO.findAll();
-        return configurationBEList.stream().map(ConfigurationMapper.toVO).collect(Collectors.toList());
+        return configurationBEList.stream().map(ConfigurationMapper.toDO).collect(Collectors.toList());
     }
 
 
@@ -59,7 +59,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
                     String.format("No result found for key '%s'", key));
         }
 
-        return ConfigurationMapper.toVO.apply(result);
+        return ConfigurationMapper.toDO.apply(result);
     }
 
 
@@ -72,7 +72,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
         final ConfigurationBE persistedConfigurationBE = configurationDAO.create(configurationBE, currentUser);
-        return ConfigurationMapper.toVO.apply(persistedConfigurationBE);
+        return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }
 
 
@@ -85,7 +85,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
         final ConfigurationBE persistedConfigurationBE = configurationDAO.update(configurationBE, currentUser);
-        return ConfigurationMapper.toVO.apply(persistedConfigurationBE);
+        return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }
 
 
