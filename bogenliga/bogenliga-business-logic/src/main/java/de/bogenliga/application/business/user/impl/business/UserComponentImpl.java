@@ -16,6 +16,9 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 
+/**
+ * TODO [YP] AL: Add documentation
+ */
 @Component
 public class UserComponentImpl implements UserComponent {
 
@@ -26,6 +29,7 @@ public class UserComponentImpl implements UserComponent {
     private final UserDAO userDAO;
     private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
+
 
     /**
      * Constructor
@@ -44,11 +48,13 @@ public class UserComponentImpl implements UserComponent {
         this.technicalUserBA = technicalUserBA;
     }
 
+
     @Override
     public List<UserDO> findAll() {
         final List<UserBE> userBEList = userDAO.findAll();
         return userBEList.stream().map(UserMapper.toUserDO).collect(Collectors.toList());
     }
+
 
     @Override
     public UserDO findById(final int id) {

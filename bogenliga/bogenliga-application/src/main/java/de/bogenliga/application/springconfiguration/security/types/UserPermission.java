@@ -65,8 +65,8 @@ public enum UserPermission implements GrantedAuthority {
             final String permissionWithPrefix = PREFIX + userPermission.name();
             final String permissionWithoutPrefix = userPermission.name();
 
-            if (permissionWithPrefix.equals(value.toUpperCase())
-                    || permissionWithoutPrefix.equals(value.toUpperCase())) {
+            if (permissionWithPrefix.equalsIgnoreCase(value)
+                    || permissionWithoutPrefix.equalsIgnoreCase(value)) {
                 return userPermission;
             }
         }

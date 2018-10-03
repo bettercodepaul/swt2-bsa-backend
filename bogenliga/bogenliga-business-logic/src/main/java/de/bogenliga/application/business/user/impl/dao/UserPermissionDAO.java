@@ -13,9 +13,11 @@ import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration
 import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
- * DataAccessObject for the user entity in the database.
+ * DataAccessObject for the user permission entity in the database.
  * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 @Repository
 public class UserPermissionDAO implements DataAccessObject {

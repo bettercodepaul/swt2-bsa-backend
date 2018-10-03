@@ -11,7 +11,19 @@ import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
+/**
+ * I convert the user DataObjects and BusinessEntities.
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
+ * Oracle Function Package Overview</a>
+ * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
+ */
 public class UserMapper implements ValueObjectMapper {
+
+    /**
+     * Converts a {@link UserBE} to a {@link UserDO}
+     */
     public static final Function<UserBE, UserDO> toUserDO = be -> {
 
         final long id = be.getUserId();
@@ -28,6 +40,9 @@ public class UserMapper implements ValueObjectMapper {
         return new UserDO(id, email, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
+    /**
+     * Converts a {@link UserBE} with a list of permissions to a {@link UserWithPermissionsDO}
+     */
     public static final BiFunction<UserBE, List<String>, UserWithPermissionsDO> toUserWithPermissionsDO =
             (be, permissions) -> {
                 UserDO userDO = toUserDO.apply(be);
@@ -35,6 +50,9 @@ public class UserMapper implements ValueObjectMapper {
                 return new UserWithPermissionsDO(userDO, permissions);
             };
 
+    /**
+     * Converts a {@link UserDO} to a {@link UserBE}
+     */
     public static final Function<UserDO, UserBE> toUserBE = vo -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getCreatedAtUtc());

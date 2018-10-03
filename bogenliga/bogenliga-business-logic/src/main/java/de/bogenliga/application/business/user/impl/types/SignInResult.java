@@ -5,7 +5,7 @@
 package de.bogenliga.application.business.user.impl.types;
 
 /**
- * TODO [AL] class documentation
+ * I contain the user sigin in results, which are persisted in the user sign in history
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */

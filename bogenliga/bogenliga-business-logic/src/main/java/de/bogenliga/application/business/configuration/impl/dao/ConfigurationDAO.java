@@ -15,7 +15,9 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 /**
  * DataAccessObject for the configuration entity in the database.
  *
- * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
+ * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods.
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 @Repository
 public class ConfigurationDAO implements DataAccessObject {
@@ -52,7 +54,7 @@ public class ConfigurationDAO implements DataAccessObject {
     /**
      * Initialize the transaction manager to provide a database connection
      *
-     * @param basicDao
+     * @param basicDao to handle the commonly used database operations
      */
     @Autowired
     public ConfigurationDAO(final BasicDAO basicDao) {

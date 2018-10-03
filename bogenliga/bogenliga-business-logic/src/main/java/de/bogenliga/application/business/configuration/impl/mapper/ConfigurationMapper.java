@@ -15,12 +15,19 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
  */
 public final class ConfigurationMapper implements ValueObjectMapper {
 
+    /**
+     * Converts a {@link ConfigurationBE} to a {@link ConfigurationDO}
+     */
     public static final Function<ConfigurationBE, ConfigurationDO> toVO = be -> {
         final String key = be.getConfigurationKey();
         final String value = be.getConfigurationValue();
 
         return new ConfigurationDO(key, value);
     };
+
+    /**
+     * Converts a {@link ConfigurationDO} to a {@link ConfigurationBE}
+     */
     public static final Function<ConfigurationDO, ConfigurationBE> toBE = vo -> {
         final String key = vo.getKey();
         final String value = vo.getValue();

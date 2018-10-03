@@ -35,7 +35,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(final AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider);
     }
 
@@ -47,14 +47,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    public void configure(final WebSecurity web) throws Exception {
+    public void configure(final WebSecurity web) {
         // allow unauthorized access to
         web.ignoring()
                 .antMatchers("/v2/hello-world")
                 .and()
                 .ignoring()
                 .antMatchers("/v1/hello-world");
-        ;
     }
 
 
@@ -74,9 +73,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // Apply JWT
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
-
-        // Optional, if you want to test the API from a browser
-        // http.httpBasic();
     }
 
 }

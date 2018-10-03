@@ -4,6 +4,14 @@ import java.sql.Timestamp;
 import de.bogenliga.application.business.user.impl.types.SignInResult;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 
+
+/**
+ * I represent the user sign in history business entity.
+ * <p>
+ * The sign in history documents each sign in attempt of an user.
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ */
 public class UserSignInHistoryBE implements BusinessEntity {
 
     private static final long serialVersionUID = -3350215655826737938L;
@@ -12,6 +20,9 @@ public class UserSignInHistoryBE implements BusinessEntity {
     private Timestamp signInAtUtc;
 
 
+    /**
+     * Constructor
+     */
     public UserSignInHistoryBE() {
         // empty constructor
     }

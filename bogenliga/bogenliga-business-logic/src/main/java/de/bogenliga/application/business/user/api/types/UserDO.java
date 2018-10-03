@@ -7,6 +7,8 @@ import de.bogenliga.application.common.component.types.DataObject;
 
 /**
  * Contains the values of the user business entity.
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class UserDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = 298357103627898987L;

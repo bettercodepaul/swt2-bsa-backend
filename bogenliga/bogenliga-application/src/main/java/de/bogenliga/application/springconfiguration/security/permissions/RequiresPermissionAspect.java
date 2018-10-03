@@ -24,7 +24,9 @@ import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTok
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
- * TODO [AL] class documentation
+ * I implement the validation logic of the {@link RequiresPermission} annotation.
+ *
+ * The logic will be wrapped around the annotated method.
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -48,15 +50,39 @@ public class RequiresPermissionAspect {
     }
 
 
+    /**
+     * I validate the permissions of an user.
+     * <p>
+     * A JSON Web Token is used for http authentication. The token contains the permissions of the user. The required
+     * permissions are defined as annotation parameter.
+     * <p>
+     * All required permissions have to be a part of the user permissions.
+     *
+     * @param joinPoint of the annotated method
+     *
+     * @return next {@link ProceedingJoinPoint}
+     *
+     * @throws Throwable         if the {@link ProceedingJoinPoint} throws an exception
+     * @throws BusinessException if the user has not all required permissions
+     */
     @Around("@annotation(de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission)")
     public Object checkPermission(final ProceedingJoinPoint joinPoint) throws Throwable {
 
         List<UserPermission> requiredPermissions = new ArrayList<>();
+        List<String> requiredPermissionStrings = new ArrayList<>();
+        String joinedRequiredPermissions = "";
 
         // get permissions from annotation
         if (getCurrentMethod(joinPoint).isAnnotationPresent(RequiresPermission.class)) {
             final UserPermission[] roles = getCurrentMethod(joinPoint).getAnnotation(RequiresPermission.class).value();
             requiredPermissions = Arrays.asList(roles);
+
+            requiredPermissionStrings = requiredPermissions.stream()
+                    .map(UserPermission::name)
+                    .collect(Collectors.toList());
+            joinedRequiredPermissions = String.join(", ", requiredPermissionStrings);
+
+            LOG.trace("Verify required permissions: [{}]", joinedRequiredPermissions);
         }
 
         // get current http request from thread
@@ -78,10 +104,6 @@ public class RequiresPermissionAspect {
 
                 // verify all jwt permissions are part of the required permissions
                 if (!userPermissions.containsAll(requiredPermissions)) {
-                    final List<String> requiredPermissionStrings = requiredPermissions.stream()
-                            .map(UserPermission::name)
-                            .collect(Collectors.toList());
-                    final String joinedRequiredPermissions = String.join(", ", requiredPermissionStrings);
                     throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
                             String.format("User '%s' has not all required permissions [%s]", username,
                                     joinedRequiredPermissions), requiredPermissionStrings.toArray());

@@ -458,21 +458,19 @@ public final class SQL {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
-                if (!VERSION.equals(fName)) {
-                    if (fName.equals(identifier)) {
+                if (!VERSION.equals(fName) && fName.equals(identifier)) {
 
-                        final String getterName = retrieveGetterName(field, fName);
-                        final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                    final String getterName = retrieveGetterName(field, fName);
+                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
 
-                        Object value = getter.invoke(updateObj);
+                    Object value = getter.invoke(updateObj);
 
-                        if (value != null && value.getClass().isEnum()) {
-                            value = ((Enum) value).name();
-                        }
-
-                        idValue = value;
-
+                    if (value != null && value.getClass().isEnum()) {
+                        value = ((Enum) value).name();
                     }
+
+                    idValue = value;
+
                 }
             }
         }
