@@ -67,7 +67,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
             errorDTO = new ErrorDTO(ErrorCode.UNEXPECTED_ERROR, e.getMessage());
         }
 
-        LOG.info("No auth. Return not authenticated");
+        LOG.debug("No auth. Return not authenticated");
         final UsernamePasswordAuthenticationToken invalidAuth = new UsernamePasswordAuthenticationToken(null, null);
         invalidAuth.setAuthenticated(false);
         invalidAuth.setDetails(errorDTO);
@@ -95,6 +95,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
                                                                                final Set<UserPermission> userPermissions) {
         LOG.trace("Create placeholder for authentication. Username = {}", username);
 
-        return new UsernamePasswordAuthenticationToken(username, "", userPermissions);
+        return new UsernamePasswordAuthenticationToken(0, "", userPermissions);
     }
 }

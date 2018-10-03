@@ -26,6 +26,7 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PASSWORD = "UserDO password must not be null or empty";
+    private static final String PRECONDITION_MSG_CURRENT_USER = "Current user id must not be negative";
     private final UserDAO userDAO;
     private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
@@ -92,29 +93,36 @@ public class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public UserDO create(final UserDO userDO) {
-        checkUserDO(userDO);
+    public UserDO create(final UserDO userDO, long currentUserId) {
+        checkUserDO(userDO, currentUserId);
 
         final UserBE userBE = UserMapper.toUserBE.apply(userDO);
-        return UserMapper.toUserDO.apply(userDAO.create(userBE));
+        UserBE persistedUserBE = userDAO.create(userBE, currentUserId);
+
+        return UserMapper.toUserDO.apply(persistedUserBE);
     }
 
 
     @Override
-    public UserDO update(final UserDO userDO) {
-        checkUserDO(userDO);
+    public UserDO update(final UserDO userDO, long currentUserId) {
+        checkUserDO(userDO, currentUserId);
 
         final UserBE userBE = UserMapper.toUserBE.apply(userDO);
-        return UserMapper.toUserDO.apply(userDAO.update(userBE));
+        UserBE persistedUserBE = userDAO.update(userBE, currentUserId);
+
+        return UserMapper.toUserDO.apply(persistedUserBE);
     }
 
 
     @Override
-    public void delete(final UserDO userDO) {
+    public void delete(final UserDO userDO, long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
+        Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_USER);
 
         final UserBE userBE = UserMapper.toUserBE.apply(userDO);
-        userDAO.delete(userBE);
+
+        userDAO.delete(userBE, currentUserId);
 
     }
 
@@ -130,15 +138,18 @@ public class UserComponentImpl implements UserComponent {
 
     @Override
     public boolean isTechnicalUser(final UserDO userDO) {
-        checkUserDO(userDO);
+        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
+        Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
 
         return technicalUserBA.isTechnicalUser(userDO);
     }
 
 
-    private void checkUserDO(final UserDO userDO) {
+    private void checkUserDO(final UserDO userDO, long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
         Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_USER);
     }
 }

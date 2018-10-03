@@ -43,7 +43,7 @@ public interface UserComponent extends ComponentFacade {
      * @param userDO new user
      * @return persisted version of the user
      */
-    UserDO create(UserDO userDO);
+    UserDO create(UserDO userDO, long currentUserId);
 
 
     /**
@@ -52,7 +52,7 @@ public interface UserComponent extends ComponentFacade {
      * @param userDO existing userDO to update
      * @return persisted version of the user
      */
-    UserDO update(UserDO userDO);
+    UserDO update(UserDO userDO, long currentUserId);
 
 
     /**
@@ -60,7 +60,7 @@ public interface UserComponent extends ComponentFacade {
      *
      * @param userDO user to delete
      */
-    void delete(UserDO userDO);
+    void delete(UserDO userDO, long currentUserId);
 
     /**
      * Sign in an user with an email address and a password.

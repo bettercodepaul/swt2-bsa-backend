@@ -35,24 +35,27 @@ public interface ConfigurationComponent extends ComponentFacade {
      * I persist a new configuration in the database.
      *
      * @param configurationDO new configuration
+     * @param userId current user
      * @return persisted version of the configuration
      */
-    ConfigurationDO create(ConfigurationDO configurationDO);
+    ConfigurationDO create(ConfigurationDO configurationDO, long userId);
 
 
     /**
      * I update an existing configuration. The configuration is identified by the key.
      *
      * @param configurationDO to update an existing configuration value
+     * @param userId current user
      * @return persisted version of the configuration
      */
-    ConfigurationDO update(ConfigurationDO configurationDO);
+    ConfigurationDO update(ConfigurationDO configurationDO, long userId);
 
 
     /**
      * I delete an existing configuration. The configuration is identified by the key.
      *
      * @param configurationDO to delete an existing configuration key-value-pair
+     * @param userId current user
      */
-    void delete(ConfigurationDO configurationDO);
+    void delete(ConfigurationDO configurationDO, long userId);
 }

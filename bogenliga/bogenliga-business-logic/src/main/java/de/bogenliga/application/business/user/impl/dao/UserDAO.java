@@ -89,34 +89,57 @@ public class UserDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
+
+    /**
+     * TODO [YP] AL: Add documentation
+     */
     public List<UserBE> findAll() {
         return basicDao.selectEntityList(USER, FIND_ALL);
     }
 
 
+    /**
+     * TODO [YP] AL: Add documentation
+     */
     public UserBE findById(final long id) {
         return basicDao.selectSingleEntity(USER, FIND_BY_ID, id);
     }
 
 
+    /**
+     * TODO [YP] AL: Add documentation
+     */
     public UserBE findByEmail(final String email) {
         return basicDao.selectSingleEntity(USER, FIND_BY_EMAIL, email);
     }
 
 
-    public UserBE create(final UserBE configurationBE) {
-        return basicDao.insertEntity(USER, configurationBE);
+    /**
+     * TODO [YP] AL: Add documentation
+     */
+    public UserBE create(final UserBE userBE, final long currentUserId) {
+        basicDao.setCreationAttributes(userBE, currentUserId);
+
+        return basicDao.insertEntity(USER, userBE);
     }
 
 
-    public UserBE update(final UserBE configurationBE) {
-        return basicDao.updateEntity(USER, configurationBE, USER_BE_ID);
+    /**
+     * TODO [YP] AL: Add documentation
+     */
+    public UserBE update(final UserBE userBE, final long currentUserId) {
+        basicDao.setModificationAttributes(userBE, currentUserId);
+
+        return basicDao.updateEntity(USER, userBE, USER_BE_ID);
     }
 
 
-    public void delete(final UserBE configurationBE) {
-        basicDao.deleteEntity(USER, configurationBE, USER_BE_ID);
+    /**
+     * TODO [YP] AL: Add documentation
+     */
+    public void delete(final UserBE userBE, final long currentUserId) {
+        basicDao.setModificationAttributes(userBE, currentUserId);
+
+        basicDao.deleteEntity(USER, userBE, USER_BE_ID);
     }
-
-
 }

@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.configuration.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.configuration.mapper.ConfigurationDTOMapper;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
@@ -135,14 +137,15 @@ public class ConfigurationService implements ServiceFacade {
      *    "value": "true"
      *  }
      * }</pre>
-     *
+     * @param configurationDTO of the request body
+     * @param principal authenticated user
      * @return list of {@link ConfigurationDTO} as JSON
      */
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public ConfigurationDTO create(@RequestBody final ConfigurationDTO configurationDTO) {
+    public ConfigurationDTO create(@RequestBody final ConfigurationDTO configurationDTO, final Principal principal) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
@@ -151,7 +154,9 @@ public class ConfigurationService implements ServiceFacade {
                 configurationDTO.getValue());
 
         final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
-        final ConfigurationDO savedConfigurationDO = configurationComponent.create(newConfigurationDO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final ConfigurationDO savedConfigurationDO = configurationComponent.create(newConfigurationDO, userId);
         return ConfigurationDTOMapper.toDTO.apply(savedConfigurationDO);
     }
 
@@ -171,7 +176,7 @@ public class ConfigurationService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public ConfigurationDTO update(@RequestBody final ConfigurationDTO configurationDTO) {
+    public ConfigurationDTO update(@RequestBody final ConfigurationDTO configurationDTO, final Principal principal) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
@@ -180,7 +185,9 @@ public class ConfigurationService implements ServiceFacade {
                 configurationDTO.getValue());
 
         final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
-        final ConfigurationDO updatedConfigurationDO = configurationComponent.update(newConfigurationDO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final ConfigurationDO updatedConfigurationDO = configurationComponent.update(newConfigurationDO, userId);
         return ConfigurationDTOMapper.toDTO.apply(updatedConfigurationDO);
     }
 
@@ -193,13 +200,15 @@ public class ConfigurationService implements ServiceFacade {
      */
     @RequestMapping(value = "{key}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public void delete(@PathVariable("key") final String key) {
+    public void delete(@PathVariable("key") final String key, final Principal principal) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 
         LOG.debug("Receive 'delete' request with key '{}'", key);
 
         // allow value == null, the value will be ignored
         final ConfigurationDO configurationDO = new ConfigurationDO(key, null);
-        configurationComponent.delete(configurationDO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        configurationComponent.delete(configurationDO, userId);
     }
 }

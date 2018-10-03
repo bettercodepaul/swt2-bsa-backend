@@ -86,17 +86,17 @@ public class ConfigurationDAO implements DataAccessObject {
     }
 
 
-    public ConfigurationBE create(final ConfigurationBE configurationBE) {
+    public ConfigurationBE create(final ConfigurationBE configurationBE, final long currentUserId) {
         return basicDao.insertEntity(CONFIG, configurationBE);
     }
 
 
-    public ConfigurationBE update(final ConfigurationBE configurationBE) {
+    public ConfigurationBE update(final ConfigurationBE configurationBE, final long currentUserId) {
         return basicDao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 
 
-    public void delete(final ConfigurationBE configurationBE) {
+    public void delete(final ConfigurationBE configurationBE, final long currentUserId) {
         basicDao.deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 }

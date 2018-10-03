@@ -64,35 +64,37 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
 
     @Override
-    public ConfigurationDO create(final ConfigurationDO configurationDO) {
+    public ConfigurationDO create(final ConfigurationDO configurationDO, final long currentUser) {
         Preconditions.checkNotNull(configurationDO, PRECONDITION_MSG_CONFIGURATION);
         Preconditions.checkNotNullOrEmpty(configurationDO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
         Preconditions.checkNotNull(configurationDO.getValue(),
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
-        return ConfigurationMapper.toVO.apply(configurationDAO.create(configurationBE));
+        final ConfigurationBE persistedConfigurationBE = configurationDAO.create(configurationBE, currentUser);
+        return ConfigurationMapper.toVO.apply(persistedConfigurationBE);
     }
 
 
     @Override
-    public ConfigurationDO update(final ConfigurationDO configurationDO) {
+    public ConfigurationDO update(final ConfigurationDO configurationDO, final long currentUser) {
         Preconditions.checkNotNull(configurationDO, PRECONDITION_MSG_CONFIGURATION);
         Preconditions.checkNotNullOrEmpty(configurationDO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
         Preconditions.checkNotNull(configurationDO.getValue(),
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
-        return ConfigurationMapper.toVO.apply(configurationDAO.update(configurationBE));
+        final ConfigurationBE persistedConfigurationBE = configurationDAO.update(configurationBE, currentUser);
+        return ConfigurationMapper.toVO.apply(persistedConfigurationBE);
     }
 
 
     @Override
-    public void delete(final ConfigurationDO configurationDO) {
+    public void delete(final ConfigurationDO configurationDO, final long currentUser) {
         Preconditions.checkNotNull(configurationDO, PRECONDITION_MSG_CONFIGURATION);
         Preconditions.checkNotNullOrEmpty(configurationDO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
-        configurationDAO.delete(configurationBE);
+        configurationDAO.delete(configurationBE, currentUser);
     }
 }

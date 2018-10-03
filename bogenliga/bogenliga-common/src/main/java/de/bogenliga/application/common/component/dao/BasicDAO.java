@@ -17,6 +17,7 @@ import de.bogenliga.application.common.database.tx.TransactionManager;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
+import de.bogenliga.application.common.time.DateProvider;
 
 
 /**
@@ -55,6 +56,15 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
+    /**
+     * I return a map with the table column to business entity parameter mapping.
+     * <p>
+     * The common business entities have these columns.
+     *
+     * @return map with the table column to business entity parameter mapping
+     *
+     * @see CommonBusinessEntity
+     */
     public static Map<String, String> getTechnicalColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
@@ -64,6 +74,36 @@ public class BasicDAO implements DataAccessObject {
         columnsToFieldsMap.put(DEFAULT_TABLE_MODIFIED_BY, DEFAULT_BE_MODIFIED_BY);
         columnsToFieldsMap.put(DEFAULT_TABLE_VERSION, DEFAULT_BE_VERSION);
         return columnsToFieldsMap;
+    }
+
+
+    /**
+     * I set the creation parameter for the user and the timestamp.
+     *
+     * @param businessEntity with common technical paramater
+     * @param currentUserId  current user
+     *
+     * @see CommonBusinessEntity
+     */
+    public <T extends CommonBusinessEntity> void setCreationAttributes(final T businessEntity,
+                                                                       final long currentUserId) {
+        businessEntity.setCreatedByUserId(currentUserId);
+        businessEntity.setCreatedAtUtc(DateProvider.currentTimestampUtc());
+    }
+
+
+    /**
+     * I set the modification parameter for the user and the timestamp.
+     *
+     * @param businessEntity with common technical paramater
+     * @param currentUserId  current user
+     *
+     * @see CommonBusinessEntity
+     */
+    public <T extends CommonBusinessEntity> void setModificationAttributes(final T businessEntity,
+                                                                           final long currentUserId) {
+        businessEntity.setLastModifiedByUserId(currentUserId);
+        businessEntity.setLastModifiedAtUtc(DateProvider.currentTimestampUtc());
     }
 
 
