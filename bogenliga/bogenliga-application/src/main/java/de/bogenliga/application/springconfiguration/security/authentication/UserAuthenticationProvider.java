@@ -47,18 +47,24 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         try {
             final UserWithPermissionsDO userDO = userComponent.signIn(username, password);
 
-            LOG.info("Signin with user: {}", userDO.toString());
+            if (userDO != null) {
 
-            permissions = userDO.getPermissions().stream().map(UserPermission::fromValue).collect(
-                    Collectors.toList());
+                permissions = userDO.getPermissions().stream().map(UserPermission::fromValue).collect(
+                        Collectors.toList());
 
-            return new UsernamePasswordAuthenticationToken(
-                    userDO.getEmail(), "", permissions);
-
+                return new UsernamePasswordAuthenticationToken(
+                        userDO, "", permissions);
+            }
         } catch (final RuntimeException e) { // NOSONAR
             LOG.warn("An unexpected error occured", e);
-            return null;
+            // null will be returned
         }
+
+        LOG.info("No auth. Return not authenticated");
+        final Authentication invalidAuth = new UsernamePasswordAuthenticationToken(null, null);
+        invalidAuth.setAuthenticated(false);
+
+        return invalidAuth;
     }
 
 

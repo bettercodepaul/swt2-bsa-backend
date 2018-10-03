@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
+import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
 import de.bogenliga.application.services.v1.user.model.UserDTO;
+import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 
@@ -63,25 +68,32 @@ public class UserService implements ServiceFacade {
     @RequestMapping(
             method = RequestMethod.POST,
             value = "/signin",
-            produces = MediaType.TEXT_PLAIN_VALUE)
-    public String login(
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity login(
             @RequestParam final String username,
             @RequestParam final String password) {
         try {
             final Authentication authentication = webSecurityConfiguration.authenticationManagerBean()
                     .authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-            LOG.info("Authentification: principal = {}, credentials = {}, authorities = {}",
-                    authentication.getPrincipal(), authentication.getCredentials(), authentication.getAuthorities());
+            if (authentication.isAuthenticated()) {
+                LOG.info("Authentification: principal = {}, credentials = {}, authorities = {}",
+                        authentication.getPrincipal(), authentication.getCredentials(),
+                        authentication.getAuthorities());
 
-            final String jwt = jwtTokenProvider.createToken(authentication);
+                // create payload
+                final UserWithPermissionsDO userWithPermissionsDO = (UserWithPermissionsDO) authentication.getPrincipal();
+                final UserSignInDTO userSignInDTO = UserDTOMapper.toUserSignInDTO.apply(userWithPermissionsDO);
+                userSignInDTO.setJwt(jwtTokenProvider.createToken(authentication));
 
-            LOG.info("Create JWT: {}", jwt);
-
-            return jwt;
+                return ResponseEntity.status(HttpStatus.OK).body(userSignInDTO);
+            }
         } catch (final Exception e) {
-            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Invalid username/password supplied", e);
+            LOG.warn("An error occured while SignIn of user {}", username, e);
         }
+
+        final ErrorDTO errorDetails = new ErrorDTO(ErrorCode.INVALID_LOGIN_CREDENTIALS, "Sign in failed");
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 
@@ -90,12 +102,8 @@ public class UserService implements ServiceFacade {
             value = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
-        final UserDTO userDTO = new UserDTO();
-
         final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
-        userDTO.setEmail(jwtTokenProvider.getUsername(jwt));
-        userDTO.setPermissions(jwtTokenProvider.getPermissions(jwt));
 
-        return userDTO;
+        return jwtTokenProvider.resolveUserSignInDTO(jwt);
     }
 }

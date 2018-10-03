@@ -141,7 +141,7 @@ public class ConfigurationService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({UserPermission.CAN_MODIFY_SYSTEMDATEN, UserPermission.CAN_MODIFY_SPORTJAHR, UserPermission.CAN_MODIFY_STAMMDATEN})
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public ConfigurationDTO create(@RequestBody final ConfigurationDTO configurationDTO) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
