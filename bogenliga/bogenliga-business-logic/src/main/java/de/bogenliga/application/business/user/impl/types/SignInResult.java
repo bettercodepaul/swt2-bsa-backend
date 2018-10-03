@@ -9,7 +9,7 @@ package de.bogenliga.application.business.user.impl.types;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public enum LoginResult {
+public enum SignInResult {
     LOGIN_SUCCESS,
     LOGIN_FAILED;
 }

@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
-import de.bogenliga.application.business.user.impl.entity.UserFailedLoginAttemptsBE;
-import de.bogenliga.application.business.user.impl.types.LoginResult;
+import de.bogenliga.application.business.user.impl.entity.UserFailedSignInAttemptsBE;
+import de.bogenliga.application.business.user.impl.types.SignInResult;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -45,8 +45,8 @@ public class UserDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<UserBE> USER = new BusinessEntityConfiguration<>(
             UserBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    private static final BusinessEntityConfiguration<UserFailedLoginAttemptsBE> USER_SIGN_IN = new BusinessEntityConfiguration<>(
-            UserFailedLoginAttemptsBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+    private static final BusinessEntityConfiguration<UserFailedSignInAttemptsBE> USER_SIGN_IN = new BusinessEntityConfiguration<>(
+            UserFailedSignInAttemptsBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
     /*
      * SQL queries
@@ -138,12 +138,12 @@ public class UserDAO implements DataAccessObject {
     }
 
 
-    public UserFailedLoginAttemptsBE findSignInUserInformationByEmail(final String email,
-                                                                      final long timeRangeInSeconds) {
+    public UserFailedSignInAttemptsBE findSignInUserInformationByEmail(final String email,
+                                                                       final long timeRangeInSeconds) {
         return basicDao.selectSingleEntity(USER_SIGN_IN, FIND_SIGNIN_INFO_BY_EMAIL,
-                LoginResult.LOGIN_FAILED.name(),
+                SignInResult.LOGIN_FAILED.name(),
                 timeRangeInSeconds,
-                LoginResult.LOGIN_SUCCESS.name(),
+                SignInResult.LOGIN_SUCCESS.name(),
                 timeRangeInSeconds,
                 email);
     }

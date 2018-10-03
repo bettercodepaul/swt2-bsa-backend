@@ -16,7 +16,7 @@ CREATE TABLE benutzer_login_verlauf (
 
   -- unique constraint (uc)
   -- scheme: uc_{column name}
-  CONSTRAINT uc_session_user UNIQUE (benutzer_login_verlauf_benutzer_id, benutzer_login_verlauf_timestamp),
+  CONSTRAINT uc_benutzer_login_verlauf UNIQUE (benutzer_login_verlauf_benutzer_id, benutzer_login_verlauf_timestamp),
 
   CONSTRAINT fk_benutzer_login_verlauf_benutzer_id FOREIGN KEY (benutzer_login_verlauf_benutzer_id) REFERENCES benutzer (benutzer_id)
 );
