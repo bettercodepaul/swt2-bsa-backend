@@ -1,6 +1,7 @@
 package de.bogenliga.application.springconfiguration.security.authentication;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -18,7 +19,10 @@ import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
- * TODO [AL] class documentation
+ * I´m a custom authentication provider for Spring Security.
+ *
+ * I authenticate the user credentials with the persisted user information from the database.
+ *
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  * @see <a href="https://www.baeldung.com/spring-security-authentication-provider">
@@ -51,8 +55,10 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
             if (userDO != null) {
 
-                permissions = userDO.getPermissions().stream().map(UserPermission::fromValue).collect(
-                        Collectors.toList());
+                permissions = userDO.getPermissions().stream()
+                        .map(UserPermission::fromValue)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
 
                 return new UsernamePasswordAuthenticationToken(
                         userDO, "", permissions);

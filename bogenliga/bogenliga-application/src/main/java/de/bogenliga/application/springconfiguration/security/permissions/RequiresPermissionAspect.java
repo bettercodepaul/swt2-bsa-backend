@@ -44,12 +44,6 @@ public class RequiresPermissionAspect {
     }
 
 
-    private static Method getCurrentMethod(final ProceedingJoinPoint joinPoint) {
-        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        return signature.getMethod();
-    }
-
-
     /**
      * I validate the permissions of an user.
      * <p>
@@ -114,5 +108,11 @@ public class RequiresPermissionAspect {
 
 
         return joinPoint.proceed();
+    }
+
+
+    Method getCurrentMethod(final ProceedingJoinPoint joinPoint) {
+        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        return signature.getMethod();
     }
 }
