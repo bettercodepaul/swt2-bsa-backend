@@ -13,8 +13,7 @@ CREATE TABLE mannschaft (
   mannschaft_id                 DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_mannschaft_id'), -- DECIMAL(19,0) = unsigned long
   mannschaft_verein_id          DECIMAL(19,0) NOT NULL,
   mannschaft_nummer             DECIMAL(2,0) NOT NULL,
-  mannschaft_sportleiter        VARCHAR(200)  NOT NULL, -- der Ansprechpartner, Meldende der Mannschaft
-  mannschaft_sportleiter_email  VARCHAR(200)  NOT NULL, -- email des Ansprechpartners
+  mannschaft_benutzer_id        DECIMAL(19,0)   NOT NULL -- der Ansprechpartner, Meldende der Mannschaft
   mannschaft_veranstaltung_id   DECIMAL(19,0) NOT NULL,
 
 
@@ -39,8 +38,9 @@ CREATE TABLE mannschaft (
   CONSTRAINT fk_mannschaft_verein FOREIGN KEY (mannschaft_verein_id) REFERENCES verein (verein_id)
     ON DELETE CASCADE, -- das Löschen eines Vereins löscht auch die Mannschaften des Vereins
 
-  -- foreign key (fk)
-  -- schema: fk_{current table name}_{foreign key origin table name}
+  CONSTRAINT fk_mannschaft_benutzer FOREIGN KEY (mannschaft_benutzer_id) REFERENCES benutzer (benutzer_id)
+    ON DELETE SET NULL, -- das Löschen eines Benutzers lentfernt den Verweis
+
   CONSTRAINT fk_mannschaft_veranstaltung FOREIGN KEY (mannschaft_veranstaltung_id) REFERENCES veranstaltung (veranstaltung_id)
     ON DELETE CASCADE -- das Löschen einer Veranstaltung löscht auch die dafür gemeldeten Mannschaften des Vereins
 

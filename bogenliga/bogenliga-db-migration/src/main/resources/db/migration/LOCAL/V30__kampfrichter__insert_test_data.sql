@@ -4,6 +4,6 @@ INSERT INTO kampfrichter (
     kampfrichter_leitend
     )
 VALUES
-(30,	32, TRUE),
-(72,	32, FALSE)
+(2,	32, TRUE),
+(2,	32, FALSE)
 ;
