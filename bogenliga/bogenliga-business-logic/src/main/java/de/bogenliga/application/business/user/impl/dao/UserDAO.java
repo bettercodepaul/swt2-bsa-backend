@@ -91,7 +91,7 @@ public class UserDAO implements DataAccessObject {
 
 
     /**
-     * TODO [YP] AL: Add documentation
+     * Return all user entries
      */
     public List<UserBE> findAll() {
         return basicDao.selectEntityList(USER, FIND_ALL);
@@ -99,7 +99,9 @@ public class UserDAO implements DataAccessObject {
 
 
     /**
-     * TODO [YP] AL: Add documentation
+     * Return user entry with specific id
+     *
+     * @param id
      */
     public UserBE findById(final long id) {
         return basicDao.selectSingleEntity(USER, FIND_BY_ID, id);
@@ -107,7 +109,9 @@ public class UserDAO implements DataAccessObject {
 
 
     /**
-     * TODO [YP] AL: Add documentation
+     * Return user entry with specific email adress
+     *
+     * @param email
      */
     public UserBE findByEmail(final String email) {
         return basicDao.selectSingleEntity(USER, FIND_BY_EMAIL, email);
@@ -115,7 +119,11 @@ public class UserDAO implements DataAccessObject {
 
 
     /**
-     * TODO [YP] AL: Add documentation
+     * Create a new user entry
+     *
+     * @param userBE
+     * @param currentUserId
+     * @return Business Entity corresponding to the created user entry
      */
     public UserBE create(final UserBE userBE, final long currentUserId) {
         basicDao.setCreationAttributes(userBE, currentUserId);
@@ -125,7 +133,11 @@ public class UserDAO implements DataAccessObject {
 
 
     /**
-     * TODO [YP] AL: Add documentation
+     * Update an existing user entry
+     *
+     * @param userBE
+     * @param currentUserId
+     * @return Business Entity corresponding to the updated user entry
      */
     public UserBE update(final UserBE userBE, final long currentUserId) {
         basicDao.setModificationAttributes(userBE, currentUserId);
@@ -135,7 +147,10 @@ public class UserDAO implements DataAccessObject {
 
 
     /**
-     * TODO [YP] AL: Add documentation
+     * Delete existing user entry
+     *
+     * @param userBE
+     * @param currentUserId
      */
     public void delete(final UserBE userBE, final long currentUserId) {
         basicDao.setModificationAttributes(userBE, currentUserId);

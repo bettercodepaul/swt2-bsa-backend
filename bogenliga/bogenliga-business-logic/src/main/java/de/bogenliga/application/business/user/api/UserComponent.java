@@ -6,7 +6,7 @@ import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
 /**
- * TODO [YP] AL: Add documentation
+ * Responsible for the user database requests.
  */
 public interface UserComponent extends ComponentFacade {
 

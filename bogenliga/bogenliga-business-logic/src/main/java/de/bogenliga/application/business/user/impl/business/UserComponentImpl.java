@@ -17,7 +17,7 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
- * TODO [YP] AL: Add documentation
+ * Implementation of {@link UserComponent}
  */
 @Component
 public class UserComponentImpl implements UserComponent {
