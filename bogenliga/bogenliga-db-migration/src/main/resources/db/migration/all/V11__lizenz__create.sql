@@ -54,7 +54,7 @@ CREATE TABLE lizenz (
 
 -- define a trigger of each UPDATE statement on this table to increment the version of the affected row automatically
 -- we do not need to implement the "autoincrement" of the version programmatically
--- the procedure is defined in V0__row_version_update.sql
+-- the procedure is defined in V1__procedure__row_version_update__create.sql
 CREATE TRIGGER tr_lizenz_update_version
   BEFORE UPDATE ON lizenz
   FOR EACH ROW EXECUTE PROCEDURE update_row_version();

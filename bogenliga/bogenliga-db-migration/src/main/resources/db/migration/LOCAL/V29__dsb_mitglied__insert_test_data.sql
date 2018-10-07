@@ -1,16 +1,3 @@
--- DSB Mitglieder mit Benutzer Account
-INSERT INTO dsb_mitglied (dsb_mitglied_id,
-                          dsb_mitglied_vorname,
-                          dsb_mitglied_nachname,
-                          dsb_mitglied_geburtsdatum,
-                          dsb_mitglied_nationalitaet,
-                          dsb_mitglied_mitgliedsnummer,
-                          dsb_mitglied_verein_id,
-                          dsb_mitglied_benutzer_id)
-VALUES (28, 'Nicholas', 'Corle', '1988-01-01', 'D', '89298571', 0, 4),
-       (30, 'Malorie', 'Artman', '1978-01-01', 'D', '80179421', 11, 5)
-;
-
 -- DSB Mitglieder ohne Benutzer Account
 INSERT INTO dsb_mitglied (dsb_mitglied_id,
                           dsb_mitglied_vorname,
@@ -19,7 +6,9 @@ INSERT INTO dsb_mitglied (dsb_mitglied_id,
                           dsb_mitglied_nationalitaet,
                           dsb_mitglied_mitgliedsnummer,
                           dsb_mitglied_verein_id)
-VALUES (31, 'Kassie', 'Hysmith', '1986-01-01', 'D', '87721795', 0),
+VALUES (28, 'Nicholas', 'Corle', '1988-01-01', 'D', '89298571', 0),
+       (30, 'Malorie', 'Artman', '1978-01-01', 'D', '80179421', 11),
+       (31, 'Kassie', 'Hysmith', '1986-01-01', 'D', '87721795', 0),
        (32, 'Phebe', 'Biddle', '1990-01-01', 'D', '92039767', 11),
        (35, 'Stephaine', 'Tovar', '1998-01-01', 'D', '14168219', 5),
        (36, 'Shanae', 'Balding', '1999-01-01', 'D', '20401429', 6),
@@ -95,4 +84,15 @@ VALUES (31, 'Kassie', 'Hysmith', '1986-01-01', 'D', '87721795', 0),
        (449, 'Scottie', 'Rickenbacker', '1961-01-01', 'D', '63481366', 10),
        (450, 'Valarie', 'Mchugh', '1955-01-01', 'D', '73G69595', 5),
        (451, 'Elin', 'Leitner', '1967-01-01', 'D', '68660172', 6)
+;
+
+-- DSB Mitglieder mit Benutzer Account
+UPDATE dsb_mitglied
+SET dsb_mitglied_benutzer_id = 4
+WHERE dsb_mitglied_id = 28
+;
+
+UPDATE dsb_mitglied
+SET dsb_mitglied_benutzer_id = 5
+WHERE dsb_mitglied_id = 30
 ;
