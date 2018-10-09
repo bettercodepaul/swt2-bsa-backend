@@ -56,12 +56,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
      */
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM benutzer";
+                    + " FROM dsb_mitglied";
 
     private static final String FIND_BY_ID =
             "SELECT * "
-                    + " FROM benutzer "
-                    + " WHERE benutzer_id = ?";
+                    + " FROM dsb_mitglied "
+                    + " WHERE dsb_mitglied_id = ?";
 
     private final BasicDAO basicDao;
 
