@@ -34,6 +34,27 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
+    /*
+    // TODO fix CORS
+     * I configure the Cross-Origin Resource Sharing (CORS) mechanism.
+     *
+     * @see <a href="https://de.wikipedia.org/wiki/Cross-Origin_Resource_Sharing">CORS</a>
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(
+                Arrays.asList("x-auth-token", "Authorization", "Cache-Control", "Content-Type"));
+        configuration.setExposedHeaders(Collections.singletonList("x-auth-token"));
+        configuration.setAllowCredentials(true);
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+     */
+
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider);
@@ -76,5 +97,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Apply JWT
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
     }
-
 }
