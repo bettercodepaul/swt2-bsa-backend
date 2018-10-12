@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/dsbMitglied")
+@RequestMapping("v1/dsbmitglied")
 public class DsbMitgliedService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_DSBMITGLIED = "DsbMitgliedDO must not be null";
@@ -72,11 +72,11 @@ public class DsbMitgliedService implements ServiceFacade {
 
     /**
      * I return all dsbMitglied entries of the database.
-     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur auf Testdaten verwendet werden!
+     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
      *
      * Usage:
-     * <pre>{@code Request: GET /v1/dsbMitglied}</pre>
-     * <pre>{@code Response:
+     * <pre>{@code Request: GET /v1/dsbmitglied}</pre>
+     * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMitlgied angepasst werden
      * [
      *  {
      *    "id": "app.bogenliga.frontend.autorefresh.active",
@@ -105,7 +105,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * I return the dsbMitglied entry of the database with a specific id.
      *
      * Usage:
-     * <pre>{@code Request: GET /v1/dsbMitglied/app.bogenliga.frontend.autorefresh.active}</pre>
+     * <pre>{@code Request: GET /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      * <pre>{@code Response:
      *  {
      *    "id": "app.bogenliga.frontend.autorefresh.active",
@@ -119,7 +119,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public DsbMitgliedDTO findById(@PathVariable("id") final int id) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+        Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
 
@@ -132,7 +132,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * I persist a new dsbMitglied and return this dsbMitglied entry.
      *
      * Usage:
-     * <pre>{@code Request: POST /v1/dsbMitglied
+     * <pre>{@code Request: POST /v1/dsbmitglied
      * Body:
      * {
      *    "id": "app.bogenliga.frontend.autorefresh.active",
@@ -155,15 +155,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
-        Preconditions.checkNotNull(dsbMitgliedDTO, PRECONDITION_MSG_DSBMITGLIED);
-        Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getVorname(), PRECONDITION_MSG_DSBMITGLIED_VORNAME);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getNachname(), PRECONDITION_MSG_DSBMITGLIED_NACHNAME);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getGeburtsdatum(), PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getNationalitaet(), PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getMitgliedsnummer(), PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getVereinsId(), PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID);
-        Preconditions.checkArgument(dsbMitgliedDTO.getVereinsId() >= 0, PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE);
+        checkPreconditions(dsbMitgliedDTO);
 
         LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
                 " mitgliedsnummer '{}', vereinsid '{}'",
@@ -182,12 +174,24 @@ public class DsbMitgliedService implements ServiceFacade {
         return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
     }
 
+    private void checkPreconditions(@RequestBody DsbMitgliedDTO dsbMitgliedDTO) {
+        Preconditions.checkNotNull(dsbMitgliedDTO, PRECONDITION_MSG_DSBMITGLIED);
+        Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
+        Preconditions.checkNotNull(dsbMitgliedDTO.getVorname(), PRECONDITION_MSG_DSBMITGLIED_VORNAME);
+        Preconditions.checkNotNull(dsbMitgliedDTO.getNachname(), PRECONDITION_MSG_DSBMITGLIED_NACHNAME);
+        Preconditions.checkNotNull(dsbMitgliedDTO.getGeburtsdatum(), PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM);
+        Preconditions.checkNotNull(dsbMitgliedDTO.getNationalitaet(), PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET);
+        Preconditions.checkNotNull(dsbMitgliedDTO.getMitgliedsnummer(), PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER);
+        Preconditions.checkNotNull(dsbMitgliedDTO.getVereinsId(), PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID);
+        Preconditions.checkArgument(dsbMitgliedDTO.getVereinsId() >= 0, PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE);
+    }
+
 
     /**
      * I persist a newer version of the dsbMitglied in the database.
      *
      * Usage:
-     * <pre>{@code Request: PUT /v1/dsbMitglied
+     * <pre>{@code Request: PUT /v1/dsbmitglied
      * Body:
      * {
      *    "id": "app.bogenliga.frontend.autorefresh.active",
@@ -199,15 +203,7 @@ public class DsbMitgliedService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
-        Preconditions.checkNotNull(dsbMitgliedDTO, PRECONDITION_MSG_DSBMITGLIED);
-        Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getVorname(), PRECONDITION_MSG_DSBMITGLIED_VORNAME);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getNachname(), PRECONDITION_MSG_DSBMITGLIED_NACHNAME);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getGeburtsdatum(), PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getNationalitaet(), PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getMitgliedsnummer(), PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER);
-        Preconditions.checkNotNull(dsbMitgliedDTO.getVereinsId(), PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID);
-        Preconditions.checkArgument(dsbMitgliedDTO.getVereinsId() >= 0, PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE);
+        checkPreconditions(dsbMitgliedDTO);
 
         LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
                         " mitgliedsnummer '{}', vereinsid '{}'",
@@ -231,7 +227,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * I delete an existing dsbMitglied entry from the database.
      *
      * Usage:
-     * <pre>{@code Request: DELETE /v1/dsbMitglied/app.bogenliga.frontend.autorefresh.active}</pre>
+     * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
