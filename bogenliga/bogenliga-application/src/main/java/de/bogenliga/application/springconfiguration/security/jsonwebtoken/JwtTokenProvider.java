@@ -20,12 +20,14 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
 import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -80,6 +82,8 @@ public class JwtTokenProvider {
     public String getUsername(final String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        } catch (final ExpiredJwtException expiredTokenException) {
+            throw new BusinessException(ErrorCode.NO_SESSION_ERROR, "Session token expired", expiredTokenException);
         } catch (final RuntimeException e) {
             throw new TechnicalException(ErrorCode.UNEXPECTED_ERROR, "User information could not parsed from JWT", e);
         }
