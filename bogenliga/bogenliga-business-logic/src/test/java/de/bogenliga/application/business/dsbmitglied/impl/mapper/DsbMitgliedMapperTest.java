@@ -9,7 +9,7 @@ import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMit
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">

@@ -23,7 +23,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Yann Philippcuyl, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">
