@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +36,7 @@ import static org.mockito.Mockito.*;
 public class DsbMitgliedComponentImplTest {
 
     private static final long USER = 0;
+    private static final long VERSION = 0;
 
     private static final long ID = 1337;
     private static final String VORNAME = "Sorscha";
@@ -123,6 +126,59 @@ public class DsbMitgliedComponentImplTest {
         final DsbMitgliedDO input = getDsbMitgliedDO();
 
         final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
+
+        // configure mocks
+        when(dsbMitgliedDAO.create(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.create(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(input.getId());
+
+        // verify invocations
+        verify(dsbMitgliedDAO).create(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getDsbMitgliedId())
+                .isEqualTo(input.getId());
+    }
+
+    @Test
+    public void create_with_mandatory_parameters() {
+        // prepare test data
+        OffsetDateTime dateTime = OffsetDateTime.now();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        final DsbMitgliedDO input = new DsbMitgliedDO(
+                ID,
+                VORNAME,
+                NACHNAME,
+                GEBURTSDATUM,
+                NATIONALITAET,
+                MITGLIEDSNUMMER,
+                VEREINSID,
+                dateTime,
+                USER,
+                VERSION);
+
+        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
+        expectedBE.setDsbMitgliedId(ID);
+        expectedBE.setDsbMitgliedVorname(VORNAME);
+        expectedBE.setDsbMitgliedNachname(NACHNAME);
+        expectedBE.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
+        expectedBE.setDsbMitgliedNationalitaet(NATIONALITAET);
+        expectedBE.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
+        expectedBE.setDsbMitgliedVereinsId(VEREINSID);
+        expectedBE.setDsbMitgliedUserId(USERID);
+        expectedBE.setCreatedAtUtc(timestamp);
+        expectedBE.setVersion(VERSION);
+
 
         // configure mocks
         when(dsbMitgliedDAO.create(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
