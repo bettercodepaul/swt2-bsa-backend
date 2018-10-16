@@ -118,7 +118,7 @@ public class DsbMitgliedService implements ServiceFacade {
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public DsbMitgliedDTO findById(@PathVariable("id") final int id) {
+    public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
@@ -231,7 +231,7 @@ public class DsbMitgliedService implements ServiceFacade {
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public void delete(@PathVariable("id") final int id, final Principal principal) {
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
