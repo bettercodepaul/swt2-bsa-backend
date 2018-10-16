@@ -156,7 +156,7 @@ public class DsbMitgliedComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(null, USER))
-                .withMessageContaining("DsbMitgliedDO")
+                .withMessageContaining("must not be null")
                 .withNoCause();
 
         // assert result
@@ -167,18 +167,18 @@ public class DsbMitgliedComponentImplTest {
 
 
     @Test
-    public void create_withoutValue_shouldThrowException() {
+    public void create_withoutVorname_shouldThrowException() {
         // prepare test data
         final DsbMitgliedDO input = getDsbMitgliedDO();
         input.setId(ID);
-        input.setNachname(null);
+        input.setVorname(null);
 
         // configure mocks
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(input, USER))
-                .withMessageContaining("value")
+                .withMessageContaining("must not be null")
                 .withNoCause();
 
         // assert result
@@ -232,7 +232,7 @@ public class DsbMitgliedComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.update(null, USER))
-                .withMessageContaining("DsbMitgliedDO")
+                .withMessageContaining("must not be null")
                 .withNoCause();
 
         // assert result
@@ -242,7 +242,7 @@ public class DsbMitgliedComponentImplTest {
     }
 
     @Test
-    public void update_withoutValue_shouldThrowException() {
+    public void update_withoutVorname_shouldThrowException() {
         // prepare test data
         final DsbMitgliedDO input = getDsbMitgliedDO();
         input.setVorname(null);
@@ -252,7 +252,7 @@ public class DsbMitgliedComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.update(input, USER))
-                .withMessageContaining("value")
+                .withMessageContaining("must not be null")
                 .withNoCause();
 
         // assert result
@@ -297,7 +297,7 @@ public class DsbMitgliedComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.delete(null, USER))
-                .withMessageContaining("DsbMitgliedDO")
+                .withMessageContaining("must not be null")
                 .withNoCause();
 
         // assert result
