@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
  */
 @Repository
 public class DsbMitgliedDAO implements DataAccessObject {

@@ -1,14 +1,15 @@
 package de.bogenliga.application.business.dsbmitglied.api.types;
 
-import java.time.OffsetDateTime;
-import java.util.Objects;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
+
+import java.time.OffsetDateTime;
+import java.util.Objects;
 
 /**
  * Contains the values of the dsbmitglied business entity.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
  */
 public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = 298357103627898987L;
@@ -28,6 +29,19 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
 
     /**
      * Constructor with optional parameters
+     * @param id
+     * @param vorname
+     * @param nachname
+     * @param geburtsdatum
+     * @param nationalitaet
+     * @param mitgliedsnummer
+     * @param vereinsId
+     * @param userId
+     * @param createdAtUtc
+     * @param createdByUserId
+     * @param lastModifiedAtUtc
+     * @param lastModifiedByUserId
+     * @param version
      */
     public DsbMitgliedDO(long id, String vorname, String nachname, String geburtsdatum,
                          String nationalitaet, String mitgliedsnummer, long vereinsId, long userId, final OffsetDateTime createdAtUtc,
@@ -50,6 +64,16 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
 
     /**
      * Constructor with mandatory parameters
+     * @param id
+     * @param vorname
+     * @param nachname
+     * @param geburtsdatum
+     * @param nationalitaet
+     * @param mitgliedsnummer
+     * @param vereinsId
+     * @param createdAtUtc
+     * @param createdByUserId
+     * @param version
      */
     public DsbMitgliedDO(long id, String vorname, String nachname, String geburtsdatum,
                          String nationalitaet, String mitgliedsnummer, long vereinsId, final OffsetDateTime createdAtUtc,
@@ -68,6 +92,14 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
 
     /**
      * Constructor without technical parameters
+     * @param id
+     * @param vorname
+     * @param nachname
+     * @param geburtsdatum
+     * @param nationalitaet
+     * @param mitgliedsnummer
+     * @param vereinsId
+     * @param userId
      */
     public DsbMitgliedDO(long id, String vorname, String nachname, String geburtsdatum, String nationalitaet,
                          String mitgliedsnummer, long vereinsId, long userId) {
@@ -83,6 +115,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
 
     /**
      * Constructor with id for deleting existing entries
+     * @param id
      */
     public DsbMitgliedDO(long id) {
         this.id = id;
