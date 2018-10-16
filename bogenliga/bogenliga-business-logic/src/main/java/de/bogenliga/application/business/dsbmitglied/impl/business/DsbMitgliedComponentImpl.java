@@ -1,9 +1,5 @@
 package de.bogenliga.application.business.dsbmitglied.impl.business;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
@@ -12,6 +8,11 @@ import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapp
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link DsbMitgliedComponent}
@@ -55,7 +56,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
 
 
     @Override
-    public DsbMitgliedDO findById(final int id) {
+    public DsbMitgliedDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
         final DsbMitgliedBE result = dsbMitgliedDAO.findById(id);

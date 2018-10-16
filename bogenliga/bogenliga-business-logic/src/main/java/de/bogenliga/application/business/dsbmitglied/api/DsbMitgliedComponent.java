@@ -1,8 +1,9 @@
 package de.bogenliga.application.business.dsbmitglied.api;
 
-import java.util.List;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.component.ComponentFacade;
+
+import java.util.List;
 
 /**
  * Responsible for the dsbmitglied database requests.
@@ -25,7 +26,7 @@ public interface DsbMitgliedComponent extends ComponentFacade {
      * @return single dsbmitglied entry with the given id;
      * null, if no dsbmitglied is found
      */
-    DsbMitgliedDO findById(int id);
+    DsbMitgliedDO findById(long id);
 
     /**
      * Create a new dsbmitglied in the database.
