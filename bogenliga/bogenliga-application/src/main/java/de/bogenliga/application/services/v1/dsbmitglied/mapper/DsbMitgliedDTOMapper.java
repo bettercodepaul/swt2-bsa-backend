@@ -27,7 +27,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final Date dsbMitgliedGeburtsdatumDate = dsbMitgliedDO.getGeburtsdatum();
 
 
-        final String dsbMitgliedGeburtsdatum = "";
+        final String dsbMitgliedGeburtsdatum = dsbMitgliedGeburtsdatumDate.toString();
         final String dsbMitgliedNationalitaet = dsbMitgliedDO.getNationalitaet();
         final String dsbMitgliedMitgliedsnummer = dsbMitgliedDO.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dsbMitgliedDO.getVereinsId();
@@ -52,7 +52,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedNachname = dto.getNachname();
         final String dsbMitgliedGeburtsdatum = dto.getGeburtsdatum();
 
-        Date dsbMitgliedGeburtsdatumDate = Date.valueOf("1970-01-02");
+        Date dsbMitgliedGeburtsdatumDate = Date.valueOf(dsbMitgliedGeburtsdatum);
 
         final String dsbMitgliedNationalitaet = dto.getNationalitaet();
         final String dsbMitgliedMitgliedsnummer = dto.getMitgliedsnummer();
