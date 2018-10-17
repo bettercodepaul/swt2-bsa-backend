@@ -11,14 +11,15 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * @see DataTransferObject
  */
 public class DsbMitgliedDTO implements DataTransferObject {
-    private long id;
+    private static final long serialVersionUID = 8559563978424033907L;
+    private Long id;
     private String vorname;
     private String nachname;
     private String geburtsdatum;
     private String nationalitaet;
     private String mitgliedsnummer;
-    private long vereinsId;
-    private long userId;
+    private Long vereinsId;
+    private Long userId;
 
 
     /**
@@ -28,8 +29,10 @@ public class DsbMitgliedDTO implements DataTransferObject {
         // empty constructor
     }
 
-    public DsbMitgliedDTO(long id, String vorname, String nachname, String geburtsdatum,
-                          String nationalitaet, String mitgliedsnummer, long vereinsId, long userId) {
+
+    public DsbMitgliedDTO(final Long id, final String vorname, final String nachname, final String geburtsdatum,
+                          final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
+                          final Long userId) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -40,11 +43,13 @@ public class DsbMitgliedDTO implements DataTransferObject {
         this.userId = userId;
     }
 
-    public long getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -52,7 +57,8 @@ public class DsbMitgliedDTO implements DataTransferObject {
         return vorname;
     }
 
-    public void setVorname(String vorname) {
+
+    public void setVorname(final String vorname) {
         this.vorname = vorname;
     }
 
@@ -60,7 +66,8 @@ public class DsbMitgliedDTO implements DataTransferObject {
         return nachname;
     }
 
-    public void setNachname(String nachname) {
+
+    public void setNachname(final String nachname) {
         this.nachname = nachname;
     }
 
@@ -68,7 +75,8 @@ public class DsbMitgliedDTO implements DataTransferObject {
         return geburtsdatum;
     }
 
-    public void setGeburtsdatum(String geburtsdatum) {
+
+    public void setGeburtsdatum(final String geburtsdatum) {
         this.geburtsdatum = geburtsdatum;
     }
 
@@ -76,7 +84,8 @@ public class DsbMitgliedDTO implements DataTransferObject {
         return nationalitaet;
     }
 
-    public void setNationalitaet(String nationalitaet) {
+
+    public void setNationalitaet(final String nationalitaet) {
         this.nationalitaet = nationalitaet;
     }
 
@@ -84,23 +93,28 @@ public class DsbMitgliedDTO implements DataTransferObject {
         return mitgliedsnummer;
     }
 
-    public void setMitgliedsnummer(String mitgliedsnummer) {
+
+    public void setMitgliedsnummer(final String mitgliedsnummer) {
         this.mitgliedsnummer = mitgliedsnummer;
     }
 
-    public long getVereinsId() {
+
+    public Long getVereinsId() {
         return vereinsId;
     }
 
-    public void setVereinsId(long vereinsId) {
+
+    public void setVereinsId(final Long vereinsId) {
         this.vereinsId = vereinsId;
     }
 
-    public long getUserId() {
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+
+    public void setUserId(final Long userId) {
         this.userId = userId;
     }
 }

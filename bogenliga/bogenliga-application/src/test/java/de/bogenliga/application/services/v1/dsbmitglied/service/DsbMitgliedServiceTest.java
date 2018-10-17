@@ -1,9 +1,9 @@
 package de.bogenliga.application.services.v1.dsbmitglied.service;
 
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
+import java.security.Principal;
+import java.sql.Date;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,11 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import java.security.Principal;
-import java.util.Collections;
-import java.util.List;
-
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -39,7 +38,7 @@ public class DsbMitgliedServiceTest {
     private static final long ID = 1337;
     private static final String VORNAME = "Sorscha";
     private static final String NACHNAME = "Kratikoff";
-    private static final String GEBURTSDATUM = "1.9.1991";
+    private static final Date GEBURTSDATUM = Date.valueOf("1991-09-01");
     private static final String NATIONALITAET = "DE";
     private static final String MITGLIEDSNUMMER = "223344uu";
     private static final long VEREINSID = 2;
@@ -61,10 +60,57 @@ public class DsbMitgliedServiceTest {
     private ArgumentCaptor<DsbMitgliedDO> dsbMitgliedVOArgumentCaptor;
 
 
+    /***
+     * Utility methods for creating business entities/data objects.
+     * Also used by other test classes.
+     */
+    public static DsbMitgliedBE getDsbMitgliedBE() {
+        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
+        expectedBE.setDsbMitgliedId(ID);
+        expectedBE.setDsbMitgliedVorname(VORNAME);
+        expectedBE.setDsbMitgliedNachname(NACHNAME);
+        expectedBE.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
+        expectedBE.setDsbMitgliedNationalitaet(NATIONALITAET);
+        expectedBE.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
+        expectedBE.setDsbMitgliedVereinsId(VEREINSID);
+        expectedBE.setDsbMitgliedUserId(USERID);
+
+        return expectedBE;
+    }
+
+
+    public static DsbMitgliedDO getDsbMitgliedDO() {
+        return new DsbMitgliedDO(
+                ID,
+                VORNAME,
+                NACHNAME,
+                GEBURTSDATUM,
+                NATIONALITAET,
+                MITGLIEDSNUMMER,
+                VEREINSID,
+                USERID);
+    }
+
+
+    private static DsbMitgliedDTO getDsbMitgliedDTO() {
+        final DsbMitgliedDTO dsbMitgliedDTO = new DsbMitgliedDTO();
+        dsbMitgliedDTO.setId(ID);
+        dsbMitgliedDTO.setVorname(VORNAME);
+        dsbMitgliedDTO.setNachname(NACHNAME);
+        dsbMitgliedDTO.setGeburtsdatum(GEBURTSDATUM.toString());
+        dsbMitgliedDTO.setNationalitaet(NATIONALITAET);
+        dsbMitgliedDTO.setMitgliedsnummer(MITGLIEDSNUMMER);
+        dsbMitgliedDTO.setVereinsId(VEREINSID);
+        dsbMitgliedDTO.setUserId(USERID);
+        return dsbMitgliedDTO;
+    }
+
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(USER));
     }
+
 
     @Test
     public void findAll() {
@@ -144,6 +190,7 @@ public class DsbMitgliedServiceTest {
         assertThat(createdDsbMitglied.getVorname()).isEqualTo(input.getVorname());
     }
 
+
     @Test
     public void update() {
         // prepare test data
@@ -193,48 +240,5 @@ public class DsbMitgliedServiceTest {
         assertThat(deletedDsbMitglied).isNotNull();
         assertThat(deletedDsbMitglied.getId()).isEqualTo(expected.getId());
         assertThat(deletedDsbMitglied.getVorname()).isNullOrEmpty();
-    }
-
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static DsbMitgliedBE getDsbMitgliedBE() {
-        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
-        expectedBE.setDsbMitgliedId(ID);
-        expectedBE.setDsbMitgliedVorname(VORNAME);
-        expectedBE.setDsbMitgliedNachname(NACHNAME);
-        expectedBE.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
-        expectedBE.setDsbMitgliedNationalitaet(NATIONALITAET);
-        expectedBE.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
-        expectedBE.setDsbMitgliedVereinsId(VEREINSID);
-        expectedBE.setDsbMitgliedUserId(USERID);
-
-        return expectedBE;
-    }
-
-    public static DsbMitgliedDO getDsbMitgliedDO() {
-        return new DsbMitgliedDO(
-                ID,
-                VORNAME,
-                NACHNAME,
-                GEBURTSDATUM,
-                NATIONALITAET,
-                MITGLIEDSNUMMER,
-                VEREINSID,
-                USERID);
-    }
-
-    private static DsbMitgliedDTO getDsbMitgliedDTO() {
-        final DsbMitgliedDTO dsbMitgliedDTO = new DsbMitgliedDTO();
-        dsbMitgliedDTO.setId(ID);
-        dsbMitgliedDTO.setVorname(VORNAME);
-        dsbMitgliedDTO.setNachname(NACHNAME);
-        dsbMitgliedDTO.setGeburtsdatum(GEBURTSDATUM);
-        dsbMitgliedDTO.setNationalitaet(NATIONALITAET);
-        dsbMitgliedDTO.setMitgliedsnummer(MITGLIEDSNUMMER);
-        dsbMitgliedDTO.setVereinsId(VEREINSID);
-        dsbMitgliedDTO.setUserId(USERID);
-        return dsbMitgliedDTO;
     }
 }

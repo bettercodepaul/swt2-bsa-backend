@@ -1,5 +1,9 @@
 package de.bogenliga.application.business.dsbmitglied.impl.business;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
@@ -8,11 +12,6 @@ import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapp
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link DsbMitgliedComponent}
@@ -39,8 +38,6 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
      *
      * dependency injection with {@link Autowired}
      * @param dsbMitgliedDAO to access the database and return dsbmitglied representations
-     * @param signInBA to sign in dsbMitglieds
-     * @param technicalDsbMitgliedBA to handle all technical dsbmitglied operations
      */
     @Autowired
     public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO) {
@@ -71,29 +68,30 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
 
 
     @Override
-    public DsbMitgliedDO create(final DsbMitgliedDO dsbMitgliedDO, long currentDsbMitgliedId) {
+    public DsbMitgliedDO create(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
         checkDsbMitgliedDO(dsbMitgliedDO, currentDsbMitgliedId);
 
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
-        DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
+        final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
 
         return DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
     }
 
 
     @Override
-    public DsbMitgliedDO update(final DsbMitgliedDO dsbMitgliedDO, long currentDsbMitgliedId) {
+    public DsbMitgliedDO update(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
         checkDsbMitgliedDO(dsbMitgliedDO, currentDsbMitgliedId);
+        Preconditions.checkArgument(dsbMitgliedDO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
-        DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
+        final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
 
         return DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
     }
 
 
     @Override
-    public void delete(final DsbMitgliedDO dsbMitgliedDO, long currentDsbMitgliedId) {
+    public void delete(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(dsbMitgliedDO, PRECONDITION_MSG_DSBMITGLIED);
         Preconditions.checkArgument(dsbMitgliedDO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_DSBMITGLIED);
@@ -105,9 +103,8 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     }
 
 
-    private void checkDsbMitgliedDO(final DsbMitgliedDO dsbMitgliedDO, long currentDsbMitgliedId) {
+    private void checkDsbMitgliedDO(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(dsbMitgliedDO, PRECONDITION_MSG_DSBMITGLIED);
-        Preconditions.checkArgument(dsbMitgliedDO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_DSBMITGLIED);
         Preconditions.checkNotNull(dsbMitgliedDO.getVorname(), PRECONDITION_MSG_DSBMITGLIED_VORNAME);
         Preconditions.checkNotNull(dsbMitgliedDO.getNachname(), PRECONDITION_MSG_DSBMITGLIED_NACHNAME);

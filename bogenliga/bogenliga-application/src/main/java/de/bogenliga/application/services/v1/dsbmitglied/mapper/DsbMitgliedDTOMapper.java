@@ -1,10 +1,10 @@
 package de.bogenliga.application.services.v1.dsbmitglied.mapper;
 
+import java.sql.Date;
+import java.util.function.Function;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
-
-import java.util.function.Function;
 
 /**
  * I map the {@link DsbMitgliedDO} and {@link DsbMitgliedDTO} objects
@@ -17,26 +17,21 @@ import java.util.function.Function;
 public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
 
     /**
-     * Constructor
-     */
-    private DsbMitgliedDTOMapper() {
-        // empty private constructor
-    }
-
-
-    /**
      * I map the {@link DsbMitgliedDO} object to the {@link DsbMitgliedDTO} object
      */
-    public static final Function<DsbMitgliedDO, DsbMitgliedDTO> toDTO = vo -> {
+    public static final Function<DsbMitgliedDO, DsbMitgliedDTO> toDTO = dsbMitgliedDO -> {
 
-        final long dsbMitgliedId = vo.getId();
-        final String dsbMitgliedVorname = vo.getVorname();
-        final String dsbMitgliedNachname = vo.getNachname();
-        final String dsbMitgliedGeburtsdatum = vo.getGeburtsdatum();
-        final String dsbMitgliedNationalitaet = vo.getNationalitaet();
-        final String dsbMitgliedMitgliedsnummer = vo.getMitgliedsnummer();
-        final long dsbMitgliedVereinsId = vo.getVereinsId();
-        final long dsbMitgliedUserId = vo.getUserId();
+        final Long dsbMitgliedId = dsbMitgliedDO.getId();
+        final String dsbMitgliedVorname = dsbMitgliedDO.getVorname();
+        final String dsbMitgliedNachname = dsbMitgliedDO.getNachname();
+        final Date dsbMitgliedGeburtsdatumDate = dsbMitgliedDO.getGeburtsdatum();
+
+
+        final String dsbMitgliedGeburtsdatum = "";
+        final String dsbMitgliedNationalitaet = dsbMitgliedDO.getNationalitaet();
+        final String dsbMitgliedMitgliedsnummer = dsbMitgliedDO.getMitgliedsnummer();
+        final Long dsbMitgliedVereinsId = dsbMitgliedDO.getVereinsId();
+        final Long dsbMitgliedUserId = dsbMitgliedDO.getUserId();
 
         return new DsbMitgliedDTO(dsbMitgliedId,
                 dsbMitgliedVorname,
@@ -47,28 +42,38 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedVereinsId,
                 dsbMitgliedUserId);
     };
-
     /**
      * I map the {@link DsbMitgliedDTO} object to the {@link DsbMitgliedDO} object
      */
-    public static final Function<DsbMitgliedDTO, DsbMitgliedDO> toVO = dto -> {
+    public static final Function<DsbMitgliedDTO, DsbMitgliedDO> toDO = dto -> {
 
-        final long dsbMitgliedId = dto.getId();
+        final Long dsbMitgliedId = dto.getId();
         final String dsbMitgliedVorname = dto.getVorname();
         final String dsbMitgliedNachname = dto.getNachname();
         final String dsbMitgliedGeburtsdatum = dto.getGeburtsdatum();
+
+        Date dsbMitgliedGeburtsdatumDate = Date.valueOf("1970-01-02");
+
         final String dsbMitgliedNationalitaet = dto.getNationalitaet();
         final String dsbMitgliedMitgliedsnummer = dto.getMitgliedsnummer();
-        final long dsbMitgliedVereinsId = dto.getVereinsId();
-        final long dsbMitgliedUserId = dto.getUserId();
+        final Long dsbMitgliedVereinsId = dto.getVereinsId();
+        final Long dsbMitgliedUserId = dto.getUserId();
 
         return new DsbMitgliedDO(dsbMitgliedId,
                 dsbMitgliedVorname,
                 dsbMitgliedNachname,
-                dsbMitgliedGeburtsdatum,
+                dsbMitgliedGeburtsdatumDate,
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
                 dsbMitgliedUserId);
     };
+
+
+    /**
+     * Constructor
+     */
+    private DsbMitgliedDTOMapper() {
+        // empty private constructor
+    }
 }

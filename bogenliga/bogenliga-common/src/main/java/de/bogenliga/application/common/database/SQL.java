@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
@@ -357,7 +358,9 @@ public final class SQL {
 
                     if (fName.equals("id")) {
                         continue;
-                    } else if (value != null && value.getClass().isEnum()) {
+                    } else if (Objects.isNull(value)) {
+                        continue;
+                    } else if (value.getClass().isEnum()) {
                         value = ((Enum) value).name();
                     }
 

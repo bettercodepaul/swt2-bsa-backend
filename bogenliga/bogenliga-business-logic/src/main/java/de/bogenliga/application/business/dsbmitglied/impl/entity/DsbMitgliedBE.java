@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.dsbmitglied.impl.entity;
 
+import java.sql.Date;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
@@ -15,29 +16,32 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private long dsbMitgliedId;
+    private Long dsbMitgliedId;
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
-    private String dsbMitgliedGeburtsdatum;
+    private Date dsbMitgliedGeburtsdatum;
     private String dsbMitgliedNationalitaet;
     private String dsbMitgliedMitgliedsnummer;
-    private long dsbMitgliedVereinsId;
-    private long dsbMitgliedUserId;
+    private Long dsbMitgliedVereinsId;
+    private Long dsbMitgliedUserId;
 
 
     public DsbMitgliedBE(){
         // empty constructor
     }
 
-    public static long getSerialVersionUID() {
+
+    public static Long getSerialVersionUID() {
         return serialVersionUID;
     }
 
-    public long getDsbMitgliedId() {
+
+    public Long getDsbMitgliedId() {
         return dsbMitgliedId;
     }
 
-    public void setDsbMitgliedId(long dsbMitgliedId) {
+
+    public void setDsbMitgliedId(final Long dsbMitgliedId) {
         this.dsbMitgliedId = dsbMitgliedId;
     }
 
@@ -45,7 +49,8 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
         return dsbMitgliedVorname;
     }
 
-    public void setDsbMitgliedVorname(String dsbMitgliedVorname) {
+
+    public void setDsbMitgliedVorname(final String dsbMitgliedVorname) {
         this.dsbMitgliedVorname = dsbMitgliedVorname;
     }
 
@@ -53,15 +58,18 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
         return dsbMitgliedNachname;
     }
 
-    public void setDsbMitgliedNachname(String dsbMitgliedNachname) {
+
+    public void setDsbMitgliedNachname(final String dsbMitgliedNachname) {
         this.dsbMitgliedNachname = dsbMitgliedNachname;
     }
 
-    public String getDsbMitgliedGeburtsdatum() {
+
+    public Date getDsbMitgliedGeburtsdatum() {
         return dsbMitgliedGeburtsdatum;
     }
 
-    public void setDsbMitgliedGeburtsdatum(String dsbMitgliedGeburtsdatum) {
+
+    public void setDsbMitgliedGeburtsdatum(final Date dsbMitgliedGeburtsdatum) {
         this.dsbMitgliedGeburtsdatum = dsbMitgliedGeburtsdatum;
     }
 
@@ -69,7 +77,8 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
         return dsbMitgliedNationalitaet;
     }
 
-    public void setDsbMitgliedNationalitaet(String dsbMitgliedNationalitaet) {
+
+    public void setDsbMitgliedNationalitaet(final String dsbMitgliedNationalitaet) {
         this.dsbMitgliedNationalitaet = dsbMitgliedNationalitaet;
     }
 
@@ -77,23 +86,28 @@ public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntit
         return dsbMitgliedMitgliedsnummer;
     }
 
-    public void setDsbMitgliedMitgliedsnummer(String dsbMitgliedMitgliedsnummer) {
+
+    public void setDsbMitgliedMitgliedsnummer(final String dsbMitgliedMitgliedsnummer) {
         this.dsbMitgliedMitgliedsnummer = dsbMitgliedMitgliedsnummer;
     }
 
-    public long getDsbMitgliedVereinsId() {
+
+    public Long getDsbMitgliedVereinsId() {
         return dsbMitgliedVereinsId;
     }
 
-    public void setDsbMitgliedVereinsId(long dsbMitgliedVereinsId) {
+
+    public void setDsbMitgliedVereinsId(final Long dsbMitgliedVereinsId) {
         this.dsbMitgliedVereinsId = dsbMitgliedVereinsId;
     }
 
-    public long getDsbMitgliedUserId() {
+
+    public Long getDsbMitgliedUserId() {
         return dsbMitgliedUserId;
     }
 
-    public void setDsbMitgliedUserId(long dsbMitgliedUserId) {
+
+    public void setDsbMitgliedUserId(final Long dsbMitgliedUserId) {
         this.dsbMitgliedUserId = dsbMitgliedUserId;
     }
 

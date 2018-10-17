@@ -1,10 +1,10 @@
 package de.bogenliga.application.business.dsbmitglied.api.types;
 
-import de.bogenliga.application.common.component.types.CommonDataObject;
-import de.bogenliga.application.common.component.types.DataObject;
-
+import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import de.bogenliga.application.common.component.types.CommonDataObject;
+import de.bogenliga.application.common.component.types.DataObject;
 
 /**
  * Contains the values of the dsbmitglied business entity.
@@ -17,14 +17,14 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     /**
      * business parameter
      */
-    private long id;
+    private Long id;
     private String vorname;
     private String nachname;
-    private String geburtsdatum;
+    private Date geburtsdatum;
     private String nationalitaet;
     private String mitgliedsnummer;
-    private long vereinsId;
-    private long userId;
+    private Long vereinsId;
+    private Long userId;
 
 
     /**
@@ -43,10 +43,11 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param lastModifiedByUserId
      * @param version
      */
-    public DsbMitgliedDO(long id, String vorname, String nachname, String geburtsdatum,
-                         String nationalitaet, String mitgliedsnummer, long vereinsId, long userId, final OffsetDateTime createdAtUtc,
-                         final long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                         final long lastModifiedByUserId, final long version) {
+    public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
+                         final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
+                         final Long userId, final OffsetDateTime createdAtUtc,
+                         final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
+                         final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -75,9 +76,10 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param createdByUserId
      * @param version
      */
-    public DsbMitgliedDO(long id, String vorname, String nachname, String geburtsdatum,
-                         String nationalitaet, String mitgliedsnummer, long vereinsId, final OffsetDateTime createdAtUtc,
-                         final long createdByUserId, final long version) {
+    public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
+                         final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
+                         final OffsetDateTime createdAtUtc,
+                         final Long createdByUserId, final Long version) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -101,8 +103,9 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param vereinsId
      * @param userId
      */
-    public DsbMitgliedDO(long id, String vorname, String nachname, String geburtsdatum, String nationalitaet,
-                         String mitgliedsnummer, long vereinsId, long userId) {
+    public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
+                         final String nationalitaet,
+                         final String mitgliedsnummer, final Long vereinsId, final Long userId) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -117,18 +120,17 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * Constructor with id for deleting existing entries
      * @param id
      */
-    public DsbMitgliedDO(long id) {
+    public DsbMitgliedDO(final Long id) {
         this.id = id;
     }
 
 
-
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -136,7 +138,8 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         return vorname;
     }
 
-    public void setVorname(String vorname) {
+
+    public void setVorname(final String vorname) {
         this.vorname = vorname;
     }
 
@@ -144,15 +147,18 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         return nachname;
     }
 
-    public void setNachname(String nachname) {
+
+    public void setNachname(final String nachname) {
         this.nachname = nachname;
     }
 
-    public String getGeburtsdatum() {
+
+    public Date getGeburtsdatum() {
         return geburtsdatum;
     }
 
-    public void setGeburtsdatum(String geburtsdatum) {
+
+    public void setGeburtsdatum(final Date geburtsdatum) {
         this.geburtsdatum = geburtsdatum;
     }
 
@@ -160,7 +166,8 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         return nationalitaet;
     }
 
-    public void setNationalitaet(String nationalitaet) {
+
+    public void setNationalitaet(final String nationalitaet) {
         this.nationalitaet = nationalitaet;
     }
 
@@ -168,31 +175,49 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         return mitgliedsnummer;
     }
 
-    public void setMitgliedsnummer(String mitgliedsnummer) {
+
+    public void setMitgliedsnummer(final String mitgliedsnummer) {
         this.mitgliedsnummer = mitgliedsnummer;
     }
 
-    public long getVereinsId() {
+
+    public Long getVereinsId() {
         return vereinsId;
     }
 
-    public void setVereinsId(long vereinsId) {
+
+    public void setVereinsId(final Long vereinsId) {
         this.vereinsId = vereinsId;
     }
 
-    public long getUserId() {
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+
+    public void setUserId(final Long userId) {
         this.userId = userId;
     }
 
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DsbMitgliedDO that = (DsbMitgliedDO) o;
+    public int hashCode() {
+        return Objects.hash(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, userId,
+                createdByUserId, lastModifiedAtUtc,
+                lastModifiedByUserId, version);
+    }
+
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final DsbMitgliedDO that = (DsbMitgliedDO) o;
         return id == that.id &&
                 vereinsId == that.vereinsId &&
                 userId == that.userId &&
@@ -205,11 +230,5 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
                 Objects.equals(nationalitaet, that.nationalitaet) &&
                 Objects.equals(mitgliedsnummer, that.mitgliedsnummer) &&
                 Objects.equals(lastModifiedAtUtc, that.lastModifiedAtUtc);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, userId, createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
     }
 }
