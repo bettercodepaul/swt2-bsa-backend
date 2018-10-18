@@ -21,22 +21,17 @@ import javax.servlet.http.HttpServletResponse;
  * License.
  */
 public class CorsFilter implements Filter {
-    public static final String ACCESS_CONTROL_ALLOW_ORIGIN_NAME = "Access-Control-Allow-Origin";
-    public static final String DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE = "*";
+    private static final String ACCESS_CONTROL_ALLOW_ORIGIN_NAME = "Access-Control-Allow-Origin";
+    private static final String DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE = "*";
 
-    public static final String ACCESS_CONTROL_ALLOW_METHDOS_NAME = "Access-Control-Allow-Methods";
-    public static final String DEFAULT_ACCESS_CONTROL_ALLOW_METHDOS_VALUE = "POST, PUT, GET, OPTIONS, DELETE";
+    private static final String ACCESS_CONTROL_ALLOW_METHDOS_NAME = "Access-Control-Allow-Methods";
+    private static final String DEFAULT_ACCESS_CONTROL_ALLOW_METHDOS_VALUE = "POST, PUT, GET, OPTIONS, DELETE";
 
-    public static final String ACCESS_CONTROL_MAX_AGE_NAME = "Access-Control-Max-Age";
-    public static final String DEFAULT_ACCESS_CONTROL_MAX_AGE_VALUE = "3600";
+    private static final String ACCESS_CONTROL_MAX_AGE_NAME = "Access-Control-Max-Age";
+    private static final String DEFAULT_ACCESS_CONTROL_MAX_AGE_VALUE = "3600";
 
-    public static final String ACCESS_CONTROL_ALLOW_HEADERS_NAME = "Access-Control-Allow-Headers";
-    public static final String DEFAULT_ACCESS_CONTROL_ALLOW_HEADERS_VALUE = "Authorization, Content-Type";
-
-    private final String accessControlAllowOrigin = DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE;
-    private final String accessControlAllowMethods = DEFAULT_ACCESS_CONTROL_ALLOW_METHDOS_VALUE;
-    private final String accessControlAllowMaxAge = DEFAULT_ACCESS_CONTROL_MAX_AGE_VALUE;
-    private final String accessControlAllowHeaders = DEFAULT_ACCESS_CONTROL_ALLOW_HEADERS_VALUE;
+    private static final String ACCESS_CONTROL_ALLOW_HEADERS_NAME = "Access-Control-Allow-Headers";
+    private static final String DEFAULT_ACCESS_CONTROL_ALLOW_HEADERS_VALUE = "Authorization, Content-Type";
 
 
     @Override
@@ -63,10 +58,10 @@ public class CorsFilter implements Filter {
                          final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN_NAME, accessControlAllowOrigin);
-        response.setHeader(ACCESS_CONTROL_ALLOW_METHDOS_NAME, accessControlAllowMethods);
-        response.setHeader(ACCESS_CONTROL_MAX_AGE_NAME, accessControlAllowMaxAge);
-        response.setHeader(ACCESS_CONTROL_ALLOW_HEADERS_NAME, accessControlAllowHeaders);
+        response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN_NAME, DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+        response.setHeader(ACCESS_CONTROL_ALLOW_METHDOS_NAME, DEFAULT_ACCESS_CONTROL_ALLOW_METHDOS_VALUE);
+        response.setHeader(ACCESS_CONTROL_MAX_AGE_NAME, DEFAULT_ACCESS_CONTROL_MAX_AGE_VALUE);
+        response.setHeader(ACCESS_CONTROL_ALLOW_HEADERS_NAME, DEFAULT_ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
@@ -74,6 +69,7 @@ public class CorsFilter implements Filter {
 
     @Override
     public void destroy() {
+        // empty
     }
 
 

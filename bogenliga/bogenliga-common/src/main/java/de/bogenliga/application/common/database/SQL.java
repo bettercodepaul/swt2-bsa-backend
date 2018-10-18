@@ -356,9 +356,7 @@ public final class SQL {
                     final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
                     Object value = getter.invoke(insertObj);
 
-                    if (fName.equals("id")) {
-                        continue;
-                    } else if (Objects.isNull(value)) {
+                    if (fName.equals("id") || Objects.isNull(value)) {
                         continue;
                     } else if (value.getClass().isEnum()) {
                         value = ((Enum) value).name();
