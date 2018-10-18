@@ -142,7 +142,7 @@ public class DsbMitgliedComponentImplTest {
         final DsbMitgliedDO actual = underTest.findById(ID);
 
         // assert result
-        assertThat(actual).isNotNull();
+        assertThat(actual).isNotNull(); // TODO implement
 
         assertThat(actual.getId())
                 .isEqualTo(expectedBE.getDsbMitgliedId());
