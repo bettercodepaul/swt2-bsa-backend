@@ -2,10 +2,7 @@ package de.bogenliga.application.business.user.api.types;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -13,19 +10,28 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class UserWithPermissionsDOTest {
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+
+    public static final OffsetDateTime NOW = OffsetDateTime.now();
 
 
     @Test
     public void assertEquals() {
 
-        final UserWithPermissionsDO underTest = new UserWithPermissionsDO(123L, "email", OffsetDateTime.now(),
-                null, OffsetDateTime.now(),
+        final UserWithPermissionsDO underTest = new UserWithPermissionsDO(123L, "email", NOW,
+                null, NOW,
                 null, null,
                 Arrays.asList("permission1", "permission2"));
 
 
         assertThat(underTest.equals(underTest)).isTrue();
+
+        final UserWithPermissionsDO underTest2 = new UserWithPermissionsDO(123L, "email", NOW,
+                null, NOW,
+                null, null,
+                Arrays.asList("permission1", "permission2"));
+
+
+        assertThat(underTest.equals(underTest2)).isTrue();
     }
 }
