@@ -24,7 +24,6 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PASSWORD = "UserDO password must not be null or empty";
-    private static final String PRECONDITION_MSG_CURRENT_USER = "Current user id must not be negative";
     private final UserDAO userDAO;
     private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
@@ -100,5 +99,5 @@ public class UserComponentImpl implements UserComponent {
 
         return technicalUserBA.isTechnicalUser(userDO);
     }
-    
+
 }
