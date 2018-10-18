@@ -48,7 +48,8 @@ public class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public UserDO findById(final long id) {
+    public UserDO findById(final Long id) {
+        Preconditions.checkNotNull(id, PRECONDITION_MSG_USER_ID);
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_USER_ID);
 
         if (id == 0) {

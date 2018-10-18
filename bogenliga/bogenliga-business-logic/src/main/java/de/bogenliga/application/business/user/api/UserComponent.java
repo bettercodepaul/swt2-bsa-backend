@@ -16,7 +16,7 @@ public interface UserComponent extends ComponentFacade {
      * @return single user entry with the given id;
      * null, if no user is found
      */
-    UserDO findById(long id);
+    UserDO findById(Long id);
 
     /**
      * Return a user entry with the given id.
