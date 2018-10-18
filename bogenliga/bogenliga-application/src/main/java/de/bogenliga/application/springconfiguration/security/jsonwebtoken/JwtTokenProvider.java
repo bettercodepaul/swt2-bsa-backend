@@ -247,7 +247,7 @@ public class JwtTokenProvider {
 
 
     @PostConstruct
-    protected void init() {
+    void init() {
         validityInMilliseconds = securityJsonWebTokenConfiguration.getExpiration();
         secretKey = Base64.getEncoder().encodeToString(securityJsonWebTokenConfiguration.getSecret().getBytes());
         maxTokenRefresh = securityJsonWebTokenConfiguration.getRefresh();
