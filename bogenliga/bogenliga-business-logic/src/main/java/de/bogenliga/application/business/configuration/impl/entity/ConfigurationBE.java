@@ -9,6 +9,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
  */
 public class ConfigurationBE implements BusinessEntity {
 
+    private static final long serialVersionUID = 815898607713382219L;
     private String configurationKey;
     private String configurationValue;
 
