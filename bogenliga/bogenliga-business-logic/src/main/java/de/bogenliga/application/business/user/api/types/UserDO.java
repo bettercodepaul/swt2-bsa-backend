@@ -16,7 +16,7 @@ public class UserDO extends CommonDataObject implements DataObject {
     /**
      * business parameter
      */
-    private long id;
+    private Long id;
     private String email;
 
 
@@ -31,9 +31,9 @@ public class UserDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with mandatory parameters
      */
-    public UserDO(final long id, final String email, final OffsetDateTime createdAtUtc,
-                  final long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                  final long lastModifiedByUserId, final long version) {
+    public UserDO(final Long id, final String email, final OffsetDateTime createdAtUtc,
+                  final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
+                  final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.email = email;
 
@@ -46,12 +46,12 @@ public class UserDO extends CommonDataObject implements DataObject {
     }
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
 
-    public void setId(final long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -81,7 +81,7 @@ public class UserDO extends CommonDataObject implements DataObject {
             return false;
         }
         final UserDO userDO = (UserDO) o;
-        return getId() == userDO.getId() &&
+        return getId().equals(userDO.getId()) &&
                 getVersion() == userDO.getVersion() &&
                 Objects.equals(getEmail(), userDO.getEmail()) &&
                 Objects.equals(getCreatedAtUtc(), userDO.getCreatedAtUtc()) &&

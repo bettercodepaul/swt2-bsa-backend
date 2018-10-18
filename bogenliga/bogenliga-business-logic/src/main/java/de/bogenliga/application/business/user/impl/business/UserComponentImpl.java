@@ -1,7 +1,5 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -51,14 +49,7 @@ public class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public List<UserDO> findAll() {
-        final List<UserBE> userBEList = userDAO.findAll();
-        return userBEList.stream().map(UserMapper.toUserDO).collect(Collectors.toList());
-    }
-
-
-    @Override
-    public UserDO findById(final int id) {
+    public UserDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_USER_ID);
 
         if (id == 0) {
@@ -93,41 +84,6 @@ public class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public UserDO create(final UserDO userDO, long currentUserId) {
-        checkUserDO(userDO, currentUserId);
-
-        final UserBE userBE = UserMapper.toUserBE.apply(userDO);
-        UserBE persistedUserBE = userDAO.create(userBE, currentUserId);
-
-        return UserMapper.toUserDO.apply(persistedUserBE);
-    }
-
-
-    @Override
-    public UserDO update(final UserDO userDO, long currentUserId) {
-        checkUserDO(userDO, currentUserId);
-
-        final UserBE userBE = UserMapper.toUserBE.apply(userDO);
-        UserBE persistedUserBE = userDAO.update(userBE, currentUserId);
-
-        return UserMapper.toUserDO.apply(persistedUserBE);
-    }
-
-
-    @Override
-    public void delete(final UserDO userDO, long currentUserId) {
-        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
-        Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
-        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_USER);
-
-        final UserBE userBE = UserMapper.toUserBE.apply(userDO);
-
-        userDAO.delete(userBE, currentUserId);
-
-    }
-
-
-    @Override
     public UserWithPermissionsDO signIn(final String email, final String password) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
@@ -146,9 +102,8 @@ public class UserComponentImpl implements UserComponent {
     }
 
 
-    private void checkUserDO(final UserDO userDO, long currentUserId) {
+    private void checkUserDO(final UserDO userDO, final long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
-        Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_USER);
     }
