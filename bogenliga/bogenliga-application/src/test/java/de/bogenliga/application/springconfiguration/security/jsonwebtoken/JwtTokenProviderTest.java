@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -47,9 +50,9 @@ public class JwtTokenProviderTest {
             UserPermission.CAN_READ_SPORTJAHR,
             UserPermission.CAN_READ_STAMMDATEN);
 
-    private static final long EXPIREATION_TIME = 1000000000L;
+    private static final long EXPIRATION_TIME = 1000000000L;
     private static final String SECRET = "secret-key";
-    private static final int REFRESH_TIME = 10000000;
+    private static final int REFRESH_TIME = 2;
     private static final String JWT = generateJwtToken();
     private static final String AUTHORIZATION_HEADER = "Authorization";
     @Rule
@@ -64,6 +67,8 @@ public class JwtTokenProviderTest {
     private FilterChain filterChain;
     @Mock
     private Authentication authentication;
+    @Mock
+    private UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
 
     @Mock
     private SecurityJsonWebTokenConfiguration securityJsonWebTokenConfiguration;
@@ -94,7 +99,7 @@ public class JwtTokenProviderTest {
 
         // expiration time
         final Date now = new Date();
-        final Date validity = new Date(now.getTime() + EXPIREATION_TIME);
+        final Date validity = new Date(now.getTime() + EXPIRATION_TIME);
 
 
         return Jwts.builder()
@@ -108,7 +113,7 @@ public class JwtTokenProviderTest {
 
     @Before
     public void initConfig() {
-        when(securityJsonWebTokenConfiguration.getExpiration()).thenReturn(EXPIREATION_TIME);
+        when(securityJsonWebTokenConfiguration.getExpiration()).thenReturn(EXPIRATION_TIME);
         when(securityJsonWebTokenConfiguration.getSecret()).thenReturn(SECRET);
         when(securityJsonWebTokenConfiguration.getRefresh()).thenReturn(REFRESH_TIME);
 
@@ -174,7 +179,7 @@ public class JwtTokenProviderTest {
         // configure mocks
 
         // call test method
-        String actual = underTest.getUsername(JWT);
+        final String actual = underTest.getUsername(JWT);
 
         // assert result
         assertThat(actual).isEqualTo(USERNAME);
@@ -195,7 +200,7 @@ public class JwtTokenProviderTest {
         // configure mocks
 
         // call test method
-        Set<UserPermission> actual = underTest.getPermissions(JWT);
+        final Set<UserPermission> actual = underTest.getPermissions(JWT);
 
         // assert result
         assertThat(actual).containsAll(PERMISSIONS);
@@ -206,16 +211,79 @@ public class JwtTokenProviderTest {
 
     @Test
     public void createToken() {
+        // prepare test data
+        final UserWithPermissionsDO userWithPermissionsDO = new UserWithPermissionsDO();
+        userWithPermissionsDO.setId(ID);
+        userWithPermissionsDO.setEmail(USERNAME);
+        userWithPermissionsDO.setPermissions(
+                PERMISSIONS.stream().map(UserPermission::name).collect(Collectors.toList()));
+
+        // configure mocks
+        when(authentication.getPrincipal()).thenReturn(userWithPermissionsDO);
+
+        // call test method
+        final String actual = underTest.createToken(authentication);
+
+        // assert result
+
+        // verify invocations
     }
 
 
     @Test
     public void getAuthentication() {
+        // prepare test data
+        final UserWithPermissionsDO userWithPermissionsDO = new UserWithPermissionsDO();
+        userWithPermissionsDO.setId(ID);
+        userWithPermissionsDO.setEmail(USERNAME);
+        userWithPermissionsDO.setPermissions(
+                PERMISSIONS.stream().map(UserPermission::name).collect(Collectors.toList()));
+
+        final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(USERNAME, PASSWORD);
+
+        // configure mocks
+        when(authentication.getPrincipal()).thenReturn(userWithPermissionsDO);
+        when(userAuthenticationProvider.createAuthenticationPlaceholder(USERNAME, new HashSet<>(PERMISSIONS)))
+                .thenReturn(usernamePasswordAuthenticationToken);
+
+        // call test method
+        final Authentication actual = underTest.getAuthentication(JWT);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getPrincipal()).isNotNull().isInstanceOf(String.class).isEqualTo(USERNAME);
+        assertThat(actual.getCredentials()).isNotNull().isInstanceOf(String.class).isEqualTo(PASSWORD);
+
+        // verify invocations
     }
 
 
     @Test
     public void getOptionsAuthentication() {
+        // prepare test data
+        final UserWithPermissionsDO userWithPermissionsDO = new UserWithPermissionsDO();
+        userWithPermissionsDO.setId(ID);
+        userWithPermissionsDO.setEmail(USERNAME);
+        userWithPermissionsDO.setPermissions(
+                PERMISSIONS.stream().map(UserPermission::name).collect(Collectors.toList()));
+
+        final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(USERNAME, PASSWORD);
+
+        // configure mocks
+        when(userAuthenticationProvider.createAuthenticationPlaceholder(any(), any()))
+                .thenReturn(usernamePasswordAuthenticationToken);
+
+        // call test method
+        final Authentication actual = underTest.getOptionsAuthentication();
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getPrincipal()).isNotNull().isInstanceOf(String.class).isEqualTo(USERNAME);
+        assertThat(actual.getCredentials()).isNotNull().isInstanceOf(String.class).isEqualTo(PASSWORD);
+
+        // verify invocations
     }
 
 
@@ -226,7 +294,7 @@ public class JwtTokenProviderTest {
         // configure mocks
 
         // call test method
-        boolean actual = underTest.validateToken(JWT);
+        final boolean actual = underTest.validateToken(JWT);
 
         // assert result
         assertThat(actual).isTrue();
@@ -241,8 +309,8 @@ public class JwtTokenProviderTest {
 
         // configure mocks
 
-        // call test method
-        String actual = underTest.refreshToken(JWT);
+        // call tes t method
+        final String actual = underTest.refreshToken(JWT);
 
         // assert result
         assertThat(actual).isEqualTo(JWT);
