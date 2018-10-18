@@ -9,8 +9,6 @@ import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -54,16 +52,17 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
 
     @Override
     public DsbMitgliedDO findById(final long id) {
-        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
+        // TODO implement
 
-        final DsbMitgliedBE result = dsbMitgliedDAO.findById(id);
+        // preconditions
 
-        if (result == null) {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", id));
-        }
+        // database request
 
-        return DsbMitgliedMapper.toDsbMitgliedDO.apply(result);
+        // validate result
+
+        // mapping
+
+        return null;
     }
 
 

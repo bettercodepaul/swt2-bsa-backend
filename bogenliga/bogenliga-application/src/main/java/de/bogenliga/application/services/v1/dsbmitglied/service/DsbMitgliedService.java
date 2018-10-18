@@ -75,23 +75,6 @@ public class DsbMitgliedService implements ServiceFacade {
 
     /**
      * I return all dsbMitglied entries of the database.
-     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
-     *
-     * Usage:
-     * <pre>{@code Request: GET /v1/dsbmitglied}</pre>
-     * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMitlgied angepasst werden
-     * [
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  },
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.interval",
-     *    "value": "10"
-     *  }
-     * ]
-     * }
-     * </pre>
      *
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
@@ -107,47 +90,27 @@ public class DsbMitgliedService implements ServiceFacade {
     /**
      * I return the dsbMitglied entry of the database with a specific id.
      *
-     * Usage:
-     * <pre>{@code Request: GET /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
-     * <pre>{@code Response:
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  }
-     * }
-     * </pre>
      *
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        // TODO implement
 
-        LOG.debug("Receive 'findById' request with ID '{}'", id);
+        // precondition
 
-        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
-        return DsbMitgliedDTOMapper.toDTO.apply(dsbMitgliedDO);
+        // business logic
+
+        // mapping
+
+        return null;
     }
 
 
     /**
      * I persist a new dsbMitglied and return this dsbMitglied entry.
      *
-     * Usage:
-     * <pre>{@code Request: POST /v1/dsbmitglied
-     * Body:
-     * {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     * }
-     * }</pre>
-     * <pre>{@code Response:
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  }
-     * }</pre>
      * @param dsbMitgliedDTO of the request body
      * @param principal authenticated user
      * @return list of {@link DsbMitgliedDTO} as JSON
@@ -160,8 +123,8 @@ public class DsbMitgliedService implements ServiceFacade {
 
         checkPreconditions(dsbMitgliedDTO);
 
-        LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                " mitgliedsnummer '{}', vereinsid '{}'",
+        LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', "
+                        + "nationalitaet '{}', mitgliedsnummer '{}', vereinsid '{}'",
                 dsbMitgliedDTO.getId(),
                 dsbMitgliedDTO.getVorname(),
                 dsbMitgliedDTO.getNachname(),
@@ -181,14 +144,6 @@ public class DsbMitgliedService implements ServiceFacade {
     /**
      * I persist a newer version of the dsbMitglied in the database.
      *
-     * Usage:
-     * <pre>{@code Request: PUT /v1/dsbmitglied
-     * Body:
-     * {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     * }
-     * }</pre>
      */
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -198,8 +153,8 @@ public class DsbMitgliedService implements ServiceFacade {
         checkPreconditions(dsbMitgliedDTO);
         Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
-        LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                        " mitgliedsnummer '{}', vereinsid '{}'",
+        LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', "
+                        + "nationalitaet '{}', mitgliedsnummer '{}', vereinsid '{}'",
                 dsbMitgliedDTO.getId(),
                 dsbMitgliedDTO.getVorname(),
                 dsbMitgliedDTO.getNachname(),
