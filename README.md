@@ -5,20 +5,12 @@
 
 # Bogenliga Application
 
-tbd 
-
-This repository can be used for a basic working Spring Boot application
 
 ## Content
 
 - Spring Boot with REST services
 - Flyway
 
-__tbd__
-
-## Requirements
-
-__tbd__
 
 ## How to use
 
