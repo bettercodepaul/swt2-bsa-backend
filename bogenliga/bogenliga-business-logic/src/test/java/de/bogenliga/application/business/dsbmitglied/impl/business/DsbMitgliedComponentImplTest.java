@@ -34,17 +34,17 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class DsbMitgliedComponentImplTest {
 
-    private static final long USER = 0;
-    private static final long VERSION = 0;
+    private static final Long USER = 0L;
+    private static final Long VERSION = 0L;
 
-    private static final long ID = 1337;
+    private static final Long ID = 1337L;
     private static final String VORNAME = "Sorscha";
     private static final String NACHNAME = "Kratikoff";
     private static final Date GEBURTSDATUM = Date.valueOf("1991-09-01");
     private static final String NATIONALITAET = "DE";
     private static final String MITGLIEDSNUMMER = "223344uu";
-    private static final long VEREINSID = 2;
-    private static final long USERID = 4242;
+    private static final Long VEREINSID = 2L;
+    private static final Long USERID = 4242L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
