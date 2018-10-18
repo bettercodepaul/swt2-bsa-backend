@@ -26,13 +26,13 @@ public class UserMapper implements ValueObjectMapper {
      */
     public static final Function<UserBE, UserDO> toUserDO = be -> {
 
-        final long id = be.getUserId();
+        final Long id = be.getUserId();
         final String email = be.getUserEmail();
 
         // technical parameter
-        long createdByUserId = be.getCreatedByUserId();
-        long lastModifiedByUserId = be.getLastModifiedByUserId();
-        long version = be.getVersion();
+        Long createdByUserId = be.getCreatedByUserId();
+        Long lastModifiedByUserId = be.getLastModifiedByUserId();
+        Long version = be.getVersion();
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());

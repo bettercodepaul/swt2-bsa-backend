@@ -150,7 +150,7 @@ public class JwtTokenProvider {
     }
 
 
-    private String createToken(final String username, final long id, final long version,
+    private String createToken(final String username, final Long id, final Long version,
                                final Set<UserPermission> permissions,
                                final int refreshCounter) {
         // subject

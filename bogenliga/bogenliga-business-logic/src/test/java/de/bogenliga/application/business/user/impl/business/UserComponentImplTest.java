@@ -28,7 +28,7 @@ public class UserComponentImplTest {
     private static final Long VERSION = 2L;
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
-    private static final long USER = 0;
+    private static final Long USER = 0L;
     private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", null, 0L, null, 0L, 0L);
 
 
