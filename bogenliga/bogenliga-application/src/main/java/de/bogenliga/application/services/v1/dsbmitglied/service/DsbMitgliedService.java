@@ -191,7 +191,8 @@ public class DsbMitgliedService implements ServiceFacade {
      * }</pre>
      */
     @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
         checkPreconditions(dsbMitgliedDTO);

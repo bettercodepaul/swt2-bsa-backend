@@ -34,27 +34,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
-    /*
-    // TODO fix CORS
-     * I configure the Cross-Origin Resource Sharing (CORS) mechanism.
-     *
-     * @see <a href="https://de.wikipedia.org/wiki/Cross-Origin_Resource_Sharing">CORS</a>
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(
-                Arrays.asList("x-auth-token", "Authorization", "Cache-Control", "Content-Type"));
-        configuration.setExposedHeaders(Collections.singletonList("x-auth-token"));
-        configuration.setAllowCredentials(true);
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-     */
-
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider);
@@ -86,16 +65,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        // Apply JWT
+        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+
         // Entry points
         http.authorizeRequests()
                 .antMatchers("/v1/user/signin").permitAll()
-                .antMatchers("/v1/*").permitAll() // TODO allow all in pupose of the failing angular application
-                .antMatchers("/v1/**").permitAll() // TODO allow all in pupose of the failing angular application
-                .antMatchers("/v1/configuration/*").permitAll() // TODO allow all in pupose of the failing angular application
+                //.antMatchers("/v1/*").permitAll() // TODO allow all in pupose of the failing angular application
+                //.antMatchers("/v1/**").permitAll() // TODO allow all in pupose of the failing angular application
+                //.antMatchers("/v1/configuration/*").permitAll() // TODO allow all in pupose of the failing angular application
                 // Disallow everything else...
                 .anyRequest().authenticated();
 
-        // Apply JWT
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
     }
 }

@@ -2,6 +2,7 @@ package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -187,6 +188,10 @@ public class JwtTokenProvider {
         return userAuthenticationProvider.createAuthenticationPlaceholder(getUsername(token), getPermissions(token));
     }
 
+
+    Authentication getOptionsAuthentication() {
+        return userAuthenticationProvider.createAuthenticationPlaceholder("SYSTEM", Collections.emptySet());
+    }
 
     boolean validateToken(final String token) {
         try {
