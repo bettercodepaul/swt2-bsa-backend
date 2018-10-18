@@ -100,11 +100,5 @@ public class UserComponentImpl implements UserComponent {
 
         return technicalUserBA.isTechnicalUser(userDO);
     }
-
-
-    private void checkUserDO(final UserDO userDO, final long currentUserId) {
-        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
-        Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
-        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_USER);
-    }
+    
 }

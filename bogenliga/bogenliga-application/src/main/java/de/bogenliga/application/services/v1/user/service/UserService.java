@@ -1,11 +1,5 @@
 package de.bogenliga.application.services.v1.user.service;
 
-/**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
-
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

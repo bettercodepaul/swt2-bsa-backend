@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Copyright 2015 Valerio Vaudi Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
@@ -21,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
  * License.
  */
 public class CorsFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(CorsFilter.class);
+
+
     private static final String ACCESS_CONTROL_ALLOW_ORIGIN_NAME = "Access-Control-Allow-Origin";
     private static final String DEFAULT_ACCESS_CONTROL_ALLOW_ORIGIN_VALUE = "*";
 
@@ -46,7 +51,8 @@ public class CorsFilter implements Filter {
             if (initParameterValue != null) {
                 try {
                     getClass().getDeclaredField(stringStringEntry.getValue()).set(this, initParameterValue);
-                } catch (final IllegalAccessException | NoSuchFieldException ignored) {
+                } catch (final IllegalAccessException | NoSuchFieldException e) {
+                    LOG.error("CORS filtering failed", e);
                 }
             }
         }
