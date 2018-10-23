@@ -32,7 +32,20 @@
                 <database.password>swt2</database.password>
             </properties>
         </profile>
-
+        <profile>
+            <id>PROD-DATA-MIGRATION</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <environment>PROD-DATA-MIGRATION</environment>
+                <!-- WORKAROUND: use configuration parameter -->
+                <!-- mvn flyway:migrate -Denvironment=LOCAL -Ddatabase.url=jdbc:postgresql://localhost:5432/swt2 -Ddatabase.user=swt2 -Ddatabase.password=swt2 -->
+                <database.url>jdbc:postgresql://localhost:5432/swt2</database.url>
+                <database.user>swt2</database.user>
+                <database.password>swt2</database.password>
+            </properties>
+        </profile>
         <!-- add profiles with properties for each environment, e.g. TEST, INT, PROD -->
     </profiles>
 
@@ -54,6 +67,10 @@
                     <placeholderReplacement>false</placeholderReplacement>
                     <outOfOrder>false</outOfOrder>
                     <baselineOnMigrate>true</baselineOnMigrate>
+                    <schemas>
+                        <schema>public</schema>
+                        <schema>prod_data_migration</schema>
+                    </schemas>
                     <!-- resolved by the profile properties -->
                     <url>${database.url}</url>
                     <user>${database.user}</user>
