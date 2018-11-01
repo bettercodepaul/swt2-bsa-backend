@@ -41,4 +41,10 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         return competitionClassBEList.stream().map(CompetitionClassMapper.toCompetitionClassDO).collect(
                 Collectors.toList());
     }
+
+
+    @Override
+    public CompetitionClassDO update(CompetitionClassDO competitionClassDO, long ClassId) {
+        return null;
+    }
 }

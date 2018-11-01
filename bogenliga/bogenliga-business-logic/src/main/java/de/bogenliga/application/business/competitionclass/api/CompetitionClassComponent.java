@@ -19,6 +19,15 @@ public interface CompetitionClassComponent extends ComponentFacade {
     List<CompetitionClassDO> findAll();
 
 
+    /**
+     * Update an existing competition Class. A class is identified by its ClassId
+     * @param competitionClassDO existing competitionClassDO to update
+     * @return an updated version of the edited competition Class
+     */
+    CompetitionClassDO update (CompetitionClassDO competitionClassDO, long ClassId);
+
+
+
     //TODO Implement create request
     //TODO Implement delete request
     //TODO Implement update request
