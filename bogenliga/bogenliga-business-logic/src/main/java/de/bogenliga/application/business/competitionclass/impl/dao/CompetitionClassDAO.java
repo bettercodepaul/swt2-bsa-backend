@@ -31,7 +31,7 @@ public class CompetitionClassDAO implements DataAccessObject {
     private static final String COMPETITIONCLASS_BE_ID = "klasseId";
     private static final String COMPETITIONCLASS_BE_NAME = "klasseName";
     private static final String COMPETITIONCLASS_BE_ALTER_MIN = "klasseAlterMin";
-    private static final String COMPETITIONCLASS_BE_ALTER_MAX = "klasseAlterMAX";
+    private static final String COMPETITIONCLASS_BE_ALTER_MAX = "klasseAlterMax";
     private static final String COMPETITIONCLASS_BE_KLASSE_NR = "klasseNr";
 
     private static final String COMPETITIONCLASS_TABLE_ID = "klasse_id";
@@ -85,6 +85,19 @@ public class CompetitionClassDAO implements DataAccessObject {
      */
     public List<CompetitionClassBE> findAll() { return basicDao.selectEntityList(COMPETITIONCLASS, FIND_ALL); }
 
+
+    /**
+     * Create a new competitionClass entry
+     *
+     * @param competitionClassBE
+     * @param currentClassId
+     * @return
+     */
+    public CompetitionClassBE create(final CompetitionClassBE competitionClassBE, final long currentClassId){
+        basicDao.setCreationAttributes(competitionClassBE, currentClassId);
+
+        return basicDao.insertEntity(COMPETITIONCLASS, competitionClassBE);
+    }
 
     /**
      * Update an existing Competition Class entry

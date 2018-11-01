@@ -54,6 +54,18 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
 
     @Override
+    public CompetitionClassDO create(final CompetitionClassDO competitionClassDO, final long currentClassId) {
+
+        checkCompetitionClassDO(competitionClassDO, currentClassId);
+
+        final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
+        final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.create(competitionClassBE, currentClassId);
+
+        return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
+    }
+
+
+    @Override
     public CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentClassId) {
     checkCompetitionClassDO(competitionClassDO, currentClassId);
     Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
@@ -72,9 +84,9 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         Preconditions.checkNotNull(competitionClassDO.getKlasseAlterMax(), PRECONDITION_MSG_KLASSE_ALTER_MAX);
         Preconditions.checkNotNull(competitionClassDO.getKlasseNr(), PRECONDITION_MSG_KLASSE_NR);
         Preconditions.checkNotNull(competitionClassDO.getKlasseName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkArgument(competitionClassDO.getId() < 0, PRECONDITION_MSG_KLASSE_ID);
-        Preconditions.checkArgument(competitionClassDO.getKlasseAlterMin() < 0, PRECONDITION_MSG_KLASSE_ALTER_MIN);
-        Preconditions.checkArgument(competitionClassDO.getKlasseAlterMin() > competitionClassDO.getKlasseAlterMax(),PRECONDITION_MSG_KLASSE_ALTER_MIN);
+        Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
+        Preconditions.checkArgument(competitionClassDO.getKlasseAlterMin() >= 0, PRECONDITION_MSG_KLASSE_ALTER_MIN);
+        Preconditions.checkArgument(competitionClassDO.getKlasseAlterMin() < competitionClassDO.getKlasseAlterMax(),PRECONDITION_MSG_KLASSE_ALTER_MIN);
 
     }
 }

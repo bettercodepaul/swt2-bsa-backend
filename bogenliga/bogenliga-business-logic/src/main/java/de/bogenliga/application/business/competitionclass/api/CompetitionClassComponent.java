@@ -2,6 +2,7 @@ package de.bogenliga.application.business.competitionclass.api;
 
 import java.util.List;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
+import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import de.bogenliga.application.common.component.ComponentFacade;
 
 /**
@@ -17,6 +18,15 @@ public interface CompetitionClassComponent extends ComponentFacade {
      * @return list of all competition classes in the database
      */
     List<CompetitionClassDO> findAll();
+
+
+    /**
+     * Create a new CommpetitionClass.
+     *
+     * @param competitionClassDO new competitionClass
+     * @return a new CompetitionClass
+     */
+    CompetitionClassDO create(CompetitionClassDO competitionClassDO, long currentClassId);
 
 
     /**

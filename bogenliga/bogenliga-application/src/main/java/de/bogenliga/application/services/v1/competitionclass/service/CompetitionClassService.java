@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.competitionclass.service;
 
+import java.awt.event.ComponentListener;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.competitionclass.api.CompetitionClassComponent;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
+import de.bogenliga.application.business.competitionclass.impl.mapper.CompetitionClassMapper;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -72,6 +74,37 @@ public class CompetitionClassService implements ServiceFacade {
 
 
     /**
+     * I persist a new CompetitionClass and return this CompetitionClass entry
+     *
+     * @param competitionClassDTO
+     * @param principal
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public CompetitionClassDTO create(@RequestBody final CompetitionClassDTO
+                                                 competitionClassDTO, final Principal principal){
+
+        checkPreconditions(competitionClassDTO);
+
+        LOGGER.debug("Receive 'create' request with klasseId '{}', klasseName '{}', klasseAlterMin '{}', klasseAlterMax '{}', klasseNr '{}' ",
+                competitionClassDTO.getId(),
+                competitionClassDTO.getKlasseName(),
+                competitionClassDTO.getKlasseAlterMin(),
+                competitionClassDTO.getKlasseAlterMax(),
+                competitionClassDTO.getKlasseNr());
+
+        final CompetitionClassDO newCompetitionClassDo = CompetitionClassDTOMapper.toDO.apply(competitionClassDTO);
+        final long ClassId = UserProvider.getCurrentUserId(principal);
+
+        final CompetitionClassDO savedCompetitionClassDo = competitionClassComponent.create(newCompetitionClassDo, ClassId);
+        return CompetitionClassDTOMapper.toDTO.apply(savedCompetitionClassDo);
+    }
+
+
+    /**
      * I persist a newer version of the CompetitionClass in the database.
      */
 
@@ -79,10 +112,10 @@ public class CompetitionClassService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public CompetitionClassDTO update(final CompetitionClassDTO competitionClassDTO, final Principal principal){
+    public CompetitionClassDTO update(@RequestBody final CompetitionClassDTO competitionClassDTO, final Principal principal){
     checkPreconditions(competitionClassDTO);
 
-        LOGGER.debug("Receive 'create' request with  id '{}', name '{}', alter_Min '{}', alter_Max '{}', number '{}'",
+        LOGGER.debug("Receive 'update' request with  id '{}', name '{}', alter_Min '{}', alter_Max '{}', klasseNr '{}'",
 
                 competitionClassDTO.getId(),
                 competitionClassDTO.getKlasseName(),
@@ -110,9 +143,9 @@ public class CompetitionClassService implements ServiceFacade {
         Preconditions.checkNotNull(competitionClassDTO.getKlasseNr(), PRECONDITION_MSG_KLASSE_NR);
         Preconditions.checkNotNull(competitionClassDTO.getKlasseName(), PRECONDITION_MSG_NAME);
 
-        Preconditions.checkArgument(competitionClassDTO.getId() < 0, PRECONDITION_MSG_KLASSE_ID);
-        Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() < 0, PRECONDITION_MSG_KLASSE_ALTER_MIN);
-        Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() > competitionClassDTO.getKlasseAlterMax(),PRECONDITION_MSG_KLASSE_ALTER_MIN);
+        Preconditions.checkArgument(competitionClassDTO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
+        Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() >= 0, PRECONDITION_MSG_KLASSE_ALTER_MIN);
+        Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() < competitionClassDTO.getKlasseAlterMax(),PRECONDITION_MSG_KLASSE_ALTER_MIN);
 
     }
 }

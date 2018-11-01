@@ -67,5 +67,19 @@ public class CompetitionClassBE extends CommonBusinessEntity implements Business
         this.klasseNr = klasseNr;
     }
 
+
+    @Override
+    public String toString(){
+
+        return "CompetitionClassBE {" +
+                "klasseId = " + klasseId + '\'' +
+                ", klasseName = '" + klasseName + '\'' +
+                ", klasseAlterMin = '" + klasseAlterMin + '\'' +
+                ", klasseAlterMax = '" + klasseAlterMax + '\'' +
+                ", klasseNr = '" + klasseNr +
+                '}';
+    }
+
     //TODO write toString method
+
 }
