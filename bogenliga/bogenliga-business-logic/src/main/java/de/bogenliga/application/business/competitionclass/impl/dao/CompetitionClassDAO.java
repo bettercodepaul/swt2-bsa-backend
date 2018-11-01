@@ -86,6 +86,23 @@ public class CompetitionClassDAO implements DataAccessObject {
     public List<CompetitionClassBE> findAll() { return basicDao.selectEntityList(COMPETITIONCLASS, FIND_ALL); }
 
 
+    /**
+     * Update an existing Competition Class entry
+     *
+     * @param competitionClassBE
+     * @param currentClassId
+     *
+     */
+    public CompetitionClassBE update(final CompetitionClassBE competitionClassBE, final long currentClassId){
+        basicDao.setModificationAttributes(competitionClassBE,currentClassId);
+
+        return basicDao.updateEntity(COMPETITIONCLASS,competitionClassBE,COMPETITIONCLASS_BE_ID);
+    }
+
+
+
+
+
     //TODO write update method
     //TODO write create method
     //TODO write delete method
