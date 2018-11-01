@@ -10,29 +10,36 @@ ALTER TABLE prod_data_migration."vereine"
 ;
 Commit;
 
-
+-- übernehmen der Mannschaftsnummer in die neue Spalte, wenn es eine gibt
 Update prod_data_migration."vereine"
 SET "Mannschaft" = SUBSTRING ("Verein",'([1-9]{1,1})')
 WHERE SUBSTRING ("vereine"."Verein",'([0-9]{1,1})')<>''
 ;
 
 
-
+-- reduzieren der Vereinsnamen - ohne Nummer und ohne training Spaces
 Update prod_data_migration."vereine"
-SET "Verein" = SUBSTRING ("Verein",'([A-Z,a-z,ä,ö,ü,Ä,Ü,Ö,ß, ,-]{1,200})')
+SET "Verein" = RTRIM(SUBSTRING ("Verein",'([A-Z,a-z,ä,ö,ü,Ä,Ü,Ö,ß, ,-]{1,200})'))
 ;
 
+-- jetzt schmeißen wir noch die "unbekannten Vereine" raus
 Delete from prod_data_migration."vereine"
 where "VNR" in ('36WT919999', '36WT929999', '36WT939999', '36WT949999')
 ;
 
+
+-- weil wir die Mannschaftsnummer entfernt haben, sind ide Namen der Vereine
+-- jetzt nicht mehr eindeutig...
+-- daher select distinct - hier reicht uns ein Eintrag
 INSERT INTO public.verein (verein_name, verein_dsb_identifier, verein_region_id)
-SELECT "vereine"."Verein",
-       "vereine"."VNR",
+SELECT DISTINCT ON
+       ("Verein") "Verein",
+       "VNR",
        1
 FROM prod_data_migration."vereine"
 WHERE "aktiviert" = '1'
-GROUP BY "vereine"."Verein"
+ORDER BY "Verein",
+    "VNR"
 ;
 
 

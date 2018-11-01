@@ -727,16 +727,17 @@ VALUES(1,1);
 
 
 
+DROP TABLE IF EXISTS "w_Vereine";
 DROP TABLE IF EXISTS "Vereine";
 
-CREATE TABLE "Vereine" (
+CREATE TABLE "w_Vereine" (
     "vnr" TEXT,
     "Verein" TEXT,
     "Landesverband" TEXT,
     "Homepageadresse" TEXT
 );
 
-INSERT INTO "Vereine"("vnr","Verein","Landesverband","Homepageadresse")
+INSERT INTO "w_Vereine"("vnr","Verein","Landesverband","Homepageadresse")
 VALUES(E'31WT111324',E'SV Schwieberdingen',E'WT',E' '),
       (E'31WT313203',E'SGes Gerstetten',E'WT',E' '),
       (E'31WT414202',E'SGes Bempflingen',E'WT',E' '),
