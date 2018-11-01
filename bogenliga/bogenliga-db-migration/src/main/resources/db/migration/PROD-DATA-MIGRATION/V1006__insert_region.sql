@@ -1,3 +1,5 @@
+
+
 INSERT INTO public.region (region_id, region_name, region_kuerzel, region_typ, region_uebergeordnet)
 VALUES
   (0, 'Deutscher Schützenbund',             'DSB',      'BUNDESVERBAND', NULL),
@@ -44,7 +46,7 @@ VALUES
   (35, 'Kreis Tuttlingen',                  'K TUT',      'KREIS', 31),
   (36, 'Kreis Zollernalb',                  'K BL',       'KREIS', 31),
 --
-  (37, 'Bezirk Oberschwaben',               'BZ SWH',    'BEZIRK', 1),
+  (37, 'Bezirk Oberschwaben',               'BZ OS',    'BEZIRK', 1),
   (38, 'Kreis Biberach-Iller',              'K BC',       'KREIS', 37),
   (39, 'Kreis Ehingen',                     'K EHI',      'KREIS', 37),
   (40, 'Kreis Ravensburg',                  'K RV',       'KREIS', 37),
