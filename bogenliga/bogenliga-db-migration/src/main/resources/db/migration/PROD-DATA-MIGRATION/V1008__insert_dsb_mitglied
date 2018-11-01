@@ -1,0 +1,20 @@
+
+--insert INTO public.dsb_mitglied
+--      ( dsb_mitglied_vorname,
+--        dsb_mitglied_nachname,
+--        dsb_mitglied_geburtsdatum,
+--        dsb_mitglied_mitgliedsnummer,
+--        dsb_mitglied_verein_id
+--        )
+select (
+      split_part("Schützentabelle"."Schname", ',', 2),
+      split_part("Schützentabelle"."Schname", ',', 1),
+      to_date("Schützentabelle"."SchGebDat",'DD.MM.YYYY'),
+      "Schützentabelle"."Mitgliedsnummer",
+      verein.verein_id
+        )
+        FROM prod_data_migration."Schützentabelle", public.verein
+        where "Schützentabelle"."SchVNR"=verein.verein_dsb_identifier
+;
+
+
