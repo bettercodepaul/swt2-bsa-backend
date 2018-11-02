@@ -16,6 +16,8 @@ DROP TABLE prod_data_migration."Finale";
 DROP TABLE prod_data_migration."Finalendtabelle";
 DROP TABLE prod_data_migration."Finalmitarbeiter";
 DROP TABLE prod_data_migration."Finalwettkampfplan";
+DROP TABLE prod_data_migration."optionen";
+DROP TABLE prod_data_migration."Seriendruck";
 
 
 

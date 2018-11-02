@@ -11,7 +11,9 @@ _Die Versionen der Migrationsskripte liegen zwischen 1000 und 1999. Die Schema-V
 Schema-Änderungen nach der Migration müssen daher bei Version **1200** starten._
 
 Wichtig: 
-manuelle Datenänderungen:
-
-
+manuelle Vorbereitung:
 1) im SQL-Skript Wettkampfdaten muss die Tabelle "Vereine" umbenannt werden in w_Vereine
+
+
+manuelle Nachbereitung:
+1) Hierarchie der Ligen pflegen (Aufstieg zu, Abstieg nach..)
