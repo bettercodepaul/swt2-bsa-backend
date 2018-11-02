@@ -4,7 +4,6 @@ INSERT INTO public.region (region_id, region_name, region_kuerzel, region_typ, r
 VALUES
   (0, 'Deutscher Schützenbund',             'DSB',      'BUNDESVERBAND', NULL),
   (1, 'Württembergischer Schützenverband',  'WT',       'LANDESVERBAND', 0),
-  (2, 'Badischer Sportschützenverband',     'BD',       'LANDESVERBAND', 0),
 --
   (3, 'Bezirk Unterland',                   'BZ UL',     'BEZIRK', 1),
   (4, 'Kreis Backnang',                     'K BKNG',    'KREIS', 3),
@@ -56,3 +55,14 @@ VALUES
   (44, 'Kreis Wangen',                      'K WG',       'KREIS', 37);
 --
 
+Insert INTO public.region
+    (region_name, region_kuerzel, region_typ, region_uebergeordnet)
+SELECT
+    "lvtest",
+    "lv",
+    'LANDESVERBAND',
+    '1'
+from prod_data_migration."landesverbände"
+where "lv"<>'WT';
+
+    
