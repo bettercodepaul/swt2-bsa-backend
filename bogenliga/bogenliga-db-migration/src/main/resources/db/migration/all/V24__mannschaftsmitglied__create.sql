@@ -22,7 +22,7 @@
 CREATE TABLE mannschaftsmitglied (
   mannschaftsmitglied_mannschaft_id                 DECIMAL(19,0) NOT NULL,
   mannschaftsmitglied_dsb_mitglied_id               DECIMAL(19,0) NOT NULL,
-  mannschaftsmitglied_dsb_mitglied_eingesetzt       BOOLEAN       NOT NULL, -- false= kein Einsatz, true= Einsatz/ hat geschossen
+  mannschaftsmitglied_dsb_mitglied_eingesetzt       INTEGER       NOT NULL, -- 0= kein Einsatz, >0 #Einsatze
 
 
   -- technical columns to track the lifecycle of each row

@@ -6,7 +6,7 @@
 
 -- spalte hinzufügen
 ALTER TABLE prod_data_migration."vereine"
-  ADD COLUMN "Mannschaft" text DEFAULT '0'
+  ADD COLUMN "Mannschaft" text DEFAULT '1'
 ;
 Commit;
 
