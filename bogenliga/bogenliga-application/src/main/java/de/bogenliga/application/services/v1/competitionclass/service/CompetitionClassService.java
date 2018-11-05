@@ -96,10 +96,10 @@ public class CompetitionClassService implements ServiceFacade {
                 competitionClassDTO.getKlasseNr());
 
         final CompetitionClassDO newCompetitionClassDo = CompetitionClassDTOMapper.toDO.apply(competitionClassDTO);
-        final long ClassId = UserProvider.getCurrentUserId(principal);
+        final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
         final CompetitionClassDO savedCompetitionClassDo = competitionClassComponent.create(newCompetitionClassDo,
-                ClassId);
+                currentDsbMitglied);
         return CompetitionClassDTOMapper.toDTO.apply(savedCompetitionClassDo);
     }
 
@@ -126,10 +126,10 @@ public class CompetitionClassService implements ServiceFacade {
 
 
         final CompetitionClassDO newCompetitionClassDO = CompetitionClassDTOMapper.toDO.apply(competitionClassDTO);
-        final long ClassId = UserProvider.getCurrentUserId(principal);
+        final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
         final CompetitionClassDO updatedCompetitionClassDO = competitionClassComponent.update(newCompetitionClassDO,
-                ClassId);
+                currentDsbMitglied);
         return CompetitionClassDTOMapper.toDTO.apply(updatedCompetitionClassDO);
 
     }

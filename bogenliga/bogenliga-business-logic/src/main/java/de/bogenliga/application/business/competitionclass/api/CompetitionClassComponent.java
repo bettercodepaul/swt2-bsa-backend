@@ -2,7 +2,6 @@ package de.bogenliga.application.business.competitionclass.api;
 
 import java.util.List;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
-import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import de.bogenliga.application.common.component.ComponentFacade;
 
 /**
@@ -24,24 +23,19 @@ public interface CompetitionClassComponent extends ComponentFacade {
      * Create a new CommpetitionClass.
      *
      * @param competitionClassDO new competitionClass
+     * @param currentDsbMitglied id of currently logged in user
      * @return a new CompetitionClass
      */
-    CompetitionClassDO create(CompetitionClassDO competitionClassDO, long currentClassId);
+    CompetitionClassDO create(CompetitionClassDO competitionClassDO, long currentDsbMitglied);
 
 
     /**
      * Update an existing competition Class. A class is identified by its ClassId
      * @param competitionClassDO existing competitionClassDO to update
+     * @param currentDsbMitblied id of the currently logged in user
      * @return an updated version of the edited competition Class
      */
-    CompetitionClassDO update (CompetitionClassDO competitionClassDO, long ClassId);
+    CompetitionClassDO update (CompetitionClassDO competitionClassDO, long currentDsbMitblied);
 
-
-
-    //TODO Implement create request
     //TODO Implement delete request
-    //TODO Implement update request
-    //CompetitionClassDO create(CompetitionClassDO competitionClassDO);
-    //CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentCompetitionClassId);
-    //void delete(CompetitionClassDO competitionClassDO, long currentCompetitionClassid);
 }

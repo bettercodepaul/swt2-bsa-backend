@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.competitionclass.service;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -106,5 +108,58 @@ public class CompetitionClassServiceTest {
         assertEquals(input.getKlasseName(), createdCompetitionClass.getKlasseName());
         assertEquals(input.getKlasseAlterMin(), createdCompetitionClass.getKlasseAlterMin());
         assertEquals(input.getKlasseNr(), createdCompetitionClass.getKlasseNr());
+    }
+
+
+    @Test
+    public void findAll() {
+        // given
+        final CompetitionClassDO competitionClassDO = getCompetitionClassDO();
+        final List<CompetitionClassDO> competitionClassDOList = Collections.singletonList(competitionClassDO);
+
+        when(competitionClassComponent.findAll()).thenReturn(competitionClassDOList);
+
+        // when
+        final List<CompetitionClassDTO> result = competitionClassService.findAll();
+
+        // then
+        final CompetitionClassDTO resultDTO = result.get(0);
+
+        assertNotNull(resultDTO);
+        assertEquals(competitionClassDO.getId(), resultDTO.getId());
+        assertEquals(competitionClassDO.getKlasseName(), resultDTO.getKlasseName());
+        assertEquals(competitionClassDO.getKlasseAlterMax(), resultDTO.getKlasseAlterMax());
+        assertEquals(competitionClassDO.getKlasseAlterMin(), resultDTO.getKlasseAlterMin());
+        assertEquals(competitionClassDO.getKlasseNr(), resultDTO.getKlasseNr());
+    }
+
+
+    @Test
+    public void update() {
+        // given
+        final CompetitionClassDTO input = getCompetitionClassDTO();
+        final CompetitionClassDO expected = getCompetitionClassDO();
+
+        when(competitionClassComponent.update(any(), anyLong())).thenReturn(expected);
+
+        // when
+        final CompetitionClassDTO result = competitionClassService.update(input, principal);
+
+        // then
+        assertNotNull(result);
+        assertEquals(input.getId(), result.getId());
+        assertEquals(input.getKlasseName(), result.getKlasseName());
+        assertEquals(input.getKlasseAlterMin(), result.getKlasseAlterMin());
+        assertEquals(input.getKlasseNr(), result.getKlasseNr());
+
+        verify(competitionClassComponent).update(competitionClassDOArgumentCaptor.capture(), anyLong());
+
+        final CompetitionClassDO createdCompetitionClassDO = competitionClassDOArgumentCaptor.getValue();
+
+        assertNotNull(createdCompetitionClassDO);
+        assertEquals(input.getId(), createdCompetitionClassDO.getId());
+        assertEquals(input.getKlasseName(), createdCompetitionClassDO.getKlasseName());
+        assertEquals(input.getKlasseAlterMin(), createdCompetitionClassDO.getKlasseAlterMin());
+        assertEquals(input.getKlasseNr(), createdCompetitionClassDO.getKlasseNr());
     }
 }

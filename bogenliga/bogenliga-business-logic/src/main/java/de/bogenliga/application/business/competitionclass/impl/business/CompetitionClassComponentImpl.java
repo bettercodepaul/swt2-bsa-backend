@@ -54,24 +54,25 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
 
     @Override
-    public CompetitionClassDO create(final CompetitionClassDO competitionClassDO, final long currentClassId) {
+    public CompetitionClassDO create(final CompetitionClassDO competitionClassDO, final long currentDsbMitglied) {
 
-        checkCompetitionClassDO(competitionClassDO, currentClassId);
+        checkCompetitionClassDO(competitionClassDO, currentDsbMitglied);
 
         final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
-        final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.create(competitionClassBE, currentClassId);
+        final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.create(competitionClassBE,
+                currentDsbMitglied);
 
         return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
     }
 
 
     @Override
-    public CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentClassId) {
-    checkCompetitionClassDO(competitionClassDO, currentClassId);
+    public CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentDsbMitblied) {
+    checkCompetitionClassDO(competitionClassDO, currentDsbMitblied);
     Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
 
     final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
-    final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.update(competitionClassBE,currentClassId);
+    final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.update(competitionClassBE,currentDsbMitblied);
 
     return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
     }
