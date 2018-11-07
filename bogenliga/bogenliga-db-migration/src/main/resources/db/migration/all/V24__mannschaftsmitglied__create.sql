@@ -17,9 +17,22 @@
  * und ob er in dieser Mannschaft wirklich eingesetzt wurde.
  * ein dsb_mitglied kann in mehreren Mannschaften gemeldet sein und auch in diesen eingesetzt werden.
  * genauere Prüfung erfolgt fachlich bei der Zuordnung
+
+ Wichtig: jedes Mannschaftsmitglied bekommt eine Nummer (auch eine "Startnummer" zum Befestigen an der Kleidung)
+ diese Nummer ergibt sich aus der Reihenfolge der Mannschaftsmitglieder - es wird einfach durchnummeriert...
+ daher sollten keine Mannschaftsmitglieder gelöscht werden - es gibt ja auch keine Grenze der Anzahl...
+ Lesen der Mannschaftmitlgieder für Tabellen sollte daher als "Sort by" mannschaftsmitglied_id erfolgen.
+
+
  **/
+-- auto increment sequence (sq)
+-- primary key range for manually added data [0, 999]
+CREATE SEQUENCE mannschaftmitglied_id START WITH 1000 INCREMENT BY 1;
+
 
 CREATE TABLE mannschaftsmitglied (
+  mannschaftmitglied_id              DECIMAL(19, 0) NOT NULL    DEFAULT nextval(
+      'mannschaftmitglied_id'), -- DECIMAL(19,0) = unsigned long
   mannschaftsmitglied_mannschaft_id                 DECIMAL(19,0) NOT NULL,
   mannschaftsmitglied_dsb_mitglied_id               DECIMAL(19,0) NOT NULL,
   mannschaftsmitglied_dsb_mitglied_eingesetzt       INTEGER       NOT NULL, -- 0= kein Einsatz, >0 #Einsatze
