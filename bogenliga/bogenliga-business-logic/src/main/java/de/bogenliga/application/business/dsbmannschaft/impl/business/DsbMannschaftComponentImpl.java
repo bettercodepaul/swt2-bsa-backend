@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
@@ -39,7 +40,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
      */
 
     @Autowired
-    public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannnschaftDAO) {
+    public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO) {
         this.dsbMannschaftDAO = dsbMannschaftDAO;
     }
 
@@ -49,7 +50,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
     @Override
     public List<DsbMannschaftDO> findAll(){
         final List<DsbMannschaftBe> dsbMannschaftBeList =dsbMannschaftDAO.findAll();
-        return dsbMannschaftBeList.stream().map(dsbMannschaftMapper.toDsbMannschaftDo).collect(Collectors.toList());
+        return dsbMannschaftBeList.stream().map(DsbMannschaftMapper.toDsbMannschaftDo).collect(Collectors.toList());
     }
 
 
@@ -100,7 +101,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
 
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
 
-        dsbMannschaftDAO.delete(dsbMannschaftdBE, currentDsbMannschaftId);
+        dsbMannschaftDAO.delete(dsbMannschaftBE, currentDsbMannschaftId);
 
     }
 
