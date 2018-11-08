@@ -1,4 +1,78 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.mapper;
 
-public class DsbMannschaftMapper {
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+
+import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
+import de.bogenliga.application.common.time.DateProvider;
+
+/**
+ * @author Philip Dengler
+ */
+
+
+public class DsbMannschaftMapper implements ValueObjectMapper {
+
+
+    /**
+     * Converts a {@link DsbMannschaftBE} to a {@link DsbMannschaftDO}
+     *
+     */
+    public static final Function<DsbMannschaftBE, DsbMannschaftDO> toDsbMannschaftDO = be -> {
+
+        final Long id = be.getDsbMitgliedId();
+        final Long vereinId = be.getDsbMannschaftVereinId();
+        final Long nummer = be.getDsbMannschaftNummer();
+        final Long benutzerId = be.getDsbMannschaftBenutzerId();
+        final Long veranstaltungId = be.getDsbMannschaftVeranstaltungId();
+
+
+        // technical parameter
+        Long createdByUserId = be.getCreatedByUserId();
+        Long lastModifiedByUserId = be.getLastModifiedByUserId();
+        Long version = be.getVersion();
+
+        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
+        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
+
+        return new DsbMannschaftDO(id, vereinId, nummer, benutzerId, veranstaltungId,
+                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+    };
+
+
+
+    /**
+     * Converts a {@link DsbMannschaftDO} to a {@link DsbMannschaftBE}
+     */
+
+    public static final Function<DsbMannschaftDO, DsbMannschaftBE> toDsbMannschaftBE = dsbMannschaftDO -> {
+
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getCreatedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getLastModifiedAtUtc());
+
+        DsbMannschaftBE dsbMannschaftBE = new DsbMannschaftBE();
+        dsbMannschaftBE.setDsbMannschaftId(dsbMannschaftDO.getId());
+        dsbMannschaftBE.setDsbMannschaftVereinId(dsbMannschaftDO.getVereinId());
+        dsbMannschaftBE.setDsbMannschaftNummer(dsbMannschaftDO.getNummer());
+        dsbMannschaftBE.setDsbMannschaftBenutzerId(dsbMannschaftDO.getBenutzerId());
+        dsbMannschaftBE.setDsbMannschaftVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
+
+
+        dsbMannschaftBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        dsbMannschaftBE.setCreatedByUserId(dsbMannschaftDO.getCreatedByUserId());
+        dsbMannschaftBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+        dsbMannschaftBE.setLastModifiedByUserId(dsbMannschaftDO.getLastModifiedByUserId());
+        dsbMannschaftBE.setVersion(dsbMannschaftDO.getVersion());
+
+        return dsbMannschaftBE;
+    };
+
+
+    /**
+     * Private constructor
+     */
+    private DsbMannschaftMapper() {
+        // empty private constructor
+    }
+
 }
