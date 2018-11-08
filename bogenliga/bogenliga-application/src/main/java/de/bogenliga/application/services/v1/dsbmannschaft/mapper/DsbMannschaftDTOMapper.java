@@ -22,7 +22,7 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftBenutzerId = dsbMannschaftDo.getBenutzerId();
         final Long dsbMannschaftVeranstalungId = dsbMannschaftDO.getVeranstalungId();
 
-        return new dsbMannschftDTO(dsbMannschaftId,
+        return new dsbMannschaftDTO(dsbMannschaftId,
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
