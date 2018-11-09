@@ -1,9 +1,9 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.mapper;
 
 import java.util.function.Function;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
-import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
+import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 
 /**
 
@@ -13,16 +13,16 @@ import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
  */
 public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
 
-    public static final Function<DsbMannschaftDO, DsbMannschaftDTO> toDTO = dsbMannschaftdDO -> {
+    public static final Function<DsbMannschaftDO, DsbMannschaftDTO> toDTO = dsbMannschaftDO -> {
 
 
-        final Long dsbMannschaftId = dsbMannschaftDo.getId();
-        final Long dsbMannschaftVereinId = dsbMannschaftDo.getVereinId();
-        final Long dsbMannschaftNummer = dsbMannschaftDo.getNummer();
-        final Long dsbMannschaftBenutzerId = dsbMannschaftDo.getBenutzerId();
-        final Long dsbMannschaftVeranstalungId = dsbMannschaftDO.getVeranstalungId();
+        final Long dsbMannschaftId = dsbMannschaftDO.getId();
+        final Long dsbMannschaftVereinId = dsbMannschaftDO.getVereinId();
+        final Long dsbMannschaftNummer = dsbMannschaftDO.getNummer();
+        final Long dsbMannschaftBenutzerId = dsbMannschaftDO.getBenutzerId();
+        final Long dsbMannschaftVeranstalungId = dsbMannschaftDO.getVeranstaltungId();
 
-        return new dsbMannschaftDTO(dsbMannschaftId,
+        return new DsbMannschaftDTO(dsbMannschaftId,
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
@@ -37,7 +37,7 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
      */
 
 
-    public static final Function<DsbMannschaftdDTO, DsbMannschaftDO> toDO = dto -> {
+    public static final Function<DsbMannschaftDTO, DsbMannschaftDO> toDO = dto -> {
 
 
 
@@ -45,9 +45,9 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftVereinId = dto.getVereinId();
         final Long dsbMannschaftNummer = dto.getNummer();
         final Long dsbMannschaftBenutzerId = dto.getBenutzerId();
-        final Long dsbMannschaftVeranstalungId = dto.getVeranstalungId();
+        final Long dsbMannschaftVeranstalungId = dto.getVeranstaltungId();
 
-        return new dsbMannschaftDO(dsbMannschaftId,
+        return new DsbMannschaftDO(dsbMannschaftId,
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
