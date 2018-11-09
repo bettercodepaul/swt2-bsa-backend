@@ -2,7 +2,10 @@ package de.bogenliga.application.business.dsbmannschaft.impl.mapper;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.function.Function;
 
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -20,11 +23,11 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
      */
     public static final Function<DsbMannschaftBE, DsbMannschaftDO> toDsbMannschaftDO = be -> {
 
-        final Long id = be.getDsbMitgliedId();
-        final Long vereinId = be.getDsbMannschaftVereinId();
-        final Long nummer = be.getDsbMannschaftNummer();
-        final Long benutzerId = be.getDsbMannschaftBenutzerId();
-        final Long veranstaltungId = be.getDsbMannschaftVeranstaltungId();
+        final Long id = be.getMannschaftId();
+        final Long vereinId = be.getVereinId();
+        final Long nummer = be.getNummer();
+        final Long benutzerId = be.getBenutzerId();
+        final Long veranstaltungId = be.getVeranstaltungId();
 
 
         // technical parameter
@@ -51,11 +54,11 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getLastModifiedAtUtc());
 
         DsbMannschaftBE dsbMannschaftBE = new DsbMannschaftBE();
-        dsbMannschaftBE.setDsbMannschaftId(dsbMannschaftDO.getId());
-        dsbMannschaftBE.setDsbMannschaftVereinId(dsbMannschaftDO.getVereinId());
-        dsbMannschaftBE.setDsbMannschaftNummer(dsbMannschaftDO.getNummer());
-        dsbMannschaftBE.setDsbMannschaftBenutzerId(dsbMannschaftDO.getBenutzerId());
-        dsbMannschaftBE.setDsbMannschaftVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
+        dsbMannschaftBE.setMannschaftId(dsbMannschaftDO.getId());
+        dsbMannschaftBE.setVereinId(dsbMannschaftDO.getVereinId());
+        dsbMannschaftBE.setNummer(dsbMannschaftDO.getNummer());
+        dsbMannschaftBE.setBenutzerId(dsbMannschaftDO.getBenutzerId());
+        dsbMannschaftBE.setVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
 
 
         dsbMannschaftBE.setCreatedAtUtc(createdAtUtcTimestamp);
