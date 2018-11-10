@@ -23,16 +23,16 @@ public class DsbMannschaftDAO implements DataAccessObject {
     // business entity parameter names
 
 
-    private static final String MANNSCHAFT_BE_ID = "Id";
+    private static final String MANNSCHAFT_BE_ID = "id";
     private static final String MANNSCHAFT_BE_TEAMID = "vereinId";
     private static final String MANNSCHAFT_BE_NUMBER = "nummer";
     private static final String MANNSCHAFT_BE_EVENTID = "veranstaltungId";
     private static final String MANNSCHAFT_BE_USER_ID = "benutzerId";
 
     private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
-    private static final String MANNSCHAFT_TABLE_TEAMID = "mannschaft_id";
+    private static final String MANNSCHAFT_TABLE_TEAMID = "mannschaft_verein_id";
     private static final String MANNSCHAFT_TABLE_NUMBER = "mannschaft_nummer";
-    private static final String MANNSCHAFT_TABLE_EVENTID = "mannschaft_veranstaltung_d";
+    private static final String MANNSCHAFT_TABLE_EVENTID = "mannschaft_veranstaltung_id";
     private static final String MANNSCHAFT_TABLE_USER_ID = "mannschaft_benutzer_id";
 
     // wrap all specific config parameters
@@ -73,8 +73,9 @@ public class DsbMannschaftDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_ID, MANNSCHAFT_BE_ID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_TEAMID, MANNSCHAFT_BE_TEAMID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NUMBER, MANNSCHAFT_BE_NUMBER);
-        columnsToFieldsMap.put(MANNSCHAFT_TABLE_EVENTID, MANNSCHAFT_BE_EVENTID);
+
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_USER_ID, MANNSCHAFT_BE_USER_ID);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_EVENTID, MANNSCHAFT_BE_EVENTID);
 
 
 
