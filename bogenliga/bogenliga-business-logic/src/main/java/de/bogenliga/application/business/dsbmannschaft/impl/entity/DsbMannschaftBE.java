@@ -5,7 +5,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEntity {
 
-    private long mannschaftId;
+    private long id;
     private long vereinId;
     private long nummer;
     private long veranstaltungId;
@@ -14,8 +14,8 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
     public DsbMannschaftBE(){/*empty constructor*/}
 
 
-    public long getMannschaftId() {
-        return mannschaftId;
+    public long getId() {
+        return id;
     }
 
     public long getVereinId() {
@@ -34,8 +34,8 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
         return benutzerId;
     }
 
-    public void setMannschaftId(final long mannschaftId) {
-        this.mannschaftId = mannschaftId;
+    public void setId(final long id) {
+        this.id = id;
     }
 
     public void setVereinId(final long vereinId) {
@@ -57,7 +57,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
     @Override
     public String toString() {
         return "DsbMannschaftBE{" +
-                "mannschaftId=" + mannschaftId +
+                "mannschaftId=" + id +
                 ", mannschaftVereinId='" + vereinId + '\'' +
                 ", mannschaftNummer='" + nummer + '\'' +
                 ", mannschaftVeranstaltungId='" + veranstaltungId + '\'' +
