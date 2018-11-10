@@ -30,11 +30,10 @@ public class DsbMannschaftService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT = "DsbMannschaftDO must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMitgliedDO ID must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaftDO Verein ID must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaftDO Nummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID = "DsbMannschaftDO Benutzer Id must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaftDO Veranstaltung ID must not be null";
-    private static final String PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT = "Current dsbmannschaft id must not be null";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaft Verein ID must not be null";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaft Nummer must not be null";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID = "DsbMannschaft Benutzer Id must not be null";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaft Veranstaltung ID must not be null";
 
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID_NEGATIVE = "DsbMannschaft Id must not be negative";
@@ -241,6 +240,8 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkNotNull(dsbMannschaftDTO.getVereinId(), PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkNotNull(dsbMannschaftDTO.getNummer(), PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
         Preconditions.checkNotNull(dsbMannschaftDTO.getVeranstaltungId(), PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
+        Preconditions.checkNotNull(dsbMannschaftDTO.getBenutzerId(), PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
+
 
 
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0,
@@ -249,6 +250,8 @@ public class DsbMannschaftService implements ServiceFacade {
                 PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getNummer() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE);
+        Preconditions.checkArgument(dsbMannschaftDTO.getBenutzerId() >= 0,
+                PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getVeranstaltungId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE);
 
