@@ -23,7 +23,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
      */
     public static final Function<DsbMannschaftBE, DsbMannschaftDO> toDsbMannschaftDO = be -> {
 
-        final Long id = be.getMannschaftId();
+        final Long id = be.getId();
         final Long vereinId = be.getVereinId();
         final Long nummer = be.getNummer();
         final Long benutzerId = be.getBenutzerId();
@@ -54,7 +54,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getLastModifiedAtUtc());
 
         DsbMannschaftBE dsbMannschaftBE = new DsbMannschaftBE();
-        dsbMannschaftBE.setMannschaftId(dsbMannschaftDO.getId());
+        dsbMannschaftBE.setId(dsbMannschaftDO.getId());
         dsbMannschaftBE.setVereinId(dsbMannschaftDO.getVereinId());
         dsbMannschaftBE.setNummer(dsbMannschaftDO.getNummer());
         dsbMannschaftBE.setBenutzerId(dsbMannschaftDO.getBenutzerId());

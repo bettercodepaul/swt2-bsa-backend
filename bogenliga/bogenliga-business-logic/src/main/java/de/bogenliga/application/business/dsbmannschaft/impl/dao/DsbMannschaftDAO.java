@@ -23,11 +23,11 @@ public class DsbMannschaftDAO implements DataAccessObject {
     // business entity parameter names
 
 
-    private static final String MANNSCHAFT_BE_ID = "mannschaftId";
-    private static final String MANNSCHAFT_BE_TEAMID = "mannschaftId";
-    private static final String MANNSCHAFT_BE_NUMBER = "mannschaftNummer";
-    private static final String MANNSCHAFT_BE_EVENTID = "mannschaftVeranstaltungId";
-    private static final String MANNSCHAFT_BE_USER_ID = "mannschaftBenutzerId";
+    private static final String MANNSCHAFT_BE_ID = "Id";
+    private static final String MANNSCHAFT_BE_TEAMID = "vereinId";
+    private static final String MANNSCHAFT_BE_NUMBER = "nummer";
+    private static final String MANNSCHAFT_BE_EVENTID = "veranstaltungId";
+    private static final String MANNSCHAFT_BE_USER_ID = "benutzerId";
 
     private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
     private static final String MANNSCHAFT_TABLE_TEAMID = "mannschaft_id";
