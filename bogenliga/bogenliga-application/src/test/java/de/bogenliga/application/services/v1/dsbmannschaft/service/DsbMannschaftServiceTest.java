@@ -227,7 +227,7 @@ public class DsbMannschaftServiceTest {
 
         assertThat(deletedDsbMannschaft).isNotNull();
         assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
-        assertThat(deletedDsbMannschaft.getVereinId()).isNull();
+        assertThat(deletedDsbMannschaft.getVereinId()).isEqualTo(0L);
     }
 
 }
