@@ -8,24 +8,17 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static org.junit.Assert.assertTrue;
+import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
+
 import static org.mockito.Mockito.when;
-import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.util.Collections;
 import java.util.List;
 
-//import static de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
 
 
 /**

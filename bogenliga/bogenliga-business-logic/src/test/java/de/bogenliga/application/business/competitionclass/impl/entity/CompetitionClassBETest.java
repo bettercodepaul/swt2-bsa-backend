@@ -2,6 +2,7 @@ package de.bogenliga.application.business.competitionclass.impl.entity;
 
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
 import static org.junit.Assert.*;
 
 /**

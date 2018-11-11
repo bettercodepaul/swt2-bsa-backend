@@ -3,6 +3,8 @@ package de.bogenliga.application.business.competitionclass.impl.mapper;
 import org.junit.Test;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
+import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
+import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassDO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
