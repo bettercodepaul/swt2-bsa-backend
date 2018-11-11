@@ -35,7 +35,7 @@ public class CompetitionClassComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long ID = 1337L;
-    private static final String NAME ="undefined";
+    private static final String NAME ="Herren";
     private static final Long ALTER_MIN = 0L;
     private static final Long ALTER_MAX = 99L;
     private static final Long NUMBER = 2L;
@@ -212,26 +212,7 @@ public class CompetitionClassComponentImplTest {
         //verify invocations
         verifyZeroInteractions(competitionClassDAO);
     }
-
-
-    /**
-     * @Test
-     *     public void create_without_ClassName_shouldThrowException()
-     *     {
-     *         //prepare test data
-     *         final CompetitionClassDO input = getCompetitionClassDO();
-     *         input.setId(ID);
-     *         input.setKlasseName(null);
-     *
-     *         //call test method
-     *         Assertions.assertThatExceptionOfType(BusinessException.class)
-     *                 .isThrownBy(() -> underTest.update(input, USER))
-     *                 .withMessageContaining("must not be null")
-     *                 .withNoCause();
-     *
-     *         verifyZeroInteractions(competitionClassDAO);
-     *     }
-     */
+    
 
 
     @Test

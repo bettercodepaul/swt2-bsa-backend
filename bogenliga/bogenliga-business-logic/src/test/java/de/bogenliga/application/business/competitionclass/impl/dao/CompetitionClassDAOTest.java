@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.competitionclass.impl.dao;
+package de.bogenliga.application.business.competitionClass.impl.dao;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -6,9 +6,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.competitionclass.impl.dao.CompetitionClassDAO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
+
 
 import static org.mockito.Mockito.when;
 
@@ -28,13 +30,13 @@ import static org.mockito.Mockito.*;
  */
 public class CompetitionClassDAOTest {
 
-    private static final long USER = 0;
+    private static final long USER = 0L;
 
-    private static final long ID = 42;
+    private static final long ID = 42L;
     private static final String KLASSENAME = "Herren";
-    private static final long KLASSEALTERMIN = 10;
-    private static final long KLASSEALTERMAX = 50;
-    private static final long KLASSENR = 1337;
+    private static final long KLASSEALTERMIN = 10L;
+    private static final long KLASSEALTERMAX = 50L;
+    private static final long KLASSENR = 1337L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -91,7 +93,7 @@ public class CompetitionClassDAOTest {
         assertThat(actual.getKlasseName()).isEqualTo(input.getKlasseName());
 
         // verify invocations
-        verify(basicDAO).updateEntities(any(), eq(input), any());
+        verify(basicDAO).updateEntity(any(), eq(input), any());
 
     }
 

@@ -1,8 +1,9 @@
-package de.bogenliga.application.business.competitionclass.impl.mapper;
+package de.bogenliga.application.business.competitionClass.impl.mapper;
 
 import org.junit.Test;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
+import de.bogenliga.application.business.competitionclass.impl.mapper.CompetitionClassMapper;
 import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
 import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassDO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,13 +16,13 @@ import static org.junit.Assert.*;
  */
 public class CompetitionClassMapperTest {
 
-    private static final long USER = 0;
+    private static final long USER = 0L;
 
-    private static final long ID = 42;
+    private static final long ID = 1337L;
     private static final String KLASSENAME = "Herren";
-    private static final long KLASSEALTERMIN = 10;
-    private static final long KLASSEALTERMAX = 50;
-    private static final long KLASSENR = 1337;
+    private static final long KLASSEALTERMIN = 10L;
+    private static final long KLASSEALTERMAX = 50L;
+    private static final long KLASSENR = 42L;
 
     @Test
     public void toVO() throws Exception{
