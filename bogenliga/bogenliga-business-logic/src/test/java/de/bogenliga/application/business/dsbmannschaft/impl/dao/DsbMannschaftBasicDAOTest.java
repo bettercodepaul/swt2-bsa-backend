@@ -15,6 +15,7 @@ import java.util.List;
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftBE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,5 +65,101 @@ public class DsbMannschaftBasicDAOTest {
         verify(basicDao).selectEntityList(any(), any(), any());
 
 
+    }
+
+    @Test
+    public void findById() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = new DsbMannschaftBE();
+        expectedBE.setId(id);
+        expectedBE.setNummer(nummer);
+
+        // configure mocks
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        // call test method
+        final DsbMannschaftBE actual = underTest.findById(id);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.getNummer())
+                .isEqualTo(expectedBE.getNummer());
+
+        // verify invocations
+        verify(basicDao).selectSingleEntity(any(), any(), any());
+    }
+
+
+    @Test
+    public void create() {
+        // prepare test data
+        final DsbMannschaftBE input = new DsbMannschaftBE();
+        input.setId(id);
+        input.setNummer(nummer);
+
+        // configure mocks
+        when(basicDao.insertEntity(any(), any())).thenReturn(input);
+
+        // call test method
+        final DsbMannschaftBE actual = underTest.create(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(input.getId());
+        assertThat(actual.getNummer())
+                .isEqualTo(input.getNummer());
+
+        // verify invocations
+        verify(basicDao).insertEntity(any(), eq(input));
+    }
+
+
+    @Test
+    public void update() {
+        // prepare test data
+        final DsbMannschaftBE input = new DsbMannschaftBE();
+        input.setId(id);
+        input.setNummer(nummer);
+
+        // configure mocks
+        when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
+
+        // call test method
+        final DsbMannschaftBE actual = underTest.update(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(input.getId());
+        assertThat(actual.getNummer())
+                .isEqualTo(input.getNummer());
+
+        // verify invocations
+        verify(basicDao).updateEntity(any(), eq(input), any());
+    }
+
+
+    @Test
+    public void delete() {
+        // prepare test data
+        final DsbMannschaftBE input = new DsbMannschaftBE();
+        input.setId(id);
+        input.setNummer(nummer);
+
+        // configure mocks
+
+        // call test method
+        underTest.delete(input, USER);
+
+        // assert result
+
+        // verify invocations
+        verify(basicDao).deleteEntity(any(), eq(input), any());
     }
 }

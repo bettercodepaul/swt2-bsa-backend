@@ -229,7 +229,7 @@ public class DsbMannschaftComponentImplTest {
         verifyZeroInteractions(dsbMannschaftDAO);
     }
 
-    @Test
+   /* @Test
     public void create_withoutNummer_shouldThrowException() {
         // prepare test data
         final DsbMannschaftDO input = getDsbMannschaftDO();
@@ -249,7 +249,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(dsbMannschaftDAO);
-    }
+    }*/
 
     @Test
     public void update() {
