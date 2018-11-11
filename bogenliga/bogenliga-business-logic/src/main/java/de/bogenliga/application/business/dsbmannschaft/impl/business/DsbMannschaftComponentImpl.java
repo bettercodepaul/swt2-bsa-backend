@@ -41,7 +41,12 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
 
     @Autowired
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO) {
+        System.out.println("created DAO object");
         this.dsbMannschaftDAO = dsbMannschaftDAO;
+    }
+
+    public DsbMannschaftDAO getDAO(){
+        return dsbMannschaftDAO;
     }
 
 
