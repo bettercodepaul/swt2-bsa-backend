@@ -46,7 +46,9 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     @Override
     public List<MannschaftsmitgliedDO> findAll() {
-        return null;
+        final List<MannschaftsmitgliedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAll();
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
+
     }
 
 
