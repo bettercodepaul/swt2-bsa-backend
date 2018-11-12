@@ -113,7 +113,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * }
      * </pre>
      *
-     * @return list of {@link DsbMitgliedDTO} as JSON
+     * @return list of {@link DsbMannschaftDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
