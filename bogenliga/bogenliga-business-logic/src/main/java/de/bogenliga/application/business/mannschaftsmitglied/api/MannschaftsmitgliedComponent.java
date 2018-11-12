@@ -48,7 +48,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @param mannschaftsmitgliedDO new mannschaftsmitglied
      * @return persisted version of the mannschaftsmitglied
      */
-    DsbMitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedId);
+    DsbMitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
 
 
 
@@ -58,7 +58,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @param mannschaftsmitgliedDO existing mannschaftsmitgliedDO to update
      * @return persisted version of the mannschaftsmitglied
      */
-    DsbMitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedId);
+    DsbMitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
 
 
     /**
@@ -66,6 +66,6 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      *
      * @param mannschaftsmitgliedDO mannschaftsmitglied to delete
      */
-    void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedId);
+    void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
 
 }
