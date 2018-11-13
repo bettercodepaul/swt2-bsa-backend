@@ -1,12 +1,15 @@
 package de.bogenliga.application.services.v1.mannschaftsmitglied.mapper;
 
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import org.apache.tomcat.util.buf.StringUtils;
 
+import java.util.function.Function;
+
 public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
 
-    public static final Function<MannschaftsMitgliedDO, MannschaftsMitgliedDTO> toDTO = mannschaftsMitgliedDO -> {
+    public static final Function<MannschaftsmitgliedDO, MannschaftsMitgliedDTO> toDTO = mannschaftsMitgliedDO -> {
         final long mannschaftId = mannschaftsMitgliedDO.getId();
         final long dsbMitgliedId = mannschaftsMitgliedDO.getDsbMitgliedId();
         final boolean dsbMitgliedEingesetzt = mannschaftsMitgliedDO.getDsbMitgliedEingesetzt();
@@ -15,12 +18,12 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
                 dsbMitgliedId, dsbMitgliedEingesetzt);
     }
 
-    public static final Function<MannschaftsMitgliedDTO, MannschaftsMitgliedDO> toDO = dto -> {
-        final long mannschaftId = dto.getId();
+    public static final Function<MannschaftsMitgliedDTO, MannschaftsmitgliedDO> toDO = dto -> {
+        final long mannschaftId = dto.getMannschaftsId();
         final long dsbMitgliedId = dto.getDsbMitgliedId();
-        final boolean dsbMitgliedEingesetzt = dto.getDsbMitgliedEingesetzt();
+        final boolean dsbMitgliedEingesetzt = dto.isDsbMitgliedEingesetzt();
 
-        return new MannschaftsMitgliedDO(mannschaftId,
+        return new MannschaftsmitgliedDO(mannschaftId,
                 dsbMitgliedId, dsbMitgliedEingesetzt);
     }
 

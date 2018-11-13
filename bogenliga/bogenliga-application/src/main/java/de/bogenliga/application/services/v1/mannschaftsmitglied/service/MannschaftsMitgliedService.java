@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.mannschaftsmitglied.service;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -47,11 +49,11 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      *
      * dependency injection with {@link Autowired}
      */
-    private final MannschaftsMItgliedComponent mannschaftsMitgliedComponent;
+    private final MannschaftsmitgliedComponent mannschaftsMitgliedComponent;
 
 
     @Autowired
-    public MannschaftsMitgliedService(MannschaftsMitgliedComponent mannschaftsMitgliedComponent){
+    public MannschaftsMitgliedService(MannschaftsmitgliedComponent mannschaftsMitgliedComponent){
         this.mannschaftsMitgliedComponent=mannschaftsMitgliedComponent;
 
     }
@@ -60,8 +62,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<MannschaftsMitgliedDTO> findAll() {
-        final List<MannschaftsMItgliedDO> dsbMannschaftDOList = mannschaftsMitgliedComponent.findAll();
-        return dsbMannschaftDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        final List<MannschaftsmitgliedDO> MannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAll();
+        return MannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,7 +73,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
 
-        final MannschaftsMitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findById(id);
+        final MannschaftsmitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findById(id);
         return MannschaftsMitgliedDTOMapper.toDTO.apply(dsbMannschaftDO);
     }
 
@@ -96,11 +98,11 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
 
 
-        final DsbMannschaftDO newDsbMannschaftDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
+        final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final DsbMannschaftDO savedDsbMannschaftDO = MannschaftsMitgliedComponent.create(newMannschaftsMitgliedDO, userId);
-        return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsMitgliedDO);
+        final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = MannschaftsmitgliedComponent.create(newMannschaftsmitgliedDO, userId);
+        return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsmitgliedDO);
     }
 
 
@@ -125,11 +127,11 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt();
 
-        final MannschaftsMitgliedDO newMannschaftsMitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
+        final MannschaftsmitgliedDO newMannschaftsMitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final MannschaftsMitgliedDO updatedDsbMannschaftDO = mannschaftsMitgliedComponent.update(newMannschaftsMitgliedDO, userId);
-        return MannschaftsMitgliedDTOMapper.toDTO.apply(updatedMannschaftsMitgliedDO);
+        final MannschaftsmitgliedDO updatedMannschaftsmitgliedDO = mannschaftsMitgliedComponent.update(newMannschaftsMitgliedDO, userId);
+        return MannschaftsMitgliedDTOMapper.toDTO.apply(updatedMannschaftsmitgliedDO);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
@@ -140,7 +142,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
         // allow value == null, the value will be ignored
-        final MannschaftsMitgliedDO mannschaftsMitgliedDO = new MannschaftsMitgliedDO(id);
+        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, userId);
@@ -156,9 +158,9 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
 
         Preconditions.checkArgument(mannschaftsMitgliedDTO.getMannschaftsId()>= 0,
-                PRECONDITION_MSG_DSBMANNSCHAFT_ID_NEGATIVE);
+                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftsMitgliedDTO.getDsbMitgliedId() >= 0,
-                PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE);
+                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE);
 
 
 
