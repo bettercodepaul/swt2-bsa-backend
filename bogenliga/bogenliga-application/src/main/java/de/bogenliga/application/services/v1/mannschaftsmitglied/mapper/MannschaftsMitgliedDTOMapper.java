@@ -10,13 +10,13 @@ import java.util.function.Function;
 public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
 
     public static final Function<MannschaftsmitgliedDO, MannschaftsMitgliedDTO> toDTO = mannschaftsMitgliedDO -> {
-        final long mannschaftId = mannschaftsMitgliedDO.getId();
-        final long dsbMitgliedId = mannschaftsMitgliedDO.getDsbMitgliedId();
-        final boolean dsbMitgliedEingesetzt = mannschaftsMitgliedDO.getDsbMitgliedEingesetzt();
+        final long mannschaftId = mannschaftsMitgliedDO.getMannschaftId();
+        final long dsbMitgliedId = mannschaftsMitgliedDO.getMitgliedId();
+        final boolean dsbMitgliedEingesetzt = mannschaftsMitgliedDO.isMitgliedEingesetzt();
 
         return new MannschaftsMitgliedDTO(mannschaftId,
                 dsbMitgliedId, dsbMitgliedEingesetzt);
-    }
+    };
 
     public static final Function<MannschaftsMitgliedDTO, MannschaftsmitgliedDO> toDO = dto -> {
         final long mannschaftId = dto.getMannschaftsId();
@@ -25,7 +25,7 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
 
         return new MannschaftsmitgliedDO(mannschaftId,
                 dsbMitgliedId, dsbMitgliedEingesetzt);
-    }
+    };
 
     private MannschaftsMitgliedDTOMapper(){};
 

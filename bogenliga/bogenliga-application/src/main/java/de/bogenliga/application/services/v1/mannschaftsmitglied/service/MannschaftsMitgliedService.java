@@ -68,12 +68,13 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public MannschaftsMitgliedDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+    public MannschaftsMitgliedDTO findById(@PathVariable("mannschaftsId") final long mannschaftsId, @PathVariable("dsbMitgliedId")final long mitgliedId) {
+        Preconditions.checkArgument(mannschaftsId > 0, "ID must not be negative.");
+        Preconditions.checkArgument(mitgliedId > 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'findById' request with ID '{}'", id);
+        LOG.debug("Receive 'findById' request with ID '{}'", mannschaftsId);
 
-        final MannschaftsmitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findById(id);
+        final MannschaftsmitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findById(mannschaftsId,mitgliedId);
         return MannschaftsMitgliedDTOMapper.toDTO.apply(dsbMannschaftDO);
     }
 
@@ -99,9 +100,10 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
 
         final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
+        final long mitgliedId = UserProvider.getCurrentUserId(principal);
 
-        final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = MannschaftsmitgliedComponent.create(newMannschaftsmitgliedDO, userId);
+
+        final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = MannschaftsmitgliedComponent.create(newMannschaftsmitgliedDO, mannschaftsId, mitgliedId);
         return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsmitgliedDO);
     }
 
@@ -136,16 +138,17 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public void delete(@PathVariable("id") final long id, final Principal principal) {
+    public void delete(@PathVariable("mannschaftsid") final long mannschaftsId,
+                       @PathVariable("mitgliedid") final long mitgliedId,final Principal principal) {
         Preconditions.checkArgument(mannschaftsId >= 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'delete' request with id '{}'", id);
+        LOG.debug("Receive 'delete' request with id '{}'", mannschaftsId);
 
         // allow value == null, the value will be ignored
-        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(id);
+        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, userId);
+        mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, mannschaftsId, mitgliedId);
     }
 
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {
