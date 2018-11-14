@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
  * I'm the data transfer Object of Vereine.
- *
+ * <p>
  * I define the payload for the external REST interface of the Vereine business entity
  *
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
@@ -22,15 +22,15 @@ public class VereineDTO implements DataTransferObject {
 
     /**
      * Constructors
-     *
      */
 
-    public VereineDTO(){
+    public VereineDTO() {
         //empty
     }
 
-    public VereineDTO (final Long id, final String name, final String identifier, final Long regionId,
-                       final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version ){
+
+    public VereineDTO(final Long id, final String name, final String identifier, final Long regionId,
+                      final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
 
         this.id = id;
         this.name = name;
