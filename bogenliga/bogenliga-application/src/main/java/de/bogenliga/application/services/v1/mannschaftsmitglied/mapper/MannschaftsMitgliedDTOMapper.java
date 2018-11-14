@@ -11,8 +11,8 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
 
     public static final Function<MannschaftsmitgliedDO, MannschaftsMitgliedDTO> toDTO = mannschaftsMitgliedDO -> {
         final long mannschaftId = mannschaftsMitgliedDO.getMannschaftId();
-        final long dsbMitgliedId = mannschaftsMitgliedDO.getMitgliedId();
-        final boolean dsbMitgliedEingesetzt = mannschaftsMitgliedDO.isMitgliedEingesetzt();
+        final long dsbMitgliedId = mannschaftsMitgliedDO.getDsbMitgliedId();
+        final boolean dsbMitgliedEingesetzt = mannschaftsMitgliedDO.isDsbMitgliedEingesetzt();
 
         return new MannschaftsMitgliedDTO(mannschaftId,
                 dsbMitgliedId, dsbMitgliedEingesetzt);

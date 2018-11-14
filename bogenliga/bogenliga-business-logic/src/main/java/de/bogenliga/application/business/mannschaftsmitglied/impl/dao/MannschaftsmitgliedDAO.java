@@ -86,6 +86,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
      * Return all mannschaftsmitglied entries
      */
     public List<MannschaftsmitgliedBE> findAll() {
+
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL);
     }
 
@@ -98,21 +99,35 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_TEAM_ID, id);
     }
 
-    /**
-     * return specially one member
-     * @param teamId
-     * @param memberId
-     * @return
-     */
+
+
+
+
+
+
     public MannschaftsmitgliedBE findByMemberAndTeamId(final long teamId, final long memberId){
         return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
     }
 
-    public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentmannschaftsmitgliedId, final long currentMemberId) {
-        basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentmannschaftsmitgliedId);
+    public MannschaftsmitgliedBE create(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMannschaftsmitgliedId, final long currentMemberId) {
+
+        basicDao.setCreationAttributes(mannschaftsmitgliedBE, currentMannschaftsmitgliedId, currentMemberId);
+
+        return basicDao.insertEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE);
+    }
 
 
-        return basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+    public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMannschaftsmitgliedId, final long currentMemberId) {
+        basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMannschaftsmitgliedId,currentMemberId);
+
+
+        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_TEAM_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
+    }
+
+    public void delete(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMannschaftsmitgliedId, final long currentMemberId) {
+        basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMannschaftsmitgliedId, currentMemberId);
+
+        basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE,MANNSCHAFTSMITGLIED_BE_TEAM_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
     }
 
 

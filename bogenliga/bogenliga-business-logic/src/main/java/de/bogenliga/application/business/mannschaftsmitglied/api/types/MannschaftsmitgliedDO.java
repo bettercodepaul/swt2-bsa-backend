@@ -1,9 +1,8 @@
 package de.bogenliga.application.business.mannschaftsmitglied.api.types;
 
-import java.sql.Date;
+
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
@@ -21,16 +20,16 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      * business parameter
      */
     private Long mannschaftId;
-    private Long mitgliedId;
-    private boolean mitgliedEingesetzt;
+    private Long dsbMitgliedId;
+    private boolean dsbMitgliedEingesetzt;
 
 
 
     /**
      * Constructor with optional parameters
      * @param mannschaftId
-     * @param mitgliedId
-     * @param mitgliedEingesetzt
+     * @param dsbMitgliedId
+     * @param dsbMitgliedEingesetzt
      * @param createdAtUtc
      * @param createdByUserId
      * @param lastModifiedAtUtc
@@ -38,12 +37,12 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      * @param version
      */
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long mitgliedId, final boolean mitgliedEingesetzt, final OffsetDateTime createdAtUtc,
+    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt, final OffsetDateTime createdAtUtc,
                          final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                          final Long lastModifiedByUserId, final Long version) {
         this.mannschaftId = mannschaftId;
-        this.mitgliedId = mitgliedId;
-        this.mitgliedEingesetzt = mitgliedEingesetzt;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
@@ -55,7 +54,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor with mandatory parameters
      * @param mannschaftId
-     * @param mitgliedId
+     * @param dsbMitgliedId
      *
      * @param createdAtUtc
      * @param createdByUserId
@@ -63,10 +62,10 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      */
 
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long mitgliedId, final OffsetDateTime createdAtUtc,
+    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final OffsetDateTime createdAtUtc,
                                  final Long createdByUserId, final Long version) {
         this.mannschaftId = mannschaftId;
-        this.mitgliedId = mitgliedId;
+        this.dsbMitgliedId = dsbMitgliedId;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -75,14 +74,14 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor without technical parameters
      * @param mannschaftId
-     * @param mitgliedId
-     * @param mitgliedEingesetzt
+     * @param dsbMitgliedId
+     * @param dsbMitgliedEingesetzt
      */
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long mitgliedId, final boolean mitgliedEingesetzt) {
+    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt) {
         this.mannschaftId = mannschaftId;
-        this.mitgliedId = mitgliedId;
-        this.mitgliedEingesetzt = mitgliedEingesetzt;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
 
     }
 
@@ -96,28 +95,28 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.mannschaftId = mannschaftId;
     }
 
-    public Long getMitgliedId() {
-        return mitgliedId;
+    public Long getDsbMitgliedId() {
+        return dsbMitgliedId;
     }
 
-    public void setMitgliedId(Long mitgliedId) {
-        this.mitgliedId = mitgliedId;
-    }
-
-
-    public boolean isMitgliedEingesetzt() {
-        return mitgliedEingesetzt;
+    public void setDsbMitgliedId(Long mitgliedId) {
+        this.dsbMitgliedId = mitgliedId;
     }
 
 
-    public void setMitgliedEingesetzt(boolean mitgliedEingesetzt) {
-        this.mitgliedEingesetzt = mitgliedEingesetzt;
+    public boolean isDsbMitgliedEingesetzt() {
+        return dsbMitgliedEingesetzt;
+    }
+
+
+    public void setDsbMitgliedEingesetzt(boolean dsbMitgliedEingesetzt) {
+        this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(mannschaftId, mitgliedId, mitgliedId,
+        return Objects.hash(mannschaftId, dsbMitgliedId, dsbMitgliedId,
                 createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
@@ -134,14 +133,14 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         }
         final MannschaftsmitgliedDO that = (MannschaftsmitgliedDO) o;
         return mannschaftId == that.mannschaftId &&
-                mitgliedId == that.mitgliedId &&
-                mitgliedEingesetzt == that.mitgliedEingesetzt &&
+                dsbMitgliedId == that.dsbMitgliedId &&
+                dsbMitgliedEingesetzt == that.dsbMitgliedEingesetzt &&
                 createdByUserId == that.createdByUserId &&
                 lastModifiedByUserId == that.lastModifiedByUserId &&
                 version == that.version &&
                 Objects.equals(mannschaftId, that.mannschaftId) &&
-                Objects.equals(mitgliedId, that.mitgliedId) &&
-                Objects.equals(mitgliedEingesetzt, that.mitgliedEingesetzt) &&
+                Objects.equals(dsbMitgliedId, that.dsbMitgliedId) &&
+                Objects.equals(dsbMitgliedEingesetzt, that.dsbMitgliedEingesetzt) &&
                 Objects.equals(lastModifiedAtUtc, that.lastModifiedAtUtc);
     }
 

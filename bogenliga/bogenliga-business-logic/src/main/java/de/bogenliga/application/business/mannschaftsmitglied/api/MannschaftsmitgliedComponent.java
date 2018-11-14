@@ -20,12 +20,10 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      */
     List<MannschaftsmitgliedDO> findAll();
 
+
     /**
-     * Return all mannschaftsmitglied with the attribut mitglied_eingesetzt = true entries.
      *
-     * @return list of all mannschaftsmitglieder mannschaftsmitglieder
-     *         mit mitglied_eingesetzt = true in the database;
-     *         empty list, if no mannschaftsmitglied schuetze is found
+     * todo
      */
 
     List<MannschaftsmitgliedDO> findAllSchuetze();
@@ -34,11 +32,12 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
     /**
      * Return a mannschaftsmitglied entry with the given id.
      *
-     * @param mannschaftId of the mannschaftsmitglied, mitgliedId of the mannschaftsmitglied
+     * @param MannschaftsmitgliedMannschaftId of the mannschaftsmitglied,
+     * @param MannschaftsmitgliedMitgliedId of the mannschaftsmitglied
      * @return single mannschaftsmitglied entry with the given id;
      * null, if no mannschaftsmitglied is found
      */
-    MannschaftsmitgliedDO findById(long mannschaftId, long mitgliedId);
+    MannschaftsmitgliedDO findByMemberAndTeamId(long MannschaftsmitgliedMannschaftId, long MannschaftsmitgliedMitgliedId);
 
 
 
@@ -46,9 +45,11 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * Create a new mannschaftsmitglied in the database.
      *
      * @param mannschaftsmitgliedDO new mannschaftsmitglied
+     * @param currentMannschaftsmitgliedMannschaftId
+     * @param currentMannschaftsmitgliedMitgliedId
      * @return persisted version of the mannschaftsmitglied
      */
-    DsbMitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
+    MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
 
 
 
@@ -56,15 +57,19 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * Update an existing mannschaftsmitglied. The mannschaftsmitglied is identified by the id.
      *
      * @param mannschaftsmitgliedDO existing mannschaftsmitgliedDO to update
+     * @param currentMannschaftsmitgliedMannschaftId
+     * @param currentMannschaftsmitgliedMitgliedId
      * @return persisted version of the mannschaftsmitglied
      */
-    DsbMitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
+    MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
 
 
     /**
      * Delete an existing mannschaftsmitglied. The mannschaftsmitglied is identified by the id.
      *
      * @param mannschaftsmitgliedDO mannschaftsmitglied to delete
+     * @param currentMannschaftsmitgliedMannschaftId
+     * @param currentMannschaftsmitgliedMitgliedId
      */
     void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
 

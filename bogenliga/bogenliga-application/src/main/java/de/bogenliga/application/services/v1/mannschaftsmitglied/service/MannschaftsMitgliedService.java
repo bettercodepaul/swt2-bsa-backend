@@ -67,6 +67,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+
+
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public MannschaftsMitgliedDTO findById(@PathVariable("mannschaftsId") final long mannschaftsId, @PathVariable("dsbMitgliedId")final long mitgliedId) {
@@ -78,8 +80,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final MannschaftsmitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findById(mannschaftsId,mitgliedId);
         return MannschaftsMitgliedDTOMapper.toDTO.apply(dsbMannschaftDO);
     }
-
-
 
 
 
@@ -95,10 +95,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
                 mannschaftsMitgliedDTO.getMannschaftsId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
-                mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt();
-
-
-
+                mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt());
 
         final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
         final long mitgliedId = UserProvider.getCurrentUserId(principal);
@@ -107,6 +104,20 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = MannschaftsmitgliedComponent.create(newMannschaftsmitgliedDO, mannschaftsId, mitgliedId);
         return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsmitgliedDO);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -12,6 +12,8 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.types.Mannschaf
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.MannschaftsmitgliedMapper;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -25,11 +27,9 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED = "MannschaftsmitgliedDO must not be null";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID = "MannschaftsmitgliedDO_Mannschaft_ID must not be null";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID = "MannschaftsmitgliedDO_Mitglied_ID must not be null";
-    private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_EINGESETZT = "MannschaftsmitgliedDO_Mitglied_Eingesetzt must not be null";
 
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV = "MannschaftsmitgliedDO_Mannschaft_ID must not be negativ";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV = "MannschaftsmitgliedDO_Mitglied_ID must not be negativ";
-    private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_EINGESETZT_NEGATIV = "MannschaftsmitgliedDO_Mitglied_Eingesetzt must not be negativ";
 
 
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
@@ -55,31 +55,65 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     }
 
 
+
+
     @Override
     public List<MannschaftsmitgliedDO> findAllSchuetze() {
         return null;
     }
 
 
+
+
     @Override
-    public MannschaftsmitgliedDO findById(long mannschaftId, long mitgliedId) {
-        return null;
+    public MannschaftsmitgliedDO findByMemberAndTeamId(long mannschaftId, long mitgliedId) {
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
+        Preconditions.checkArgument(mitgliedId>=0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
+
+        final MannschaftsmitgliedBE result = mannschaftsmitgliedDAO.findByMemberAndTeamId(mannschaftId,mitgliedId);
+
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for mannschaftId '%s' and mitgliedId '%s", mannschaftId, mitgliedId));
+        }
+
+        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(result);
     }
 
 
     @Override
-    public DsbMitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO,
+    public MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO,
                                 long currentMannschaftsmitgliedMannschaftId,
                                 long currentMannschaftsmitgliedMitgliedId) {
-        return null;
+        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMannschaftId);
+        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMitgliedId);
+
+
+        final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(mannschaftsmitgliedDO);
+        final MannschaftsmitgliedBE persistedMannschaftsmitgliedBE = mannschaftsmitgliedDAO.create(mannschaftsmitgliedBE, currentMannschaftsmitgliedMannschaftId,currentMannschaftsmitgliedMitgliedId);
+
+        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(persistedMannschaftsmitgliedBE);
+
     }
 
 
     @Override
-    public DsbMitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO,
+    public MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO,
                                 long currentMannschaftsmitgliedMannschaftId,
                                 long currentMannschaftsmitgliedMitgliedId) {
-        return null;
+
+        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMannschaftId);
+        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMitgliedId);
+
+        Preconditions.checkArgument(mannschaftsmitgliedDO.getMannschaftId()>=0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
+        Preconditions.checkArgument(mannschaftsmitgliedDO.getDsbMitgliedId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
+
+
+        final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(mannschaftsmitgliedDO);
+        final MannschaftsmitgliedBE persistedMannschaftsmitgliederBE = mannschaftsmitgliedDAO.update(mannschaftsmitgliedBE, currentMannschaftsmitgliedMannschaftId,currentMannschaftsmitgliedMitgliedId);
+
+        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(persistedMannschaftsmitgliederBE);
+
     }
 
 
@@ -87,5 +121,22 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     public void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId,
                        long currentMannschaftsmitgliedMitgliedId) {
 
+        Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
+        Preconditions.checkArgument(mannschaftsmitgliedDO.getMannschaftId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID);
+        Preconditions.checkArgument(mannschaftsmitgliedDO.getDsbMitgliedId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID);
+
+        final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(mannschaftsmitgliedDO);
+
+        mannschaftsmitgliedDAO.delete(mannschaftsmitgliedBE, currentMannschaftsmitgliedMannschaftId,currentMannschaftsmitgliedMitgliedId);
+
+    }
+
+    private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO, final long parameter) {
+        Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
+        Preconditions.checkNotNull(mannschaftsmitgliedDO.getMannschaftId(), PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID);
+        Preconditions.checkNotNull(mannschaftsmitgliedDO.getDsbMitgliedId(), PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID);
+
+        Preconditions.checkArgument(mannschaftsmitgliedDO.getMannschaftId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
+        Preconditions.checkArgument(mannschaftsmitgliedDO.getDsbMitgliedId()>=0,PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
     }
 }
