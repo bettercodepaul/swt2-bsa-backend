@@ -49,6 +49,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      *
      * dependency injection with {@link Autowired}
      */
+
     private final MannschaftsmitgliedComponent mannschaftsMitgliedComponent;
 
 

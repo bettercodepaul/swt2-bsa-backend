@@ -21,6 +21,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  */
 public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComponent {
 
+
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED = "MannschaftsmitgliedDO must not be null";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID = "MannschaftsmitgliedDO_Mannschaft_ID must not be null";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID = "MannschaftsmitgliedDO_Mitglied_ID must not be null";
@@ -40,6 +41,8 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
      * dependency injection with {@link Autowired}
      * @param MannschaftsmitgliedDAO to access the database and return dsbmitglied representations
      */
+
+
     @Autowired
     public MannschaftsmitgliedComponentImpl(final MannschaftsmitgliedDAO mannschaftsmitgliedDAO) { this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO; }
 
