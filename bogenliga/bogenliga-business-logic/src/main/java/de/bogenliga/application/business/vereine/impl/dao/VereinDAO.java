@@ -46,6 +46,11 @@ public class VereinDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM verein"
                     + " ORDER BY verein_id";
+    private static final String FIND_BY_ID =
+            "SELECT * "
+                    + " FROM verein"
+                    + " WHERE verein_id = ?";
+
     private final BasicDAO basicDao;
 
 
@@ -79,9 +84,57 @@ public class VereinDAO implements DataAccessObject {
     }
 
 
+    /**
+     * Returns a "Verein" entry with a specific id
+     *
+     * @param vereinId Id of the verein that should be queried
+     *
+     * @return Returns the queried verein as Business Entity
+     */
+    public VereinBE findById(final long vereinId) {
+        return basicDao.selectSingleEntity(VEREIN, FIND_BY_ID, vereinId);
+    }
+
+
+    /**
+     * Creates a verein database entry
+     *
+     * @param vereinBE             Verein Business Entity to be persisted in the database
+     * @param currentDsbMitgliedId Id of the user creating the entry
+     *
+     * @return returns the created verein
+     */
     public VereinBE create(final VereinBE vereinBE, final long currentDsbMitgliedId) {
         basicDao.setCreationAttributes(vereinBE, currentDsbMitgliedId);
 
         return basicDao.insertEntity(VEREIN, vereinBE);
+    }
+
+
+    /**
+     * Updates a verein by the given properties
+     *
+     * @param vereinBE           Verein Business Entity to be changed in the database
+     * @param currentDsbMitglied Id of the user updating the database entry
+     *
+     * @return returns the updated verein
+     */
+    public VereinBE update(final VereinBE vereinBE, final long currentDsbMitglied) {
+        basicDao.setModificationAttributes(vereinBE, currentDsbMitglied);
+
+        return basicDao.updateEntity(VEREIN, vereinBE, VEREIN_BE_ID);
+    }
+
+
+    /**
+     * Deletes a verein depending on the id
+     *
+     * @param vereinBE           Verein Business entity to identify the verein to be deleted
+     * @param currentDsbMitglied Id of the user deleting the database entry
+     */
+    public void delete(final VereinBE vereinBE, final long currentDsbMitglied) {
+        basicDao.setModificationAttributes(vereinBE, currentDsbMitglied);
+
+        basicDao.deleteEntity(VEREIN, vereinBE, VEREIN_BE_ID);
     }
 }

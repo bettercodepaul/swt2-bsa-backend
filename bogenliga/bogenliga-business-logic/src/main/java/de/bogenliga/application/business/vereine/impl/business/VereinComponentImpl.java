@@ -26,7 +26,6 @@ public class VereinComponentImpl implements VereinComponent {
     private static final String PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER = "VereinDO dsk identifier must not be null";
     private static final String PRECONDITION_MSG_VEREIN_REGION_ID = "VereinDO region id must not be null";
     private static final String PRECONDITION_MSG_VEREIN_REGION_ID_NOT_NEG = "VereinDO region id must not be negative";
-    private static final String PRECONDITION_MSG_VEREIN_DSB_MITGLIED = "DsbMitglied id must not be null";
     private static final String PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG = "DsbMitglied id must not be negative";
 
 
@@ -55,6 +54,38 @@ public class VereinComponentImpl implements VereinComponent {
 
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
+
+
+    @Override
+    public VereinDO findById(long vereinId) {
+        final VereinBE vereinBE = vereinDAO.findById(vereinId);
+        return VereinMapper.toVereinDO.apply(vereinBE);
+    }
+
+
+    @Override
+    public VereinDO update(VereinDO vereinDO, long currentDsbMitglied) {
+        checkVereinDO(vereinDO, currentDsbMitglied);
+        Preconditions.checkArgument(vereinDO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
+
+        final VereinBE vereinBE = VereinMapper.toVereinBE.apply(vereinDO);
+        final VereinBE persistedVereinBE = vereinDAO.update(vereinBE, currentDsbMitglied);
+
+        return VereinMapper.toVereinDO.apply(persistedVereinBE);
+    }
+
+
+    @Override
+    public void delete(VereinDO vereinDO, long currentDsbMitglied) {
+        Preconditions.checkNotNull(vereinDO, PRECONDITION_MSG_VEREIN);
+        Preconditions.checkArgument(vereinDO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
+        Preconditions.checkArgument(currentDsbMitglied >= 0, PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG);
+
+        final VereinBE vereinBE = VereinMapper.toVereinBE.apply(vereinDO);
+
+        vereinDAO.delete(vereinBE, currentDsbMitglied);
+    }
+
 
     private void checkVereinDO(final VereinDO vereinDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(vereinDO, PRECONDITION_MSG_VEREIN);
