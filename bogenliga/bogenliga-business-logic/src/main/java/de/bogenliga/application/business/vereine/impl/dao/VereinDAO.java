@@ -77,4 +77,11 @@ public class VereinDAO implements DataAccessObject {
     public List<VereinBE> findAll() {
         return basicDao.selectEntityList(VEREIN, FIND_ALL);
     }
+
+
+    public VereinBE create(final VereinBE vereinBE, final long currentDsbMitgliedId) {
+        basicDao.setCreationAttributes(vereinBE, currentDsbMitgliedId);
+
+        return basicDao.insertEntity(VEREIN, vereinBE);
+    }
 }
