@@ -14,9 +14,19 @@ public interface CompetitionClassComponent extends ComponentFacade {
 
     /**
      * Return all class entries.
+     *
      * @return list of all competition classes in the database
      */
     List<CompetitionClassDO> findAll();
+
+    /**
+     * Returns a klasse entry of the given id
+     *
+     * @param id of the klasse entry
+     *
+     * @return single database entry of a klasse
+     */
+    CompetitionClassDO findById(final long id);
 
 
     /**
@@ -24,6 +34,7 @@ public interface CompetitionClassComponent extends ComponentFacade {
      *
      * @param competitionClassDO new competitionClass
      * @param currentDsbMitglied id of currently logged in user
+     *
      * @return a new CompetitionClass
      */
     CompetitionClassDO create(CompetitionClassDO competitionClassDO, long currentDsbMitglied);
@@ -31,11 +42,11 @@ public interface CompetitionClassComponent extends ComponentFacade {
 
     /**
      * Update an existing competition Class. A class is identified by its ClassId
+     *
      * @param competitionClassDO existing competitionClassDO to update
      * @param currentDsbMitblied id of the currently logged in user
+     *
      * @return an updated version of the edited competition Class
      */
-    CompetitionClassDO update (CompetitionClassDO competitionClassDO, long currentDsbMitblied);
-
-    //TODO Implement delete request
+    CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentDsbMitblied);
 }

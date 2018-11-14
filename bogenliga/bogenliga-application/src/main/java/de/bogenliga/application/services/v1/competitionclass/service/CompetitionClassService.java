@@ -3,11 +3,13 @@ package de.bogenliga.application.services.v1.competitionclass.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.print.attribute.standard.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,10 +65,32 @@ public class CompetitionClassService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<CompetitionClassDTO> findAll() {
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findAll();
         return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+    /**
+     * Returns a klasse entry of the given id
+     *
+     * @param id id of the klasse to be returned
+     * @return returns a klasse
+     */
+    @RequestMapping(
+            value = "{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public CompetitionClassDTO findById(@PathVariable("id") final long id){
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
+
+        LOGGER.debug("Receive 'findById' request with ID '{}'", id);
+
+        final CompetitionClassDO competitionClassDO = competitionClassComponent.findById(id);
+
+        return CompetitionClassDTOMapper.toDTO.apply(competitionClassDO);
     }
 
 
@@ -107,7 +131,6 @@ public class CompetitionClassService implements ServiceFacade {
     /**
      * I persist a newer version of the CompetitionClass in the database.
      */
-
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)

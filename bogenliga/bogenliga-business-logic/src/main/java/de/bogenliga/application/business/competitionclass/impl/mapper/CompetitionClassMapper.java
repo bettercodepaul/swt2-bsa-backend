@@ -9,7 +9,7 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
- * TODO [AL] class documentation
+ * I convert the klassen DataObjects and BusinessEntities.
  *
  * @author Giuseppe Ferrera, giuseppe.ferrera@student.reutlingen-university.de
  */

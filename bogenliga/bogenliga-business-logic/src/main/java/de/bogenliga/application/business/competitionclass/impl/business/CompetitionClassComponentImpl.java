@@ -1,15 +1,15 @@
 package de.bogenliga.application.business.competitionclass.impl.business;
-import de.bogenliga.application.common.validation.Preconditions;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.competitionclass.api.CompetitionClassComponent;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.business.competitionclass.impl.dao.CompetitionClassDAO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import de.bogenliga.application.business.competitionclass.impl.mapper.CompetitionClassMapper;
+import de.bogenliga.application.common.validation.Preconditions;
 
 /**
  * Implementation of {@link CompetitionClassComponent}
@@ -54,6 +54,15 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
 
     @Override
+    public CompetitionClassDO findById(long id) {
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
+
+        final CompetitionClassBE competitionClassBE = competitionClassDAO.findById(id);
+        return CompetitionClassMapper.toCompetitionClassDO.apply(competitionClassBE);
+    }
+
+
+    @Override
     public CompetitionClassDO create(final CompetitionClassDO competitionClassDO, final long currentDsbMitglied) {
 
         checkCompetitionClassDO(competitionClassDO, currentDsbMitglied);
@@ -64,7 +73,6 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
         return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
     }
-
 
     @Override
     public CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentDsbMitblied) {

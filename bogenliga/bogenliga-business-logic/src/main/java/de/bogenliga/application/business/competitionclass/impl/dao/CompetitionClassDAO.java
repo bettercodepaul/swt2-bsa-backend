@@ -87,6 +87,16 @@ public class CompetitionClassDAO implements DataAccessObject {
 
 
     /**
+     * Return a competition class matching the id
+     * @param id of competition class to be returned
+     * @return a single competition class
+     */
+    public CompetitionClassBE findById(final long id) {
+        return basicDao.selectSingleEntity(COMPETITIONCLASS, FIND_BY_ID, id);
+    }
+
+
+    /**
      * Create a new competitionClass entry
      *
      * @param competitionClassBE
@@ -111,12 +121,4 @@ public class CompetitionClassDAO implements DataAccessObject {
 
         return basicDao.updateEntity(COMPETITIONCLASS,competitionClassBE,COMPETITIONCLASS_BE_ID);
     }
-
-
-
-
-
-    //TODO write update method
-    //TODO write create method
-    //TODO write delete method
 }
