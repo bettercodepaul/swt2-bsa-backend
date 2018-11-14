@@ -52,6 +52,7 @@ public class DsbMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
 
+
     private static final Logger LOG = LoggerFactory.getLogger(DsbMitgliedService.class);
 
     /*
@@ -161,7 +162,7 @@ public class DsbMitgliedService implements ServiceFacade {
         checkPreconditions(dsbMitgliedDTO);
 
         LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                " mitgliedsnummer '{}', vereinsid '{}'",
+                " mitgliedsnummer '{}', vereinsid '{}', kampfrichter '{}'",
                 dsbMitgliedDTO.getId(),
                 dsbMitgliedDTO.getVorname(),
                 dsbMitgliedDTO.getNachname(),
@@ -169,7 +170,7 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getNationalitaet(),
                 dsbMitgliedDTO.getMitgliedsnummer(),
                 dsbMitgliedDTO.getVereinsId());
-
+                dsbMitgliedDTO.isKampfrichter();
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
@@ -199,7 +200,7 @@ public class DsbMitgliedService implements ServiceFacade {
         Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
         LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                        " mitgliedsnummer '{}', vereinsid '{}'",
+                        " mitgliedsnummer '{}', vereinsid '{}', kampfrichter '{}'",
                 dsbMitgliedDTO.getId(),
                 dsbMitgliedDTO.getVorname(),
                 dsbMitgliedDTO.getNachname(),
@@ -207,6 +208,7 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getNationalitaet(),
                 dsbMitgliedDTO.getMitgliedsnummer(),
                 dsbMitgliedDTO.getVereinsId());
+                dsbMitgliedDTO.isKampfrichter();
 
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);

@@ -32,6 +32,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedMitgliedsnummer = dsbMitgliedDO.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dsbMitgliedDO.getVereinsId();
         final Long dsbMitgliedUserId = dsbMitgliedDO.getUserId();
+        //final boolean dsbMitgliedKampfrichter = dsbMitgliedDO.is
 
         return new DsbMitgliedDTO(dsbMitgliedId,
                 dsbMitgliedVorname,
