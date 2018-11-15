@@ -24,8 +24,6 @@ import static org.mockito.Mockito.*;
 
 
 /**
- * TODO [AL] class documentation
- *
  * @author Leila Taraman, Leila.Taraman@Student.Reutlingen-University.DE
  */
 public class CompetitionClassDAOTest {

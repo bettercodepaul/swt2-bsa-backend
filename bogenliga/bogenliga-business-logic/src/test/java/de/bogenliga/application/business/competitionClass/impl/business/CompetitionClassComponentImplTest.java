@@ -155,15 +155,15 @@ public class CompetitionClassComponentImplTest {
         final Timestamp lastModified = new Timestamp(System.currentTimeMillis());
         final Timestamp expectedTimestamp = new Timestamp(System.currentTimeMillis());
         final CompetitionClassDO input = new CompetitionClassDO(
-              ID,
-              NAME,
-              ALTER_MIN,
-              ALTER_MAX,
-              NUMBER,
-              dateTime,
-              USER,
-              timestamp,
-              VERSION
+                ID,
+                NAME,
+                ALTER_MIN,
+                ALTER_MAX,
+                NUMBER,
+                dateTime,
+                USER,
+                timestamp,
+                VERSION
         );
 
         final CompetitionClassBE expectedBE = new CompetitionClassBE();
@@ -212,7 +212,7 @@ public class CompetitionClassComponentImplTest {
         //verify invocations
         verifyZeroInteractions(competitionClassDAO);
     }
-    
+
 
 
     @Test

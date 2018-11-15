@@ -80,6 +80,6 @@ public class CompetitionClassBE extends CommonBusinessEntity implements Business
                 '}';
     }
 
-    //TODO write toString method
+
 
 }

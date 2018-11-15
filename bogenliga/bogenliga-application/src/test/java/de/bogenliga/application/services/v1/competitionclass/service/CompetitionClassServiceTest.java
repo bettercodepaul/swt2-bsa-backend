@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class to test the CompetitionClassService
@@ -162,4 +163,25 @@ public class CompetitionClassServiceTest {
         assertEquals(input.getKlasseAlterMin(), createdCompetitionClassDO.getKlasseAlterMin());
         assertEquals(input.getKlasseNr(), createdCompetitionClassDO.getKlasseNr());
     }
+
+    @Test
+    public void findById(){
+        //prepare test data
+        final CompetitionClassDO competitionClassDO = getCompetitionClassDO();
+
+        //configure Mocks
+        when(competitionClassComponent.findById(anyLong())).thenReturn(competitionClassDO);
+
+        //call test method
+        final CompetitionClassDTO actual = competitionClassService.findById(ID);
+
+        //assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(competitionClassDO.getId());
+        assertThat(actual.getKlasseName()).isEqualTo(competitionClassDO.getKlasseName());
+
+        //verify invocations
+        verify(competitionClassComponent).findById(ID);
+    }
+
 }

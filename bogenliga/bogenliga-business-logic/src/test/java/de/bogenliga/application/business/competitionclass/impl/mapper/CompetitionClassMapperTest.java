@@ -10,8 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Leila Taraman, Leila.Taraman@Student.Reutlingen-University.DE
  */
 public class CompetitionClassMapperTest {

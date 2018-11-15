@@ -7,8 +7,6 @@ import static de.bogenliga.application.business.competitionClass.impl.business.C
 import static org.junit.Assert.*;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Leila Taraman, Leila.Taraman@Student.Reutlingen-University.DE
  */
 public class CompetitionClassBETest {

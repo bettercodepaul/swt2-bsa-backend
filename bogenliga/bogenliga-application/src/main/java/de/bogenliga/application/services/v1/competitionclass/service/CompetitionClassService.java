@@ -100,7 +100,7 @@ public class CompetitionClassService implements ServiceFacade {
      * @param competitionClassDTO
      * @param principal
      *
-     * @return
+     * @return list of {@link CompetitionClassDTO} as JSON
      */
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,

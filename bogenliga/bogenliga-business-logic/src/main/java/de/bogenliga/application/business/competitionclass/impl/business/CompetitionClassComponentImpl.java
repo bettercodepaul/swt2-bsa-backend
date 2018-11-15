@@ -76,13 +76,13 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
     @Override
     public CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentDsbMitblied) {
-    checkCompetitionClassDO(competitionClassDO, currentDsbMitblied);
-    Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
+        checkCompetitionClassDO(competitionClassDO, currentDsbMitblied);
+        Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
 
-    final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
-    final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.update(competitionClassBE,currentDsbMitblied);
+        final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
+        final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.update(competitionClassBE,currentDsbMitblied);
 
-    return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
+        return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
     }
 
 
