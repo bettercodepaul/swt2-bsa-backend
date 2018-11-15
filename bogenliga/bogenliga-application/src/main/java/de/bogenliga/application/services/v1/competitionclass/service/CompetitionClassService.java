@@ -106,11 +106,7 @@ public class CompetitionClassService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public CompetitionClassDTO create(@RequestBody final CompetitionClassDTO
-                                              competitionClassDTO, final Principal principal) {
-
-        checkPreconditions(competitionClassDTO);
-
+    public CompetitionClassDTO create(@RequestBody final CompetitionClassDTO competitionClassDTO, final Principal principal) {
         LOGGER.debug(
                 "Receive 'create' request with klasseId '{}', klasseName '{}', klasseAlterMin '{}', klasseAlterMax '{}', klasseNr '{}' ",
                 competitionClassDTO.getId(),
@@ -118,6 +114,8 @@ public class CompetitionClassService implements ServiceFacade {
                 competitionClassDTO.getKlasseAlterMin(),
                 competitionClassDTO.getKlasseAlterMax(),
                 competitionClassDTO.getKlasseNr());
+
+        checkPreconditions(competitionClassDTO);
 
         final CompetitionClassDO newCompetitionClassDo = CompetitionClassDTOMapper.toDO.apply(competitionClassDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
@@ -160,13 +158,11 @@ public class CompetitionClassService implements ServiceFacade {
 
     private void checkPreconditions(@RequestBody final CompetitionClassDTO competitionClassDTO) {
         Preconditions.checkNotNull(competitionClassDTO, PRECONDITION_MSG_KLASSE);
-        Preconditions.checkNotNull(competitionClassDTO.getId(), PRECONDITION_MSG_KLASSE_ID);
         Preconditions.checkNotNull(competitionClassDTO.getKlasseAlterMin(), PRECONDITION_MSG_KLASSE_ALTER_MIN);
         Preconditions.checkNotNull(competitionClassDTO.getKlasseAlterMax(), PRECONDITION_MSG_KLASSE_ALTER_MAX);
         Preconditions.checkNotNull(competitionClassDTO.getKlasseNr(), PRECONDITION_MSG_KLASSE_NR);
         Preconditions.checkNotNull(competitionClassDTO.getKlasseName(), PRECONDITION_MSG_NAME);
 
-        Preconditions.checkArgument(competitionClassDTO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
         Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() >= 0, PRECONDITION_MSG_KLASSE_ALTER_MIN);
         Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() < competitionClassDTO.getKlasseAlterMax(),
                 PRECONDITION_MSG_KLASSE_ALTER_MIN);

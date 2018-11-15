@@ -26,7 +26,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     private static final String PRECONDITION_MSG_KLASSE_ALTER_MAX = "Max Age must be higher than Min Age and must not be negative";
     private static final String PRECONDITION_MSG_KLASSE_NR = "Something is wrong with the CompetitionClass Number";
     private static final String PRECONDITION_MSG_NAME = "The CompetitionClass must be given a name";
-    private static final String PRECONDITION_MSG_KLASSE_CURRENT_ID = "The current Id cannot be negative";
+    private static final String PRECONDITION_MSG_CURRENT_DSB_ID = "The currentDsbId cannot be negative";
 
 
     public final CompetitionClassDAO competitionClassDAO;
@@ -86,14 +86,13 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     }
 
 
-    private void checkCompetitionClassDO(final CompetitionClassDO competitionClassDO, final long currentCompetitionClassId){
+    private void checkCompetitionClassDO(final CompetitionClassDO competitionClassDO, final long currentDsbMitglied){
         Preconditions.checkNotNull(competitionClassDO, PRECONDITION_MSG_KLASSE);
-        Preconditions.checkNotNull(currentCompetitionClassId >= 0, PRECONDITION_MSG_KLASSE_CURRENT_ID);
+        Preconditions.checkNotNull(currentDsbMitglied >= 0, PRECONDITION_MSG_CURRENT_DSB_ID);
         Preconditions.checkNotNull(competitionClassDO.getKlasseAlterMin(), PRECONDITION_MSG_KLASSE_ALTER_MIN);
         Preconditions.checkNotNull(competitionClassDO.getKlasseAlterMax(), PRECONDITION_MSG_KLASSE_ALTER_MAX);
         Preconditions.checkNotNull(competitionClassDO.getKlasseNr(), PRECONDITION_MSG_KLASSE_NR);
         Preconditions.checkNotNull(competitionClassDO.getKlasseName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
         Preconditions.checkArgument(competitionClassDO.getKlasseAlterMin() >= 0, PRECONDITION_MSG_KLASSE_ALTER_MIN);
         Preconditions.checkArgument(competitionClassDO.getKlasseAlterMin() < competitionClassDO.getKlasseAlterMax(),PRECONDITION_MSG_KLASSE_ALTER_MIN);
 
