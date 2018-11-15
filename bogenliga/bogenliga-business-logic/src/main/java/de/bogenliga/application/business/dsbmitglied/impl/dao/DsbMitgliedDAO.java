@@ -65,6 +65,11 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_id = ?";
 
+    private static final String FIND_KAMPFRICHTER =
+            "SELECT * "
+                    + " FROM lizenz "
+                    + " WHERE lizenz_typ = Kampfrichter AND lizenz_dsb_mitglied_id = ?";
+
     private final BasicDAO basicDao;
 
 
@@ -98,6 +103,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
+    public DsbMitgliedBE isKampfrichter(final long id){return basicDao.selectSingleEntity(DSBMITGLIED, FIND_KAMPFRICHTER,id);}
 
     /**
      * Return all dsbmitglied entries

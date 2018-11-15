@@ -43,6 +43,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedVereinsId,
                 dsbMitgliedUserId);
     };
+
     /**
      * I map the {@link DsbMitgliedDTO} object to the {@link DsbMitgliedDO} object
      */

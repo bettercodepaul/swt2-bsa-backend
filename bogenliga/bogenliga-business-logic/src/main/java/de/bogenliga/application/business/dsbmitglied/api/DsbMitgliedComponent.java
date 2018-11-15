@@ -11,6 +11,13 @@ import java.util.List;
 public interface DsbMitgliedComponent extends ComponentFacade {
 
     /**
+     *
+     * @param id
+     * @return true if id has the liscence to be Kampfrichter
+     */
+    boolean isKampfrichter(long id);
+
+    /**
      * Return all dsbmitglied entries.
      *
      * @return list of all dsbmitglied dsbmitglied in the database;

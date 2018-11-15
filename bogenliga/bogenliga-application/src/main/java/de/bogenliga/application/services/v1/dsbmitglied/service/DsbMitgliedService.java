@@ -162,7 +162,7 @@ public class DsbMitgliedService implements ServiceFacade {
         checkPreconditions(dsbMitgliedDTO);
 
         LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                " mitgliedsnummer '{}', vereinsid '{}', kampfrichter '{}'",
+                " mitgliedsnummer '{}', vereinsid '{}'",
                 dsbMitgliedDTO.getId(),
                 dsbMitgliedDTO.getVorname(),
                 dsbMitgliedDTO.getNachname(),
@@ -170,7 +170,7 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getNationalitaet(),
                 dsbMitgliedDTO.getMitgliedsnummer(),
                 dsbMitgliedDTO.getVereinsId());
-                dsbMitgliedDTO.isKampfrichter();
+               // dsbMitgliedDTO.isKampfrichter();
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
@@ -208,7 +208,7 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getNationalitaet(),
                 dsbMitgliedDTO.getMitgliedsnummer(),
                 dsbMitgliedDTO.getVereinsId());
-                dsbMitgliedDTO.isKampfrichter();
+                //dsbMitgliedDTO.isKampfrichter();
 
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);

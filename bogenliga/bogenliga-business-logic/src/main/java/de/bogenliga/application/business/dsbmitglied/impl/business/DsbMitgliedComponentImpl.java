@@ -44,6 +44,18 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         this.dsbMitgliedDAO = dsbMitgliedDAO;
     }
 
+    @Override
+    public boolean isKampfrichter(final long id){
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
+        final DsbMitgliedBE result = dsbMitgliedDAO.isKampfrichter(id);
+
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for ID '%s'", id));
+        }
+
+        return true;
+    }
 
     @Override
     public List<DsbMitgliedDO> findAll() {
