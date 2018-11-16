@@ -75,11 +75,11 @@ public class DsbMitgliedService implements ServiceFacade {
 
     /**
      * I return all dsbMitglied entries of the database.
-     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
+
      *
      * Usage:
      * <pre>{@code Request: GET /v1/dsbmitglied}</pre>
-     * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMitlgied angepasst werden
+     *
      * [
      *  {
      *    "id": "app.bogenliga.frontend.autorefresh.active",
