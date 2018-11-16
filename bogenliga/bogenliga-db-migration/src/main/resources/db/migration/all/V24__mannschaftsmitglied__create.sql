@@ -31,7 +31,7 @@ CREATE SEQUENCE mannschaftmitglied_id START WITH 1000 INCREMENT BY 1;
 
 
 CREATE TABLE mannschaftsmitglied (
-  mannschaftmitglied_id              DECIMAL(19, 0) NOT NULL    DEFAULT nextval(
+  mannschaftsmitglied_id              DECIMAL(19, 0) NOT NULL    DEFAULT nextval(
       'mannschaftmitglied_id'), -- DECIMAL(19,0) = unsigned long
   mannschaftsmitglied_mannschaft_id                 DECIMAL(19,0) NOT NULL,
   mannschaftsmitglied_dsb_mitglied_id               DECIMAL(19,0) NOT NULL,
@@ -49,7 +49,11 @@ CREATE TABLE mannschaftsmitglied (
   version               DECIMAL(19,0)    NOT NULL    DEFAULT 0,
 
 
-  -- foreign key (fk)
+  -- primary key (pk)
+  -- scheme: pk_{column name}
+  CONSTRAINT pk_mannschaftsmitglied_id PRIMARY KEY (mannschaftsmitglied_id),
+
+ -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
   CONSTRAINT fk_mannschaftsmitglied_mannschaft FOREIGN KEY (mannschaftsmitglied_mannschaft_id) REFERENCES mannschaft (mannschaft_id)
     ON DELETE CASCADE, -- das Löschen einer Mannschaft löscht auch die Zuordnung der dsb_mitgliedn zur Mannschaft
