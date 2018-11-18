@@ -22,7 +22,7 @@ public class VereineDTOMapper implements DataTransferObjectMapper {
         final String vereinName = vereinDO.getName();
         final String vereinIdentifier = vereinDO.getDsbIdentifier();
         final Long regionId = vereinDO.getRegionId();
-        final String regionName = vereinDO.getName();
+        final String regionName = vereinDO.getRegionName();
         final Long createdByUserId = vereinDO.getCreatedByUserId();
         final OffsetDateTime createdAtUtc = vereinDO.getCreatedAtUtc();
         final Long version = vereinDO.getVersion();
