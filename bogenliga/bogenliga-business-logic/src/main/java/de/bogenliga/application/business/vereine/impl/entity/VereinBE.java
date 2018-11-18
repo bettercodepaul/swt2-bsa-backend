@@ -15,6 +15,7 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     private String vereinName;
     private String vereinDsbIdentifier;
     private Long vereinRegionId;
+    private String regionName;
 
 
     /**
@@ -65,6 +66,16 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
+    public String getRegionName() {
+        return regionName;
+    }
+
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
+    }
+
+
     @Override
     public String toString() {
         return "VereinBE{" +
@@ -72,6 +83,7 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
                 ", vereinName='" + vereinName + '\'' +
                 ", vereinDsbIdentifier='" + vereinDsbIdentifier + '\'' +
                 ", vereinRegionId='" + vereinRegionId + '\'' +
+                ", regionName='" + regionName + '\'' +
                 "}";
     }
 }
