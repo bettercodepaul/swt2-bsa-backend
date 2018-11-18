@@ -128,6 +128,16 @@ public class VereinDO extends CommonDataObject implements DataObject {
     }
 
 
+    public String getRegionName() {
+        return regionName;
+    }
+
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
+    }
+
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name, dsbIdentifier, regionId,
