@@ -15,6 +15,7 @@ public class VereineDTO implements DataTransferObject {
     private String name;
     private String identifier;
     private Long regionId;
+    private String regionName;
     private OffsetDateTime createdAtUtc;
     private Long createdByUserId;
     private Long version;
@@ -29,17 +30,39 @@ public class VereineDTO implements DataTransferObject {
     }
 
 
-    public VereineDTO(final Long id, final String name, final String identifier, final Long regionId,
-                      final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
+    /**
+     *
+     * @param id
+     * @param name
+     * @param identifier
+     * @param regionId
+     * @param regionName
+     * @param createdAtUtc
+     * @param createdByUserId
+     * @param version
+     */
+    public VereineDTO(Long id, String name, String identifier, Long regionId, String regionName,
+                      OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
+        this.id = id;
+        this.name = name;
+        this.identifier = identifier;
+        this.regionId = regionId;
+        this.regionName = regionName;
+        this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
+        this.version = version;
+    }
 
+    public VereineDTO(Long id, String name, String identifier, Long regionId,
+                      OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
         this.identifier = identifier;
         this.regionId = regionId;
         this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
         this.version = version;
     }
-
 
     public Long getId() {
         return id;
@@ -78,6 +101,16 @@ public class VereineDTO implements DataTransferObject {
 
     public void setRegionId(Long regionId) {
         this.regionId = regionId;
+    }
+
+
+    public String getRegionName() {
+        return regionName;
+    }
+
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
 

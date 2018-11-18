@@ -31,11 +31,13 @@ public class VereinDAO implements DataAccessObject {
     private static final String VEREIN_BE_NAME = "vereinName";
     private static final String VEREIN_BE_DSB_IDENTIFIER = "vereinDsbIdentifier";
     private static final String VEREIN_BE_REGION_ID = "vereinRegionId";
+    private static final String VEREIN_BE_REGION_NAME = "regionName";
 
     private static final String VEREIN_TABLE_ID = "verein_id";
     private static final String VEREIN_TABLE_NAME = "verein_name";
     private static final String VEREIN_TABLE_DSB_IDENTIFIER = "verein_dsb_identifier";
     private static final String VEREIN_TABLE_REGION_ID = "verein_region_id";
+    private static final String VEREIN_TABLE_REGION_NAME = "region_name";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<VereinBE> VEREIN = new BusinessEntityConfiguration<>(
@@ -43,13 +45,15 @@ public class VereinDAO implements DataAccessObject {
 
     // SQL Queries
     private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM verein"
+            "SELECT v.*, r.region_name "
+                    + " FROM verein v"
+                    + " JOIN region r on v.verein_id=r.region_id"
                     + " ORDER BY verein_id";
     private static final String FIND_BY_ID =
             "SELECT * "
-                    + " FROM verein"
-                    + " WHERE verein_id = ?";
+                    + " FROM verein v"
+                    + " JOIN region r on v.id=r.id"
+                    + " WHERE v.verein_id = ?";
 
     private final BasicDAO basicDao;
 
@@ -68,6 +72,7 @@ public class VereinDAO implements DataAccessObject {
         columnsToFieldsMap.put(VEREIN_TABLE_NAME, VEREIN_BE_NAME);
         columnsToFieldsMap.put(VEREIN_TABLE_DSB_IDENTIFIER, VEREIN_BE_DSB_IDENTIFIER);
         columnsToFieldsMap.put(VEREIN_TABLE_REGION_ID, VEREIN_BE_REGION_ID);
+        columnsToFieldsMap.put(VEREIN_TABLE_REGION_NAME, VEREIN_BE_REGION_NAME);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
