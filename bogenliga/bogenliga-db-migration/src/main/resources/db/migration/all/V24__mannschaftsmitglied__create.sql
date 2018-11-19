@@ -27,12 +27,12 @@
  **/
 -- auto increment sequence (sq)
 -- primary key range for manually added data [0, 999]
-CREATE SEQUENCE mannschaftmitglied_id START WITH 1000 INCREMENT BY 1;
+CREATE SEQUENCE mannschaftsmitglied_id START WITH 1000 INCREMENT BY 1;
 
 
 CREATE TABLE mannschaftsmitglied (
   mannschaftsmitglied_id              DECIMAL(19, 0) NOT NULL    DEFAULT nextval(
-      'mannschaftmitglied_id'), -- DECIMAL(19,0) = unsigned long
+      'mannschaftsmitglied_id'), -- DECIMAL(19,0) = unsigned long
   mannschaftsmitglied_mannschaft_id                 DECIMAL(19,0) NOT NULL,
   mannschaftsmitglied_dsb_mitglied_id               DECIMAL(19,0) NOT NULL,
   mannschaftsmitglied_dsb_mitglied_eingesetzt       INTEGER       NOT NULL, -- 0= kein Einsatz, >0 #Einsatze
