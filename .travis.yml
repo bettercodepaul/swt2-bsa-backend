@@ -16,10 +16,10 @@ cache:
   - '$HOME/.m2/repository' # cache maven dependencies
   - '$HOME/.sonar/cache' # cache sonar dependencies
 
-branches:
-  only:
-  - master
-  - /^release-.*$/
+#branches:
+#  only:
+#  - master
+#  - /^release-.*$/
 
 addons:
   # static code analysis dashboard
