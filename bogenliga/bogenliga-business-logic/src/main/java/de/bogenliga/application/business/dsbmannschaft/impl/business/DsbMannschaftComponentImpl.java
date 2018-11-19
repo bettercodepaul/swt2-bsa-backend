@@ -12,12 +12,13 @@ import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaft
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Philip Dengler
  */
 
-
+@Component
 public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT= "DsbMannschaftDO must not be null";
@@ -41,7 +42,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
 
     @Autowired
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO) {
-        System.out.println("created DAO object");
+
         this.dsbMannschaftDAO = dsbMannschaftDAO;
     }
 

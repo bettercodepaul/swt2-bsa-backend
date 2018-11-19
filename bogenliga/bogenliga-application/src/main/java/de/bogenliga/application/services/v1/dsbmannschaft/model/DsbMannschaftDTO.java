@@ -15,7 +15,7 @@ public class DsbMannschaftDTO implements DataTransferObject {
 
     private long id;
     private long vereinId;
-    private long nummer;
+    private long nummer;m
     private long benutzerId;
     private long veranstaltungId;
 
