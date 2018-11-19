@@ -17,3 +17,4 @@ manuelle Vorbereitung:
 
 manuelle Nachbereitung:
 1) Hierarchie der Ligen pflegen (Aufstieg zu, Abstieg nach..)
+
