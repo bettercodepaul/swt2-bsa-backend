@@ -210,6 +210,7 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getVereinsId());
                 //dsbMitgliedDTO.isKampfrichter();
 
+
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
