@@ -20,6 +20,8 @@ branches:
   only:
   - master
   - /^release-.*$/
+  # build all branches
+  - /.*/
 
 addons:
   # static code analysis dashboard
