@@ -1,62 +1,53 @@
 package de.bogenliga.application.business.kampfrichter.api;
 
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.component.ComponentFacade;
+import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 
-import java.util.List;
 
 /**
- * Responsible for the dsbmitglied database requests.
+ * Responsible for the kampfrichter database requests.
  */
 public interface KampfrichterComponent extends ComponentFacade {
 
     /**
      *
-     * @param id
-     * @return true if id has the liscence to be Kampfrichter
+     * @param userId
+     * @return true if userId has the liscence to be Kampfrichter
      */
-    boolean isKampfrichter(long id);
+    boolean isKampfrichter(long userId);
+
+/*
+    /**
+     * Return a kampfrichter entry with the given userId.
+     *
+     * @param userId of the kampfrichter
+     * @return single kampfrichter entry with the given userId;
+     * null, if no kampfrichter is found
+
+    KampfrichterDO findById(long userId);*/
 
     /**
-     * Return all dsbmitglied entries.
+     * Create a new kampfrichter in the database.
      *
-     * @return list of all dsbmitglied dsbmitglied in the database;
-     * empty list, if no dsbmitglied is found
+     * @param kampfrichterDO new kampfrichter
+     * @return persisted version of the kampfrichter
      */
-    List<DsbMitgliedDO> findAll();
-
-
-    /**
-     * Return a dsbmitglied entry with the given id.
-     *
-     * @param id of the dsbmitglied
-     * @return single dsbmitglied entry with the given id;
-     * null, if no dsbmitglied is found
-     */
-    DsbMitgliedDO findById(long id);
-
-    /**
-     * Create a new dsbmitglied in the database.
-     *
-     * @param dsbMitgliedDO new dsbmitglied
-     * @return persisted version of the dsbmitglied
-     */
-    DsbMitgliedDO create(DsbMitgliedDO dsbMitgliedDO, long currentDsbMitgliedId);
+    KampfrichterDO create(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
 
 
     /**
-     * Update an existing dsbmitglied. The dsbmitglied is identified by the id.
+     * Update an existing kampfrichter. The kampfrichter is identified by the userId.
      *
-     * @param dsbMitgliedDO existing dsbMitgliedDO to update
-     * @return persisted version of the dsbmitglied
+     * @param kampfrichterDO existing kampfrichterDO to update
+     * @return persisted version of the kampfrichter
      */
-    DsbMitgliedDO update(DsbMitgliedDO dsbMitgliedDO, long currentDsbMitgliedId);
+    KampfrichterDO update(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
 
 
     /**
-     * Delete an existing dsbmitglied. The dsbmitglied is identified by the id.
+     * Delete an existing kampfrichter. The kampfrichter is identified by the userId.
      *
-     * @param dsbMitgliedDO dsbmitglied to delete
+     * @param kampfrichterDO kampfrichter to delete
      */
-    void delete(DsbMitgliedDO dsbMitgliedDO, long currentDsbMitgliedId);
+    void delete(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
 }
