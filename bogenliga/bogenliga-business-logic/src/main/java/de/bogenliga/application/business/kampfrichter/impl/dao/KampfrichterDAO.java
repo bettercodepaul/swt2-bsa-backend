@@ -1,15 +1,15 @@
 package de.bogenliga.application.business.kampfrichter.impl.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * DataAccessObject for the kampfrichter entity in the database.
@@ -18,6 +18,7 @@ import java.util.Map;
  *
  * @author Rahul Pöse
  */
+@Repository
 public class KampfrichterDAO  implements DataAccessObject {
 
     // define the logger context

@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.kampfrichter.api;
 
-import de.bogenliga.application.common.component.ComponentFacade;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
+import de.bogenliga.application.common.component.ComponentFacade;
 
 
 /**
