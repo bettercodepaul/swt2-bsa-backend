@@ -109,19 +109,19 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
     }
 
-    public MannschaftsmitgliedBE create(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMannschaftsmitgliedId, final long currentMemberId) {
+    public MannschaftsmitgliedBE create(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
 
-        basicDao.setCreationAttributes(mannschaftsmitgliedBE, currentMannschaftsmitgliedId, currentMemberId);
+        basicDao.setCreationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
         return basicDao.insertEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE);
     }
 
 
-    public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMannschaftsmitgliedId, final long currentMemberId) {
-        basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMannschaftsmitgliedId,currentMemberId);
+    public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE,final long currentMemberId) {
+        basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
 
-        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_TEAM_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
+        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_USER_ID);
     }
 
     public void delete(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMannschaftsmitgliedId, final long currentMemberId) {
