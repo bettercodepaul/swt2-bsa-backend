@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.vereine.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.catalina.User;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,7 +22,6 @@ import de.bogenliga.application.services.v1.vereine.mapper.VereineDTOMapper;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import org.slf4j.Logger;
 
 /**
  * TODO [AL] class documentation
@@ -141,6 +140,7 @@ public class VereineService implements ServiceFacade {
      */
 
     @RequestMapping(method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
