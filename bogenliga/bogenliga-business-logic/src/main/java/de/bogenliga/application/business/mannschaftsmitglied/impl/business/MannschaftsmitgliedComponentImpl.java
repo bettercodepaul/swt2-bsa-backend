@@ -83,14 +83,12 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     @Override
     public MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO,
-                                long currentMannschaftsmitgliedMannschaftId,
-                                long currentMannschaftsmitgliedMitgliedId) {
-        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMannschaftId);
-        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMitgliedId);
+                               final long currentMemberId) {
+        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMemberId);
 
 
         final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(mannschaftsmitgliedDO);
-        final MannschaftsmitgliedBE persistedMannschaftsmitgliedBE = mannschaftsmitgliedDAO.create(mannschaftsmitgliedBE, currentMannschaftsmitgliedMannschaftId,currentMannschaftsmitgliedMitgliedId);
+        final MannschaftsmitgliedBE persistedMannschaftsmitgliedBE = mannschaftsmitgliedDAO.create(mannschaftsmitgliedBE, currentMemberId);
 
         return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(persistedMannschaftsmitgliedBE);
 
@@ -99,18 +97,17 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     @Override
     public MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO,
-                                long currentMannschaftsmitgliedMannschaftId,
-                                long currentMannschaftsmitgliedMitgliedId) {
+                                final long currentMemberId) {
 
-        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMannschaftId);
-        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMannschaftsmitgliedMitgliedId);
+        checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMemberId);
+
 
         Preconditions.checkArgument(mannschaftsmitgliedDO.getMannschaftId()>=0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
         Preconditions.checkArgument(mannschaftsmitgliedDO.getDsbMitgliedId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
 
 
         final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(mannschaftsmitgliedDO);
-        final MannschaftsmitgliedBE persistedMannschaftsmitgliederBE = mannschaftsmitgliedDAO.update(mannschaftsmitgliedBE, currentMannschaftsmitgliedMannschaftId,currentMannschaftsmitgliedMitgliedId);
+        final MannschaftsmitgliedBE persistedMannschaftsmitgliederBE = mannschaftsmitgliedDAO.update(mannschaftsmitgliedBE, currentMemberId);
 
         return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(persistedMannschaftsmitgliederBE);
 
@@ -118,8 +115,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
     @Override
-    public void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId,
-                       long currentMannschaftsmitgliedMitgliedId) {
+    public void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, final long currentMemberId) {
 
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
         Preconditions.checkArgument(mannschaftsmitgliedDO.getMannschaftId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID);
@@ -127,7 +123,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
         final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(mannschaftsmitgliedDO);
 
-        mannschaftsmitgliedDAO.delete(mannschaftsmitgliedBE, currentMannschaftsmitgliedMannschaftId,currentMannschaftsmitgliedMitgliedId);
+        mannschaftsmitgliedDAO.delete(mannschaftsmitgliedBE, currentMemberId);
 
     }
 

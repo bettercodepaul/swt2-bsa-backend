@@ -146,7 +146,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
-     * Delete existing dsbmitglied entry
+     * Delete existing dsbmitglied entrycreated_at_utc
      *
      * @param dsbMitgliedBE
      * @param currentDsbMitgliedId

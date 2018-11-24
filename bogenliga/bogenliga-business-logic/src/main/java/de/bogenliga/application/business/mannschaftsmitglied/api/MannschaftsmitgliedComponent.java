@@ -45,11 +45,10 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * Create a new mannschaftsmitglied in the database.
      *
      * @param mannschaftsmitgliedDO new mannschaftsmitglied
-     * @param currentMannschaftsmitgliedMannschaftId
-     * @param currentMannschaftsmitgliedMitgliedId
+     * @param currentMemberId
      * @return persisted version of the mannschaftsmitglied
      */
-    MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
+    MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
 
 
 
@@ -57,20 +56,18 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * Update an existing mannschaftsmitglied. The mannschaftsmitglied is identified by the id.
      *
      * @param mannschaftsmitgliedDO existing mannschaftsmitgliedDO to update
-     * @param currentMannschaftsmitgliedMannschaftId
-     * @param currentMannschaftsmitgliedMitgliedId
+     * @param currentMemberId
      * @return persisted version of the mannschaftsmitglied
      */
-    MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
+    MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
 
 
     /**
      * Delete an existing mannschaftsmitglied. The mannschaftsmitglied is identified by the id.
      *
      * @param mannschaftsmitgliedDO mannschaftsmitglied to delete
-     * @param currentMannschaftsmitgliedMannschaftId
-     * @param currentMannschaftsmitgliedMitgliedId
+     * @param currentMemberId
      */
-    void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMannschaftsmitgliedMannschaftId, long currentMannschaftsmitgliedMitgliedId);
+    void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
 
 }
