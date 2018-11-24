@@ -77,7 +77,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
         LOG.debug("Receive 'findById' request with ID '{}'", mannschaftsId);
 
-        final MannschaftsmitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findById(mannschaftsId,mitgliedId);
+        final MannschaftsmitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findByMemberAndTeamId(mannschaftsId,mitgliedId);
         return MannschaftsMitgliedDTOMapper.toDTO.apply(dsbMannschaftDO);
     }
 
@@ -98,36 +98,15 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt());
 
         final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
-        final long mitgliedId = UserProvider.getCurrentUserId(principal);
+        final long currentMemberId = UserProvider.getCurrentUserId(principal);
 
 
-        final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = MannschaftsmitgliedComponent.create(newMannschaftsmitgliedDO, mannschaftsId, mitgliedId);
+        final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = mannschaftsMitgliedComponent.create(newMannschaftsmitgliedDO, currentMemberId);
         return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsmitgliedDO);
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public @RequestMapping(method = RequestMethod.PUT,
+     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
@@ -139,7 +118,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
                 mannschaftsMitgliedDTO.getMannschaftsId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
-                mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt();
+                mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt());
 
         final MannschaftsmitgliedDO newMannschaftsMitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -150,17 +129,18 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public void delete(@PathVariable("mannschaftsid") final long mannschaftsId,
-                       @PathVariable("mitgliedid") final long mitgliedId,final Principal principal) {
-        Preconditions.checkArgument(mannschaftsId >= 0, "ID must not be negative.");
+    public void delete(@PathVariable("mannschaftsId") final long mannschaftsId,
+                       @PathVariable("mitgliedId") final long mitgliedId,final Principal principal) {
+        Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
+        Preconditions.checkArgument(mitgliedId>= 0, "mitgliedId must not be negativ");
 
         LOG.debug("Receive 'delete' request with id '{}'", mannschaftsId);
 
         // allow value == null, the value will be ignored
-        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId);
-        final long userId = UserProvider.getCurrentUserId(principal);
+        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId,mitgliedId);
+        final long currentUserId = UserProvider.getCurrentUserId(principal);
 
-        mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, mannschaftsId, mitgliedId);
+        mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
     }
 
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {

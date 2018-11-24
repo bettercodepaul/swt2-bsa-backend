@@ -85,6 +85,16 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
 
     }
 
+    /**
+     * Constructor with id for deleting existing entries
+     * @param mannschaftId
+     * @param dsbMitgliedId
+     */
+    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId) {
+        this.mannschaftId = mannschaftId;
+        this.dsbMitgliedId = dsbMitgliedId;
+    }
+
 
 
     public Long getMannschaftId() {
