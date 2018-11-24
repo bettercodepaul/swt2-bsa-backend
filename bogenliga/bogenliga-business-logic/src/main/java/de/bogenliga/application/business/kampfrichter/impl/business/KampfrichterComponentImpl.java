@@ -44,6 +44,7 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         final KampfrichterBE result = kampfrichterDAO.isKampfrichter(userId);
 
         if (result == null) {
+            // TODO REVIEW[GOLDEN MIDDLE]: return false ?
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", userId));
         }
@@ -51,6 +52,7 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         return true;
     }
 
+    // TODO REVIEW[GOLDEN MIDDLE]: Bitte keinen auskommentierten Code pushen
     /*
     @Override
     public KampfrichterDO findById(final long userId) {
