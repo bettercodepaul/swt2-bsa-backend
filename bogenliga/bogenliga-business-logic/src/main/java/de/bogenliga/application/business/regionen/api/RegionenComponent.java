@@ -1,9 +1,21 @@
 package de.bogenliga.application.business.regionen.api;
 
+import java.util.List;
+import de.bogenliga.application.business.regionen.api.types.RegionenDO;
+import de.bogenliga.application.common.component.ComponentFacade;
+
 /**
- * TODO [AL] class documentation
+ *Responsible for the Class DB requests
  *
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
  */
-public class RegionenComponent {
+
+public interface RegionenComponent extends ComponentFacade {
+    /**
+     * Return all class entries
+     * @return list of all Regionen classes in the DB
+     */
+
+    List<RegionenDO> findAll();
+
 }
