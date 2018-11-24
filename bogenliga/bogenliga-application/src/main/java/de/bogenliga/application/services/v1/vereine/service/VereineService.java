@@ -74,7 +74,7 @@ public class VereineService implements ServiceFacade {
      * @return list of {@link VereineDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public VereineDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id > 0 , "ID must not be negative");
 
@@ -142,7 +142,7 @@ public class VereineService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() >= 0 , PRECONDITION_MSG__VEREIN_ID);
