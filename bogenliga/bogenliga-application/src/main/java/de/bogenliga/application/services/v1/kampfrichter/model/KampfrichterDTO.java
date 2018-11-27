@@ -1,4 +1,4 @@
-package de.bogenliga.application.services.v1.dsbmitglied.model;
+package de.bogenliga.application.services.v1.kampfrichter.model;
 
 import de.bogenliga.application.common.service.types.DataTransferObject;
 

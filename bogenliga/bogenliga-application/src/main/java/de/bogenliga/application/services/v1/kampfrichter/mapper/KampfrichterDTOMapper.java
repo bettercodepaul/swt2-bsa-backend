@@ -1,10 +1,9 @@
-package de.bogenliga.application.services.v1.dsbmitglied.mapper;
+package de.bogenliga.application.services.v1.kampfrichter.mapper;
 
-import java.sql.Date;
 import java.util.function.Function;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
-import de.bogenliga.application.services.v1.dsbmitglied.model.KampfrichterDTO;
+import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterDTO;
 
 /**
  * I map the {@link KampfrichterDO} and {@link KampfrichterDTO} objects
