@@ -67,6 +67,18 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with optional parameters
      * @param userId
+     * @param wettkampfId
+     * @param leitend
+     */
+    public KampfrichterDO(final Long userId, final long wettkampfId, final boolean leitend){
+        this.userId = userId;
+        this.wettkampfId = wettkampfId;
+        this.leitend = leitend;
+    }
+
+    /**
+     * Constructor with optional parameters
+     * @param userId
      */
     public KampfrichterDO(final Long userId){
         this.userId = userId;

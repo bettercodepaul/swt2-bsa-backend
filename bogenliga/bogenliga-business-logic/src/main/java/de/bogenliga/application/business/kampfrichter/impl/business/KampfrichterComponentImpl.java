@@ -52,21 +52,6 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         return true;
     }
 
-    // TODO REVIEW[GOLDEN MIDDLE]: Bitte keinen auskommentierten Code pushen
-    /*
-    @Override
-    public KampfrichterDO findById(final long userId) {
-        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
-
-        final KampfrichterBE result = kampfrichterDAO.findById(userId);
-
-        if (result == null) {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", userId));
-        }
-
-        return KampfrichterMapper.toKampfrichterDO.apply(result);
-    }*/
 
     @Override
     public KampfrichterDO create(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
