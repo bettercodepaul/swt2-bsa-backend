@@ -68,62 +68,8 @@ public class KampfrichterService implements ServiceFacade {
     }
 
 
-    /**
-     * I return all kmpfrichter entries of the database.
-     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
-     *
-     * Usage:
-     * <pre>{@code Request: GET /v1/kampfrichter}</pre>
-     * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für Kampfrichter angepasst werden
-     * [
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  },
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.interval",
-     *    "value": "10"
-     *  }
-     * ]
-     * }
-     * </pre>
-     *
-     * @return list of {@link KampfrichterDTO} as JSON
-     */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public List<KampfrichterDTO> findAll() {
-        final List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findAll();
-        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTO).collect(Collectors.toList());
-    }
 
 
-    /**
-     * I return the dsbMitglied entry of the database with a specific id.
-     *
-     * Usage:
-     * <pre>{@code Request: GET /v1/kampfrichter/app.bogenliga.frontend.autorefresh.active}</pre>
-     * <pre>{@code Response:
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  }
-     * }
-     * </pre>
-     *
-     * @return list of {@link KampfrichterDTO} as JSON
-     */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public KampfrichterDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
-
-        LOG.debug("Receive 'findById' request with ID '{}'", id);
-
-        final KampfrichterDO kampfrichterDO = kampfrichterComponent.findById(id);
-        return KampfrichterDTOMapper.toDTO.apply(kampfrichterDO);
-    }
 
 
     /**
@@ -160,6 +106,7 @@ public class KampfrichterService implements ServiceFacade {
 
                // dsbMitgliedDTO.isKampfrichter();
         final KampfrichterDO newKampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
+
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final KampfrichterDO savedKampfrichterDO = kampfrichterComponent.create(newKampfrichterDO, userId);
@@ -187,8 +134,7 @@ public class KampfrichterService implements ServiceFacade {
         checkPreconditions(kampfrichterDTO);
         Preconditions.checkArgument(kampfrichterDTO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_USERID);
 
-        LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                        " mitgliedsnummer '{}', vereinsid '{}', kampfrichter '{}'",
+        LOG.debug("Receive 'create' request with user_id '{}'",
                 kampfrichterDTO.getUserId());
 
                 //dsbMitgliedDTO.isKampfrichter();

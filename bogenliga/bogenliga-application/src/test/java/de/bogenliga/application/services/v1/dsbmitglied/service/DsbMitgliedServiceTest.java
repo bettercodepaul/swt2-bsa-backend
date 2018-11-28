@@ -102,6 +102,7 @@ public class DsbMitgliedServiceTest {
         dsbMitgliedDTO.setMitgliedsnummer(MITGLIEDSNUMMER);
         dsbMitgliedDTO.setVereinsId(VEREINSID);
         dsbMitgliedDTO.setUserId(USERID);
+
         return dsbMitgliedDTO;
     }
 
@@ -202,7 +203,7 @@ public class DsbMitgliedServiceTest {
         when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
-        final DsbMitgliedDTO actual = underTest.update(input, principal);
+        final DsbMitgliedDTO actual = underTest.update(input, principal,false);
 
         // assert result
         assertThat(actual).isNotNull();

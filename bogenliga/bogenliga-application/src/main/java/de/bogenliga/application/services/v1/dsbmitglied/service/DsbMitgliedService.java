@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
+import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmitglied.mapper.DsbMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
+import de.bogenliga.application.services.v1.kampfrichter.service.KampfrichterService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -61,6 +64,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final KampfrichterComponent kampfrichterComponent = null;
 
 
     /**
@@ -195,26 +199,34 @@ public class DsbMitgliedService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
+    public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal,@PathVariable("kampfrichter") boolean kampfrichter) {
         checkPreconditions(dsbMitgliedDTO);
         Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
         LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                        " mitgliedsnummer '{}', vereinsid '{}', kampfrichter '{}'",
+                        " mitgliedsnummer '{}', vereinsid '{}'",
                 dsbMitgliedDTO.getId(),
                 dsbMitgliedDTO.getVorname(),
                 dsbMitgliedDTO.getNachname(),
                 dsbMitgliedDTO.getGeburtsdatum(),
                 dsbMitgliedDTO.getNationalitaet(),
                 dsbMitgliedDTO.getMitgliedsnummer(),
-                dsbMitgliedDTO.getVereinsId());
-                //dsbMitgliedDTO.isKampfrichter();
+                dsbMitgliedDTO.getVereinsId()
+                );
+
+
 
 
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
+
         final DsbMitgliedDO updatedDsbMitgliedDO = dsbMitgliedComponent.update(newDsbMitgliedDO, userId);
+
+        if(kampfrichter){
+            KampfrichterDO kampfrichterDO = new KampfrichterDO(dsbMitgliedDTO.getUserId());
+            KampfrichterDO updateKampfrichterDO = kampfrichterComponent.update(kampfrichterDO,userId);
+        }
         return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
     }
 

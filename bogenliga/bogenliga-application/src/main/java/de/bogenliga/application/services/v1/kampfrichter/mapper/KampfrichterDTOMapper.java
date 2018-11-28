@@ -1,6 +1,10 @@
 package de.bogenliga.application.services.v1.kampfrichter.mapper;
 
 import java.util.function.Function;
+<<<<<<< HEAD
+=======
+
+>>>>>>> Kampfrichter in MitgliedServiceKlasse bei Update eingefügt
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterDTO;
