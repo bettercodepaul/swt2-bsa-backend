@@ -54,5 +54,4 @@ public class VereineDTOMapper implements DataTransferObjectMapper {
     private VereineDTOMapper(){
         //empty
     }
-
 }
