@@ -2,7 +2,7 @@ package de.bogenliga.application.services.v1.dsbmitglied.mapper;
 
 import java.sql.Date;
 import java.util.function.Function;
-import de.bogenliga.application.business.dsbmitglied.api.types.KampfrichterDO;
+import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.dsbmitglied.model.KampfrichterDTO;
 
@@ -32,13 +32,14 @@ public final class KampfrichterDTOMapper implements DataTransferObjectMapper {
                 );
     };
 
+
     /**
      * I map the {@link KampfrichterDTO} object to the {@link KampfrichterDO} object
      */
     public static final Function<KampfrichterDTO, KampfrichterDO> toDO = dto -> {
 
-        //final Long kampfrichterWetterkampfId = dto.getWettkampfId();
-       // final boolean kampfrichterLeitend = dto.getLeitend();
+        final Long kampfrichterWetterkampfId = dto.getWettkampfId();
+        final boolean kampfrichterLeitend = dto.getLeitend();
         final Long kampfrichterUserId = dto.getUserId();
 
         return new KampfrichterDO(
