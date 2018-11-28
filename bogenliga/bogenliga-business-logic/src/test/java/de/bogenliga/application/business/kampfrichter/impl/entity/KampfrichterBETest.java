@@ -25,7 +25,7 @@ public class KampfrichterBETest {
 
 
     @Test
-    public void assertToString() {
+    public void assertToLong() {
         final KampfrichterBE underTest = getKampfrichterBE();
         underTest.setKampfrichterUserId(USERID);
         underTest.setKampfrichterWettkampfId(WETTKAMPFID);
@@ -36,21 +36,21 @@ public class KampfrichterBETest {
         assertThat(actual)
                 .isNotEmpty()
                 .contains(Long.toString(USERID))
-                .contains(VORNAME);
+                .contains(WETTKAMPFID+"");
     }
 
 
     @Test
-    public void assertToString_withoutVorname() {
-        final DsbMitgliedBE underTest = new DsbMitgliedBE();
-        underTest.setDsbMitgliedId(ID);
-        underTest.setDsbMitgliedVorname(null);
+    public void assertToString_withWettkampfId_0() {
+        final KampfrichterBE underTest = new KampfrichterBE();
+        underTest.setKampfrichterUserId(USERID);
+        underTest.setKampfrichterWettkampfId(0000);
 
         final String actual = underTest.toString();
 
         assertThat(actual)
                 .isNotEmpty()
-                .contains(Long.toString(ID))
-                .contains("null");
+                .contains(Long.toString(USERID))
+                .contains("0");
     }
 }
