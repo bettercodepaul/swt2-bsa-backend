@@ -145,7 +145,6 @@ public class VereineService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
         checkPreconditions(vereineDTO);
-        Preconditions.checkArgument(vereineDTO.getId() >= 0 , PRECONDITION_MSG__VEREIN_ID);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug("Receive 'create' request with id '{}', name '{}', identifier '{}', region id '{}', version '{}', createdBy '{}'" ,
