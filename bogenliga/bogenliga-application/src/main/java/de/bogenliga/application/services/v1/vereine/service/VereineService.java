@@ -76,7 +76,7 @@ public class VereineService implements ServiceFacade {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public VereineDTO findById(@PathVariable ("id") final long id){
-        Preconditions.checkArgument(id > 0 , "ID must not be negative");
+        Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
         LOG.debug("Receive 'findById' with requested ID '{}'", id);
 
@@ -98,7 +98,7 @@ public class VereineService implements ServiceFacade {
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() > 0, PRECONDITION_MSG__VEREIN_ID);
 
-        LOG.debug("Receive  'create' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
+        LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
                 vereineDTO.getId(),
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
@@ -147,8 +147,7 @@ public class VereineService implements ServiceFacade {
         checkPreconditions(vereineDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        LOG.debug("Receive 'create' request with id '{}', name '{}', identifier '{}', region id '{}', version '{}', createdBy '{}'" ,
-                vereineDTO.getId(),
+        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region id '{}', version '{}', createdBy '{}'" ,
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
                 vereineDTO.getRegionId(),
