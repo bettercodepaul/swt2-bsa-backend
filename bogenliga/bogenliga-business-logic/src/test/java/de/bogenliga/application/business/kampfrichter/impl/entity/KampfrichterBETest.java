@@ -35,7 +35,7 @@ public class KampfrichterBETest {
 
         assertThat(actual)
                 .isNotEmpty()
-                .contains(Long.toString(ID))
+                .contains(Long.toString(USERID))
                 .contains(VORNAME);
     }
 
