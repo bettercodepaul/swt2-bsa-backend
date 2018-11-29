@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
+import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
+import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
@@ -17,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -25,29 +26,34 @@ import static org.mockito.Mockito.when;
 
 public class VereinComponentImplTest {
 
-    private static final Long USER=0L;
+    private static final Long USER = 0L;
     private static final Long VERSION = 0L;
 
-    private static final String VEREIN="";
-    private static final long   VEREIN_ID=0;
-    private static final String VEREIN_NAME="";
-    private static final String VEREIN_DSB_IDENTIFIER="";
-    private static final long   VEREIN_REGION_ID=0;
-    private static final String VEREIN_REGION_ID_NOT_NEG="";
-    private static final String VEREIN_DSB_MITGLIED_NOT_NEG="";
-    private static final long USER_ID=0;
+    private static final long VEREIN_ID = 0;
+    private static final String VEREIN_NAME = "";
+    private static final String VEREIN_DSB_IDENTIFIER = "";
+    private static final long VEREIN_REGION_ID = 0;
+    private static final long USER_ID = 0;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
+    private static final Long REGION_ID = 0L;
+    private static final String REGION_NAME = "Test";
+    private static final String REGION_KUERZEL = "tt";
+    private static final String REGION_TYPE = "TE";
+    private static final Long REGION_UEBERGEORDNET = 1L;
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private VereinDAO VereinDAO;
+    private VereinDAO vereinDAO;
+    @Mock
+    private RegionenDAO regionenDAO;
     @InjectMocks
     private VereinComponentImpl underTest;
     @Captor
     private ArgumentCaptor<VereinBE> vereinBEArgumentCaptor;
 
-    public static VereinBE getVereinBE(){
+    public static VereinBE getVereinBE() {
         final VereinBE expectedBE = new VereinBE();
         expectedBE.setVereinName(VEREIN_NAME);
         expectedBE.setVereinId(VEREIN_ID);
@@ -58,7 +64,7 @@ public class VereinComponentImplTest {
         return expectedBE;
     }
 
-    public static VereinDO getVereinDO(){
+    public static VereinDO getVereinDO() {
         return new VereinDO(VEREIN_ID,
                 VEREIN_NAME,
                 VEREIN_DSB_IDENTIFIER,
@@ -68,15 +74,29 @@ public class VereinComponentImplTest {
                 VERSION);
     }
 
+    public static RegionenBE getRegionenBE() { // da ist die region die der Verein ID entspricht
+        RegionenBE regionenBE = new RegionenBE();
+        regionenBE.setRegionId(REGION_ID);
+        regionenBE.setRegionKuerzel(REGION_KUERZEL);
+        regionenBE.setRegionTyp(REGION_TYPE);
+        regionenBE.setRegionUebergeordnet(REGION_UEBERGEORDNET);
+        regionenBE.setRegionName(REGION_NAME);
+
+        return regionenBE;
+    }
+
     @Test
     public void findAll() {
         // prepare test data
         final VereinBE expectedBE = getVereinBE();
-        final List<VereinBE> expectedBEList = Collections.singletonList(expectedBE);
+        final RegionenBE expectedRegionBE = getRegionenBE();
+        final List<RegionenBE> expectedRegionBEList = Collections.singletonList(expectedRegionBE);
+        final List<VereinBE> expectedVereinBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
-        when(VereinDAO.findAll()).thenReturn(expectedBEList);
+        when(vereinDAO.findAll()).thenReturn(expectedVereinBEList);
 
+        when(regionenDAO.findAll()).thenReturn(expectedRegionBEList);
         // call test method
         final List<VereinDO> actual = underTest.findAll();
 
@@ -92,15 +112,15 @@ public class VereinComponentImplTest {
                 .isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getName())
                 .isEqualTo(expectedBE.getVereinName());
-        assertThat(actual.get(0).getRegionName())
-                .isEqualTo(expectedBE.getRegionName());
         assertThat(actual.get(0).getRegionId())
                 .isEqualTo(expectedBE.getVereinRegionId());
         assertThat(actual.get(0).getDsbIdentifier())
                 .isEqualTo(expectedBE.getVereinDsbIdentifier());
+        assertThat(actual.get(0).getRegionName())
+                .isEqualTo(expectedRegionBE.getRegionName());
 
         // verify invocations
-        verify(VereinDAO).findAll();
+        verify(vereinDAO).findAll();
     }
 
     @Test
@@ -111,7 +131,7 @@ public class VereinComponentImplTest {
         final VereinBE expectedBE = getVereinBE();
 
         // configure mocks
-        when(VereinDAO.create(any(VereinBE.class), anyLong())).thenReturn(expectedBE);
+        when(vereinDAO.create(any(VereinBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
         final VereinDO actual = underTest.create(input, USER);
@@ -123,7 +143,7 @@ public class VereinComponentImplTest {
                 .isEqualTo(input.getId());
 
         // verify invocations
-        verify(VereinDAO).create(vereinBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).create(vereinBEArgumentCaptor.capture(), anyLong());
 
         final VereinBE persistedBE = vereinBEArgumentCaptor.getValue();
 
@@ -139,7 +159,7 @@ public class VereinComponentImplTest {
         final VereinBE expectedBE = getVereinBE();
 
         // configure mocks
-        when(VereinDAO.findById(VEREIN_ID)).thenReturn(expectedBE);
+        when(vereinDAO.findById(VEREIN_ID)).thenReturn(expectedBE);
 
         // call test method
         final VereinDO actual = underTest.findById(VEREIN_ID);
@@ -151,7 +171,7 @@ public class VereinComponentImplTest {
                 .isEqualTo(expectedBE.getVereinId());
 
         // verify invocations
-        verify(VereinDAO).findById(VEREIN_ID);
+        verify(vereinDAO).findById(VEREIN_ID);
     }
 
     @Test
@@ -162,7 +182,7 @@ public class VereinComponentImplTest {
         final VereinBE expectedBE = getVereinBE();
 
         // configure mocks
-        when(VereinDAO.update(any(VereinBE.class), anyLong())).thenReturn(expectedBE);
+        when(vereinDAO.update(any(VereinBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
         final VereinDO actual = underTest.update(input, USER);
@@ -176,7 +196,7 @@ public class VereinComponentImplTest {
                 .isEqualTo(input.getName());
 
         // verify invocations
-        verify(VereinDAO).update(vereinBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).update(vereinBEArgumentCaptor.capture(), anyLong());
 
         final VereinBE persistedBE = vereinBEArgumentCaptor.getValue();
 
@@ -202,7 +222,7 @@ public class VereinComponentImplTest {
         // assert result
 
         // verify invocations
-        verify(VereinDAO).delete(vereinBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).delete(vereinBEArgumentCaptor.capture(), anyLong());
 
         final VereinBE persistedBE = vereinBEArgumentCaptor.getValue();
 
