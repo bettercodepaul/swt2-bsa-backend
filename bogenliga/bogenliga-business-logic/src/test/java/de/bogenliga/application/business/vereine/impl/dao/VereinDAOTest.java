@@ -26,7 +26,6 @@ public class VereinDAOTest {
     private static String VEREIN_NAME="TEST";
     private static String VEREIN_DSB_IDENTIFIER="2";
     private static long VEREIN_REGION_ID= 1;
-    private static String VEREIN_REGION_NAME="Liga Süd";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -38,7 +37,7 @@ public class VereinDAOTest {
     public static VereinBE getVereinBE() {
         final VereinBE expectedBE = new VereinBE();
 
-        expectedBE.setRegionName(VEREIN_REGION_NAME);
+
         expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
         expectedBE.setVereinName(VEREIN_NAME);
         expectedBE.setVereinId(VEREIN_ID);
