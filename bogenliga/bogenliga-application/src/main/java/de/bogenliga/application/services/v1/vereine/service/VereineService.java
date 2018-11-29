@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.vereine.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.catalina.User;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,7 +22,6 @@ import de.bogenliga.application.services.v1.vereine.mapper.VereineDTOMapper;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import org.slf4j.Logger;
 
 /**
  * TODO [AL] class documentation
@@ -75,9 +74,9 @@ public class VereineService implements ServiceFacade {
      * @return list of {@link VereineDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public VereineDTO findById(@PathVariable ("id") final long id){
-        Preconditions.checkArgument(id > 0 , "ID must not be negative");
+        Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
         LOG.debug("Receive 'findById' with requested ID '{}'", id);
 
@@ -99,7 +98,7 @@ public class VereineService implements ServiceFacade {
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() > 0, PRECONDITION_MSG__VEREIN_ID);
 
-        LOG.debug("Receive  'create' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
+        LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
                 vereineDTO.getId(),
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
@@ -141,15 +140,14 @@ public class VereineService implements ServiceFacade {
      */
 
     @RequestMapping(method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
         checkPreconditions(vereineDTO);
-        Preconditions.checkArgument(vereineDTO.getId() >= 0 , PRECONDITION_MSG__VEREIN_ID);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        LOG.debug("Receive 'create' request with id '{}', name '{}', identifier '{}', region id '{}', version '{}', createdBy '{}'" ,
-                vereineDTO.getId(),
+        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region id '{}', version '{}', createdBy '{}'" ,
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
                 vereineDTO.getRegionId(),

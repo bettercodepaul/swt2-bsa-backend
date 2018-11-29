@@ -21,7 +21,7 @@ public class VereinMapper implements ValueObjectMapper {
         final String name = be.getVereinName();
         final String dsbIdentifier = be.getVereinDsbIdentifier();
         final Long regionId = be.getVereinRegionId();
-        final String regionName = be.getRegionName();
+        //final String regionName = be.getRegionName();
 
         // technical params
         final Long createdByUserId = be.getCreatedByUserId();
@@ -31,8 +31,7 @@ public class VereinMapper implements ValueObjectMapper {
         final OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         final OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new VereinDO(id, name, dsbIdentifier, regionId, regionName, createdAtUtc, createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
+        return new VereinDO(id, name, dsbIdentifier, regionId, createdAtUtc, createdByUserId, version);
     };
 
     public static final Function<VereinDO, VereinBE> toVereinBE = vereinDO -> {

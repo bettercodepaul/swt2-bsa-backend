@@ -29,7 +29,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     private static final String PRECONDITION_MSG_CURRENT_DSB_ID = "The currentDsbId cannot be negative";
 
 
-    public final CompetitionClassDAO competitionClassDAO;
+    private final CompetitionClassDAO competitionClassDAO;
 
 
     /**
@@ -40,7 +40,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
      * @param competitionClassDAO
      */
     public CompetitionClassComponentImpl(
-            CompetitionClassDAO competitionClassDAO) {
+            final CompetitionClassDAO competitionClassDAO) {
         this.competitionClassDAO = competitionClassDAO;
     }
 
@@ -54,7 +54,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
 
     @Override
-    public CompetitionClassDO findById(long id) {
+    public CompetitionClassDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
 
         final CompetitionClassBE competitionClassBE = competitionClassDAO.findById(id);
@@ -75,7 +75,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     }
 
     @Override
-    public CompetitionClassDO update(CompetitionClassDO competitionClassDO, long currentDsbMitblied) {
+    public CompetitionClassDO update(final CompetitionClassDO competitionClassDO, final long currentDsbMitblied) {
         checkCompetitionClassDO(competitionClassDO, currentDsbMitblied);
         Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
 
