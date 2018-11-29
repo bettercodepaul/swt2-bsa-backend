@@ -96,7 +96,7 @@ public class VereineService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public VereineDTO update (@RequestBody final VereineDTO vereineDTO, final Principal principal){
         checkPreconditions(vereineDTO);
-        Preconditions.checkArgument(vereineDTO.getId() > 0, PRECONDITION_MSG__VEREIN_ID);
+        Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG__VEREIN_ID);
 
         LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
                 vereineDTO.getId(),
