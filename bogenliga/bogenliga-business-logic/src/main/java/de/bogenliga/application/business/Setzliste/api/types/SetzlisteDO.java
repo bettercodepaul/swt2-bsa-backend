@@ -1,234 +1,125 @@
-package de.bogenliga.application.business.dsbmitglied.api.types;
+package de.bogenliga.application.business.Setzliste.api.types;
+
+import de.bogenliga.application.common.component.types.CommonDataObject;
+import de.bogenliga.application.common.component.types.DataObject;
 
 import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import de.bogenliga.application.common.component.types.CommonDataObject;
-import de.bogenliga.application.common.component.types.DataObject;
 
 /**
  * Contains the values of the dsbmitglied business entity.
  *
  * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
  */
-public class DsbMitgliedDO extends CommonDataObject implements DataObject {
+public class SetzlisteDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = 298357103627898987L;
 
     /**
      * business parameter
      */
-    private Long id;
-    private String vorname;
-    private String nachname;
-    private Date geburtsdatum;
-    private String nationalitaet;
-    private String mitgliedsnummer;
-    private Long vereinsId;
-    private Long userId;
+    private Integer matchNr;
+    private Integer matchScheibennummer;
+    private Integer ligatabelleTabellenplatz;
+    private String vereinName;
+    private Integer wettkampfTag;
+    private Date wettkampfDatum;
+    private String wettkampfBeginn;
+    private String wettkampfOrt;
 
 
     /**
-     * Constructor with optional parameters
-     * @param id
-     * @param vorname
-     * @param nachname
-     * @param geburtsdatum
-     * @param nationalitaet
-     * @param mitgliedsnummer
-     * @param vereinsId
-     * @param userId
-     * @param createdAtUtc
-     * @param createdByUserId
-     * @param lastModifiedAtUtc
-     * @param lastModifiedByUserId
-     * @param version
+     * Constructor with default parameters
+     * @param
      */
-    public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
-                         final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
-                         final Long userId, final OffsetDateTime createdAtUtc,
-                         final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                         final Long lastModifiedByUserId, final Long version) {
-        this.id = id;
-        this.vorname = vorname;
-        this.nachname = nachname;
-        this.geburtsdatum = geburtsdatum;
-        this.nationalitaet = nationalitaet;
-        this.mitgliedsnummer = mitgliedsnummer;
-        this.vereinsId = vereinsId;
-        this.userId = userId;
-        this.createdAtUtc = createdAtUtc;
-        this.createdByUserId = createdByUserId;
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
-        this.lastModifiedByUserId = lastModifiedByUserId;
-        this.version = version;
-    }
-
-    /**
-     * Constructor with mandatory parameters
-     * @param id
-     * @param vorname
-     * @param nachname
-     * @param geburtsdatum
-     * @param nationalitaet
-     * @param mitgliedsnummer
-     * @param vereinsId
-     * @param createdAtUtc
-     * @param createdByUserId
-     * @param version
-     */
-    public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
-                         final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
-                         final OffsetDateTime createdAtUtc,
-                         final Long createdByUserId, final Long version) {
-        this.id = id;
-        this.vorname = vorname;
-        this.nachname = nachname;
-        this.geburtsdatum = geburtsdatum;
-        this.nationalitaet = nationalitaet;
-        this.mitgliedsnummer = mitgliedsnummer;
-        this.vereinsId = vereinsId;
-        this.createdAtUtc = createdAtUtc;
-        this.createdByUserId = createdByUserId;
-        this.version = version;
-    }
-
-    /**
-     * Constructor without technical parameters
-     * @param id
-     * @param vorname
-     * @param nachname
-     * @param geburtsdatum
-     * @param nationalitaet
-     * @param mitgliedsnummer
-     * @param vereinsId
-     * @param userId
-     */
-    public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
-                         final String nationalitaet,
-                         final String mitgliedsnummer, final Long vereinsId, final Long userId) {
-        this.id = id;
-        this.vorname = vorname;
-        this.nachname = nachname;
-        this.geburtsdatum = geburtsdatum;
-        this.nationalitaet = nationalitaet;
-        this.mitgliedsnummer = mitgliedsnummer;
-        this.vereinsId = vereinsId;
-        this.userId = userId;
-    }
-
-    /**
-     * Constructor with id for deleting existing entries
-     * @param id
-     */
-    public DsbMitgliedDO(final Long id) {
-        this.id = id;
+    public SetzlisteDO(final Integer matchNr,
+            final Integer matchScheibennummer,
+            final Integer ligatabelleTabellenplatz,
+            final String vereinName,
+            final Integer wettkampfTag,
+            final Date wettkampfDatum,
+            final String wettkampfBeginn,
+            final String wettkampfOrt) {
+        this.matchNr = matchNr;
+        this.matchScheibennummer = matchScheibennummer;
+        this.ligatabelleTabellenplatz = ligatabelleTabellenplatz;
+        this.vereinName = vereinName;
+        this.wettkampfTag = wettkampfTag;
+        this.wettkampfDatum = wettkampfDatum;
+        this.wettkampfBeginn = wettkampfBeginn;
+        this.wettkampfOrt = wettkampfOrt;
     }
 
 
-    public Long getId() {
-        return id;
+    public Integer getMatchNr() {
+        return matchNr;
+    }
+
+    public void setMatchNr(Integer matchNr) {
+        this.matchNr = matchNr;
+    }
+
+    public Integer getMatchScheibennummer() {
+        return matchScheibennummer;
+    }
+
+    public void setMatchScheibennummer(Integer matchScheibennummer) {
+        this.matchScheibennummer = matchScheibennummer;
+    }
+
+    public Integer getLigatabelleTabellenplatz() {
+        return ligatabelleTabellenplatz;
+    }
+
+    public void setLigatabelleTabellenplatz(Integer ligatabelleTabellenplatz) {
+        this.ligatabelleTabellenplatz = ligatabelleTabellenplatz;
+    }
+
+    public String getVereinName() {
+        return vereinName;
+    }
+
+    public void setVereinName(String vereinName) {
+        this.vereinName = vereinName;
+    }
+
+    public Integer getWettkampfTag() {
+        return wettkampfTag;
+    }
+
+    public void setWettkampfTag(Integer wettkampfTag) {
+        this.wettkampfTag = wettkampfTag;
+    }
+
+    public Date getWettkampfDatum() {
+        return wettkampfDatum;
+    }
+
+    public void setWettkampfDatum(Date wettkampfDatum) {
+        this.wettkampfDatum = wettkampfDatum;
+    }
+
+    public String getWettkampfBeginn() {
+        return wettkampfBeginn;
+    }
+
+    public void setWettkampfBeginn(String wettkampfBeginn) {
+        this.wettkampfBeginn = wettkampfBeginn;
+    }
+
+    public String getWettkampfOrt() {
+        return wettkampfOrt;
+    }
+
+    public void setWettkampfOrt(String wettkampfOrt) {
+        this.wettkampfOrt = wettkampfOrt;
     }
 
 
-    public void setId(final long id) {
-        this.id = id;
-    }
-
-    public String getVorname() {
-        return vorname;
-    }
-
-
-    public void setVorname(final String vorname) {
-        this.vorname = vorname;
-    }
-
-    public String getNachname() {
-        return nachname;
-    }
-
-
-    public void setNachname(final String nachname) {
-        this.nachname = nachname;
-    }
-
-
-    public Date getGeburtsdatum() {
-        return geburtsdatum;
-    }
-
-
-    public void setGeburtsdatum(final Date geburtsdatum) {
-        this.geburtsdatum = geburtsdatum;
-    }
-
-    public String getNationalitaet() {
-        return nationalitaet;
-    }
-
-
-    public void setNationalitaet(final String nationalitaet) {
-        this.nationalitaet = nationalitaet;
-    }
-
-    public String getMitgliedsnummer() {
-        return mitgliedsnummer;
-    }
-
-
-    public void setMitgliedsnummer(final String mitgliedsnummer) {
-        this.mitgliedsnummer = mitgliedsnummer;
-    }
-
-
-    public Long getVereinsId() {
-        return vereinsId;
-    }
-
-
-    public void setVereinsId(final Long vereinsId) {
-        this.vereinsId = vereinsId;
-    }
-
-
-    public Long getUserId() {
-        return userId;
-    }
-
-
-    public void setUserId(final Long userId) {
-        this.userId = userId;
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, userId,
-                createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
-    }
-
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final DsbMitgliedDO that = (DsbMitgliedDO) o;
-        return id == that.id &&
-                vereinsId == that.vereinsId &&
-                userId == that.userId &&
-                createdByUserId == that.createdByUserId &&
-                lastModifiedByUserId == that.lastModifiedByUserId &&
-                version == that.version &&
-                Objects.equals(vorname, that.vorname) &&
-                Objects.equals(nachname, that.nachname) &&
-                Objects.equals(geburtsdatum, that.geburtsdatum) &&
-                Objects.equals(nationalitaet, that.nationalitaet) &&
-                Objects.equals(mitgliedsnummer, that.mitgliedsnummer) &&
-                Objects.equals(lastModifiedAtUtc, that.lastModifiedAtUtc);
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, userId,
+//                createdByUserId, lastModifiedAtUtc,
+//                lastModifiedByUserId, version);
+//    }
 }

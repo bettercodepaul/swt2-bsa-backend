@@ -70,6 +70,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @Autowired
     public DsbMitgliedService(final DsbMitgliedComponent dsbMitgliedComponent) {
         this.dsbMitgliedComponent = dsbMitgliedComponent;
+        LOG.debug("############# Service Konstruktor ################");
     }
 
 
@@ -99,6 +100,9 @@ public class DsbMitgliedService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<DsbMitgliedDTO> findAll() {
+        LOG.warn("############# Service GET ################");
+        LOG.error("#################### GRRRRRR ############");
+
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAll();
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -124,7 +128,7 @@ public class DsbMitgliedService implements ServiceFacade {
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'findById' request with ID '{}'", id);
+        LOG.debug("Receive 'find    ById' request with ID '{}'", id);
 
         final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return DsbMitgliedDTOMapper.toDTO.apply(dsbMitgliedDO);

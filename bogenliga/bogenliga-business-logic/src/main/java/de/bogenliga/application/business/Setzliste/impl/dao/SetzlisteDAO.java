@@ -1,6 +1,6 @@
-package de.bogenliga.application.business.Setzliste.dao;
+package de.bogenliga.application.business.Setzliste.impl.dao;
 
-import de.bogenliga.application.business.Setzliste.entity.SetzlisteBE;
+import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -64,7 +64,7 @@ public class SetzlisteDAO implements DataAccessObject {
                 + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
                 + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
                 + " INNER JOIN region r ON v.verein_region_id = r.region_id"
-                + " INNER JOIN liga AS l ON r.region_id = l.liga_region_id"
+        //        + " INNER JOIN liga AS l ON r.region_id = l.liga_region_id"
                 + " WHERE wk.wettkampf_tag = lt.ligatabelle_wettkampf_tag";
 
 
