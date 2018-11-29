@@ -32,7 +32,6 @@ public class VereinComponentImpl implements VereinComponent {
     private static final String PRECONDITION_MSG_VEREIN_REGION_ID_NOT_NEG = "VereinDO region id must not be negative";
     private static final String PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG = "DsbMitglied id must not be negative";
 
-
     private final VereinDAO vereinDAO;
     private final RegionenDAO regionenDAO;
 
