@@ -4,7 +4,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * TODO [AL] class documentation
+ * I represent the Regionen Bussines Entity
  *
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
  */
