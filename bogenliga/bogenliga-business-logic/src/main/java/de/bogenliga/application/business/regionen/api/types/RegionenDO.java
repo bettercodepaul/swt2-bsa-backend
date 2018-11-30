@@ -22,7 +22,7 @@ public class RegionenDO extends CommonDataObject implements DataObject {
 
     public RegionenDO(final Long id, final String regionName, final String regionKuerzel,
                       final String regionType, final Long regionUebergeordnet, final OffsetDateTime createdAtUtc,
-                      final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long version){
+                      final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long lastModifiedByUserId, final Long version){
 
         this.id = id;
         this.regionName = regionName;
@@ -35,6 +35,7 @@ public class RegionenDO extends CommonDataObject implements DataObject {
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedUtc;
+        this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
     }
 

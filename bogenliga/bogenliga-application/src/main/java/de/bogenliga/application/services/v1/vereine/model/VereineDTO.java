@@ -140,6 +140,6 @@ public class VereineDTO implements DataTransferObject {
 
 
     public void setVersion(Long version) {
-        version = version;
+        this.version = version;
     }
 }
