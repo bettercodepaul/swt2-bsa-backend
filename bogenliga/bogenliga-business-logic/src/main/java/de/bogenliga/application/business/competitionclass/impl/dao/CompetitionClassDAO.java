@@ -41,7 +41,7 @@ public class CompetitionClassDAO implements DataAccessObject {
     private static final String COMPETITIONCLASS_TABLE_KLASSE_NR = "klasse_nr";
 
 
-    private static final BusinessEntityConfiguration<CompetitionClassBE> COMPETITIONCLASS = new BusinessEntityConfiguration<CompetitionClassBE>(
+    private static final BusinessEntityConfiguration<CompetitionClassBE> COMPETITIONCLASS = new BusinessEntityConfiguration<>(
             CompetitionClassBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
 
     /**

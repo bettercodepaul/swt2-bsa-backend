@@ -25,7 +25,7 @@ public class CompetitionClassDO extends CommonDataObject implements DataObject {
      */
     public CompetitionClassDO(final Long id, final String klasseName, final Long klasseAlterMin,
                               final Long klasseAlterMax, final Long klasseNr, final OffsetDateTime createdAtUtc,
-                              final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long version) {
+                              final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.klasseName = klasseName;
         this.klasseAlterMin = klasseAlterMin;
@@ -36,6 +36,7 @@ public class CompetitionClassDO extends CommonDataObject implements DataObject {
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedUtc;
+        this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
     }
 
