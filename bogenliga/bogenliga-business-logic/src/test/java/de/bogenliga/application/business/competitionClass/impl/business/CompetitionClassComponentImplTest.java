@@ -163,6 +163,7 @@ public class CompetitionClassComponentImplTest {
                 dateTime,
                 USER,
                 timestamp,
+                USER,
                 VERSION
         );
 

@@ -1,10 +1,8 @@
 package de.bogenliga.application.services.v1.competitionclass.mapper;
 
-import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
-import de.bogenliga.application.common.time.DateProvider;
 import de.bogenliga.application.services.v1.competitionclass.model.CompetitionClassDTO;
 
 /**
@@ -14,7 +12,7 @@ import de.bogenliga.application.services.v1.competitionclass.model.CompetitionCl
  */
 public class CompetitionClassDTOMapper implements DataTransferObjectMapper {
 
-    public CompetitionClassDTOMapper() {
+    private CompetitionClassDTOMapper() {
         // Empty constructor
     }
 

@@ -15,6 +15,10 @@ import de.bogenliga.application.common.time.DateProvider;
  */
 public class CompetitionClassMapper implements ValueObjectMapper {
 
+    private CompetitionClassMapper() {
+        // empty constructor
+    }
+
     public static final Function<CompetitionClassBE, CompetitionClassDO> toCompetitionClassDO = competitionClassBE -> {
         final Long klasseId = competitionClassBE.getKlasseId();
         final String klasseName = competitionClassBE.getKlasseName();
@@ -30,7 +34,7 @@ public class CompetitionClassMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(competitionClassBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(competitionClassBE.getLastModifiedAtUtc());
 
-        return new CompetitionClassDO(klasseId,klasseName,klasseAlterMin,klasseAlterMax,klasseNr,createdAtUtc,createdByUserId,lastModifiedUtc,version);
+        return new CompetitionClassDO(klasseId,klasseName,klasseAlterMin,klasseAlterMax,klasseNr,createdAtUtc,createdByUserId,lastModifiedUtc, lastModifiedUserId, version);
     };
 
     public static final Function<CompetitionClassDO, CompetitionClassBE> toCompetitionClassBE = competitionClassDO -> {
