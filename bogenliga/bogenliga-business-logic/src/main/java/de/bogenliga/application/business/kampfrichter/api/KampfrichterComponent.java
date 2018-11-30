@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.kampfrichter.api;
 
+import java.util.List;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
@@ -9,22 +10,24 @@ import de.bogenliga.application.common.component.ComponentFacade;
  */
 public interface KampfrichterComponent extends ComponentFacade {
 
-    /**
+    /*
+     * Return all kampfrichter entries.
      *
-     * @param userId
-     * @return true if userId has the liscence to be Kampfrichter
+     * @return list of all kampfrichter kampfrichter in the database;
+     * empty list, if no kampfrichter is found
      */
-    boolean isKampfrichter(long userId);
+    List<KampfrichterDO> findAll();
 
-/*
+
     /**
      * Return a kampfrichter entry with the given userId.
      *
      * @param userId of the kampfrichter
      * @return single kampfrichter entry with the given userId;
      * null, if no kampfrichter is found
+     */
+    KampfrichterDO findById(long userId);
 
-    KampfrichterDO findById(long userId);*/
 
     /**
      * Create a new kampfrichter in the database.

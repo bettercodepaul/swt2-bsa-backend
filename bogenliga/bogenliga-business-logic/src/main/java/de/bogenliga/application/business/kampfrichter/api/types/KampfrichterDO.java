@@ -6,8 +6,9 @@ import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
 /**
+ * Contains the values of the kampfrichter business entity.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Rahul Pöse
  */
 public class KampfrichterDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = 8559563978424033907L;
@@ -16,7 +17,7 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * business parameter
      */
     private Long userId;
-    private long wettkampfId;
+    private Long wettkampfId;
     private boolean leitend;
 
     /**
@@ -30,7 +31,7 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * @param lastModifiedByUserId
      * @param version
      */
-    public KampfrichterDO(final Long userId, final long wettkampfId, final boolean leitend,
+    public KampfrichterDO(final Long userId, final Long wettkampfId, final boolean leitend,
                           final OffsetDateTime createdAtUtc,
                           final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                           final Long lastModifiedByUserId, final Long version){
@@ -53,7 +54,7 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * @param createdByUserId
      * @param version
      */
-    public KampfrichterDO(final Long userId, final long wettkampfId, final boolean leitend,
+    public KampfrichterDO(final Long userId, final Long wettkampfId, final boolean leitend,
                          final OffsetDateTime createdAtUtc,
                          final Long createdByUserId, final Long version) {
         this.userId = userId;
@@ -70,7 +71,7 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * @param wettkampfId
      * @param leitend
      */
-    public KampfrichterDO(final Long userId, final long wettkampfId, final boolean leitend){
+    public KampfrichterDO(final Long userId, final Long wettkampfId, final boolean leitend){
         this.userId = userId;
         this.wettkampfId = wettkampfId;
         this.leitend = leitend;
@@ -94,11 +95,11 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
         this.userId = userId;
     }
 
-    public long getWettkampfId() {
+    public Long getWettkampfId() {
         return wettkampfId;
     }
 
-    public void setWettkampfId(long wettkampfId) {
+    public void setWettkampfId(Long wettkampfId) {
         this.wettkampfId = wettkampfId;
     }
 

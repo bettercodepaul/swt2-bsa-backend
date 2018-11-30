@@ -16,7 +16,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 public class KampfrichterBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
     private Long kampfrichterUserId;
-    private long kampfrichterWettkampfId;
+    private Long kampfrichterWettkampfId;
     private boolean kampfrichterLeitend;
 
 
@@ -38,15 +38,13 @@ public class KampfrichterBE extends CommonBusinessEntity implements BusinessEnti
         this.kampfrichterUserId = kampfrichterUserId;
     }
 
-
-    public long getKampfrichterWettkampfId() {
+    public Long getKampfrichterWettkampfId() {
         return kampfrichterWettkampfId;
     }
 
-    public void setKampfrichterWettkampfId(long kampfrichterWettkampfId) {
+    public void setKampfrichterWettkampfId(Long kampfrichterWettkampfId) {
         this.kampfrichterWettkampfId = kampfrichterWettkampfId;
     }
-
 
     public boolean isKampfrichterLeitend() {
         return kampfrichterLeitend;
@@ -60,9 +58,9 @@ public class KampfrichterBE extends CommonBusinessEntity implements BusinessEnti
     @Override
     public String toString() {
         return "KampfrichterBE{" +
-                "KampfrichterUserId=" + kampfrichterUserId +
-                ", KampfrichterWettkampfId='" + kampfrichterWettkampfId + '\'' +
-                ", KampfrichterLeitend='" + kampfrichterLeitend +
+                "kampfrichterUserId=" + kampfrichterUserId +
+                ", kampfrichterWettkampfId=" + kampfrichterWettkampfId + '\'' +
+                ", kampfrichterLeitend=" + kampfrichterLeitend +
                 '}';
     }
 }

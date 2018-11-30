@@ -225,7 +225,7 @@ public class DsbMitgliedService implements ServiceFacade {
 
         if(kampfrichter){
             KampfrichterDO kampfrichterDO = new KampfrichterDO(dsbMitgliedDTO.getUserId());
-            KampfrichterDO updateKampfrichterDO = kampfrichterComponent.update(kampfrichterDO,userId);
+            KampfrichterDO updateKampfrichterDO = kampfrichterComponent.create(kampfrichterDO,userId);
         }
         return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
     }

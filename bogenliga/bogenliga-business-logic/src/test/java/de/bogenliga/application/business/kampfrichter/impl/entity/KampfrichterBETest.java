@@ -44,7 +44,7 @@ public class KampfrichterBETest {
     public void assertToString_withWettkampfId_0() {
         final KampfrichterBE underTest = new KampfrichterBE();
         underTest.setKampfrichterUserId(USERID);
-        underTest.setKampfrichterWettkampfId(0000);
+        underTest.setKampfrichterWettkampfId((long) 0);
 
         final String actual = underTest.toString();
 

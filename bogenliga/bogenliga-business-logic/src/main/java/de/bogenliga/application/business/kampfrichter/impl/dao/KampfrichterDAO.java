@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.kampfrichter.impl.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class KampfrichterDAO  implements DataAccessObject {
     private static final String KAMPFRICHTER_BE_COMPETITION_ID = "kampfrichterWettkampfId";
     private static final String KAMPFRICHTER_BE_LEADING = "kampfrichterLeitend";
 
-    private static final String KAMPFRICHTER_TABLE_ID = "kamprichter_benutzer_userId";
+    private static final String KAMPFRICHTER_TABLE_ID = "kampfrichter_benutzer_id";
     private static final String KAMPFRICHTER_TABLE_COMPETITION_ID = "kampfrichter_wettkampf_id";
     private static final String KAMPFRICHTER_TABLE_LEADING = "kampfrichter_leitend";
 
@@ -43,6 +44,16 @@ public class KampfrichterDAO  implements DataAccessObject {
     /*
      * SQL queries
      */
+    private static final String FIND_ALL =
+            "SELECT * "
+                    + " FROM kampfrichter"
+                    + " ORDER BY kampfrichter_benutzer_id";
+
+    private static final String FIND_BY_ID =
+            "SELECT * "
+                    + " FROM kampfrichter "
+                    + " WHERE kampfrichter_benutzer_id = ?";
+
     private static final String FIND_KAMPFRICHTER =
             "SELECT * "
                     + " FROM lizenz "
@@ -61,6 +72,7 @@ public class KampfrichterDAO  implements DataAccessObject {
         this.basicDao = basicDao;
     }
 
+
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
@@ -75,14 +87,31 @@ public class KampfrichterDAO  implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
-    public KampfrichterBE isKampfrichter(final long userId){return basicDao.selectSingleEntity(KAMPFRICHTER, FIND_KAMPFRICHTER, userId);}
 
     /**
-     * Create a new dsbmitglied entry
+     * Return all kampfrichter entries
+     */
+    public List<KampfrichterBE> findAll() {
+        return basicDao.selectEntityList(KAMPFRICHTER, FIND_ALL);
+    }
+
+
+    /**
+     * Return kampfrichter entry with specific id
+     *
+     * @param userId
+     */
+    public KampfrichterBE findById(final long userId) {
+        return basicDao.selectSingleEntity(KAMPFRICHTER, FIND_BY_ID, userId);
+    }
+
+
+    /**
+     * Create a new kampfrichter entry
      *
      * @param kampfrichterBE
      * @param currentKampfrichterUserId
-     * @return Business Entity corresponding to the created dsbmitglied entry
+     * @return Business Entity corresponding to the created kampfrichter entry
      */
     public KampfrichterBE create(final KampfrichterBE kampfrichterBE, final long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(kampfrichterBE, currentKampfrichterUserId);
@@ -96,7 +125,7 @@ public class KampfrichterDAO  implements DataAccessObject {
      *
      * @param kampfrichterBE
      * @param currentKampfrichterUserId
-     * @return Business Entity corresponding to the updated dsbmitglied entry
+     * @return Business Entity corresponding to the updated kampfrichter entry
      */
     public KampfrichterBE update(final KampfrichterBE kampfrichterBE, final long currentKampfrichterUserId) {
         basicDao.setModificationAttributes(kampfrichterBE, currentKampfrichterUserId);

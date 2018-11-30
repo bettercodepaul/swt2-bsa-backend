@@ -2,20 +2,14 @@ package de.bogenliga.application.business.dsbmitglied.api;
 
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.component.ComponentFacade;
-
 import java.util.List;
+
 
 /**
  * Responsible for the dsbmitglied database requests.
  */
 public interface DsbMitgliedComponent extends ComponentFacade {
 
-    /**
-     *
-     * @param id
-     * @return true if id has the liscence to be Kampfrichter
-     */
-    boolean isKampfrichter(long id);
 
     /**
      * Return all dsbmitglied entries.

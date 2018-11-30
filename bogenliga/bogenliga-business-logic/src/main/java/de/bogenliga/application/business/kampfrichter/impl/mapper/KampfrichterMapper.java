@@ -21,7 +21,7 @@ public class KampfrichterMapper implements ValueObjectMapper {
     public static final Function<KampfrichterBE, KampfrichterDO> toKampfrichterDO = be -> {
 
         final Long userId = be.getKampfrichterUserId();
-        final long wettkampfId = be.getKampfrichterWettkampfId();
+        final Long wettkampfId = be.getKampfrichterWettkampfId();
         final boolean leitend = be.isKampfrichterLeitend();
 
         // technical parameter
@@ -59,32 +59,10 @@ public class KampfrichterMapper implements ValueObjectMapper {
     };
 
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+    /**
+     * Private constructor
+     */
+    private KampfrichterMapper() {
+        // empty private constructor
     }
 }

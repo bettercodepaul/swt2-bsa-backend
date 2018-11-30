@@ -2,6 +2,8 @@ package de.bogenliga.application.business.kampfrichter.impl.business;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -67,6 +69,60 @@ public class KampfrichterComponentImplTest {
                 USERID,
                 WETTKAMPFID,
                 LEITEND);
+    }
+
+
+    @Test
+    public void findAll() {
+        // prepare test data
+        final KampfrichterBE expectedBE = getKampfrichterBE();
+        final List<KampfrichterBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(kampfrichterDAO.findAll()).thenReturn(expectedBEList);
+
+        // call test method
+        final List<KampfrichterDO> actual = underTest.findAll();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getUserId())
+                .isEqualTo(expectedBE.getKampfrichterUserId());
+        assertThat(actual.get(0).getWettkampfId())
+                .isEqualTo(expectedBE.getKampfrichterWettkampfId());
+        assertThat(actual.get(0).isLeitend())
+                .isEqualTo(expectedBE.isKampfrichterLeitend());
+
+        // verify invocations
+        verify(kampfrichterDAO).findAll();
+    }
+
+
+    @Test
+    public void findById() {
+        // prepare test data
+        final KampfrichterBE expectedBE = getKampfrichterBE();
+
+        // configure mocks
+        when(kampfrichterDAO.findById(USERID)).thenReturn(expectedBE);
+
+        // call test method
+        final KampfrichterDO actual = underTest.findById(USERID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getUserId())
+                .isEqualTo(expectedBE.getKampfrichterUserId());
+
+        // verify invocations
+        verify(kampfrichterDAO).findById(USERID);
     }
 
 

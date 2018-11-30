@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.kampfrichter.impl.business;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
@@ -38,18 +40,26 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         this.kampfrichterDAO = kampfrichterDAO;
     }
 
+
     @Override
-    public boolean isKampfrichter(final long userId){
+    public List<KampfrichterDO> findAll() {
+        final List<KampfrichterBE> kampfrichterBEList = kampfrichterDAO.findAll();
+        return kampfrichterBEList.stream().map(KampfrichterMapper.toKampfrichterDO).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public KampfrichterDO findById(final long userId) {
         Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
-        final KampfrichterBE result = kampfrichterDAO.isKampfrichter(userId);
+
+        final KampfrichterBE result = kampfrichterDAO.findById(userId);
 
         if (result == null) {
-            // TODO REVIEW[GOLDEN MIDDLE]: return false ?
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", userId));
         }
 
-        return true;
+        return KampfrichterMapper.toKampfrichterDO.apply(result);
     }
 
 

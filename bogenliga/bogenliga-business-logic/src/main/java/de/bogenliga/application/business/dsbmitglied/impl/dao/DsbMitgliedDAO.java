@@ -103,7 +103,6 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
-    public DsbMitgliedBE isKampfrichter(final long id){return basicDao.selectSingleEntity(DSBMITGLIED, FIND_KAMPFRICHTER,id);}
 
     /**
      * Return all dsbmitglied entries
