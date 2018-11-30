@@ -24,7 +24,7 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
- * TODO [AL] class documentation
+ * I'm a REST resource and handle vereine CRUD requests over the HTTP protocol
  *
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
  */
@@ -34,9 +34,9 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 
 public class VereineService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VEREIN = "Verein must not be null";
-    private static final String PRECONDITION_MSG__VEREIN_ID = "Verein ID must not be negative";
+    private static final String PRECONDITION_MSG_VEREIN_ID = "Verein ID must not be negative";
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
-    private static final String PRECONDITION_MSG__VEREIN_DSB_IDENTIFIER = "Verein dsb Identifier must not be null";
+    private static final String PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER = "Verein dsb Identifier must not be null";
     private static final String PRECONDITION_MSG_REGION_ID_NOT_NEG = "Verein regio ID must not be negative";
     private static final String PRECONDITION_MSG_REGION_ID = "Verein regio ID can not be null";
 
@@ -96,7 +96,7 @@ public class VereineService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public VereineDTO update (@RequestBody final VereineDTO vereineDTO, final Principal principal){
         checkPreconditions(vereineDTO);
-        Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG__VEREIN_ID);
+        Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
 
         LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
                 vereineDTO.getId(),
@@ -166,7 +166,7 @@ public class VereineService implements ServiceFacade {
     private void checkPreconditions(@RequestBody final VereineDTO vereinDTO) {
         Preconditions.checkNotNull(vereinDTO, PRECONDITION_MSG_VEREIN);
         Preconditions.checkNotNull(vereinDTO.getName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkNotNull(vereinDTO.getIdentifier(), PRECONDITION_MSG__VEREIN_DSB_IDENTIFIER);
+        Preconditions.checkNotNull(vereinDTO.getIdentifier(), PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER);
         Preconditions.checkNotNull(vereinDTO.getRegionId(), PRECONDITION_MSG_REGION_ID);
 
         Preconditions.checkArgument(vereinDTO.getRegionId() >= 0, PRECONDITION_MSG_REGION_ID_NOT_NEG);

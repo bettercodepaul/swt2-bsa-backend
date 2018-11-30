@@ -15,13 +15,16 @@ import de.bogenliga.application.common.time.DateProvider;
  */
 public class VereinMapper implements ValueObjectMapper {
 
+    private VereinMapper() {
+        // empty constructor
+    }
+
     public static final Function<VereinBE, VereinDO> toVereinDO = be -> {
 
         final Long id = be.getVereinId();
         final String name = be.getVereinName();
         final String dsbIdentifier = be.getVereinDsbIdentifier();
         final Long regionId = be.getVereinRegionId();
-        //final String regionName = be.getRegionName();
 
         // technical params
         final Long createdByUserId = be.getCreatedByUserId();
@@ -31,7 +34,7 @@ public class VereinMapper implements ValueObjectMapper {
         final OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         final OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new VereinDO(id, name, dsbIdentifier, regionId, createdAtUtc, createdByUserId, version);
+        return new VereinDO(id, name, dsbIdentifier, regionId, "", createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
     public static final Function<VereinDO, VereinBE> toVereinBE = vereinDO -> {

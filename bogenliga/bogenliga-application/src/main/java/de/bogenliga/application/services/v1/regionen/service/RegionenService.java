@@ -27,8 +27,6 @@ import de.bogenliga.application.services.v1.regionen.model.RegionenDTO;
 
 public class RegionenService implements ServiceFacade {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
-
     private final RegionenComponent regionenComponent;
 
 
