@@ -199,7 +199,9 @@ public class DsbMitgliedService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal,@PathVariable("kampfrichter") boolean kampfrichter) {
+    public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
+        System.out.println(dsbMitgliedDTO.isKampfrichter());
+
         checkPreconditions(dsbMitgliedDTO);
         Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
@@ -222,11 +224,12 @@ public class DsbMitgliedService implements ServiceFacade {
 
 
         final DsbMitgliedDO updatedDsbMitgliedDO = dsbMitgliedComponent.update(newDsbMitgliedDO, userId);
-
+/*
         if(kampfrichter){
             KampfrichterDO kampfrichterDO = new KampfrichterDO(dsbMitgliedDTO.getUserId());
             KampfrichterDO updateKampfrichterDO = kampfrichterComponent.create(kampfrichterDO,userId);
         }
+        */
         return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
     }
 

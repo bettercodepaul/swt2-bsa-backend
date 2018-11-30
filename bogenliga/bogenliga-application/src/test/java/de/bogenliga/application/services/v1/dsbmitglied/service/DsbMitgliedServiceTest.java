@@ -79,7 +79,7 @@ public class DsbMitgliedServiceTest {
     }
 
 
-    public static DsbMitgliedDO getDsbMitgliedDO() {
+    private static DsbMitgliedDO getDsbMitgliedDO() {
         return new DsbMitgliedDO(
                 ID,
                 VORNAME,
@@ -194,6 +194,7 @@ public class DsbMitgliedServiceTest {
 
     @Test
     public void update() {
+
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
 
@@ -203,7 +204,7 @@ public class DsbMitgliedServiceTest {
         when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
-        final DsbMitgliedDTO actual = underTest.update(input, principal,false);
+        final DsbMitgliedDTO actual = underTest.update(input, principal);//,false);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -218,6 +219,7 @@ public class DsbMitgliedServiceTest {
         assertThat(updatedDsbMitglied).isNotNull();
         assertThat(updatedDsbMitglied.getId()).isEqualTo(input.getId());
         assertThat(updatedDsbMitglied.getVorname()).isEqualTo(input.getVorname());
+
     }
 
 
