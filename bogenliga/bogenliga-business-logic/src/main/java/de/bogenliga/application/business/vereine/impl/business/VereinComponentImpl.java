@@ -3,10 +3,8 @@ package de.bogenliga.application.business.vereine.impl.business;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.plaf.synth.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -120,8 +118,10 @@ public class VereinComponentImpl implements VereinComponent {
             Optional<RegionenBE> regionenBEOptional = regionenBEList.stream()
                     .filter(region -> region.getRegionId() == tmpVerein.getRegionId()).findFirst();
 
-            tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
-            vereinDOList.set(i, tmpVerein);
+            if(regionenBEOptional.isPresent()) {
+                tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
+                vereinDOList.set(i, tmpVerein);
+            }
         }
 
         return vereinDOList;
