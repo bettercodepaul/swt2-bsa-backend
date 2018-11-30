@@ -3,10 +3,8 @@ package de.bogenliga.application.business.vereine.impl.business;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.plaf.synth.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -31,7 +29,6 @@ public class VereinComponentImpl implements VereinComponent {
     private static final String PRECONDITION_MSG_VEREIN_REGION_ID = "VereinDO region id must not be null";
     private static final String PRECONDITION_MSG_VEREIN_REGION_ID_NOT_NEG = "VereinDO region id must not be negative";
     private static final String PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG = "DsbMitglied id must not be negative";
-
 
     private final VereinDAO vereinDAO;
     private final RegionenDAO regionenDAO;
@@ -121,8 +118,10 @@ public class VereinComponentImpl implements VereinComponent {
             Optional<RegionenBE> regionenBEOptional = regionenBEList.stream()
                     .filter(region -> region.getRegionId() == tmpVerein.getRegionId()).findFirst();
 
-            tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
-            vereinDOList.set(i, tmpVerein);
+            if(regionenBEOptional.isPresent()) {
+                tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
+                vereinDOList.set(i, tmpVerein);
+            }
         }
 
         return vereinDOList;

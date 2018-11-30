@@ -10,7 +10,7 @@ import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.regionen.impl.mapper.RegionenMapper;
 
 /**
- * TODO [AL] class documentation
+ * Implementation of {@link RegionenComponent}
  *
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
  */
