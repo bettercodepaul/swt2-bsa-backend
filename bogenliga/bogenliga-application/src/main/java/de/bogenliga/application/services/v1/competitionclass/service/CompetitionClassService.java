@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.competitionclass.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.print.attribute.standard.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
