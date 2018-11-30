@@ -8,7 +8,6 @@ import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.regionen.impl.mapper.RegionenMapper;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
 
 /**
  * Implementation of {@link RegionenComponent}
