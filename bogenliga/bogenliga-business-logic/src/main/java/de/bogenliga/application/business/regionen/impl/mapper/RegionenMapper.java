@@ -1,9 +1,8 @@
 package de.bogenliga.application.business.regionen.impl.mapper;
 
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import java.sql.Timestamp;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
@@ -15,6 +14,10 @@ import de.bogenliga.application.common.time.DateProvider;
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
  */
 public class RegionenMapper implements ValueObjectMapper {
+
+    private RegionenMapper() {
+        // empty constructor
+    }
 
     public static final Function<RegionenBE, RegionenDO> toRegionDO = regionenBE -> {
         final Long regionID = regionenBE.getRegionId();
@@ -32,7 +35,7 @@ public class RegionenMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(regionenBE.getLastModifiedAtUtc());
 
         return new RegionenDO(regionID,regionName,regionKuerzel,regionTyp,regionUebergeordnet,
-                    createdAtUtc,createdByUserId, lastModifiedUtc,version);
+                    createdAtUtc,createdByUserId, lastModifiedUtc, lastModifiedByUserId, version);
     };
 
 
