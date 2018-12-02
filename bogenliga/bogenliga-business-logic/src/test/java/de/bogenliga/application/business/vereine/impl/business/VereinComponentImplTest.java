@@ -13,12 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -230,5 +232,18 @@ public class VereinComponentImplTest {
 
         assertThat(persistedBE.getVereinId())
                 .isEqualTo(input.getId());
+    }
+
+    @Test
+    public void equals(){
+         VereinDO underTest = new VereinDO(VEREIN_ID,
+                VEREIN_NAME,
+                VEREIN_DSB_IDENTIFIER,
+                VEREIN_REGION_ID,
+                VEREIN_OFFSETDATETIME,
+                USER_ID,
+                VERSION);
+         assertThat(underTest.getRegionName()).isEqualTo(getVereinDO().getRegionName());
+         assertEquals(underTest,getVereinDO());
     }
 }
