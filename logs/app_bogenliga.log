@@ -1,0 +1,8 @@
+2018-11-30 16:02:11,390 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-5] Request method 'PUT' not supported
+2018-11-30 16:02:11,523 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-6] Request method 'PUT' not supported
+2018-11-30 16:02:11,642 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-7] Request method 'PUT' not supported
+2018-11-30 16:02:30,256 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-8] Request method 'PUT' not supported
+2018-11-30 16:02:30,414 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-9] Request method 'PUT' not supported
+2018-11-30 16:02:30,526 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-10] Request method 'PUT' not supported
+2018-11-30 16:04:11,536 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-2] Request method 'PUT' not supported
+2018-11-30 16:04:11,733 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-3] Request method 'PUT' not supported
