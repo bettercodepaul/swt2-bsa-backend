@@ -26,6 +26,8 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     private Long vereinsId;
     private Long userId;
 
+    private Boolean kampfrichter;
+
 
     /**
      * Constructor with optional parameters
@@ -104,8 +106,8 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
      * @param userId
      */
     public DsbMitgliedDO(final Long id, final String vorname, final String nachname, final Date geburtsdatum,
-                         final String nationalitaet,
-                         final String mitgliedsnummer, final Long vereinsId, final Long userId) {
+                         final String nationalitaet, final String mitgliedsnummer,
+                         final Long vereinsId, final Long userId, final Boolean kampfrichter) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -114,6 +116,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         this.mitgliedsnummer = mitgliedsnummer;
         this.vereinsId = vereinsId;
         this.userId = userId;
+        this.kampfrichter = kampfrichter;
     }
 
     /**
@@ -198,6 +201,16 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
 
     public void setUserId(final Long userId) {
         this.userId = userId;
+    }
+
+
+    public Boolean isKampfrichter() {
+        return kampfrichter;
+    }
+
+
+    public void setKampfrichter(Boolean kampfrichter) {
+        this.kampfrichter = kampfrichter;
     }
 
 

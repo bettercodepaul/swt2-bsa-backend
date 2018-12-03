@@ -3,6 +3,7 @@ package de.bogenliga.application.business.kampfrichter.impl.mapper;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
@@ -37,23 +38,23 @@ public class KampfrichterMapper implements ValueObjectMapper {
     };
 
     /**
-     * Converts a {@link KampfrichterDO} to a {@link KampfrichterBE}
+     * Converts a {@link DsbMitgliedDO} to a {@link KampfrichterBE}
      */
-    public static final Function<KampfrichterDO, KampfrichterBE> toKampfrichterBE = kampfrichterDO -> {
+    public static final Function<DsbMitgliedDO, KampfrichterBE> toKampfrichterBE = dsbMitgliedDO -> {
 
-        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(kampfrichterDO.getCreatedAtUtc());
-        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(kampfrichterDO.getLastModifiedAtUtc());
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getCreatedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getLastModifiedAtUtc());
 
         KampfrichterBE kampfrichterBE = new KampfrichterBE();
-        kampfrichterBE.setKampfrichterUserId(kampfrichterDO.getUserId());
-        kampfrichterBE.setKampfrichterWettkampfId(kampfrichterDO.getWettkampfId());
-        kampfrichterBE.setKampfrichterLeitend(kampfrichterDO.isLeitend());
+        kampfrichterBE.setKampfrichterUserId((long)998877);
+        kampfrichterBE.setKampfrichterWettkampfId((long)9999);
+        kampfrichterBE.setKampfrichterLeitend(false);
 
         kampfrichterBE.setCreatedAtUtc(createdAtUtcTimestamp);
-        kampfrichterBE.setCreatedByUserId(kampfrichterDO.getCreatedByUserId());
+        kampfrichterBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());
         kampfrichterBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
-        kampfrichterBE.setLastModifiedByUserId(kampfrichterDO.getLastModifiedByUserId());
-        kampfrichterBE.setVersion(kampfrichterDO.getVersion());
+        kampfrichterBE.setLastModifiedByUserId(dsbMitgliedDO.getLastModifiedByUserId());
+        kampfrichterBE.setVersion(dsbMitgliedDO.getVersion());
 
         return kampfrichterBE;
     };

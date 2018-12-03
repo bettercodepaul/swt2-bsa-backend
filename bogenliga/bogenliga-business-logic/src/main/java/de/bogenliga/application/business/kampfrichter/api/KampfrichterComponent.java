@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.kampfrichter.api;
 
 import java.util.List;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
@@ -35,7 +36,7 @@ public interface KampfrichterComponent extends ComponentFacade {
      * @param kampfrichterDO new kampfrichter
      * @return persisted version of the kampfrichter
      */
-    KampfrichterDO create(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
+    KampfrichterDO create(DsbMitgliedDO kampfrichterDO, long currentKampfrichterUserId);
 
 
     /**
@@ -44,7 +45,7 @@ public interface KampfrichterComponent extends ComponentFacade {
      * @param kampfrichterDO existing kampfrichterDO to update
      * @return persisted version of the kampfrichter
      */
-    KampfrichterDO update(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
+    KampfrichterDO update(DsbMitgliedDO kampfrichterDO, long currentKampfrichterUserId);
 
 
     /**
@@ -52,5 +53,5 @@ public interface KampfrichterComponent extends ComponentFacade {
      *
      * @param kampfrichterDO kampfrichter to delete
      */
-    void delete(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
+    void delete(DsbMitgliedDO kampfrichterDO, long currentKampfrichterUserId);
 }

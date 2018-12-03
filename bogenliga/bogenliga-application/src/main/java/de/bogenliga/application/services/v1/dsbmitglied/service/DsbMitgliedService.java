@@ -64,7 +64,6 @@ public class DsbMitgliedService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMitgliedComponent dsbMitgliedComponent;
-    private final KampfrichterComponent kampfrichterComponent = null;
 
 
     /**
@@ -175,10 +174,12 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getMitgliedsnummer(),
                 dsbMitgliedDTO.getVereinsId());
                // dsbMitgliedDTO.isKampfrichter();
+
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
+
         return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
     }
 

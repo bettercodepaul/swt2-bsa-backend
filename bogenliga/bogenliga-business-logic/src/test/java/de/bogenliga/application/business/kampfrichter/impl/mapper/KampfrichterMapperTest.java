@@ -1,10 +1,14 @@
 package de.bogenliga.application.business.kampfrichter.impl.mapper;
 
 import org.junit.Test;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedBE;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedDO;
 import static de.bogenliga.application.business.kampfrichter.impl.business.KampfrichterComponentImplTest.getKampfrichterBE;
-import static de.bogenliga.application.business.kampfrichter.impl.business.KampfrichterComponentImplTest.getKampfrichterDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -37,9 +41,10 @@ public class KampfrichterMapperTest {
 
     @Test
     public void toBE() throws Exception {
-        final KampfrichterDO kampfrichterDO = getKampfrichterDO();
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
-        final KampfrichterBE actual = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
+
+        final KampfrichterBE actual = KampfrichterMapper.toKampfrichterBE.apply(dsbMitgliedDO);
 
         assertThat(actual.getKampfrichterUserId() == USERID);
     }

@@ -44,6 +44,8 @@ public class DsbMitgliedServiceTest {
     private static final long VEREINSID = 2;
     private static final long USERID = 4242;
 
+    private static final boolean KAMPFRICHTER = true;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -88,7 +90,8 @@ public class DsbMitgliedServiceTest {
                 NATIONALITAET,
                 MITGLIEDSNUMMER,
                 VEREINSID,
-                USERID);
+                USERID,
+                KAMPFRICHTER);
     }
 
 

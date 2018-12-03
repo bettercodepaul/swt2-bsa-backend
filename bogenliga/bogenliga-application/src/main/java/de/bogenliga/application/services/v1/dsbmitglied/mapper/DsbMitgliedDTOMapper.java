@@ -32,7 +32,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedMitgliedsnummer = dsbMitgliedDO.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dsbMitgliedDO.getVereinsId();
         final Long dsbMitgliedUserId = dsbMitgliedDO.getUserId();
-        //final boolean dsbMitgliedKampfrichter = dsbMitgliedDO.is
+       // final Boolean dsbMitgliedKampfrichter = dsbMitgliedDO.
 
         return new DsbMitgliedDTO(dsbMitgliedId,
                 dsbMitgliedVorname,
@@ -60,6 +60,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedMitgliedsnummer = dto.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dto.getVereinsId();
         final Long dsbMitgliedUserId = dto.getUserId();
+        final Boolean dsbMitgliedKampfrichter = dto.isKampfrichter();
 
         return new DsbMitgliedDO(dsbMitgliedId,
                 dsbMitgliedVorname,
@@ -68,7 +69,8 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
-                dsbMitgliedUserId);
+                dsbMitgliedUserId,
+                dsbMitgliedKampfrichter);
     };
 
 

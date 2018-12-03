@@ -17,7 +17,7 @@ public class KampfrichterBE extends CommonBusinessEntity implements BusinessEnti
     private static final long serialVersionUID = -76389969048178948L;
     private Long kampfrichterUserId;
     private Long kampfrichterWettkampfId;
-    private boolean kampfrichterLeitend;
+    private Boolean kampfrichterLeitend;
 
 
     public KampfrichterBE(){
@@ -46,11 +46,11 @@ public class KampfrichterBE extends CommonBusinessEntity implements BusinessEnti
         this.kampfrichterWettkampfId = kampfrichterWettkampfId;
     }
 
-    public boolean isKampfrichterLeitend() {
+    public Boolean isKampfrichterLeitend() {
         return kampfrichterLeitend;
     }
 
-    public void setKampfrichterLeitend(boolean kampfrichterLeitend) {
+    public void setKampfrichterLeitend(Boolean kampfrichterLeitend) {
         this.kampfrichterLeitend = kampfrichterLeitend;
     }
 

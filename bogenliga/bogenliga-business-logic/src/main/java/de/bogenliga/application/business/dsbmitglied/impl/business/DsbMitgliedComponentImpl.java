@@ -9,6 +9,9 @@ import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
+import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -31,6 +34,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
 
     private final DsbMitgliedDAO dsbMitgliedDAO;
+    private final KampfrichterDAO kampfrichterDAO;
 
 
     /**
@@ -40,8 +44,9 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
      * @param dsbMitgliedDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO) {
+    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO, final KampfrichterDAO kampfrichterDAO) {
         this.dsbMitgliedDAO = dsbMitgliedDAO;
+        this.kampfrichterDAO = kampfrichterDAO;
     }
 
 
@@ -73,6 +78,16 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
 
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
         final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
+
+        System.out.println(dsbMitgliedDO.isKampfrichter()+" "+1);
+
+        if(dsbMitgliedDO.isKampfrichter()){
+
+            System.out.println(dsbMitgliedDO.isKampfrichter()+" "+2);
+
+            final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(dsbMitgliedDO);
+            kampfrichterDAO.create(kampfrichterBE, currentDsbMitgliedId); //Objekt wird nicht weiter verarbeitet
+        }
 
         return DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
     }

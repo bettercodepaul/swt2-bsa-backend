@@ -46,6 +46,8 @@ public class DsbMitgliedComponentImplTest {
     private static final Long VEREINSID = 2L;
     private static final Long USERID = 4242L;
 
+    private static final Boolean KAMPFRICHTER = true;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
@@ -84,7 +86,8 @@ public class DsbMitgliedComponentImplTest {
                 NATIONALITAET,
                 MITGLIEDSNUMMER,
                 VEREINSID,
-                USERID);
+                USERID,
+                KAMPFRICHTER);
     }
 
 
