@@ -23,11 +23,11 @@ public class CompetitionClassDTOMapper implements DataTransferObjectMapper {
 
         final Long klasseId = competitionClassDO.getId();
         final String klasseName = competitionClassDO.getKlasseName();
-        final Long klasseAlterMin = competitionClassDO.getKlasseAlterMin();
-        final Long klasseAlterMax = competitionClassDO.getKlasseAlterMax();
+        final Long klasseJahrgangMin = competitionClassDO.getKlasseJahrgangMin();
+        final Long klasseJahrgangMax = competitionClassDO.getKlasseJahrgangMax();
         final Long klasseNr = competitionClassDO.getKlasseNr();
 
-        return new CompetitionClassDTO(klasseId, klasseName, klasseAlterMin, klasseAlterMax, klasseNr);
+        return new CompetitionClassDTO(klasseId, klasseName, klasseJahrgangMin, klasseJahrgangMax, klasseNr);
     };
 
     /**
@@ -36,10 +36,10 @@ public class CompetitionClassDTOMapper implements DataTransferObjectMapper {
     public static final Function<CompetitionClassDTO, CompetitionClassDO> toDO = competitionClassDTO -> {
         final Long klasseId = competitionClassDTO.getId();
         final String klasseName = competitionClassDTO.getKlasseName();
-        final Long klasseAlterMin = competitionClassDTO.getKlasseAlterMin();
-        final Long klasseAlterMax = competitionClassDTO.getKlasseAlterMax();
+        final Long klasseJahrgangMin = competitionClassDTO.getKlasseJahrgangMin();
+        final Long klasseJahrgangMax = competitionClassDTO.getKlasseJahrgangMax();
         final Long klasseNr = competitionClassDTO.getKlasseNr();
 
-        return new CompetitionClassDO(klasseId, klasseName, klasseAlterMin, klasseAlterMax, klasseNr);
+        return new CompetitionClassDO(klasseId, klasseName, klasseJahrgangMin, klasseJahrgangMax, klasseNr);
     };
 }
