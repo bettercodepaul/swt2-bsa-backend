@@ -32,8 +32,8 @@ public class CompetitionClassDAOTest {
 
     private static final long ID = 42L;
     private static final String KLASSENAME = "Herren";
-    private static final long KLASSEALTERMIN = 10L;
-    private static final long KLASSEALTERMAX = 50L;
+    private static final long KLASSEJAHRGANGMIN = 10L;
+    private static final long KLASSEJAHRGANGMAX = 50L;
     private static final long KLASSENR = 1337L;
 
     @Rule

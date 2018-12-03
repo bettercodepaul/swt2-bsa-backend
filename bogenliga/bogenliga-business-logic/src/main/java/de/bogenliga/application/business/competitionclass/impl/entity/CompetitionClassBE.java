@@ -11,8 +11,8 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 public class CompetitionClassBE extends CommonBusinessEntity implements BusinessEntity {
     private Long klasseId;
     private String klasseName;
-    private Long klasseAlterMin;
-    private Long klasseAlterMax;
+    private Long klasseJahrgangMin;
+    private Long klasseJahrgangMax;
     private Long klasseNr;
 
 
@@ -38,23 +38,23 @@ public class CompetitionClassBE extends CommonBusinessEntity implements Business
     }
 
 
-    public Long getKlasseAlterMin() {
-        return klasseAlterMin;
+    public Long getKlasseJahrgangMin() {
+        return klasseJahrgangMin;
     }
 
 
-    public void setKlasseAlterMin(Long klasseAlterMin) {
-        this.klasseAlterMin = klasseAlterMin;
+    public void setKlasseJahrgangMin(Long klasseJahrgangMin) {
+        this.klasseJahrgangMin = klasseJahrgangMin;
     }
 
 
-    public Long getKlasseAlterMax() {
-        return klasseAlterMax;
+    public Long getKlasseJahrgangMax() {
+        return klasseJahrgangMax;
     }
 
 
-    public void setKlasseAlterMax(Long klasseAlterMax) {
-        this.klasseAlterMax = klasseAlterMax;
+    public void setKlasseJahrgangMax(Long klasseJahrgangMax) {
+        this.klasseJahrgangMax = klasseJahrgangMax;
     }
 
 
@@ -74,8 +74,8 @@ public class CompetitionClassBE extends CommonBusinessEntity implements Business
         return "CompetitionClassBE {" +
                 "klasseId = " + klasseId + '\'' +
                 ", klasseName = '" + klasseName + '\'' +
-                ", klasseAlterMin = '" + klasseAlterMin + '\'' +
-                ", klasseAlterMax = '" + klasseAlterMax + '\'' +
+                ", klasseJahrgangMin = '" + klasseJahrgangMin + '\'' +
+                ", klasseJahrgangMax = '" + klasseJahrgangMax + '\'' +
                 ", klasseNr = '" + klasseNr +
                 '}';
     }
