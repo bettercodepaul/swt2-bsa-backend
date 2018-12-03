@@ -96,7 +96,7 @@ public class CompetitionClassServiceTest {
         assertNotNull(result);
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getKlasseName(), result.getKlasseName());
-        assertEquals(input.getKlasseAlterMin(), result.getKlasseAlterMin());
+        assertEquals(input.getKlasseJahrgangMin(), result.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), result.getKlasseNr());
 
         // verify invocations
@@ -107,7 +107,7 @@ public class CompetitionClassServiceTest {
         assertNotNull(createdCompetitionClass);
         assertEquals(input.getId(), createdCompetitionClass.getId());
         assertEquals(input.getKlasseName(), createdCompetitionClass.getKlasseName());
-        assertEquals(input.getKlasseAlterMin(), createdCompetitionClass.getKlasseAlterMin());
+        assertEquals(input.getKlasseJahrgangMin(), createdCompetitionClass.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), createdCompetitionClass.getKlasseNr());
     }
 
@@ -129,8 +129,8 @@ public class CompetitionClassServiceTest {
         assertNotNull(resultDTO);
         assertEquals(competitionClassDO.getId(), resultDTO.getId());
         assertEquals(competitionClassDO.getKlasseName(), resultDTO.getKlasseName());
-        assertEquals(competitionClassDO.getKlasseAlterMax(), resultDTO.getKlasseAlterMax());
-        assertEquals(competitionClassDO.getKlasseAlterMin(), resultDTO.getKlasseAlterMin());
+        assertEquals(competitionClassDO.getKlasseJahrgangMax(), resultDTO.getKlasseJahrgangMax());
+        assertEquals(competitionClassDO.getKlasseJahrgangMin(), resultDTO.getKlasseJahrgangMin());
         assertEquals(competitionClassDO.getKlasseNr(), resultDTO.getKlasseNr());
     }
 
@@ -150,7 +150,7 @@ public class CompetitionClassServiceTest {
         assertNotNull(result);
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getKlasseName(), result.getKlasseName());
-        assertEquals(input.getKlasseAlterMin(), result.getKlasseAlterMin());
+        assertEquals(input.getKlasseJahrgangMin(), result.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), result.getKlasseNr());
 
         verify(competitionClassComponent).update(competitionClassDOArgumentCaptor.capture(), anyLong());
@@ -160,7 +160,7 @@ public class CompetitionClassServiceTest {
         assertNotNull(createdCompetitionClassDO);
         assertEquals(input.getId(), createdCompetitionClassDO.getId());
         assertEquals(input.getKlasseName(), createdCompetitionClassDO.getKlasseName());
-        assertEquals(input.getKlasseAlterMin(), createdCompetitionClassDO.getKlasseAlterMin());
+        assertEquals(input.getKlasseJahrgangMin(), createdCompetitionClassDO.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), createdCompetitionClassDO.getKlasseNr());
     }
 

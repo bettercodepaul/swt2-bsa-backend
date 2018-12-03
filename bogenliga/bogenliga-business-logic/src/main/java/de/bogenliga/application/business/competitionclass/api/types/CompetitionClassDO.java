@@ -74,7 +74,7 @@ public class CompetitionClassDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Long getKlasseAlterMin() {
+    public Long getKlasseJahrgangMin() {
         return klasseAlterMin;
     }
 
@@ -84,7 +84,7 @@ public class CompetitionClassDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Long getKlasseAlterMax() {
+    public Long getKlasseJahrgangMax() {
         return klasseAlterMax;
     }
 
