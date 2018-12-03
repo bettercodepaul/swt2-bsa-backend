@@ -40,9 +40,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
      * @param dsbMitgliedDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO) {
-        this.dsbMitgliedDAO = dsbMitgliedDAO;
-    }
+    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO) { this.dsbMitgliedDAO = dsbMitgliedDAO;System.out.println("created DAO object"); }
 
 
     @Override
