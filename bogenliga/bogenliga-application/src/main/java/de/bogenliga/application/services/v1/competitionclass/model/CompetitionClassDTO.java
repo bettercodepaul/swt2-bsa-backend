@@ -12,8 +12,8 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class CompetitionClassDTO implements DataTransferObject {
     private Long id;
     private String klasseName;
-    private Long klasseAlterMin;
-    private Long klasseAlterMax;
+    private Long klasseJahrgangMin;
+    private Long klasseJahrgangMax;
     private Long klasseNr;
 
 
@@ -24,11 +24,11 @@ public class CompetitionClassDTO implements DataTransferObject {
         // empty constructor
     }
 
-    public CompetitionClassDTO(Long id, String klasseName, Long klasseAlterMin, Long klasseAlterMax, Long klasseNr) {
+    public CompetitionClassDTO(Long id, String klasseName, Long klasseJahrgangMin, Long klasseJahrgangMax, Long klasseNr) {
         this.id = id;
         this.klasseName = klasseName;
-        this.klasseAlterMin = klasseAlterMin;
-        this.klasseAlterMax = klasseAlterMax;
+        this.klasseJahrgangMin = klasseJahrgangMin;
+        this.klasseJahrgangMax = klasseJahrgangMax;
         this.klasseNr = klasseNr;
     }
 
@@ -53,23 +53,23 @@ public class CompetitionClassDTO implements DataTransferObject {
     }
 
 
-    public Long getKlasseAlterMin() {
-        return klasseAlterMin;
+    public Long getKlasseJahrgangMin() {
+        return klasseJahrgangMin;
     }
 
 
-    public void setKlasseAlterMin(Long klasseAlterMin) {
-        this.klasseAlterMin = klasseAlterMin;
+    public void setKlasseJahrgangMin(Long klasseJahrgangMin) {
+        this.klasseJahrgangMin = klasseJahrgangMin;
     }
 
 
-    public Long getKlasseAlterMax() {
-        return klasseAlterMax;
+    public Long getKlasseJahrgangMax() {
+        return klasseJahrgangMax;
     }
 
 
-    public void setKlasseAlterMax(Long klasseAlterMax) {
-        this.klasseAlterMax = klasseAlterMax;
+    public void setKlasseJahrgangMax(Long klasseJahrgangMax) {
+        this.klasseJahrgangMax = klasseJahrgangMax;
     }
 
 

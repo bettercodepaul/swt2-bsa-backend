@@ -2,7 +2,6 @@ package de.bogenliga.application.business.competitionClass.impl.business;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.Collection;
 import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
@@ -36,8 +35,8 @@ public class CompetitionClassComponentImplTest {
 
     private static final Long ID = 1337L;
     private static final String NAME ="Herren";
-    private static final Long ALTER_MIN = 0L;
-    private static final Long ALTER_MAX = 99L;
+    private static final Long JAHRGANG_MIN = 0L;
+    private static final Long JAHRGANG_MAX = 99L;
     private static final Long NUMBER = 2L;
 
     @Rule
@@ -58,8 +57,8 @@ public class CompetitionClassComponentImplTest {
         final CompetitionClassBE expectedBE = new CompetitionClassBE();
         expectedBE.setKlasseId(ID);
         expectedBE.setKlasseName(NAME);
-        expectedBE.setKlasseAlterMin(ALTER_MIN);
-        expectedBE.setKlasseAlterMax(ALTER_MAX);
+        expectedBE.setKlasseJahrgangMin(JAHRGANG_MIN);
+        expectedBE.setKlasseJahrgangMax(JAHRGANG_MAX);
         expectedBE.setKlasseNr(NUMBER);
         return expectedBE;
     }
@@ -70,8 +69,8 @@ public class CompetitionClassComponentImplTest {
         return new CompetitionClassDO(
                 ID,
                 NAME,
-                ALTER_MIN,
-                ALTER_MAX,
+                JAHRGANG_MIN,
+                JAHRGANG_MAX,
                 NUMBER);
 
     }
@@ -101,10 +100,10 @@ public class CompetitionClassComponentImplTest {
                 .isEqualTo(expectedBE.getKlasseId());
         assertThat(actual.get(0).getKlasseName())
                 .isEqualTo(expectedBE.getKlasseName());
-        assertThat(actual.get(0).getKlasseAlterMax())
-                .isEqualTo(expectedBE.getKlasseAlterMax());
-        assertThat(actual.get(0).getKlasseAlterMin())
-                .isEqualTo(expectedBE.getKlasseAlterMin());
+        assertThat(actual.get(0).getKlasseJahrgangMax())
+                .isEqualTo(expectedBE.getKlasseJahrgangMax());
+        assertThat(actual.get(0).getKlasseJahrgangMin())
+                .isEqualTo(expectedBE.getKlasseJahrgangMin());
         assertThat(actual.get(0).getKlasseNr())
                 .isEqualTo(expectedBE.getKlasseNr());
 
@@ -157,8 +156,8 @@ public class CompetitionClassComponentImplTest {
         final CompetitionClassDO input = new CompetitionClassDO(
                 ID,
                 NAME,
-                ALTER_MIN,
-                ALTER_MAX,
+                JAHRGANG_MIN,
+                JAHRGANG_MAX,
                 NUMBER,
                 dateTime,
                 USER,
@@ -170,8 +169,8 @@ public class CompetitionClassComponentImplTest {
         final CompetitionClassBE expectedBE = new CompetitionClassBE();
         expectedBE.setKlasseId(ID);
         expectedBE.setKlasseNr(NUMBER);
-        expectedBE.setKlasseAlterMax(ALTER_MAX);
-        expectedBE.setKlasseAlterMin(ALTER_MIN);
+        expectedBE.setKlasseJahrgangMax(JAHRGANG_MAX);
+        expectedBE.setKlasseJahrgangMin(JAHRGANG_MIN);
         expectedBE.setKlasseName(NAME);
         expectedBE.setCreatedAtUtc(expectedTimestamp);
         expectedBE.setCreatedByUserId(USER);
