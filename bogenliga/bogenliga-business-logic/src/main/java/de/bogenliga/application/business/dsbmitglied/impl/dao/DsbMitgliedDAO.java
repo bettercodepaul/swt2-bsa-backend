@@ -65,6 +65,11 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_id = ?";
 
+    private static final String FIND_BY_USER_ID =
+            "SELECT * "
+                    + " FROM dsb_mitglied "
+                    + " WHERE dsb_mitglied_benutzer_id = ?";
+
     private final BasicDAO basicDao;
 
 
@@ -114,6 +119,15 @@ public class DsbMitgliedDAO implements DataAccessObject {
      */
     public DsbMitgliedBE findById(final long id) {
         return basicDao.selectSingleEntity(DSBMITGLIED, FIND_BY_ID, id);
+    }
+
+    /**
+     * Return dsbmitglied entry with specific user id
+     *
+     * @param id
+     */
+    public DsbMitgliedBE findByUserId(final long id) {
+        return basicDao.selectSingleEntity(DSBMITGLIED, FIND_BY_USER_ID, id);
     }
 
 
