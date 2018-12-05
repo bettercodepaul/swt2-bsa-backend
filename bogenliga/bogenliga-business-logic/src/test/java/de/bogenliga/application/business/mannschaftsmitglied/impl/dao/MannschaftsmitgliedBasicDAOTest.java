@@ -86,6 +86,7 @@ public class MannschaftsmitgliedBasicDAOTest {
         expectedBE.setDsbMitgliedEingesetzt(true);
 
 
+
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
