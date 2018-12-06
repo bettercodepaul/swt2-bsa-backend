@@ -55,8 +55,8 @@ public class UserProfileComponentImpl implements UserProfileComponent {
 
         UserProfileDO userProfileDO = new UserProfileDO();
 
-        final UserBE userBE = userDAO.findById(id);
-        final DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findByUserId(id);
+        final UserBE userBE = userDAO.findById(id); // required for email adress
+        final DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findByUserId(id);    // required for remaining profile data
 
         if (userBE == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
