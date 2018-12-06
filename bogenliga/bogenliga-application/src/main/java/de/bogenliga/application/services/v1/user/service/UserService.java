@@ -16,8 +16,7 @@ import de.bogenliga.application.services.v1.user.model.UserProfileDTO;
 import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +130,7 @@ public class UserService implements ServiceFacade {
      * @return
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresOwnIdentity
     public UserProfileDTO getUserProfileById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
