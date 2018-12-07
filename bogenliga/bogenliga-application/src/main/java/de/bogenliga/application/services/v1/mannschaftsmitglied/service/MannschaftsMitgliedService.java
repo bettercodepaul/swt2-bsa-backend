@@ -71,18 +71,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public MannschaftsMitgliedDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
-
-        LOG.debug("Receive 'findById' request with ID '{}'", id);
-
-        final MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findById(id);
-        return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
-    }
-
-
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)

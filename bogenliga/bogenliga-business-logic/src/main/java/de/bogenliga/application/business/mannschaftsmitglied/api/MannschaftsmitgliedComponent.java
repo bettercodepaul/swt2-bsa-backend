@@ -29,12 +29,6 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
     List<MannschaftsmitgliedDO> findAllSchuetze();
 
 
-    /**
-     * Return a mannschaftsmitglied entry with the given id.
-     *
-
-    */
-    MannschaftsmitgliedDO findById(long MannschaftsmitgliedMannschaftId);
 
 
 
