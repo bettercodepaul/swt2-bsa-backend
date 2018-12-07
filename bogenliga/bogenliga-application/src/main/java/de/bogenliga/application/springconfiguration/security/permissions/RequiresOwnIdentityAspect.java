@@ -59,7 +59,6 @@ public class RequiresOwnIdentityAspect {
     public Object checkOwnIdentity(final ProceedingJoinPoint joinPoint) throws Throwable {
 
         List<String> requiredOwnIdentityStrings = new ArrayList<>();
-        String joinedRequiredOwnIdentitys = "";
 
         // get permissions from annotation
         if (getCurrentMethod(joinPoint).isAnnotationPresent(RequiresOwnIdentity.class)) {
