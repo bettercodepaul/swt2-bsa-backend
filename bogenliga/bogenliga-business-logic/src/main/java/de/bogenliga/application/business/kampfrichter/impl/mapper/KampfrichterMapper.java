@@ -38,23 +38,23 @@ public class KampfrichterMapper implements ValueObjectMapper {
     };
 
     /**
-     * Converts a {@link DsbMitgliedDO} to a {@link KampfrichterBE}
+     * Converts a {@link KampfrichterDO} to a {@link KampfrichterBE}
      */
-    public static final Function<DsbMitgliedDO, KampfrichterBE> toKampfrichterBE = dsbMitgliedDO -> {
+    public static final Function<KampfrichterDO, KampfrichterBE> toKampfrichterBE = kampfrichterDO -> {
 
-        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getCreatedAtUtc());
-        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getLastModifiedAtUtc());
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(kampfrichterDO.getCreatedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(kampfrichterDO.getLastModifiedAtUtc());
 
         KampfrichterBE kampfrichterBE = new KampfrichterBE();
-        kampfrichterBE.setKampfrichterUserId((long)998877);
+        kampfrichterBE.setKampfrichterUserId(kampfrichterDO.getUserId());
         kampfrichterBE.setKampfrichterWettkampfId((long)9999);
         kampfrichterBE.setKampfrichterLeitend(false);
 
         kampfrichterBE.setCreatedAtUtc(createdAtUtcTimestamp);
-        kampfrichterBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());
+        kampfrichterBE.setCreatedByUserId(kampfrichterDO.getCreatedByUserId());
         kampfrichterBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
-        kampfrichterBE.setLastModifiedByUserId(dsbMitgliedDO.getLastModifiedByUserId());
-        kampfrichterBE.setVersion(dsbMitgliedDO.getVersion());
+        kampfrichterBE.setLastModifiedByUserId(kampfrichterDO.getLastModifiedByUserId());
+        kampfrichterBE.setVersion(kampfrichterDO.getVersion());
 
         return kampfrichterBE;
     };

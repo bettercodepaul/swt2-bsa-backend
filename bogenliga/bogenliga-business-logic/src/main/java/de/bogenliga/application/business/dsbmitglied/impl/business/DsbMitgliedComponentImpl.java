@@ -79,14 +79,10 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
         final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
 
-        System.out.println(dsbMitgliedDO.isKampfrichter()+" "+1);
-
         if(dsbMitgliedDO.isKampfrichter()){
 
-            System.out.println(dsbMitgliedDO.isKampfrichter()+" "+2);
-
-            final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(dsbMitgliedDO);
-            kampfrichterDAO.create(kampfrichterBE, currentDsbMitgliedId); //Objekt wird nicht weiter verarbeitet
+            //final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(dsbMitgliedDO);
+            //kampfrichterDAO.create(kampfrichterBE, currentDsbMitgliedId); //Objekt wird nicht weiter verarbeitet
         }
 
         return DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
