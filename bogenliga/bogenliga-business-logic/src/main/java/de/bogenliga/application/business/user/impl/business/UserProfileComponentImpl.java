@@ -46,13 +46,6 @@ public class UserProfileComponentImpl implements UserProfileComponent {
     public UserProfileDO findById(final Long id) {
         Preconditions.checkNotNull(id, PRECONDITION_MSG_USER_ID);
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_USER_ID);
-
-        //TODO
-        //if (id == 0) {
-        //    // 0 identifies the SYSTEM user
-        //    return technicalUserBA.getSystemUser();
-        //}
-
         UserProfileDO userProfileDO = new UserProfileDO();
 
         final UserBE userBE = userDAO.findById(id); // required for email adress
