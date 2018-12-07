@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+//
 /**
  * TODO [AL] class documentation
  *
@@ -109,8 +109,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     public MannschaftsmitgliedBE findByMemberAndTeamId(final long teamId, final long memberId){
 
-       // return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
-
+        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
+/*
         // second try if first variante is worng
         MannschaftsmitgliedBE objectBE =null;
         List<MannschaftsmitgliedBE> tempListBE = basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL);
@@ -121,7 +121,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         }
         return objectBE;
 
-
+*/
     }
 
     public MannschaftsmitgliedBE create(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
