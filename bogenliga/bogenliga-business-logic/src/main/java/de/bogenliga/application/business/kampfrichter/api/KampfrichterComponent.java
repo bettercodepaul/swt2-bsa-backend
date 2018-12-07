@@ -36,7 +36,7 @@ public interface KampfrichterComponent extends ComponentFacade {
      * @param kampfrichterDO new kampfrichter
      * @return persisted version of the kampfrichter
      */
-    KampfrichterDO create(DsbMitgliedDO kampfrichterDO, long currentKampfrichterUserId);
+    KampfrichterDO create(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
 
 
     /**
@@ -45,7 +45,7 @@ public interface KampfrichterComponent extends ComponentFacade {
      * @param kampfrichterDO existing kampfrichterDO to update
      * @return persisted version of the kampfrichter
      */
-    KampfrichterDO update(DsbMitgliedDO kampfrichterDO, long currentKampfrichterUserId);
+    KampfrichterDO update(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
 
 
     /**
@@ -53,5 +53,5 @@ public interface KampfrichterComponent extends ComponentFacade {
      *
      * @param kampfrichterDO kampfrichter to delete
      */
-    void delete(DsbMitgliedDO kampfrichterDO, long currentKampfrichterUserId);
+    void delete(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
 }

@@ -36,7 +36,7 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
                           final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                           final Long lastModifiedByUserId, final Long version){
         this.userId = userId;
-        this. wettkampfId = wettkampfId;
+        this.wettkampfId = wettkampfId;
         this.leitend = leitend;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
@@ -99,9 +99,7 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
         return wettkampfId;
     }
 
-    public void setWettkampfId(Long wettkampfId) {
-        this.wettkampfId = wettkampfId;
-    }
+    public void setWettkampfId(Long wettkampfId) { this.wettkampfId = wettkampfId; }
 
     public boolean isLeitend() {
         return leitend;
