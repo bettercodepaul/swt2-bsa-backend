@@ -1,0 +1,48 @@
+2018-11-16 15:44:06,881 WARN org.springframework.context.support.AbstractApplicationContext [main] Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dsbMannschaftService' defined in file [C:\Users\kaywa\Documents\Studium\Semester_4\SWT2\swt2-bsa-infrastructure\project\backend\bogenliga\bogenliga-application\target\classes\de\bogenliga\application\services\v1\dsbmannschaft\service\DsbMannschaftService.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2018-11-16 15:44:07,334 ERROR org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter [main] 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService required a bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' in your configuration.
+
+2018-11-16 15:44:49,342 WARN org.springframework.context.support.AbstractApplicationContext [main] Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dsbMannschaftService' defined in file [C:\Users\kaywa\Documents\Studium\Semester_4\SWT2\swt2-bsa-infrastructure\project\backend\bogenliga\bogenliga-application\target\classes\de\bogenliga\application\services\v1\dsbmannschaft\service\DsbMannschaftService.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2018-11-16 15:44:50,798 ERROR org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter [main] 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService required a bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' in your configuration.
+
+2018-11-16 16:07:19,463 WARN org.springframework.context.support.AbstractApplicationContext [main] Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dsbMannschaftService' defined in file [C:\Users\kaywa\Documents\Studium\Semester_4\SWT2\swt2-bsa-infrastructure\project\backend\bogenliga\bogenliga-application\target\classes\de\bogenliga\application\services\v1\dsbmannschaft\service\DsbMannschaftService.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2018-11-16 16:07:19,725 ERROR org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter [main] 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService required a bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent' in your configuration.
+

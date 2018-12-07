@@ -8,6 +8,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Repository
 public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
@@ -42,8 +44,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM mannschafsmitglied"
+            "SELECT *"
+                    + " FROM mannschaftsmitglied"
                     + " ORDER BY mannschaftsmitglied_mannschaft_id";
 
     private static final String FIND_BY_TEAM_ID =
@@ -107,16 +109,17 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     public MannschaftsmitgliedBE findByMemberAndTeamId(final long teamId, final long memberId){
 
-        //return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
+       // return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
 
         // second try if first variante is worng
+        MannschaftsmitgliedBE objectBE =null;
         List<MannschaftsmitgliedBE> tempListBE = basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL);
         for(int i=0; i<tempListBE.size();i++){
             if(tempListBE.get(i).getMannschaftId()== teamId && tempListBE.get(i).getDsbMitgliedId()==memberId){
-                return tempListBE.get(i);
+                objectBE=tempListBE.get(i);
             }
         }
-        return null;
+        return objectBE;
 
 
     }

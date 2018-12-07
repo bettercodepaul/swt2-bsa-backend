@@ -15,12 +15,14 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.Mannsch
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+import org.springframework.stereotype.Component;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComponent {
 
 
