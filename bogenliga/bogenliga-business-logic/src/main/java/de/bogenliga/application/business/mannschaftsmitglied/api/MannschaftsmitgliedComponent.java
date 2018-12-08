@@ -30,6 +30,15 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
 
 
 
+    /**
+     * Return all mannschaftsmitglied entries from one team.
+     *
+     * @return list of all mannschaftsmitglied mannschaftsmitglied in the database;
+     * empty list, if no mannschaftsmitglied is found
+     */
+
+    List<MannschaftsmitgliedDO> findByTeamId(long MannschaftsmitgliederMannschaftsId);
+
 
 
     /**

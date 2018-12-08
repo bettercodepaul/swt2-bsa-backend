@@ -66,6 +66,12 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
 
+    @Override
+    public List<MannschaftsmitgliedDO> findByTeamId(long mannschaftsId){
+        final List<MannschaftsmitgliedBE>  mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findByTeamId(mannschaftsId);
+        return  mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
+    }
+
 
     @Override
     public MannschaftsmitgliedDO findByMemberAndTeamId(long mannschaftId, long mitgliedId) {
