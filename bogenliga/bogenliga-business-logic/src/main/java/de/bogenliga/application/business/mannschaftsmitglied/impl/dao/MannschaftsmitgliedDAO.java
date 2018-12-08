@@ -87,7 +87,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     /**
      * Return all mannschaftsmitglied entries
      */
-    public List<MannschaftsmitgliedBE> findAll() {
+     public List<MannschaftsmitgliedBE> findAll() {
 
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL);
     }
@@ -107,21 +107,28 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
 
-    public MannschaftsmitgliedBE findByMemberAndTeamId(final long teamId, final long memberId){
+    public MannschaftsmitgliedBE findByMemberAndTeamId(long teamId, final long memberId){
+        System.out.println("hallo");
+        MannschaftsmitgliedBE test;
+        test = basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
+        System.out.println(test+"adjasf");
+        return test;
 
-        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
+
 /*
         // second try if first variante is worng
         MannschaftsmitgliedBE objectBE =null;
+        System.out.println("ich bin hier");
         List<MannschaftsmitgliedBE> tempListBE = basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL);
+        System.out.println(tempListBE.size());
         for(int i=0; i<tempListBE.size();i++){
             if(tempListBE.get(i).getMannschaftId()== teamId && tempListBE.get(i).getDsbMitgliedId()==memberId){
                 objectBE=tempListBE.get(i);
             }
         }
         return objectBE;
-
 */
+
     }
 
     public MannschaftsmitgliedBE create(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
@@ -143,7 +150,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     public void delete(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-       // basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE,MANNSCHAFTSMITGLIED_BE_TEAM_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
+        basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE,MANNSCHAFTSMITGLIED_BE_TEAM_ID);
 
     }
 
