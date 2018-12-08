@@ -131,7 +131,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftsMitgliedDTOMapper.toDTO.apply(updatedMannschaftsmitgliedDO);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "{mannschaftsId}/{mitgliedId}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public void delete(@PathVariable("mannschaftsId") final long mannschaftsId,
                        @PathVariable("mitgliedId") final long mitgliedId,final Principal principal) {
@@ -145,6 +145,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final long currentUserId = UserProvider.getCurrentUserId(principal);
 
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
+
     }
 
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {

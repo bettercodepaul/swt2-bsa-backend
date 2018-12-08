@@ -1,1 +1,3 @@
 2018-12-08 15:47:08,811 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-6] Request method 'GET' not supported
+2018-12-08 16:41:16,800 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-5] Request method 'PUT' not supported
+2018-12-08 16:41:49,898 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-8] Request method 'PUT' not supported
