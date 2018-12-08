@@ -72,15 +72,16 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
 
 
-    @RequestMapping(value = "{teamId, memberId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "{teamId}/{memberId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("mannschaftsId") final long mannschaftsId, @PathVariable("dsbMitgliedId")final long mitgliedId) {
+    public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("teamId") final long mannschaftsId, @PathVariable("memberId")final long mitgliedId) {
         Preconditions.checkArgument(mannschaftsId > 0, "ID must not be negative.");
         Preconditions.checkArgument(mitgliedId > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findById' request with ID '{}'", mannschaftsId);
 
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByMemberAndTeamId(mannschaftsId,mitgliedId);
+        System.out.println(MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO));
         return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
     }
 
