@@ -102,6 +102,20 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     }
 
 
+    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeam(final long id){
+
+        List<MannschaftsmitgliedBE> allMannschaftsmitgliedBEList = basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID,id);
+        List<MannschaftsmitgliedBE> allSchuetze=null;
+        for(int i=0; i<allMannschaftsmitgliedBEList.size();i++){
+            if(allMannschaftsmitgliedBEList.get(i).isDsbMitgliedEingesetzt()){
+                allSchuetze.add(allMannschaftsmitgliedBEList.get(i));
+            }
+        }
+
+        return allSchuetze;
+    }
+
+
     public MannschaftsmitgliedBE findByMemberAndTeamId(long teamId, final long memberId){
         System.out.println("hallo");
         MannschaftsmitgliedBE test;

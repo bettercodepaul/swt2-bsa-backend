@@ -60,8 +60,9 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
     @Override
-    public List<MannschaftsmitgliedDO> findAllSchuetze() {
-        return null;
+    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(long mannschaftsId) {
+        final List<MannschaftsmitgliedBE>  mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findByTeamId(mannschaftsId);
+        return  mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
     }
 
 

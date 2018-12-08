@@ -26,7 +26,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * todo
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetze();
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(long MannschaftsmitgliederMannschaftsId);
 
 
 

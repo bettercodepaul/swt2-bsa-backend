@@ -82,6 +82,16 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
 
 
+    @RequestMapping(value = "{teamIdInTeam}/{istEingesetzt}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId,
+                                                              @PathVariable("istEingesetzt") final boolean istEingesetzt){
+        final List<MannschaftsmitgliedDO> MannschaftmitgliedDOList = mannschaftsMitgliedComponent.findByTeamId(mannschaftsId);
+        return MannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+
     @RequestMapping(value = "{teamId}/{memberId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("teamId") final long mannschaftsId, @PathVariable("memberId")final long mitgliedId) {
