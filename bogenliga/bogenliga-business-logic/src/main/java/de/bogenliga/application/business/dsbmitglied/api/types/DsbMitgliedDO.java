@@ -25,7 +25,6 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     private String mitgliedsnummer;
     private Long vereinsId;
     private Long userId;
-
     private Boolean kampfrichter;
 
 
@@ -49,7 +48,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
                          final String nationalitaet, final String mitgliedsnummer, final Long vereinsId,
                          final Long userId, final OffsetDateTime createdAtUtc,
                          final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                         final Long lastModifiedByUserId, final Long version) {
+                         final Long lastModifiedByUserId, final Long version, boolean lizenz) {
         this.id = id;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -63,6 +62,7 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
+        this.kampfrichter =lizenz;
     }
 
     /**

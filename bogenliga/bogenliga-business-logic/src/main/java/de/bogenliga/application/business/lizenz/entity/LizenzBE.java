@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.kampfrichterlizenz.impl.entity;
+package de.bogenliga.application.business.lizenz.entity;
 
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
@@ -6,7 +6,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 import java.sql.Date;
 
 /**
- * I represent the dsbmitglied business entity.
+ * I represent the lizenz business entity.
  * <p>
  * A dsbmitglied is a registered member of the DSB. The dsbmitglied is not necessarily a technical user of the system.
  * <p>
@@ -15,7 +15,7 @@ import java.sql.Date;
  *
  * @see CommonBusinessEntity
  */
-public class KampfrichterlizenzBE extends CommonBusinessEntity implements BusinessEntity {
+public class LizenzBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
     private Long lizenzId;
     private String lizenznummer;
@@ -74,7 +74,7 @@ public class KampfrichterlizenzBE extends CommonBusinessEntity implements Busine
 
 
 
-    public KampfrichterlizenzBE(){
+    public LizenzBE(){
         // empty constructor
     }
 
@@ -88,7 +88,7 @@ public class KampfrichterlizenzBE extends CommonBusinessEntity implements Busine
 
     @Override
     public String toString() {
-        return "Kampfrichterlizenz{" +
+        return "Lizenz{" +
                 "lizenzId=" + lizenzId +
                 ", lizenznummer='" + lizenznummer + '\'' +
                 ", lizenzRegionId='" + lizenzRegionId + '\'' +

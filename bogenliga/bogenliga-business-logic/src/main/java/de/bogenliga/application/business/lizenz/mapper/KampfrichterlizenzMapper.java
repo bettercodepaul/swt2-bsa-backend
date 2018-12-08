@@ -1,13 +1,11 @@
-package de.bogenliga.application.business.kampfrichterlizenz.impl.mapper;
+package de.bogenliga.application.business.lizenz.mapper;
 
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.kampfrichterlizenz.impl.entity.KampfrichterlizenzBE;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.util.function.Function;
 
 /**
@@ -17,7 +15,7 @@ import java.util.function.Function;
 public class KampfrichterlizenzMapper implements ValueObjectMapper {
 
     /**
-     * Converts a {@link KampfrichterlizenzBE} to a {@link DsbMitgliedDO}
+     * Converts a {@link LizenzBE} to a {@link DsbMitgliedDO}
      *
      */
 /*    public static final Function<KampfrichterlizenzBE, DsbMitgliedDO> toDsbMitgliedDO = be -> {
@@ -47,27 +45,28 @@ public class KampfrichterlizenzMapper implements ValueObjectMapper {
     /**
      * Converts a {@link DsbMitgliedDO} to a {@link KampfrichterlizenzBE}
      */
-    public static final Function<DsbMitgliedDO, KampfrichterlizenzBE> toKampfrichterlizenz = dsbMitgliedDO -> {
+    public static final Function<DsbMitgliedDO, LizenzBE> toKampfrichterlizenz = dsbMitgliedDO -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getLastModifiedAtUtc());
 
-        KampfrichterlizenzBE kampfrichterlizenzBE = new KampfrichterlizenzBE();
-        kampfrichterlizenzBE.setLizenzDsbMitgliedId(dsbMitgliedDO.getId());
-        kampfrichterlizenzBE.setLizenztyp("Kampfrichter");
-       // kampfrichterlizenzBE.setLizenzId((long)5);
-        kampfrichterlizenzBE.setLizenzDisziplinId((long)0);
-        kampfrichterlizenzBE.setLizenznummer("123456KL");
-        kampfrichterlizenzBE.setLizenzRegionId((long)1);
+        LizenzBE lizenzBE = new LizenzBE();
+        System.out.println(dsbMitgliedDO.getId());
+        lizenzBE.setLizenzDsbMitgliedId(dsbMitgliedDO.getId());
+        lizenzBE.setLizenztyp("Kampfrichter");
+        lizenzBE.setLizenzId(lizenzBE.getLizenzId());
+        lizenzBE.setLizenzDisziplinId((long)0);
+        lizenzBE.setLizenznummer("123456KL");
+        lizenzBE.setLizenzRegionId((long)1);
 
 
-        kampfrichterlizenzBE.setCreatedAtUtc(createdAtUtcTimestamp);
-        kampfrichterlizenzBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());
-        kampfrichterlizenzBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
-        kampfrichterlizenzBE.setLastModifiedByUserId(dsbMitgliedDO.getLastModifiedByUserId());
-        kampfrichterlizenzBE.setVersion(dsbMitgliedDO.getVersion());
+        lizenzBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        lizenzBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());
+        lizenzBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+        lizenzBE.setLastModifiedByUserId(dsbMitgliedDO.getLastModifiedByUserId());
+        lizenzBE.setVersion(dsbMitgliedDO.getVersion());
 
-        return kampfrichterlizenzBE;
+        return lizenzBE;
     };
 
 

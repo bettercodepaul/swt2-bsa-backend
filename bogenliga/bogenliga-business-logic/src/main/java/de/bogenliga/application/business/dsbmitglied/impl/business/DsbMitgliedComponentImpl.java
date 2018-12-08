@@ -2,6 +2,10 @@ package de.bogenliga.application.business.dsbmitglied.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import de.bogenliga.application.business.lizenz.dao.LizenzDAO;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.lizenz.mapper.KampfrichterlizenzMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
@@ -9,9 +13,6 @@ import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
-import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
-import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
-import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -34,7 +35,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
 
     private final DsbMitgliedDAO dsbMitgliedDAO;
-    private final KampfrichterDAO kampfrichterDAO;
+    private final LizenzDAO lizenzDAO;
 
 
     /**
@@ -44,9 +45,9 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
      * @param dsbMitgliedDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO, final KampfrichterDAO kampfrichterDAO) {
+    public DsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO, final LizenzDAO lizenzDAO) {
         this.dsbMitgliedDAO = dsbMitgliedDAO;
-        this.kampfrichterDAO = kampfrichterDAO;
+        this.lizenzDAO = lizenzDAO;
     }
 
 
@@ -79,13 +80,15 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
         final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
 
-        if(dsbMitgliedDO.isKampfrichter()){
+        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
 
-            //final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(dsbMitgliedDO);
-            //kampfrichterDAO.create(kampfrichterBE, currentDsbMitgliedId); //Objekt wird nicht weiter verarbeitet
+        if(dsbMitgliedDO.isKampfrichter()){
+        System.out.println("TEst");
+            final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
+            lizenzDAO.create(lizenzBE, currentDsbMitgliedId);
         }
 
-        return DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
+        return dsbMitgliedDOResponse;
     }
 
 
@@ -97,7 +100,15 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
         final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
 
-        return DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
+        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
+
+        if(dsbMitgliedDO.isKampfrichter()){
+            System.out.println("TEst");
+            final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
+            lizenzDAO.update(lizenzBE, currentDsbMitgliedId);
+        }
+
+        return dsbMitgliedDOResponse;
     }
 
 
