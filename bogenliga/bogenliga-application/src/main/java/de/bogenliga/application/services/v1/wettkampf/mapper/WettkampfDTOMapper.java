@@ -38,6 +38,29 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
                 wettkampfDisziplinId, wettkampfTypId, createdByUserId, createdAtUtc, version);
     };
 
+
+    /**
+     * maps the {@link WettkampfDTO} to the {@link WettkampfDO} object
+     */
+    public static final Function<WettkampfDTO, WettkampfDO> toDO = wettkampfDTO -> {
+
+        final Long wettkampfId = wettkampfDTO.getId();
+        final Long veranstaltungsId = wettkampfDTO.getVeranstaltungsId();
+        final String datum = wettkampfDTO.getDatum();
+        final String wettkampfOrt = wettkampfDTO.getWettkampfOrt();
+        final String wettkampfBeginn = wettkampfDTO.getWettkampfBeginn();
+        final Long wettkampfTag = wettkampfDTO.getWettkampfTag();
+        final Long wettkampfDisziplinId = wettkampfDTO.getWettkampfDisziplinId();
+        final Long wettkampfTypId = wettkampfDTO.getWettkampfTypId();
+        final Long createdByUserId = wettkampfDTO.getCreatedByUserId();
+        final OffsetDateTime createdAtUtc = wettkampfDTO.getCreatedAtUtc();
+        final Long version = wettkampfDTO.getVersion();
+
+        return new WettkampfDO(wettkampfId, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
+                wettkampfDisziplinId, wettkampfTypId, createdAtUtc,createdByUserId, version);
+    };
+
+
     /**
      * Constructor
      */
