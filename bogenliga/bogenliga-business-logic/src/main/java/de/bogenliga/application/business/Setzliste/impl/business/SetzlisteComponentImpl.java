@@ -73,7 +73,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         LOGGER.warn("### SetzlisteCompImpl!!!! ########");
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable();
 
-        try (OutputStream result = new FileOutputStream(new File("tableForDennis.pdf"));
+        try (OutputStream result = new FileOutputStream(new File("bogenliga/bogenliga-application/src/main/resources/tableForDennis.pdf"));
              PdfWriter writer = new PdfWriter(result);
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4.rotate())   )

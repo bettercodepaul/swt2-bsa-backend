@@ -15,9 +15,15 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -92,12 +98,33 @@ public class SetzlisteService implements ServiceFacade {
     //   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam Map<String,String> requestParams) {
+        final List<SetzlisteDO> setzlisteDOList = setzlisteComponent.getTable();
+        LOG.debug("setzliste works...");
+        Resource resource = new ClassPathResource("tableForDennis.pdf");
+        long r = 0;
+        InputStream is=null;
+
+        try {
+            is = resource.getInputStream();
+            r = resource.contentLength();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok().contentLength(r)
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(new InputStreamResource(is));
+    }
+
+/*    @RequestMapping(method = RequestMethod.POST)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public String getTableByVars(@RequestParam Map<String,String> requestParams) {
         LOG.debug("Receive 'find byVars' request with wettkampf " + requestParams.get("wettkampf"));
         LOG.debug("Receive 'find byVars' request with wettkampftag  " + requestParams.get("wettkampftag"));
         //final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return "/setzliste passt";
-    }
+    }*/
 
 
     @RequestMapping(value = "/{tag}/{wettkampf}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
