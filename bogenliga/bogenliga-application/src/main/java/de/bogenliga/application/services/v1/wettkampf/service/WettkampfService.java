@@ -32,6 +32,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @CrossOrigin
 @RequestMapping("v1/wettkampf")
 public class WettkampfService implements ServiceFacade {
+    private static final String PRECONDITION_MSG_WETTKAMPF = "WettkampfDO must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "Wettkampfveranstaltungsid must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "Format: YYYY-MM-DD Format must be correct,  Wettkampfdatum must not be null";
@@ -57,4 +58,80 @@ public class WettkampfService implements ServiceFacade {
         this.wettkampfComponent = wettkampfComponent;
     }
 
+    /**
+     * findAll-Method gives back all Wettkämpfe safed in the Database.
+     *
+     * @return wettkampfDoList - List filled with Data Objects of Wettkämpfe
+     */
+    @RequestMapping(method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<WettkampfDTO> findAll() {
+        final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findAll();
+        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    /**
+     * findByID-Method gives back a specific Wettkampf according to a single Wettkampf_ID
+     *
+     * @param id - single id of the Wettkampf you want te access
+     * @return
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public WettkampfDTO findById(@PathVariable("id") final long id) {
+        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'findById' request with ID '{}'", id);
+
+        final WettkampfDO wettkampfDO= wettkampfComponent.findById(id);
+        return WettkampfDTOMapper.toDTO.apply(wettkampfDO);
+    }
+
+    /**
+     * create-Method() writes a new entry of Wettkampf into the database
+     * @param wettkampfDTO
+     * @param principal
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public WettkampfDTO create(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
+
+        checkPreconditions(wettkampfDTO);
+
+        LOG.debug("Received 'create' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
+                        " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
+                wettkampfDTO.getId(),
+                wettkampfDTO.getDatum(),
+                wettkampfDTO.getVeranstaltungsId(),
+                wettkampfDTO.getWettkampfDisziplinId(),
+                wettkampfDTO.getWettkampfOrt(),
+                wettkampfDTO.getWettkampfTag(),
+                wettkampfDTO.getWettkampfBeginn(),
+                wettkampfDTO.getWettkampfTypId());
+
+        final WettkampfDO newDsbMitgliedDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final WettkampfDO savedWettkampfDO= wettkampfComponent.create(newDsbMitgliedDO, userId);
+        return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
+    }
+
+
+    /**
+     * checks the preconditions defined above in this class
+     * @param wettkampfDTO
+     */
+    private void checkPreconditions(@RequestBody final WettkampfDTO wettkampfDTO) {
+        Preconditions.checkNotNull(wettkampfDTO, PRECONDITION_MSG_WETTKAMPF);
+        Preconditions.checkNotNull(wettkampfDTO.getDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);
+        Preconditions.checkNotNull(wettkampfDTO.getId() >=0,PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfBeginn(),PRECONDITION_MSG_WETTKAMPF_BEGINN);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrt(),PRECONDITION_MSG_WETTKAMPF_ORT);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfDisziplinId()>=0, PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
+        Preconditions.checkNotNull(wettkampfDTO.getVeranstaltungsId()>=0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkArgument(wettkampfDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_TYP_ID);
+        Preconditions.checkArgument(wettkampfDTO.getWettkampfTag() >= 0, PRECONDITION_MSG_WETTKAMPF_TAG);
+    }
 }
