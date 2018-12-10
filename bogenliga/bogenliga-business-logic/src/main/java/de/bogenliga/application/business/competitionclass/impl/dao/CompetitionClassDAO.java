@@ -30,18 +30,18 @@ public class CompetitionClassDAO implements DataAccessObject {
     // business entity parameters
     private static final String COMPETITIONCLASS_BE_ID = "klasseId";
     private static final String COMPETITIONCLASS_BE_NAME = "klasseName";
-    private static final String COMPETITIONCLASS_BE_ALTER_MIN = "klasseAlterMin";
-    private static final String COMPETITIONCLASS_BE_ALTER_MAX = "klasseAlterMax";
+    private static final String COMPETITIONCLASS_BE_JAHRGANG_MIN = "klasseJahrgangMin";
+    private static final String COMPETITIONCLASS_BE_JAHRGANG_MAX = "klasseJahrgangMax";
     private static final String COMPETITIONCLASS_BE_KLASSE_NR = "klasseNr";
 
     private static final String COMPETITIONCLASS_TABLE_ID = "klasse_id";
     private static final String COMPETITIONCLASS_TABLE_NAME = "klasse_name";
-    private static final String COMPETITIONCLASS_TABLE_ALTER_MIN = "klasse_alter_min";
-    private static final String COMPETITIONCLASS_TABLE_ALTER_MAX = "klasse_alter_max";
+    private static final String COMPETITIONCLASS_TABLE_JAHRGANG_MIN = "klasse_jahrgang_min";
+    private static final String COMPETITIONCLASS_TABLE_JAHRGANG_MAX = "klasse_jahrgang_max";
     private static final String COMPETITIONCLASS_TABLE_KLASSE_NR = "klasse_nr";
 
 
-    private static final BusinessEntityConfiguration<CompetitionClassBE> COMPETITIONCLASS = new BusinessEntityConfiguration<CompetitionClassBE>(
+    private static final BusinessEntityConfiguration<CompetitionClassBE> COMPETITIONCLASS = new BusinessEntityConfiguration<>(
             CompetitionClassBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
 
     /**
@@ -69,8 +69,8 @@ public class CompetitionClassDAO implements DataAccessObject {
 
         columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_ID, COMPETITIONCLASS_BE_ID);
         columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_NAME, COMPETITIONCLASS_BE_NAME);
-        columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_ALTER_MIN, COMPETITIONCLASS_BE_ALTER_MIN);
-        columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_ALTER_MAX, COMPETITIONCLASS_BE_ALTER_MAX);
+        columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_JAHRGANG_MIN, COMPETITIONCLASS_BE_JAHRGANG_MIN);
+        columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_JAHRGANG_MAX, COMPETITIONCLASS_BE_JAHRGANG_MAX);
         columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_KLASSE_NR, COMPETITIONCLASS_BE_KLASSE_NR);
 
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
