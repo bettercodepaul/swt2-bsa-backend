@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.competitionclass.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.print.attribute.standard.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,8 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class CompetitionClassService implements ServiceFacade {
     private static final String PRECONDITION_MSG_KLASSE = "CompetitionClass must not be null";
     private static final String PRECONDITION_MSG_KLASSE_ID = "CompetitionClass ID must not be negative";
-    private static final String PRECONDITION_MSG_KLASSE_ALTER_MIN = "Minimum Age must not be negative";
-    private static final String PRECONDITION_MSG_KLASSE_ALTER_MAX = "Max Age must be higher than Min Age and must not be negative";
+    private static final String PRECONDITION_MSG_KLASSE_JAHRGANG_MIN = "Minimum Age must not be negative";
+    private static final String PRECONDITION_MSG_KLASSE_JAHRGANG_MAX = "Max Age must be higher than Min Age and must not be negative";
     private static final String PRECONDITION_MSG_KLASSE_NR = "Something is wrong with the CompetitionClass Number";
     private static final String PRECONDITION_MSG_NAME = "The CompetitionClass must be given a name";
 
@@ -111,8 +110,8 @@ public class CompetitionClassService implements ServiceFacade {
                 "Receive 'create' request with klasseId '{}', klasseName '{}', klasseAlterMin '{}', klasseAlterMax '{}', klasseNr '{}' ",
                 competitionClassDTO.getId(),
                 competitionClassDTO.getKlasseName(),
-                competitionClassDTO.getKlasseAlterMin(),
-                competitionClassDTO.getKlasseAlterMax(),
+                competitionClassDTO.getKlasseJahrgangMin(),
+                competitionClassDTO.getKlasseJahrgangMax(),
                 competitionClassDTO.getKlasseNr());
 
         checkPreconditions(competitionClassDTO);
@@ -141,8 +140,8 @@ public class CompetitionClassService implements ServiceFacade {
 
                 competitionClassDTO.getId(),
                 competitionClassDTO.getKlasseName(),
-                competitionClassDTO.getKlasseAlterMin(),
-                competitionClassDTO.getKlasseAlterMax(),
+                competitionClassDTO.getKlasseJahrgangMin(),
+                competitionClassDTO.getKlasseJahrgangMax(),
                 competitionClassDTO.getKlasseNr());
 
 
@@ -158,14 +157,15 @@ public class CompetitionClassService implements ServiceFacade {
 
     private void checkPreconditions(@RequestBody final CompetitionClassDTO competitionClassDTO) {
         Preconditions.checkNotNull(competitionClassDTO, PRECONDITION_MSG_KLASSE);
-        Preconditions.checkNotNull(competitionClassDTO.getKlasseAlterMin(), PRECONDITION_MSG_KLASSE_ALTER_MIN);
-        Preconditions.checkNotNull(competitionClassDTO.getKlasseAlterMax(), PRECONDITION_MSG_KLASSE_ALTER_MAX);
+        Preconditions.checkNotNull(competitionClassDTO.getKlasseJahrgangMin(), PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
+        Preconditions.checkNotNull(competitionClassDTO.getKlasseJahrgangMax(), PRECONDITION_MSG_KLASSE_JAHRGANG_MAX);
         Preconditions.checkNotNull(competitionClassDTO.getKlasseNr(), PRECONDITION_MSG_KLASSE_NR);
         Preconditions.checkNotNull(competitionClassDTO.getKlasseName(), PRECONDITION_MSG_NAME);
 
-        Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() >= 0, PRECONDITION_MSG_KLASSE_ALTER_MIN);
-        Preconditions.checkArgument(competitionClassDTO.getKlasseAlterMin() < competitionClassDTO.getKlasseAlterMax(),
-                PRECONDITION_MSG_KLASSE_ALTER_MIN);
+        Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMin() >= 0,
+                PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
+        Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMin() < competitionClassDTO.getKlasseJahrgangMax(),
+                PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
 
     }
 }
