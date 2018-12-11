@@ -5,7 +5,7 @@
 -- die ID geben wir nicht vor, die wird beim Insert automatisch generiert
 
 -- alle mal lachen: die Zuordnung zwischen Liga und Mannschaft ist in der Tabelle vereinsanschriften
--- übringens stehen da keine Adressen drin ;-))
+-- übringens stehen da keine Addressen drin ;-))
 
 insert INTO public.mannschaft
   (mannschaft_nummer,

@@ -1,3 +1,3 @@
-DROP SCHEMA IF EXISTS prod_data_migration CASCADE
-;
+--DROP SCHEMA IF EXISTS prod_data_migration CASCADE
+--;
 
