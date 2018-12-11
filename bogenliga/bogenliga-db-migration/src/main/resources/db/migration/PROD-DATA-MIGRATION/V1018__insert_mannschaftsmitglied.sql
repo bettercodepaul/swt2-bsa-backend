@@ -8,6 +8,14 @@
 -- alle mal lachen: die Zuordnung zwischen Liga und Mannschaft ist in der Tabelle vereinsanschriften
 -- übringens stehen da keine Adressen drin ;-))
 
+-- fachlich kritisch: eine Mannschaft gehört zu einem Verein -
+-- aber dsb-mitglieder können prinzipiell in mehreren Vereinen sein
+-- und je Disziplin in einem anderen Verein in einer Mannschaft sein...
+
+
+
+
+
 insert INTO public.mannschaftsmitglied
     (mannschaftsmitglied_mannschaft_id,
     mannschaftsmitglied_dsb_mitglied_id,
