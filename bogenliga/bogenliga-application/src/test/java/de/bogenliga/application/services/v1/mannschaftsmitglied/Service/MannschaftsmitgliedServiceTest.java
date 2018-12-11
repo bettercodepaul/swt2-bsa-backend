@@ -214,27 +214,6 @@ public class MannschaftsmitgliedServiceTest {
         assertThat(createdDsbMannschaft.getMannschaftId()).isEqualTo(input.getMannschaftsId());
         assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
     }
-    @Test
-    public void delete() {
-        // prepare test data
-        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
-
-        // configure mocks
-
-        // call test method
-        underTest.delete(mannschaftsId,dsbMitgliedId, principal);
-
-        // assert result
-
-        // verify invocations
-        verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
-
-        final MannschaftsmitgliedDO deletedMannschaftsmitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
-
-        assertThat(deletedMannschaftsmitglied).isNotNull();
-        assertThat(deletedMannschaftsmitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
-        assertThat(deletedMannschaftsmitglied.getDsbMitgliedId()).isEqualTo(0L);
-    }
 
     @Test
     public void checkExistingSchuetze(){
@@ -258,6 +237,29 @@ public class MannschaftsmitgliedServiceTest {
 
 
 
+    }
+
+    @Test
+
+    public void delete() {
+        // prepare test data
+        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+
+        // configure mocks
+
+        // call test method
+        underTest.delete(mannschaftsId,dsbMitgliedId, principal);
+
+        // assert result
+
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+
+        final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
+
+        assertThat(deletedDsbMitglied).isNotNull();
+        assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
+        assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
     }
 
     
