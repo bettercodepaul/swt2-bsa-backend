@@ -31,8 +31,7 @@ public class UserProfileComponentImpl implements UserProfileComponent {
      * dependency injection with {@link Autowired}
      *
      * @param userDAO         to access the database and return user representations
-     * @param signInBA        to sign in users
-     * @param technicalUserBA to handle all technical user operations
+     * @param dsbMitgliedDAO  to access the database and return DSB Mitglied representations
      */
     @Autowired
     public UserProfileComponentImpl(final UserDAO userDAO,
