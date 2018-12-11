@@ -1,7 +1,9 @@
 package de.bogenliga.application.services.v1.veranstaltung.mapper;
 
+import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
@@ -17,35 +19,18 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
      * I map the {@link VereinDO} to the {@link VeranstaltungDTO} object
      */
 
-    public static final Function<VereinDO, VeranstaltungDTO> toDTO = vereinDO -> {
-        final Long vereinId = vereinDO.getId();
-        final String vereinName = vereinDO.getName();
-        final String vereinIdentifier = vereinDO.getDsbIdentifier();
-        final Long regionId = vereinDO.getRegionId();
-        final String regionName = vereinDO.getRegionName();
-        final Long createdByUserId = vereinDO.getCreatedByUserId();
-        final OffsetDateTime createdAtUtc = vereinDO.getCreatedAtUtc();
-        final Long version = vereinDO.getVersion();
+    public static final Function<VeranstaltungDO, VeranstaltungDTO> toDTO = veranstaltungDO -> {
+        final Long veranstaltungId = veranstaltungDO.getId();
+        final Long veranstaltungWettkampfTypId = veranstaltungDO.getWettkampfTypId();
+        final String veranstaltungName = veranstaltungDO.getName();
+        final Long veranstaltungSportjahr = veranstaltungDO.getSportjahr();
+        final Date veranstaltungMeldeDeadline = veranstaltungDO.getMeldeDeadline();
+        final Long veranstaltungDOKampfrichterAnzahl = veranstaltungDO.getKampfrichterAnzahl();
+        final Long veranstaltungHoere = veranstaltungDO.getHoere();
+        final Long veranstaltungLigaleiterId = veranstaltungDO.getLigaLeiterId();
 
-
-        return new VeranstaltungDTO(vereinId, vereinName, vereinIdentifier, regionId, regionName, createdAtUtc,createdByUserId, version);
-    };
-
-    /**
-     I map the {@link VeranstaltungDTO} to the {@link VereinDO} object
-     */
-
-    public static final Function<VeranstaltungDTO, VereinDO> toDO = dto -> {
-        final Long vereinId  = dto.getId();
-        final String vereinName = dto.getName();
-        final String vereinIdentifier = dto.getIdentifier();
-        final Long regionId = dto.getRegionId();
-        final Long createdByUserId = dto.getCreatedByUserId();
-        final OffsetDateTime createdAtUtc = dto.getCreatedAtUtc();
-        final Long version = dto.getVersion();
-
-        return new VereinDO(vereinId, vereinName, vereinIdentifier, regionId,
-                createdAtUtc, createdByUserId, version);
+        return new VeranstaltungDTO(veranstaltungId, veranstaltungWettkampfTypId, veranstaltungName, veranstaltungSportjahr,
+                veranstaltungMeldeDeadline,veranstaltungDOKampfrichterAnzahl, veranstaltungHoere, veranstaltungLigaleiterId);
     };
 
     /**

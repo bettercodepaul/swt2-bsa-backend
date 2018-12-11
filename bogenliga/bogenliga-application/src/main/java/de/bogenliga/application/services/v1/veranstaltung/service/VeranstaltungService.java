@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -24,53 +26,45 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
- * I'm a REST resource and handle vereine CRUD requests over the HTTP protocol
+ * I'm a REST resource and handle veranstaltung CRUD requests over the HTTP protocol
  *
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/ver")
-
+@RequestMapping("v1/veranstaltung")
 public class VeranstaltungService implements ServiceFacade {
-    private static final String PRECONDITION_MSG_VEREIN = "Verein must not be null";
-    private static final String PRECONDITION_MSG_VEREIN_ID = "Verein ID must not be negative";
-    private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
-    private static final String PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER = "Verein dsb Identifier must not be null";
-    private static final String PRECONDITION_MSG_REGION_ID_NOT_NEG = "Verein regio ID must not be negative";
-    private static final String PRECONDITION_MSG_REGION_ID = "Verein regio ID can not be null";
-
     private static final Logger LOG = LoggerFactory.getLogger(
             VeranstaltungService.class);
 
-    private final VereinComponent vereinComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
 
 
     /**
      * Constructor with dependency injection
      *
-     * @param vereinComponent to handle the database CRUD requests
+     * @param veranstaltungComponent to handle the database CRUD requests
      */
 
     @Autowired
-    public VeranstaltungService(final VereinComponent vereinComponent){
-        this.vereinComponent = vereinComponent;
+    public VeranstaltungService(final VeranstaltungComponent veranstaltungComponent){
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
 
     /**
-     * I return all the teams (Vereine) of the database.
+     * I return all the teams (veranstaltung) of the database.
      * @return
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VeranstaltungDTO> findAll(){
-        final List<VereinDO> vereinDOList = vereinComponent.findAll();
-        return vereinDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+        final List<VeranstaltungDO> VeranstaltungDOList = VeranstaltungComponent.findAll();
+        return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     /**
-     * I return the verein Entry of the database with a specific id
+     * I return the veranstaltung Entry of the database with a specific id
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
@@ -81,96 +75,8 @@ public class VeranstaltungService implements ServiceFacade {
 
         LOG.debug("Receive 'findById' with requested ID '{}'", id);
 
-        final VereinDO vereinDO = vereinComponent.findById(id);
+        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(id);
 
-        return VeranstaltungDTOMapper.toDTO.apply(vereinDO);
+        return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
     }
-
-
-    /**
-     * I persist a newer version of the dsbMitglied in the database.
-     */
-
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public VeranstaltungDTO update (@RequestBody final VeranstaltungDTO vereineDTO, final Principal principal){
-        checkPreconditions(vereineDTO);
-        Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
-
-        LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
-                vereineDTO.getId(),
-                vereineDTO.getName(),
-                vereineDTO.getIdentifier(),
-                vereineDTO.getRegionId());
-
-
-        final VereinDO newVereinDo = VeranstaltungDTOMapper.toDO.apply(vereineDTO);
-        final long userID = UserProvider.getCurrentUserId(principal);
-
-        final VereinDO updateVereinDO = vereinComponent.update(newVereinDo,userID);
-        return VeranstaltungDTOMapper.toDTO.apply(updateVereinDO);
-    }
-
-    /**
-     * I delete an existing Verein entry from the DB.
-     */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public void delete (@PathVariable("id") final long id, final Principal principal){
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
-
-        LOG.debug("Receive 'delete' request with id '{}'", id);
-
-        final VereinDO vereinDO = new VereinDO(id);
-        final long userId = UserProvider.getCurrentUserId(principal);
-        vereinComponent.delete(vereinDO,userId);
-    }
-
-
-
-
-
-    /**
-     * I persist a new verein and return this verein entry.
-     *
-     * @param vereineDTO of the request body
-     * @param principal authenticated user
-     * @return list of {@link VeranstaltungDTO} as JSON
-     */
-
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-                produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO vereineDTO, final Principal principal) {
-        checkPreconditions(vereineDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
-
-        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region id '{}', version '{}', createdBy '{}'" ,
-                vereineDTO.getName(),
-                vereineDTO.getIdentifier(),
-                vereineDTO.getRegionId(),
-                vereineDTO.getVersion(),
-                userId);
-
-        final VereinDO vereinDO = VeranstaltungDTOMapper.toDO.apply(vereineDTO);
-        final VereinDO persistedVereinDO = vereinComponent.create(vereinDO, userId);
-
-        return VeranstaltungDTOMapper.toDTO.apply(persistedVereinDO);
-    }
-
-
-
-
-    private void checkPreconditions(@RequestBody final VeranstaltungDTO vereinDTO) {
-        Preconditions.checkNotNull(vereinDTO, PRECONDITION_MSG_VEREIN);
-        Preconditions.checkNotNull(vereinDTO.getName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkNotNull(vereinDTO.getIdentifier(), PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER);
-        Preconditions.checkNotNull(vereinDTO.getRegionId(), PRECONDITION_MSG_REGION_ID);
-
-        Preconditions.checkArgument(vereinDTO.getRegionId() >= 0, PRECONDITION_MSG_REGION_ID_NOT_NEG);
-    }
-
 }
