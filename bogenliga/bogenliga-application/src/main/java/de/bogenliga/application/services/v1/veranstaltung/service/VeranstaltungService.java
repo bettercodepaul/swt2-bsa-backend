@@ -40,7 +40,6 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @param veranstaltungComponent to handle the database CRUD requests
      */
-
     @Autowired
     public VeranstaltungService(final VeranstaltungComponent veranstaltungComponent){
         this.veranstaltungComponent = veranstaltungComponent;
@@ -54,7 +53,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VeranstaltungDTO> findAll(){
-        final List<VeranstaltungDO> VeranstaltungDOList = VeranstaltungComponent.findAll();
+        final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findAll();
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
