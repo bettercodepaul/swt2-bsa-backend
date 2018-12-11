@@ -197,4 +197,52 @@ public class WettkampfServiceTest {
         assertThat(createdDsbMitglied).isNotNull();
         assertThat(createdDsbMitglied.getId()).isEqualTo(input.getId());
     }
+
+    @Test
+    public void update() {
+        // prepare test data
+        final WettkampfDTO input = getWettkampfDTO();
+
+        final WettkampfDO expected = getWettkampfDO();
+
+        // configure mocks
+        when(wettkampfComponent.update(any(), anyLong())).thenReturn(expected);
+
+        // call test method
+        final WettkampfDTO actual  = underTest.update(input, principal);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+
+        // verify invocations
+        verify(wettkampfComponent).update(wettkampfDOArgumentCaptor.capture(), anyLong());
+
+        final WettkampfDO updatedWettkampf = wettkampfDOArgumentCaptor.getValue();
+
+        assertThat(updatedWettkampf).isNotNull();
+        assertThat(updatedWettkampf.getId()).isEqualTo(input.getId());
+    }
+
+    @Test
+    public void delete() {
+        // prepare test data
+        final WettkampfDO expected = getWettkampfDO();
+
+        // configure mocks
+
+        // call test method
+        underTest.delete(wettkampf_Id, principal);
+
+        // assert result
+
+        // verify invocations
+        verify(wettkampfComponent).delete(wettkampfDOArgumentCaptor.capture(), anyLong());
+
+        final WettkampfDO deletedWettkampf= wettkampfDOArgumentCaptor.getValue();
+
+        assertThat(deletedWettkampf).isNotNull();
+        assertThat(deletedWettkampf.getId()).isEqualTo(expected.getId());
+        assertThat(deletedWettkampf.getDatum()).isNullOrEmpty();
+    }
 }

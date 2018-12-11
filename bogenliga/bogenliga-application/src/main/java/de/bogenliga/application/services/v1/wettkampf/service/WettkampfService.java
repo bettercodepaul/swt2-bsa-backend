@@ -118,6 +118,56 @@ public class WettkampfService implements ServiceFacade {
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
 
+    /**
+     * Update-Method changes the chosen Wettkampf entry in the Database
+     * @param wettkampfDTO
+     * @param principal
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public WettkampfDTO update(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
+        checkPreconditions(wettkampfDTO);
+        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+                LOG.debug("Received 'update' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
+                                " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
+                        wettkampfDTO.getId(),
+                        wettkampfDTO.getDatum(),
+                        wettkampfDTO.getVeranstaltungsId(),
+                        wettkampfDTO.getWettkampfDisziplinId(),
+                        wettkampfDTO.getWettkampfOrt(),
+                        wettkampfDTO.getWettkampfTag(),
+                        wettkampfDTO.getWettkampfBeginn(),
+                        wettkampfDTO.getWettkampfTypId());
+
+        final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
+        return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
+    }
+
+    /**
+     * Delete-Method removes an entry from the database
+     * @param id
+     * @param principal
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        // allow value == null, the value will be ignored
+        final WettkampfDO wettkampfDO = new WettkampfDO(id);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        wettkampfComponent.delete(wettkampfDO, userId);
+    }
 
     /**
      * checks the preconditions defined above in this class
