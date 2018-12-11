@@ -18,12 +18,23 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
+ * I handle all application exceptions globally and generate an error response
+ * with a suitable http status code and an error message
+ *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 @ControllerAdvice
 @RestController
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /**
+     * Handles all {@link BusinessException}
+     *
+     * @param ex      {@link BusinessException}
+     * @param request will be ignored
+     *
+     * @return response with error
+     */
     @ExceptionHandler(BusinessException.class)
     public final ResponseEntity<ErrorDTO> handleBusinessException(final BusinessException ex,
                                                                   final WebRequest request) {
@@ -53,6 +64,14 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     }
 
 
+    /**
+     * Handles all {@link TechnicalException}
+     *
+     * @param ex      {@link TechnicalException}
+     * @param request will be ignored
+     *
+     * @return response with error
+     */
     @ExceptionHandler(TechnicalException.class)
     public final ResponseEntity<ErrorDTO> handleTechnicalException(final TechnicalException ex,
                                                                    final WebRequest request) {
@@ -76,6 +95,14 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     }
 
 
+    /**
+     * Handles all {@link NullPointerException}
+     *
+     * @param ex      {@link NullPointerException}
+     * @param request will be ignored
+     *
+     * @return response with error
+     */
     @ExceptionHandler(NullPointerException.class)
     public final ResponseEntity<ErrorDTO> handleNullPointerException(final NullPointerException ex,
                                                                      final WebRequest request) {
@@ -84,6 +111,14 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     }
 
 
+    /**
+     * Handles all {@link RuntimeException}
+     *
+     * @param ex      {@link RuntimeException}
+     * @param request will be ignored
+     *
+     * @return response with error
+     */
     @ExceptionHandler(RuntimeException.class)
     public final ResponseEntity<ErrorDTO> handleRuntimeException(final RuntimeException ex,
                                                                  final WebRequest request) {
@@ -92,6 +127,11 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     }
 
 
+    /**
+     * Handles invalid REST requests
+     *
+     * @return response with error
+     */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
                                                                   final HttpHeaders headers, final HttpStatus status,

@@ -16,6 +16,9 @@ import de.bogenliga.application.common.validation.Preconditions;
 /**
  * I´m the implementation of {@link ConfigurationComponent}.
  *
+ * The global application configuration consists of a key-value pairs.
+ * The configuration is stored in the database.
+ *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 @Component
