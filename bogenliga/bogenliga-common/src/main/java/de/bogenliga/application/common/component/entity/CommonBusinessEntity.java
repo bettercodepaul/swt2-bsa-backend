@@ -17,12 +17,12 @@ public abstract class CommonBusinessEntity implements BusinessEntity {
      * technical parameter
      */
     private Timestamp createdAtUtc;
-    private long createdByUserId;
+    private Long createdByUserId;
 
     private Timestamp lastModifiedAtUtc;
-    private long lastModifiedByUserId;
+    private Long lastModifiedByUserId;
 
-    private long version;
+    private Long version;
 
 
     public Timestamp getCreatedAtUtc() {
@@ -35,12 +35,12 @@ public abstract class CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public long getCreatedByUserId() {
+    public Long getCreatedByUserId() {
         return createdByUserId;
     }
 
 
-    public void setCreatedByUserId(final long createdByUserId) {
+    public void setCreatedByUserId(final Long createdByUserId) {
         this.createdByUserId = createdByUserId;
     }
 
@@ -55,22 +55,22 @@ public abstract class CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public long getLastModifiedByUserId() {
+    public Long getLastModifiedByUserId() {
         return lastModifiedByUserId;
     }
 
 
-    public void setLastModifiedByUserId(final long lastModifiedByUserId) {
+    public void setLastModifiedByUserId(final Long lastModifiedByUserId) {
         this.lastModifiedByUserId = lastModifiedByUserId;
     }
 
 
-    public long getVersion() {
+    public Long getVersion() {
         return version;
     }
 
 
-    public void setVersion(final long version) {
+    public void setVersion(final Long version) {
         this.version = version;
     }
 }

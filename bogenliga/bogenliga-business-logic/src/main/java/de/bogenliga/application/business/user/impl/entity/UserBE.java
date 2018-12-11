@@ -18,7 +18,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private long userId;
+    private Long userId;
     private String userEmail;
     private String userSalt;
     private String userPassword;
@@ -40,12 +40,12 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
 
-    public void setUserId(final long userId) {
+    public void setUserId(final Long userId) {
         this.userId = userId;
     }
 

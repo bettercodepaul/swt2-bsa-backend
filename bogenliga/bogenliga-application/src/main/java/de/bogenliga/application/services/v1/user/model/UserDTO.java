@@ -10,8 +10,8 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class UserDTO implements DataTransferObject {
 
     private static final long serialVersionUID = -8591546299429551992L;
-    private long id;
-    private long version;
+    private Long id;
+    private Long version;
     private String email;
 
 
@@ -26,7 +26,7 @@ public class UserDTO implements DataTransferObject {
     /**
      * Constructor with mandatory parameters
      */
-    public UserDTO(final long id, final long version, final String email) {
+    public UserDTO(final Long id, final Long version, final String email) {
         this.id = id;
         this.version = version;
         this.email = email;
@@ -43,12 +43,12 @@ public class UserDTO implements DataTransferObject {
     }
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
 
-    public void setId(final long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -63,12 +63,12 @@ public class UserDTO implements DataTransferObject {
     }
 
 
-    public long getVersion() {
+    public Long getVersion() {
         return version;
     }
 
 
-    public void setVersion(final long version) {
+    public void setVersion(final Long version) {
         this.version = version;
     }
 }

@@ -5,20 +5,12 @@
 
 # Bogenliga Application
 
-tbd 
-
-This repository can be used for a basic working Spring Boot application
 
 ## Content
 
 - Spring Boot with REST services
 - Flyway
 
-__tbd__
-
-## Requirements
-
-__tbd__
 
 ## How to use
 
@@ -30,9 +22,15 @@ Use ```mvnw``` instead of ```mvn``` commands.
    - run: ```mvn clean install```
 2. Run database migration
     - go to the bogenliga-db-migration directory: ```cd bogenliga-db-migration```
-    - run: ```mvn flyway:migrate```
+    - run: ```mvn clean flyway:clean flyway:migrate -PLOCAL``` 
 3. Run Spring Boot
     - go to the bogenliga-application directory: ```cd bogenliga-application```
     - run: ```mvn spring-boot:run```
 
 
+   
+## References
+
+- https://flywaydb.org/documentation/migrations
+- https://flywaydb.org/documentation/maven/
+- https://flywaydb.org/documentation/command/migrate
