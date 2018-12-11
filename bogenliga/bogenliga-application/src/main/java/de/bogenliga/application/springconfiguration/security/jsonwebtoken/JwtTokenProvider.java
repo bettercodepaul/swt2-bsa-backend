@@ -1,34 +1,25 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
 import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * I handle all JSON Web Token processing steps.
@@ -80,6 +71,25 @@ public class JwtTokenProvider {
     public String getUsername(final String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        } catch (final ExpiredJwtException expiredTokenException) {
+            throw new BusinessException(ErrorCode.NO_SESSION_ERROR, "Session token expired", expiredTokenException);
+        } catch (final RuntimeException e) {
+            throw new TechnicalException(ErrorCode.UNEXPECTED_ERROR, "User information could not parsed from JWT", e);
+        }
+    }
+
+
+    /**
+     * Returns the user id contained in the given token
+     *
+     * @param token
+     * @return
+     */
+    public Long getUserId(final String token) {
+        try {
+            return resolveUserSignInDTO(token).getId();
+        } catch (final ExpiredJwtException expiredTokenException) {
+            throw new BusinessException(ErrorCode.NO_SESSION_ERROR, "Session token expired", expiredTokenException);
         } catch (final RuntimeException e) {
             throw new TechnicalException(ErrorCode.UNEXPECTED_ERROR, "User information could not parsed from JWT", e);
         }
@@ -145,7 +155,7 @@ public class JwtTokenProvider {
     }
 
 
-    private String createToken(final String username, final long id, final long version,
+    private String createToken(final String username, final Long id, final Long version,
                                final Set<UserPermission> permissions,
                                final int refreshCounter) {
         // subject
@@ -183,6 +193,10 @@ public class JwtTokenProvider {
         return userAuthenticationProvider.createAuthenticationPlaceholder(getUsername(token), getPermissions(token));
     }
 
+
+    Authentication getOptionsAuthentication() {
+        return userAuthenticationProvider.createAuthenticationPlaceholder("SYSTEM", Collections.emptySet());
+    }
 
     boolean validateToken(final String token) {
         try {
@@ -238,7 +252,7 @@ public class JwtTokenProvider {
 
 
     @PostConstruct
-    protected void init() {
+    void init() {
         validityInMilliseconds = securityJsonWebTokenConfiguration.getExpiration();
         secretKey = Base64.getEncoder().encodeToString(securityJsonWebTokenConfiguration.getSecret().getBytes());
         maxTokenRefresh = securityJsonWebTokenConfiguration.getRefresh();

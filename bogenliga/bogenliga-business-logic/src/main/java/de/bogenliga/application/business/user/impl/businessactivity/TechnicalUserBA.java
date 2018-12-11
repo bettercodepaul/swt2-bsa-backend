@@ -12,7 +12,7 @@ import de.bogenliga.application.common.component.businessactivity.BusinessActivi
 @Component
 public class TechnicalUserBA implements BusinessActivity {
 
-    private static final UserDO SYSTEM_USER = new UserDO(0, "SYSTEM", null, 0, null, 0, 0);
+    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", null, 0L, null, 0L, 0L);
 
 
     /**

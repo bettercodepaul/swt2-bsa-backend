@@ -3,6 +3,7 @@ package de.bogenliga.application.springconfiguration.requestfilters;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import de.bogenliga.application.springconfiguration.requestfilters.filters.CorsFilter;
 import de.bogenliga.application.springconfiguration.requestfilters.filters.RequestResponseLoggingFilter;
 
 /**
@@ -26,4 +27,16 @@ public class FilterRegistrationConfiguration {
 
     }
 
+
+    @Bean
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
+        final FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new CorsFilter());
+
+        registrationBean.addUrlPatterns("/*");
+
+        return registrationBean;
+
+    }
 }

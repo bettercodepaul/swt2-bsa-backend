@@ -1,7 +1,3 @@
-//======================================================================================================================
-// Module: BMW Remote Software Update (RSU) - Zentrales Fahrzeug Update System (ZFUS)
-// Copyright (c) 2018 BMW Group. All rights reserved.
-//======================================================================================================================
 package de.bogenliga.application.services.common.errorhandling;
 
 import java.util.ArrayList;
@@ -27,26 +23,6 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 @ControllerAdvice
 @RestController
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
-                                                                  final HttpHeaders headers, final HttpStatus status,
-                                                                  final WebRequest request) {
-        final List<ErrorDTO> errors = new ArrayList<>();
-        for (final FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.add(new ErrorDTO(ErrorCode.INVALID_ARGUMENT_ERROR,
-                    error.getField() + " = " + error.getRejectedValue() + " -> " + error.getField()
-                            + " " + error.getDefaultMessage()));
-        }
-        for (final ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-            errors.add(new ErrorDTO(ErrorCode.INVALID_ARGUMENT_ERROR,
-                    error.getObjectName() + ": " + error.getDefaultMessage()));
-        }
-
-        return handleExceptionInternal(
-                ex, errors, headers, HttpStatus.BAD_REQUEST, request);
-    }
-
 
     @ExceptionHandler(BusinessException.class)
     public final ResponseEntity<ErrorDTO> handleBusinessException(final BusinessException ex,
@@ -113,5 +89,25 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                                                                  final WebRequest request) {
         final ErrorDTO errorDetails = new ErrorDTO(ErrorCode.UNEXPECTED_ERROR, ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
+                                                                  final HttpHeaders headers, final HttpStatus status,
+                                                                  final WebRequest request) {
+        final List<ErrorDTO> errors = new ArrayList<>();
+        for (final FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.add(new ErrorDTO(ErrorCode.INVALID_ARGUMENT_ERROR,
+                    error.getField() + " = " + error.getRejectedValue() + " -> " + error.getField()
+                            + " " + error.getDefaultMessage()));
+        }
+        for (final ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            errors.add(new ErrorDTO(ErrorCode.INVALID_ARGUMENT_ERROR,
+                    error.getObjectName() + ": " + error.getDefaultMessage()));
+        }
+
+        return handleExceptionInternal(
+                ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
 }

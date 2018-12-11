@@ -1,15 +1,18 @@
 package de.bogenliga.application.business.user.impl.mapper;
 
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.user.api.types.UserProfileDO;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
+import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
+import de.bogenliga.application.common.time.DateProvider;
+
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.business.user.impl.entity.UserBE;
-import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
-import de.bogenliga.application.common.time.DateProvider;
 
 /**
  * I convert the user DataObjects and BusinessEntities.
@@ -26,13 +29,13 @@ public class UserMapper implements ValueObjectMapper {
      */
     public static final Function<UserBE, UserDO> toUserDO = be -> {
 
-        final long id = be.getUserId();
+        final Long id = be.getUserId();
         final String email = be.getUserEmail();
 
         // technical parameter
-        long createdByUserId = be.getCreatedByUserId();
-        long lastModifiedByUserId = be.getLastModifiedByUserId();
-        long version = be.getVersion();
+        Long createdByUserId = be.getCreatedByUserId();
+        Long lastModifiedByUserId = be.getLastModifiedByUserId();
+        Long version = be.getVersion();
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
@@ -69,6 +72,23 @@ public class UserMapper implements ValueObjectMapper {
         userBE.setVersion(vo.getVersion());
 
         return userBE;
+    };
+
+
+    /**
+     * Converts a {@link UserBE} and a corresponding {@link DsbMitgliedBE}to a {@link UserProfileDO}
+     */
+    public static final BiFunction<UserBE, DsbMitgliedBE, UserProfileDO> toUserProfileDO = (userBE, dsbMitgliedBE) -> {
+        UserProfileDO userProfileDO = new UserProfileDO();
+        userProfileDO.setId(userBE.getUserId());
+        userProfileDO.setEmail(userBE.getUserEmail());
+        userProfileDO.setVorname(dsbMitgliedBE.getDsbMitgliedVorname());
+        userProfileDO.setNachname(dsbMitgliedBE.getDsbMitgliedNachname());
+        userProfileDO.setGeburtsdatum(dsbMitgliedBE.getDsbMitgliedGeburtsdatum());
+        userProfileDO.setNationalitaet(dsbMitgliedBE.getDsbMitgliedNationalitaet());
+        userProfileDO.setMitgliedsnummer(dsbMitgliedBE.getDsbMitgliedMitgliedsnummer());
+        userProfileDO.setVereinsId(dsbMitgliedBE.getDsbMitgliedVereinsId());
+        return userProfileDO;
     };
 
 

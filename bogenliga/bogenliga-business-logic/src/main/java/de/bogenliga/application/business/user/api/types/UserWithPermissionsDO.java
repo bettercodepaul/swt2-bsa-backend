@@ -34,9 +34,9 @@ public class UserWithPermissionsDO extends UserDO implements DataObject {
     /**
      * Constructor with mandatory parameters
      */
-    public UserWithPermissionsDO(final long id, final String email, final OffsetDateTime createdAtUtc,
-                                 final long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                                 final long lastModifiedByUserId, final long version,
+    public UserWithPermissionsDO(final Long id, final String email, final OffsetDateTime createdAtUtc,
+                                 final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
+                                 final Long lastModifiedByUserId, final Long version,
                                  final List<String> permissions) {
         setId(id);
         setEmail(email);
