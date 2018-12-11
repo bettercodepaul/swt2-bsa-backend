@@ -1,6 +1,5 @@
 package de.bogenliga.application.services.v1.veranstaltung.service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -9,16 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.veranstaltung.mapper.VeranstaltungDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
@@ -28,7 +23,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 /**
  * I'm a REST resource and handle veranstaltung CRUD requests over the HTTP protocol
  *
- * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
+ * @author Marvin Holm
  */
 @RestController
 @CrossOrigin

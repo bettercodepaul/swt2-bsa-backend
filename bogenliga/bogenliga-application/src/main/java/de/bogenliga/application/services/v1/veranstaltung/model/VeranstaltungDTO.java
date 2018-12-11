@@ -1,16 +1,15 @@
 package de.bogenliga.application.services.v1.veranstaltung.model;
 
-import java.time.OffsetDateTime;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 import java.sql.Date;
 
 
 /**
- * I'm the data transfer Object of Vereine.
+ * I'm the data transfer Object of Veranstaltung.
  * <p>
- * I define the payload for the external REST interface of the Vereine business entity
+ * I define the payload for the external REST interface of the Veranstaltung business entity
  *
- * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
+ * @author Marvin Holm
  */
 public class VeranstaltungDTO implements DataTransferObject {
     private Long id;
@@ -21,13 +20,6 @@ public class VeranstaltungDTO implements DataTransferObject {
     private Long kampfrichterAnzahl;
     private Long hoehere;
     private Long ligaleiterID;
-    /**
-     * Constructors
-     */
-
-    public VeranstaltungDTO() {
-        //empty
-    }
 
 
     /**
