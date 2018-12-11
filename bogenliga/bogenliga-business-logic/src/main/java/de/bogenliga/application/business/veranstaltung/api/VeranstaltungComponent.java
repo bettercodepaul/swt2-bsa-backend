@@ -27,6 +27,11 @@ public interface VeranstaltungComponent extends ComponentFacade {
      */
     VeranstaltungDO findById(final long veranstaltungId);
 
+
+    //Following Methods are in commands because they may be used at a later point
+    //Methods need to be implemented in VeranstaltungComponentImpl
+
+    /*
     /**
      * Create an entry of Veranstaltung
      *
@@ -34,7 +39,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      * @param currentDsbMitglied Id of the currently logged in user that sent create request
      *
      * @return returns that created Verein
-     */
+     *
     VeranstaltungDO create(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
 
@@ -45,7 +50,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      * @param currentDsbMitglied id of the currently logged in user that sent the update request
      *
      * @return returns the updated verein entry
-     */
+
     VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
     /**
@@ -53,6 +58,8 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      * @param VeranstaltungDO           Veranstaltung DataObject containing atleast an id
      * @param currentDsbMitglied id of the currently logged in user that sent the delete request
-     */
+
     void delete(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
+
+    */
 }

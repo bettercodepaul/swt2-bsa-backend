@@ -17,20 +17,11 @@ import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Daniel Schott, daniel.schott@student.reutlingen-university.de
  */
 public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
-    private static final String PRECONDITION_MSG_DSBMITGLIED = "DsbMitgliedDO must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_ID = "DsbMitgliedDO ID must not be negative";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VORNAME = "DsbMitglied vorname must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_NACHNAME = "DsbMitglied nachname must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM = "DsbMitglied geburtsdatum must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET = "DsbMitglied nationalitaet must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER = "DsbMitglied mitgliedsnummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
-    private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "VeranstaltungDO must not be null";
 
     private final VeranstaltungDAO veranstaltungDAO;
 
@@ -38,6 +29,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * Constructor for VeranstaltungComponentImpl - Autowired by springboot
      * @param veranstaltungDAO
      */
+
     @Autowired
     public VeranstaltungComponentImpl(final VeranstaltungDAO veranstaltungDAO) {
         this.veranstaltungDAO= veranstaltungDAO;
@@ -50,8 +42,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      */
     @Override
     public List<VeranstaltungDO> findAll() {
-        final List<DsbMitgliedBE> veranstaltugBEList = veranstaltungDAO.findAll();
-        return veranstaltugBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
+        final List<VeranstaltungBE> veranstaltugBEList = veranstaltungDAO.findAll();
+        return veranstaltugBEList.stream().map(VeranstaltungMapper.toVeranstaltungDO).collect(Collectors.toList());
     }
 
 
@@ -67,6 +59,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
                     String.format("No result found for ID '%s'", id));
         }
 
-        return DsbMitgliedMapper.toDsbMitgliedDO.apply(result);
+        return VeranstaltungMapper.toVeranstaltungDO.apply(result);
     }
 }
