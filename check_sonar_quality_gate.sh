@@ -1,13 +1,16 @@
 #!/bin/sh
 
 # $1 := SONAR CLOUD PROJECT KEY
-echo "==> Get quality gate for project $1"
+# $2 := GIT BRANCH
 
-quality_gate_result=$(curl -s "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$1" | python -mjson.tool)
+echo "==> Get quality gate for project $1 and branch $2"
 
-echo "==> Result: $quality_gate_result"
+url=$(echo "https://sonarcloud.io/api/project_branches/list?project=$1")
+branch=$2
 
-if echo "$quality_gate_result" | grep -q ERROR; then
+command=$(python sonar_branch_result_parser.py $url $branch)
+
+if echo "$command" | grep -q ERROR; then
     echo "==> Found ERROR! Quality gate failure"
     exit 1
 else
