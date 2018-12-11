@@ -35,7 +35,7 @@ script:
 - cd bogenliga
 # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
 - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=de.bogenliga.application -Dsonar.organization=$SONAR_CLOUD_ORG -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_CLOUD_KEY
-- sh /home/travis/build/exxcellent/swt2-bsa-backend/check_sonar_quality_gate.sh $SONAR_CLOUD_PROJECT
+- sh /home/travis/build/exxcellent/swt2-bsa-backend/check_sonar_quality_gate.sh $SONAR_CLOUD_PROJECT $TRAVIS_BRANCH
 
 # maven plugin to generate the code coverage report for https://codecov.io
 # generate reports for specific projects
