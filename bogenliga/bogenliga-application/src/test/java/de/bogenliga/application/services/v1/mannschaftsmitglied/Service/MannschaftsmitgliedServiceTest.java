@@ -77,7 +77,7 @@ public class MannschaftsmitgliedServiceTest {
     }
 
     @Test
-    public void findall() {
+    public void findAll() {
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
         //configure Mocks

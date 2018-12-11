@@ -1,10 +1,10 @@
 package de.bogenliga.application.business.mannschaftsmitglied.impl.business;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,10 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImpl;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
@@ -32,7 +28,7 @@ import static org.mockito.Mockito.when;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Philip Dengler,
  */
 public class MannschaftsmitgliedComponentImplTest {
 
@@ -162,8 +158,16 @@ public class MannschaftsmitgliedComponentImplTest {
         assertThat(actual).isNotNull();
         assertThat(actual.get(0).getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
 
+    }
 
+    @Test
+    public void checkExistingSchuetze() {
 
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID,DSB_MITGLIED_ID)).thenReturn(expectedBE);
+        final boolean actual = underTest.checkExistingSchuetze(MANNSCHAFTSID,DSB_MITGLIED_ID);
+        assertThat(actual);
     }
 
 
@@ -206,7 +210,6 @@ public class MannschaftsmitgliedComponentImplTest {
     public void create_with_mandatory_parameters() {
 
         final OffsetDateTime dateTime = OffsetDateTime.now();
-        final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         final MannschaftsmitgliedDO input = new MannschaftsmitgliedDO(MANNSCHAFTSID,
                 DSB_MITGLIED_ID,
                 dateTime,
@@ -356,6 +359,7 @@ public class MannschaftsmitgliedComponentImplTest {
         // verify invocations
         verifyZeroInteractions(mannschaftsmitgliedDAO);
     }
+
 
 
 }
