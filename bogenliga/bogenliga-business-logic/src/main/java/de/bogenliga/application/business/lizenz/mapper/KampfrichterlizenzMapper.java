@@ -54,7 +54,7 @@ public class KampfrichterlizenzMapper implements ValueObjectMapper {
         System.out.println(dsbMitgliedDO.getId());
         lizenzBE.setLizenzDsbMitgliedId(dsbMitgliedDO.getId());
         lizenzBE.setLizenztyp("Kampfrichter");
-        lizenzBE.setLizenzId(lizenzBE.getLizenzId());
+        lizenzBE.setLizenzId(null);
         lizenzBE.setLizenzDisziplinId((long)0);
         lizenzBE.setLizenznummer("123456KL");
         lizenzBE.setLizenzRegionId((long)1);
