@@ -123,6 +123,26 @@ public class ConfigurationComponentImplTest {
 
 
     @Test
+    public void findByKey_withoutResult_shouldThrowException() {
+        // prepare test data
+
+        // configure mocks
+        when(configurationDAO.findByKey(anyString())).thenReturn(null);
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByKey(KEY))
+                .withMessageContaining("key")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verify(configurationDAO).findByKey(KEY);
+    }
+
+
+    @Test
     public void findByKey_withEmptyKey_shouldThrowException() {
         // prepare test data
 
