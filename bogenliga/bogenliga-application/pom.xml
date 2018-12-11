@@ -22,6 +22,8 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <!-- used dependencies -->
+    <!-- Spring Framework Dependencies -->
     <dependencies>
         <dependency>
             <groupId>de.bogenliga</groupId>
@@ -118,6 +120,7 @@
                             <excludes>
                                 <exclude>none</exclude>
                             </excludes>
+                            <!-- selector for integration unit tests to assert the REST service endpoint functionality -->
                             <includes>
                                 <include>**/*IT.java</include>
                             </includes>
