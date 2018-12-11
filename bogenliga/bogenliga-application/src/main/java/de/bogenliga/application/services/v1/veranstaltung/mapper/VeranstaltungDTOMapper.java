@@ -19,14 +19,14 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
      */
 
     public static final Function<VeranstaltungDO, VeranstaltungDTO> toDTO = veranstaltungDO -> {
-        final Long veranstaltungId = veranstaltungDO.getId();
-        final Long veranstaltungWettkampfTypId = veranstaltungDO.getWettkampfTypId();
-        final String veranstaltungName = veranstaltungDO.getName();
-        final Long veranstaltungSportjahr = veranstaltungDO.getSportjahr();
-        final Date veranstaltungMeldeDeadline = veranstaltungDO.getMeldeDeadline();
-        final Long veranstaltungDOKampfrichterAnzahl = veranstaltungDO.getKampfrichterAnzahl();
-        final Long veranstaltungHoere = veranstaltungDO.getHoere();
-        final Long veranstaltungLigaleiterId = veranstaltungDO.getLigaLeiterId();
+        final Long veranstaltungId = veranstaltungDO.getVeranstaltungID();
+        final Long veranstaltungWettkampfTypId = veranstaltungDO.getVeranstaltungWettkampftypID();
+        final String veranstaltungName = veranstaltungDO.getVeranstaltungName();
+        final Long veranstaltungSportjahr = veranstaltungDO.getVeranstaltungSportJahr();
+        final Date veranstaltungMeldeDeadline = veranstaltungDO.getVeranstaltungMeldeDeadline();
+        final Long veranstaltungDOKampfrichterAnzahl = veranstaltungDO.getVeranstaltungKampfrichterAnzahl();
+        final Long veranstaltungHoere = veranstaltungDO.getVeranstaltungHoehere();
+        final Long veranstaltungLigaleiterId = veranstaltungDO.getVeranstaltungLigaleiterID();
 
         return new VeranstaltungDTO(veranstaltungId, veranstaltungWettkampfTypId, veranstaltungName, veranstaltungSportjahr,
                 veranstaltungMeldeDeadline,veranstaltungDOKampfrichterAnzahl, veranstaltungHoere, veranstaltungLigaleiterId);
