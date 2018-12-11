@@ -11,12 +11,12 @@ public abstract class CommonDataObject implements DataObject {
 
     private static final long serialVersionUID = 9084773078605162633L;
     protected OffsetDateTime createdAtUtc;
-    protected long createdByUserId;
+    protected Long createdByUserId;
 
     protected OffsetDateTime lastModifiedAtUtc;
-    protected long lastModifiedByUserId;
+    protected Long lastModifiedByUserId;
 
-    protected long version;
+    protected Long version;
 
 
     public OffsetDateTime getCreatedAtUtc() {
@@ -29,12 +29,12 @@ public abstract class CommonDataObject implements DataObject {
     }
 
 
-    public long getCreatedByUserId() {
+    public Long getCreatedByUserId() {
         return createdByUserId;
     }
 
 
-    public void setCreatedByUserId(final long createdByUserId) {
+    public void setCreatedByUserId(final Long createdByUserId) {
         this.createdByUserId = createdByUserId;
     }
 
@@ -49,22 +49,22 @@ public abstract class CommonDataObject implements DataObject {
     }
 
 
-    public long getLastModifiedByUserId() {
+    public Long getLastModifiedByUserId() {
         return lastModifiedByUserId;
     }
 
 
-    public void setLastModifiedByUserId(final long lastModifiedByUserId) {
+    public void setLastModifiedByUserId(final Long lastModifiedByUserId) {
         this.lastModifiedByUserId = lastModifiedByUserId;
     }
 
 
-    public long getVersion() {
+    public Long getVersion() {
         return version;
     }
 
 
-    public void setVersion(final long version) {
+    public void setVersion(final Long version) {
         this.version = version;
     }
 

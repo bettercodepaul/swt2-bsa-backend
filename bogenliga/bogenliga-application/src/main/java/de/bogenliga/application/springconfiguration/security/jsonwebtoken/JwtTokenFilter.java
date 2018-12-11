@@ -34,24 +34,33 @@ public class JwtTokenFilter extends GenericFilterBean {
     public void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain filterChain)
             throws IOException, ServletException {
 
-        final String token = JwtTokenProvider.resolveToken((HttpServletRequest) req);
+        final HttpServletRequest request = (HttpServletRequest) req;
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            // TODO check reverted tokens, e.g. user changed password -> database request required ...
+        // the client sends OPTIONS requests for each normal request
+        if (!request.getMethod().equals("OPTIONS")) {
 
-            final Authentication auth = jwtTokenProvider.getAuthentication(token);
-            // authenticate against Spring Security
+            final String token = JwtTokenProvider.resolveToken((HttpServletRequest) req);
+
+            if (token != null && jwtTokenProvider.validateToken(token)) {
+                // TODO check reverted tokens, e.g. user changed password -> database request required ...
+
+                final Authentication auth = jwtTokenProvider.getAuthentication(token);
+                // authenticate against Spring Security
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+                // auto refresh expiration time of the token
+                // increment refresh counter
+                final String refreshedToken = jwtTokenProvider.refreshToken(token);
+                ((HttpServletResponse) res).addHeader("Authorization", "Bearer " + refreshedToken);
+            }
+        } else {
+            // do not block OPTIONS requests with 403 "no permission"
+            final Authentication auth = jwtTokenProvider.getOptionsAuthentication();
+
             SecurityContextHolder.getContext().setAuthentication(auth);
-
-            // auto refresh expiration time of the token
-            // increment refresh counter
-            String refreshedToken = jwtTokenProvider.refreshToken(token);
-            ((HttpServletResponse) res).addHeader("Authorization", "Bearer " + refreshedToken);
         }
 
         filterChain.doFilter(req, res);
-
-
     }
 
 }
