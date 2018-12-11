@@ -144,5 +144,9 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     }
 
+    public boolean checkExistingSchuetze(long teamId, final long memberId){
+        return findByMemberAndTeamId(teamId,memberId).isDsbMitgliedEingesetzt();
+    }
+
 
 }

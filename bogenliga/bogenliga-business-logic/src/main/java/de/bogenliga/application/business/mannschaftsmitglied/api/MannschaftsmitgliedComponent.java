@@ -82,4 +82,6 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      */
     void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
 
+    boolean checkExistingSchuetze(long teamId, long memberId);
+
 }

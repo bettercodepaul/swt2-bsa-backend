@@ -236,5 +236,31 @@ public class MannschaftsmitgliedServiceTest {
         assertThat(deletedMannschaftsmitglied.getDsbMitgliedId()).isEqualTo(0L);
     }
 
+    @Test
+    public void checkExistingSchuetze(){
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+
+        //configure Mocks
+
+        // call test method
+        final boolean actual = underTest.checkExistingSchuetze(mannschaftsId,dsbMitgliedId,principal);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull();
+
+
+        final MannschaftsMitgliedDTO actualDTO = getMannschaftsmitgliedDTO();
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.isDsbMitgliedEingesetzt()).isEqualTo(mannschaftsmitgliedDO.isDsbMitgliedEingesetzt());
+        assertThat(actualDTO.isDsbMitgliedEingesetzt()).isEqualTo(true);
+
+
+
+    }
+
+    
+
 
 }

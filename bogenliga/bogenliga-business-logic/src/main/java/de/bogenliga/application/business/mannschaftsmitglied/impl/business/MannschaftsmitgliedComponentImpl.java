@@ -136,6 +136,16 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     }
 
+    @Override
+    public boolean checkExistingSchuetze(long mannschaftId, final long mitgliedId){
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
+        Preconditions.checkArgument(mitgliedId>=0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
+
+        final MannschaftsmitgliedBE result = mannschaftsmitgliedDAO.findByMemberAndTeamId(mannschaftId,mitgliedId);
+
+        return result.isDsbMitgliedEingesetzt();
+    }
+
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO, final long parameter) {
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
         Preconditions.checkNotNull(mannschaftsmitgliedDO.getMannschaftId(), PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID);

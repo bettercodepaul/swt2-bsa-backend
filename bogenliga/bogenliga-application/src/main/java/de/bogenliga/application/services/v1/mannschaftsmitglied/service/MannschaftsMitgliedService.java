@@ -167,6 +167,19 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
     }
 
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public boolean checkExistingSchuetze(@PathVariable("mannschaftsId") final long mannschaftsId,
+                                         @PathVariable("mitgliedId")final long mitgliedId, final Principal principal){
+        Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
+        Preconditions.checkArgument(mitgliedId>= 0, "mitgliedId must not be negativ");
+
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(mannschaftsId,mitgliedId);
+
+
+        return mannschaftsmitgliedDO.isDsbMitgliedEingesetzt();
+
+    }
+
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {
         Preconditions.checkNotNull(mannschaftsMitgliedDTO, PRECONDITION_MSG_MANNSCHAFTSMITGLIED);
         Preconditions.checkNotNull(mannschaftsMitgliedDTO.getMannschaftsId(), PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID);
