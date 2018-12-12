@@ -1,9 +1,13 @@
 package de.bogenliga.application.business.lizenz.impl.mapper;
 
 import org.junit.Test;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
 import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.lizenz.mapper.KampfrichterlizenzMapper;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedDO;
 import static de.bogenliga.application.business.kampfrichter.impl.business.KampfrichterComponentImplTest.getKampfrichterBE;
 import static de.bogenliga.application.business.kampfrichter.impl.business.KampfrichterComponentImplTest.getKampfrichterDO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,22 +30,15 @@ public class LizenzMapperTest {
     private static final boolean LEITEND = false;
 
 
-    @Test
-    public void toVO() throws Exception {
-        final KampfrichterBE kampfrichterBE = getKampfrichterBE();
 
-        final KampfrichterDO actual = KampfrichterMapper.toKampfrichterDO.apply(kampfrichterBE);
-
-        assertThat(actual.getUserId() == USERID);
-    }
 
 
     @Test
     public void toBE() throws Exception {
-        final KampfrichterDO kampfrichterDO = getKampfrichterDO();
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
-        final KampfrichterBE actual = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
+        final LizenzBE actual = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDO);
 
-        assertThat(actual.getKampfrichterUserId() == USERID);
+        assertThat(actual.getLizenzId() == USERID);
     }
 }
