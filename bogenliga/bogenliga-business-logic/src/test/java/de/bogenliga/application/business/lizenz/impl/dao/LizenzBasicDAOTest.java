@@ -84,23 +84,22 @@ public class LizenzBasicDAOTest {
      public void findById() {
      // prepare test data
      final LizenzBE expectedBE = new LizenzBE();
-     expectedBE.setKampfrichterUserId(USERID);
-     expectedBE.setKampfrichterWettkampfId(WETTKAMPFID);
+     expectedBE.setLizenzId(LIZENZID);
+     expectedBE.setLizenzDsbMitgliedId(LIZENZDSBMITGLIEDID);
 
      // configure mocks
      when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
      // call test method
-     final KampfrichterBE actual = underTest.findById(USERID);
+     final LizenzBE actual = underTest.findByDsbMitgliedId((long)LIZENZDSBMITGLIEDID);
 
      // assert result
      assertThat(actual).isNotNull();
 
-     assertThat(actual.getKampfrichterUserId())
-     .isEqualTo(expectedBE.getKampfrichterUserId());
-     assertThat(actual.getKampfrichterWettkampfId())
-     .isEqualTo(expectedBE.getKampfrichterWettkampfId());
-
+     assertThat(actual.getLizenzDsbMitgliedId())
+     .isEqualTo(expectedBE.getLizenzDsbMitgliedId());
+     assertThat(actual.getLizenzDsbMitgliedId())
+     .isEqualTo(expectedBE.getLizenzDsbMitgliedId());
 
      // verify invocations
      verify(basicDao).selectSingleEntity(any(), any(), any());
@@ -110,23 +109,23 @@ public class LizenzBasicDAOTest {
     @Test
     public void create() {
         // prepare test data
-        final KampfrichterBE input = new KampfrichterBE();
-        input.setKampfrichterUserId(USERID);
-        input.setKampfrichterWettkampfId(WETTKAMPFID);
+        final LizenzBE input = new LizenzBE();
+        input.setLizenzId(LIZENZID);
+        input.setLizenzDsbMitgliedId(LIZENZDSBMITGLIEDID);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final KampfrichterBE actual = underTest.create(input, USER);
+        final LizenzBE actual = underTest.create(input, LIZENZID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getKampfrichterUserId())
-                .isEqualTo(input.getKampfrichterUserId());
-        assertThat(actual.getKampfrichterWettkampfId())
-                .isEqualTo(input.getKampfrichterWettkampfId());
+        assertThat(actual.getLizenzDsbMitgliedId())
+                .isEqualTo(input.getLizenzDsbMitgliedId());
+        assertThat(actual.getLizenzDsbMitgliedId())
+                .isEqualTo(input.getLizenzDsbMitgliedId());
 
         // verify invocations
         verify(basicDao).insertEntity(any(), eq(input));
@@ -136,23 +135,23 @@ public class LizenzBasicDAOTest {
     @Test
     public void update() {
         // prepare test data
-        final KampfrichterBE input = new KampfrichterBE();
-        input.setKampfrichterUserId(USERID);
-        input.setKampfrichterWettkampfId(WETTKAMPFID);
+        final LizenzBE input = new LizenzBE();
+        input.setLizenzId(LIZENZID);
+        input.setLizenzDsbMitgliedId(LIZENZDSBMITGLIEDID);
 
         // configure mocks
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final KampfrichterBE actual = underTest.update(input, USER);
+        final LizenzBE actual = underTest.update(input, LIZENZID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getKampfrichterUserId())
-                .isEqualTo(input.getKampfrichterUserId());
-        assertThat(actual.getKampfrichterWettkampfId())
-                .isEqualTo(input.getKampfrichterWettkampfId());
+        assertThat(actual.getLizenzDsbMitgliedId())
+                .isEqualTo(input.getLizenzDsbMitgliedId());
+        assertThat(actual.getLizenzDsbMitgliedId())
+                .isEqualTo(input.getLizenzDsbMitgliedId());
 
         // verify invocations
         verify(basicDao).updateEntity(any(), eq(input), any());
@@ -162,14 +161,14 @@ public class LizenzBasicDAOTest {
     @Test
     public void delete() {
         // prepare test data
-        final KampfrichterBE input = new KampfrichterBE();
-        input.setKampfrichterUserId(USERID);
-        input.setKampfrichterWettkampfId(WETTKAMPFID);
+        final LizenzBE input = new LizenzBE();
+        input.setLizenzId(LIZENZID);
+        input.setLizenzDsbMitgliedId(LIZENZDSBMITGLIEDID);
 
         // configure mocks
 
         // call test method
-        underTest.delete(input, USER);
+        underTest.delete(input, LIZENZDSBMITGLIEDID);
 
         // assert result
 
