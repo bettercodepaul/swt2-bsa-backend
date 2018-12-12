@@ -8,11 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
 import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import de.bogenliga.application.business.lizenz.dao.LizenzDAO;
 
 /**
  * @author Rahul Pöse
@@ -33,6 +35,7 @@ public class LizenzBasicDAOTest {
     private long LIZENZDSBMITGLIEDID = 71;
     private String LIZENZTYP = "Liga";
     private long LIZENZDISZIPLINID = 0;
+    private DsbMitgliedComponentImplTest dsbMitgliedComponentImplTest = new DsbMitgliedComponentImplTest();
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -45,8 +48,11 @@ public class LizenzBasicDAOTest {
      @Test
      public void findAll() {
      // prepare test data
-     final LizenzBE expectedBE = getLizenzBE();
-
+     final LizenzBE expectedBE = dsbMitgliedComponentImplTest.getLizenzBE();
+         expectedBE.setLizenzId((long)0);
+         expectedBE.setLizenznummer("WT1234567");
+         expectedBE.setLizenzRegionId((long)1);
+         expectedBE.setLizenzDsbMitgliedId(LIZENZDSBMITGLIEDID);
      // configure mocks
      when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
