@@ -83,7 +83,7 @@ public class LizenzBasicDAOTest {
      @Test
      public void findById() {
      // prepare test data
-     final KampfrichterBE expectedBE = new KampfrichterBE();
+     final LizenzBE expectedBE = new LizenzBE();
      expectedBE.setKampfrichterUserId(USERID);
      expectedBE.setKampfrichterWettkampfId(WETTKAMPFID);
 
