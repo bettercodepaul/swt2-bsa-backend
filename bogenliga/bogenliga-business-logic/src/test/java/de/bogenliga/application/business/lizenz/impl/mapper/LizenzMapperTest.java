@@ -23,11 +23,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class LizenzMapperTest {
 
-    private static final long USER = 0;
-
-    private static final long USERID = 1337;
-    private static final long WETTKAMPFID = 9999;
-    private static final boolean LEITEND = false;
+    private long LIZENZID = 0;
+    private String LIZENZNUMMER = "WT1234567";
+    private long LIZENZREGIONID = 1;
+    private long LIZENZDSBMITGLIEDID = 1337L;
+    private String LIZENZTYP = "Liga";
+    private long LIZENZDISZIPLINID = 0;
 
 
 
@@ -38,7 +39,6 @@ public class LizenzMapperTest {
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
         final LizenzBE actual = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDO);
-
-        assertThat(actual.getLizenzId() == USERID);
+        assertThat(actual.getLizenzDsbMitgliedId() == LIZENZDSBMITGLIEDID);
     }
 }
