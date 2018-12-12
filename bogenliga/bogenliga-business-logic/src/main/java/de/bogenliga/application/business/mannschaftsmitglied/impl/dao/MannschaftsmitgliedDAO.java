@@ -8,16 +8,18 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+//
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Repository
 public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
@@ -42,8 +44,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM mannschafsmitglied"
+            "SELECT *"
+                    + " FROM mannschaftsmitglied"
                     + " ORDER BY mannschaftsmitglied_mannschaft_id";
 
     private static final String FIND_BY_TEAM_ID =
@@ -55,6 +57,11 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             "SELECT * "
                     + "FROM mannschaftsmitglied"
                     +" WHERE mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_id=?";
+
+    private static final String FIND_ALL_SCHUETZE_TEAM =
+            "SELECT *"
+                    + "FROM mannschaftsmitglied"
+                    +" WHERE   mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_eingesetzt= true";
 
 
 
@@ -85,7 +92,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     /**
      * Return all mannschaftsmitglied entries
      */
-    public List<MannschaftsmitgliedBE> findAll() {
+     public List<MannschaftsmitgliedBE> findAll() {
 
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL);
     }
@@ -95,18 +102,23 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
      * @param id
      * @return
      */
-    public MannschaftsmitgliedBE findByTeamId(final long id) {
-        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_TEAM_ID, id);
+    public List<MannschaftsmitgliedBE> findByTeamId(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_BY_TEAM_ID, id);
     }
 
 
+    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeam(final long id){
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM,id);
+    }
 
 
+    public MannschaftsmitgliedBE findByMemberAndTeamId(long teamId, final long memberId){
+        System.out.println("hallo");
+        MannschaftsmitgliedBE test;
+        test = basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
+        System.out.println(test+"adjasf");
+        return test;
 
-
-
-    public MannschaftsmitgliedBE findByMemberAndTeamId(final long teamId, final long memberId){
-        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
     }
 
     public MannschaftsmitgliedBE create(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
@@ -121,15 +133,19 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
 
-      //  return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_TEAM_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
-        return null;
+     return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_USER_ID);
+
     }
 
     public void delete(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-       // basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE,MANNSCHAFTSMITGLIED_BE_TEAM_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
+        basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE,MANNSCHAFTSMITGLIED_BE_USER_ID);
 
+    }
+
+    public boolean checkExistingSchuetze(long teamId, final long memberId){
+        return findByMemberAndTeamId(teamId,memberId).isDsbMitgliedEingesetzt();
     }
 
 

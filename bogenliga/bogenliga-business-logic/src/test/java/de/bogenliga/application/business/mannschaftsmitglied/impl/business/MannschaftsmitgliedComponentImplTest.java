@@ -1,25 +1,34 @@
 package de.bogenliga.application.business.mannschaftsmitglied.impl.business;
 
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImpl;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Philip Dengler,
  */
 public class MannschaftsmitgliedComponentImplTest {
 
@@ -31,7 +40,7 @@ public class MannschaftsmitgliedComponentImplTest {
 
     private static final Long MANNSCHAFTSID = 1111L;
     private static final Long DSB_MITGLIED_ID = 2222L;
-    private static final Boolean DSB_MITGLIED_EINGESTZT = false;
+    private static final Boolean DSB_MITGLIED_EINGESTZT = true;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -58,12 +67,299 @@ public class MannschaftsmitgliedComponentImplTest {
 
     }
 
-    public static MannschaftsmitgliedDO getMannschaftsmitgliedDO(){
+    public static MannschaftsmitgliedDO getMannschatfsmitgliedDO(){
         return new MannschaftsmitgliedDO(
                     MANNSCHAFTSID,
                     DSB_MITGLIED_ID,
                     DSB_MITGLIED_EINGESTZT);
     }
+
+    @Test
+    public void findAll() {
+        // prepare test data
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findAll()).thenReturn(expectedBEList);
+
+
+        // call test method
+        final List<MannschaftsmitgliedDO> actual = underTest.findAll();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+        assertThat(actual.get(0).getMannschaftId())
+                .isEqualTo(expectedBE.getMannschaftId());
+        assertThat(actual.get(0).getDsbMitgliedId())
+                .isEqualTo(expectedBE.getDsbMitgliedId());
+        assertThat(actual.get(0).isDsbMitgliedEingesetzt())
+                .isEqualTo(expectedBE.isDsbMitgliedEingesetzt());
+    }
+
+    @Test
+    public void findAllSchuetzeInTeam(){
+
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findAllSchuetzeInTeam(MANNSCHAFTSID)).thenReturn(expectedBEList);
+
+        // call test method
+        final List<MannschaftsmitgliedDO> actual = underTest.findAllSchuetzeInTeam(MANNSCHAFTSID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+        assertThat(actual.get(0).getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
+        assertThat(actual.get(0).isDsbMitgliedEingesetzt()).isEqualTo(expectedBE.isDsbMitgliedEingesetzt());
+
+
+
+    }
+
+    @Test
+    public void findByMemberAndTeamId(){
+
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID,DSB_MITGLIED_ID)).thenReturn(expectedBE);
+        final MannschaftsmitgliedDO actual = underTest.findByMemberAndTeamId(MANNSCHAFTSID,DSB_MITGLIED_ID);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
+        assertThat(actual.getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
+
+    }
+
+    @Test
+    public void findByTeamId(){
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findByTeamId(MANNSCHAFTSID)).thenReturn(expectedBEList);
+
+
+        // call test method
+        final List<MannschaftsmitgliedDO> actual = underTest.findByTeamId(MANNSCHAFTSID);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.get(0).getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
+
+    }
+
+    @Test
+    public void checkExistingSchuetze() {
+
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID,DSB_MITGLIED_ID)).thenReturn(expectedBE);
+        final boolean actual = underTest.checkExistingSchuetze(MANNSCHAFTSID,DSB_MITGLIED_ID);
+        assertThat(actual);
+    }
+
+
+
+    @Test
+    public void create(){
+
+        final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
+
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.create(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final MannschaftsmitgliedDO actual = underTest.create(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getMannschaftId())
+                .isEqualTo(input.getMannschaftId());
+
+        // verify invocations
+        verify(mannschaftsmitgliedDAO).create(mannschaftsmitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final MannschaftsmitgliedBE persistedBE = mannschaftsmitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getMannschaftId())
+                .isEqualTo(input.getMannschaftId());
+
+    }
+
+
+
+
+    @Test
+    public void create_with_mandatory_parameters() {
+
+        final OffsetDateTime dateTime = OffsetDateTime.now();
+        final MannschaftsmitgliedDO input = new MannschaftsmitgliedDO(MANNSCHAFTSID,
+                DSB_MITGLIED_ID,
+                dateTime,
+                USER,
+                VERSION);
+
+        final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
+        expectedBE.setMannschaftId(MANNSCHAFTSID);
+        expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
+        expectedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESTZT);
+
+
+        when(mannschaftsmitgliedDAO.create(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final MannschaftsmitgliedDO actual = underTest.create(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getMannschaftId())
+                .isEqualTo(input.getMannschaftId());
+
+        // verify invocations
+        verify(mannschaftsmitgliedDAO).create(mannschaftsmitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final MannschaftsmitgliedBE persistedBE = mannschaftsmitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getMannschaftId())
+                .isEqualTo(input.getMannschaftId());
+
+    }
+
+    @Test
+    public void create_withoutInput_shouldThrowException() {
+        // prepare test data
+
+        // configure mocks
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(null, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verifyZeroInteractions(mannschaftsmitgliedDAO);
+    }
+
+
+
+    @Test
+    public void update(){
+
+
+        final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
+
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.update(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final MannschaftsmitgliedDO actual = underTest.create(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getMannschaftId())
+                .isEqualTo(input.getMannschaftId());
+
+        // verify invocations
+        verify(mannschaftsmitgliedDAO).update(mannschaftsmitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final MannschaftsmitgliedBE persistedBE = mannschaftsmitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getMannschaftId())
+                .isEqualTo(input.getMannschaftId());
+    }
+
+
+    @Test
+    public void update_withoutInput_shouldThrowException() {
+        // prepare test data
+
+        // configure mocks
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(null, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verifyZeroInteractions(mannschaftsmitgliedDAO);
+    }
+
+
+
+    @Test
+    public void delete() {
+        // prepare test data
+        final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
+
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+
+        // configure mocks
+
+        // call test method
+        underTest.delete(input, USER);
+
+        // assert result
+
+        // verify invocations
+        verify(mannschaftsmitgliedDAO).delete(mannschaftsmitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final MannschaftsmitgliedBE persistedBE = mannschaftsmitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getMannschaftId())
+                .isEqualTo(input.getMannschaftId());
+    }
+
+    @Test
+    public void delete_withoutInput_shouldThrowException() {
+        // prepare test data
+
+        // configure mocks
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.delete(null, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verifyZeroInteractions(mannschaftsmitgliedDAO);
+    }
+
 
 
 }

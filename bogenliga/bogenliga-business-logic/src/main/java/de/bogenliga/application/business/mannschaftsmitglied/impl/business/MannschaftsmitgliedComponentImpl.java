@@ -15,12 +15,14 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.Mannsch
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+import org.springframework.stereotype.Component;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComponent {
 
 
@@ -58,11 +60,18 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
     @Override
-    public List<MannschaftsmitgliedDO> findAllSchuetze() {
-        return null;
+    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(long mannschaftsId) {
+        final List<MannschaftsmitgliedBE>  mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeam(mannschaftsId);
+        return  mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
     }
 
 
+
+    @Override
+    public List<MannschaftsmitgliedDO> findByTeamId(long mannschaftsId){
+        final List<MannschaftsmitgliedBE>  mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findByTeamId(mannschaftsId);
+        return  mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
+    }
 
 
     @Override
@@ -125,6 +134,16 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
         mannschaftsmitgliedDAO.delete(mannschaftsmitgliedBE, currentMemberId);
 
+    }
+
+    @Override
+    public boolean checkExistingSchuetze(long mannschaftId, final long mitgliedId){
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
+        Preconditions.checkArgument(mitgliedId>=0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
+
+        final MannschaftsmitgliedBE result = mannschaftsmitgliedDAO.findByMemberAndTeamId(mannschaftId,mitgliedId);
+
+        return result.isDsbMitgliedEingesetzt();
     }
 
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO, final long parameter) {
