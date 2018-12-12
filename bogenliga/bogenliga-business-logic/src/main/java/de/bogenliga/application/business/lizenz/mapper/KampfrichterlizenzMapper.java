@@ -14,36 +14,9 @@ import java.util.function.Function;
  */
 public class KampfrichterlizenzMapper implements ValueObjectMapper {
 
-    /**
-     * Converts a {@link LizenzBE} to a {@link DsbMitgliedDO}
-     *
-     */
-/*    public static final Function<KampfrichterlizenzBE, DsbMitgliedDO> toDsbMitgliedDO = be -> {
-
-        final Long id = be.getDsbMitgliedId();
-        final String vorname = be.getDsbMitgliedVorname();
-        final String nachname = be.getDsbMitgliedNachname();
-        final Date geburtsdatum = be.getDsbMitgliedGeburtsdatum();
-        final String nationalitaet = be.getDsbMitgliedNationalitaet();
-        final String mitgliedsnummer = be.getDsbMitgliedMitgliedsnummer();
-        final Long vereinsId = be.getDsbMitgliedVereinsId();
-        final Long userId = be.getDsbMitgliedUserId();
-
-        // technical parameter
-        Long createdByUserId = be.getCreatedByUserId();
-        Long lastModifiedByUserId = be.getLastModifiedByUserId();
-        Long version = be.getVersion();
-
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
-        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
-
-        return new DsbMitgliedDO(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, userId,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
-
-    };
 
     /**
-     * Converts a {@link DsbMitgliedDO} to a {@link KampfrichterlizenzBE}
+     * Converts a {@link DsbMitgliedDO} to a {@link LizenzBE}
      */
     public static final Function<DsbMitgliedDO, LizenzBE> toKampfrichterlizenz = dsbMitgliedDO -> {
 
@@ -51,14 +24,12 @@ public class KampfrichterlizenzMapper implements ValueObjectMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getLastModifiedAtUtc());
 
         LizenzBE lizenzBE = new LizenzBE();
-        System.out.println(dsbMitgliedDO.getId());
         lizenzBE.setLizenzDsbMitgliedId(dsbMitgliedDO.getId());
         lizenzBE.setLizenztyp("Kampfrichter");
         lizenzBE.setLizenzId(null);
         lizenzBE.setLizenzDisziplinId((long)0);
         lizenzBE.setLizenznummer("123456KL");
         lizenzBE.setLizenzRegionId((long)1);
-
 
         lizenzBE.setCreatedAtUtc(createdAtUtcTimestamp);
         lizenzBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());

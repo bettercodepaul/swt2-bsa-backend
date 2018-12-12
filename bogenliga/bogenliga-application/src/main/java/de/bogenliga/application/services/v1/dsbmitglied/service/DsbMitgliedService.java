@@ -128,7 +128,7 @@ public class DsbMitgliedService implements ServiceFacade {
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'findById' request with ID '{}'", id);
+        LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 
         final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return DsbMitgliedDTOMapper.toDTO.apply(dsbMitgliedDO);
@@ -173,7 +173,6 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getNationalitaet(),
                 dsbMitgliedDTO.getMitgliedsnummer(),
                 dsbMitgliedDTO.getVereinsId());
-               // dsbMitgliedDTO.isKampfrichter();
 
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -217,20 +216,10 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getVereinsId()
                 );
 
-
-
-
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-
         final DsbMitgliedDO updatedDsbMitgliedDO = dsbMitgliedComponent.update(newDsbMitgliedDO, userId);
-/*
-        if(kampfrichter){
-            KampfrichterDO kampfrichterDO = new KampfrichterDO(dsbMitgliedDTO.getUserId());
-            KampfrichterDO updateKampfrichterDO = kampfrichterComponent.create(kampfrichterDO,userId);
-        }
-        */
         return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
     }
 
