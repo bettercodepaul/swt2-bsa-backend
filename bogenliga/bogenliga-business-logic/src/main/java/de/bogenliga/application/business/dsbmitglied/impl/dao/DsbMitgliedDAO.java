@@ -113,6 +113,11 @@ public class DsbMitgliedDAO implements DataAccessObject {
     }
 
 
+    /**
+     *
+     * @param id from DsbMitglied
+     * @return boolean if dsbMitglied has a lizenz
+     */
     public Boolean hasKampfrichterLizenz(final long id) {
         return (basicDao.selectSingleEntity(DSBMITGLIED, FIND_DSB_KAMPFRICHTER, id)==null) ? false : true;
     }

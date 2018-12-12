@@ -109,7 +109,7 @@ public class LizenzDAO implements DataAccessObject {
      *
      * @param id
      */
-    public LizenzBE findById(final long id) {
+    public LizenzBE findByDsbMitgliedId(final long id) {
         return basicDao.selectSingleEntity(LIZENZ, FIND_BY_DSB_MITGLIED_ID, id);
     }
 
