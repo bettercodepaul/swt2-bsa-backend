@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -74,6 +75,13 @@ public class DsbMitgliedComponentImplTest {
         expectedBE.setDsbMitgliedUserId(USERID);
 
         return expectedBE;
+    }
+
+    public static LizenzBE getLizenzBE(){
+        final LizenzBE expectedBe = new LizenzBE();
+        expectedBe.setLizenzId(1L);
+        expectedBe.setLizenzDsbMitgliedId(2L);
+        return expectedBe;
     }
 
 
