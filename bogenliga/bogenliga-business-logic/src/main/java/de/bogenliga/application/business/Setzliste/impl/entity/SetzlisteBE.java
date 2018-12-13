@@ -21,6 +21,8 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
     private Integer matchScheibennummer;
     private Integer ligatabelleTabellenplatz;
     private String vereinName;
+    private Integer mannschaftNummer;
+    private String veranstaltungName;
     private Integer wettkampfTag;
     private Date wettkampfDatum;
     private String wettkampfBeginn;
@@ -69,6 +71,22 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
         this.vereinName = vereinName;
     }
 
+    public Integer getMannschaftNummer() {
+        return mannschaftNummer;
+    }
+
+    public void setMannschaftNummer(Integer mannschaftNummer) {
+        this.mannschaftNummer = mannschaftNummer;
+    }
+
+    public String getVeranstaltungName() {
+        return veranstaltungName;
+    }
+
+    public void setVeranstaltungName(String veranstaltungName) {
+        this.veranstaltungName = veranstaltungName;
+    }
+
     public Integer getWettkampfTag() {
         return wettkampfTag;
     }
@@ -108,6 +126,8 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
                 ", matchScheibennummer='" + matchScheibennummer + '\'' +
                 ", ligatabelleTabellenplatz='" + ligatabelleTabellenplatz + '\'' +
                 ", vereinName='" + vereinName + '\'' +
+                ", mannschaftNummer='" + mannschaftNummer + '\'' +
+                ", veranstaltungName='" + veranstaltungName + '\'' +
                 ", wettkampfTag='" + wettkampfTag + '\'' +
                 ", wettkampfDatum='" + wettkampfDatum + '\'' +
                 ", wettkampfBeginn=" + wettkampfBeginn +

@@ -1,14 +1,11 @@
 package de.bogenliga.application.business.Setzliste.impl.business;
 
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.IBlockElement;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
@@ -16,26 +13,17 @@ import de.bogenliga.application.business.Setzliste.api.types.SetzlisteDO;
 import de.bogenliga.application.business.Setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.Setzliste.impl.mapper.SetzlisteMapper;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link DsbMitgliedComponent}
+ * Implementation of {@link SetzlisteComponent}
  */
 @Component
 public class SetzlisteComponentImpl implements SetzlisteComponent {
@@ -81,7 +69,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
             //Beschreibung
             String date = setzlisteBEList.get(0).getWettkampfDatum().toString();
-            doc.add(new Paragraph("Setzliste " + Integer.toString(setzlisteBEList.get(0).getWettkampfTag()) + ". Wettkampf Liganame"));
+            doc.add(new Paragraph("Setzliste " + Integer.toString(setzlisteBEList.get(0).getWettkampfTag()) + ". Wettkampf " + setzlisteBEList.get(0).getVeranstaltungName()));
             doc.add(new Paragraph("am " + date + " in"));
             doc.add(new Paragraph(setzlisteBEList.get(0).getWettkampfOrt() + ", " + setzlisteBEList.get(0).getWettkampfBeginn() + " Uhr"));
 
@@ -105,17 +93,17 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
             //Zeile 1
             table.addCell(new Cell(2, 1).add(new Paragraph("1")));
-            table.addCell(new Cell(2, 1).add(new Paragraph("5 " + setzlisteBEList.get(getTableEntry(1,5, setzlisteBEList)).getVereinName()
-                    + "\n 4 " + setzlisteBEList.get(getTableEntry(1,4, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("5 " + getMannschaftsname(1,5, setzlisteBEList)
+                    + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("2 " + setzlisteBEList.get(getTableEntry(1,2, setzlisteBEList)).getVereinName()
-                    + "\n 7 " + setzlisteBEList.get(getTableEntry(1,7, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("2 " + getMannschaftsname(1,2, setzlisteBEList)
+                    + "\n 7 " + getMannschaftsname(1,7, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("1 " + setzlisteBEList.get(getTableEntry(1,1, setzlisteBEList)).getVereinName()
-                    + "\n 8 " + setzlisteBEList.get(getTableEntry(1,8, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("1 " + getMannschaftsname(1,1, setzlisteBEList)
+                    + "\n 8 " + getMannschaftsname(1,8, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("3 " + setzlisteBEList.get(getTableEntry(1,3, setzlisteBEList)).getVereinName()
-                    + "\n 6 " + setzlisteBEList.get(getTableEntry(1,6, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("3 " + getMannschaftsname(1,3, setzlisteBEList)
+                    + "\n 6 " + getMannschaftsname(1,6, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
 
             table.addCell(new Cell().setHeight(15));
@@ -125,17 +113,17 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
             //Zeile 2
             table.addCell(new Cell(2, 1).add(new Paragraph("2")));
-            table.addCell(new Cell(2, 1).add(new Paragraph("3 " + setzlisteBEList.get(getTableEntry(1,3, setzlisteBEList)).getVereinName()
-                    + "\n 5 " + setzlisteBEList.get(getTableEntry(1,5, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("3 " + getMannschaftsname(1,3, setzlisteBEList)
+                    + "\n 5 " + getMannschaftsname(1,5, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("8 " + setzlisteBEList.get(getTableEntry(1,8, setzlisteBEList)).getVereinName()
-                    + "\n 4 " + setzlisteBEList.get(getTableEntry(1,4, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("8 " + getMannschaftsname(1,8, setzlisteBEList)
+                    + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("7 " + setzlisteBEList.get(getTableEntry(1,7, setzlisteBEList)).getVereinName()
-                    + "\n 1 " + setzlisteBEList.get(getTableEntry(1,1, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("7 " + getMannschaftsname(1,7, setzlisteBEList)
+                    + "\n 1 " + getMannschaftsname(1,1, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("6 " + setzlisteBEList.get(getTableEntry(1,6, setzlisteBEList)).getVereinName()
-                    + "\n 2 " + setzlisteBEList.get(getTableEntry(1,2, setzlisteBEList)).getVereinName())));
+            table.addCell(new Cell(2, 1).add(new Paragraph("6 " + getMannschaftsname(1,6, setzlisteBEList)
+                    + "\n 2 " + getMannschaftsname(1,2, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
 
             table.addCell(new Cell().setHeight(15));
@@ -146,20 +134,20 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             //Zeile 3
             table.addCell(new Cell(2, 1).add(new Paragraph("3")));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "4 " + setzlisteBEList.get(getTableEntry(1,4, setzlisteBEList)).getVereinName()
-                    + "\n 7 " + setzlisteBEList.get(getTableEntry(1,7, setzlisteBEList)).getVereinName())));
+                    "4 " + getMannschaftsname(1,4, setzlisteBEList)
+                    + "\n 7 " + getMannschaftsname(1,7, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "1 " + setzlisteBEList.get(getTableEntry(1,1, setzlisteBEList)).getVereinName()
-                    + "\n 6 " + setzlisteBEList.get(getTableEntry(1,6, setzlisteBEList)).getVereinName())));
+                    "1 " + getMannschaftsname(1,1, setzlisteBEList)
+                    + "\n 6 " + getMannschaftsname(1,6, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "2 " + setzlisteBEList.get(getTableEntry(1,2, setzlisteBEList)).getVereinName()
-                    + "\n 5 " + setzlisteBEList.get(getTableEntry(1,5, setzlisteBEList)).getVereinName())));
+                    "2 " + getMannschaftsname(1,2, setzlisteBEList)
+                    + "\n 5 " + getMannschaftsname(1,5, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "8 " + setzlisteBEList.get(getTableEntry(1,8, setzlisteBEList)).getVereinName()
-                    + "\n 3 " + setzlisteBEList.get(getTableEntry(1,3, setzlisteBEList)).getVereinName())));
+                    "8 " + getMannschaftsname(1,8, setzlisteBEList)
+                    + "\n 3 " + getMannschaftsname(1,3, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
 
             table.addCell(new Cell().setHeight(15));
@@ -170,20 +158,20 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             //Zeile 4
             table.addCell(new Cell(2, 1).add(new Paragraph("4")));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "8 " + setzlisteBEList.get(getTableEntry(1,8, setzlisteBEList)).getVereinName()
-                    + "\n 2 " + setzlisteBEList.get(getTableEntry(1,2, setzlisteBEList)).getVereinName())));
+                    "8 " + getMannschaftsname(1,8, setzlisteBEList)
+                    + "\n 2 " + getMannschaftsname(1,2, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "7 " + setzlisteBEList.get(getTableEntry(1,7, setzlisteBEList)).getVereinName()
-                    + "\n 3 " + setzlisteBEList.get(getTableEntry(1,3, setzlisteBEList)).getVereinName())));
+                    "7 " + getMannschaftsname(1,7, setzlisteBEList)
+                    + "\n 3 " + getMannschaftsname(1,3, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "6 " + setzlisteBEList.get(getTableEntry(1,6, setzlisteBEList)).getVereinName()
-                    + "\n 4 " + setzlisteBEList.get(getTableEntry(1,4, setzlisteBEList)).getVereinName())));
+                    "6 " + getMannschaftsname(1,6, setzlisteBEList)
+                    + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "1 " + setzlisteBEList.get(getTableEntry(1,1, setzlisteBEList)).getVereinName()
-                    + "\n 5 " + setzlisteBEList.get(getTableEntry(1,5, setzlisteBEList)).getVereinName())));
+                    "1 " + getMannschaftsname(1,1, setzlisteBEList)
+                    + "\n 5 " + getMannschaftsname(1,5, setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
 
             table.addCell(new Cell().setHeight(15));
@@ -230,8 +218,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         table.addCell("M.Pkte");
 
         table.addCell("1");
-        table.addCell("5 " + setzlisteBEList.get(getTableEntry(1,5, setzlisteBEList)).getVereinName()
-            + "\n 4 " + setzlisteBEList.get(getTableEntry(1,4, setzlisteBEList)).getVereinName());
+        table.addCell("5 " + getMannschaftsname(1,5, setzlisteBEList)
+            + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList));
         Table innerTable = new Table(1);
         innerTable.addCell("     ");
         innerTable.addCell("     ");
@@ -262,7 +250,22 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 }
             }
         }
-        return 9999;
+        return -1;
+    }
+
+    private String getMannschaftsname(int matchnr, int tabellenplatz, List<SetzlisteBE> setzlisteBEList){
+        int rowIndex = getTableEntry(matchnr, tabellenplatz, setzlisteBEList);
+        if(rowIndex == -1){
+            return "Fehler";
+        }
+        else {
+            if (setzlisteBEList.get(rowIndex).getMannschaftNummer() > 1) {
+                return setzlisteBEList.get(rowIndex).getVereinName()+ " " + setzlisteBEList.get(rowIndex).getMannschaftNummer();
+            }
+            else {
+                return setzlisteBEList.get(rowIndex).getVereinName();
+            }
+        }
     }
 
 

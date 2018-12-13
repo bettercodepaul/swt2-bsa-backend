@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class SetzlisteMapper implements ValueObjectMapper {
 
     /**
-     * Converts a {@link DsbMitgliedBE} to a {@link DsbMitgliedDO}
+     * Converts a {@link SetzlisteBE} to a {@link SetzlisteDO}
      *
      */
     public static final Function<SetzlisteBE, SetzlisteDO> toSetzlisteDO = be -> {
@@ -27,6 +27,8 @@ public class SetzlisteMapper implements ValueObjectMapper {
         final Integer matchScheibennummer = be.getMatchScheibennummer();
         final Integer ligatabelleTabellenplatz = be.getLigatabelleTabellenplatz();
         final String vereinName = be.getVereinName();
+        final Integer mannschaftNummer = be.getMannschaftNummer();
+        final String veranstaltungName = be.getVeranstaltungName();
         final Integer wettkampfTag = be.getWettkampfTag();
         final Date wettkampfDatum = be.getWettkampfDatum();
         final String wettkampfBeginn = be.getWettkampfBeginn();
@@ -40,12 +42,12 @@ public class SetzlisteMapper implements ValueObjectMapper {
 //        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
 //        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new SetzlisteDO(matchNr, matchScheibennummer, ligatabelleTabellenplatz, vereinName, wettkampfTag,
+        return new SetzlisteDO(matchNr, matchScheibennummer, ligatabelleTabellenplatz, vereinName, mannschaftNummer, veranstaltungName, wettkampfTag,
                 wettkampfDatum, wettkampfBeginn, wettkampfOrt);
     };
 
     /**
-     * Converts a {@link DsbMitgliedDO} to a {@link DsbMitgliedBE}
+     * Converts a {@link SetzlisteDO} to a {@link SetzlisteBE}
      */
     public static final Function<SetzlisteDO, SetzlisteBE> toSetzlisteBE = setzlisteDO -> {
 
@@ -54,6 +56,8 @@ public class SetzlisteMapper implements ValueObjectMapper {
         setzlisteBE.setMatchScheibennummer(setzlisteDO.getMatchScheibennummer());
         setzlisteBE.setLigatabelleTabellenplatz(setzlisteDO.getLigatabelleTabellenplatz());
         setzlisteBE.setVereinName(setzlisteDO.getVereinName());
+        setzlisteBE.setMannschaftNummer(setzlisteDO.getMannschaftNummer());
+        setzlisteBE.setVeranstaltungName(setzlisteDO.getVeranstaltungName());
         setzlisteBE.setWettkampfTag(setzlisteDO.getWettkampfTag());
         setzlisteBE.setWettkampfDatum(setzlisteDO.getWettkampfDatum());
         setzlisteBE.setWettkampfBeginn(setzlisteDO.getWettkampfBeginn());
