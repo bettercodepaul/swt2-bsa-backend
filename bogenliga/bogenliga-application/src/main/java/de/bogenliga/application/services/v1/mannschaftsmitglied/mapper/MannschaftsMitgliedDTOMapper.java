@@ -27,6 +27,7 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
                 dsbMitgliedId, dsbMitgliedEingesetzt);
     };
 
+
     private MannschaftsMitgliedDTOMapper(){};
 
 }
