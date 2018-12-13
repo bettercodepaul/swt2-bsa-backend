@@ -31,6 +31,7 @@ public interface DsbMitgliedComponent extends ComponentFacade {
 
     /**
      * Create a new dsbmitglied in the database.
+     * and create an lizens if needed
      *
      * @param dsbMitgliedDO new dsbmitglied
      * @return persisted version of the dsbmitglied
@@ -40,6 +41,7 @@ public interface DsbMitgliedComponent extends ComponentFacade {
 
     /**
      * Update an existing dsbmitglied. The dsbmitglied is identified by the id.
+     * and check if a lizenz is given or nor
      *
      * @param dsbMitgliedDO existing dsbMitgliedDO to update
      * @return persisted version of the dsbmitglied
@@ -49,6 +51,7 @@ public interface DsbMitgliedComponent extends ComponentFacade {
 
     /**
      * Delete an existing dsbmitglied. The dsbmitglied is identified by the id.
+     * and the lizenz if one exists
      *
      * @param dsbMitgliedDO dsbmitglied to delete
      */
