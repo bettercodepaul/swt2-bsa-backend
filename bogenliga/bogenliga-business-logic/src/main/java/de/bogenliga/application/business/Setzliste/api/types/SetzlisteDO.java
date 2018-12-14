@@ -18,8 +18,6 @@ public class SetzlisteDO extends CommonDataObject implements DataObject {
     /**
      * business parameter
      */
-    private Integer matchNr;
-    private Integer matchScheibennummer;
     private Integer ligatabelleTabellenplatz;
     private String vereinName;
     private Integer mannschaftNummer;
@@ -34,8 +32,7 @@ public class SetzlisteDO extends CommonDataObject implements DataObject {
      * Constructor with default parameters
      * @param
      */
-    public SetzlisteDO(final Integer matchNr,
-            final Integer matchScheibennummer,
+    public SetzlisteDO(
             final Integer ligatabelleTabellenplatz,
             final String vereinName,
             final Integer mannschaftNummer,
@@ -44,8 +41,6 @@ public class SetzlisteDO extends CommonDataObject implements DataObject {
             final Date wettkampfDatum,
             final String wettkampfBeginn,
             final String wettkampfOrt) {
-        this.matchNr = matchNr;
-        this.matchScheibennummer = matchScheibennummer;
         this.ligatabelleTabellenplatz = ligatabelleTabellenplatz;
         this.vereinName = vereinName;
         this.mannschaftNummer = mannschaftNummer;
@@ -54,23 +49,6 @@ public class SetzlisteDO extends CommonDataObject implements DataObject {
         this.wettkampfDatum = wettkampfDatum;
         this.wettkampfBeginn = wettkampfBeginn;
         this.wettkampfOrt = wettkampfOrt;
-    }
-
-
-    public Integer getMatchNr() {
-        return matchNr;
-    }
-
-    public void setMatchNr(Integer matchNr) {
-        this.matchNr = matchNr;
-    }
-
-    public Integer getMatchScheibennummer() {
-        return matchScheibennummer;
-    }
-
-    public void setMatchScheibennummer(Integer matchScheibennummer) {
-        this.matchScheibennummer = matchScheibennummer;
     }
 
     public Integer getLigatabelleTabellenplatz() {

@@ -23,8 +23,6 @@ public class SetzlisteMapper implements ValueObjectMapper {
      */
     public static final Function<SetzlisteBE, SetzlisteDO> toSetzlisteDO = be -> {
 
-        final Integer matchNr = be.getMatchNr();
-        final Integer matchScheibennummer = be.getMatchScheibennummer();
         final Integer ligatabelleTabellenplatz = be.getLigatabelleTabellenplatz();
         final String vereinName = be.getVereinName();
         final Integer mannschaftNummer = be.getMannschaftNummer();
@@ -42,7 +40,7 @@ public class SetzlisteMapper implements ValueObjectMapper {
 //        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
 //        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new SetzlisteDO(matchNr, matchScheibennummer, ligatabelleTabellenplatz, vereinName, mannschaftNummer, veranstaltungName, wettkampfTag,
+        return new SetzlisteDO(ligatabelleTabellenplatz, vereinName, mannschaftNummer, veranstaltungName, wettkampfTag,
                 wettkampfDatum, wettkampfBeginn, wettkampfOrt);
     };
 
@@ -52,8 +50,6 @@ public class SetzlisteMapper implements ValueObjectMapper {
     public static final Function<SetzlisteDO, SetzlisteBE> toSetzlisteBE = setzlisteDO -> {
 
         SetzlisteBE setzlisteBE = new SetzlisteBE();
-        setzlisteBE.setMatchNr(setzlisteDO.getMatchNr());
-        setzlisteBE.setMatchScheibennummer(setzlisteDO.getMatchScheibennummer());
         setzlisteBE.setLigatabelleTabellenplatz(setzlisteDO.getLigatabelleTabellenplatz());
         setzlisteBE.setVereinName(setzlisteDO.getVereinName());
         setzlisteBE.setMannschaftNummer(setzlisteDO.getMannschaftNummer());

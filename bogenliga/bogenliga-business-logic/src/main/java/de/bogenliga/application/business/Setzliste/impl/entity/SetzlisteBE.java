@@ -17,8 +17,6 @@ import java.sql.Date;
  */
 public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private Integer matchNr;
-    private Integer matchScheibennummer;
     private Integer ligatabelleTabellenplatz;
     private String vereinName;
     private Integer mannschaftNummer;
@@ -36,23 +34,6 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
 
     public static Long getSerialVersionUID() {
         return serialVersionUID;
-    }
-
-
-    public Integer getMatchNr() {
-        return matchNr;
-    }
-
-    public void setMatchNr(Integer matchNr) {
-        this.matchNr = matchNr;
-    }
-
-    public Integer getMatchScheibennummer() {
-        return matchScheibennummer;
-    }
-
-    public void setMatchScheibennummer(Integer matchScheibennummer) {
-        this.matchScheibennummer = matchScheibennummer;
     }
 
     public Integer getLigatabelleTabellenplatz() {
@@ -122,8 +103,6 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
     @Override
     public String toString() {
         return "setzliste{" +
-                "matchnr=" + matchNr +
-                ", matchScheibennummer='" + matchScheibennummer + '\'' +
                 ", ligatabelleTabellenplatz='" + ligatabelleTabellenplatz + '\'' +
                 ", vereinName='" + vereinName + '\'' +
                 ", mannschaftNummer='" + mannschaftNummer + '\'' +

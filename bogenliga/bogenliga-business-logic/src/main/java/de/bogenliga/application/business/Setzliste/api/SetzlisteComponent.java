@@ -16,5 +16,5 @@ public interface SetzlisteComponent extends ComponentFacade {
      * @return list of all dsbmitglied dsbmitglied in the database;
      * empty list, if no dsbmitglied is found
      */
-    List<SetzlisteDO> getTable();
+    String getTable();
 }

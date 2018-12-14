@@ -27,11 +27,9 @@ public class SetzlisteDAO implements DataAccessObject {
     private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteDAO.class);
 
     // table name in the database
-    private static final String TABLE = "match";
+    private static final String TABLE = "veranstaltung";
     // business entity parameter names
 
-    private static final String MATCH_BE_NR = "matchNr";
-    private static final String MATCH_BE_SCHEIBENNUMMER = "matchScheibennummer";
     private static final String LIGATABELLE_BE_TABELLENPLATZ = "ligatabelleTabellenplatz";
     private static final String VEREIN_BE_NAME = "vereinName";
     private static final String MANNSCHAFT_BE_NR = "mannschaftNummer";
@@ -41,8 +39,6 @@ public class SetzlisteDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_BEGINN = "wettkampfBeginn";
     private static final String WETTKAMPF_BE_ORT = "wettkampfOrt";
 
-    private static final String MATCH_TABLE_NR = "match_nr";
-    private static final String MATCH_TABLE_SCHEIBENNUMMER = "match_scheibennummer";
     private static final String LIGATABELLE_TABLE_TABELLENPLATZ = "ligatabelle_tabellenplatz";
     private static final String VEREIN_TABLE_NAME = "verein_name";
     private static final String MANNSCHAFT_TABLE_NR = "mannschaft_nummer";
@@ -60,16 +56,14 @@ public class SetzlisteDAO implements DataAccessObject {
      * SQL queries
      */
     private static final String GET_TABLE =
-            "SELECT match.match_nr, match.match_scheibennummer, lt.ligatabelle_tabellenplatz, v.verein_name, ms.mannschaft_nummer, vs.veranstaltung_name, wk.wettkampf_tag,"
-                    + " wk.wettkampf_datum, wk.wettkampf_beginn, wk.wettkampf_ort"
-                + " FROM match"
-                + " INNER JOIN wettkampf AS wk ON match.match_wettkampf_id = wk.wettkampf_id"
-                + " INNER JOIN mannschaft AS ms ON match.match_mannschaft_id = ms.mannschaft_id"
-                + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
-                + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
-                + " INNER JOIN region r ON v.verein_region_id = r.region_id"
-                + " INNER JOIN veranstaltung vs on lt.ligatabelle_veranstaltung_id = vs.veranstaltung_id"
-                    + " WHERE wk.wettkampf_tag = lt.ligatabelle_wettkampf_tag";
+            "SELECT lt.ligatabelle_tabellenplatz, v.verein_name, ms.mannschaft_nummer, vs.veranstaltung_name, wk.wettkampf_tag,"
+                   + " wk.wettkampf_datum, wk.wettkampf_beginn, wk.wettkampf_ort"
+                   + " FROM veranstaltung as vs"
+                   + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
+                   + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
+                   + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
+                   + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
+                   + " WHERE wk.wettkampf_tag = lt.ligatabelle_wettkampf_tag";
 
 
 
@@ -91,8 +85,6 @@ public class SetzlisteDAO implements DataAccessObject {
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
-        columnsToFieldsMap.put(MATCH_TABLE_NR, MATCH_BE_NR);
-        columnsToFieldsMap.put(MATCH_TABLE_SCHEIBENNUMMER, MATCH_BE_SCHEIBENNUMMER);
         columnsToFieldsMap.put(LIGATABELLE_TABLE_TABELLENPLATZ, LIGATABELLE_BE_TABELLENPLATZ);
         columnsToFieldsMap.put(VEREIN_TABLE_NAME, VEREIN_BE_NAME);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NR, MANNSCHAFT_BE_NR);

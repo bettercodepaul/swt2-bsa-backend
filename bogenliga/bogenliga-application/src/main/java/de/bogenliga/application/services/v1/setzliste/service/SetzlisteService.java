@@ -99,9 +99,9 @@ public class SetzlisteService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam Map<String,String> requestParams) {
-        final List<SetzlisteDO> setzlisteDOList = setzlisteComponent.getTable();
+        final String fileName = setzlisteComponent.getTable();
         LOG.debug("setzliste works...");
-        Resource resource = new ClassPathResource("tableForDennis.pdf");
+        Resource resource = new ClassPathResource(fileName);
         long r = 0;
         InputStream is=null;
 
@@ -141,7 +141,7 @@ public class SetzlisteService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public String create(@RequestBody final Map<String, String> mybody, final Principal principal) {
-        LOG.error(mybody.get("tag"));
+        LOG.debug(mybody.get("tag"));
         return "blaaaa";
     }
 
@@ -171,8 +171,8 @@ public class SetzlisteService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public String getTable() {
-        LOG.warn("### Setzliste Service #####");
-        final List<SetzlisteDO> setzlisteDOList = setzlisteComponent.getTable();
+        LOG.debug("### Setzliste Service #####");
+        final String filename = setzlisteComponent.getTable();
         return "Hello Setzliste!";
     }
 

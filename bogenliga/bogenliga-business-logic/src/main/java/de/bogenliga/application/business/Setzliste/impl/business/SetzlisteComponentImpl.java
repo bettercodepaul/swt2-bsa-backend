@@ -48,7 +48,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * Constructor
      *
      * dependency injection with {@link Autowired}
-     * @param setzlisteDAO to access the database and return dsbmitglied representations
+     * @param setzlisteDAO to access the database and return setzliste representations
      */
     @Autowired
     public SetzlisteComponentImpl(final SetzlisteDAO setzlisteDAO) {
@@ -57,15 +57,26 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
 
     @Override
-    public List<SetzlisteDO> getTable() {
-        LOGGER.warn("### SetzlisteCompImpl!!!! ########");
+    public String getTable() {
+        LOGGER.debug("Generate Setzliste");
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable();
-
-        try (OutputStream result = new FileOutputStream(new File("bogenliga/bogenliga-application/src/main/resources/tableForDennis.pdf"));
+        String fileName = "setzliste.pdf";
+        try (OutputStream result = new FileOutputStream(new File("bogenliga/bogenliga-application/src/main/resources/" + fileName));
              PdfWriter writer = new PdfWriter(result);
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4.rotate())   )
         {
+
+            //Structure of setzliste
+            int[][] structure = {
+                    { 5, 4, 2, 7, 1, 8, 3, 6 },
+                    { 3, 5, 8, 4, 7, 1, 6, 2 },
+                    { 4, 7, 1, 6, 2, 5, 8, 3 },
+                    { 8, 2, 7, 3, 6, 4, 1, 5 },
+                    { 7, 6, 5, 8, 3, 2, 4, 1 },
+                    { 1, 3, 4, 2, 8, 6, 5, 7 },
+                    { 2, 1, 6, 5, 4, 3, 7, 8 }};
+
 
             //Beschreibung
             String date = setzlisteBEList.get(0).getWettkampfDatum().toString();
@@ -76,10 +87,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             doc.add(new Paragraph(""));
             doc.add(new Paragraph(""));
 
-            //Tabelle
+            //Create table
             Table table = new Table(new float[] {40, 150, 40, 150, 40, 150, 40, 150, 40});
 
-            //Überschrift
+            //Table header
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 1 + 2")));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("M.Pkte")));
@@ -91,170 +102,56 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("M.Pkte")));
 
 
-            //Zeile 1
-            table.addCell(new Cell(2, 1).add(new Paragraph("1")));
-            table.addCell(new Cell(2, 1).add(new Paragraph("5 " + getMannschaftsname(1,5, setzlisteBEList)
-                    + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("2 " + getMannschaftsname(1,2, setzlisteBEList)
-                    + "\n 7 " + getMannschaftsname(1,7, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("1 " + getMannschaftsname(1,1, setzlisteBEList)
-                    + "\n 8 " + getMannschaftsname(1,8, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("3 " + getMannschaftsname(1,3, setzlisteBEList)
-                    + "\n 6 " + getMannschaftsname(1,6, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
+            //Create Setzliste content on base of structure array
+            for (int i = 0; i < structure.length ; i++){
+                table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i+1))));
+                table.addCell(new Cell(2, 1).add(new Paragraph(
+                        Integer.toString(structure[i][0]) + " " + getMannschaftsname(structure[i][0], setzlisteBEList)
+                                + "\n " + Integer.toString(structure[i][1]) + " " + getMannschaftsname(structure[i][1], setzlisteBEList))));
+                table.addCell(new Cell().setHeight(15));
+                table.addCell(new Cell(2, 1).add(new Paragraph(
+                        Integer.toString(structure[i][2]) + " " + getMannschaftsname(structure[i][2], setzlisteBEList)
+                                + "\n " + Integer.toString(structure[i][3]) + " " + getMannschaftsname(structure[i][3], setzlisteBEList))));
+                table.addCell(new Cell().setHeight(15));
+                table.addCell(new Cell(2, 1).add(new Paragraph(
+                        Integer.toString(structure[i][4]) + " " + getMannschaftsname(structure[i][4], setzlisteBEList)
+                                + "\n " + Integer.toString(structure[i][5]) + " " + getMannschaftsname(structure[i][5], setzlisteBEList))));
+                table.addCell(new Cell().setHeight(15));
+                table.addCell(new Cell(2, 1).add(new Paragraph(
+                        Integer.toString(structure[i][6]) + " " + getMannschaftsname(structure[i][6], setzlisteBEList)
+                                + "\n " + Integer.toString(structure[i][7]) + " " + getMannschaftsname(structure[i][7], setzlisteBEList))));
+                table.addCell(new Cell().setHeight(15));
 
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-
-            //Zeile 2
-            table.addCell(new Cell(2, 1).add(new Paragraph("2")));
-            table.addCell(new Cell(2, 1).add(new Paragraph("3 " + getMannschaftsname(1,3, setzlisteBEList)
-                    + "\n 5 " + getMannschaftsname(1,5, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("8 " + getMannschaftsname(1,8, setzlisteBEList)
-                    + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("7 " + getMannschaftsname(1,7, setzlisteBEList)
-                    + "\n 1 " + getMannschaftsname(1,1, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph("6 " + getMannschaftsname(1,6, setzlisteBEList)
-                    + "\n 2 " + getMannschaftsname(1,2, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-
-            //Zeile 3
-            table.addCell(new Cell(2, 1).add(new Paragraph("3")));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "4 " + getMannschaftsname(1,4, setzlisteBEList)
-                    + "\n 7 " + getMannschaftsname(1,7, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "1 " + getMannschaftsname(1,1, setzlisteBEList)
-                    + "\n 6 " + getMannschaftsname(1,6, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "2 " + getMannschaftsname(1,2, setzlisteBEList)
-                    + "\n 5 " + getMannschaftsname(1,5, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "8 " + getMannschaftsname(1,8, setzlisteBEList)
-                    + "\n 3 " + getMannschaftsname(1,3, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-
-            //Zeile 4
-            table.addCell(new Cell(2, 1).add(new Paragraph("4")));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "8 " + getMannschaftsname(1,8, setzlisteBEList)
-                    + "\n 2 " + getMannschaftsname(1,2, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "7 " + getMannschaftsname(1,7, setzlisteBEList)
-                    + "\n 3 " + getMannschaftsname(1,3, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "6 " + getMannschaftsname(1,6, setzlisteBEList)
-                    + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    "1 " + getMannschaftsname(1,1, setzlisteBEList)
-                    + "\n 5 " + getMannschaftsname(1,5, setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
-
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            //Zeile n
+                table.addCell(new Cell().setHeight(15));
+                table.addCell(new Cell().setHeight(15));
+                table.addCell(new Cell().setHeight(15));
+                table.addCell(new Cell().setHeight(15));
+            }
 
             doc.add(table);
             doc.close();
-            LOGGER.warn("### Setzliste erstellt ######");
+            LOGGER.debug("Setzliste erstellt");
 
 
         } catch(IOException e){
             LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
         }
 
-
-/*
-        String dest = "pdfText2.pdf";
-        PdfWriter writer = null;
-        try {
-            writer = new PdfWriter(dest);
-        }
-        catch (FileNotFoundException e){
-            LOGGER.error("PDF konnte nicht erzeugt werden. Filepath not valid: " + dest);
-        }
-        PdfDocument pdf = new PdfDocument(writer);
-        Document document = new Document(pdf, PageSize.A4.rotate());
-        String date = setzlisteBEList.get(0).getWettkampfDatum().toString();
-        document.add(new Paragraph("Setzliste " + Integer.toString(setzlisteBEList.get(0).getWettkampfTag()) + ". Wettkampf Liganame"));
-        document.add(new Paragraph("am " + date + " in"));
-        document.add(new Paragraph(setzlisteBEList.get(0).getWettkampfOrt() + ", " + setzlisteBEList.get(0).getWettkampfBeginn() + " Uhr"));
-
-        Table table = new Table(9);
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
-        table.addCell("Scheibe 1 + 2");
-        table.addCell("M.Pkte");
-        table.addCell("Scheibe 3 + 4");
-        table.addCell("M.Pkte");
-        table.addCell("Scheibe 5 + 6");
-        table.addCell("M.Pkte");
-        table.addCell("Scheibe 7 + 8");
-        table.addCell("M.Pkte");
-
-        table.addCell("1");
-        table.addCell("5 " + getMannschaftsname(1,5, setzlisteBEList)
-            + "\n 4 " + getMannschaftsname(1,4, setzlisteBEList));
-        Table innerTable = new Table(1);
-        innerTable.addCell("     ");
-        innerTable.addCell("     ");
-        table.addCell(innerTable);
-        //   Cell cell = new Cell(2,1);
-      //  cell.add(new Cell().setBorderBottom(new SolidBorder(1f)));
-      //  cell.add(new Cell());
-      //  cell.add(new Paragraph("    ").setBorderBottom(new SolidBorder(1f)));
-      //  cell.add(new Paragraph("    "));
-      //  table.addCell(cell);
-
-
-        //Alternative: Für jedes Match 2 Reihen und für alle Nicht-M.Pkte Spalten new Cell(1,2) nutzen
-
-        document.add(table);
-        document.close();
-*/
-
-
-        return setzlisteBEList.stream().map(SetzlisteMapper.toSetzlisteDO).collect(Collectors.toList());
+        return fileName;
+        //return setzlisteBEList.stream().map(SetzlisteMapper.toSetzlisteDO).collect(Collectors.toList());
     }
 
-    private int getTableEntry(int matchnr, int tabellenplatz, List<SetzlisteBE> setzlisteBEList){
+    private int getTableEntry(int tabellenplatz, List<SetzlisteBE> setzlisteBEList){
         for (int i = 0; i < setzlisteBEList.size(); i++) {
-            if(setzlisteBEList.get(i).getMatchNr()==matchnr){
-                if(setzlisteBEList.get(i).getLigatabelleTabellenplatz()==tabellenplatz){
-                    return i;
-                }
+            if(setzlisteBEList.get(i).getLigatabelleTabellenplatz()==tabellenplatz){
+                return i;
             }
         }
         return -1;
     }
 
-    private String getMannschaftsname(int matchnr, int tabellenplatz, List<SetzlisteBE> setzlisteBEList){
-        int rowIndex = getTableEntry(matchnr, tabellenplatz, setzlisteBEList);
+    private String getMannschaftsname(int tabellenplatz, List<SetzlisteBE> setzlisteBEList){
+        int rowIndex = getTableEntry(tabellenplatz, setzlisteBEList);
         if(rowIndex == -1){
             return "Fehler";
         }
@@ -267,33 +164,4 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             }
         }
     }
-
-
-
-//    @Override
-//    public DsbMitgliedDO findById(final long id) {
-//        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
-//
-//        final SetzlisteBE result = setzlisteDAO.findById(id);
-//
-//        if (result == null) {
-//            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-//                    String.format("No result found for ID '%s'", id));
-//        }
-//
-//        return DsbMitgliedMapper.toDsbMitgliedDO.apply(result);
-//    }
-
-
-//    private void checkDsbMitgliedDO(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
-//        Preconditions.checkNotNull(dsbMitgliedDO, PRECONDITION_MSG_DSBMITGLIED);
-//        Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_DSBMITGLIED);
-//        Preconditions.checkNotNull(dsbMitgliedDO.getVorname(), PRECONDITION_MSG_DSBMITGLIED_VORNAME);
-//        Preconditions.checkNotNull(dsbMitgliedDO.getNachname(), PRECONDITION_MSG_DSBMITGLIED_NACHNAME);
-//        Preconditions.checkNotNull(dsbMitgliedDO.getGeburtsdatum(), PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM);
-//        Preconditions.checkNotNull(dsbMitgliedDO.getNationalitaet(), PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET);
-//        Preconditions.checkNotNull(dsbMitgliedDO.getMitgliedsnummer(), PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER);
-//        Preconditions.checkNotNull(dsbMitgliedDO.getVereinsId(), PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID);
-//        Preconditions.checkArgument(dsbMitgliedDO.getVereinsId() >= 0, PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE);
-//    }
 }
