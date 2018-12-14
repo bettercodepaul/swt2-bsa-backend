@@ -1,11 +1,14 @@
 package de.bogenliga.application.services.v1.mannschaftsmitglied.service;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.dsbmitglied.mapper.DsbMitgliedDTOMapper;
+import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.mapper.MannschaftsMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -14,15 +17,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RestController
+@CrossOrigin
+@RequestMapping("v1/mannschaftsmitglied")
 public class MannschaftsMitgliedService implements ServiceFacade {
 
 
@@ -69,16 +72,36 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
 
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @RequestMapping(value = "{teamId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public MannschaftsMitgliedDTO findById(@PathVariable("mannschaftsId") final long mannschaftsId, @PathVariable("dsbMitgliedId")final long mitgliedId) {
+    public List<MannschaftsMitgliedDTO> findByTeamId(@PathVariable("teamId") final long mannschaftsId){
+        final List<MannschaftsmitgliedDO> MannschaftmitgliedDOList = mannschaftsMitgliedComponent.findByTeamId(mannschaftsId);
+        return MannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+
+    @RequestMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId){
+        final List<MannschaftsmitgliedDO> MannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeam(mannschaftsId);
+        return MannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+
+    @RequestMapping(value = "{teamId}/{memberId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("teamId") final long mannschaftsId, @PathVariable("memberId")final long mitgliedId) {
         Preconditions.checkArgument(mannschaftsId > 0, "ID must not be negative.");
         Preconditions.checkArgument(mitgliedId > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findById' request with ID '{}'", mannschaftsId);
 
-        final MannschaftsmitgliedDO dsbMannschaftDO = mannschaftsMitgliedComponent.findByMemberAndTeamId(mannschaftsId,mitgliedId);
-        return MannschaftsMitgliedDTOMapper.toDTO.apply(dsbMannschaftDO);
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByMemberAndTeamId(mannschaftsId,mitgliedId);
+        System.out.println(MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO));
+        return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
     }
 
 
@@ -127,7 +150,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftsMitgliedDTOMapper.toDTO.apply(updatedMannschaftsmitgliedDO);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "{mannschaftsId}/{mitgliedId}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public void delete(@PathVariable("mannschaftsId") final long mannschaftsId,
                        @PathVariable("mitgliedId") final long mitgliedId,final Principal principal) {
@@ -141,6 +164,20 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final long currentUserId = UserProvider.getCurrentUserId(principal);
 
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
+
+    }
+
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public boolean checkExistingSchuetze(@PathVariable("mannschaftsId") final long mannschaftsId,
+                                         @PathVariable("mitgliedId")final long mitgliedId, final Principal principal){
+        Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
+        Preconditions.checkArgument(mitgliedId>= 0, "mitgliedId must not be negativ");
+
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(mannschaftsId,mitgliedId);
+
+
+        return mannschaftsmitgliedDO.isDsbMitgliedEingesetzt();
+
     }
 
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {
