@@ -2,23 +2,23 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Daniel Schott, daniel.schott@student.reutlingen-university.de
  */
+@Component
 public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "VeranstaltungDO must not be null";
