@@ -26,7 +26,19 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * todo
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetze();
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(long MannschaftsmitgliederMannschaftsId);
+
+
+
+    /**
+     * Return all mannschaftsmitglied entries from one team.
+     *
+     * @return list of all mannschaftsmitglied mannschaftsmitglied in the database;
+     * empty list, if no mannschaftsmitglied is found
+     */
+
+    List<MannschaftsmitgliedDO> findByTeamId(long MannschaftsmitgliederMannschaftsId);
+
 
 
     /**
@@ -69,5 +81,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @param currentMemberId
      */
     void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
+
+    boolean checkExistingSchuetze(long teamId, long memberId);
 
 }
