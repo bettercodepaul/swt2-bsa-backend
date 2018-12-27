@@ -7,12 +7,16 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.user.impl.businessactivity.SignInBA;
 import de.bogenliga.application.business.user.impl.businessactivity.TechnicalUserBA;
+import de.bogenliga.application.business.user.impl.businessactivity.PasswordHashingBA;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.user.impl.mapper.UserMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link UserComponent}
@@ -27,6 +31,7 @@ public class UserComponentImpl implements UserComponent {
     private final UserDAO userDAO;
     private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
+    private final PasswordHashingBA passwordHashingBA;
 
 
     /**
@@ -39,13 +44,21 @@ public class UserComponentImpl implements UserComponent {
      */
     @Autowired
     public UserComponentImpl(final UserDAO userDAO,
+                             final PasswordHashingBA passwordHashingBA,
                              final SignInBA signInBA,
                              final TechnicalUserBA technicalUserBA) {
         this.userDAO = userDAO;
+        this.passwordHashingBA = passwordHashingBA;
         this.signInBA = signInBA;
         this.technicalUserBA = technicalUserBA;
     }
 
+
+    @Override
+    public List<UserDO> findAll() {
+        final List<UserBE> userBEList = userDAO.findAll();
+        return userBEList.stream().map(UserMapper.toUserDO).collect(Collectors.toList());
+    }
 
     @Override
     public UserDO findById(final Long id) {
@@ -89,6 +102,43 @@ public class UserComponentImpl implements UserComponent {
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
 
         return signInBA.signInUser(email, password);
+    }
+
+
+    @Override
+    public UserDO create(final String email, final String password, final Long currentUserId) {
+        Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
+        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
+        Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
+
+        final UserBE result = new UserBE();
+        final String salt = passwordHashingBA.generateSalt();
+        final String pwdhash = passwordHashingBA.calculateHash(password, salt);
+        result.setUserSalt(salt);
+        result.setUserPassword(pwdhash);
+
+        final UserBE persistedUserBE = userDAO.update(result, currentUserId);
+
+        return UserMapper.toUserDO.apply(persistedUserBE);
+    }
+
+
+    @Override
+    public UserDO update(final UserDO userDO, final String password, final Long currentUserId) {
+        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
+        Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
+        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
+        Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
+
+
+        final UserBE result = userDAO.findByEmail(userDO.getEmail());
+        final String pwdhash = passwordHashingBA.calculateHash(password, result.getUserSalt());
+        result.setUserPassword(pwdhash);
+
+        final UserBE persistedUserBE = userDAO.update(result, currentUserId);
+
+        return UserMapper.toUserDO.apply(persistedUserBE);
     }
 
 

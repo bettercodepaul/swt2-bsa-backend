@@ -4,10 +4,21 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
+import java.util.List;
+
 /**
  * Responsible for the user database requests.
  */
 public interface UserComponent extends ComponentFacade {
+
+    /**
+     * Return all user entries.
+     *
+     * @return list of all dsbmitglied dsbmitglied in the database;
+     * empty list, if no dsbmitglied is found
+     */
+    List<UserDO> findAll();
+
 
     /**
      * Return a user entry with the given id.
@@ -39,6 +50,36 @@ public interface UserComponent extends ComponentFacade {
      * @return the user with permissions, if the user exists and the password is correct
      */
     UserWithPermissionsDO signIn(String email, String password);
+
+    /**
+     * Create new user
+     *
+     * <p>
+     * new entry in benutzer entitiy will be crreated
+     *
+     *
+     * @param email of the user
+     * @param password of the user
+     * @param currentUserId current user
+     *
+     * @return the user, if the user exists and the password is sufficient
+     */
+    UserDO create(final String email, final String password, final Long currentUserId);
+
+    /**
+     * Udpate password of user
+     *
+     * <p>
+     * A new salt will be created and the password will be hashed and checked with
+     * password requirements prdefined.
+     *
+     *
+     * @param password of the user
+     * @param currentUserId current user
+     *
+     * @return the user, if the user exists and the password is sufficient
+     */
+    UserDO update(final UserDO userDO, final String password, final Long currentUserId);
 
     /**
      * Identifies technical user, e.g. the SYSTEM user
