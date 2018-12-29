@@ -2,27 +2,21 @@ package de.bogenliga.application.services.v1.regionen.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.print.attribute.standard.Media;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.regionen.mapper.RegionenDTOMapper;
 import de.bogenliga.application.services.v1.regionen.model.RegionenDTO;
 import de.bogenliga.application.services.v1.regionen.types.RegionTypes;
-import de.bogenliga.application.services.v1.vereine.service.VereineService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -40,7 +34,6 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION_TYPE = "Unknown type for region";
 
     private final RegionenComponent regionenComponent;
-    private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
 
 
     /**
