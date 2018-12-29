@@ -39,4 +39,9 @@ public class RegionenComponentImpl implements RegionenComponent {
         return regionenBEList.stream().map(RegionenMapper.toRegionDO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<RegionenDO> findAllByType(final String type) {
+        final List<RegionenBE> regionenBEList = regionenDAO.findAllByType(type);
+        return regionenBEList.stream().map(RegionenMapper.toRegionDO).collect(Collectors.toList());
+    }
 }

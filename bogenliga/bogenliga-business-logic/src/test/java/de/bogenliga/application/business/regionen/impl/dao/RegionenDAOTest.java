@@ -20,12 +20,15 @@ import static org.mockito.Mockito.when;
 
 public class RegionenDAOTest {
 
+    private static final String REGION_TYP = "TEST";
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private BasicDAO basicDao;
     @InjectMocks
     private RegionenDAO underTest;
+
 
     @Test
     public void findAll() {
@@ -54,7 +57,37 @@ public class RegionenDAOTest {
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
 
+    }
+
+    @Test
+    public void findAllByType() {
+        // prepare test data
+        final RegionenBE expectedBE = getRegionenBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<RegionenBE> actual = underTest.findAllByType(REGION_TYP);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getRegionId())
+                .isEqualTo(expectedBE.getRegionId());
+        assertThat(actual.get(0).getRegionName())
+                .isEqualTo(expectedBE.getRegionName());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
 
     }
+
+
 
 }
