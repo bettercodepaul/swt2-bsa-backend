@@ -50,7 +50,11 @@ public class RegionenDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM region"
                     + " ORDER BY region_id";
-
+    private static final String FIND_ALL_BY_TYPE =
+            "SELECT * "
+                    + " FROM region"
+                    + " WHERE region_typ = ?"
+                    + " ORDER BY region_name";
     private final BasicDAO basicDAO;
 
 
@@ -89,6 +93,16 @@ public class RegionenDAO implements DataAccessObject {
 
     public List<RegionenBE> findAll() {
         return basicDAO.selectEntityList(REGIONEN, FIND_ALL);
+    }
+
+
+    /**
+     * Returns all the region entries of type = KREIS
+     *
+     * @return List with Region Business Entities
+     */
+    public List<RegionenBE> findAllByType(final String type) {
+        return basicDAO.selectEntityList(REGIONEN, FIND_ALL_BY_TYPE, type);
     }
 
 
