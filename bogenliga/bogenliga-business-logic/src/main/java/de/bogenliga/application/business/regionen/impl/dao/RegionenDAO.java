@@ -51,6 +51,11 @@ public class RegionenDAO implements DataAccessObject {
                     + " FROM region"
                     + " ORDER BY region_id";
 
+    private static final String FIND_BY_ID =
+            "SELECT * "
+                    + " FROM region "
+                    + " WHERE region_id = ?";
+
     private final BasicDAO basicDAO;
 
 
@@ -89,6 +94,16 @@ public class RegionenDAO implements DataAccessObject {
 
     public List<RegionenBE> findAll() {
         return basicDAO.selectEntityList(REGIONEN, FIND_ALL);
+    }
+
+    /**
+     * Return dsbmitglied entry with specific id
+     *
+     * @param id
+     */
+    public RegionenBE findById(final long id) {
+
+        return basicDAO.selectSingleEntity(REGIONEN, FIND_BY_ID, id);
     }
 
 

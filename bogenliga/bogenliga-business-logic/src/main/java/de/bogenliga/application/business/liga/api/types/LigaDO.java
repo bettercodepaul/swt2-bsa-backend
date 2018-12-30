@@ -23,7 +23,7 @@ public class LigaDO extends CommonDataObject implements DataObject {
     private String liga_uebergeordnet_name;
     private Long liga_verantwortlich_id;
     private String liga_verantwortlich_mail;
-    private Long userId;
+
 
 
     /**
@@ -73,26 +73,16 @@ public class LigaDO extends CommonDataObject implements DataObject {
      * @param name
      * @param region_id
      * @param region_name
-     * @param liga_uebergeordnet_id
-     * @param liga_uebergeordnet_name
-     * @param liga_verantwortlich_id
-     * @param liga_verantwortlich_mail
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
     public LigaDO(final Long id, final String name, final Long region_id, final String region_name,
-                  final Long liga_uebergeordnet_id, final String liga_uebergeordnet_name,
-                  final Long liga_verantwortlich_id, final String liga_verantwortlich_mail,
                   final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version) {
         this.id = id;
         this.name = name;
         this.region_id = region_id;
         this.region_name = region_name;
-        this.liga_uebergeordnet_id = liga_uebergeordnet_id;
-        this.liga_uebergeordnet_name = liga_uebergeordnet_name;
-        this.liga_verantwortlich_id = liga_verantwortlich_id;
-        this.liga_verantwortlich_mail = liga_verantwortlich_mail;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -209,7 +199,7 @@ public class LigaDO extends CommonDataObject implements DataObject {
     public int hashCode() {
         return Objects.hash(id, name, region_id, region_name, liga_uebergeordnet_id,
                 liga_uebergeordnet_name, liga_verantwortlich_id, liga_verantwortlich_mail,
-                userId, createdByUserId, lastModifiedAtUtc, getLastModifiedByUserId(), version);
+                createdByUserId, lastModifiedAtUtc, getLastModifiedByUserId(), version);
     }
 
     @Override
@@ -222,7 +212,6 @@ public class LigaDO extends CommonDataObject implements DataObject {
         }
         final LigaDO that = (LigaDO) o;
         return id == that.id &&
-                userId==that.userId&&
                 region_id == that.region_id &&
                 liga_uebergeordnet_id ==that.liga_uebergeordnet_id &&
                 liga_verantwortlich_id == that.liga_verantwortlich_id &&
