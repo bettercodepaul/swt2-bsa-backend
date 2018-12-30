@@ -15,12 +15,8 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
     private Long ligaId;
     private String ligaName;
     private Long ligaRegionId;
-    private String ligaRegionName;
     private Long ligaUebergeordnetId;
-    private String ligaUebergeordnetName;
     private Long ligaVerantwortlichId;
-    private String ligaVerantwortlichMail;
-    private Long ligaUserId;
 
     public LigaBE(){
         // empty constructor
@@ -57,16 +53,6 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public String getLigaRegionName() {
-        return ligaRegionName;
-    }
-
-
-    public void setLigaRegionName(String ligaRegionName) {
-        this.ligaRegionName = ligaRegionName;
-    }
-
-
     public Long getLigaUebergeordnetId() {
         return ligaUebergeordnetId;
     }
@@ -74,16 +60,6 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
 
     public void setLigaUebergeordnetId(Long ligaUebergeordnetId) {
         this.ligaUebergeordnetId = ligaUebergeordnetId;
-    }
-
-
-    public String getLigaUebergeordnetName() {
-        return ligaUebergeordnetName;
-    }
-
-
-    public void setLigaUebergeordnetName(String ligaUebergeordnetName) {
-        this.ligaUebergeordnetName = ligaUebergeordnetName;
     }
 
 
@@ -97,36 +73,14 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public String getLigaVerantwortlichMail() {
-        return ligaVerantwortlichMail;
-    }
-
-
-    public void setLigaVerantwortlichMail(String ligaVerantwortlichMail) {
-        this.ligaVerantwortlichMail = ligaVerantwortlichMail;
-    }
-
-
-    public Long getLigaUserId() {
-        return ligaUserId;
-    }
-
-
-    public void setLigaUserId(Long ligaUserId) {
-        this.ligaUserId = ligaUserId;
-    }
-
     @Override
     public String toString(){
         return "LigaBE{" +
                 "ligaId=" + ligaId +
                 ", ligaName='" + ligaName + '\'' +
                 ", ligaRegionId='" + ligaRegionId + '\'' +
-                ", ligaRegionName='" + ligaRegionName + '\'' +
                 ", ligaUebergeordnetId='" + ligaUebergeordnetId + '\'' +
-                ", ligaUebergeordnetName='" + ligaUebergeordnetName + '\'' +
                 ", ligaVerantwortlichId=" + ligaVerantwortlichId + '\'' +
-                ", ligaVerantwortlichMail=" + ligaVerantwortlichMail + '\'' +
                 ", ligaUserId=" + ligaId+
                 '}';
     }

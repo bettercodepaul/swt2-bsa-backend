@@ -23,17 +23,17 @@ public class LigaMapper implements ValueObjectMapper {
          * Converts a {@link LigaBE} to a {@link LigaDO}
          *
          */
-        public static final LigaDO toLigaDO(LigaBE ligaBE, RegionenBE regionenBE, UserBE userBE){
+        public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenBE regionenBE, UserBE userBE){
 
             OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
             OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
 
-           LigaDO ligaDO = new LigaDO(ligaBE.getLigaUserId(),
+           LigaDO ligaDO = new LigaDO(ligaBE.getLigaId(),
                    ligaBE.getLigaName(),
                    regionenBE.getRegionId(),
                    regionenBE.getRegionName(),
-                    ligaBE.getLigaUebergeordnetId(),
-                   ligaBE.getLigaUebergeordnetName(),
+                   ligaBE.getLigaUebergeordnetId(),
+                   uebergeordnetLiga.getLigaName(),
                    userBE.getUserId(),
                    userBE.getUserEmail());
             ligaDO.setCreatedAtUtc(createdAtUtc);
@@ -55,12 +55,9 @@ public class LigaMapper implements ValueObjectMapper {
         LigaBE ligaBE = new LigaBE();
         ligaBE.setLigaId(ligaDO.getId());
         ligaBE.setLigaName(ligaDO.getName());
-        ligaBE.setLigaRegionId(ligaDO.getId());
-        ligaBE.setLigaRegionName(ligaDO.getName());
+        ligaBE.setLigaRegionId(ligaDO.getRegion_id());
         ligaBE.setLigaUebergeordnetId(ligaDO.getLiga_uebergeordnet_id());
-        ligaBE.setLigaUebergeordnetName(ligaDO.getLiga_uebergeordnet_name());
         ligaBE.setLigaVerantwortlichId(ligaDO.getLiga_verantwortlich_id());
-        ligaBE.setLigaVerantwortlichMail(ligaDO.getLiga_verantwortlich_mail());
         ligaBE.setCreatedAtUtc(createdAtUtcTimestamp);
         ligaBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
 

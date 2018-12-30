@@ -1,5 +1,7 @@
 package de.bogenliga.application.services.v1.liga.mapper;
 
+import java.util.function.Function;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.liga.model.LigaDTO;
 
@@ -16,12 +18,12 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
 
         final Long ligaId = ligaDO.getId();
         final String ligaName = ligaDO.getName();
-        final Long regionId = ligaDO.getRegionId();
-        final String regionName = ligaDO.getRegionName();
-        final Long liga_uebergeordnet_id = ligaDO.getLigaUebergeordnetId();
-        final String liga_uebergeordnet_name = ligaDO.getLigaUebergeordnetName();
-        final Long liga_verantwortlich_id = ligaDO.getLigaVerantwortlichId();
-        final String liga_verantwortlich_mail = ligaDO.getLigaVerantwortlichMail();
+        final Long regionId = ligaDO.getRegion_id();
+        final String regionName = ligaDO.getRegion_name();
+        final Long liga_uebergeordnet_id = ligaDO.getLiga_uebergeordnet_id();
+        final String liga_uebergeordnet_name = ligaDO.getLiga_uebergeordnet_name();
+        final Long liga_verantwortlich_id = ligaDO.getLiga_verantwortlich_id();
+        final String liga_verantwortlich_mail = ligaDO.getLiga_verantwortlich_mail();
 
 
         return new LigaDTO(ligaId, ligaName, regionId, regionName, liga_uebergeordnet_id, liga_uebergeordnet_name,
@@ -32,13 +34,15 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<LigaDTO, LigaDO> toDO = dto -> {
 
-        final Long ligaId = dto.getId();
-        final String ligaName = dto.getName();
-        final Long regionId = dto.getRegionId();
-        final Long ligaUebergeordnetId = dto.getRegionUebergeordnetId();
-        final Long ligaVerantwortlichId = dto.getLigaVerantwortlichId();
+        LigaDO ligaDO = new LigaDO();
+        ligaDO.setId(dto.getId());
+        ligaDO.setName(dto.getName());
+        ligaDO.setRegion_id(dto.getRegion_id());
+        ligaDO.setLiga_uebergeordnet_id(dto.getLiga_ubergeordnet_id());
+        ligaDO.setLiga_verantwortlich_id(dto.getLiga_verantwortlich_id());
 
-        return new LigaDO(ligaId, ligaName, regionId, ligaUebergeordnetId, ligaVerantwortlichId);
+
+        return ligaDO;
     };
 
 

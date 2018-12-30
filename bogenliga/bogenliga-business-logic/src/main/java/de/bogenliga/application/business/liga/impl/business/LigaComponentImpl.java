@@ -18,18 +18,17 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LigaComponentImpl implements LigaComponent {
 
     private static final String PRECONDITION_MSG_LIGA = "ligaDO must not be Null";
     private static final String PRECONDITION_MSG_LIGA_ID = "ligaId must not be Null";
     private static final String PRECONDITION_MSG_LIGA_NAME = "ligaName must not be Null";
     private static final String PRECONDITION_MSG_REGION_ID = "ligaRegionId must not be Null";
-    private static final String PRECONDITION_MSG_REGION_NAME = "ligaRegionName must not be Null";
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID = "ligaUebergeordnetId must not be Null";
-    private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_NAME = "ligaUebergeordnetName must not be Null";
     private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID = "ligaVerantwortlichId must not be Null";
-    private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_MAIL = "ligaVerantwortlichMail must not be Null";
     private static final String PRECONDITION_MSG_CURRENT_LIGA_ID = "Current liga id must not be Null";
 
     private final LigaDAO ligaDAO;
@@ -49,9 +48,11 @@ public class LigaComponentImpl implements LigaComponent {
         final List<LigaBE> ligaBEList = ligaDAO.findAll();
 
         for (int i = 0; i < ligaBEList.size(); i++) {
+
             returnList.add(i, LigaMapper.toLigaDO(ligaBEList.get(i),
+                    ligaDAO.findById(ligaBEList.get(i).getLigaId()),
                     regionenDAO.findById(ligaBEList.get(i).getLigaRegionId()),
-                    userDAO.findById(ligaBEList.get(i).getLigaUserId())));
+                    userDAO.findById(ligaBEList.get(i).getLigaVerantwortlichId())));
 
         }
         return returnList;
@@ -70,7 +71,7 @@ public class LigaComponentImpl implements LigaComponent {
                     String.format("No result found for ID '%s'", id));
         }
 
-        return LigaMapper.toLigaDO(result, regionenDAO.findById(id), userDAO.findById(id));
+        return LigaMapper.toLigaDO(result, ligaDAO.findById(result.getLigaId()), regionenDAO.findById(result.getLigaRegionId()), userDAO.findById(result.getLigaVerantwortlichId()));
     }
 
 
@@ -80,12 +81,13 @@ public class LigaComponentImpl implements LigaComponent {
         checkLigaDO(ligaDO, currentDsbMitgliedId);
         final LigaBE ligaBE = LigaMapper.toLigaBE.apply(ligaDO);
         final LigaBE persistedLigaBE = ligaDAO.create(ligaBE,currentDsbMitgliedId);
+        final LigaBE uebergeordnetLigaBE = ligaDAO.findById(persistedLigaBE.getLigaUebergeordnetId());
         final RegionenBE regionenBE = regionenDAO.findById(persistedLigaBE.getLigaRegionId());
-        final UserBE userBE = userDAO.findById(persistedLigaBE.getLigaUserId());
+        final UserBE userBE = userDAO.findById(persistedLigaBE.getLigaVerantwortlichId());
 
 
 
-        return LigaMapper.toLigaDO(persistedLigaBE,regionenBE,userBE);
+        return LigaMapper.toLigaDO(persistedLigaBE, uebergeordnetLigaBE, regionenBE,userBE);
     }
 
 
@@ -95,11 +97,12 @@ public class LigaComponentImpl implements LigaComponent {
         Preconditions.checkArgument(ligaDO.getId() >= 0, PRECONDITION_MSG_LIGA_ID);
 
         final LigaBE ligaBE = LigaMapper.toLigaBE.apply(ligaDO);
-        final LigaBE persistedLigaBE = ligaDAO.create(ligaBE,currentDsbMitgliedId);
+        final LigaBE persistedLigaBE = ligaDAO.update(ligaBE,currentDsbMitgliedId);
+        final LigaBE uebergeordnetLigaBE = ligaDAO.findById(persistedLigaBE.getLigaUebergeordnetId());
         final RegionenBE regionenBE = regionenDAO.findById(persistedLigaBE.getLigaRegionId());
-        final UserBE userBE = userDAO.findById(persistedLigaBE.getLigaUserId());
+        final UserBE userBE = userDAO.findById(persistedLigaBE.getLigaVerantwortlichId());
 
-        return LigaMapper.toLigaDO(persistedLigaBE,regionenBE,userBE);
+        return LigaMapper.toLigaDO(persistedLigaBE, uebergeordnetLigaBE, regionenBE,userBE);
     }
 
 
@@ -119,10 +122,7 @@ public class LigaComponentImpl implements LigaComponent {
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_LIGA_ID);
         Preconditions.checkNotNull(ligaDO.getName(), PRECONDITION_MSG_LIGA_NAME);
         Preconditions.checkArgument(ligaDO.getRegion_id() >= 0, PRECONDITION_MSG_REGION_ID);
-        Preconditions.checkNotNull(ligaDO.getRegion_name(), PRECONDITION_MSG_REGION_NAME);
         Preconditions.checkArgument(ligaDO.getLiga_uebergeordnet_id() >= 0, PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID);
-        Preconditions.checkNotNull(ligaDO.getLiga_uebergeordnet_name(), PRECONDITION_MSG_LIGA_UEBERGEORDNET_NAME);
         Preconditions.checkArgument(ligaDO.getLiga_verantwortlich_id() >= 0, PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID);
-        Preconditions.checkNotNull(ligaDO.getLiga_verantwortlich_mail(), PRECONDITION_MSG_LIGA_VERANTWORTLICH_MAIL);
     }
 }
