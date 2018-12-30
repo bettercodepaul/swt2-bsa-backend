@@ -108,4 +108,22 @@ public class LigaDAO implements DataAccessObject {
         return basicDao.selectEntityList(LIGA, FIND_ALL);
     }
 
+    public void delete(final LigaBE ligaBE, final long currentLigaId) {
+        basicDao.setModificationAttributes(ligaBE, currentLigaId);
+
+        basicDao.deleteEntity(LIGA, ligaBE, LIGA_BE_ID);
+    }
+
+    /**
+     * Create a new dsbmitglied entry
+     *
+     * @param ligaBE
+     * @param currentLigaId
+     * @return Business Entity corresponding to the created dsbmitglied entry
+     */
+    public LigaBE create(final LigaBE ligaBE, final long currentLigaId) {
+        basicDao.setCreationAttributes(ligaBE, currentLigaId);
+
+        return basicDao.insertEntity(LIGA, ligaBE);
+    }
 }

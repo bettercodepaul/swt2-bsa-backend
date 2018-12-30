@@ -2,8 +2,16 @@ package de.bogenliga.application.business.liga.impl.mapper;
 
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
+import de.bogenliga.application.business.regionen.api.types.RegionenDO;
+import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
+import de.bogenliga.application.common.time.DateProvider;
 
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -15,18 +23,47 @@ public class LigaMapper implements ValueObjectMapper {
          * Converts a {@link LigaBE} to a {@link LigaDO}
          *
          */
-        public static final Function<LigaBE, LigaDO> toLigaDO = be-> {
-            final long id = be.getLigaId();
-            final String ligaName = be.getLigaName();
-            final long regionID = be.getLigaRegionId();
-            final String regionName = be.getLigaRegionName();
-            final long ligaUebergeordnetId = be.getLigaUebergeordnetId();
-            final String ligaUebergeordnetName = be.getLigaUebergeordnetName();
-            final long ligaVerantwortlichId = be.getLigaVerantwortlichId();
-            final String ligaVerantwortlichMail = be.getLigaVerantwortlichMail();
-            final long userId = be.getLigaUserId();
+        public static final LigaDO toLigaDO(LigaBE ligaBE, RegionenBE regionenBE, UserBE userBE){
 
-            //technical parameter
-          return null;
-        };
+            OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
+            OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
+
+           LigaDO ligaDO = new LigaDO(ligaBE.getLigaUserId(),
+                   ligaBE.getLigaName(),
+                   regionenBE.getRegionId(),
+                   regionenBE.getRegionName(),
+                    ligaBE.getLigaUebergeordnetId(),
+                   ligaBE.getLigaUebergeordnetName(),
+                   userBE.getUserId(),
+                   userBE.getUserEmail());
+            ligaDO.setCreatedAtUtc(createdAtUtc);
+            ligaDO.setLastModifiedAtUtc(lastModifiedAtUtc);
+            return ligaDO;
+        }
+
+    /**
+     * Converts a {@link LigaDO} to a {@link LigaBE}
+     *
+     */
+    public static final Function <LigaDO,LigaBE> toLigaBE = ligaDO -> {
+
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(ligaDO.getCreatedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(ligaDO.getLastModifiedAtUtc());
+
+
+
+        LigaBE ligaBE = new LigaBE();
+        ligaBE.setLigaId(ligaDO.getId());
+        ligaBE.setLigaName(ligaDO.getName());
+        ligaBE.setLigaRegionId(ligaDO.getId());
+        ligaBE.setLigaRegionName(ligaDO.getName());
+        ligaBE.setLigaUebergeordnetId(ligaDO.getLiga_uebergeordnet_id());
+        ligaBE.setLigaUebergeordnetName(ligaDO.getLiga_uebergeordnet_name());
+        ligaBE.setLigaVerantwortlichId(ligaDO.getLiga_verantwortlich_id());
+        ligaBE.setLigaVerantwortlichMail(ligaDO.getLiga_verantwortlich_mail());
+        ligaBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        ligaBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+
+        return ligaBE;
+    };
 }
