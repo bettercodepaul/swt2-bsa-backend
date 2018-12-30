@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -32,7 +34,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class LigaService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIGA = "Liga must not be null";
     private static final String PRECONDITION_MSG_LIGA_ID = "Liga Id must not be negative";
-    private static final String PRECONDITION_MSG_LIGA_NAME = "Liga name can not be null";
     private static final String PRECONDITION_MSG_LIGA_REGION = "Region can not be null";
     private static final String PRECONDITION_MSG_LIGA_REGION_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG = "Region id can not be negative";
@@ -112,7 +113,7 @@ public class LigaService implements ServiceFacade {
                 ligaDTO.getLiga_ubergeordnet_id(),
                 ligaDTO.getLiga_verantwortlich_id());
 
-        //checkPreconditions(ligaDTO);
+        checkPreconditions(ligaDTO);
 
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
@@ -152,11 +153,25 @@ public class LigaService implements ServiceFacade {
 
     }
 
+    /**
+     * I delete an existing Liga entry from the DB.
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public void delete (@PathVariable("id") final Long id, final Principal principal){
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOGGER.debug("Receive 'delete' request with id '{}'", id);
+
+        final LigaDO ligaDO = new LigaDO(id);
+        final long userId = UserProvider.getCurrentUserId(principal);
+        ligaComponent.delete(ligaDO,userId);
+    }
+
 
     private void checkPreconditions(@RequestBody final LigaDTO ligaDTO) {
         Preconditions.checkNotNull(ligaDTO, PRECONDITION_MSG_LIGA);
         Preconditions.checkNotNull(ligaDTO.getRegion_id(), PRECONDITION_MSG_LIGA_REGION);
-        Preconditions.checkNotNull(ligaDTO.getRegion_name(), PRECONDITION_MSG_LIGA_NAME);
 
         Preconditions.checkArgument(ligaDTO.getRegion_id() >= 0, PRECONDITION_MSG_LIGA_REGION_ID_NEG);
 

@@ -25,6 +25,19 @@ public class LigaDO extends CommonDataObject implements DataObject {
     private String liga_verantwortlich_mail;
 
 
+    public LigaDO() {
+        // empty constructor
+    }
+
+
+    /**
+     *
+     * @param id
+     */
+    public LigaDO(final long id) {
+        this.id = id;
+    }
+
 
     /**
      * Constructor with optional parameters
