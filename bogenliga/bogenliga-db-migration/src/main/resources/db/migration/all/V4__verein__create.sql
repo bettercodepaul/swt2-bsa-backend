@@ -46,7 +46,7 @@ CREATE TABLE verein (
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
-  CONSTRAINT fk_verein_region FOREIGN KEY (verein_region_id) REFERENCES region (region_id)
+  CONSTRAINT fk_verein_region FOREIGN KEY (verein_region_id) REFERENCES region (regionId)
     ON DELETE SET NULL -- das Loeschen einer Region wuerde alle Vereine und deren dsb_mitgliedn entfernen
 );
 

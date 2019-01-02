@@ -17,12 +17,12 @@ public class LigaDO extends CommonDataObject implements DataObject {
      */
     private Long id;
     private String name;
-    private Long region_id;
-    private String region_name;
-    private Long liga_uebergeordnet_id;
-    private String liga_uebergeordnet_name;
-    private Long liga_verantwortlich_id;
-    private String liga_verantwortlich_mail;
+    private Long regionId;
+    private String regionName;
+    private Long ligaUebergeordnetId;
+    private String ligaUebergeordnetName;
+    private Long ligaVerantwortlichId;
+    private String ligaVerantwortlichMail;
 
 
     public LigaDO() {
@@ -44,33 +44,32 @@ public class LigaDO extends CommonDataObject implements DataObject {
      *
      * @param id
      * @param name
-     * @param region_id
-     * @param region_name
-     * @param liga_uebergeordnet_id
-     * @param liga_uebergeordnet_name
-     * @param liga_verantwortlich_id
-     * @param liga_verantwortlich_mail
-     * @param userId
+     * @param regionId
+     * @param regionName
+     * @param ligaUebergeordnetId
+     * @param ligaUebergeordnetName
+     * @param ligaVerantwortlichId
+     * @param ligaVerantwortlichMail
      * @param createdAtUtc
      * @param createdByUserId
      * @param lastModifiedAtUtc
      * @param lastModifiedByUserId
      * @param version
      */
-    public LigaDO(final Long id, final String name, final Long region_id, final String region_name,
-                  final Long liga_uebergeordnet_id, final String liga_uebergeordnet_name,
-                  final Long liga_verantwortlich_id, final String liga_verantwortlich_mail, Long userId,
+    public LigaDO(final Long id, final String name, final Long regionId, final String regionName,
+                  final Long ligaUebergeordnetId, final String ligaUebergeordnetName,
+                  final Long ligaVerantwortlichId, final String ligaVerantwortlichMail,
                   final OffsetDateTime createdAtUtc, final Long createdByUserId,
                   final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId,
                   final Long version) {
-        this.id = id;
+        this.id=id;
         this.name = name;
-        this.region_id = region_id;
-        this.region_name = region_name;
-        this.liga_uebergeordnet_id = liga_uebergeordnet_id;
-        this.liga_uebergeordnet_name = liga_uebergeordnet_name;
-        this.liga_verantwortlich_id = liga_verantwortlich_id;
-        this.liga_verantwortlich_mail = liga_verantwortlich_mail;
+        this.regionId = regionId;
+        this.regionName = regionName;
+        this.ligaUebergeordnetId = ligaUebergeordnetId;
+        this.ligaUebergeordnetName = ligaUebergeordnetName;
+        this.ligaVerantwortlichId = ligaVerantwortlichId;
+        this.ligaVerantwortlichMail = ligaVerantwortlichMail;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
@@ -84,18 +83,18 @@ public class LigaDO extends CommonDataObject implements DataObject {
      *
      * @param id
      * @param name
-     * @param region_id
-     * @param region_name
+     * @param regionId
+     * @param regionName
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
-    public LigaDO(final Long id, final String name, final Long region_id, final String region_name,
+    public LigaDO(final Long id, final String name, final Long regionId, final String regionName,
                   final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version) {
         this.id = id;
         this.name = name;
-        this.region_id = region_id;
-        this.region_name = region_name;
+        this.regionId = regionId;
+        this.regionName = regionName;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -107,24 +106,24 @@ public class LigaDO extends CommonDataObject implements DataObject {
      *
      * @param id
      * @param name
-     * @param region_id
-     * @param region_name
-     * @param liga_uebergeordnet_id
-     * @param liga_uebergeordnet_name
-     * @param liga_verantwortlich_id
-     * @param liga_verantwortlich_mail
+     * @param regionId
+     * @param regionName
+     * @param ligaUebergeordnetId
+     * @param ligaUebergeordnetName
+     * @param ligaVerantwortlichId
+     * @param ligaVerantwortlichMail
      */
-    public LigaDO(final Long id, final String name, final Long region_id, final String region_name,
-                  final Long liga_uebergeordnet_id, final String liga_uebergeordnet_name,
-                  final Long liga_verantwortlich_id, final String liga_verantwortlich_mail) {
+    public LigaDO(final Long id, final String name, final Long regionId, final String regionName,
+                  final Long ligaUebergeordnetId, final String ligaUebergeordnetName,
+                  final Long ligaVerantwortlichId, final String ligaVerantwortlichMail) {
         this.id = id;
         this.name = name;
-        this.region_id = region_id;
-        this.region_name = region_name;
-        this.liga_uebergeordnet_id = liga_uebergeordnet_id;
-        this.liga_uebergeordnet_name = liga_uebergeordnet_name;
-        this.liga_verantwortlich_id = liga_verantwortlich_id;
-        this.liga_verantwortlich_mail = liga_verantwortlich_mail;
+        this.regionId = regionId;
+        this.regionName = regionName;
+        this.ligaUebergeordnetId = ligaUebergeordnetId;
+        this.ligaUebergeordnetName = ligaUebergeordnetName;
+        this.ligaVerantwortlichId = ligaVerantwortlichId;
+        this.ligaVerantwortlichMail = ligaVerantwortlichMail;
     }
 
 
@@ -148,70 +147,70 @@ public class LigaDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Long getRegion_id() {
-        return region_id;
+    public Long getRegionId() {
+        return regionId;
     }
 
 
-    public void setRegion_id(Long region_id) {
-        this.region_id = region_id;
+    public void setRegionId(Long regionId) {
+        this.regionId = regionId;
     }
 
 
-    public String getRegion_name() {
-        return region_name;
+    public String getRegionName() {
+        return regionName;
     }
 
 
-    public void setRegion_name(String region_name) {
-        this.region_name = region_name;
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
 
-    public Long getLiga_uebergeordnet_id() {
-        return liga_uebergeordnet_id;
+    public Long getLigaUebergeordnetId() {
+        return ligaUebergeordnetId;
     }
 
 
-    public void setLiga_uebergeordnet_id(Long liga_uebergeordnet_id) {
-        this.liga_uebergeordnet_id = liga_uebergeordnet_id;
+    public void setLigaUebergeordnetId(Long ligaUebergeordnetId) {
+        this.ligaUebergeordnetId = ligaUebergeordnetId;
     }
 
 
-    public String getLiga_uebergeordnet_name() {
-        return liga_uebergeordnet_name;
+    public String getLigaUebergeordnetName() {
+        return ligaUebergeordnetName;
     }
 
 
-    public void setLiga_uebergeordnet_name(String liga_uebergeordnet_name) {
-        this.liga_uebergeordnet_name = liga_uebergeordnet_name;
+    public void setLigaUebergeordnetName(String ligaUebergeordnetName) {
+        this.ligaUebergeordnetName = ligaUebergeordnetName;
     }
 
 
-    public Long getLiga_verantwortlich_id() {
-        return liga_verantwortlich_id;
+    public Long getLigaVerantwortlichId() {
+        return ligaVerantwortlichId;
     }
 
 
-    public void setLiga_verantwortlich_id(Long liga_verantwortlich_id) {
-        this.liga_verantwortlich_id = liga_verantwortlich_id;
+    public void setLigaVerantwortlichId(Long ligaVerantwortlichId) {
+        this.ligaVerantwortlichId = ligaVerantwortlichId;
     }
 
 
-    public String getLiga_verantwortlich_mail() {
-        return liga_verantwortlich_mail;
+    public String getLigaVerantwortlichMail() {
+        return ligaVerantwortlichMail;
     }
 
 
-    public void setLiga_verantwortlich_mail(String liga_verantwortlich_mail) {
-        this.liga_verantwortlich_mail = liga_verantwortlich_mail;
+    public void setLigaVerantwortlichMail(String ligaVerantwortlichMail) {
+        this.ligaVerantwortlichMail = ligaVerantwortlichMail;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, region_id, region_name, liga_uebergeordnet_id,
-                liga_uebergeordnet_name, liga_verantwortlich_id, liga_verantwortlich_mail,
+        return Objects.hash(id, name, regionId, regionName, ligaUebergeordnetId,
+                ligaUebergeordnetName, ligaVerantwortlichId, ligaVerantwortlichMail,
                 createdByUserId, lastModifiedAtUtc, getLastModifiedByUserId(), version);
     }
 
@@ -225,13 +224,13 @@ public class LigaDO extends CommonDataObject implements DataObject {
         }
         final LigaDO that = (LigaDO) o;
         return id == that.id &&
-                region_id == that.region_id &&
-                liga_uebergeordnet_id ==that.liga_uebergeordnet_id &&
-                liga_verantwortlich_id == that.liga_verantwortlich_id &&
+                regionId == that.regionId &&
+                ligaUebergeordnetId ==that.ligaUebergeordnetId &&
+                ligaVerantwortlichId == that.ligaVerantwortlichId &&
                 Objects.equals(name, that.name)&&
-                Objects.equals(region_name,that.region_name)&&
-                Objects.equals(liga_uebergeordnet_name,that.liga_uebergeordnet_name)&&
-                Objects.equals(liga_verantwortlich_mail,that.liga_verantwortlich_mail)&&
+                Objects.equals(regionName,that.regionName)&&
+                Objects.equals(ligaUebergeordnetName,that.ligaUebergeordnetName)&&
+                Objects.equals(ligaVerantwortlichMail,that.ligaVerantwortlichMail)&&
                 Objects.equals(lastModifiedAtUtc,that.lastModifiedAtUtc);
 
     }

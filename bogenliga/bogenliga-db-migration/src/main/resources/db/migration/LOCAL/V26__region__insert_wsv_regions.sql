@@ -1,4 +1,4 @@
-INSERT INTO region (region_id, region_name, region_kuerzel, region_typ, region_uebergeordnet)
+INSERT INTO region (regionId, regionName, region_kuerzel, region_typ, region_uebergeordnet)
 VALUES
   (0, 'Deutscher Schützenbund',             'DSB',      'BUNDESVERBAND', NULL),
   (1, 'Württembergischer Schützenverband',  'WT',       'LANDESVERBAND', 0),

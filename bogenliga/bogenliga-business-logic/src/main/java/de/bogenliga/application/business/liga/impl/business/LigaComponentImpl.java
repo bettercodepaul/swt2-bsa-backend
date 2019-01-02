@@ -2,14 +2,12 @@ package de.bogenliga.application.business.liga.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
 import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
@@ -49,8 +47,8 @@ public class LigaComponentImpl implements LigaComponent {
 
         for (int i = 0; i < ligaBEList.size(); i++) {
 
-            returnList.add(i, LigaMapper.toLigaDO(ligaBEList.get(i),
-                    ligaDAO.findById(ligaBEList.get(i).getLigaId()),
+            returnList.add(i, LigaMapper.toLigaDO(ligaBEList.get(i),// null fixen
+                    ligaDAO.findById(ligaBEList.get(i).getLigaUebergeordnetId()),
                     regionenDAO.findById(ligaBEList.get(i).getLigaRegionId()),
                     userDAO.findById(ligaBEList.get(i).getLigaVerantwortlichId())));
 
@@ -71,7 +69,7 @@ public class LigaComponentImpl implements LigaComponent {
                     String.format("No result found for ID '%s'", id));
         }
 
-        return LigaMapper.toLigaDO(result, ligaDAO.findById(result.getLigaId()), regionenDAO.findById(result.getLigaRegionId()), userDAO.findById(result.getLigaVerantwortlichId()));
+        return LigaMapper.toLigaDO(result, ligaDAO.findById(result.getLigaUebergeordnetId()), regionenDAO.findById(result.getLigaRegionId()), userDAO.findById(result.getLigaVerantwortlichId()));
     }
 
 
@@ -121,8 +119,8 @@ public class LigaComponentImpl implements LigaComponent {
         Preconditions.checkNotNull(ligaDO, PRECONDITION_MSG_LIGA);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_LIGA_ID);
         Preconditions.checkNotNull(ligaDO.getName(), PRECONDITION_MSG_LIGA_NAME);
-        Preconditions.checkArgument(ligaDO.getRegion_id() >= 0, PRECONDITION_MSG_REGION_ID);
-        Preconditions.checkArgument(ligaDO.getLiga_uebergeordnet_id() >= 0, PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID);
-        Preconditions.checkArgument(ligaDO.getLiga_verantwortlich_id() >= 0, PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID);
+        Preconditions.checkArgument(ligaDO.getRegionId() >= 0, PRECONDITION_MSG_REGION_ID);
+        Preconditions.checkArgument(ligaDO.getLigaUebergeordnetId() >= 0, PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID);
+        Preconditions.checkArgument(ligaDO.getLigaVerantwortlichId() >= 0, PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID);
     }
 }
