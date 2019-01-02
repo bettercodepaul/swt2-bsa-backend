@@ -2,16 +2,13 @@ package de.bogenliga.application.business.liga.impl.mapper;
 
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -55,12 +52,17 @@ public class LigaMapper implements ValueObjectMapper {
         LigaBE ligaBE = new LigaBE();
         ligaBE.setLigaId(ligaDO.getId());
         ligaBE.setLigaName(ligaDO.getName());
-        ligaBE.setLigaRegionId(ligaDO.getRegion_id());
-        ligaBE.setLigaUebergeordnetId(ligaDO.getLiga_uebergeordnet_id());
-        ligaBE.setLigaVerantwortlichId(ligaDO.getLiga_verantwortlich_id());
+        ligaBE.setLigaRegionId(ligaDO.getRegionId());
+        ligaBE.setLigaUebergeordnetId(ligaDO.getLigaUebergeordnetId());
+        ligaBE.setLigaVerantwortlichId(ligaDO.getLigaVerantwortlichId());
         ligaBE.setCreatedAtUtc(createdAtUtcTimestamp);
         ligaBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
 
         return ligaBE;
     };
+
+    /**
+     * Private Constructor
+     */
+    private LigaMapper(){}
 }

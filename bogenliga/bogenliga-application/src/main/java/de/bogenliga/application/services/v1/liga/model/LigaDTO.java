@@ -13,34 +13,34 @@ public class LigaDTO implements DataTransferObject {
 
     private Long id;
     private String name;
-    private Long region_id;
-    private String region_name;
-    private Long liga_ubergeordnet_id;
-    private String liga_uebergeordnet_name;
-    private Long liga_verantwortlich_id;
-    private String liga_verantwortlich_mail;
+    private Long regionId;
+    private String regionName;
+    private Long ligaUbergeordnetId;
+    private String ligaUebergeordnetName;
+    private Long ligaVerantwortlichId;
+    private String ligaVerantwortlichMail;
 
 
     /**
      * @param id
      * @param name
-     * @param region_id
-     * @param region_name
-     * @param liga_ubergeordnet_id
-     * @param liga_uebergeordnet_name
-     * @param liga_verantwortlich_id
-     * @param liga_verantwortlich_mail
+     * @param regionId
+     * @param regionName
+     * @param ligaUbergeordnetId
+     * @param ligaUebergeordnetName
+     * @param ligaVerantwortlichId
+     * @param ligaVerantwortlichMail
      */
-    public LigaDTO(Long id, String name, Long region_id, String region_name, Long liga_ubergeordnet_id,
-                   String liga_uebergeordnet_name, Long liga_verantwortlich_id, String liga_verantwortlich_mail) {
+    public LigaDTO(Long id, String name, Long regionId, String regionName, Long ligaUbergeordnetId,
+                   String ligaUebergeordnetName, Long ligaVerantwortlichId, String ligaVerantwortlichMail) {
         this.id = id;
         this.name = name;
-        this.region_id = region_id;
-        this.region_name = region_name;
-        this.liga_ubergeordnet_id = liga_ubergeordnet_id;
-        this.liga_uebergeordnet_name = liga_uebergeordnet_name;
-        this.liga_verantwortlich_id = liga_verantwortlich_id;
-        this.liga_verantwortlich_mail = liga_verantwortlich_mail;
+        this.regionId = regionId;
+        this.regionName = regionName;
+        this.ligaUbergeordnetId = ligaUbergeordnetId;
+        this.ligaUebergeordnetName = ligaUebergeordnetName;
+        this.ligaVerantwortlichId = ligaVerantwortlichId;
+        this.ligaVerantwortlichMail = ligaVerantwortlichMail;
     }
 
 
@@ -69,62 +69,62 @@ public class LigaDTO implements DataTransferObject {
     }
 
 
-    public Long getRegion_id() {
-        return region_id;
+    public Long getRegionId() {
+        return regionId;
     }
 
 
-    public void setRegion_id(Long region_id) {
-        this.region_id = region_id;
+    public void setRegionId(Long regionId) {
+        this.regionId = regionId;
     }
 
 
-    public String getRegion_name() {
-        return region_name;
+    public String getRegionName() {
+        return regionName;
     }
 
 
-    public void setRegion_name(String region_name) {
-        this.region_name = region_name;
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
 
-    public Long getLiga_ubergeordnet_id() {
-        return liga_ubergeordnet_id;
+    public Long getLigaUbergeordnetId() {
+        return ligaUbergeordnetId;
     }
 
 
-    public void setLiga_ubergeordnet_id(Long liga_ubergeordnet_id) {
-        this.liga_ubergeordnet_id = liga_ubergeordnet_id;
+    public void setLigaUbergeordnetId(Long ligaUbergeordnetId) {
+        this.ligaUbergeordnetId = ligaUbergeordnetId;
     }
 
 
-    public String getLiga_uebergeordnet_name() {
-        return liga_uebergeordnet_name;
+    public String getLigaUebergeordnetName() {
+        return ligaUebergeordnetName;
     }
 
 
-    public void setLiga_uebergeordnet_name(String liga_uebergeordnet_name) {
-        this.liga_uebergeordnet_name = liga_uebergeordnet_name;
+    public void setLigaUebergeordnetName(String ligaUebergeordnetName) {
+        this.ligaUebergeordnetName = ligaUebergeordnetName;
     }
 
 
-    public Long getLiga_verantwortlich_id() {
-        return liga_verantwortlich_id;
+    public Long getLigaVerantwortlichId() {
+        return ligaVerantwortlichId;
     }
 
 
-    public void setLiga_verantwortlich_id(Long liga_verantwortlich_id) {
-        this.liga_verantwortlich_id = liga_verantwortlich_id;
+    public void setLigaVerantwortlichId(Long ligaVerantwortlichId) {
+        this.ligaVerantwortlichId = ligaVerantwortlichId;
     }
 
 
-    public String getLiga_verantwortlich_mail() {
-        return liga_verantwortlich_mail;
+    public String getLigaVerantwortlichMail() {
+        return ligaVerantwortlichMail;
     }
 
 
-    public void setLiga_verantwortlich_mail(String liga_verantwortlich_mail) {
-        this.liga_verantwortlich_mail = liga_verantwortlich_mail;
+    public void setLigaVerantwortlichMail(String ligaVerantwortlichMail) {
+        this.ligaVerantwortlichMail = ligaVerantwortlichMail;
     }
 }

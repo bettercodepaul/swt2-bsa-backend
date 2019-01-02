@@ -109,9 +109,9 @@ public class LigaService implements ServiceFacade {
                 "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
                 ligaDTO.getId(),
                 ligaDTO.getName(),
-                ligaDTO.getRegion_id(),
-                ligaDTO.getLiga_ubergeordnet_id(),
-                ligaDTO.getLiga_verantwortlich_id());
+                ligaDTO.getRegionId(),
+                ligaDTO.getLigaUbergeordnetId(),
+                ligaDTO.getLigaVerantwortlichId());
 
         checkPreconditions(ligaDTO);
 
@@ -139,9 +139,9 @@ public class LigaService implements ServiceFacade {
                 "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
                 ligaDTO.getId(),
                 ligaDTO.getName(),
-                ligaDTO.getRegion_id(),
-                ligaDTO.getLiga_ubergeordnet_id(),
-                ligaDTO.getLiga_verantwortlich_id());
+                ligaDTO.getRegionId(),
+                ligaDTO.getLigaUbergeordnetId(),
+                ligaDTO.getLigaVerantwortlichId());
 
 
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
@@ -171,16 +171,16 @@ public class LigaService implements ServiceFacade {
 
     private void checkPreconditions(@RequestBody final LigaDTO ligaDTO) {
         Preconditions.checkNotNull(ligaDTO, PRECONDITION_MSG_LIGA);
-        Preconditions.checkNotNull(ligaDTO.getRegion_id(), PRECONDITION_MSG_LIGA_REGION);
+        Preconditions.checkNotNull(ligaDTO.getRegionId(), PRECONDITION_MSG_LIGA_REGION);
 
-        Preconditions.checkArgument(ligaDTO.getRegion_id() >= 0, PRECONDITION_MSG_LIGA_REGION_ID_NEG);
+        Preconditions.checkArgument(ligaDTO.getRegionId() >= 0, PRECONDITION_MSG_LIGA_REGION_ID_NEG);
 
         // These are not mandatory fields. Only check if filled.
-        if (ligaDTO.getLiga_ubergeordnet_id() != null) {
-            Preconditions.checkArgument(ligaDTO.getLiga_ubergeordnet_id() >= 0,
+        if (ligaDTO.getLigaUbergeordnetId() != null) {
+            Preconditions.checkArgument(ligaDTO.getLigaUbergeordnetId() >= 0,
                     PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG);
-        } else if (ligaDTO.getLiga_verantwortlich_id() != null) {
-            Preconditions.checkArgument(ligaDTO.getLiga_verantwortlich_id() >= 0,
+        } else if (ligaDTO.getLigaVerantwortlichId() != null) {
+            Preconditions.checkArgument(ligaDTO.getLigaVerantwortlichId() >= 0,
                     PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID_NEG);
         }
     }
