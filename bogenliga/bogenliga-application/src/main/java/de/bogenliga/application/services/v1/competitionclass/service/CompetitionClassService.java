@@ -107,7 +107,7 @@ public class CompetitionClassService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public CompetitionClassDTO create(@RequestBody final CompetitionClassDTO competitionClassDTO, final Principal principal) {
         LOGGER.debug(
-                "Receive 'create' request with klasseId '{}', klasseName '{}', klasseAlterMin '{}', klasseAlterMax '{}', klasseNr '{}' ",
+                "Receive 'create' request with klasseId '{}', klasseName '{}', klasseJahrgangMin '{}', klasseJahrgangMax '{}', klasseNr '{}' ",
                 competitionClassDTO.getId(),
                 competitionClassDTO.getKlasseName(),
                 competitionClassDTO.getKlasseJahrgangMin(),
@@ -136,7 +136,7 @@ public class CompetitionClassService implements ServiceFacade {
                                       final Principal principal) {
         checkPreconditions(competitionClassDTO);
 
-        LOGGER.debug("Receive 'update' request with  id '{}', name '{}', alter_Min '{}', alter_Max '{}', klasseNr '{}'",
+        LOGGER.debug("Receive 'update' request with  id '{}', name '{}', jahrgang_Min '{}', jahrgang_Max '{}', klasseNr '{}'",
 
                 competitionClassDTO.getId(),
                 competitionClassDTO.getKlasseName(),
