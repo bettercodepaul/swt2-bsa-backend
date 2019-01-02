@@ -52,6 +52,20 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         final List<CompetitionClassBE> competitionClassBEList = competitionClassDAO.findAll();
 
 
+        for(int i = 0; i < competitionClassBEList.size(); i++){
+
+            Long alterMin = competitionClassBEList.get(i).getKlasseAlterMin();
+            Long alterMax = competitionClassBEList.get(i).getKlasseAlterMax();
+
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+
+            Long jahrgangMin = year - alterMin;
+            Long jahrgangMax = year - alterMax;
+
+            competitionClassBEList.get(i).setKlasseAlterMin(jahrgangMin);
+            competitionClassBEList.get(i).setKlasseAlterMax(jahrgangMax);
+
+        }
 
         return competitionClassBEList.stream().map(CompetitionClassMapper.toCompetitionClassDO).collect(
                 Collectors.toList());
