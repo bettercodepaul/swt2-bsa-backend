@@ -39,7 +39,7 @@ public class LigaService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID_NEG = "Verantwortlich id can not be negative";
 
-    private final Logger LOGGER = LoggerFactory.getLogger(LigaService.class);
+    private final Logger logger = LoggerFactory.getLogger(LigaService.class);
 
     private final LigaComponent ligaComponent;
 
@@ -84,7 +84,7 @@ public class LigaService implements ServiceFacade {
     public LigaDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 
-        LOGGER.debug("Receive 'findById' request with ID '{}'", id);
+        logger.debug("Receive 'findById' request with ID '{}'", id);
 
         final LigaDO ligaDO = ligaComponent.findById(id);
 
@@ -105,7 +105,7 @@ public class LigaService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public LigaDTO create(@RequestBody final LigaDTO ligaDTO, final Principal principal) {
-        LOGGER.debug(
+        logger.debug(
                 "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
                 ligaDTO.getId(),
                 ligaDTO.getName(),
@@ -133,9 +133,8 @@ public class LigaService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
-        //checkPreconditions(ligaDTO);
 
-        LOGGER.debug(
+        logger.debug(
                 "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
                 ligaDTO.getId(),
                 ligaDTO.getName(),
@@ -161,7 +160,7 @@ public class LigaService implements ServiceFacade {
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-        LOGGER.debug("Receive 'delete' request with id '{}'", id);
+        logger.debug("Receive 'delete' request with id '{}'", id);
 
         final LigaDO ligaDO = new LigaDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);

@@ -42,14 +42,23 @@ public class LigaComponentImpl implements LigaComponent {
 
     @Override
     public List<LigaDO> findAll() {
-        final ArrayList<LigaDO> returnList = new ArrayList<LigaDO>();
+        LigaBE tempLigaBE;
+        RegionenBE tempRegionenBE;
+        final ArrayList<LigaDO> returnList = new ArrayList<>();
         final List<LigaBE> ligaBEList = ligaDAO.findAll();
 
         for (int i = 0; i < ligaBEList.size(); i++) {
-
-            returnList.add(i, LigaMapper.toLigaDO(ligaBEList.get(i),// null fixen
-                    ligaDAO.findById(ligaBEList.get(i).getLigaUebergeordnetId()),
-                    regionenDAO.findById(ligaBEList.get(i).getLigaRegionId()),
+            tempLigaBE = new LigaBE();
+            tempRegionenBE = new RegionenBE();
+            if (ligaBEList.get(i).getLigaUebergeordnetId() != null) {
+                tempLigaBE = ligaDAO.findById(ligaBEList.get(i).getLigaUebergeordnetId());
+            }
+            if (ligaBEList.get(i).getLigaRegionId() != null) {
+                tempRegionenBE = regionenDAO.findById(ligaBEList.get(i).getLigaRegionId());
+            }
+            returnList.add(i, LigaMapper.toLigaDO(ligaBEList.get(i),
+                    tempLigaBE,
+                    tempRegionenBE,
                     userDAO.findById(ligaBEList.get(i).getLigaVerantwortlichId())));
 
         }
@@ -78,29 +87,28 @@ public class LigaComponentImpl implements LigaComponent {
 
         checkLigaDO(ligaDO, currentDsbMitgliedId);
         final LigaBE ligaBE = LigaMapper.toLigaBE.apply(ligaDO);
-        final LigaBE persistedLigaBE = ligaDAO.create(ligaBE,currentDsbMitgliedId);
+        final LigaBE persistedLigaBE = ligaDAO.create(ligaBE, currentDsbMitgliedId);
         final LigaBE uebergeordnetLigaBE = ligaDAO.findById(persistedLigaBE.getLigaUebergeordnetId());
         final RegionenBE regionenBE = regionenDAO.findById(persistedLigaBE.getLigaRegionId());
         final UserBE userBE = userDAO.findById(persistedLigaBE.getLigaVerantwortlichId());
 
 
-
-        return LigaMapper.toLigaDO(persistedLigaBE, uebergeordnetLigaBE, regionenBE,userBE);
+        return LigaMapper.toLigaDO(persistedLigaBE, uebergeordnetLigaBE, regionenBE, userBE);
     }
 
 
     @Override
     public LigaDO update(LigaDO ligaDO, long currentDsbMitgliedId) {
-        checkLigaDO(ligaDO,currentDsbMitgliedId);
+        checkLigaDO(ligaDO, currentDsbMitgliedId);
         Preconditions.checkArgument(ligaDO.getId() >= 0, PRECONDITION_MSG_LIGA_ID);
 
         final LigaBE ligaBE = LigaMapper.toLigaBE.apply(ligaDO);
-        final LigaBE persistedLigaBE = ligaDAO.update(ligaBE,currentDsbMitgliedId);
+        final LigaBE persistedLigaBE = ligaDAO.update(ligaBE, currentDsbMitgliedId);
         final LigaBE uebergeordnetLigaBE = ligaDAO.findById(persistedLigaBE.getLigaUebergeordnetId());
         final RegionenBE regionenBE = regionenDAO.findById(persistedLigaBE.getLigaRegionId());
         final UserBE userBE = userDAO.findById(persistedLigaBE.getLigaVerantwortlichId());
 
-        return LigaMapper.toLigaDO(persistedLigaBE, uebergeordnetLigaBE, regionenBE,userBE);
+        return LigaMapper.toLigaDO(persistedLigaBE, uebergeordnetLigaBE, regionenBE, userBE);
     }
 
 
@@ -112,7 +120,7 @@ public class LigaComponentImpl implements LigaComponent {
 
         final LigaBE ligaBE = LigaMapper.toLigaBE.apply(ligaDO);
 
-        ligaDAO.delete(ligaBE,currentDsbMitgliedId);
+        ligaDAO.delete(ligaBE, currentDsbMitgliedId);
     }
 
     private void checkLigaDO(final LigaDO ligaDO, final long currentDsbMitgliedId) {
