@@ -1,4 +1,4 @@
-INSERT INTO klasse (klasse_id, klasse_name, klasse_jahrgang_min, klasse_jahrgang_max, klasse_nr)
+INSERT INTO klasse (klasse_id, klasse_name, klasse_alter_min, klasse_alter_max, klasse_nr)
 VALUES
 
 (0,'Herren' ,21, 49 ,10),

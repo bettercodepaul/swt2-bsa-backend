@@ -164,7 +164,7 @@ public class CompetitionClassService implements ServiceFacade {
 
         Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMin() >= 0,
                 PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
-        Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMin() < competitionClassDTO.getKlasseJahrgangMax(),
+        Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMin() > competitionClassDTO.getKlasseJahrgangMax(),
                 PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
 
     }
