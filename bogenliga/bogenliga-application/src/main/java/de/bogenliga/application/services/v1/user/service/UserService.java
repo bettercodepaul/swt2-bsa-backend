@@ -34,6 +34,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Null;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -130,7 +131,7 @@ public class UserService implements ServiceFacade {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/chpwd",
+            value = "/update",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOwnIdentity
@@ -163,7 +164,7 @@ public class UserService implements ServiceFacade {
     }
 
 
-
+/*
     @RequestMapping(
             method = RequestMethod.POST,
             value = "/admchpwd",
@@ -183,6 +184,8 @@ public class UserService implements ServiceFacade {
 
         return UserDTOMapper.toDTO.apply(userUpdatedDO);
     }
+*/
+
 
     @RequestMapping(
             method = RequestMethod.GET,
@@ -258,42 +261,31 @@ public class UserService implements ServiceFacade {
      *    "value": "true"
      *  }
      * }</pre>
-     * @param userDTO of the request body
      * @param userCredentialsDTO of the request body
      * @param principal authenticated user
-     * @return list of {@link userDTO} as JSON
+     * @return  {@link userDO} as JSON
      */
 
-/**
+
     @RequestMapping(method = RequestMethod.POST,
+            value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserDTO create(@RequestBody final UserDTO userDTO, final UserCredentialsDTO userCredentialsDTO, final Principal principal) {
+    public UserDTO create(@RequestBody final UserCredentialsDTO userCredentialsDTO, final Principal principal) {
 
-        checkPreconditions(userDTO);
+        ErrorDTO errorDetails = null;
 
-        LOG.debug("Receive 'create' request with id '{}', email '{}', version '{}', username '{}', password '{}'",
-                userDTO.getId(),
-                userDTO.getEmail(),
-                userDTO.getVersion(),
+        LOG.debug("Receive 'create' request with username '{}', password '{}'",
                 userCredentialsDTO.getUsername(),
-                userCredentialsDTO.getPassword();
-        // admins may update all passwords
-        final long userId = UserProvider.getCurrentUserId(principal);
-        final UserDO userDO = userComponent.findByEmail(uptcredentials.getUsername());
+                userCredentialsDTO.getPassword());
 
-        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), userId );
-
-        return UserDTOMapper.toDTO.apply(userUpdatedDO);
-        final UserDO newUserDO = UserDTOMapper.toDO.apply(userDTO);
-        final UserCredentialsDO newUserDO = UserDTOMapper.toDO.apply(userDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final BenutzerDO savedBenutzerDO = benutzerComponent.create(newBenutzerDO, userId);
-        return BenutzerDTOMapper.toDTO.apply(savedBenutzerDO);
+        final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(), userCredentialsDTO.getPassword(), userId);
+        return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
-*/
+
 
 
 }
