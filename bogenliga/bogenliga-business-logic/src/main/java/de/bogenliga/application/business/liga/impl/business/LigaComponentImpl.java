@@ -35,12 +35,14 @@ public class LigaComponentImpl implements LigaComponent {
     private final RegionenDAO regionenDAO;
     private final UserDAO userDAO;
 
+
     @Autowired
     public LigaComponentImpl(final LigaDAO ligaDAO, final RegionenDAO regionenDAO, final UserDAO userDAO) {
         this.ligaDAO = ligaDAO;
         this.regionenDAO = regionenDAO;
         this.userDAO = userDAO;
     }
+
 
     @Override
     public List<LigaDO> findAll() {
@@ -89,9 +91,6 @@ public class LigaComponentImpl implements LigaComponent {
 
         final LigaBE ligaBE = LigaMapper.toLigaBE.apply(ligaDO);
         final LigaBE persistedLigaBE = ligaDAO.update(ligaBE, currentDsbMitgliedId);
-        final LigaBE uebergeordnetLigaBE = ligaDAO.findById(persistedLigaBE.getLigaUebergeordnetId());
-        final RegionenBE regionenBE = regionenDAO.findById(persistedLigaBE.getLigaRegionId());
-        final UserBE userBE = userDAO.findById(persistedLigaBE.getLigaVerantwortlichId());
 
         return notNull(persistedLigaBE);
     }
@@ -108,30 +107,39 @@ public class LigaComponentImpl implements LigaComponent {
         ligaDAO.delete(ligaBE, currentDsbMitgliedId);
     }
 
+
     private void checkLigaDO(final LigaDO ligaDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(ligaDO, PRECONDITION_MSG_LIGA);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_LIGA_ID);
         Preconditions.checkNotNull(ligaDO.getName(), PRECONDITION_MSG_LIGA_NAME);
         Preconditions.checkArgument(ligaDO.getRegionId() >= 0, PRECONDITION_MSG_REGION_ID);
-        Preconditions.checkArgument(ligaDO.getLigaUebergeordnetId() >= 0, PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID);
-        Preconditions.checkArgument(ligaDO.getLigaVerantwortlichId() >= 0, PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID);
+
+        if(ligaDO.getLigaUebergeordnetId() != null) {
+            Preconditions.checkArgument(ligaDO.getLigaUebergeordnetId() >= 0, PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID);
+        }
+
+        if(ligaDO.getLigaVerantwortlichId() != null) {
+            Preconditions.checkArgument(ligaDO.getLigaVerantwortlichId() >= 0, PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID);
+        }
     }
 
-    private LigaDO notNull(LigaBE ligaBE){
+
+    private LigaDO notNull(LigaBE ligaBE) {
         LigaBE tempLigaBE = new LigaBE();
         RegionenBE tempRegionenBE = new RegionenBE();
         UserBE tempUserBE = new UserBE();
 
         if (ligaBE.getLigaUebergeordnetId() != null) {
-            tempLigaBE = ligaDAO.findById(ligaBE.getLigaUebergeordnetId()); }
-            if (ligaBE.getLigaRegionId() != null) {
-                tempRegionenBE = regionenDAO.findById(ligaBE.getLigaRegionId()); }
-                if (ligaBE.getLigaUebergeordnetId() != null) {
-                tempUserBE = userDAO.findById(ligaBE.getLigaVerantwortlichId()); }
+            tempLigaBE = ligaDAO.findById(ligaBE.getLigaUebergeordnetId());
+        }
+        if (ligaBE.getLigaRegionId() != null) {
+            tempRegionenBE = regionenDAO.findById(ligaBE.getLigaRegionId());
+        }
+        if (ligaBE.getLigaUebergeordnetId() != null) {
+            tempUserBE = userDAO.findById(ligaBE.getLigaVerantwortlichId());
+        }
 
-            return LigaMapper.toLigaDO(ligaBE,tempLigaBE, tempRegionenBE, tempUserBE);
-
-
+        return LigaMapper.toLigaDO(ligaBE, tempLigaBE, tempRegionenBE, tempUserBE);
 
     }
 }
