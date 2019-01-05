@@ -34,9 +34,18 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static final String MANNSCHAFTSMITGLIED_BE_USER_ID = "dsbMitgliedId";
     private static final String MANNSCHAFTSMITGLIED_BE_INSERT = "dsbMitgliedEingesetzt";
 
+    // new: important for the join with dsb_mitglied
+    private static final String DSBMITGLIED_BE_FORENAME = "dsbMitgliedVorname";
+    private static final String DSBMITGLIED_BE_SURNAME = "dsbMitgliedNachname";
+
+
     private static final String MANNSCHAFTSMITGLIED_TABLE_TEAM_ID = "mannschaftsmitglied_mannschaft_id";
     private static final String MANNSCHAFTSMITGLIED_TABLE_USER_ID = "mannschaftsmitglied_dsb_mitglied_id";
     private static final String MANNSCHAFTSMITGLIED_TABLE_INSERT = "mannschaftsmitglied_dsb_mitglied_eingesetzt";
+
+    // new: important for the join with dsb_mitglied
+    private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
+    private static final String DSBMITGLIED_TABLE_SURNAME = "dsb_mitglied_nachname";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<MannschaftsmitgliedBE> MANNSCHAFTSMITGLIED = new BusinessEntityConfiguration<>(
@@ -44,23 +53,23 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     private static final String FIND_ALL =
-            "SELECT *"
-                    + " FROM mannschaftsmitglied"
+            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+                    + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
                     + " ORDER BY mannschaftsmitglied_mannschaft_id";
 
     private static final String FIND_BY_TEAM_ID =
-            "SELECT * "
-                    + " FROM mannschaftsmitglied "
+            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+                    + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
                     + " WHERE mannschaftsmitglied_mannschaft_id = ?";
 
     private static final String FIND_BY_MEMBER_AND_TEAM_ID =
-            "SELECT * "
-                    + "FROM mannschaftsmitglied"
+            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
+                    + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
                     +" WHERE mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_id=?";
 
     private static final String FIND_ALL_SCHUETZE_TEAM =
-            "SELECT *"
-                    + "FROM mannschaftsmitglied"
+            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+                    + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
                     +" WHERE   mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_eingesetzt= true";
 
 
@@ -81,6 +90,11 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_BE_TEAM_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_USER_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_INSERT, MANNSCHAFTSMITGLIED_BE_INSERT);
+
+        System.out.println("test");
+        //new: important for the join with dsb_mitglied
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME,DSBMITGLIED_BE_FORENAME);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME,DSBMITGLIED_BE_SURNAME);
 
 
         // add technical columns
@@ -113,10 +127,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     public MannschaftsmitgliedBE findByMemberAndTeamId(long teamId, final long memberId){
-        System.out.println("hallo");
         MannschaftsmitgliedBE test;
         test = basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId,memberId);
-        System.out.println(test+"adjasf");
         return test;
 
     }
