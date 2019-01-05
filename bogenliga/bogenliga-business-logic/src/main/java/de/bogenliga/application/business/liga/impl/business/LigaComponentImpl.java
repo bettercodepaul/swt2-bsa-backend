@@ -44,22 +44,28 @@ public class LigaComponentImpl implements LigaComponent {
     public List<LigaDO> findAll() {
         LigaBE tempLigaBE;
         RegionenBE tempRegionenBE;
+        UserBE tempUserBE;
         final ArrayList<LigaDO> returnList = new ArrayList<>();
         final List<LigaBE> ligaBEList = ligaDAO.findAll();
 
         for (int i = 0; i < ligaBEList.size(); i++) {
             tempLigaBE = new LigaBE();
             tempRegionenBE = new RegionenBE();
+            tempUserBE = new UserBE();
             if (ligaBEList.get(i).getLigaUebergeordnetId() != null) {
                 tempLigaBE = ligaDAO.findById(ligaBEList.get(i).getLigaUebergeordnetId());
             }
             if (ligaBEList.get(i).getLigaRegionId() != null) {
                 tempRegionenBE = regionenDAO.findById(ligaBEList.get(i).getLigaRegionId());
             }
+            if (ligaBEList.get(i).getLigaUebergeordnetId() != null) {
+                tempUserBE = userDAO.findById(ligaBEList.get(i).getLigaVerantwortlichId());
+            }
+
             returnList.add(i, LigaMapper.toLigaDO(ligaBEList.get(i),
                     tempLigaBE,
                     tempRegionenBE,
-                    userDAO.findById(ligaBEList.get(i).getLigaVerantwortlichId())));
+                    tempUserBE));
 
         }
         return returnList;
