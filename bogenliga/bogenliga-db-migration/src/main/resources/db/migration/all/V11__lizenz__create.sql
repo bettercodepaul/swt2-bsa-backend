@@ -47,7 +47,7 @@ CREATE TABLE lizenz (
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
-  CONSTRAINT fk_lizenz_region FOREIGN KEY (lizenz_region_id) REFERENCES region (regionId)
+  CONSTRAINT fk_lizenz_region FOREIGN KEY (lizenz_region_id) REFERENCES region (region_id)
     ON DELETE CASCADE -- das Löschen einer Region löscht auch die Lizenzen
 );
 

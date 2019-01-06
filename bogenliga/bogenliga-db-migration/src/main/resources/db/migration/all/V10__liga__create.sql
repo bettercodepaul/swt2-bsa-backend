@@ -31,7 +31,7 @@ CREATE TABLE liga (
 
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
-  CONSTRAINT fk_liga_region FOREIGN KEY (liga_region_id) REFERENCES region (regionId)
+  CONSTRAINT fk_liga_region FOREIGN KEY (liga_region_id) REFERENCES region (region_id)
     ON DELETE CASCADE,
   CONSTRAINT fk_liga_liga FOREIGN KEY (liga_uebergeordnet) REFERENCES liga (liga_id)
     ON DELETE CASCADE,
