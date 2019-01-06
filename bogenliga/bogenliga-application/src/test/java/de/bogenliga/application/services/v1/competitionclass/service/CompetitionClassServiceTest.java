@@ -32,8 +32,8 @@ public class CompetitionClassServiceTest {
 
     private static final long ID = 42;
     private static final String KLASSENAME = "Herren";
-    private static final long KLASSEALTERMIN = 10;
-    private static final long KLASSEALTERMAX = 50;
+    private static final long KLASSEALTERMIN = 1998;
+    private static final long KLASSEALTERMAX = 1996;
     private static final long KLASSENR = 1337;
 
 
