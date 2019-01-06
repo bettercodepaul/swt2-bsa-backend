@@ -18,7 +18,6 @@ import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 
 @Component
 public class LigaComponentImpl implements LigaComponent {
@@ -114,11 +113,11 @@ public class LigaComponentImpl implements LigaComponent {
         Preconditions.checkNotNull(ligaDO.getName(), PRECONDITION_MSG_LIGA_NAME);
         Preconditions.checkArgument(ligaDO.getRegionId() >= 0, PRECONDITION_MSG_REGION_ID);
 
-        if(ligaDO.getLigaUebergeordnetId() != null) {
+        if (ligaDO.getLigaUebergeordnetId() != null) {
             Preconditions.checkArgument(ligaDO.getLigaUebergeordnetId() >= 0, PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID);
         }
 
-        if(ligaDO.getLigaVerantwortlichId() != null) {
+        if (ligaDO.getLigaVerantwortlichId() != null) {
             Preconditions.checkArgument(ligaDO.getLigaVerantwortlichId() >= 0, PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID);
         }
     }
