@@ -35,8 +35,8 @@ public class CompetitionClassComponentImplTest {
 
     private static final Long ID = 1337L;
     private static final String NAME ="Herren";
-    private static final Long JAHRGANG_MIN = 0L;
-    private static final Long JAHRGANG_MAX = 99L;
+    private static final Long JAHRGANG_MIN = 1998L;
+    private static final Long JAHRGANG_MAX = 1996L;
     private static final Long NUMBER = 2L;
 
     @Rule
@@ -57,8 +57,8 @@ public class CompetitionClassComponentImplTest {
         final CompetitionClassBE expectedBE = new CompetitionClassBE();
         expectedBE.setKlasseId(ID);
         expectedBE.setKlasseName(NAME);
-        expectedBE.setKlasseAlterMin(JAHRGANG_MIN);
-        expectedBE.setKlasseAlterMax(JAHRGANG_MAX);
+        expectedBE.setKlasseAlterMin(44L);
+        expectedBE.setKlasseAlterMax(66L);
         expectedBE.setKlasseNr(NUMBER);
         return expectedBE;
     }

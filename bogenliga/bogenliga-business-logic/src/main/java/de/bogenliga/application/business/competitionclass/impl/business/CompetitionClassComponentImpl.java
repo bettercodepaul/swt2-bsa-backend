@@ -134,9 +134,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         Preconditions.checkNotNull(competitionClassDO.getKlasseJahrgangMax(), PRECONDITION_MSG_KLASSE_JAHRGANG_MAX);
         Preconditions.checkNotNull(competitionClassDO.getKlasseNr(), PRECONDITION_MSG_KLASSE_NR);
         Preconditions.checkNotNull(competitionClassDO.getKlasseName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkArgument(competitionClassDO.getKlasseJahrgangMin() >= 0, PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
         Preconditions.checkArgument(competitionClassDO.getKlasseJahrgangMin() > competitionClassDO.getKlasseJahrgangMax(),
                 PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
-
     }
 }
