@@ -114,31 +114,40 @@ public class UserComponentImpl implements UserComponent {
         final UserBE result = new UserBE();
         final String salt = passwordHashingBA.generateSalt();
         final String pwdhash = passwordHashingBA.calculateHash(password, salt);
+        result.setUserEmail(email);
         result.setUserSalt(salt);
         result.setUserPassword(pwdhash);
 
-        final UserBE persistedUserBE = userDAO.update(result, currentUserId);
+        final UserBE persistedUserBE = userDAO.create(result, currentUserId);
 
         return UserMapper.toUserDO.apply(persistedUserBE);
     }
 
 
     @Override
-    public UserDO update(final UserDO userDO, final String password, final Long currentUserId) {
+    public UserDO update(final UserDO userDO, final String password, final String newpassword, final Long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
         Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
+        Preconditions.checkNotNullOrEmpty(newpassword, PRECONDITON_MSG_USER_PASSWORD);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
 
 
-        final UserBE result = userDAO.findByEmail(userDO.getEmail());
+        final UserBE result = userDAO.findById(userDO.getId());
         final String pwdhash = passwordHashingBA.calculateHash(password, result.getUserSalt());
-        result.setUserPassword(pwdhash);
+        // string vergleich der hash-Werte im aktuelllen BE Object und aus dem aktuellen Password
+        // nur bei Identität (Passwort richtig) geht es weiter
+        if (pwdhash != result.getUserPassword()){
+            throw new BusinessException(ErrorCode.INSUFFICIENT_CREDENTIALS, "Aktuelles Passwort ist falsch");
+        }else{
+            final String newpwdhash = passwordHashingBA.calculateHash(newpassword, result.getUserSalt());
+            result.setUserPassword(pwdhash);
 
-        final UserBE persistedUserBE = userDAO.update(result, currentUserId);
+            final UserBE persistedUserBE = userDAO.update(result, currentUserId);
 
-        return UserMapper.toUserDO.apply(persistedUserBE);
+            return UserMapper.toUserDO.apply(persistedUserBE);
+        }
     }
 
 
