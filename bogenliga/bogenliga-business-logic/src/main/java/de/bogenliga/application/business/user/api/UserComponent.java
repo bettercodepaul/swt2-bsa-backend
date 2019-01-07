@@ -79,7 +79,7 @@ public interface UserComponent extends ComponentFacade {
      *
      * @return the user, if the user exists and the password is sufficient
      */
-    UserDO update(final UserDO userDO, final String password, final Long currentUserId);
+    UserDO update(final UserDO userDO, final String password, final String newpassword, final Long currentUserId);
 
     /**
      * Identifies technical user, e.g. the SYSTEM user

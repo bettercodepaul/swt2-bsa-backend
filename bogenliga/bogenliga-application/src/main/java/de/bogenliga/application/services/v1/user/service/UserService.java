@@ -13,10 +13,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
 import de.bogenliga.application.services.v1.user.mapper.UserProfileDTOMapper;
-import de.bogenliga.application.services.v1.user.model.UserCredentialsDTO;
-import de.bogenliga.application.services.v1.user.model.UserDTO;
-import de.bogenliga.application.services.v1.user.model.UserProfileDTO;
-import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
+import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
@@ -130,43 +127,33 @@ public class UserService implements ServiceFacade {
 
 
     @RequestMapping(
-            method = RequestMethod.POST,
-            value = "/update",
+            method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOwnIdentity
-    public ResponseEntity update(@RequestBody final UserCredentialsDTO uptcredentials,  final Principal principal) {
+    public UserDTO update(@RequestBody final UserChangeCredentialsDTO uptcredentials, final Principal principal) {
         Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getUsername(), "Username must not be null or empty");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
+        Preconditions.checkNotNullOrEmpty(uptcredentials.getNewPassword(), "New password must not be null or empty");
 
         ErrorDTO errorDetails = null;
 
         final long userId = UserProvider.getCurrentUserId(principal);
-        final UserDO userDO = userComponent.findByEmail(uptcredentials.getUsername());
 
-        // we will only allow changes to password in case autheticated user changes his own password
-        if(userId == userDO.getId() ){
-            final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), userId );
-            final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
+        final UserDO userDO = new UserDO();
+        userDO.setId(userId);
 
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add("Update User", "Bearer " + userUpdatedDTO.getEmail());
+        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), uptcredentials.getNewPassword(), userId );
+        final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
 
-            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userUpdatedDTO);
-        }
-        else {
 
-            // return error details from authentication or a default error
-            errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.INSUFFICIENT_CREDENTIALS, "Update failed");
-            return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        return userUpdatedDTO;
     }
 
 
 /*
     @RequestMapping(
-            method = RequestMethod.POST,
+            method = RequestMethod.PUT,
             value = "/admchpwd",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -268,7 +255,6 @@ public class UserService implements ServiceFacade {
 
 
     @RequestMapping(method = RequestMethod.POST,
-            value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
