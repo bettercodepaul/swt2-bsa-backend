@@ -40,6 +40,9 @@ public class MannschaftsmitgliedComponentImplTest {
     private static final Long MANNSCHAFTSID = 1111L;
     private static final Long DSB_MITGLIED_ID = 2222L;
     private static final Boolean DSB_MITGLIED_EINGESTZT = true;
+    private static final String DSB_MITGLIED_VORNSME = "Mario";
+    private static final String DSB_MItglied_Nachname = "Gomez";
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -70,7 +73,9 @@ public class MannschaftsmitgliedComponentImplTest {
         return new MannschaftsmitgliedDO(
                     MANNSCHAFTSID,
                     DSB_MITGLIED_ID,
-                    DSB_MITGLIED_EINGESTZT);
+                    DSB_MITGLIED_EINGESTZT,
+                     DSB_MITGLIED_VORNSME,
+                    DSB_MItglied_Nachname);
     }
 
     @Test
