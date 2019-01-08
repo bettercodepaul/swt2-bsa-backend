@@ -7,19 +7,11 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class UserCredentialsDTO implements DataTransferObject {
+public class UserChangeCredentialsDTO implements DataTransferObject {
 
     private static final long serialVersionUID = 7100904135169446743L;
-    private String username;
     private String password;
-
-
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(final String username) {
-        this.username = username;
-    }
+    private String newpassword;
 
 
     public String getPassword() {
@@ -28,4 +20,12 @@ public class UserCredentialsDTO implements DataTransferObject {
     public void setPassword(final String password) {
         this.password = password;
     }
+
+    public String getNewPassword() {
+        return newpassword;
+    }
+    public void setNewPassword(final String newpassword) {
+        this.newpassword = newpassword;
+    }
+
 }

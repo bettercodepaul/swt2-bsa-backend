@@ -33,6 +33,7 @@ public class UserDTO implements DataTransferObject {
     }
 
 
+
     /**
      * Copy constructor
      *

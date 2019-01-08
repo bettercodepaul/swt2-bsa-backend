@@ -45,7 +45,7 @@ public class PasswordHashingBA {
      *
      * @return sha-512 hash value
      */
-    String calculateHash(final String password, final String salt) {
+    public String calculateHash(final String password, final String salt) {
 
         try {
             final MessageDigest md = MessageDigest.getInstance(SHA_512);
@@ -65,7 +65,7 @@ public class PasswordHashingBA {
      *
      * @return sha-512 hash value
      */
-    String generateSalt() {
+    public String generateSalt() {
         try {
             final SecureRandom random = new SecureRandom();
             final byte[] randomSeed = new byte[100];
