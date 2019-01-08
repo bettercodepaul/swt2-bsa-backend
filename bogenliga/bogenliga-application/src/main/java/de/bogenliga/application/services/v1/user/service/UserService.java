@@ -5,7 +5,6 @@ import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.common.errorhandling.ErrorCategory;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
@@ -31,7 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Null;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -125,12 +123,34 @@ public class UserService implements ServiceFacade {
     }
 
 
+    /**
+     * I persist a new password for the current user and return this user entry.
+     *
+     * Usage:
+     * <pre>{@code Request: PUT /v1/user
+     * Body:
+     * {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     * }
+     * }</pre>
+     * <pre>{@code Response:
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     *  }
+     * }</pre>
+     * @param uptcredentials of the request body
+     * @param principal authenticated user
+     * @return  {@link UserDTO} as JSON
+     */
+
 
     @RequestMapping(
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOwnIdentity
+//    @RequiresOwnIdentity
     public UserDTO update(@RequestBody final UserChangeCredentialsDTO uptcredentials, final Principal principal) {
         Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
@@ -138,12 +158,12 @@ public class UserService implements ServiceFacade {
 
         ErrorDTO errorDetails = null;
 
-        final long userId = UserProvider.getCurrentUserId(principal);
+        final Long userId = UserProvider.getCurrentUserId(principal);
 
         final UserDO userDO = new UserDO();
         userDO.setId(userId);
 
-        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), uptcredentials.getNewPassword(), userId );
+        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), uptcredentials.getNewPassword(), userId);
         final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
 
 
@@ -151,27 +171,6 @@ public class UserService implements ServiceFacade {
     }
 
 
-/*
-    @RequestMapping(
-            method = RequestMethod.PUT,
-            value = "/admchpwd",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserDTO admchpwd(@RequestBody final UserCredentialsDTO uptcredentials,  final Principal principal) {
-        Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getUsername(), "Username must not be null or empty");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
-
-        // admins may update all passwords
-        final long userId = UserProvider.getCurrentUserId(principal);
-        final UserDO userDO = userComponent.findByEmail(uptcredentials.getUsername());
-
-        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), userId );
-
-        return UserDTOMapper.toDTO.apply(userUpdatedDO);
-    }
-*/
 
 
     @RequestMapping(
@@ -250,7 +249,7 @@ public class UserService implements ServiceFacade {
      * }</pre>
      * @param userCredentialsDTO of the request body
      * @param principal authenticated user
-     * @return  {@link userDO} as JSON
+     * @return  {@link UserDTO} as JSON
      */
 
 
@@ -267,6 +266,13 @@ public class UserService implements ServiceFacade {
                 userCredentialsDTO.getPassword());
 
         final long userId = UserProvider.getCurrentUserId(principal);
+        final String username = UserProvider.get(principal);
+);
+
+
+        // custom permission check
+        final Long id = jwtTokenProvider.getUserId(jwt);
+
 
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(), userCredentialsDTO.getPassword(), userId);
         return UserDTOMapper.toDTO.apply(userCreatedDO);

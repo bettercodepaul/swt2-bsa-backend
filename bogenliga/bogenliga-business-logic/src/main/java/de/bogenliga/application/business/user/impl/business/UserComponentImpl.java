@@ -125,12 +125,11 @@ public class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public UserDO update(final UserDO userDO, final String password, final String newpassword, final Long currentUserId) {
+    public UserDO update(final UserDO userDO, final String password, final String newPassword, final Long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
         Preconditions.checkArgument(userDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
-        Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
-        Preconditions.checkNotNullOrEmpty(newpassword, PRECONDITON_MSG_USER_PASSWORD);
+        Preconditions.checkNotNullOrEmpty(newPassword, PRECONDITON_MSG_USER_PASSWORD);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
 
 
@@ -141,7 +140,7 @@ public class UserComponentImpl implements UserComponent {
         if (pwdhash != result.getUserPassword()){
             throw new BusinessException(ErrorCode.INSUFFICIENT_CREDENTIALS, "Aktuelles Passwort ist falsch");
         }else{
-            final String newpwdhash = passwordHashingBA.calculateHash(newpassword, result.getUserSalt());
+            final String newpwdhash = passwordHashingBA.calculateHash(newPassword, result.getUserSalt());
             result.setUserPassword(pwdhash);
 
             final UserBE persistedUserBE = userDAO.update(result, currentUserId);

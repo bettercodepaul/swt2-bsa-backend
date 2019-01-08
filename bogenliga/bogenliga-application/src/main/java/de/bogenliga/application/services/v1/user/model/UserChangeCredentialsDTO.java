@@ -11,21 +11,22 @@ public class UserChangeCredentialsDTO implements DataTransferObject {
 
     private static final long serialVersionUID = 7100904135169446743L;
     private String password;
-    private String newpassword;
+    private String newPassword;
 
 
     public String getPassword() {
         return password;
     }
-    public void setPassword(final String password) {
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
     public String getNewPassword() {
-        return newpassword;
-    }
-    public void setNewPassword(final String newpassword) {
-        this.newpassword = newpassword;
+        return newPassword;
     }
 
+    public void setNewpassword(String newpassword) {
+        this.newPassword = newPassword;
+    }
 }
