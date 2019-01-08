@@ -1,6 +1,6 @@
 
 
-INSERT INTO public.region (regionId, regionName, region_kuerzel, region_typ, region_uebergeordnet)
+INSERT INTO public.region (region_id, region_name, region_kuerzel, region_typ, region_uebergeordnet)
 VALUES
   (0, 'Deutscher Schützenbund',             'DSB',      'BUNDESVERBAND', NULL),
   (1, 'Württembergischer Schützenverband',  'WT',       'LANDESVERBAND', 0),
@@ -56,7 +56,7 @@ VALUES
 --
 
 Insert INTO public.region
-    (regionName, region_kuerzel, region_typ, region_uebergeordnet)
+    (region_name, region_kuerzel, region_typ, region_uebergeordnet)
 SELECT
     "lvtest",
     "lv",
