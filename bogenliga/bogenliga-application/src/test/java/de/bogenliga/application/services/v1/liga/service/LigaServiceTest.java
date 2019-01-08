@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -87,9 +86,9 @@ public class LigaServiceTest {
         ligaDTO.setName(NAME);
         ligaDTO.setRegionId(REGIONID);
         ligaDTO.setRegionName(REGIONNAME);
-        ligaDTO.setLigaUbergeordnetId(LIGAUEBERGEORDNETID);
+        ligaDTO.setLigaUebergeordnetId(LIGAUEBERGEORDNETID);
         ligaDTO.setLigaUebergeordnetName(LIGAUEBERGEORDNETNAME);
-        ligaDTO.setLigaUbergeordnetId(VERANTWORTLICHERID);
+        ligaDTO.setLigaUebergeordnetId(VERANTWORTLICHERID);
         ligaDTO.setLigaVerantwortlichMail(VERANTWORTLICHEREMAIL);
         return ligaDTO;
     }

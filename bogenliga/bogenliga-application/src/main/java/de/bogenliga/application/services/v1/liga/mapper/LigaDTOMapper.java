@@ -38,7 +38,7 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
         ligaDO.setId(dto.getId());
         ligaDO.setName(dto.getName());
         ligaDO.setRegionId(dto.getRegionId());
-        ligaDO.setLigaUebergeordnetId(dto.getLigaUbergeordnetId());
+        ligaDO.setLigaUebergeordnetId(dto.getLigaUebergeordnetId());
         ligaDO.setLigaVerantwortlichId(dto.getLigaVerantwortlichId());
 
 

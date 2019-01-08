@@ -110,7 +110,7 @@ public class LigaService implements ServiceFacade {
                 ligaDTO.getId(),
                 ligaDTO.getName(),
                 ligaDTO.getRegionId(),
-                ligaDTO.getLigaUbergeordnetId(),
+                ligaDTO.getLigaUebergeordnetId(),
                 ligaDTO.getLigaVerantwortlichId());
 
         checkPreconditions(ligaDTO);
@@ -139,7 +139,7 @@ public class LigaService implements ServiceFacade {
                 ligaDTO.getId(),
                 ligaDTO.getName(),
                 ligaDTO.getRegionId(),
-                ligaDTO.getLigaUbergeordnetId(),
+                ligaDTO.getLigaUebergeordnetId(),
                 ligaDTO.getLigaVerantwortlichId());
 
 
@@ -175,8 +175,8 @@ public class LigaService implements ServiceFacade {
         Preconditions.checkArgument(ligaDTO.getRegionId() >= 0, PRECONDITION_MSG_LIGA_REGION_ID_NEG);
 
         // These are not mandatory fields. Only check if filled.
-        if (ligaDTO.getLigaUbergeordnetId() != null) {
-            Preconditions.checkArgument(ligaDTO.getLigaUbergeordnetId() >= 0,
+        if (ligaDTO.getLigaUebergeordnetId() != null) {
+            Preconditions.checkArgument(ligaDTO.getLigaUebergeordnetId() >= 0,
                     PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG);
         } else if (ligaDTO.getLigaVerantwortlichId() != null) {
             Preconditions.checkArgument(ligaDTO.getLigaVerantwortlichId() >= 0,
