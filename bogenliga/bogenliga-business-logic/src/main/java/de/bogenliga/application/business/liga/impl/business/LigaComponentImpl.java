@@ -134,9 +134,8 @@ public class LigaComponentImpl implements LigaComponent {
         if (ligaBE.getLigaRegionId() != null) {
             tempRegionenBE = regionenDAO.findById(ligaBE.getLigaRegionId());
         }
-        if (ligaBE.getLigaUebergeordnetId() != null) {
             tempUserBE = userDAO.findById(ligaBE.getLigaVerantwortlichId());
-        }
+
 
         return LigaMapper.toLigaDO(ligaBE, tempLigaBE, tempRegionenBE, tempUserBE);
 
