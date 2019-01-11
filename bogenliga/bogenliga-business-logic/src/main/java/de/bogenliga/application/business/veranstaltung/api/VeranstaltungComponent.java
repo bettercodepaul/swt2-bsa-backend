@@ -1,55 +1,63 @@
 package de.bogenliga.application.business.veranstaltung.api;
 
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-
 import java.util.List;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.common.component.ComponentFacade;
 
 /**
  * Responsible for the veranstaltung database requests.
+ *
+ * @author Daniel Schott, daniel.schott@student.reutlingen-university.de
  */
-public interface VeranstaltungComponent {
+public interface VeranstaltungComponent extends ComponentFacade {
 
     /**
-     * Return all veranstaltung entries.
+     * Return all Veranstaltung entries.
      *
-     * @return list of all veranstaltung in the database;
-     * empty list, if no veranstaltung is found
+     * @return list of all Veranstaltung in the database. empty list if no Veranstaltung was found in the database.
      */
     List<VeranstaltungDO> findAll();
-    /**
-     * Return a veranstaltung entry with the given id.
-     *
-     * @param id of the veranstaltung
-     * @return single veranstaltung entry with the given id;
-     * null, if no veranstaltung is found
-     */
-    VeranstaltungDO findById(long id);
 
     /**
-     * Create a new veranstaltung in the database.
+     * Returns a "Veranstaltung" with the given id
      *
-     * @param veranstaltungDO new veranstaltung
-     * @return persisted version of the veranstaltung
+     * @param veranstaltungId ID of the verein to be queried from the database.
+     *
+     * @return returns the queried Veranstaltung
      */
-    VeranstaltungDO create(VeranstaltungDO veranstaltungDO, long currentVeranstaltungId);
+    VeranstaltungDO findById(final long veranstaltungId);
 
 
+    /*TODO
     /**
-     * Update an existing veranstaltung. The veranstaltung is identified by the id.
+     * Create an entry of Veranstaltung
      *
-     * @param veranstaltungDO existing veranstaltungDO to update
-     * @return persisted version of the veranstaltung
-     */
-    VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentVeranstaltungId);
+     * @param veranstaltungDO    Veranstaltungs DataObject containing propertires of a Veranstaltung
+     * @param currentDsbMitglied Id of the currently logged in user that sent create request
+     *
+     * @return returns that created Verein
+
+    VeranstaltungDO create(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
 
     /**
-     * Delete an existing veranstaltung. The veranstaltung is identified by the id.
+     * Updates a database entry with the given values
      *
-     * @param veranstaltungDO veranstaltung to delete
+     * @param veranstaltungDO    Veranstaltung DO containing properties of a verein
+     * @param currentDsbMitglied id of the currently logged in user that sent the update request
+     *
+     * @return returns the updated verein entry
+
+
+    VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
+
+    /**
+     * Deletes a database entry depending on the id of the VeranstaltungDO property
+     *
+     * @param veranstaltungDO    Veranstaltung DataObject containing atleast an id
+     * @param currentDsbMitglied id of the currently logged in user that sent the delete request
+
+
+    void delete(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
      */
-    void delete(VeranstaltungDO veranstaltungDO, long currentVeranstaltungId);
 }
-
-
-

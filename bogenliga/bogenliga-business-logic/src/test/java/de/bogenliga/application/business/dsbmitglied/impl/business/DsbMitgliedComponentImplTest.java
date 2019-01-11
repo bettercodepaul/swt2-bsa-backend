@@ -97,8 +97,10 @@ public class DsbMitgliedComponentImplTest {
         // configure mocks
         when(dsbMitgliedDAO.findAll()).thenReturn(expectedBEList);
 
+
         // call test method
         final List<DsbMitgliedDO> actual = underTest.findAll();
+
 
         // assert result
         assertThat(actual)
