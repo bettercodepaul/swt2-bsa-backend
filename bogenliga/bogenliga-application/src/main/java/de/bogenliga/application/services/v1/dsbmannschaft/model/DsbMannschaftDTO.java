@@ -13,11 +13,11 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class DsbMannschaftDTO implements DataTransferObject {
     private static final long serialVersionUID = 8559563978424033907L;
 
-    private long id;
-    private long vereinId;
-    private long nummer;
-    private long benutzerId;
-    private long veranstaltungId;
+    private Long id;
+    private Long vereinId;
+    private Long nummer;
+    private Long benutzerId;
+    private Long veranstaltungId;
 
 
     /**
