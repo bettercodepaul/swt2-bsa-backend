@@ -1,9 +1,11 @@
 package de.bogenliga.application.services.v1.user.service;
 
 import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
+import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -11,9 +13,11 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
+import de.bogenliga.application.services.v1.user.mapper.UserRoleDTOMapper;
 import de.bogenliga.application.services.v1.user.mapper.UserProfileDTOMapper;
 import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
+import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -54,8 +58,10 @@ import java.util.stream.Collectors;
 public class UserService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_USER = "BenutzerDO must not be null";
-    private static final String PRECONDITION_MSG_USER_ID = "BenutzerDO ID must not be negative";
+    private static final String PRECONDITION_MSG_USER_ID = "User ID must not be negative";
+    private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
+    private static final String PRECONDITION_MSG_ROLE_NAME = "RoleName must not be null";
     private static final String PRECONDITION_MSG_USER_PASSWORD = "Benutzer password must not be null";
     private static final String PRECONDITION_MSG_USER_NEWPASSWORD = "Benutzer new password must not be null";
 
@@ -67,6 +73,8 @@ public class UserService implements ServiceFacade {
 
     private final UserComponent userComponent;
 
+    private final UserRoleComponent userRoleComponent;
+
     private final UserProfileComponent userProfileComponent;
 
 
@@ -75,10 +83,12 @@ public class UserService implements ServiceFacade {
                        //final AuthenticationManager authenticationManager
                        final WebSecurityConfiguration webSecurityConfiguration,
                        final UserComponent userComponent,
+                       final UserRoleComponent userRoleComponent,
                        final UserProfileComponent userProfileComponent) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.webSecurityConfiguration = webSecurityConfiguration;
         this.userComponent = userComponent;
+        this.userRoleComponent = userRoleComponent;
         this.userProfileComponent = userProfileComponent;
     }
 
@@ -150,7 +160,6 @@ public class UserService implements ServiceFacade {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-//    @RequiresOwnIdentity
     public UserDTO update(@RequestBody final UserChangeCredentialsDTO uptcredentials, final Principal principal) {
         Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
@@ -165,6 +174,34 @@ public class UserService implements ServiceFacade {
 
         final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), uptcredentials.getNewPassword(), userId);
         final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
+
+
+        return userUpdatedDTO;
+    }
+
+
+    @RequestMapping(
+            method = RequestMethod.PUT,
+//            value = "/uptRole",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public UserRoleDTO updateRole(@RequestBody final UserRoleDTO updatedUserRole, final Principal principal) {
+        Preconditions.checkNotNull(updatedUserRole, "UserRole-Definition must not be null");
+        Preconditions.checkNotNull(updatedUserRole.getId(), PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(updatedUserRole.getRoleId(), PRECONDITION_MSG_ROLE_ID);
+        Preconditions.checkNotNullOrEmpty(updatedUserRole.getEmail(),PRECONDITION_MSG_USER_EMAIL);
+        Preconditions.checkNotNullOrEmpty(updatedUserRole.getRoleName(),PRECONDITION_MSG_ROLE_NAME);
+
+        ErrorDTO errorDetails = null;
+        final Long userId = UserProvider.getCurrentUserId(principal);
+
+        final UserRoleDO userRoleDO = new UserRoleDO();
+        userRoleDO.setId(updatedUserRole.getId());
+        userRoleDO.setRoleId(updatedUserRole.getRoleId());
+
+        final UserRoleDO userRoleUpdatedDO = userRoleComponent.update(userRoleDO, userId);
+        final UserRoleDTO userUpdatedDTO = UserRoleDTOMapper.toUserDTO.apply(userRoleUpdatedDO);
 
 
         return userUpdatedDTO;
@@ -225,9 +262,9 @@ public class UserService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public List<UserDTO> findAll() {
-        final List<UserDO> userDOList = userComponent.findAll();
-        return userDOList.stream().map(UserDTOMapper.toDTO).collect(Collectors.toList());
+    public List<UserRoleDTO> findAll() {
+        final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
+        return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     /**
@@ -265,16 +302,13 @@ public class UserService implements ServiceFacade {
                 userCredentialsDTO.getUsername(),
                 userCredentialsDTO.getPassword());
 
-        final long userId = UserProvider.getCurrentUserId(principal);
-        final String username = UserProvider.get(principal);
-);
+        final UserAuthenticationProvider userAuthenticationProvider = new UserAuthenticationProvider(userComponent);
+        final Long userId = UserProvider.getCurrentUserId(principal);
 
-
-        // custom permission check
-        final Long id = jwtTokenProvider.getUserId(jwt);
-
-
+        // user anlegen
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(), userCredentialsDTO.getPassword(), userId);
+        //default rolle anlegen (User)
+        final UserRoleDO userRoleCreatedDO = userRoleComponent.create(userCreatedDO.getId(), userId);
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
 
