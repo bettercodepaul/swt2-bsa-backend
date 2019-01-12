@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
+import de.bogenliga.application.business.user.impl.dao.UserPermissionDAO;
+import de.bogenliga.application.business.user.impl.entity.UserPermissionBE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -28,6 +30,7 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PASSWORD = "UserDO password must not be null or empty";
+    private static final String USER_ROLE_DEFAULT = "USER";
     private final UserDAO userDAO;
     private final SignInBA signInBA;
     private final TechnicalUserBA technicalUserBA;
@@ -119,6 +122,7 @@ public class UserComponentImpl implements UserComponent {
         result.setUserPassword(pwdhash);
 
         final UserBE persistedUserBE = userDAO.create(result, currentUserId);
+
 
         return UserMapper.toUserDO.apply(persistedUserBE);
     }

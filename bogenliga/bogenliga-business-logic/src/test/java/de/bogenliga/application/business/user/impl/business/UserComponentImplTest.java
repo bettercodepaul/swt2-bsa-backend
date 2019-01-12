@@ -11,6 +11,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.impl.businessactivity.SignInBA;
 import de.bogenliga.application.business.user.impl.businessactivity.TechnicalUserBA;
+import de.bogenliga.application.business.user.impl.businessactivity.PasswordHashingBA;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -28,6 +29,9 @@ public class UserComponentImplTest {
     private static final Long VERSION = 2L;
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
+    private static final String NEWPASSWORD = "newpassword";
+    private static final String SALT = "salt";
+    private static final String PWDHASH = "pwdhash";
     private static final Long USER = 0L;
     private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", null, 0L, null, 0L, 0L);
 
@@ -41,6 +45,8 @@ public class UserComponentImplTest {
     private SignInBA signInBA;
     @Mock
     private TechnicalUserBA technicalUserBA;
+    @Mock
+    private PasswordHashingBA passwordHashingBA;
 
     @InjectMocks
     private UserComponentImpl underTest;
@@ -271,6 +277,174 @@ public class UserComponentImplTest {
         // verify invocations
         verify(signInBA, never()).signInUser(any(), any());
     }
+
+
+    @Test
+    public void create_UserEmailnotNull(){
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create("", PASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void create_UserPasswordnotNull(){
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(EMAIL, "", ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void create_UserIDnotNull(){
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, null))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+
+    @Test
+    public void create_sucessful(){
+
+        final UserBE expectedBE = new UserBE();
+        expectedBE.setUserId(ID);
+        expectedBE.setUserEmail(EMAIL);
+        expectedBE.setVersion(VERSION);
+
+        final UserBE inputBE = new UserBE();
+        inputBE.setUserEmail(EMAIL);
+        inputBE.setUserSalt(SALT);
+        inputBE.setUserPassword(PWDHASH);
+
+        // configure mocks
+        when(passwordHashingBA.generateSalt()).thenReturn(SALT);
+        when(passwordHashingBA.calculateHash(anyString(), anyString())).thenReturn(PWDHASH);
+
+        // call test method
+        final UserDO actual =  underTest.create(EMAIL, PASSWORD, ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getUserId());
+        assertThat(actual.getEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+        assertThat(actual.getVersion())
+                .isEqualTo(expectedBE.getVersion());
+
+        // verify invocations
+        verify(userDAO).create(inputBE, ID);
+    }
+
+
+
+
+    @Test
+    public void update_UserDO_notNull(){
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(null, PASSWORD, NEWPASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void update_UserDO_ID_notNull(){
+
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(SYSTEM_USER, PASSWORD, NEWPASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+
+    @Test
+    public void update_Password_notNull(){
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(inUserDO, "", NEWPASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void update_NewPassword_notNull(){
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, "", ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void update_CurrentUserId_notNull(){
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void update_Password_incorrect(){
+//TODO prüfen auf falsches Password
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void update_successful(){
+//TODO einmal erfolgreich
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
 
 
     @Test
