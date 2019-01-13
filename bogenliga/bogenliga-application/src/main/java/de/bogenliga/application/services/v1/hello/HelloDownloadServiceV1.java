@@ -55,7 +55,7 @@ public class HelloDownloadServiceV1 implements ServiceFacade {
                     .contentLength(r)
                     .body(new InputStreamResource(is));
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOG.error("PDF download failed", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF download failed", e);
         }
     }
@@ -82,7 +82,7 @@ public class HelloDownloadServiceV1 implements ServiceFacade {
                     .contentLength(r)
                     .body(new InputStreamResource(is));
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOG.error("WORD download failed", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "WORD download failed", e);
         }
     }
@@ -109,7 +109,7 @@ public class HelloDownloadServiceV1 implements ServiceFacade {
                     .contentLength(r)
                     .body(new InputStreamResource(is));
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOG.error("EXCEL download failed", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "EXCEL download failed", e);
         }
     }
@@ -136,7 +136,7 @@ public class HelloDownloadServiceV1 implements ServiceFacade {
                     .contentLength(r)
                     .body(new InputStreamResource(is));
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOG.error("CSV download failed", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "CSV download failed", e);
         }
     }
@@ -163,7 +163,7 @@ public class HelloDownloadServiceV1 implements ServiceFacade {
                     .contentLength(r)
                     .body(new InputStreamResource(is));
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOG.error("MDB download failed", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "MDB download failed", e);
         }
     }
