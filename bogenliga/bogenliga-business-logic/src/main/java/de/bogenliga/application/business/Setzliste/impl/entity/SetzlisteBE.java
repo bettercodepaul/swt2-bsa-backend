@@ -6,9 +6,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 import java.sql.Date;
 
 /**
- * I represent the dsbmitglied business entity.
- * <p>
- * A dsbmitglied is a registered member of the DSB. The dsbmitglied is not necessarily a technical user of the system.
+ * I represent the setzliste business entity.
  * <p>
  * The {@link CommonBusinessEntity} contains the technical parameter. Business entities commonly use these parameters to
  * control their lifecycle.

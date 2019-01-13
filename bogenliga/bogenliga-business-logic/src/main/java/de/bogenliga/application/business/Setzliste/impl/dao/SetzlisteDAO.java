@@ -63,7 +63,10 @@ public class SetzlisteDAO implements DataAccessObject {
                    + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
                    + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
                    + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
-                   + " WHERE wk.wettkampf_tag = lt.ligatabelle_wettkampf_tag";
+                   + " WHERE wk.wettkampf_tag = lt.ligatabelle_wettkampf_tag"
+                   + " AND wk.wettkampf_id = ?"
+                   + " AND lt.ligatabelle_wettkampf_tag = ?"
+                   + " ORDER BY lt.ligatabelle_tabellenplatz";
 
 
 
@@ -102,9 +105,9 @@ public class SetzlisteDAO implements DataAccessObject {
 
 
     /**
-     * Return all dsbmitglied entries
+     * Return all setzliste entries
      */
-    public List<SetzlisteBE> getTable() {
-        return basicDao.selectEntityList(SETZLISTE, GET_TABLE);
+    public List<SetzlisteBE> getTable(int wettkampfid, int wettkampftag) {
+        return basicDao.selectEntityList(SETZLISTE, GET_TABLE, wettkampfid, wettkampftag);
     }
 }

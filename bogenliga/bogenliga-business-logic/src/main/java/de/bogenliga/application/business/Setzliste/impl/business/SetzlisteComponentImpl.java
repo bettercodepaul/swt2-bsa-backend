@@ -9,18 +9,19 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
-import de.bogenliga.application.business.Setzliste.api.types.SetzlisteDO;
 import de.bogenliga.application.business.Setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
-import de.bogenliga.application.business.Setzliste.impl.mapper.SetzlisteMapper;
+import de.bogenliga.application.common.validation.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link SetzlisteComponent}
@@ -28,16 +29,8 @@ import java.util.stream.Collectors;
 @Component
 public class SetzlisteComponentImpl implements SetzlisteComponent {
 
-    private static final String PRECONDITION_MSG_DSBMITGLIED = "DsbMitgliedDO must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_ID = "DsbMitgliedDO ID must not be negative";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VORNAME = "DsbMitglied vorname must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_NACHNAME = "DsbMitglied nachname must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM = "DsbMitglied geburtsdatum must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET = "DsbMitglied nationalitaet must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER = "DsbMitglied mitgliedsnummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
-    private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
+    private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
+    private static final String PRECONDITION_WETTKAMPFTAG = "wettkampftag cannot be 0 or negative";
 
     private final SetzlisteDAO setzlisteDAO;
 
@@ -57,9 +50,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
 
     @Override
-    public String getTable() {
+    public String getTable(int wettkampfid, int wettkampftag) {
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+        Preconditions.checkArgument(wettkampftag >= 1, PRECONDITION_WETTKAMPFTAG);
+
         LOGGER.debug("Generate Setzliste");
-        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable();
+        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable(wettkampfid, wettkampftag);
         String fileName = "setzliste.pdf";
         try (OutputStream result = new FileOutputStream(new File("bogenliga/bogenliga-application/src/main/resources/" + fileName));
              PdfWriter writer = new PdfWriter(result);
@@ -78,10 +74,17 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                     { 2, 1, 6, 5, 4, 3, 7, 8 }};
 
 
-            //Beschreibung
-            String date = setzlisteBEList.get(0).getWettkampfDatum().toString();
+            //description
+            DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
+            String dateFormatted = null;
+            try {
+                dateFormatted = sdF2.format(sdF.parse(setzlisteBEList.get(0).getWettkampfDatum().toString()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             doc.add(new Paragraph("Setzliste " + Integer.toString(setzlisteBEList.get(0).getWettkampfTag()) + ". Wettkampf " + setzlisteBEList.get(0).getVeranstaltungName()));
-            doc.add(new Paragraph("am " + date + " in"));
+            doc.add(new Paragraph("am " + dateFormatted + " in"));
             doc.add(new Paragraph(setzlisteBEList.get(0).getWettkampfOrt() + ", " + setzlisteBEList.get(0).getWettkampfBeginn() + " Uhr"));
 
             doc.add(new Paragraph(""));
@@ -138,7 +141,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         }
 
         return fileName;
-        //return setzlisteBEList.stream().map(SetzlisteMapper.toSetzlisteDO).collect(Collectors.toList());
     }
 
     private int getTableEntry(int tabellenplatz, List<SetzlisteBE> setzlisteBEList){
@@ -153,7 +155,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private String getMannschaftsname(int tabellenplatz, List<SetzlisteBE> setzlisteBEList){
         int rowIndex = getTableEntry(tabellenplatz, setzlisteBEList);
         if(rowIndex == -1){
-            return "Fehler";
+            LOGGER.error("Cannot find Mannschaftsname.");
+            return "Error";
         }
         else {
             if (setzlisteBEList.get(rowIndex).getMannschaftNummer() > 1) {
