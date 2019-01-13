@@ -39,9 +39,16 @@
     <!-- Spring Boot uses a "parent module" to configure the Spring dependencies -->
     <dependencyManagement>
         <dependencies>
-
+            <!-- add all iText 7 Community modules -->
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itext7-core</artifactId>
+                <version>7.1.4</version>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <!-- BUILD CONFIGURATION -->
     <build>
