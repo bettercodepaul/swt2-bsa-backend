@@ -16,20 +16,20 @@ public class CompetitionClassDO extends CommonDataObject implements DataObject {
      */
     private Long id;
     private String klasseName;
-    private Long klasseAlterMin;
-    private Long klasseAlterMax;
+    private Long klasseJahrgangMin;
+    private Long klasseJahrgangMax;
     private Long klasseNr;
 
     /**
      * Constructor with mandatory parameters
      */
-    public CompetitionClassDO(final Long id, final String klasseName, final Long klasseAlterMin,
-                              final Long klasseAlterMax, final Long klasseNr, final OffsetDateTime createdAtUtc,
+    public CompetitionClassDO(final Long id, final String klasseName, final Long klasseJahrgangMin,
+                              final Long klasseJahrgangMax, final Long klasseNr, final OffsetDateTime createdAtUtc,
                               final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.klasseName = klasseName;
-        this.klasseAlterMin = klasseAlterMin;
-        this.klasseAlterMax = klasseAlterMax;
+        this.klasseJahrgangMin = klasseJahrgangMin;
+        this.klasseJahrgangMax = klasseJahrgangMax;
         this.klasseNr = klasseNr;
 
         // set param from CommonDataObject
@@ -44,12 +44,12 @@ public class CompetitionClassDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with optional parameters
      */
-    public CompetitionClassDO(final Long id, final String klasseName, final Long klasseAlterMin,
-                              final Long klasseAlterMax, final Long klasseNr) {
+    public CompetitionClassDO(final Long id, final String klasseName, final Long klasseJahrgangMin,
+                              final Long klasseJahrgangMax, final Long klasseNr) {
         this.id = id;
         this.klasseName = klasseName;
-        this.klasseAlterMin = klasseAlterMin;
-        this.klasseAlterMax = klasseAlterMax;
+        this.klasseJahrgangMin = klasseJahrgangMin;
+        this.klasseJahrgangMax = klasseJahrgangMax;
         this.klasseNr = klasseNr;
     }
 
@@ -75,22 +75,22 @@ public class CompetitionClassDO extends CommonDataObject implements DataObject {
 
 
     public Long getKlasseJahrgangMin() {
-        return klasseAlterMin;
+        return klasseJahrgangMin;
     }
 
 
-    public void setKlasseAlterMin(Long klasseAlterMin) {
-        this.klasseAlterMin = klasseAlterMin;
+    public void setKlasseJahrgangMin(Long klasseJahrgangMin) {
+        this.klasseJahrgangMin = klasseJahrgangMin;
     }
 
 
     public Long getKlasseJahrgangMax() {
-        return klasseAlterMax;
+        return klasseJahrgangMax;
     }
 
 
-    public void setKlasseAlterMax(Long klasseAlterMax) {
-        this.klasseAlterMax = klasseAlterMax;
+    public void setKlasseJahrgangMax(Long klasseJahrgangMax) {
+        this.klasseJahrgangMax = klasseJahrgangMax;
     }
 
 

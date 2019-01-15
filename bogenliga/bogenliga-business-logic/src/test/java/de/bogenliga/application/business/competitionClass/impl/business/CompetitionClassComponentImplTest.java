@@ -35,8 +35,8 @@ public class CompetitionClassComponentImplTest {
 
     private static final Long ID = 1337L;
     private static final String NAME ="Herren";
-    private static final Long JAHRGANG_MIN = 0L;
-    private static final Long JAHRGANG_MAX = 99L;
+    private static final Long JAHRGANG_MIN = 1998L;
+    private static final Long JAHRGANG_MAX = 1996L;
     private static final Long NUMBER = 2L;
 
     @Rule
@@ -57,8 +57,8 @@ public class CompetitionClassComponentImplTest {
         final CompetitionClassBE expectedBE = new CompetitionClassBE();
         expectedBE.setKlasseId(ID);
         expectedBE.setKlasseName(NAME);
-        expectedBE.setKlasseJahrgangMin(JAHRGANG_MIN);
-        expectedBE.setKlasseJahrgangMax(JAHRGANG_MAX);
+        expectedBE.setKlasseAlterMin(44L);
+        expectedBE.setKlasseAlterMax(66L);
         expectedBE.setKlasseNr(NUMBER);
         return expectedBE;
     }
@@ -101,9 +101,9 @@ public class CompetitionClassComponentImplTest {
         assertThat(actual.get(0).getKlasseName())
                 .isEqualTo(expectedBE.getKlasseName());
         assertThat(actual.get(0).getKlasseJahrgangMax())
-                .isEqualTo(expectedBE.getKlasseJahrgangMax());
+                .isEqualTo(expectedBE.getKlasseAlterMax());
         assertThat(actual.get(0).getKlasseJahrgangMin())
-                .isEqualTo(expectedBE.getKlasseJahrgangMin());
+                .isEqualTo(expectedBE.getKlasseAlterMin());
         assertThat(actual.get(0).getKlasseNr())
                 .isEqualTo(expectedBE.getKlasseNr());
 
@@ -169,8 +169,8 @@ public class CompetitionClassComponentImplTest {
         final CompetitionClassBE expectedBE = new CompetitionClassBE();
         expectedBE.setKlasseId(ID);
         expectedBE.setKlasseNr(NUMBER);
-        expectedBE.setKlasseJahrgangMax(JAHRGANG_MAX);
-        expectedBE.setKlasseJahrgangMin(JAHRGANG_MIN);
+        expectedBE.setKlasseAlterMax(JAHRGANG_MAX);
+        expectedBE.setKlasseAlterMin(JAHRGANG_MIN);
         expectedBE.setKlasseName(NAME);
         expectedBE.setCreatedAtUtc(expectedTimestamp);
         expectedBE.setCreatedByUserId(USER);
