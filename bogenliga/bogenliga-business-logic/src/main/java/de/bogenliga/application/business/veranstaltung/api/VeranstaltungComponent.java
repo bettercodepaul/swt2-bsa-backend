@@ -28,7 +28,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
     VeranstaltungDO findById(final long veranstaltungId);
 
 
-    /*TODO
+
     /**
      * Create an entry of Veranstaltung
      *
@@ -36,6 +36,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      * @param currentDsbMitglied Id of the currently logged in user that sent create request
      *
      * @return returns that created Verein
+    */
 
     VeranstaltungDO create(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
@@ -47,7 +48,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      * @param currentDsbMitglied id of the currently logged in user that sent the update request
      *
      * @return returns the updated verein entry
-
+    */
 
     VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
@@ -56,8 +57,19 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      * @param veranstaltungDO    Veranstaltung DataObject containing atleast an id
      * @param currentDsbMitglied id of the currently logged in user that sent the delete request
-
+    */
 
     void delete(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
+
+
+    /**
+     * Returns a "Veranstaltung" with the given id
+     *
+     * @param ligado ID of the liga to be queried from the database.
+     *
+     * @return returns the queried Veranstaltung
      */
+
+
+
 }
