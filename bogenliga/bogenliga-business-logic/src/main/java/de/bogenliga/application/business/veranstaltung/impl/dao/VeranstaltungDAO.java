@@ -110,4 +110,43 @@ public class VeranstaltungDAO implements DataAccessObject{
     public VeranstaltungBE findById(final long id) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
+
+    /**
+     * Delete existing veranstaltung entrycreated_at_utc
+     *
+     * @param veranstaltungBE
+     * @param currentDsbMitgliedId
+     */
+    public void delete(final VeranstaltungBE veranstaltungBE, final long currentDsbMitgliedId) {
+        basicDao.setModificationAttributes(veranstaltungBE, currentDsbMitgliedId);
+
+        basicDao.deleteEntity(VERANSTALTUNG, veranstaltungBE, VERANSTALTUNG_BE_ID);
+    }
+
+    /**
+     * Update an existing veranstaltung entry
+     *
+     * @param veranstaltungBE
+     * @param currentDsbMitgliedId
+     * @return Business Entity corresponding to the updated dsbmitglied entry
+     */
+    public VeranstaltungBE update(final VeranstaltungBE veranstaltungBE, final long currentDsbMitgliedId) {
+        basicDao.setModificationAttributes(veranstaltungBE, currentDsbMitgliedId);
+
+        return basicDao.updateEntity(VERANSTALTUNG, veranstaltungBE, VERANSTALTUNG_BE_ID);
+    }
+
+    /**
+     * Create a new veranstaltung entry
+     *
+     * @param veranstaltungBE
+     * @param currentDsbMitgliedId
+     * @return Business Entity corresponding to the created dsbmitglied entry
+     */
+    public VeranstaltungBE create(final VeranstaltungBE veranstaltungBE, final long currentDsbMitgliedId) {
+        basicDao.setCreationAttributes(veranstaltungBE, currentDsbMitgliedId);
+
+        return basicDao.insertEntity(VERANSTALTUNG, veranstaltungBE);
+    }
+
 }

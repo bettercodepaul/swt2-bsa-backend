@@ -24,6 +24,12 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "VeranstaltungDO must not be null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG ="VeranstaltungDO must not be null";
     private static final String PRECONDITION_MSG_CURRENT_VERANSTALTUNG =" Current veranstaltungDO id must not be null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_LEITER_ID ="VeranstaltungLigaLeiterId must not be null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_MELDE_DEADLINE=" veranstaltungMeldeDeadline must be not null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPF_ID="Veranstaltungwettkampfid must be not null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR="veranstaltungsportjahr must be not null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_NAME="veranstaltungname must be not null";
+    private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
     private final VeranstaltungDAO veranstaltungDAO;
 
     /**
@@ -62,8 +68,18 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         return VeranstaltungMapper.toVeranstaltungDO.apply(result);
     }
+    @Override
+    public VeranstaltungDO update(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId){
+        checkVeranstaltungDO(veranstaltungDO,currentDsbMitgliedId);
+        Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >=0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
+        final VeranstaltungBE veranstaltungBE;
+        final VeranstaltungBE persistedVeranstaltungBE;
 
+        return null;
+    }
+
+    @Override
     public VeranstaltungDO create (final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId){
         checkVeranstaltungDO(veranstaltungDO,currentDsbMitgliedId);
         Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
@@ -72,7 +88,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
      return null;
     }
-
+    @Override
     public void delete(final VeranstaltungDO veranstltungDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(veranstltungDO, PRECONDITION_MSG_VERANSTALTUNG);
         Preconditions.checkArgument(veranstltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
@@ -80,12 +96,19 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         final VeranstaltungBE  veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstltungDO);
 
-        //veranstaltungDAO.delete(veranstaltungBE, currentDsbMitgliedId);
+        veranstaltungDAO.delete(veranstaltungBE, currentDsbMitgliedId);
 
     }
 
     private void checkVeranstaltungDO(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId){
-
+    Preconditions.checkNotNull(veranstaltungDO,PRECONDITION_MSG_VERANSTALTUNG);
+    Preconditions.checkArgument(currentDsbMitgliedId>=0,PRECONDITION_MSG_CURRENT_DSBMITGLIED);
+    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungName(),PRECONDITION_MSG_VERANSTALTUNG_NAME);
+    Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >=0,PRECONDITION_MSG_VERANSTALTUNG_ID);
+    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungMeldeDeadline(),PRECONDITION_MSG_VERANSTALTUNG_MELDE_DEADLINE);
+    Preconditions.checkArgument(veranstaltungDO.getVeranstaltungLigaleiterID()>=0,PRECONDITION_MSG_VERANSTALTUNG_LIGA_LEITER_ID);
+    Preconditions.checkArgument(veranstaltungDO.getVeranstaltungWettkampftypID()>=0,PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPF_ID);
+    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungSportJahr(),PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
     }
 }
 
