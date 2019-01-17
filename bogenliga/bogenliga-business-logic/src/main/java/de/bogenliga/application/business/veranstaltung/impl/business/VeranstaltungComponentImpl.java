@@ -22,7 +22,8 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "VeranstaltungDO must not be null";
-
+    private static final String PRECONDITION_MSG_VERANSTALTUNG ="VeranstaltungDO must not be null";
+    private static final String PRECONDITION_MSG_CURRENT_VERANSTALTUNG =" Current veranstaltungDO id must not be null";
     private final VeranstaltungDAO veranstaltungDAO;
 
     /**
@@ -61,4 +62,30 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         return VeranstaltungMapper.toVeranstaltungDO.apply(result);
     }
+
+
+    public VeranstaltungDO create (final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId){
+        checkVeranstaltungDO(veranstaltungDO,currentDsbMitgliedId);
+        Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+
+        final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+
+     return null;
+    }
+
+    public void delete(final VeranstaltungDO veranstltungDO, final long currentDsbMitgliedId) {
+        Preconditions.checkNotNull(veranstltungDO, PRECONDITION_MSG_VERANSTALTUNG);
+        Preconditions.checkArgument(veranstltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+        Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_VERANSTALTUNG);
+
+        final VeranstaltungBE  veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstltungDO);
+
+        //veranstaltungDAO.delete(veranstaltungBE, currentDsbMitgliedId);
+
+    }
+
+    private void checkVeranstaltungDO(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId){
+
+    }
 }
+
