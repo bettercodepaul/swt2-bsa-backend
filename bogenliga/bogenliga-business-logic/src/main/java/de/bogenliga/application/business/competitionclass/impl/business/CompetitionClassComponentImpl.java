@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.competitionclass.impl.business;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,23 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     @Override
     public List<CompetitionClassDO> findAll() {
         final List<CompetitionClassBE> competitionClassBEList = competitionClassDAO.findAll();
+
+
+        for(int i = 0; i < competitionClassBEList.size(); i++){
+
+            Long alterMin = competitionClassBEList.get(i).getKlasseAlterMin();
+            Long alterMax = competitionClassBEList.get(i).getKlasseAlterMax();
+
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+
+            Long jahrgangMin = year - alterMin;
+            Long jahrgangMax = year - alterMax;
+
+            competitionClassBEList.get(i).setKlasseAlterMin(jahrgangMin);
+            competitionClassBEList.get(i).setKlasseAlterMax(jahrgangMax);
+
+        }
+
         return competitionClassBEList.stream().map(CompetitionClassMapper.toCompetitionClassDO).collect(
                 Collectors.toList());
     }
@@ -59,6 +77,12 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
 
         final CompetitionClassBE competitionClassBE = competitionClassDAO.findById(id);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        Long jahrgangMin = year - competitionClassBE.getKlasseAlterMin();
+        Long jahrgangMax = year - competitionClassBE.getKlasseAlterMax();
+
+        competitionClassBE.setKlasseAlterMin(jahrgangMin);
+        competitionClassBE.setKlasseAlterMax(jahrgangMax);
         return CompetitionClassMapper.toCompetitionClassDO.apply(competitionClassBE);
     }
 
@@ -69,6 +93,14 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         checkCompetitionClassDO(competitionClassDO, currentDsbMitglied);
 
         final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        Long alterMin = year - competitionClassDO.getKlasseJahrgangMin();
+        Long alterMax = year - competitionClassDO.getKlasseJahrgangMax();
+
+        competitionClassBE.setKlasseAlterMin(alterMin);
+        competitionClassBE.setKlasseAlterMax(alterMax);
+
         final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.create(competitionClassBE,
                 currentDsbMitglied);
 
@@ -81,6 +113,14 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
 
         final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        Long alterMin = year - competitionClassDO.getKlasseJahrgangMin();
+        Long alterMax = year - competitionClassDO.getKlasseJahrgangMax();
+
+        competitionClassBE.setKlasseAlterMin(alterMin);
+        competitionClassBE.setKlasseAlterMax(alterMax);
+
         final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.update(competitionClassBE,currentDsbMitblied);
 
         return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
@@ -94,9 +134,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         Preconditions.checkNotNull(competitionClassDO.getKlasseJahrgangMax(), PRECONDITION_MSG_KLASSE_JAHRGANG_MAX);
         Preconditions.checkNotNull(competitionClassDO.getKlasseNr(), PRECONDITION_MSG_KLASSE_NR);
         Preconditions.checkNotNull(competitionClassDO.getKlasseName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkArgument(competitionClassDO.getKlasseJahrgangMin() >= 0, PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
-        Preconditions.checkArgument(competitionClassDO.getKlasseJahrgangMin() < competitionClassDO.getKlasseJahrgangMax(),
+        Preconditions.checkArgument(competitionClassDO.getKlasseJahrgangMin() > competitionClassDO.getKlasseJahrgangMax(),
                 PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
-
     }
 }

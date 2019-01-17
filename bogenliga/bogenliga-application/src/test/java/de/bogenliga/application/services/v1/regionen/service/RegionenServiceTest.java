@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- *
  * @author Dennis Goericke, dennis.goericke@student.reutlingen-university.de
  */
 
@@ -30,7 +29,7 @@ public class RegionenServiceTest {
     private static final long ID = 3333;
     private static final String regionName = "Bezirk Reutlingen";
     private static final String regionKuerzel = "RT";
-    private static final String regionTyp = "BEZIRK";
+    private static final String regionTyp = "KREIS";
     private static final long regionUebergeordnet = 4;
 
     @Rule
@@ -54,7 +53,7 @@ public class RegionenServiceTest {
      * Also used by other test classes.
      */
 
-    public static RegionenBE getRegionenBE(){
+    public static RegionenBE getRegionenBE() {
         final RegionenBE expectedRegionenBE = new RegionenBE();
         expectedRegionenBE.setRegionId(ID);
         expectedRegionenBE.setRegionName(regionName);
@@ -66,7 +65,7 @@ public class RegionenServiceTest {
     }
 
 
-    public static RegionenDO getRegionenDO(){
+    public static RegionenDO getRegionenDO() {
         return new RegionenDO(
                 ID,
                 regionName,
@@ -77,7 +76,7 @@ public class RegionenServiceTest {
     }
 
 
-    private static RegionenDTO getRegionenDTO(){
+    private static RegionenDTO getRegionenDTO() {
         final RegionenDTO regionenDTO = new RegionenDTO();
         regionenDTO.setId(ID);
         regionenDTO.setName(regionName);
@@ -89,10 +88,13 @@ public class RegionenServiceTest {
 
 
     @Before
-    public void initMocks(){when (principal.getName()).thenReturn(String.valueOf(USER));}
+    public void initMocks() {
+        when(principal.getName()).thenReturn(String.valueOf(USER));
+    }
+
 
     @Test
-    public void findAll(){
+    public void findAll() {
         //prepare Test
         final RegionenDO regionenDO = getRegionenDO();
 
@@ -120,7 +122,27 @@ public class RegionenServiceTest {
     }
 
 
+    @Test
+    public void findAllByType() {
+        //prepare test
+        final RegionenDO regionenDO = getRegionenDO();
 
+        final List<RegionenDO> regionenDOList = Collections.singletonList(regionenDO);
 
+        //Configure mocks
+        when(regionenComponent.findAllByType(regionTyp)).thenReturn(regionenDOList);
 
+        //call test method
+        final List<RegionenDTO> actual = underTest.findAllByType(regionTyp);
+
+        //assert result
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final RegionenDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getTyp()).isEqualTo(regionenDO.getRegionType());
+    }
 }

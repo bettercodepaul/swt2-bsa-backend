@@ -15,7 +15,12 @@ public interface RegionenComponent extends ComponentFacade {
      * Return all class entries
      * @return list of all Regionen classes in the DB
      */
-
     List<RegionenDO> findAll();
+
+    /**
+     * Return all class entries
+     * @return list of all Region classes of type = kreis in the DB
+     */
+    List<RegionenDO> findAllByType(final String type);
 
 }

@@ -50,7 +50,6 @@ public class VereinDAO implements DataAccessObject {
     private static final String FIND_BY_ID =
             "SELECT * "
                     + " FROM verein v"
-                    + " JOIN region r on v.verein_id=r.region_id"
                     + " WHERE v.verein_id = ?";
 
     private final BasicDAO basicDao;
