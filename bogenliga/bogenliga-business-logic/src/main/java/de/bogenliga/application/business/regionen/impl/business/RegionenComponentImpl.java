@@ -17,26 +17,31 @@ import de.bogenliga.application.business.regionen.impl.mapper.RegionenMapper;
 @Component
 public class RegionenComponentImpl implements RegionenComponent {
 
-  //no need for preconditions since we only need to implement FindAll()
+    //no need for preconditions since we only need to implement FindAll()
 
     public final RegionenDAO regionenDAO;
 
+
     /**
-     * Constructor
-     * Dependeny injection with {@link org.springframework.beans.factory.annotation.Autowired}
+     * Constructor Dependeny injection with {@link org.springframework.beans.factory.annotation.Autowired}
      *
      * @param regionenDAO
      */
-
-
-    public RegionenComponentImpl(RegionenDAO regionenDAO){
+    public RegionenComponentImpl(RegionenDAO regionenDAO) {
         this.regionenDAO = regionenDAO;
     }
 
+
     @Override
-    public List<RegionenDO> findAll(){
+    public List<RegionenDO> findAll() {
         final List<RegionenBE> regionenBEList = regionenDAO.findAll();
         return regionenBEList.stream().map(RegionenMapper.toRegionDO).collect(Collectors.toList());
     }
 
+
+    @Override
+    public List<RegionenDO> findAllByType(final String type) {
+        final List<RegionenBE> regionenBEList = regionenDAO.findAllByType(type);
+        return regionenBEList.stream().map(RegionenMapper.toRegionDO).collect(Collectors.toList());
+    }
 }

@@ -22,8 +22,8 @@ public class CompetitionClassMapper implements ValueObjectMapper {
     public static final Function<CompetitionClassBE, CompetitionClassDO> toCompetitionClassDO = competitionClassBE -> {
         final Long klasseId = competitionClassBE.getKlasseId();
         final String klasseName = competitionClassBE.getKlasseName();
-        final Long klasseJahrgangMin = competitionClassBE.getKlasseJahrgangMin();
-        final Long klasseAlterMax = competitionClassBE.getKlasseJahrgangMax();
+        final Long klasseJahrgangMin = competitionClassBE.getKlasseAlterMin();
+        final Long klasseJahrgangMax = competitionClassBE.getKlasseAlterMax();
         final Long klasseNr = competitionClassBE.getKlasseNr();
 
         // Technical Parameter
@@ -34,7 +34,7 @@ public class CompetitionClassMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(competitionClassBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(competitionClassBE.getLastModifiedAtUtc());
 
-        return new CompetitionClassDO(klasseId,klasseName,klasseJahrgangMin,klasseAlterMax,klasseNr,createdAtUtc,createdByUserId,lastModifiedUtc, lastModifiedUserId, version);
+        return new CompetitionClassDO(klasseId,klasseName,klasseJahrgangMin,klasseJahrgangMax,klasseNr,createdAtUtc,createdByUserId,lastModifiedUtc, lastModifiedUserId, version);
     };
 
     public static final Function<CompetitionClassDO, CompetitionClassBE> toCompetitionClassBE = competitionClassDO -> {
@@ -45,8 +45,8 @@ public class CompetitionClassMapper implements ValueObjectMapper {
         CompetitionClassBE competitionClassBE = new CompetitionClassBE();
         competitionClassBE.setKlasseId(competitionClassDO.getId());
         competitionClassBE.setKlasseName(competitionClassDO.getKlasseName());
-        competitionClassBE.setKlasseJahrgangMin(competitionClassDO.getKlasseJahrgangMin());
-        competitionClassBE.setKlasseJahrgangMax(competitionClassDO.getKlasseJahrgangMax());
+        competitionClassBE.setKlasseAlterMin(competitionClassDO.getKlasseJahrgangMin());
+        competitionClassBE.setKlasseAlterMax(competitionClassDO.getKlasseJahrgangMax());
         competitionClassBE.setKlasseNr(competitionClassDO.getKlasseNr());
 
         competitionClassBE.setCreatedAtUtc(createdAtUtcTimestamp);

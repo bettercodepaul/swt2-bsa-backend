@@ -56,6 +56,11 @@ public class RegionenDAO implements DataAccessObject {
                     + " FROM region "
                     + " WHERE region_id = ?";
 
+    private static final String FIND_ALL_BY_TYPE =
+            "SELECT * "
+                    + " FROM region"
+                    + " WHERE region_typ = ?"
+                    + " ORDER BY region_name";
     private final BasicDAO basicDAO;
 
 
@@ -96,15 +101,25 @@ public class RegionenDAO implements DataAccessObject {
         return basicDAO.selectEntityList(REGIONEN, FIND_ALL);
     }
 
-    /**
-     * Return dsbmitglied entry with specific id
-     *
-     * @param id
-     */
-    public RegionenBE findById(final long id) {
 
+    /**
+     * Returns all the region entries of type = KREIS
+     *
+     * @return List with Region Business Entities
+     */
+    public List<RegionenBE> findAllByType(final String type) {
+        return basicDAO.selectEntityList(REGIONEN, FIND_ALL_BY_TYPE, type);
+    }
+
+    /**
+     * Returns a single region entity
+     *
+     * @return single regionBE entity
+     */
+    public RegionenBE findById(final Long id) {
         return basicDAO.selectSingleEntity(REGIONEN, FIND_BY_ID, id);
     }
+
 
 
 }
