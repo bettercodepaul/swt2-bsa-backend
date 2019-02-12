@@ -50,15 +50,15 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
      * SQL queries
      */
     private static final String FIND_ALL =
-            "SELECT benutzer.benutzer_id, benutzer.benutzer_email,"
-                    + " rolle.rolle_id, rolle.rolle_name "
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email,"
+                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.bentzer_rolle_rolle_id = rolle.rolle_id ";
+                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id ";
 
     private static final String FIND_BY_ID =
-            "SELECT benutzer.benutzer_id, benutzer.benutzer_email, "
-                    + " rolle.rolle_id, rolle.rolle_name "
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
+                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = ? "
                     + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
@@ -66,8 +66,8 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
 
 
     private static final String FIND_BY_EMAIL =
-            "SELECT benutzer.benutzer_id, benutzer.benutzer_email, "
-                    + " rolle.rolle_id, rolle.rolle_name "
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
+                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE upper(benutzer.benutzer_email) = upper(?) "
                     + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "

@@ -31,7 +31,7 @@ public class UserRoleMapper implements ValueObjectMapper {
 
         final Long id = be.getUserId();
         final String email = be.getUserEmail();
-        final Long roleId = be.getUserId();
+        final Long roleId = be.getRoleId();
         final String roleName = be.getRoleName();
 
         // technical parameter

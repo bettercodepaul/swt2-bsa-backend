@@ -1,6 +1,6 @@
-package de.bogenliga.application.business.user.impl.dao;
+package de.bogenliga.application.business.role.impl.dao;
 
-import de.bogenliga.application.business.user.impl.entity.RoleBE;
+import de.bogenliga.application.business.role.impl.entity.RoleBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
