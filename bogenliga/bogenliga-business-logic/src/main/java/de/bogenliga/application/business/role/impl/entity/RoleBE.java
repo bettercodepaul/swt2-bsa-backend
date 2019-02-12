@@ -1,6 +1,7 @@
-package de.bogenliga.application.business.user.impl.entity;
+package de.bogenliga.application.business.role.impl.entity;
 
 import de.bogenliga.application.common.component.entity.BusinessEntity;
+import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
  * I´m a composed business entity of the user and the permission business entity.
@@ -9,7 +10,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class RoleBE implements BusinessEntity {
+public class RoleBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -7930719922483666804L;
 
     private long roleId;

@@ -182,7 +182,7 @@ public class UserService implements ServiceFacade {
 
     @RequestMapping(
             method = RequestMethod.PUT,
-//            value = "/uptRole",
+            value = "/uptRole",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
@@ -205,6 +205,71 @@ public class UserService implements ServiceFacade {
 
 
         return userUpdatedDTO;
+    }
+
+    /**
+     * I return all user entries of the database.
+
+     *
+     * Usage:
+     * <pre>{@code Request: GET /v1/user}</pre>
+     *
+     * [
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     *  },
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.interval",
+     *    "value": "10"
+     *  }
+     * ]
+     * }
+     * </pre>
+     *
+     * @return list of {@link UserDTO} as JSON
+     */
+    @RequestMapping(method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public List<UserRoleDTO> findAll() {
+        final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
+        return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    /**
+     * I return a specific user-role entries of the database.
+
+     *
+     * Usage:
+     * <pre>{@code Request: GET /v1/user/userrole/id}</pre>
+     *
+     * [
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     *  },
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.interval",
+     *    "value": "10"
+     *  }
+     * ]
+     * }
+     * </pre>
+     *
+     * @return list of {@link UserDTO} as JSON
+     */
+    @RequestMapping(method = RequestMethod.GET,
+            value = "/userrole/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public UserRoleDTO getUserRoleById(@PathVariable("id") final long id) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'getUserRoleById' request with ID '{}'", id);
+
+        final UserRoleDO userRoleDO = userRoleComponent.findById(id);
+        return UserRoleDTOMapper.toDTO.apply(userRoleDO);
     }
 
 
@@ -237,35 +302,6 @@ public class UserService implements ServiceFacade {
         return UserProfileDTOMapper.toDTO.apply(userProfileDO);
     }
 
-    /**
-     * I return all user entries of the database.
-
-     *
-     * Usage:
-     * <pre>{@code Request: GET /v1/user}</pre>
-     *
-     * [
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  },
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.interval",
-     *    "value": "10"
-     *  }
-     * ]
-     * }
-     * </pre>
-     *
-     * @return list of {@link UserDTO} as JSON
-     */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public List<UserRoleDTO> findAll() {
-        final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
-        return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
-    }
 
     /**
      * I persist a new user and return this user entry.
