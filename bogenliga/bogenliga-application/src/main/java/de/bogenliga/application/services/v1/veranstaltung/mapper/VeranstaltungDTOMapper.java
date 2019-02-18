@@ -24,12 +24,10 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
         final String veranstaltungName = veranstaltungDO.getVeranstaltungName();
         final Long veranstaltungSportjahr = veranstaltungDO.getVeranstaltungSportJahr();
         final Date veranstaltungMeldeDeadline = veranstaltungDO.getVeranstaltungMeldeDeadline();
-        final Long veranstaltungDOKampfrichterAnzahl = veranstaltungDO.getVeranstaltungKampfrichterAnzahl();
-        final Long veranstaltungHoere = veranstaltungDO.getVeranstaltungHoehere();
         final Long veranstaltungLigaleiterId = veranstaltungDO.getVeranstaltungLigaleiterID();
 
         return new VeranstaltungDTO(veranstaltungId, veranstaltungWettkampfTypId, veranstaltungName, veranstaltungSportjahr,
-                veranstaltungMeldeDeadline,veranstaltungDOKampfrichterAnzahl, veranstaltungHoere, veranstaltungLigaleiterId);
+                veranstaltungMeldeDeadline, veranstaltungLigaleiterId);
     };
 
     /**

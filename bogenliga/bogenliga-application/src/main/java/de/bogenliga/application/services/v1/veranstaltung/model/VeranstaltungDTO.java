@@ -17,8 +17,6 @@ public class VeranstaltungDTO implements DataTransferObject {
     private String name;
     private Long sportjahr;
     private Date meldeDeadline;
-    private Long kampfrichterAnzahl;
-    private Long hoehere;
     private Long ligaleiterID;
 
 
@@ -27,15 +25,12 @@ public class VeranstaltungDTO implements DataTransferObject {
 
      */
     public VeranstaltungDTO(Long id, Long wettkampfTypId, String name, Long sportjahr,
-                            Date meldeDeadline, Long kampfrichterAnzahl,
-                            Long hoehere, Long ligaleiterID) {
+                            Date meldeDeadline, Long ligaleiterID) {
         this.id = id;
         this.wettkampfTypId = wettkampfTypId;
         this.name = name;
         this.sportjahr = sportjahr;
         this.meldeDeadline = meldeDeadline;
-        this.kampfrichterAnzahl = kampfrichterAnzahl;
-        this.hoehere = hoehere;
         this.ligaleiterID = ligaleiterID;
     }
 

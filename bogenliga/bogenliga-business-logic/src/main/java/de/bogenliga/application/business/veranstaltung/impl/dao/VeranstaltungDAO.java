@@ -26,8 +26,6 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltungName";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltungSportJahr";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltungMeldedeadline";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_KAMPFRICHTER_ANZAHL = "veranstaltungKampfrichterAnzahl";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_HOEHERE= "veranstaltungHoehere";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterId";
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
@@ -35,8 +33,6 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_TABLE_NAME= "veranstaltung_name";
     private static final String VERANSTALTUNG_TABLE_SPORTJAHR = "veranstaltung_sportjahr";
     private static final String VERANSTALTUNG_TABLE_MELDEDEADLINE = "veranstaltung_meldedeadline";
-    private static final String VERANSTALTUNG_TABLE_KAMPFRICHTER_ANZAHL = "veranstaltung_kampfrichter_anzahl";
-    private static final String VERANSTALTUNG_TABLE_HOEHERE= "veranstaltung_hoehere";
     private static final String VERANSTALTUNG_TABLE_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
 
 
@@ -89,8 +85,6 @@ public class VeranstaltungDAO implements DataAccessObject{
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_NAME, VERANSTALTUNG_BE_VERANSTALTUNG_NAME);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_SPORTJAHR, VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_MELDEDEADLINE, VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE);
-        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_KAMPFRICHTER_ANZAHL, VERANSTALTUNG_BE_VERANSTALTUNG_KAMPFRICHTER_ANZAHL);
-        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_HOEHERE, VERANSTALTUNG_BE_VERANSTALTUNG_HOEHERE);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGALEITER_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID);
 
         // add technical columns
@@ -116,4 +110,43 @@ public class VeranstaltungDAO implements DataAccessObject{
     public VeranstaltungBE findById(final long id) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
+
+    /**
+     * Delete existing veranstaltung entrycreated_at_utc
+     *
+     * @param veranstaltungBE
+     * @param currentDsbMitgliedId
+     */
+    public void delete(final VeranstaltungBE veranstaltungBE, final long currentDsbMitgliedId) {
+        basicDao.setModificationAttributes(veranstaltungBE, currentDsbMitgliedId);
+
+        basicDao.deleteEntity(VERANSTALTUNG, veranstaltungBE, VERANSTALTUNG_BE_ID);
+    }
+
+    /**
+     * Update an existing veranstaltung entry
+     *
+     * @param veranstaltungBE
+     * @param currentDsbMitgliedId
+     * @return Business Entity corresponding to the updated dsbmitglied entry
+     */
+    public VeranstaltungBE update(final VeranstaltungBE veranstaltungBE, final long currentDsbMitgliedId) {
+        basicDao.setModificationAttributes(veranstaltungBE, currentDsbMitgliedId);
+
+        return basicDao.updateEntity(VERANSTALTUNG, veranstaltungBE, VERANSTALTUNG_BE_ID);
+    }
+
+    /**
+     * Create a new veranstaltung entry
+     *
+     * @param veranstaltungBE
+     * @param currentDsbMitgliedId
+     * @return Business Entity corresponding to the created dsbmitglied entry
+     */
+    public VeranstaltungBE create(final VeranstaltungBE veranstaltungBE, final long currentDsbMitgliedId) {
+        basicDao.setCreationAttributes(veranstaltungBE, currentDsbMitgliedId);
+
+        return basicDao.insertEntity(VERANSTALTUNG, veranstaltungBE);
+    }
+
 }

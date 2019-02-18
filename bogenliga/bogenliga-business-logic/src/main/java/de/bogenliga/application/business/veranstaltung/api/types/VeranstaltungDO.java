@@ -20,24 +20,17 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     private String veranstaltungName;
     private Long veranstaltungSportJahr;
     private Date veranstaltungMeldeDeadline;
-    private Long veranstaltungKampfrichterAnzahl;
-    private Long veranstaltungHoehere;
     private Long veranstaltungLigaleiterID;
-    private OffsetDateTime createdAtUtc;
-    private Long createdByUserId;
-    private OffsetDateTime lastModifiedAtUtc;
-    private Long lastModifiedByUserID;
-    private Long version;
+
 
     /**
      * Constructor with all parameters
+     *
      * @param id
      * @param wettkampfTypID
      * @param name
      * @param sportJahr
      * @param meldeDeadline
-     * @param kampfrichterAnzahl
-     * @param hoehere
      * @param ligaleiterID
      * @param createdAtUtc
      * @param createdByUserId
@@ -45,57 +38,54 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param lastModifiedByUserId
      * @param version
      */
-    public VeranstaltungDO (final Long id, final Long wettkampfTypID, final String name, final Long sportJahr, final Date meldeDeadline,
-                            final Long kampfrichterAnzahl, final Long hoehere, final Long ligaleiterID, final OffsetDateTime createdAtUtc,
-                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                            final Long lastModifiedByUserId, final Long version){
+    public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
+                           final Date meldeDeadline,
+                           final Long ligaleiterID, final OffsetDateTime createdAtUtc, final Long createdByUserId,
+                           final OffsetDateTime lastModifiedAtUtc,
+                           final Long lastModifiedByUserId, final Long version) {
 
-        this.veranstaltungID= id;
+        this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
         this.veranstaltungName = name;
         this.veranstaltungSportJahr = sportJahr;
-        this.veranstaltungMeldeDeadline=meldeDeadline;
-        this.veranstaltungKampfrichterAnzahl = kampfrichterAnzahl;
-        this.veranstaltungHoehere = hoehere;
+        this.veranstaltungMeldeDeadline = meldeDeadline;
         this.veranstaltungLigaleiterID = ligaleiterID;
         this.createdByUserId = createdByUserId;
         this.createdAtUtc = createdAtUtc;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
-        this.lastModifiedByUserID = lastModifiedByUserId;
+        this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
     }
 
 
     /**
      * Constructor without technical parameters
+     *
      * @param id
      * @param wettkampfTypID
      * @param name
      * @param sportJahr
      * @param meldeDeadline
-     * @param kampfrichterAnzahl
-     * @param hoehere
      * @param ligaleiterID
-
      */
-    public VeranstaltungDO (final Long id, final Long wettkampfTypID, final String name, final Long sportJahr, final Date meldeDeadline,
-                            final Long kampfrichterAnzahl, final Long hoehere, final Long ligaleiterID){
+    public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
+                           final Date meldeDeadline, final Long ligaleiterID) {
 
-        this.veranstaltungID= id;
+        this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
         this.veranstaltungName = name;
         this.veranstaltungSportJahr = sportJahr;
-        this.veranstaltungMeldeDeadline=meldeDeadline;
-        this.veranstaltungKampfrichterAnzahl = kampfrichterAnzahl;
-        this.veranstaltungHoehere = hoehere;
+        this.veranstaltungMeldeDeadline = meldeDeadline;
         this.veranstaltungLigaleiterID = ligaleiterID;
 
     }
 
+
     @Override
     public int hashCode() {
-        return Objects.hash(veranstaltungID,veranstaltungWettkampftypID,veranstaltungName,veranstaltungSportJahr,
-                veranstaltungMeldeDeadline,veranstaltungKampfrichterAnzahl,veranstaltungHoehere,veranstaltungLigaleiterID,
+        return Objects.hash(veranstaltungID, veranstaltungWettkampftypID, veranstaltungName, veranstaltungSportJahr,
+                veranstaltungMeldeDeadline,
+                veranstaltungLigaleiterID,
                 createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
@@ -110,114 +100,108 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                     this.getVeranstaltungName() == that.getVeranstaltungName() &&
                     this.getVeranstaltungSportJahr().equals(that.getVeranstaltungSportJahr()) &&
                     this.getVeranstaltungMeldeDeadline() == that.getVeranstaltungMeldeDeadline() &&
-                    this.getVeranstaltungKampfrichterAnzahl() == that.getVeranstaltungKampfrichterAnzahl() &&
-                    this.getVeranstaltungHoehere() == that.getVeranstaltungHoehere() &&
                     this.getVeranstaltungLigaleiterID() == that.getVeranstaltungLigaleiterID());
         }
         return false;
 
     }
 
+
     //autogenerated getter and setters for all attributes
     public Long getVeranstaltungID() {
         return veranstaltungID;
     }
 
+
     public void setVeranstaltungID(Long veranstaltungID) {
         this.veranstaltungID = veranstaltungID;
     }
+
 
     public Long getVeranstaltungWettkampftypID() {
         return veranstaltungWettkampftypID;
     }
 
+
     public void setVeranstaltungWettkampftypID(Long veranstaltungWettkampftypID) {
         this.veranstaltungWettkampftypID = veranstaltungWettkampftypID;
     }
+
 
     public String getVeranstaltungName() {
         return veranstaltungName;
     }
 
+
     public void setVeranstaltungName(String veranstaltungName) {
         this.veranstaltungName = veranstaltungName;
     }
+
 
     public Long getVeranstaltungSportJahr() {
         return veranstaltungSportJahr;
     }
 
+
     public void setVeranstaltungSportJahr(Long veranstaltungSportJahr) {
         this.veranstaltungSportJahr = veranstaltungSportJahr;
     }
+
 
     public Date getVeranstaltungMeldeDeadline() {
         return veranstaltungMeldeDeadline;
     }
 
+
     public void setVeranstaltungMeldeDeadline(Date veranstaltungMeldeDeadline) {
         this.veranstaltungMeldeDeadline = veranstaltungMeldeDeadline;
     }
 
-    public Long getVeranstaltungKampfrichterAnzahl() {
-        return veranstaltungKampfrichterAnzahl;
-    }
-
-    public void setVeranstaltungKampfrichterAnzahl(Long veranstaltungKampfrichterAnzahl) {
-        this.veranstaltungKampfrichterAnzahl = veranstaltungKampfrichterAnzahl;
-    }
-
-    public Long getVeranstaltungHoehere() {
-        return veranstaltungHoehere;
-    }
-
-    public void setVeranstaltungHoehere(Long veranstaltungHoehere) {
-        this.veranstaltungHoehere = veranstaltungHoehere;
-    }
 
     public Long getVeranstaltungLigaleiterID() {
         return veranstaltungLigaleiterID;
     }
 
+
     public void setVeranstaltungLigaleiterID(Long veranstaltungLigaleiterID) {
         this.veranstaltungLigaleiterID = veranstaltungLigaleiterID;
     }
+
 
     public OffsetDateTime getCreatedAtUtc() {
         return createdAtUtc;
     }
 
+
     public void setCreatedAtUtc(OffsetDateTime createdAtUtc) {
         this.createdAtUtc = createdAtUtc;
     }
+
 
     public Long getCreatedByUserId() {
         return createdByUserId;
     }
 
+
     public void setCreatedByUserId(Long createdByUserId) {
         this.createdByUserId = createdByUserId;
     }
+
 
     public OffsetDateTime getLastModifiedAtUtc() {
         return lastModifiedAtUtc;
     }
 
+
     public void setLastModifiedAtUtc(OffsetDateTime lastModifiedAtUtc) {
         this.lastModifiedAtUtc = lastModifiedAtUtc;
     }
 
-    public Long getLastModifiedByUserID() {
-        return lastModifiedByUserID;
-    }
-
-    public void setLastModifiedByUserID(Long lastModifiedByUserID) {
-        this.lastModifiedByUserID = lastModifiedByUserID;
-    }
 
     public Long getVersion() {
         return version;
     }
+
 
     public void setVersion(Long version) {
         this.version = version;
