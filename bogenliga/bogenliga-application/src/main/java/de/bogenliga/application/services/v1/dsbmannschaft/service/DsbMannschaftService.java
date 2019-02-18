@@ -171,6 +171,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
 
         final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
+
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);

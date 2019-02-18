@@ -1,8 +1,17 @@
 package de.bogenliga.application.services.v1.user.service;
 
-import java.util.Arrays;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+import de.bogenliga.application.business.user.api.UserProfileComponent;
+import de.bogenliga.application.business.user.api.types.UserProfileDO;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
+import de.bogenliga.application.services.v1.user.model.UserCredentialsDTO;
+import de.bogenliga.application.services.v1.user.model.UserDTO;
+import de.bogenliga.application.services.v1.user.model.UserProfileDTO;
+import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
+import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,15 +25,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
-import de.bogenliga.application.services.v1.user.model.UserCredentialsDTO;
-import de.bogenliga.application.services.v1.user.model.UserDTO;
-import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
-import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -58,6 +63,8 @@ public class UserServiceTest {
     private Authentication authentication;
     @Mock
     private HttpServletRequest requestWithHeader;
+    @Mock
+    private UserProfileComponent userProfileComponent;
 
     @InjectMocks
     private UserService underTest;
@@ -190,5 +197,24 @@ public class UserServiceTest {
 
         // verify invocations
         verify(requestWithHeader).getHeader(AUTHORIZATION_HEADER);
+    }
+
+    @Test
+    public void getUserProfileById() {
+
+        // prepare test data
+        final UserProfileDO userProfileDO = new UserProfileDO();
+        userProfileDO.setVorname(USERNAME);
+
+        // configure mocks
+        when(userProfileComponent.findById(anyLong())).thenReturn(userProfileDO);
+
+        // call test method
+        final UserProfileDTO actual = underTest.getUserProfileById(ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getVorname()).isEqualTo(userProfileDO.getVorname());
+
     }
 }

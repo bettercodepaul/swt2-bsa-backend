@@ -18,8 +18,10 @@ cache:
 
 branches:
   only:
-  - master
-  - /^release-.*$/
+    - master
+    - /^release-.*$/
+    # build all branches
+    - /.*/
 
 addons:
   # static code analysis dashboard
