@@ -41,7 +41,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
      * Constructor
      *
      * dependency injection with {@link Autowired}
-     * @param MannschaftsmitgliedDAO to access the database and return dsbmitglied representations
+     * @param mannschaftsmitgliedDAO to access the database and return dsbmitglied representations
      */
 
 

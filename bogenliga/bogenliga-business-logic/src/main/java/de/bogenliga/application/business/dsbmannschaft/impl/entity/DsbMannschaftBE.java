@@ -5,32 +5,32 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEntity {
 
-    private long id;
-    private long vereinId;
-    private long nummer;
-    private long veranstaltungId;
-    private long benutzerId;
+    private Long id;
+    private Long vereinId;
+    private Long nummer;
+    private Long veranstaltungId;
+    private Long benutzerId;
 
     public DsbMannschaftBE(){/*empty constructor*/}
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getVereinId() {
+    public Long getVereinId() {
         return vereinId;
     }
 
-    public long getNummer() {
+    public Long getNummer() {
         return nummer;
     }
 
-    public long getVeranstaltungId() {
+    public Long getVeranstaltungId() {
         return veranstaltungId;
     }
 
-    public long getBenutzerId() {
+    public Long getBenutzerId() {
         return benutzerId;
     }
 

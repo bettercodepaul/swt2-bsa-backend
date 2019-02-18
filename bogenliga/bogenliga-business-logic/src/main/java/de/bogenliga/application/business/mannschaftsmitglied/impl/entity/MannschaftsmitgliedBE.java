@@ -21,7 +21,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
 
     }
 
-    public long getMannschaftId() {
+    public Long getMannschaftId() {
         return mannschaftId;
     }
 
@@ -29,7 +29,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
         this.mannschaftId = mannschaftId;
     }
 
-    public long getDsbMitgliedId() {
+    public Long getDsbMitgliedId() {
         return dsbMitgliedId;
     }
 
