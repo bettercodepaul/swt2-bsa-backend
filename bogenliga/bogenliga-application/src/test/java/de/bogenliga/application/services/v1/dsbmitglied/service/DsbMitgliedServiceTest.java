@@ -105,7 +105,7 @@ public class DsbMitgliedServiceTest {
         dsbMitgliedDTO.setMitgliedsnummer(MITGLIEDSNUMMER);
         dsbMitgliedDTO.setVereinsId(VEREINSID);
         dsbMitgliedDTO.setUserId(USERID);
-
+        dsbMitgliedDTO.setKampfrichter(KAMPFRICHTER);
         return dsbMitgliedDTO;
     }
 

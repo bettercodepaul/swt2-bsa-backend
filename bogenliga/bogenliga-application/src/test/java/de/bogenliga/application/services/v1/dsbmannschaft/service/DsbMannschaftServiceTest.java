@@ -15,17 +15,11 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
-import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
-import de.bogenliga.application.services.v1.dsbmitglied.service.DsbMitgliedService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * TODO [AL] class documentation
@@ -38,7 +32,7 @@ public class DsbMannschaftServiceTest {
     private static final long ID = 1893;
 
     private static final long VEREIN_ID = 111111;
-    private static final long  NUMMER = 22222;
+    private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
     private static final long VERANSTALTUNG_ID = 44444;
 
@@ -58,15 +52,13 @@ public class DsbMannschaftServiceTest {
     private ArgumentCaptor<DsbMannschaftDO> dsbMannschaftVOArgumentCaptor;
 
 
-
-
     /***
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
      */
     public static DsbMannschaftBE getDsbMannschaftBE() {
         final DsbMannschaftBE expectedBE = new DsbMannschaftBE();
-       // expectedBE.setDsbMannschaftId(ID);  in be fehlt set id
+        // expectedBE.setDsbMannschaftId(ID);  in be fehlt set id
         expectedBE.setId(ID);
         expectedBE.setVereinId(VEREIN_ID);
         expectedBE.setNummer(NUMMER);
@@ -80,9 +72,10 @@ public class DsbMannschaftServiceTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, VEREIN_ID,NUMMER,BENUTZER_ID,VERANSTALTUNG_ID
-                );
+                ID, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID
+        );
     }
+
 
     private static DsbMannschaftDTO getDsbMannschaftDTO() {
         final DsbMannschaftDTO dsbMannschaftDTO = new DsbMannschaftDTO();
@@ -95,6 +88,7 @@ public class DsbMannschaftServiceTest {
         return dsbMannschaftDTO;
 
     }
+
 
     @Before
     public void initMocks() {
@@ -129,6 +123,7 @@ public class DsbMannschaftServiceTest {
         // verify invocations
         verify(dsbMannschaftComponent).findAll();
     }
+
 
     @Test
     public void findById() {
@@ -208,6 +203,7 @@ public class DsbMannschaftServiceTest {
         assertThat(updatedDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
     }
 
+
     @Test
     public void delete() {
         // prepare test data
@@ -227,7 +223,7 @@ public class DsbMannschaftServiceTest {
 
         assertThat(deletedDsbMannschaft).isNotNull();
         assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
-        assertThat(deletedDsbMannschaft.getVereinId()).isEqualTo(0L);
+        assertThat(deletedDsbMannschaft.getVereinId()).isEqualTo(null);
     }
 
 }
