@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -70,6 +71,20 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
+    private static final String FIND_KAMPFRICHTER =
+            "SELECT * "
+                    + " FROM lizenz "
+                    + " WHERE lizenz_typ = 'Kampfrichter' AND lizenz_dsb_mitglied_id = ?";
+
+    private static final String FIND_DSB_KAMPFRICHTER =
+            "SELECT * FROM dsb_mitglied" +
+                    " WHERE dsb_mitglied_id = (" +
+                    " SELECT lizenz_dsb_mitglied_id" +
+                    " FROM lizenz" +
+                    " WHERE lizenz_dsb_mitglied_id = ?" +
+                    " AND lizenz_typ = 'Kampfrichter'" +
+                    " )";
+
     private final BasicDAO basicDao;
 
 
@@ -101,6 +116,16 @@ public class DsbMitgliedDAO implements DataAccessObject {
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
         return columnsToFieldsMap;
+    }
+
+
+    /**
+     *
+     * @param id from DsbMitglied
+     * @return boolean if dsbMitglied has a lizenz
+     */
+    public Boolean hasKampfrichterLizenz(final long id) {
+        return (basicDao.selectSingleEntity(DSBMITGLIED, FIND_DSB_KAMPFRICHTER, id)==null) ? false : true;
     }
 
 
@@ -160,7 +185,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
-     * Delete existing dsbmitglied entry
+     * Delete existing dsbmitglied entrycreated_at_utc
      *
      * @param dsbMitgliedBE
      * @param currentDsbMitgliedId
