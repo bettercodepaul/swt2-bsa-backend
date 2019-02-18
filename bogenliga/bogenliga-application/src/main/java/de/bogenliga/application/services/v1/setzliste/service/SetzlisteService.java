@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.setzliste.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
-import de.bogenliga.application.business.Setzliste.api.types.SetzlisteDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.services.v1.setzliste.model.SetzlisteDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -96,7 +94,7 @@ public class SetzlisteService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam final Map<String, String> requestParams) {
-        final List<SetzlisteDO> setzlisteDOList = setzlisteComponent.getTable();
+        final String setzlisteDOList = setzlisteComponent.getTable(0, 0);
         LOG.debug("setzliste works...");
         final Resource resource = new ClassPathResource("tableForDennis.pdf");
         long r = 0;
@@ -172,7 +170,7 @@ public class SetzlisteService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public String getTable() {
         LOG.warn("### Setzliste Service #####");
-        final List<SetzlisteDO> setzlisteDOList = setzlisteComponent.getTable();
+        final String s = setzlisteComponent.getTable(0, 0);
         return "Hello Setzliste!";
     }
 
