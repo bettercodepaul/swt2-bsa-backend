@@ -6,9 +6,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 import java.sql.Date;
 
 /**
- * I represent the dsbmitglied business entity.
- * <p>
- * A dsbmitglied is a registered member of the DSB. The dsbmitglied is not necessarily a technical user of the system.
+ * I represent the setzliste business entity.
  * <p>
  * The {@link CommonBusinessEntity} contains the technical parameter. Business entities commonly use these parameters to
  * control their lifecycle.
@@ -17,10 +15,10 @@ import java.sql.Date;
  */
 public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private Integer matchNr;
-    private Integer matchScheibennummer;
     private Integer ligatabelleTabellenplatz;
     private String vereinName;
+    private Integer mannschaftNummer;
+    private String veranstaltungName;
     private Integer wettkampfTag;
     private Date wettkampfDatum;
     private String wettkampfBeginn;
@@ -34,23 +32,6 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
 
     public static Long getSerialVersionUID() {
         return serialVersionUID;
-    }
-
-
-    public Integer getMatchNr() {
-        return matchNr;
-    }
-
-    public void setMatchNr(Integer matchNr) {
-        this.matchNr = matchNr;
-    }
-
-    public Integer getMatchScheibennummer() {
-        return matchScheibennummer;
-    }
-
-    public void setMatchScheibennummer(Integer matchScheibennummer) {
-        this.matchScheibennummer = matchScheibennummer;
     }
 
     public Integer getLigatabelleTabellenplatz() {
@@ -67,6 +48,22 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
 
     public void setVereinName(String vereinName) {
         this.vereinName = vereinName;
+    }
+
+    public Integer getMannschaftNummer() {
+        return mannschaftNummer;
+    }
+
+    public void setMannschaftNummer(Integer mannschaftNummer) {
+        this.mannschaftNummer = mannschaftNummer;
+    }
+
+    public String getVeranstaltungName() {
+        return veranstaltungName;
+    }
+
+    public void setVeranstaltungName(String veranstaltungName) {
+        this.veranstaltungName = veranstaltungName;
     }
 
     public Integer getWettkampfTag() {
@@ -104,10 +101,10 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
     @Override
     public String toString() {
         return "setzliste{" +
-                "matchnr=" + matchNr +
-                ", matchScheibennummer='" + matchScheibennummer + '\'' +
                 ", ligatabelleTabellenplatz='" + ligatabelleTabellenplatz + '\'' +
                 ", vereinName='" + vereinName + '\'' +
+                ", mannschaftNummer='" + mannschaftNummer + '\'' +
+                ", veranstaltungName='" + veranstaltungName + '\'' +
                 ", wettkampfTag='" + wettkampfTag + '\'' +
                 ", wettkampfDatum='" + wettkampfDatum + '\'' +
                 ", wettkampfBeginn=" + wettkampfBeginn +

@@ -13,6 +13,7 @@ import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
+ * test123
  */
 public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
 
@@ -32,6 +33,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedMitgliedsnummer = dsbMitgliedDO.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dsbMitgliedDO.getVereinsId();
         final Long dsbMitgliedUserId = dsbMitgliedDO.getUserId();
+        final Boolean dsbMitgliedKampfrichterlizenz = dsbMitgliedDO.isKampfrichter();
 
         return new DsbMitgliedDTO(dsbMitgliedId,
                 dsbMitgliedVorname,
@@ -40,8 +42,9 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
-                dsbMitgliedUserId);
+                dsbMitgliedUserId, dsbMitgliedKampfrichterlizenz);//,dsbMitgliedKampfrichter);
     };
+
     /**
      * I map the {@link DsbMitgliedDTO} object to the {@link DsbMitgliedDO} object
      */
@@ -58,6 +61,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
         final String dsbMitgliedMitgliedsnummer = dto.getMitgliedsnummer();
         final Long dsbMitgliedVereinsId = dto.getVereinsId();
         final Long dsbMitgliedUserId = dto.getUserId();
+        final Boolean dsbMitgliedKampfrichter = dto.isKampfrichter();
 
         return new DsbMitgliedDO(dsbMitgliedId,
                 dsbMitgliedVorname,
@@ -66,7 +70,8 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
-                dsbMitgliedUserId);
+                dsbMitgliedUserId,
+                dsbMitgliedKampfrichter);
     };
 
 

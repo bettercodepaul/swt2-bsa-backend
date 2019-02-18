@@ -1,0 +1,24 @@
+2018-11-30 16:02:11,390 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-5] Request method 'PUT' not supported
+2018-11-30 16:02:11,523 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-6] Request method 'PUT' not supported
+2018-11-30 16:02:11,642 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-7] Request method 'PUT' not supported
+2018-11-30 16:02:30,256 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-8] Request method 'PUT' not supported
+2018-11-30 16:02:30,414 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-9] Request method 'PUT' not supported
+2018-11-30 16:02:30,526 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-10] Request method 'PUT' not supported
+2018-11-30 16:04:11,536 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-2] Request method 'PUT' not supported
+2018-11-30 16:04:11,733 WARN org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler [http-nio-9000-exec-3] Request method 'PUT' not supported
+2018-12-02 18:59:12,394 WARN org.springframework.context.support.AbstractApplicationContext [main] Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'kampfrichterService' defined in file [C:\Users\Rahul\Documents\MKI\SWT2\swt2-bsa-infrastructure\project\backend\bogenliga\bogenliga-application\target\classes\de\bogenliga\application\services\v1\kampfrichter\service\KampfrichterService.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2018-12-02 18:59:12,892 ERROR org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter [main] 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in de.bogenliga.application.services.v1.kampfrichter.service.KampfrichterService required a bean of type 'de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent' in your configuration.
+

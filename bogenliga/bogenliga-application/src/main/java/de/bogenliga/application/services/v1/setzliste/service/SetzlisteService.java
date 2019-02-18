@@ -1,17 +1,9 @@
 package de.bogenliga.application.services.v1.setzliste.service;
 
-import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
-import de.bogenliga.application.business.Setzliste.api.types.SetzlisteDO;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.common.service.UserProvider;
-import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.dsbmitglied.mapper.DsbMitgliedDTOMapper;
-import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
-import de.bogenliga.application.services.v1.setzliste.mapper.SetzlisteDTOMapper;
-import de.bogenliga.application.services.v1.setzliste.model.SetzlisteDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Principal;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +12,18 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
+import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.services.v1.setzliste.model.SetzlisteDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
  * I´m a REST resource and handle dsbMitglied CRUD requests over the HTTP protocol.
@@ -70,7 +66,6 @@ public class SetzlisteService implements ServiceFacade {
 
     /**
      * Constructor with dependency injection
-     *
      */
     @Autowired
     public SetzlisteService(final SetzlisteComponent setzlisteComponent) {
@@ -80,7 +75,7 @@ public class SetzlisteService implements ServiceFacade {
 
     /**
      * I return the dsbMitglied entry of the database with a specific id.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: GET /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      * <pre>{@code Response:
@@ -98,18 +93,18 @@ public class SetzlisteService implements ServiceFacade {
     //   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam Map<String,String> requestParams) {
-        final List<SetzlisteDO> setzlisteDOList = setzlisteComponent.getTable();
+    public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam final Map<String, String> requestParams) {
+        final String setzlisteDOList = setzlisteComponent.getTable(0, 0);
         LOG.debug("setzliste works...");
-        Resource resource = new ClassPathResource("tableForDennis.pdf");
+        final Resource resource = new ClassPathResource("tableForDennis.pdf");
         long r = 0;
-        InputStream is=null;
+        InputStream is = null;
 
         try {
             is = resource.getInputStream();
             r = resource.contentLength();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            LOG.error("Error: ", e);
         }
 
         return ResponseEntity.ok().contentLength(r)
@@ -129,12 +124,14 @@ public class SetzlisteService implements ServiceFacade {
 
     @RequestMapping(value = "/{tag}/{wettkampf}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public String getTableByVars2(@PathVariable("tag") final String tag, @PathVariable("wettkampf") final String wettkampf) {
+    public String getTableByVars2(@PathVariable("tag") final String tag,
+                                  @PathVariable("wettkampf") final String wettkampf) {
         LOG.debug("Receive 'find byVars' request with wettkampf " + tag);
         LOG.debug("Receive 'find byVars' request with wettkampftag  " + wettkampf);
         //final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return "/setzliste passt";
     }
+
 
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -145,10 +142,11 @@ public class SetzlisteService implements ServiceFacade {
         return "blaaaa";
     }
 
+
     /**
-     * I return all dsbMitglied entries of the database.
-     * TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom Admin oder auf Testdaten verwendet werden!
-     *
+     * I return all dsbMitglied entries of the database. TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom
+     * Admin oder auf Testdaten verwendet werden!
+     * <p>
      * Usage:
      * <pre>{@code Request: GET /v1/dsbmitglied}</pre>
      * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMitlgied angepasst werden
@@ -172,11 +170,9 @@ public class SetzlisteService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public String getTable() {
         LOG.warn("### Setzliste Service #####");
-        final List<SetzlisteDO> setzlisteDOList = setzlisteComponent.getTable();
+        final String s = setzlisteComponent.getTable(0, 0);
         return "Hello Setzliste!";
     }
-
-
 
 
 //    public List<SetzlisteDTO> getTable() {
