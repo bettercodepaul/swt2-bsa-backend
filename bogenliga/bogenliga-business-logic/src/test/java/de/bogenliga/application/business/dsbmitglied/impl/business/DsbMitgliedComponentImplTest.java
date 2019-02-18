@@ -16,6 +16,8 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.lizenz.dao.LizenzDAO;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -46,10 +48,14 @@ public class DsbMitgliedComponentImplTest {
     private static final Long VEREINSID = 2L;
     private static final Long USERID = 4242L;
 
+    private static final Boolean KAMPFRICHTER = true;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private DsbMitgliedDAO dsbMitgliedDAO;
+    @Mock
+    private LizenzDAO lizenzDAO;
     @InjectMocks
     private DsbMitgliedComponentImpl underTest;
     @Captor
@@ -75,6 +81,14 @@ public class DsbMitgliedComponentImplTest {
     }
 
 
+    public static LizenzBE getLizenzBE() {
+        final LizenzBE expectedBe = new LizenzBE();
+        expectedBe.setLizenzId(1L);
+        expectedBe.setLizenzDsbMitgliedId(2L);
+        return expectedBe;
+    }
+
+
     public static DsbMitgliedDO getDsbMitgliedDO() {
         return new DsbMitgliedDO(
                 ID,
@@ -84,7 +98,8 @@ public class DsbMitgliedComponentImplTest {
                 NATIONALITAET,
                 MITGLIEDSNUMMER,
                 VEREINSID,
-                USERID);
+                USERID,
+                KAMPFRICHTER);
     }
 
 
@@ -201,6 +216,7 @@ public class DsbMitgliedComponentImplTest {
                 dateTime,
                 USER,
                 VERSION);
+        input.setKampfrichter(false);
 
         final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
         expectedBE.setDsbMitgliedId(ID);

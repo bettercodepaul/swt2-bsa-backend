@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
+import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmitglied.mapper.DsbMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
+import de.bogenliga.application.services.v1.kampfrichter.service.KampfrichterService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -51,6 +54,7 @@ public class DsbMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER = "DsbMitglied mitgliedsnummer must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
+
 
     private static final Logger LOG = LoggerFactory.getLogger(DsbMitgliedService.class);
 
@@ -124,7 +128,7 @@ public class DsbMitgliedService implements ServiceFacade {
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'findById' request with ID '{}'", id);
+        LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 
         final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return DsbMitgliedDTOMapper.toDTO.apply(dsbMitgliedDO);
@@ -174,6 +178,7 @@ public class DsbMitgliedService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
+
         return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
     }
 
@@ -195,6 +200,7 @@ public class DsbMitgliedService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
+
         checkPreconditions(dsbMitgliedDTO);
         Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
@@ -206,7 +212,8 @@ public class DsbMitgliedService implements ServiceFacade {
                 dsbMitgliedDTO.getGeburtsdatum(),
                 dsbMitgliedDTO.getNationalitaet(),
                 dsbMitgliedDTO.getMitgliedsnummer(),
-                dsbMitgliedDTO.getVereinsId());
+                dsbMitgliedDTO.getVereinsId()
+                );
 
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);

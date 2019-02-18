@@ -5,54 +5,66 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEntity {
 
-    private long id;
-    private long vereinId;
-    private long nummer;
-    private long veranstaltungId;
-    private long benutzerId;
+    private static final long serialVersionUID = -6431886856322437597L;
+    private Long id;
+    private Long vereinId;
+    private Long nummer;
+    private Long veranstaltungId;
+    private Long benutzerId;
 
-    public DsbMannschaftBE(){/*empty constructor*/}
+
+    public DsbMannschaftBE() {/*empty constructor*/}
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getVereinId() {
-        return vereinId;
-    }
 
-    public long getNummer() {
-        return nummer;
-    }
-
-    public long getVeranstaltungId() {
-        return veranstaltungId;
-    }
-
-    public long getBenutzerId() {
-        return benutzerId;
-    }
-
-    public void setId(final long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
-    public void setVereinId(final long vereinId) {
+
+    public Long getVereinId() {
+        return vereinId;
+    }
+
+
+    public void setVereinId(final Long vereinId) {
         this.vereinId = vereinId;
     }
 
-    public void setNummer(final long nummer) {
+
+    public Long getNummer() {
+        return nummer;
+    }
+
+
+    public void setNummer(final Long nummer) {
         this.nummer = nummer;
     }
 
-    public void setVeranstaltungId(final long veranstaltungId) {
+
+    public Long getVeranstaltungId() {
+        return veranstaltungId;
+    }
+
+
+    public void setVeranstaltungId(final Long veranstaltungId) {
         this.veranstaltungId = veranstaltungId;
     }
 
-    public void setBenutzerId(final long benutzerId) {
+
+    public Long getBenutzerId() {
+        return benutzerId;
+    }
+
+
+    public void setBenutzerId(final Long benutzerId) {
         this.benutzerId = benutzerId;
     }
+
 
     @Override
     public String toString() {

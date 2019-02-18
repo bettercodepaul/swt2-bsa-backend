@@ -21,6 +21,8 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         final Long mannschaftId = be.getMannschaftId();
         final Long mitgliedId = be.getDsbMitgliedId();
         final boolean mitgliedEingesetzt = be.isDsbMitgliedEingesetzt();
+        final String mitgliedVorname = be.getDsbMitgliedVorname();
+        final String mitgliedNachname = be.getDsbMitgliedNachname();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -30,7 +32,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new MannschaftsmitgliedDO(mannschaftId, mitgliedId, mitgliedEingesetzt,
+        return new MannschaftsmitgliedDO(mannschaftId, mitgliedId, mitgliedEingesetzt,mitgliedVorname,mitgliedNachname,
                 createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
@@ -47,6 +49,8 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         mannschaftsmitgliedBE.setMannschaftId(mannschaftsmitgliedDO.getMannschaftId());
         mannschaftsmitgliedBE.setDsbMitgliedId(mannschaftsmitgliedDO.getDsbMitgliedId());
         mannschaftsmitgliedBE.setDsbMitgliedEingesetzt(mannschaftsmitgliedDO.isDsbMitgliedEingesetzt());
+        mannschaftsmitgliedBE.setDsbMitgliedVorname(mannschaftsmitgliedDO.getDsbMitgliedVorname());
+        mannschaftsmitgliedBE.setDsbMitgliedNachname(mannschaftsmitgliedDO.getDsbMitgliedNachname());
 
         mannschaftsmitgliedBE.setCreatedAtUtc(createdAtUtcTimestamp);
         mannschaftsmitgliedBE.setCreatedByUserId(mannschaftsmitgliedDO.getCreatedByUserId());

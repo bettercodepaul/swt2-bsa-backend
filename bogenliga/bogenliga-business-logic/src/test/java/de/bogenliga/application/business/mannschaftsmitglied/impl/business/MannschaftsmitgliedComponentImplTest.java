@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -41,6 +40,9 @@ public class MannschaftsmitgliedComponentImplTest {
     private static final Long MANNSCHAFTSID = 1111L;
     private static final Long DSB_MITGLIED_ID = 2222L;
     private static final Boolean DSB_MITGLIED_EINGESTZT = true;
+    private static final String DSB_MITGLIED_VORNSME = "Mario";
+    private static final String DSB_MItglied_Nachname = "Gomez";
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -71,7 +73,9 @@ public class MannschaftsmitgliedComponentImplTest {
         return new MannschaftsmitgliedDO(
                     MANNSCHAFTSID,
                     DSB_MITGLIED_ID,
-                    DSB_MITGLIED_EINGESTZT);
+                    DSB_MITGLIED_EINGESTZT,
+                     DSB_MITGLIED_VORNSME,
+                    DSB_MItglied_Nachname);
     }
 
     @Test
@@ -268,7 +272,6 @@ public class MannschaftsmitgliedComponentImplTest {
     @Test
     public void update(){
 
-
         final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
 
         final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
@@ -277,23 +280,15 @@ public class MannschaftsmitgliedComponentImplTest {
         when(mannschaftsmitgliedDAO.update(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final MannschaftsmitgliedDO actual = underTest.create(input, USER);
+        final MannschaftsmitgliedDO actual = underTest.update(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
 
         assertThat(actual.getMannschaftId())
                 .isEqualTo(input.getMannschaftId());
-
-        // verify invocations
-        verify(mannschaftsmitgliedDAO).update(mannschaftsmitgliedBEArgumentCaptor.capture(), anyLong());
-
-        final MannschaftsmitgliedBE persistedBE = mannschaftsmitgliedBEArgumentCaptor.getValue();
-
-        assertThat(persistedBE).isNotNull();
-
-        assertThat(persistedBE.getMannschaftId())
-                .isEqualTo(input.getMannschaftId());
+        assertThat(actual.getDsbMitgliedId())
+                .isEqualTo(input.getDsbMitgliedId());
     }
 
 

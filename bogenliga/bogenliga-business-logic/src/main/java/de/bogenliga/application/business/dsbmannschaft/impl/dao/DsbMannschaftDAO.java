@@ -1,17 +1,16 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.dao;
 
-import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
-import de.bogenliga.application.common.component.dao.DataAccessObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 @Repository
 public class DsbMannschaftDAO implements DataAccessObject {
@@ -79,12 +78,12 @@ public class DsbMannschaftDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_EVENTID, MANNSCHAFT_BE_EVENTID);
 
 
-
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
         return columnsToFieldsMap;
     }
+
 
     /**
      * Return all dsbmitglied entries
@@ -109,6 +108,7 @@ public class DsbMannschaftDAO implements DataAccessObject {
      *
      * @param dsbMannschaftBE
      * @param currentDsbMannschaftId
+     *
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
     public DsbMannschaftBE create(final DsbMannschaftBE dsbMannschaftBE, final long currentDsbMannschaftId) {
@@ -117,11 +117,13 @@ public class DsbMannschaftDAO implements DataAccessObject {
         return basicDao.insertEntity(MANNSCHAFT, dsbMannschaftBE);
     }
 
+
     /**
      * Update an existing dsbmitglied entry
      *
      * @param dsbMannschaftBE
      * @param currentDsbMannschaftId
+     *
      * @return Business Entity corresponding to the updated dsbmitglied entry
      */
     public DsbMannschaftBE update(final DsbMannschaftBE dsbMannschaftBE, final long currentDsbMannschaftId) {
