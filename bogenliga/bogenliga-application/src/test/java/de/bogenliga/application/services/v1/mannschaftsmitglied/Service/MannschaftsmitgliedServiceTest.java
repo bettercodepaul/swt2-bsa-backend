@@ -33,6 +33,8 @@ public class MannschaftsmitgliedServiceTest {
     private static long mannschaftsId = 1;
     private static long dsbMitgliedId = 100;
     private static boolean dsbMitgliedEingesetzt = true;
+    private static String dsbMitgliedVorname = "Mario";
+    private static String dsbMitgliedNachname= "Gomez";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -59,7 +61,7 @@ public class MannschaftsmitgliedServiceTest {
 
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         return new MannschaftsmitgliedDO(
-                mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt
+                mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt,dsbMitgliedVorname,dsbMitgliedNachname
         );
     }
 

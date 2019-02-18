@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -31,6 +33,8 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
         final String mitgliedsnummer = be.getDsbMitgliedMitgliedsnummer();
         final Long vereinsId = be.getDsbMitgliedVereinsId();
         final Long userId = be.getDsbMitgliedUserId();
+        final Boolean kampfrichter=false;
+
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -41,7 +45,7 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new DsbMitgliedDO(id, vorname, nachname, geburtsdatum, nationalitaet, mitgliedsnummer, vereinsId, userId,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, kampfrichter);
     };
 
     /**

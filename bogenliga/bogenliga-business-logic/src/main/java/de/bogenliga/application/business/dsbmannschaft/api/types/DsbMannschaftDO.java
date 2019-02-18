@@ -13,11 +13,11 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * business parameter
      */
 
-    private long id;
-    private long vereinId;
-    private long nummer;
-    private long benutzerId;
-    private long veranstaltungId;
+    private Long id;
+    private Long vereinId;
+    private Long nummer;
+    private Long benutzerId;
+    private Long veranstaltungId;
 
 
     /**
@@ -114,27 +114,27 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     }
 
 
-    public long getId(){ return id; }
+    public Long getId(){ return id; }
 
     public void setId(final long id){this.id=id;}
 
 
-    public long getVereinId(){return vereinId;}
+    public Long getVereinId(){return vereinId;}
 
     public void setVereinId(final long vereinId){this.vereinId=vereinId;}
 
 
-    public long getNummer(){return nummer;}
+    public Long getNummer(){return nummer;}
 
     public void setNummer(final long nummer){this.nummer=nummer;}
 
 
-    public long getBenutzerId(){return benutzerId;}
+    public Long getBenutzerId(){return benutzerId;}
 
     public void setBenutzerId(final long benutzerId){this.benutzerId=benutzerId;}
 
 
-    public long getVeranstaltungId(){return veranstaltungId;}
+    public Long getVeranstaltungId(){return veranstaltungId;}
 
     public void setVeranstaltungId(final long veranstaltungId){this.veranstaltungId=veranstaltungId;}
 

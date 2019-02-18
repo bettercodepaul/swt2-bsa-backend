@@ -10,37 +10,71 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class MannschaftsmitgliedBE extends CommonBusinessEntity implements BusinessEntity {
 
-    private long mannschaftId;
-    private long dsbMitgliedId;
+    private static final long serialVersionUID = 2616130134662239870L;
+    private Long mannschaftId;
+    private Long dsbMitgliedId;
     private boolean dsbMitgliedEingesetzt;
+    private String dsbMitgliedVorname;
+    private String dsbMitgliedNachname;
 
-    public MannschaftsmitgliedBE(){
 
+    /**
+     * Constructor
+     */
+    public MannschaftsmitgliedBE() {
+        // empty
     }
 
-    public long getMannschaftId() {
+
+    public Long getMannschaftId() {
         return mannschaftId;
     }
 
-    public void setMannschaftId(long mannschaftId) {
+
+    public void setMannschaftId(final long mannschaftId) {
         this.mannschaftId = mannschaftId;
     }
 
-    public long getDsbMitgliedId() {
+
+    public Long getDsbMitgliedId() {
         return dsbMitgliedId;
     }
 
-    public void setDsbMitgliedId(long dsbMitgliedId) {
+
+    public void setDsbMitgliedId(final long dsbMitgliedId) {
         this.dsbMitgliedId = dsbMitgliedId;
     }
+
 
     public boolean isDsbMitgliedEingesetzt() {
         return dsbMitgliedEingesetzt;
     }
 
-    public void setDsbMitgliedEingesetzt(boolean dsbMitgliedEingesetzt) {
+
+    public void setDsbMitgliedEingesetzt(final boolean dsbMitgliedEingesetzt) {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
+
+
+    public String getDsbMitgliedVorname() {
+        return dsbMitgliedVorname;
+    }
+
+
+    public void setDsbMitgliedVorname(final String dsbMitgliedVorname) {
+        this.dsbMitgliedVorname = dsbMitgliedVorname;
+    }
+
+
+    public String getDsbMitgliedNachname() {
+        return dsbMitgliedNachname;
+    }
+
+
+    public void setDsbMitgliedNachname(final String dsbMitgliedNachname) {
+        this.dsbMitgliedNachname = dsbMitgliedNachname;
+    }
+
 
     @Override
     public String toString() {
@@ -48,6 +82,8 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
                 "mannschaftId=" + mannschaftId +
                 ", dsbMitgliedId=" + dsbMitgliedId +
                 ", dsbMitgliedEingesetzt=" + dsbMitgliedEingesetzt +
+                ", dsbMitgliedVorname=" + dsbMitgliedVorname +
+                ", dsbMitgliedNachname=" + dsbMitgliedNachname +
                 '}';
     }
 }

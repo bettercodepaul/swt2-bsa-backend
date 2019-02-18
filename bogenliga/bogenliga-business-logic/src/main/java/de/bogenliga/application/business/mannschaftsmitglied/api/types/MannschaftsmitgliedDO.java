@@ -22,6 +22,8 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     private Long mannschaftId;
     private Long dsbMitgliedId;
     private boolean dsbMitgliedEingesetzt;
+    private String dsbMitgliedVorname;
+    private String dsbMitgliedNachname;
 
 
 
@@ -37,12 +39,14 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      * @param version
      */
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt, final OffsetDateTime createdAtUtc,
+    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt,final String dsbMitgliedVorname,final String dsbMitgliedNachname, final OffsetDateTime createdAtUtc,
                          final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                          final Long lastModifiedByUserId, final Long version) {
         this.mannschaftId = mannschaftId;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
+        this.dsbMitgliedVorname=dsbMitgliedVorname;
+        this.dsbMitgliedNachname=dsbMitgliedNachname;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
@@ -78,10 +82,12 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      * @param dsbMitgliedEingesetzt
      */
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt) {
+    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt, final String dsbMitgliedVorname, final String dsbMitgliedNachname) {
         this.mannschaftId = mannschaftId;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
+        this.dsbMitgliedVorname= dsbMitgliedVorname;
+        this.dsbMitgliedNachname= dsbMitgliedNachname;
 
     }
 
@@ -123,10 +129,26 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 
+    public String getDsbMitgliedVorname(){
+        return dsbMitgliedVorname;
+    }
+
+    public void setDsbMitgliedVorname(String dsbMitgliedVorname){
+        this.dsbMitgliedVorname=dsbMitgliedVorname;
+    }
+
+    public String getDsbMitgliedNachname(){
+        return dsbMitgliedNachname;
+    }
+
+    public void setDsbMitgliedNachname(){
+        this.dsbMitgliedNachname=dsbMitgliedNachname;
+    }
+
 
     @Override
     public int hashCode() {
-        return Objects.hash(mannschaftId, dsbMitgliedId, dsbMitgliedId,
+        return Objects.hash(mannschaftId, dsbMitgliedId, dsbMitgliedId, dsbMitgliedVorname, dsbMitgliedNachname,
                 createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
@@ -145,12 +167,16 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         return mannschaftId == that.mannschaftId &&
                 dsbMitgliedId == that.dsbMitgliedId &&
                 dsbMitgliedEingesetzt == that.dsbMitgliedEingesetzt &&
+                dsbMitgliedVorname == that.dsbMitgliedVorname &&
+                dsbMitgliedNachname == that.dsbMitgliedVorname &&
                 createdByUserId == that.createdByUserId &&
                 lastModifiedByUserId == that.lastModifiedByUserId &&
                 version == that.version &&
                 Objects.equals(mannschaftId, that.mannschaftId) &&
                 Objects.equals(dsbMitgliedId, that.dsbMitgliedId) &&
                 Objects.equals(dsbMitgliedEingesetzt, that.dsbMitgliedEingesetzt) &&
+                Objects.equals(dsbMitgliedVorname, that.dsbMitgliedVorname)&&
+                Objects.equals(dsbMitgliedNachname, that.dsbMitgliedNachname)&&
                 Objects.equals(lastModifiedAtUtc, that.lastModifiedAtUtc);
     }
 
