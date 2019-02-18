@@ -20,31 +20,62 @@ public class SecurityJsonWebTokenConfiguration {
     private long expiration; // ms
     private int refresh;
 
+
+    /**
+     * Getter
+     *
+     * @return secret
+     */
     public String getSecret() {
         return secret == null ? DEFAULT_SECRET : secret;
     }
 
 
+    /**
+     * Setter
+     *
+     * @param secret
+     */
     public void setSecret(final String secret) {
         this.secret = secret;
     }
 
 
+    /**
+     * Getter
+     *
+     * @return expiration
+     */
     public long getExpiration() {
         return expiration <= 0 ? DEFAULT_EXPIRATION_TIME : expiration;
     }
 
 
+    /**
+     * Setter
+     *
+     * @param expiration
+     */
     public void setExpiration(final long expiration) {
         this.expiration = expiration;
     }
 
 
+    /**
+     * Getter
+     *
+     * @return refresh
+     */
     public int getRefresh() {
         return refresh <= 0 ? DEFAULT_REFRESH_COUNT : refresh;
     }
 
 
+    /**
+     * Setter
+     *
+     * @param refresh
+     */
     public void setRefresh(final int refresh) {
         this.refresh = refresh;
     }
