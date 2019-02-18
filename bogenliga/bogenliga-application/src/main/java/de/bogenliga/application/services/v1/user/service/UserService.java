@@ -1,6 +1,22 @@
 package de.bogenliga.application.services.v1.user.service;
 
-import javax.servlet.http.HttpServletRequest;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.UserProfileComponent;
+import de.bogenliga.application.business.user.api.types.UserProfileDO;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
+import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
+import de.bogenliga.application.services.v1.user.mapper.UserProfileDTOMapper;
+import de.bogenliga.application.services.v1.user.model.UserCredentialsDTO;
+import de.bogenliga.application.services.v1.user.model.UserDTO;
+import de.bogenliga.application.services.v1.user.model.UserProfileDTO;
+import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
+import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,22 +26,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
-import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
-import de.bogenliga.application.services.v1.user.model.UserCredentialsDTO;
-import de.bogenliga.application.services.v1.user.model.UserDTO;
-import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
-import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
@@ -52,13 +55,21 @@ public class UserService implements ServiceFacade {
 
     private final WebSecurityConfiguration webSecurityConfiguration;
 
+    private final UserComponent userComponent;
+
+    private final UserProfileComponent userProfileComponent;
+
 
     @Autowired
     public UserService(final JwtTokenProvider jwtTokenProvider,
                        //final AuthenticationManager authenticationManager
-                       final WebSecurityConfiguration webSecurityConfiguration) {
+                       final WebSecurityConfiguration webSecurityConfiguration,
+                       final UserComponent userComponent,
+                       final UserProfileComponent userProfileComponent) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.webSecurityConfiguration = webSecurityConfiguration;
+        this.userComponent = userComponent;
+        this.userProfileComponent = userProfileComponent;
     }
 
 
@@ -110,5 +121,22 @@ public class UserService implements ServiceFacade {
         final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
 
         return jwtTokenProvider.resolveUserSignInDTO(jwt);
+    }
+
+    /**
+     * Returns the user profile for a given id.
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOwnIdentity
+    public UserProfileDTO getUserProfileById(@PathVariable("id") final long id) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'getUserProfileById' request with ID '{}'", id);
+
+        final UserProfileDO userProfileDO = userProfileComponent.findById(id);
+        return UserProfileDTOMapper.toDTO.apply(userProfileDO);
     }
 }

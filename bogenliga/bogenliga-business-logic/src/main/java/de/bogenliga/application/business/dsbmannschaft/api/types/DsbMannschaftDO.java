@@ -96,6 +96,16 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     }
 
     /**
+     * individuel constructor
+     * @param id
+     * @param vereinId
+     */
+    public DsbMannschaftDO(final Long id, final long vereinId) {
+        this.id = id;
+        this.vereinId = vereinId;
+    }
+
+    /**
      * Constructor with id for deleting existing entries
      * @param id
      */
