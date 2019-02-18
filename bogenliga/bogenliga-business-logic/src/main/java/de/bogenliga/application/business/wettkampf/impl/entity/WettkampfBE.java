@@ -2,6 +2,7 @@ package de.bogenliga.application.business.wettkampf.impl.entity;
 
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
+
 /**
  * I represent the wettkampf business entity.
  * <p>
@@ -14,6 +15,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity {
 
+    private static final long serialVersionUID = 7307883175430867611L;
     private Long id;
     private Long veranstaltungsId;
     private String datum;
@@ -23,8 +25,12 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
 
-    public WettkampfBE(){
 
+    /**
+     * Constructor
+     */
+    public WettkampfBE() {
+        // empty
     }
 
 
@@ -33,7 +39,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -43,7 +49,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setVeranstaltungsId(Long veranstaltungsId) {
+    public void setVeranstaltungsId(final Long veranstaltungsId) {
         this.veranstaltungsId = veranstaltungsId;
     }
 
@@ -53,7 +59,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setDatum(String datum) {
+    public void setDatum(final String datum) {
         this.datum = datum;
     }
 
@@ -63,7 +69,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setWettkampfOrt(String wettkampfOrt) {
+    public void setWettkampfOrt(final String wettkampfOrt) {
         this.wettkampfOrt = wettkampfOrt;
     }
 
@@ -73,7 +79,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setWettkampfBeginn(String wettkampfBeginn) {
+    public void setWettkampfBeginn(final String wettkampfBeginn) {
         this.wettkampfBeginn = wettkampfBeginn;
     }
 
@@ -83,7 +89,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setWettkampfTag(Long wettkampfTag) {
+    public void setWettkampfTag(final Long wettkampfTag) {
         this.wettkampfTag = wettkampfTag;
     }
 
@@ -93,7 +99,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setWettkampfDisziplinId(Long wettkampfDisziplinId) {
+    public void setWettkampfDisziplinId(final Long wettkampfDisziplinId) {
         this.wettkampfDisziplinId = wettkampfDisziplinId;
     }
 
@@ -103,19 +109,20 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public void setWettkampfTypId(Long wettkampfTypId) {
+    public void setWettkampfTypId(final Long wettkampfTypId) {
         this.wettkampfTypId = wettkampfTypId;
     }
 
+
     @Override
-    public String toString(){
-        return "Wettkampf ID = " + this.getId()+ "\n"+
-                "Veranstaltungs ID =  " + this.getVeranstaltungsId() + "\n" +
-                "Datum = " + this.getDatum() + "\n" +
-                "Wettkampf Ort = " + this.getWettkampfOrt() + "\n" +
-                "Wettkampfbeginn = " + this.getWettkampfBeginn() + "\n" +
-                "Wettkampftag = " + this.getWettkampfTag() + "\n" +
-                "Wettkampfdiziplin ID = " + this.getWettkampfDisziplinId() + "\n" +
-                "Wettkampftyp ID = " + this.getWettkampfTypId();
+    public String toString() {
+        return "Wettkampf ID = " + getId() + "\n" +
+                "Veranstaltungs ID =  " + getVeranstaltungsId() + "\n" +
+                "Datum = " + getDatum() + "\n" +
+                "Wettkampf Ort = " + getWettkampfOrt() + "\n" +
+                "Wettkampfbeginn = " + getWettkampfBeginn() + "\n" +
+                "Wettkampftag = " + getWettkampfTag() + "\n" +
+                "Wettkampfdiziplin ID = " + getWettkampfDisziplinId() + "\n" +
+                "Wettkampftyp ID = " + getWettkampfTypId();
     }
 }
