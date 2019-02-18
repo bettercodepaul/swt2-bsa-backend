@@ -24,8 +24,8 @@ CREATE TABLE veranstaltung (
   veranstaltung_name                VARCHAR(200)   NOT NULL,
   veranstaltung_sportjahr           DECIMAL(4, 0)  NOT NULL, --Okt 2018 bis Okt 2019 wird als 2019 erfasst
   veranstaltung_meldedeadline       DATE           NOT NULL, --Termin zu dem die Anmeldungen abgeschlossen wird
-  veranstaltung_kampfrichter_anzahl DECIMAL(2, 0), -- benötigte Kampfrichter im Wettkampf
-  veranstaltung_hoehere             DECIMAL(19, 0), -- Aufstiegsliga oder Weitermeldung in Folgeveranstaltung
+  /** veranstaltung_kampfrichter_anzahl DECIMAL(2, 0), -- benötigte Kampfrichter im Wettkampf **/
+  /** veranstaltung_hoehere             DECIMAL(19, 0), -- Aufstiegsliga oder Weitermeldung in Folgeveranstaltung **/
   veranstaltung_ligaleiter_id       DECIMAL(19, 0) NOT NULL, -- Benutzer-id des Koordinators aller Wettkämpfe des Sportjahres
 
   -- technical columns to track the lifecycle of each row
