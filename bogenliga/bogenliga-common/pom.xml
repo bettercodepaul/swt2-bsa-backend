@@ -24,13 +24,6 @@
 
     <dependencies>
 
-        <!-- iText 7 Community modules -->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itext7-core</artifactId>
-            <version>7.1.4</version>
-        </dependency>
-
         <!-- SPRING -->
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
         <dependency>
