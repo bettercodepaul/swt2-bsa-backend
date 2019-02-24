@@ -11,10 +11,7 @@ public class RoleDTO implements DataTransferObject {
 
     private static final long serialVersionUID = -8591546299429551992L;
     private Long id;
-    private String email;
-    private Long roleId;
     private String roleName;
-
     private Long version;
 
 
@@ -38,11 +35,9 @@ public class RoleDTO implements DataTransferObject {
     /**
      * Constructor with mandatory parameters
      */
-    public RoleDTO(final Long id, final String email, final Long roleId, final String RoleName, final Long version) {
+    public RoleDTO(final Long id, final String roleName, final Long version) {
         this.id = id;
-        this.email = email;
-        this.roleId = id;
-        this.roleName = email;
+        this.roleName = roleName;
         this.version = version;
     }
 
@@ -51,10 +46,10 @@ public class RoleDTO implements DataTransferObject {
     /**
      * Copy constructor
      *
-     * @param userDTO to copy
+     * @param roleDTO to copy
      */
-    public RoleDTO(final RoleDTO userDTO) {
-        this(userDTO.getId(), userDTO.getEmail(), userDTO.getRoleId(), userDTO.getRoleName(), userDTO.getVersion());
+    public RoleDTO(final RoleDTO roleDTO) {
+        this(roleDTO.getId(), roleDTO.getRoleName(), roleDTO.getVersion());
     }
 
 
@@ -64,22 +59,6 @@ public class RoleDTO implements DataTransferObject {
     public void setId(final Long id) {
         this.id = id;
     }
-
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(final String email) {
-        this.email = email;
-    }
-
-    public Long getRoleId() {
-        return roleId;
-    }
-    public void setRoleId(final Long roleId) {
-        this.roleId = roleId;
-    }
-
 
     public String getRoleName() {
         return roleName;
