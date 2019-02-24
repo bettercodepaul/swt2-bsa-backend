@@ -24,6 +24,15 @@ public class RoleBE extends CommonBusinessEntity implements BusinessEntity {
         // empty
     }
 
+    @Override
+    public String toString() {
+        return "RoleBE{" +
+                "roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                '}';
+    }
+
+
     public long getRoleId() {
         return roleId;
     }
