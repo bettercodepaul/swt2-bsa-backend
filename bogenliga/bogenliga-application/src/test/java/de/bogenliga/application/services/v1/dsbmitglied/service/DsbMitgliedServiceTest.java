@@ -44,6 +44,8 @@ public class DsbMitgliedServiceTest {
     private static final long VEREINSID = 2;
     private static final long USERID = 4242;
 
+    private static final boolean KAMPFRICHTER = true;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -79,7 +81,7 @@ public class DsbMitgliedServiceTest {
     }
 
 
-    public static DsbMitgliedDO getDsbMitgliedDO() {
+    private static DsbMitgliedDO getDsbMitgliedDO() {
         return new DsbMitgliedDO(
                 ID,
                 VORNAME,
@@ -88,7 +90,8 @@ public class DsbMitgliedServiceTest {
                 NATIONALITAET,
                 MITGLIEDSNUMMER,
                 VEREINSID,
-                USERID);
+                USERID,
+                KAMPFRICHTER);
     }
 
 
@@ -102,6 +105,7 @@ public class DsbMitgliedServiceTest {
         dsbMitgliedDTO.setMitgliedsnummer(MITGLIEDSNUMMER);
         dsbMitgliedDTO.setVereinsId(VEREINSID);
         dsbMitgliedDTO.setUserId(USERID);
+        dsbMitgliedDTO.setKampfrichter(KAMPFRICHTER);
         return dsbMitgliedDTO;
     }
 
@@ -193,6 +197,7 @@ public class DsbMitgliedServiceTest {
 
     @Test
     public void update() {
+
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
 
@@ -202,7 +207,7 @@ public class DsbMitgliedServiceTest {
         when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
-        final DsbMitgliedDTO actual = underTest.update(input, principal);
+        final DsbMitgliedDTO actual = underTest.update(input, principal);//,false);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -217,6 +222,7 @@ public class DsbMitgliedServiceTest {
         assertThat(updatedDsbMitglied).isNotNull();
         assertThat(updatedDsbMitglied.getId()).isEqualTo(input.getId());
         assertThat(updatedDsbMitglied.getVorname()).isEqualTo(input.getVorname());
+
     }
 
 

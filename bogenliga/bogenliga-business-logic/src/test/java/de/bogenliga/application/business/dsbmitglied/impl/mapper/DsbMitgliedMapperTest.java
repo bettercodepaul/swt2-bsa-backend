@@ -1,11 +1,9 @@
 package de.bogenliga.application.business.dsbmitglied.impl.mapper;
 
+import java.sql.Date;
+import org.junit.Test;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import org.junit.Test;
-
-import java.sql.Date;
-
 import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedBE;
 import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedDO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +40,8 @@ public class DsbMitgliedMapperTest {
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getVorname()).isEqualTo(VORNAME);
 
-        DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET, MITGLIEDSNUMMER, VEREINSID, USERID);
+        final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET,
+                MITGLIEDSNUMMER, VEREINSID, USERID, false);
         assertThat(actual.equals(dsbMitgliedDO));
     }
 
