@@ -26,7 +26,7 @@ public class UserChangeCredentialsDTO implements DataTransferObject {
         return newPassword;
     }
 
-    public void setNewpassword(String newpassword) {
+    public void setNewpassword(String newPassword) {
         this.newPassword = newPassword;
     }
 }

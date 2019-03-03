@@ -51,7 +51,7 @@ public class UserRoleMapper implements ValueObjectMapper {
     public static final Function<UserRoleBE, UserRoleDO> toUserRoleDO = be -> {
 
         final Long id = be.getUserId();
-        final Long roleId = be.getUserId();
+        final Long roleId = be.getRoleId();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
