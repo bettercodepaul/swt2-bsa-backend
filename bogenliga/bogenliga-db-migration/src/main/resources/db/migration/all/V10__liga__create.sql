@@ -7,6 +7,7 @@ CREATE TABLE liga (
   liga_region_id        DECIMAL(19,0)   NOT NULL, --Fremdschluessel zur Region
   liga_name             VARCHAR(200)    NOT NULL,
   liga_uebergeordnet    DECIMAL(19,0)   NULL,  -- Verweis auf die uebergeordnete Liga - bei Bundesliga (ganz oben) leer
+  liga_verantwortlich   DECIMAL(19,0)   NULL,  -- Verweis auf den Verantwortlichen User für die Liga
 
 
   -- technical columns to track the lifecycle of each row
@@ -33,7 +34,8 @@ CREATE TABLE liga (
   CONSTRAINT fk_liga_region FOREIGN KEY (liga_region_id) REFERENCES region (region_id)
     ON DELETE CASCADE,
   CONSTRAINT fk_liga_liga FOREIGN KEY (liga_uebergeordnet) REFERENCES liga (liga_id)
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+  CONSTRAINT fk_liga_benutzer FOREIGN KEY (liga_verantwortlich) REFERENCES benutzer (benutzer_id)
 );
 
 
