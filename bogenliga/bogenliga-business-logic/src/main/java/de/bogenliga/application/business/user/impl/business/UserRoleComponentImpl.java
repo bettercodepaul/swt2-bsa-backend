@@ -4,6 +4,7 @@ import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.impl.dao.UserRoleExtDAO;
+import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.business.role.impl.dao.RoleDAO;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
@@ -25,9 +26,9 @@ import java.util.stream.Collectors;
 public class UserRoleComponentImpl implements UserRoleComponent {
 
     private static final String PRECONDITION_MSG_USERROLE = "UserRoleDO must not be null";
-    private static final String PRECONDITION_MSG_USER_ID = "UserID must not be negative";
+    private static final String PRECONDITION_MSG_USER_ID = "UserID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserEmail must not be null or empty";
-    private static final String PRECONDITION_MSG_ROLE_ID = "RoleID must not be negative";
+    private static final String PRECONDITION_MSG_ROLE_ID = "RoleID must not be null or negative";
     private static final String USER_ROLE_DEFAULT = "USER";
     private final UserRoleExtDAO userRoleExtDAO;
 
@@ -38,7 +39,8 @@ public class UserRoleComponentImpl implements UserRoleComponent {
      * Constructor
      *
      * dependency injection with {@link Autowired}
-     * @param userRoleExtDAO to access the database and return user role (including name, email - not IDs only)
+     * @param userRoleExtDAO  to access the database and return user role (including name, email - not IDs only)
+     * @param roleDAO  to access the database and return default role
      */
     @Autowired
     public UserRoleComponentImpl(final UserRoleExtDAO userRoleExtDAO, RoleDAO roleDAO) {
@@ -56,7 +58,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
     @Override
     public UserRoleDO findById(final Long id) {
-        Preconditions.checkNotNull(id, PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(id, PRECONDITION_MSG_USERROLE);
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_USER_ID);
 
         final UserRoleExtBE result = userRoleExtDAO.findById(id);
@@ -121,6 +123,8 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
     public UserRoleDO update(final UserRoleDO userRoleDO, final Long currentUserId) {
         Preconditions.checkNotNull(userRoleDO, PRECONDITION_MSG_USERROLE);
+        Preconditions.checkNotNull(userRoleDO.getId(), PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(userRoleDO.getRoleId(), PRECONDITION_MSG_ROLE_ID);
         Preconditions.checkArgument(userRoleDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
         Preconditions.checkArgument(userRoleDO.getRoleId() >= 0, PRECONDITION_MSG_ROLE_ID);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);

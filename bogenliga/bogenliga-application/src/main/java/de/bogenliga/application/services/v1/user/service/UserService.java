@@ -57,13 +57,10 @@ import java.util.stream.Collectors;
 @RequestMapping("v1/user")
 public class UserService implements ServiceFacade {
 
-    private static final String PRECONDITION_MSG_USER = "BenutzerDO must not be null";
-    private static final String PRECONDITION_MSG_USER_ID = "User ID must not be negative";
-    private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be negative";
+    private static final String PRECONDITION_MSG_USER_ID = "User ID must not be null or negative";
+    private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
     private static final String PRECONDITION_MSG_ROLE_NAME = "RoleName must not be null";
-    private static final String PRECONDITION_MSG_USER_PASSWORD = "Benutzer password must not be null";
-    private static final String PRECONDITION_MSG_USER_NEWPASSWORD = "Benutzer new password must not be null";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
@@ -133,6 +130,36 @@ public class UserService implements ServiceFacade {
     }
 
 
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/me",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
+
+        return jwtTokenProvider.resolveUserSignInDTO(jwt);
+    }
+
+    /**
+     * Returns the user profile for a given id.
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOwnIdentity
+    public UserProfileDTO getUserProfileById(@PathVariable("id") final long id) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'getUserProfileById' request with ID '{}'", id);
+
+        final UserProfileDO userProfileDO = userProfileComponent.findById(id);
+        return UserProfileDTOMapper.toDTO.apply(userProfileDO);
+    }
+
+
+
     /**
      * I persist a new password for the current user and return this user entry.
      *
@@ -151,7 +178,6 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      * @param uptcredentials of the request body
-     * @param principal authenticated user
      * @return  {@link UserDTO} as JSON
      */
 
@@ -160,22 +186,27 @@ public class UserService implements ServiceFacade {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO update(@RequestBody final UserChangeCredentialsDTO uptcredentials, final Principal principal) {
+    public UserDTO update(final HttpServletRequest requestWithHeader, @RequestBody final UserChangeCredentialsDTO uptcredentials) {
         Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getNewPassword(), "New password must not be null or empty");
 
         ErrorDTO errorDetails = null;
 
-        final Long userId = UserProvider.getCurrentUserId(principal);
+        //update password is limited to own password,
+        // therefore we get the current user id based on system utils
+
+        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final Long userId = jwtTokenProvider.getUserId(jwt);
 
         final UserDO userDO = new UserDO();
         userDO.setId(userId);
 
+        //update password
         final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), uptcredentials.getNewPassword(), userId);
+
+        //prepare return DTO
         final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
-
-
         return userUpdatedDTO;
     }
 
@@ -186,22 +217,22 @@ public class UserService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserRoleDTO updateRole(@RequestBody final UserRoleDTO updatedUserRole, final Principal principal) {
+    public UserRoleDTO updateRole(final HttpServletRequest requestWithHeader, @RequestBody final UserRoleDTO updatedUserRole) {
         Preconditions.checkNotNull(updatedUserRole, "UserRole-Definition must not be null");
         Preconditions.checkNotNull(updatedUserRole.getId(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(updatedUserRole.getRoleId(), PRECONDITION_MSG_ROLE_ID);
-        Preconditions.checkNotNullOrEmpty(updatedUserRole.getEmail(),PRECONDITION_MSG_USER_EMAIL);
-        Preconditions.checkNotNullOrEmpty(updatedUserRole.getRoleName(),PRECONDITION_MSG_ROLE_NAME);
 
         ErrorDTO errorDetails = null;
-        final Long userId = UserProvider.getCurrentUserId(principal);
+
+        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final Long userId = jwtTokenProvider.getUserId(jwt);
 
         final UserRoleDO userRoleDO = new UserRoleDO();
         userRoleDO.setId(updatedUserRole.getId());
         userRoleDO.setRoleId(updatedUserRole.getRoleId());
 
         final UserRoleDO userRoleUpdatedDO = userRoleComponent.update(userRoleDO, userId);
-        final UserRoleDTO userUpdatedDTO = UserRoleDTOMapper.toUserDTO.apply(userRoleUpdatedDO);
+        final UserRoleDTO userUpdatedDTO = UserRoleDTOMapper.toDTO.apply(userRoleUpdatedDO);
 
 
         return userUpdatedDTO;
@@ -275,34 +306,6 @@ public class UserService implements ServiceFacade {
 
 
 
-    @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/me",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
-        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
-
-        return jwtTokenProvider.resolveUserSignInDTO(jwt);
-    }
-
-    /**
-     * Returns the user profile for a given id.
-     *
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOwnIdentity
-    public UserProfileDTO getUserProfileById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
-
-        LOG.debug("Receive 'getUserProfileById' request with ID '{}'", id);
-
-        final UserProfileDO userProfileDO = userProfileComponent.findById(id);
-        return UserProfileDTOMapper.toDTO.apply(userProfileDO);
-    }
-
-
     /**
      * I persist a new user and return this user entry.
      *
@@ -321,7 +324,7 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      * @param userCredentialsDTO of the request body
-     * @param principal authenticated user
+     * @param userCredentialsDTO of the request body
      * @return  {@link UserDTO} as JSON
      */
 
@@ -330,16 +333,18 @@ public class UserService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserDTO create(@RequestBody final UserCredentialsDTO userCredentialsDTO, final Principal principal) {
+    public UserDTO create(final HttpServletRequest requestWithHeader, @RequestBody final UserCredentialsDTO userCredentialsDTO) {
 
-        ErrorDTO errorDetails = null;
+        Preconditions.checkNotNull(userCredentialsDTO, "User Credentials must not be null");
+        Preconditions.checkNotNull(userCredentialsDTO.getUsername(), PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(userCredentialsDTO.getPassword(), PRECONDITION_MSG_USER_EMAIL);
 
         LOG.debug("Receive 'create' request with username '{}', password '{}'",
                 userCredentialsDTO.getUsername(),
                 userCredentialsDTO.getPassword());
 
-        final UserAuthenticationProvider userAuthenticationProvider = new UserAuthenticationProvider(userComponent);
-        final Long userId = UserProvider.getCurrentUserId(principal);
+        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final Long userId = jwtTokenProvider.getUserId(jwt);
 
         // user anlegen
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(), userCredentialsDTO.getPassword(), userId);

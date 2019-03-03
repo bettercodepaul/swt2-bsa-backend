@@ -38,4 +38,14 @@ public class UserRoleBE extends CommonBusinessEntity implements BusinessEntity {
         this.roleId = roleId;
     }
 
+
+    @Override
+    public String toString() {
+        return "UserRoleBE{" +
+                "userId=" + userId +
+                ", roleId='" + roleId + '\'' +
+                '}';
+    }
+
+
 }

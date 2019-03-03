@@ -24,11 +24,6 @@ import java.util.stream.Collectors;
  */
 public final class UserRoleDTOMapper implements DataTransferObjectMapper {
 
-    /**
-     * I map the {@link UserRoleDO} object to the {@link UserRoleDTO} object
-     */
-    public static final Function<UserRoleDO, UserRoleDTO> toUserDTO = userRoleDO -> new UserRoleDTO(userRoleDO.getId(),
-            userRoleDO.getEmail(), userRoleDO.getRoleId(), userRoleDO.getRoleName(), userRoleDO.getVersion() );
 
 
     /**

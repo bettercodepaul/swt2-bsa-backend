@@ -28,6 +28,18 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
         // empty
     }
 
+
+    @Override
+    public String toString() {
+        return "UserRoleExtBE{" +
+                "userId=" + userId +
+                ", userEmail='" + userEmail + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", roleName='" + roleName + '\'' +
+                '}';
+    }
+
+
     public Long getUserId() {
         return userId;
     }
