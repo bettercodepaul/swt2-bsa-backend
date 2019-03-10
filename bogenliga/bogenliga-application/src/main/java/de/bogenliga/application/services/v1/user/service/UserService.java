@@ -324,12 +324,12 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      * @param userCredentialsDTO of the request body
-     * @param userCredentialsDTO of the request body
      * @return  {@link UserDTO} as JSON
      */
 
 
     @RequestMapping(method = RequestMethod.POST,
+            value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)

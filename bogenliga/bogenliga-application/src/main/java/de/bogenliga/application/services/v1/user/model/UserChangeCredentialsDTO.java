@@ -3,9 +3,11 @@ package de.bogenliga.application.services.v1.user.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- * TODO [AL] class documentation
+ * Zum aktualiseren des Passworts eines Anwenders hält diese Klasse
+ * sowohl das aktuelle, als auch das neue Passwort
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ *
+ * @author Michael Dirksmöller, eXXcellent solutions consulting & software gmbh
  */
 public class UserChangeCredentialsDTO implements DataTransferObject {
 

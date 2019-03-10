@@ -2,6 +2,7 @@ package de.bogenliga.application.business.user.impl.business;
 
 import de.bogenliga.application.business.user.impl.dao.UserPermissionDAO;
 import de.bogenliga.application.business.user.impl.entity.UserPermissionBE;
+import de.bogenliga.application.business.user.impl.types.SignInResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -58,6 +59,11 @@ public class UserComponentImpl implements UserComponent {
         this.technicalUserBA = technicalUserBA;
     }
 
+    /**
+     * findAll
+     *
+     * liefert die Liste alle User - jeweils ID und User-Name (Email)
+     */
 
     @Override
     public List<UserDO> findAll() {
@@ -65,6 +71,12 @@ public class UserComponentImpl implements UserComponent {
         return userBEList.stream().map(UserMapper.toUserDO).collect(Collectors.toList());
     }
 
+    /**
+     * findByID
+     *
+     * @param id User-Id des gesuchten Users
+     * Liest den UserName zu einer gegebenen User-ID
+     */
     @Override
     public UserDO findById(final Long id) {
         Preconditions.checkNotNull(id, PRECONDITION_MSG_USER_ID);
@@ -85,6 +97,12 @@ public class UserComponentImpl implements UserComponent {
         return UserMapper.toUserDO.apply(result);
     }
 
+    /**
+     * findBy Email
+     *
+     * liefert die Liste alle User - jeweils ID und User-Name (Email)
+     * @param  email User-Name des gesuchten Users
+     */
 
     @Override
     public UserDO findByEmail(final String email) {
@@ -100,7 +118,13 @@ public class UserComponentImpl implements UserComponent {
         return UserMapper.toUserDO.apply(result);
     }
 
-
+    /**
+     * signIn
+     *
+     * User anmelden
+     * @param  email User-Name
+     * @param  password Kennwort
+     */
     @Override
     public UserWithPermissionsDO signIn(final String email, final String password) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
@@ -109,7 +133,14 @@ public class UserComponentImpl implements UserComponent {
         return signInBA.signInUser(email, password);
     }
 
-
+    /**
+     * create
+     *
+     * Neuen User anlegen
+     * @param  email User-Name
+     * @param  password Kennwort
+     * @param  currentUserId aktueller User mit den Rechten zur Neuanlage
+     */
     @Override
     public UserDO create(final String email, final String password, final Long currentUserId) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
@@ -130,6 +161,17 @@ public class UserComponentImpl implements UserComponent {
     }
 
 
+    /**
+     * update
+     *
+     * Passwort aktualiseren
+     * @param  userDO User-ID des Accounts
+     * @param  password Kennwort bisher
+     * @param  newPassword Kennwort neu
+     * @param  currentUserId aktueller User mit den Rechten zum Ändern
+     *                       - hieraus wird das Passwort zur Vergleichsprüfung bestimmt
+     *
+     */
     @Override
     public UserDO update(final UserDO userDO, final String password, final String newPassword, final Long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
@@ -140,19 +182,22 @@ public class UserComponentImpl implements UserComponent {
         Preconditions.checkArgument(currentUserId > 0, PRECONDITION_MSG_USER_NULL);
 
 
-        final UserBE result = userDAO.findById(userDO.getId());
-        final String pwdhash = passwordHashingBA.calculateHash(password, result.getUserSalt());
+        final UserBE currentUser = userDAO.findById(userDO.getId());
         // string vergleich der hash-Werte im aktuelllen BE Object und aus dem aktuellen Password
         // nur bei Identität (Passwort richtig) geht es weiter
-        if (pwdhash != result.getUserPassword()){
-            throw new BusinessException(ErrorCode.INSUFFICIENT_CREDENTIALS, PRECONDITON_MSG_USER_WRONG_PASSWORD);
-        }else{
-            final String newpwdhash = passwordHashingBA.calculateHash(newPassword, result.getUserSalt());
-            result.setUserPassword(pwdhash);
+        // check password
+        final String hashedPassword = passwordHashingBA.calculateHash(password, currentUser.getUserSalt());
+        final String newpwdhash = passwordHashingBA.calculateHash(newPassword, currentUser.getUserSalt());
 
-            final UserBE persistedUserBE = userDAO.update(result, currentUserId);
-
+        if (hashedPassword.equals(currentUser.getUserPassword())) {
+            // existing user with correct password
+            currentUser.setUserPassword(newpwdhash);
+            final UserBE persistedUserBE = userDAO.update(currentUser, currentUserId);
             return UserMapper.toUserDO.apply(persistedUserBE);
+
+        } else {
+            // wrong password
+            throw new BusinessException(ErrorCode.INSUFFICIENT_CREDENTIALS, PRECONDITON_MSG_USER_WRONG_PASSWORD);
         }
     }
 
