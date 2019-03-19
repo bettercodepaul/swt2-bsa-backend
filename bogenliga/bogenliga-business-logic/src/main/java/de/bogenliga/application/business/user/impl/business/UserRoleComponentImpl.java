@@ -4,7 +4,6 @@ import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.impl.dao.UserRoleExtDAO;
-import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.business.role.impl.dao.RoleDAO;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
