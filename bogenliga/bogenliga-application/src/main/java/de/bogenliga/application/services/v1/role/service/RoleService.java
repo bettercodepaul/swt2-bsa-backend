@@ -9,8 +9,6 @@ import de.bogenliga.application.springconfiguration.security.WebSecurityConfigur
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -37,11 +35,7 @@ import java.util.stream.Collectors;
 @RequestMapping("v1/role")
 public class RoleService implements ServiceFacade {
 
-    private static final String PRECONDITION_MSG_ROLE = "RoleDO must not be null";
-    private static final String PRECONDITION_MSG_ROLE_ID = "Role ID must not be negative";
-    private static final String PRECONDITION_MSG_ROLE_NAME = "RoleName must not be null";
 
-    private static final Logger LOG = LoggerFactory.getLogger(RoleService.class);
 
     private final JwtTokenProvider jwtTokenProvider;
 

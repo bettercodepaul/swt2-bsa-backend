@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.role.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- * TODO [AL] class documentation
+ *  I map and construct {@link RoleDTO} objects
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
