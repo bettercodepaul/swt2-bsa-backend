@@ -6,11 +6,8 @@ import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
 import de.bogenliga.application.services.v1.role.model.RoleDTO;
 
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
 
 /**
  * I map the {@link RoleDO} and {@link RoleDTO} objects
