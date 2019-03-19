@@ -37,23 +37,18 @@ import java.util.stream.Collectors;
 @RequestMapping("v1/role")
 public class RoleService implements ServiceFacade {
 
-    private static final String PRECONDITION_MSG_ROLE = "RoleDO must not be null";
-    private static final String PRECONDITION_MSG_ROLE_ID = "Role ID must not be negative";
-    private static final String PRECONDITION_MSG_ROLE_NAME = "RoleName must not be null";
 
-    private static final Logger LOG = LoggerFactory.getLogger(RoleService.class);
 
+
+    private final RoleComponent roleComponent;
     private final JwtTokenProvider jwtTokenProvider;
 
     private final WebSecurityConfiguration webSecurityConfiguration;
-
-    private final RoleComponent roleComponent;
 
 
 
     @Autowired
     public RoleService(final JwtTokenProvider jwtTokenProvider,
-                       //final AuthenticationManager authenticationManager
                        final WebSecurityConfiguration webSecurityConfiguration,
                        final RoleComponent roleComponent) {
         this.jwtTokenProvider = jwtTokenProvider;
