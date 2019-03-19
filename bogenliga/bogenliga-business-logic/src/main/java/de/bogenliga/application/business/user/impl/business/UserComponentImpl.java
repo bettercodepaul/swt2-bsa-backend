@@ -30,8 +30,8 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private static final String PRECONDITION_MSG_USER_NULL = "UserID must not be null";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
-    private static final String PRECONDITON_MSG_USER_PASSWORD = "UserDO password must not be null or empty";
-    private static final String PRECONDITON_MSG_USER_WRONG_PASSWORD = "Current password incorrect";
+    private static final String PRECONDITON_MSG_USER_PWD = "UserDO password must not be null or empty";
+    private static final String PRECONDITON_MSG_USER_WRONG_PWD = "Current password incorrect";
     private static final String USER_ROLE_DEFAULT = "USER";
     private final UserDAO userDAO;
     private final SignInBA signInBA;
@@ -104,7 +104,7 @@ public class UserComponentImpl implements UserComponent {
     @Override
     public UserWithPermissionsDO signIn(final String email, final String password) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
-        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
+        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
 
         return signInBA.signInUser(email, password);
     }
@@ -113,7 +113,7 @@ public class UserComponentImpl implements UserComponent {
     @Override
     public UserDO create(final String email, final String password, final Long currentUserId) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
-        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
+        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_NULL);
 
         final UserBE result = new UserBE();
@@ -134,8 +134,8 @@ public class UserComponentImpl implements UserComponent {
     public UserDO update(final UserDO userDO, final String password, final String newPassword, final Long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
         Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
-        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PASSWORD);
-        Preconditions.checkNotNullOrEmpty(newPassword, PRECONDITON_MSG_USER_PASSWORD);
+        Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
+        Preconditions.checkNotNullOrEmpty(newPassword, PRECONDITON_MSG_USER_PWD);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
         Preconditions.checkArgument(currentUserId > 0, PRECONDITION_MSG_USER_NULL);
 
@@ -145,7 +145,7 @@ public class UserComponentImpl implements UserComponent {
         // string vergleich der hash-Werte im aktuelllen BE Object und aus dem aktuellen Password
         // nur bei Identität (Passwort richtig) geht es weiter
         if (pwdhash != result.getUserPassword()){
-            throw new BusinessException(ErrorCode.INSUFFICIENT_CREDENTIALS, PRECONDITON_MSG_USER_WRONG_PASSWORD);
+            throw new BusinessException(ErrorCode.INSUFFICIENT_CREDENTIALS, PRECONDITON_MSG_USER_WRONG_PWD);
         }else{
             final String newpwdhash = passwordHashingBA.calculateHash(newPassword, result.getUserSalt());
             result.setUserPassword(pwdhash);
