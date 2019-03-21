@@ -10,3 +10,7 @@ build/
 **/*.log
 */logs/*
 *.log
+logs/
+*/logs/
+log/
+*/log/

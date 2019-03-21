@@ -8,5 +8,9 @@ build/
 *.iml
 */target
 **/*.log
-
-
+*/logs/*
+*.log
+logs/
+*/logs/
+log/
+*/log/
