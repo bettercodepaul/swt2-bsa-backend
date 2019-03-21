@@ -74,12 +74,14 @@ public interface UserComponent extends ComponentFacade {
      * password requirements prdefined.
      *
      *
+     * @param userDO ID of the user account the pwd is to be changed
      * @param password of the user
+     * @param newPassword of the user
      * @param currentUserId current user
      *
      * @return the user, if the user exists and the password is sufficient
      */
-    UserDO update(final UserDO userDO, final String password, final String newpassword, final Long currentUserId);
+    UserDO update(final UserDO userDO, final String password, final String newPassword, final Long currentUserId);
 
     /**
      * Identifies technical user, e.g. the SYSTEM user
