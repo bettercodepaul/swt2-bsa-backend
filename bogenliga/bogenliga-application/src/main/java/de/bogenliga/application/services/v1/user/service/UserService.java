@@ -9,7 +9,6 @@ import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
@@ -17,7 +16,6 @@ import de.bogenliga.application.services.v1.user.mapper.UserRoleDTOMapper;
 import de.bogenliga.application.services.v1.user.mapper.UserProfileDTOMapper;
 import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
-import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -34,7 +32,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +57,6 @@ public class UserService implements ServiceFacade {
     private static final String PRECONDITION_MSG_USER_ID = "User ID must not be null or negative";
     private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
-    private static final String PRECONDITION_MSG_ROLE_NAME = "RoleName must not be null";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
@@ -136,7 +132,7 @@ public class UserService implements ServiceFacade {
             value = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
-        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
+        final String jwt =  JwtTokenProvider.resolveToken(requestWithHeader);
 
         return jwtTokenProvider.resolveUserSignInDTO(jwt);
     }
@@ -324,12 +320,12 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      * @param userCredentialsDTO of the request body
-     * @param userCredentialsDTO of the request body
      * @return  {@link UserDTO} as JSON
      */
 
 
     @RequestMapping(method = RequestMethod.POST,
+            value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)

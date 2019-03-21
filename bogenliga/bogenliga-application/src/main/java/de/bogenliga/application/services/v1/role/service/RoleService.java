@@ -37,17 +37,16 @@ public class RoleService implements ServiceFacade {
 
 
 
+
+    private final RoleComponent roleComponent;
     private final JwtTokenProvider jwtTokenProvider;
 
     private final WebSecurityConfiguration webSecurityConfiguration;
-
-    private final RoleComponent roleComponent;
 
 
 
     @Autowired
     public RoleService(final JwtTokenProvider jwtTokenProvider,
-                       //final AuthenticationManager authenticationManager
                        final WebSecurityConfiguration webSecurityConfiguration,
                        final RoleComponent roleComponent) {
         this.jwtTokenProvider = jwtTokenProvider;
