@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.user.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- * TODO [AL] class documentation
+ * Zur initialen Anlage einer neuen Anwenders werden Name und Password gehalten
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */

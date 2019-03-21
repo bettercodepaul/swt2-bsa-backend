@@ -1,18 +1,10 @@
 package de.bogenliga.application.services.v1.user.mapper;
 
-import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
-import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
 import de.bogenliga.application.services.v1.user.model.UserRoleDTO;
-import de.bogenliga.application.services.v1.user.model.UserSignInDTO;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * I map the {@link UserRoleDO} and {@link UserRoleDTO} objects

@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.user.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- * TODO [AL] class documentation
+ * Der Name und ID der dem User zugeordneten Rolle werden gehalten
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -32,8 +32,8 @@ public class UserRoleDTO implements DataTransferObject {
     public UserRoleDTO(final Long id, final String email, final Long roleId, final String RoleName, final Long version) {
         this.id = id;
         this.email = email;
-        this.roleId = id;
-        this.roleName = email;
+        this.roleId = roleId;
+        this.roleName = RoleName;
         this.version = version;
     }
 
