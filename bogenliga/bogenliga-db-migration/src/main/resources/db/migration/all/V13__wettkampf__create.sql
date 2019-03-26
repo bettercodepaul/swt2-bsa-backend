@@ -37,6 +37,11 @@ CREATE TABLE wettkampf (
   CONSTRAINT fk_wettkampf_wettkampftyp FOREIGN KEY (wettkampf_wettkampftyp_id ) REFERENCES wettkampftyp (wettkampftyp_id)
     ON DELETE CASCADE, -- das Löschen eines wettkampftyps löscht auch die zugehörigen wettkämpfe
 
+   -- foreign key (fk)
+  -- schema: fk_{current table name}_{foreign key origin table name}
+  CONSTRAINT fk_wettkampf_veranstaltung_id FOREIGN KEY (wettkampf_veranstaltung_id ) REFERENCES veranstaltung (veranstaltung_id)
+    ON DELETE CASCADE, -- das Löschen eines wettkampftyps löscht auch die zugehörigen wettkämpfe
+
   -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}
   CONSTRAINT fk_wettkampf_disziplin FOREIGN KEY (wettkampf_disziplin_id) REFERENCES disziplin (disziplin_id)
