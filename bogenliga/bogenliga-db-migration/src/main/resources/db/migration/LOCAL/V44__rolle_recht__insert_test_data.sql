@@ -21,6 +21,7 @@ VALUES (1, 1), -- admin = all permissions (technical and business)
        (2, 6),
        (2, 9),
        (2, 10),
+       (2, 11),
        (3, 1), -- user = all business read permissions
        (3, 3),
        (3, 5),
