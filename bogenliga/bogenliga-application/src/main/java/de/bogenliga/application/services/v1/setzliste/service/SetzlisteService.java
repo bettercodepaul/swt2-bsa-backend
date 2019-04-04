@@ -44,16 +44,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RequestMapping("v1/setzliste")
 public class SetzlisteService implements ServiceFacade {
 
-    private static final String PRECONDITION_MSG_DSBMITGLIED = "DsbMitgliedDO must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_ID = "DsbMitgliedDO ID must not be negative";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VORNAME = "DsbMitglied vorname must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_NACHNAME = "DsbMitglied nachname must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_GEBURTSDATUM = "DsbMitglied geburtsdatum must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_NATIONALITAET = "DsbMitglied nationalitaet must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER = "DsbMitglied mitgliedsnummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
-    private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
-
     private static final Logger LOG = LoggerFactory.getLogger(SetzlisteService.class);
 
     /*
@@ -68,7 +58,7 @@ public class SetzlisteService implements ServiceFacade {
      * Constructor with dependency injection
      */
     @Autowired
-    public SetzlisteService(final SetzlisteComponent setzlisteComponent) {
+    public SetzlisteService(SetzlisteComponent setzlisteComponent) {
         this.setzlisteComponent = setzlisteComponent;
     }
 
@@ -93,17 +83,17 @@ public class SetzlisteService implements ServiceFacade {
     //   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam final Map<String, String> requestParams) {
-        final String setzlisteDOList = setzlisteComponent.getTable(0, 0);
+    public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam Map<String, String> requestParams) {
+        String setzlisteDOList = setzlisteComponent.getTable(0, 0);
         LOG.debug("setzliste works...");
-        final Resource resource = new ClassPathResource("tableForDennis.pdf");
+        Resource resource = new ClassPathResource("tableForDennis.pdf");
         long r = 0;
         InputStream is = null;
 
         try {
             is = resource.getInputStream();
             r = resource.contentLength();
-        } catch (final IOException e) {
+        } catch (IOException e) {
             LOG.error("Error: ", e);
         }
 
@@ -124,8 +114,8 @@ public class SetzlisteService implements ServiceFacade {
 
     @RequestMapping(value = "/{tag}/{wettkampf}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public String getTableByVars2(@PathVariable("tag") final String tag,
-                                  @PathVariable("wettkampf") final String wettkampf) {
+    public String getTableByVars2(@PathVariable("tag") String tag,
+                                  @PathVariable("wettkampf") String wettkampf) {
         LOG.debug("Receive 'find byVars' request with wettkampf " + tag);
         LOG.debug("Receive 'find byVars' request with wettkampftag  " + wettkampf);
         //final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
@@ -137,7 +127,7 @@ public class SetzlisteService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public String create(@RequestBody final Map<String, String> mybody, final Principal principal) {
+    public String create(@RequestBody Map<String, String> mybody, Principal principal) {
         LOG.error(mybody.get("tag"));
         return "blaaaa";
     }
@@ -170,7 +160,7 @@ public class SetzlisteService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public String getTable() {
         LOG.warn("### Setzliste Service #####");
-        final String s = setzlisteComponent.getTable(0, 0);
+        String s = setzlisteComponent.getTable(0, 0);
         return "Hello Setzliste!";
     }
 
