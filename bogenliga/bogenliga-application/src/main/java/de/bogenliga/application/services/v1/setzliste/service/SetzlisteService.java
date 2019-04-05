@@ -84,7 +84,6 @@ public class SetzlisteService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam Map<String, String> requestParams) {
-        String setzlisteDOList = setzlisteComponent.getTable(0, 0);
         LOG.debug("setzliste works...");
         Resource resource = new ClassPathResource("tableForDennis.pdf");
         long r = 0;
@@ -160,7 +159,7 @@ public class SetzlisteService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public String getTable() {
         LOG.warn("### Setzliste Service #####");
-        String s = setzlisteComponent.getTable(0, 0);
+        // String s = setzlisteComponent.getTable(0, 0);
         return "Hello Setzliste!";
     }
 
