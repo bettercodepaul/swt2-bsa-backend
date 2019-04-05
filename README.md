@@ -5,6 +5,7 @@
 
 # Bogenliga Application
 
+Ja wirklich. Ich bin eine coole Anwendung.
 
 ## Content
 
