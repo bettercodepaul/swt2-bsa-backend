@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.download;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.slf4j.Logger;
@@ -70,15 +71,13 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public ResponseEntity<InputStreamResource> downloadSetzlistePdf() {
-        LOG.debug("Download static PDF file...");
+        LOG.debug("Download setzliste PDF file...");
         //TODO: Aktuell werden Parameter noch nicht übergeben, da die Wettkampftabelle im Frontend noch statisch ist. Sobald das erledigt ist, können Parameter aus dem Frontend wie bei "getTableByVarsV2()" übergeben werden
-        final String fileName = setzlisteComponent.getTable(30, 1);
-        final Resource resource = new ClassPathResource(fileName);
-        long r = 0;
-        InputStream is = null;
+        final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(30, 1);
+        final Resource resource = new InputStreamResource(new ByteArrayInputStream(fileBloB));
         try {
-            is = resource.getInputStream();
-            r = resource.contentLength();
+            InputStream is = new ByteArrayInputStream(fileBloB);
+            long r = resource.contentLength();
             return ResponseEntity.ok()
                     .contentLength(r)
                     .body(new InputStreamResource(is));
