@@ -38,11 +38,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE = "MannschaftsMitglied ID must not be negative";
     private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE = "MannschaftsMitglied DSB MITGLIED ID must not be negative";
     private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_EINGESETZT_NEGATIVE = "MannschaftsMitglied DSB MITGLIED EINGESETZT must not be negative";
-
-
-
-
-
     private static final Logger LOG = LoggerFactory.getLogger(MannschaftsMitgliedService.class);
 
 
