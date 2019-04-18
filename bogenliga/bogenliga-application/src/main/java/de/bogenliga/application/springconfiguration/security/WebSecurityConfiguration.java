@@ -28,15 +28,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    public WebSecurityConfiguration(final JwtTokenProvider jwtTokenProvider,
-                                    final UserAuthenticationProvider authProvider) {
+    public WebSecurityConfiguration(JwtTokenProvider jwtTokenProvider,
+                                    UserAuthenticationProvider authProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.authProvider = authProvider;
     }
 
 
     @Override
-    protected void configure(final AuthenticationManagerBuilder auth) {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider);
     }
 
@@ -48,13 +48,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    public void configure(final WebSecurity web) {
+    public void configure(WebSecurity web) {
         // allow unauthorized access to
         web.ignoring()
+                // allow insecure access to example endpoints
                 .antMatchers("/v2/hello-world")
                 .and()
                 .ignoring()
                 .antMatchers("/v1/hello-world")
+                .and()
+                // allow insecure access to swagger
+                .ignoring()
+                .antMatchers("/swagger-ui.html")
+                .and()
+                .ignoring()
+                .antMatchers("/v2/api-docs")
+                // TODO: remove
                 .and()
                 .ignoring()
                 .antMatchers(HttpMethod.GET, "/v1/vereine");
@@ -62,7 +71,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    protected void configure(final HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity http) throws Exception {
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();
 
@@ -75,6 +84,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Entry points
         http.authorizeRequests()
                 .antMatchers("/v1/user/signin").permitAll()
+                .antMatchers("/webjars/springfox-swagger-ui/**").permitAll() // swagger-ui resources
+                .antMatchers("/swagger-resources/**").permitAll() // swagger-ui resources
                 //.antMatchers("/v1/*").permitAll() // TODO allow all in pupose of the failing angular application
                 //.antMatchers("/v1/**").permitAll() // TODO allow all in pupose of the failing angular application
                 //.antMatchers("/v1/configuration/*").permitAll() // TODO allow all in pupose of the failing angular application
