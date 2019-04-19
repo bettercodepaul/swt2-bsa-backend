@@ -11,7 +11,6 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class WettkampfDTO implements DataTransferObject {
 
-    //test commentar
 
     private Long id;
     private Long veranstaltungsId;
