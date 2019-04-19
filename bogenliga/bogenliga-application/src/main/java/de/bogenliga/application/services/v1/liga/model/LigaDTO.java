@@ -10,7 +10,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * @author Giuseppe Ferrera, giuseppe.ferrera@student.reutlingen-university.de
  */
 public class LigaDTO implements DataTransferObject {
-
+    
 
     private Long id;
     private String name;
