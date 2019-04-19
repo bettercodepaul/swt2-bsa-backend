@@ -11,6 +11,8 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class LigaDTO implements DataTransferObject {
 
+    //Hallo Scrumicorns_Test Annea
+
     private Long id;
     private String name;
     private Long regionId;
