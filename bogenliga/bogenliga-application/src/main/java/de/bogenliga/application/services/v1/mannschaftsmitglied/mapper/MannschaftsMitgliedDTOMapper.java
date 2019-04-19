@@ -6,6 +6,7 @@ import de.bogenliga.application.services.v1.mannschaftsmitglied.model.Mannschaft
 import org.apache.tomcat.util.buf.StringUtils;
 
 import java.util.function.Function;
+// Test Ronja
 
 public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
 
