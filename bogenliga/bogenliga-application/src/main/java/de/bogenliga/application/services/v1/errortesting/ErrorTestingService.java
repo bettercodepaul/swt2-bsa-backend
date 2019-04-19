@@ -12,6 +12,8 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
 
+//Scrumicorns_Kai_Test
+
 /**
  * I´m a REST resource and produce errors for the error handling tests
  *
