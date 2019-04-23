@@ -22,14 +22,6 @@ public class PasseDO extends CommonDataObject {
     private int pfeil5;
     private int pfeil6;
 
-    @Override
-    public String toString(){
-        return  "Passe: "
-                +"MitgliedID: "+id
-                +"MannschaftID: "+passeMannschaftId
-                +"WettkampfID: "+passeWettkampfId
-                +"MatchNr: "+passeMatchNr;
-    }
 
      public PasseDO(long id, long passeMannschaftId, long passeWettkampfId, long passeMatchNr, long passeLfdnr,
         long passeDsbMitgliedId, int pfeil1, int pfeil2, int pfeil3, int pfeil4, int pfeil5, int pfeil6, final OffsetDateTime createdAtUtc,
@@ -47,7 +39,7 @@ public class PasseDO extends CommonDataObject {
         this.pfeil4 = pfeil4;
         this.pfeil5 = pfeil5;
         this.pfeil6 = pfeil6;
-        
+
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedUtc;
