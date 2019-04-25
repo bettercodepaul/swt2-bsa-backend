@@ -113,6 +113,42 @@ public class DsbMannschaftComponentImplTest {
     }
 
     @Test
+    public void findAllByVereinsId() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAllByVereinsId(vereinId)).thenReturn(expectedBEList);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findAllByVereinsId(vereinId);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getBenutzerId())
+                .isEqualTo(expectedBE.getBenutzerId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAllByVereinsId(vereinId);
+    }
+
+    @Test
     public void findById() {
         // prepare test data
         final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
