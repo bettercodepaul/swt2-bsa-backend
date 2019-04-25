@@ -55,8 +55,8 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final String FIND_ALL_BY_VEREINS_ID =
             "SELECT * "
                     + "FROM mannschaft"
-                    + "ORDER BY manschaft_id"
-                    + "WHERE mannschaft_verein_id = ?";
+                    + "WHERE mannschaft_verein_id = ?"
+                    + "ORDER BY manschaft_id";
 
     private final BasicDAO basicDao;
 
