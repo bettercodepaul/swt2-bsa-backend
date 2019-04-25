@@ -126,7 +126,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(value = "{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
