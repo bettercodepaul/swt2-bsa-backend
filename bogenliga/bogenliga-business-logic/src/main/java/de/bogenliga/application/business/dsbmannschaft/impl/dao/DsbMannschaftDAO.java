@@ -52,6 +52,12 @@ public class DsbMannschaftDAO implements DataAccessObject {
                     + " FROM mannschaft"
                     + " WHERE mannschaft_id = ?";
 
+    private static final String FIND_ALL_BY_VEREINS_ID =
+            "SELECT * "
+                    + "FROM mannschaft"
+                    + "ORDER BY manschaft_id"
+                    + "WHERE mannschaft_verein_id = ?";
+
     private final BasicDAO basicDao;
 
 
@@ -92,6 +98,15 @@ public class DsbMannschaftDAO implements DataAccessObject {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL);
     }
 
+
+    /**
+     * Return all dsbmannschaft entries with the given vereinsId
+     *
+     * @param id from the verein
+     * @return all dbsmannschaft entries with the given vereinsId
+     */
+
+    public List<DsbMannschaftBE> findAllByVereinsId(final long id) {return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_VEREINS_ID);}
 
     /**
      * Return dsbmitglied entry with specific id
