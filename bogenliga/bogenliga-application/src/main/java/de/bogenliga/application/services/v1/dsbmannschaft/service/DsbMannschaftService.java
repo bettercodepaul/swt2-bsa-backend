@@ -103,6 +103,37 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
 
+    /**
+     * I return the dsbMannschaft entries of the database with the given vereinsId.
+     *
+     * Usage:
+     * <pre>{@Code Request: GET /v1/dsbmannschaft}</pre>
+     * <pre>{@Code Response:
+     * [
+     *  {
+     *      "id": "app.bogenliga.frontend.autorefresh.active",
+     *      "value": "true"
+     *  },
+     *  {
+     *      "id": "app.bogenliga.frontend.autorefresh.interval",
+     *      "value": 10
+     *  }
+     * ]
+     * }</pre>
+     * @param id the given vereinsId
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+    @RequestMapping(value = "{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
+        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAllByVereinsId(id);
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     /**
      * I return the dsbMannschaft entry of the database with a specific id.

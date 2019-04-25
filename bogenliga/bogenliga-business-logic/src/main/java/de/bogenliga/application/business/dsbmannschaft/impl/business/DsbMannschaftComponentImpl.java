@@ -59,6 +59,19 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
         return dsbMannschaftBeList.stream().map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<DsbMannschaftDO> findAllByVereinsId(long id){
+        Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByVereinsId(id);
+
+        if(dsbMannschaftBeList == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result for ID '%s", id));
+        }
+
+        return dsbMannschaftBeList.stream().map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList());
+    }
+
 
     @Override
     public DsbMannschaftDO findById(final long id){
