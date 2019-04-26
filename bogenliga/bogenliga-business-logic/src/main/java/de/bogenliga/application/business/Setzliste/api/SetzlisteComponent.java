@@ -14,7 +14,6 @@ public interface SetzlisteComponent extends ComponentFacade {
      *
      * @return String contains the name of the setzliste pdf file;
      */
-    String getTable(int wettkampfid, int wettkampftag);
 
     byte[] getPDFasByteArray(int wettkampfid, int wettkampftag);
 }

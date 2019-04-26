@@ -62,18 +62,28 @@ public class DownloadService implements ServiceFacade {
         this.setzlisteComponent = setzlisteComponent;
     }
 
-
     /**
-     * Provide Setzliste PDF
+     * returns the Setzliste as pdf file for client download
+     * <p>
+     * @param wettkampfid to identify the competition (from GET-Request)
+     * @param wettkampftag to identify day of the competition (from GET-Request)
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/setzliste?wettkampfid=x&?wettkampftag=y}</pre>
+     *
+     * @return PDF as InputStreamResource
      */
+    @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
-    public ResponseEntity<InputStreamResource> downloadSetzlistePdf() {
-        LOG.debug("Download setzliste PDF file...");
-        //TODO: Aktuell werden Parameter noch nicht übergeben, da die Wettkampftabelle im Frontend noch statisch ist. Sobald das erledigt ist, können Parameter aus dem Frontend wie bei "getTableByVarsV2()" übergeben werden
-        final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(30, 1);
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final int wettkampfid,
+                                                         @RequestParam("wettkampftag") final int wettkampftag) {
+        LOG.debug("wettkampfid: " + wettkampfid);
+        LOG.debug("wettkampftag: " + wettkampftag);
+
+        final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid, wettkampftag);
         final Resource resource = new InputStreamResource(new ByteArrayInputStream(fileBloB));
         try {
             InputStream is = new ByteArrayInputStream(fileBloB);
@@ -85,47 +95,5 @@ public class DownloadService implements ServiceFacade {
             LOG.error("Error: ", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF download failed", e);
         }
-    }
-
-
-    /**
-     * I return the setzliste pdf.
-     * <p>
-     * Usage:
-     * <pre>{@code Request: GET /v1/setzliste/app.bogenliga.frontend.autorefresh.active}</pre>
-     * <pre>{@code Response:
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  }
-     * }
-     * </pre>
-     *
-     * @return application/pdf
-     */
-    @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public @ResponseBody
-    ResponseEntity<InputStreamResource> getTableByVarsV2(@RequestParam("wettkampfid") final int wettkampfid,
-                                                         @RequestParam("wettkampftag") final int wettkampftag) {
-        LOG.debug("wettkampfid: " + wettkampfid);
-        LOG.debug("wettkampftag: " + wettkampftag);
-        final String fileName = setzlisteComponent.getTable(wettkampfid, wettkampftag);
-        final Resource resource = new ClassPathResource(fileName);
-        long r = 0;
-        InputStream is = null;
-
-        try {
-            is = resource.getInputStream();
-            r = resource.contentLength();
-        } catch (final IOException e) {
-            LOG.error("Error: ", e);
-
-        }
-
-        return ResponseEntity.ok().contentLength(r).cacheControl(CacheControl.noCache())
-                .contentType(MediaType.parseMediaType("application/pdf"))
-                .body(new InputStreamResource(is));
     }
 }
