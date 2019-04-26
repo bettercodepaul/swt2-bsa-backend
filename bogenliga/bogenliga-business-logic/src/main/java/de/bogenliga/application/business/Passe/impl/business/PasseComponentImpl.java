@@ -1,11 +1,14 @@
 package de.bogenliga.application.business.Passe.impl.business;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import de.bogenliga.application.business.Passe.api.PasseComponent;
 import de.bogenliga.application.business.Passe.api.types.PasseDO;
 import de.bogenliga.application.business.Passe.impl.dao.PasseDAO;
 import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.Passe.impl.mapper.PasseMapper;
+import de.bogenliga.application.common.validation.Preconditions;
 
 /**
  * TODO [AL] class documentation
@@ -43,8 +46,9 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findAll() {
-        final List<PasseBE> mannschaftsmitgliedBEList = passeDAO.findAll();
-        return null;
+        final List<PasseBE> passeBEList = passeDAO.findAll();
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+
     }
 
 
@@ -57,7 +61,8 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByWettkampfId(long wettkampfId) {
-        return null;
+        final List<PasseBE> passeBEList = passeDAO.findByWettkampfId(wettkampfId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
 
@@ -70,7 +75,8 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByTeamId(long teamId) {
-        return null;
+        final List<PasseBE> passeBEList = passeDAO.findByTeamId(teamId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
 
@@ -84,27 +90,9 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId) {
-        return null;
+        final List<PasseBE> passeBEList = passeDAO.findByMemberAndTeamId(dsbMitgliedId,mannschaftId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
-
-
-    /**
-     * Return a passe entry with the given id.
-     *
-     * @param dsbMitgliedId of the mannschaftsmitglied,
-     * @param mannschaftId  of the mannschaft
-     * @param lfdnr
-     * @param matchNr
-     * @param wettkampfId
-     *
-     * @return list of passe from one mitglied in one team; empty list, if no passe are found
-     */
-    @Override
-    public List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId, long lfdnr, long matchNr,
-                                               long wettkampfId) {
-        return null;
-    }
-
 
     /**
      * Return a passe entry with the given id.
@@ -115,7 +103,8 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public PasseDO findByLfdNr(long lfdNr) {
-        return null;
+        final PasseBE passeBE = passeDAO.findByLfdNr(lfdNr);
+        return PasseMapper.toPasseDO.apply(passeBE);
     }
 
 
@@ -123,18 +112,23 @@ public class PasseComponentImpl implements PasseComponent {
      * Create a new passe in the database.
      *
      * @param passeDO         new passeDO
-     * @param currentMemberId id of the member currently updating the passe
-     * @param mannschaftId    id of the mannschaft
-     * @param wettkampfId     id of the wettkampf
-     * @param matchNr         number of the match
-     * @param lfdNr           counting number
+     * @param currentUserId the current user creating
      *
      * @return persisted version of the passe
      */
     @Override
-    public PasseDO create(PasseDO passeDO, long currentMemberId, long mannschaftId, long wettkampfId, long matchNr,
-                          long lfdNr) {
-        return null;
+    public PasseDO create(PasseDO passeDO, final Long currentUserId) {
+        final PasseBE passeBE = new PasseBE();
+        passeBE.setCreatedByUserId(passeDO.getCreatedByUserId());
+
+        passeBE.setPfeil1(passeDO.getPfeil1());
+        passeBE.setPfeil2(passeDO.getPfeil2());
+        passeBE.setPfeil3(passeDO.getPfeil3());
+        passeBE.setPfeil4(passeDO.getPfeil4());
+        passeBE.setPfeil5(passeDO.getPfeil5());
+        passeBE.setPfeil6(passeDO.getPfeil6());
+        final PasseBE persistedPasseBE = passeDAO.create(passeBE, currentUserId);
+        return PasseMapper.toPasseDO.apply(persistedPasseBE);
     }
 
 
@@ -161,11 +155,5 @@ public class PasseComponentImpl implements PasseComponent {
     @Override
     public void delete(PasseDO passeDO, long currentMemberId) {
 
-    }
-
-
-    @Override
-    public boolean checkExistingSchuetze(long teamId, long memberId) {
-        return false;
     }
 }

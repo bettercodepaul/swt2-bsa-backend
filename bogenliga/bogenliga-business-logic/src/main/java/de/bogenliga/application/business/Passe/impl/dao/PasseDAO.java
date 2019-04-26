@@ -93,40 +93,40 @@ public class PasseDAO implements DataAccessObject {
     }
 
     /**
-     * SQL queries
+     * SQL queries, not sure which ones are needed at all
      */
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM "+TABLE
-                    + " ORDER BY "+ PASSE_BE_MATCH_NR
+                    + " ORDER BY "+ PASSE_TABLE_LFDNR
                     + "=?";
 
     private static final String FIND_BY_MANNSCHAFT_ID =
             "SELECT * "
                     + " FROM "+TABLE
-                    + " WHERE "+PASSE_BE_MANNSCHAFT_ID
+                    + " WHERE "+PASSE_TABLE_MANNSCHAFT_ID
                     + "=?";
 
     private static final String FIND_BY_WETTKAMPF_ID =
             "SELECT * "
                     + " FROM "+TABLE
-                    + " WHERE "+PASSE_BE_WETTKAMPF_ID
+                    + " WHERE "+PASSE_TABLE_WETTKAMPF_ID
                     + "=?";
 
-    private static final String FIND_BY_MATCHNR =
+    private static final String FIND_BY_LFDNR =
             "SELECT * "
                     + " FROM "+TABLE
-                    + " WHERE MATCH_NR "
+                    + " WHERE "+PASSE_TABLE_LFDNR
                     +"= ?";
 
 
 
     /**
-     * Create a new kampfrichter entry
+     * Create a new passe entry
      *
      * @param passeBE
      * @param currentKampfrichterUserId
-     * @return Business Entity corresponding to the created kampfrichter entry (should only be creatable by Kampfrichter entities
+     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter and  entities
      */
     public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
@@ -141,7 +141,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of all passe in the database; empty list, if no passe is found
      */
     public List<PasseBE> findAll() {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_ALL);
     }
 
 
@@ -185,29 +185,12 @@ public class PasseDAO implements DataAccessObject {
     /**
      * Return a passe entry with the given id.
      *
-     * @param dsbMitgliedId of the mannschaftsmitglied,
-     * @param mannschaftId  of the mannschaft
-     * @param lfdnr
-     * @param matchNr
-     * @param wettkampfId
-     *
-     * @return list of passe from one mitglied in one team; empty list, if no passe are found
-     */
-    public List<PasseBE> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId, long lfdnr, long matchNr,
-                                               long wettkampfId) {
-        return null;
-    }
-
-
-    /**
-     * Return a passe entry with the given id.
-     *
      * @param lfdNr counting number,
      *
      * @return passe by counting number; empty list, if no passe are found
      */
     public PasseBE findByLfdNr(long lfdNr) {
-        return null;
+        return basicDao.selectSingleEntity(PASSE,FIND_BY_LFDNR,lfdNr);
     }
 
 
