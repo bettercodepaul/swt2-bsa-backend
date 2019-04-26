@@ -1,10 +1,7 @@
 package de.bogenliga.application.business.Setzliste.impl.business;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -77,33 +74,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         return bResult;
     }
 
-    @Override
-    public String getTable(final int wettkampfid, final int wettkampftag) {
-        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
-        Preconditions.checkArgument(wettkampftag >= 1, PRECONDITION_WETTKAMPFTAG);
-
-        LOGGER.debug("Generate Setzliste");
-        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable(wettkampfid, wettkampftag);
-        final String fileName = "setzliste.pdf";
-        byte[] bResult = null;
-        try (final OutputStream result = new FileOutputStream(new File("backend/bogenliga/bogenliga-application/src/main/resources/" + fileName));
-             final PdfWriter writer = new PdfWriter(result);
-             final PdfDocument pdfDocument = new PdfDocument(writer);
-             final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
-
-            generateDoc(doc, setzlisteBEList);
-
-            LOGGER.debug("Setzliste erstellt");
-
-
-
-        } catch (final IOException e) {
-            LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
-        }
-
-        return fileName;
-    }
-
+    /**
+     * <p>generetes a document with a table containing information from given Setzliste
+     * </p>
+     * @param doc document to write
+     * @param setzlisteBEList list with data for the doc
+     */
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
         //Structure of setzliste
         final int[][] structure = {
@@ -125,8 +101,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         } catch (final ParseException e) {
             LOGGER.error("Error: ", e);
         }
-        doc.add(new Paragraph("Setzliste " + Integer.toString(
-                setzlisteBEList.get(0).getWettkampfTag()) + ". Wettkampf " + setzlisteBEList.get(
+        doc.add(new Paragraph("Setzliste " +
+                setzlisteBEList.get(0).getWettkampfTag() + ". Wettkampf " + setzlisteBEList.get(
                 0).getVeranstaltungName()));
         doc.add(new Paragraph("am " + dateFormatted + " in"));
         doc.add(new Paragraph(setzlisteBEList.get(0).getWettkampfOrt() + ", " + setzlisteBEList.get(
@@ -154,23 +130,23 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         for (int i = 0; i < structure.length; i++) {
             table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    Integer.toString(structure[i][0]) + " " + getMannschaftsname(structure[i][0], setzlisteBEList)
-                            + "\n " + Integer.toString(structure[i][1]) + " " + getMannschaftsname(structure[i][1],
+                    structure[i][0] + " " + getMannschaftsname(structure[i][0], setzlisteBEList)
+                            + "\n " + structure[i][1] + " " + getMannschaftsname(structure[i][1],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    Integer.toString(structure[i][2]) + " " + getMannschaftsname(structure[i][2], setzlisteBEList)
-                            + "\n " + Integer.toString(structure[i][3]) + " " + getMannschaftsname(structure[i][3],
+                    structure[i][2] + " " + getMannschaftsname(structure[i][2], setzlisteBEList)
+                            + "\n " + structure[i][3] + " " + getMannschaftsname(structure[i][3],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    Integer.toString(structure[i][4]) + " " + getMannschaftsname(structure[i][4], setzlisteBEList)
-                            + "\n " + Integer.toString(structure[i][5]) + " " + getMannschaftsname(structure[i][5],
+                    structure[i][4] + " " + getMannschaftsname(structure[i][4], setzlisteBEList)
+                            + "\n " + structure[i][5] + " " + getMannschaftsname(structure[i][5],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    Integer.toString(structure[i][6]) + " " + getMannschaftsname(structure[i][6], setzlisteBEList)
-                            + "\n " + Integer.toString(structure[i][7]) + " " + getMannschaftsname(structure[i][7],
+                    structure[i][6] + " " + getMannschaftsname(structure[i][6], setzlisteBEList)
+                            + "\n " + structure[i][7] + " " + getMannschaftsname(structure[i][7],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
 
