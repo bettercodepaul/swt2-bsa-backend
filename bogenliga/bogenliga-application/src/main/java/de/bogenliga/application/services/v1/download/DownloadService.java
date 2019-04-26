@@ -28,7 +28,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 /**
  * I´m a REST resource and handle download requests over the HTTP protocol.
  *
- * @author Dennis Eitle
+ * @author Dennis Eitle, Michael Hesse
  * @see <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">Wikipedia - CRUD</a>
  * @see <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">Wikipedia - REST</a>
  * @see <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">Wikipedia - HTTP</a>
@@ -65,8 +65,8 @@ public class DownloadService implements ServiceFacade {
     /**
      * returns the Setzliste as pdf file for client download
      * <p>
-     * @param wettkampfid to identify the competition (from GET-Request)
-     * @param wettkampftag to identify day of the competition (from GET-Request)
+     * @param wettkampfid  from GET-Request: ID for the competition
+     * @param wettkampftag from GET-Request: to identify day of the competition (from GET-Request)
      * Usage:
      * <pre>{@code Request: GET /v1/download/pdf/setzliste?wettkampfid=x&?wettkampftag=y}</pre>
      *
