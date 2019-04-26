@@ -51,18 +51,6 @@ public interface PasseComponent {
      */
     List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId);
 
-
-    /**
-     * Return a passe entry with the given id.
-     *
-     * @param dsbMitgliedId of the mannschaftsmitglied,
-     * @param mannschaftId of the mannschaft
-     * @return  list of passe from one mitglied in one team;
-     * empty list, if no passe are found
-     */
-    List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId, long lfdnr,long matchNr,long wettkampfId);
-
-
     /**
      * Return a passe entry with the given id.
      *
@@ -76,17 +64,11 @@ public interface PasseComponent {
     /**
      * Create a new passe in the database.
      *
-     * @param passeDO new passeDO
-     * @param currentMemberId id of the member currently updating the passe
-     * @param mannschaftId id of the mannschaft
-     * @param wettkampfId id of the wettkampf
-     * @param matchNr number of the match
-     * @param lfdNr counting number
+     * @param passeDO the new passeDO
+     * @param currentUserId the id of the creating user
      * @return persisted version of the passe
      */
-    PasseDO create(PasseDO passeDO, long currentMemberId,long mannschaftId, long wettkampfId,long matchNr, long lfdNr);
-
-
+    public PasseDO create(PasseDO passeDO,final Long currentUserId);
 
     /**
      * Update an existing passe. The passe is identified by the id's set in passeDO.
@@ -105,7 +87,4 @@ public interface PasseComponent {
      * @param currentMemberId id of the member currently updating the passe
      */
     void delete(PasseDO passeDO, long currentMemberId);
-
-    boolean checkExistingSchuetze(long teamId, long memberId);
-
 }
