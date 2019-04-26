@@ -47,6 +47,13 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         this.setzlisteDAO = setzlisteDAO;
     }
 
+
+    /**
+     * Generates a pdf as binary document
+     * @param wettkampfid ID for the competition
+     * @param wettkampftag day of the competition
+     * @return document
+     */
     @Override
     public byte[] getPDFasByteArray(final int wettkampfid, final int wettkampftag) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
@@ -75,7 +82,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
     /**
-     * <p>generetes a document with a table containing information from given Setzliste
+     * <p>writes a document with a table containing information from given Setzliste
      * </p>
      * @param doc document to write
      * @param setzlisteBEList list with data for the doc
@@ -130,23 +137,23 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         for (int i = 0; i < structure.length; i++) {
             table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    structure[i][0] + " " + getMannschaftsname(structure[i][0], setzlisteBEList)
-                            + "\n " + structure[i][1] + " " + getMannschaftsname(structure[i][1],
+                    structure[i][0] + " " + getTeamName(structure[i][0], setzlisteBEList)
+                            + "\n " + structure[i][1] + " " + getTeamName(structure[i][1],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    structure[i][2] + " " + getMannschaftsname(structure[i][2], setzlisteBEList)
-                            + "\n " + structure[i][3] + " " + getMannschaftsname(structure[i][3],
+                    structure[i][2] + " " + getTeamName(structure[i][2], setzlisteBEList)
+                            + "\n " + structure[i][3] + " " + getTeamName(structure[i][3],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    structure[i][4] + " " + getMannschaftsname(structure[i][4], setzlisteBEList)
-                            + "\n " + structure[i][5] + " " + getMannschaftsname(structure[i][5],
+                    structure[i][4] + " " + getTeamName(structure[i][4], setzlisteBEList)
+                            + "\n " + structure[i][5] + " " + getTeamName(structure[i][5],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
             table.addCell(new Cell(2, 1).add(new Paragraph(
-                    structure[i][6] + " " + getMannschaftsname(structure[i][6], setzlisteBEList)
-                            + "\n " + structure[i][7] + " " + getMannschaftsname(structure[i][7],
+                    structure[i][6] + " " + getTeamName(structure[i][6], setzlisteBEList)
+                            + "\n " + structure[i][7] + " " + getTeamName(structure[i][7],
                             setzlisteBEList))));
             table.addCell(new Cell().setHeight(15));
 
@@ -161,6 +168,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
 
+    /**
+     * help function to get table entry
+     * @param tabellenplatz index in table
+     * @param setzlisteBEList list with data
+     * @return index if found, otherwise -1
+     */
     private int getTableEntry(final int tabellenplatz, final List<SetzlisteBE> setzlisteBEList) {
         for (int i = 0; i < setzlisteBEList.size(); i++) {
             if (setzlisteBEList.get(i).getLigatabelleTabellenplatz() == tabellenplatz) {
@@ -170,8 +183,13 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         return -1;
     }
 
-
-    private String getMannschaftsname(final int tabellenplatz, final List<SetzlisteBE> setzlisteBEList) {
+    /**
+     * help funktion to get team name
+     * @param tabellenplatz index in table
+     * @param setzlisteBEList list with data
+     * @return name of the team
+     */
+    private String getTeamName(final int tabellenplatz, final List<SetzlisteBE> setzlisteBEList) {
         final int rowIndex = getTableEntry(tabellenplatz, setzlisteBEList);
         if (rowIndex == -1) {
             LOGGER.error("Cannot find Mannschaftsname.");
