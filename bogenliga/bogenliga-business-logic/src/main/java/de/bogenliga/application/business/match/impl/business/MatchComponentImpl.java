@@ -46,11 +46,18 @@ public class MatchComponentImpl implements MatchComponent {
 
 
     @Override
-    public MatchDO findByNr(Long nr) {
-        Preconditions.checkNotNull(nr, PRECONDITION_MSG_MATCH_NR_NULL);
-        Preconditions.checkArgument(nr >= 0, PRECONDITION_MSG_MATCH_NR);
+    public MatchDO findById(Long id) {
+        Preconditions.checkNotNull(id, PRECONDITION_MSG_MATCH_NR_NULL);
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_MATCH_NR);
 
-        final MatchBE matchBE = matchDAO.findByNr(nr);
+        final MatchBE matchBE = matchDAO.findById(id);
+        return MatchMapper.toMatchDO.apply(matchBE);
+    }
+
+
+    @Override
+    public MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer) {
+        final MatchBE matchBE = matchDAO.findByPk(nr, wettkampfId, mannschaftId, begegnung, scheibenNummer);
         return MatchMapper.toMatchDO.apply(matchBE);
     }
 
@@ -95,7 +102,7 @@ public class MatchComponentImpl implements MatchComponent {
 
         this.checkMatch(matchDO);
 
-        MatchBE matchBE = matchDAO.findByNr(matchDO.getNr());
+        MatchBE matchBE = matchDAO.findById(matchDO.getNr());
 
         matchBE.setSatzpunkte(matchDO.getSatzpunkte());
         matchBE.setMatchpunkte(matchDO.getMatchpunkte());

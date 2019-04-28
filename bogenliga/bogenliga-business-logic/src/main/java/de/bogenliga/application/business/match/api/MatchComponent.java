@@ -17,12 +17,21 @@ public interface MatchComponent {
 
 
     /**
-     * Return a single match by unique nr
+     * Return a single match by unique id
      *
      * @return single matchDO
      */
 
-    MatchDO findByNr(Long nr);
+    MatchDO findById(Long id);
+
+
+    /**
+     * Return a single match by combined primary key attributes
+     *
+     * @return single matchDO
+     */
+
+    MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer);
 
 
     /**

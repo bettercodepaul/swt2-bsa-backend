@@ -10,22 +10,27 @@ public class MatchDO extends CommonDataObject {
     private static final long serialVersionUID = -6105018809032979203L;
 
     private Long nr;
+    private Long id;
     private Long version;
     private Long wettkampfId;
     private Long mannschaftId;
+    private Long begegnung;
     private Long scheibenNummer;
     private Long matchpunkte;
     private Long satzpunkte;
 
 
-    public MatchDO(Long nr, Long wettkampfId, Long mannschaftId, Long scheibenNummer, Long matchpunkte, Long satzpunkte,
+    public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer,
+                   Long matchpunkte, Long satzpunkte,
                    final OffsetDateTime createdAtUtc,
                    final Long createdByUserId, final OffsetDateTime lastModifiedUtc,
                    final Long lastModifiedByUserId, final Long version) {
+        this.setId(id);
         this.setNr(nr);
         this.setVersion(version);
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
+        this.setBegegnung(begegnung);
         this.setScheibenNummer(scheibenNummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
@@ -38,14 +43,26 @@ public class MatchDO extends CommonDataObject {
     }
 
 
-    public MatchDO(Long nr, Long wettkampfId, Long mannschaftId, Long scheibenNummer, Long matchpunkte,
-                   Long satzpunkte) {
+    public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung,
+                   Long scheibenNummer, Long matchpunkte, Long satzpunkte) {
+        this.setId(id);
         this.setNr(nr);
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
+        this.setBegegnung(begegnung);
         this.setScheibenNummer(scheibenNummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 
@@ -86,6 +103,16 @@ public class MatchDO extends CommonDataObject {
 
     public void setMannschaftId(Long mannschaftId) {
         this.mannschaftId = mannschaftId;
+    }
+
+
+    public Long getBegegnung() {
+        return begegnung;
+    }
+
+
+    public void setBegegnung(Long begegnung) {
+        this.begegnung = begegnung;
     }
 
 

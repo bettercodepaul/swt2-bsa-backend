@@ -25,18 +25,22 @@ public class MatchDAO implements DataAccessObject {
 
 
     // business entity parameters
+    private static final String MATCH_BE_ID = "id";
     private static final String MATCH_BE_NR = "nr";
     private static final String MATCH_BE_WETTKAMPF_ID = "wettkampfId";
     private static final String MATCH_BE_MANNSCHAFT_ID = "mannschaftId";
     private static final String MATCH_BE_SCHEIBENNUMMER = "scheibenNummer";
+    private static final String MATCH_BE_BEGEGNUNG = "begegnung";
     private static final String MATCH_BE_MATCHPUNKTE = "matchpunkte";
     private static final String MATCH_BE_SATZPUNKTE = "satzpunkte";
 
     // table columns
+    private static final String MATCH_TABLE_ID = "match_id";
     private static final String MATCH_TABLE_NR = "match_nr";
     private static final String MATCH_TABLE_WETTKAMPF_ID = "match_wettkampf_id";
     private static final String MATCH_TABLE_MANNSCHAFT_ID = "match_mannschaft_id";
     private static final String MATCH_TABLE_SCHEIBENNUMMER = "match_scheibennummer";
+    private static final String MATCH_TABLE_BEGEGNUNG = "match_begegnung";
     private static final String MATCH_TABLE_MATCHPUNKTE = "match_matchpunkte";
     private static final String MATCH_TABLE_SATZPUNKTE = "match_satzpunkte";
 
@@ -62,9 +66,11 @@ public class MatchDAO implements DataAccessObject {
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
+        columnsToFieldsMap.put(MATCH_TABLE_ID, MATCH_BE_ID);
         columnsToFieldsMap.put(MATCH_TABLE_NR, MATCH_BE_NR);
         columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFT_ID, MATCH_BE_MANNSCHAFT_ID);
         columnsToFieldsMap.put(MATCH_TABLE_WETTKAMPF_ID, MATCH_BE_WETTKAMPF_ID);
+        columnsToFieldsMap.put(MATCH_TABLE_BEGEGNUNG, MATCH_BE_BEGEGNUNG);
         columnsToFieldsMap.put(MATCH_TABLE_SCHEIBENNUMMER, MATCH_BE_SCHEIBENNUMMER);
         columnsToFieldsMap.put(MATCH_TABLE_MATCHPUNKTE, MATCH_BE_MATCHPUNKTE);
         columnsToFieldsMap.put(MATCH_TABLE_SATZPUNKTE, MATCH_BE_SATZPUNKTE);
@@ -82,13 +88,23 @@ public class MatchDAO implements DataAccessObject {
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM " + TABLE
-                    + " ORDER BY " + MATCH_TABLE_NR;
+                    + " ORDER BY " + MATCH_TABLE_ID;
 
-    private static final String FIND_BY_NR =
+    private static final String FIND_BY_ID =
             "SELECT * "
                     + " FROM " + TABLE
-                    + " WHERE " + MATCH_TABLE_NR
+                    + " WHERE " + MATCH_TABLE_ID
                     + "=?"
+                    + " ORDER BY " + MATCH_TABLE_ID;
+
+    private static final String FIND_BY_PK =
+            "SELECT * "
+                    + " FROM " + TABLE
+                    + " WHERE " + MATCH_TABLE_NR + "=?"
+                    + " AND " + MATCH_TABLE_WETTKAMPF_ID + "=?"
+                    + " AND " + MATCH_TABLE_MANNSCHAFT_ID + "=?"
+                    + " AND " + MATCH_TABLE_BEGEGNUNG + "=?"
+                    + " AND " + MATCH_TABLE_SCHEIBENNUMMER + "=?"
                     + " ORDER BY " + MATCH_TABLE_NR;
 
     private static final String FIND_BY_MANNSCHAFT_ID =
@@ -123,12 +139,25 @@ public class MatchDAO implements DataAccessObject {
     /**
      * Return a specific match.
      *
-     * @return match with given nr
+     * @return match with given id
      */
-    public MatchBE findByNr(final Long matchNr) {
-        return basicDao.selectSingleEntity(MATCH, FIND_BY_NR, matchNr);
+    public MatchBE findById(final Long matchId) {
+        return basicDao.selectSingleEntity(MATCH, FIND_BY_ID, matchId);
     }
 
+
+    /**
+     * Return a specific match.
+     *
+     * @return match with given combined primary key attributes
+     */
+    public MatchBE findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer) {
+        return basicDao.selectSingleEntity(
+                MATCH, FIND_BY_PK,
+                nr, wettkampfId, mannschaftId,
+                begegnung, scheibenNummer
+        );
+    }
 
     /**
      * Return all match entries.

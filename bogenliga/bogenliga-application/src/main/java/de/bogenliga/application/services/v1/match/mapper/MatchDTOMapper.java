@@ -14,15 +14,18 @@ public class MatchDTOMapper implements DataTransferObjectMapper {
     /**
      * I map the {@link ConfigurationDO} object to the {@link ConfigurationDTO} object
      */
-    public static final Function<MatchDO, MatchDTO> toMatchDTO = matchDO -> new MatchDTO(matchDO.getNr(),
-            matchDO.getVersion(), matchDO.getWettkampfId(),
-            matchDO.getMannschaftId(), matchDO.getScheibenNummer(), matchDO.getMatchpunkte(), matchDO.getSatzpunkte());
+    public static final Function<MatchDO, MatchDTO> toMatchDTO = matchDO -> new MatchDTO(
+            matchDO.getId(), matchDO.getNr(), matchDO.getVersion(), matchDO.getWettkampfId(),
+            matchDO.getMannschaftId(), matchDO.getBegegnung(), matchDO.getScheibenNummer(),
+            matchDO.getMatchpunkte(), matchDO.getSatzpunkte(), null // TODO: prefill with related passen?
+    );
 
     /**
      * I map the {@link ConfigurationDTO} object to the {@link ConfigurationDO} object
      */
-    public static final Function<MatchDTO, MatchDO> toDO = dto -> new MatchDO(
-            dto.getNr(), dto.getWettkampfId(), dto.getMannschaftId(), dto.getScheibenNummer(), dto.getMatchpunkte(),
-            dto.getSatzpunkte()
+    public static final Function<MatchDTO, MatchDO> toDO = matchDTO -> new MatchDO(
+            matchDTO.getId(), matchDTO.getNr(), matchDTO.getWettkampfId(), matchDTO.getMannschaftId(),
+            matchDTO.getBegegnung(), matchDTO.getScheibenNummer(),
+            matchDTO.getMatchpunkte(), matchDTO.getSatzpunkte()
     );
 }
