@@ -18,12 +18,15 @@ public class MatchMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(matchBE.getLastModifiedAtUtc());
 
         return new MatchDO(
+                matchBE.getId(),
                 matchBE.getNr(),
                 matchBE.getWettkampfId(),
                 matchBE.getMannschaftId(),
+                matchBE.getBegegnung(),
                 matchBE.getScheibenNummer(),
                 matchBE.getMatchpunkte(),
                 matchBE.getSatzpunkte(),
+
                 createdAtUtc,
                 matchBE.getCreatedByUserId(),
                 lastModifiedUtc,
@@ -39,11 +42,16 @@ public class MatchMapper implements ValueObjectMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(matchDO.getLastModifiedAtUtc());
 
         MatchBE matchBE = new MatchBE();
+
+        matchBE.setId(matchDO.getId());
+        matchBE.setNr(matchDO.getNr());
         matchBE.setMannschaftId(matchDO.getMannschaftId());
         matchBE.setWettkampfId(matchDO.getWettkampfId());
         matchBE.setScheibenNummer(matchDO.getScheibenNummer());
+        matchBE.setBegegnung(matchDO.getBegegnung());
         matchBE.setMatchpunkte(matchDO.getMatchpunkte());
         matchBE.setSatzpunkte(matchDO.getSatzpunkte());
+
         matchBE.setCreatedAtUtc(createdAtUtcTimestamp);
         matchBE.setCreatedByUserId(matchDO.getCreatedByUserId());
         matchBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);

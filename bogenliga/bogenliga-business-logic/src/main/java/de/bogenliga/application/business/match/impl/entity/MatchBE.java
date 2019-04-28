@@ -10,9 +10,11 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 3591981606558698229L;
 
     private Long nr;
+    private Long id;
     private Long wettkampfId;
     private Long mannschaftId;
     private Long scheibenNummer;
+    private Long begegnung;
     private Long matchpunkte;
     private Long satzpunkte;
 
@@ -20,13 +22,25 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     @Override
     public String toString() {
         return "PasseBE{" +
+                "id=" + id +
                 "nr=" + nr +
                 "wettkampfId=" + wettkampfId +
                 "mannschaftId=" + mannschaftId +
                 "scheibenNummer=" + scheibenNummer +
+                "begegnung=" + begegnung +
                 "matchpunkte=" + matchpunkte +
                 "satzpunkte=" + satzpunkte +
                 '}';
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 
@@ -67,6 +81,16 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
 
     public void setScheibenNummer(Long scheibenNummer) {
         this.scheibenNummer = scheibenNummer;
+    }
+
+
+    public Long getBegegnung() {
+        return begegnung;
+    }
+
+
+    public void setBegegnung(Long begegnung) {
+        this.begegnung = begegnung;
     }
 
 
