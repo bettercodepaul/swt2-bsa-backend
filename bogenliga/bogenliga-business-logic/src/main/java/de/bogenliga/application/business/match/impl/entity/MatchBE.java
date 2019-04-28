@@ -4,10 +4,89 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
 public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 3591981606558698229L;
+
+    private Long nr;
+    private Long wettkampfId;
+    private Long mannschaftId;
+    private Long scheibenNummer;
+    private Long matchpunkte;
+    private Long satzpunkte;
+
+
+    @Override
+    public String toString() {
+        return "PasseBE{" +
+                "nr=" + nr +
+                "wettkampfId=" + wettkampfId +
+                "mannschaftId=" + mannschaftId +
+                "scheibenNummer=" + scheibenNummer +
+                "matchpunkte=" + matchpunkte +
+                "satzpunkte=" + satzpunkte +
+                '}';
+    }
+
+
+    public Long getNr() {
+        return nr;
+    }
+
+
+    public void setNr(Long nr) {
+        this.nr = nr;
+    }
+
+
+    public Long getWettkampfId() {
+        return wettkampfId;
+    }
+
+
+    public void setWettkampfId(Long wettkampfId) {
+        this.wettkampfId = wettkampfId;
+    }
+
+
+    public Long getMannschaftId() {
+        return mannschaftId;
+    }
+
+
+    public void setMannschaftId(Long mannschaftId) {
+        this.mannschaftId = mannschaftId;
+    }
+
+
+    public Long getScheibenNummer() {
+        return scheibenNummer;
+    }
+
+
+    public void setScheibenNummer(Long scheibenNummer) {
+        this.scheibenNummer = scheibenNummer;
+    }
+
+
+    public Long getMatchpunkte() {
+        return matchpunkte;
+    }
+
+
+    public void setMatchpunkte(Long matchpunkte) {
+        this.matchpunkte = matchpunkte;
+    }
+
+
+    public Long getSatzpunkte() {
+        return satzpunkte;
+    }
+
+
+    public void setSatzpunkte(Long satzpunkte) {
+        this.satzpunkte = satzpunkte;
+    }
+
 }

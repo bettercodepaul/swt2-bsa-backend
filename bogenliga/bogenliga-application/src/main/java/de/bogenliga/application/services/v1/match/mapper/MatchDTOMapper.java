@@ -8,8 +8,6 @@ import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
 public class MatchDTOMapper implements DataTransferObjectMapper {

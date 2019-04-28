@@ -6,8 +6,8 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
 public class MatchDTO implements DataTransferObject {
-
     private static final long serialVersionUID = 2743639156011821590L;
+
     private Long nr;
     private Long version;
     private Long wettkampfId;
