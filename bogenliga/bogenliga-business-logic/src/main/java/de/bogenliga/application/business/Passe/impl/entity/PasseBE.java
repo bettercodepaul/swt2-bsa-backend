@@ -9,6 +9,8 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * @author Kay Scheerer
  */
 public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
+    private static final long serialVersionUID = 8445258747402691960L;
+
     private long id;
     private long passeMannschaftId;
     private long passeWettkampfId;

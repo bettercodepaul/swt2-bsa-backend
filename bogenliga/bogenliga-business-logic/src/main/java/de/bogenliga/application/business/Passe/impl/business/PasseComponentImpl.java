@@ -3,6 +3,7 @@ package de.bogenliga.application.business.Passe.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.Passe.api.PasseComponent;
 import de.bogenliga.application.business.Passe.api.types.PasseDO;
 import de.bogenliga.application.business.Passe.impl.dao.PasseDAO;
@@ -15,6 +16,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  *
  * @author Kay Scheerer
  */
+@Component
 public class PasseComponentImpl implements PasseComponent {
 
 
@@ -26,18 +28,21 @@ public class PasseComponentImpl implements PasseComponent {
     private static final String PRECONDITION_PASSE_DSB_MITGLIED_ID_NEGATIV = "PasseDO_Dsb_Mitglied_ID must not be negativ";
 
 
-
     private final PasseDAO passeDAO;
 
 
     /**
      * Constructor
-     *
+     * <p>
      * dependency injection with {@link Autowired}
+     *
      * @param passeDAO to access the database and return passe representations
      */
     @Autowired
-    public PasseComponentImpl(final PasseDAO passeDAO) { this.passeDAO = passeDAO; }
+    public PasseComponentImpl(final PasseDAO passeDAO) {
+        this.passeDAO = passeDAO;
+    }
+
 
     /**
      * Return all passe entries.
@@ -90,9 +95,10 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId) {
-        final List<PasseBE> passeBEList = passeDAO.findByMemberAndTeamId(dsbMitgliedId,mannschaftId);
+        final List<PasseBE> passeBEList = passeDAO.findByMemberAndTeamId(dsbMitgliedId, mannschaftId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
+
 
     /**
      * Return a passe entry with the given id.
@@ -111,7 +117,7 @@ public class PasseComponentImpl implements PasseComponent {
     /**
      * Create a new passe in the database.
      *
-     * @param passeDO         new passeDO
+     * @param passeDO       new passeDO
      * @param currentUserId the current user creating
      *
      * @return persisted version of the passe

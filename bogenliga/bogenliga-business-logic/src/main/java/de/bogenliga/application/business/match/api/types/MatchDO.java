@@ -4,8 +4,6 @@ import java.time.OffsetDateTime;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
 public class MatchDO extends CommonDataObject {
