@@ -70,13 +70,12 @@ public class PasseComponentImpl implements PasseComponent {
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
-
     /**
-     * Return all passe entries from one team.
+     * Return all passe from one Wettkampf
      *
      * @param teamId
      *
-     * @return list of all passe from one team in the database; empty list, if no passe are found
+     * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
     @Override
     public List<PasseDO> findByTeamId(long teamId) {
@@ -84,35 +83,72 @@ public class PasseComponentImpl implements PasseComponent {
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
+    /**
+     * Return all passe from one Wettkampf
+     *
+     * @param memberId of the member
+     *
+     * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
+     */
+    @Override
+    public List<PasseDO> findByMemberId(long memberId) {
+        final List<PasseBE> passeBEList = passeDAO.findByMemberId(memberId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+    }
 
     /**
      * Return a passe entry with the given ids.
      *
-     * @param dsbMitgliedId of the mannschaftsmitglied,
-     * @param mannschaftId  of the mannschaft
-     *
-     * @return list of passe from one mitglied in one team; empty list, if no passe are found
+     * @param dsbMemberId of the mannschaftsmitglied,
+     * @param mannschaftId of the mannschaft
+     * @return  list of passe from one mitglied in a mannschaft ;
+     * empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId) {
-        final List<PasseBE> passeBEList = passeDAO.findByMemberAndTeamId(dsbMitgliedId, mannschaftId);
+    public List<PasseDO> findByMemberMannschaftId(long dsbMemberId, long mannschaftId) {
+        final List<PasseBE> passeBEList = passeDAO.findByMannschaftMatchId(dsbMemberId, mannschaftId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
-
     /**
-     * Return a passe entry with the given id.
+     * Return a passe entry with the given ids.
      *
-     * @param lfdNr counting number,
-     *
-     * @return passe by counting number; empty list, if no passe are found
+     * @param dsbMemberId of the mannschaftsmitglied,
+     * @param matchId of the mannschaft
+     * @return  list of passe from one mitglied in a mannschaft ;
+     * empty list, if no passe are found
      */
     @Override
-    public PasseDO findByLfdNr(long lfdNr) {
-        final PasseBE passeBE = passeDAO.findByLfdNr(lfdNr);
-        return PasseMapper.toPasseDO.apply(passeBE);
+    public List<PasseDO> findByMitgliedMatchId(long dsbMemberId, long matchId) {
+        final List<PasseBE> passeBEList = passeDAO.findByMitgliedMatchId(dsbMemberId, matchId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
+    /**
+     * Return a passe entry with the given ids.
+     *
+     * @param mannschaftId of the mannschaftsmitglied,
+     * @param matchId of the match
+     * @return  list of passe from one mannschaft in a match;
+     * empty list, if no passe are found
+     */
+    @Override
+    public List<PasseDO> findByMannschaftMatchId(long mannschaftId, long matchId) {
+        final List<PasseBE> passeBEList = passeDAO.findByMannschaftMatchId(mannschaftId, matchId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+    }
+
+    /**
+     * Return a passe entry with the given ids.
+     * @param matchId of the match
+     * @return  list of passe from one mannschaft in a match;
+     * empty list, if no passe are found
+     */
+    @Override
+    public List<PasseDO> findByMatchId( long matchId) {
+        final List<PasseBE> passeBEList = passeDAO.findByMatchId(matchId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+    }
 
     /**
      * Create a new passe in the database.
