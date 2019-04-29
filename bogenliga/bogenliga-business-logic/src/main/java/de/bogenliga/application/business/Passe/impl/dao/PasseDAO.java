@@ -101,10 +101,21 @@ public class PasseDAO implements DataAccessObject {
                     + " ORDER BY " + PASSE_TABLE_LFDNR
                     + "=?";
 
+    private static final String FIND_BY_MATCH_ID =
+            "SELECT * "
+                    + " FROM " + TABLE
+                    + " WHERE " + "" //MatchID ist noch nicht in der Passetabelle
+                    + "=?";
+
     private static final String FIND_BY_MANNSCHAFT_ID =
             "SELECT * "
                     + " FROM " + TABLE
                     + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
+                    + "=?";
+    private static final String FIND_BY_MEMBER_ID =
+            "SELECT * "
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
                     + "=?";
 
     private static final String FIND_BY_WETTKAMPF_ID =
@@ -113,11 +124,30 @@ public class PasseDAO implements DataAccessObject {
                     + " WHERE " + PASSE_TABLE_WETTKAMPF_ID
                     + "=?";
 
-    private static final String FIND_BY_LFDNR =
+    private static final String FIND_BY_MEMBER_MANNSCHAFT_ID =
             "SELECT * "
                     + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_LFDNR
-                    + "= ?";
+                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
+                    + "=? "
+                    + " AND WHERE " + PASSE_TABLE_MANNSCHAFT_ID
+                    + "=?";
+
+    private static final String FIND_BY_MANNSCHAFT_MATCH_ID =
+            "SELECT * "
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
+                    + "=? "
+                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
+                    + "=?";
+
+    private static final String FIND_BY_MITGLIED_MATCH_ID =
+            "SELECT * "
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
+                    + "=? "
+                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
+                    + "=?";
+
 
 
     /**
@@ -154,7 +184,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
     public List<PasseBE> findByWettkampfId(long wettkampfId) {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_BY_WETTKAMPF_ID, wettkampfId);
     }
 
 
@@ -166,7 +196,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of all passe from one team in the database; empty list, if no passe are found
      */
     public List<PasseBE> findByTeamId(long teamId) {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_ID,teamId);
     }
 
 
@@ -179,7 +209,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMemberMannschaftId(long dsbMitgliedId, long mannschaftId) {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_MANNSCHAFT_ID,dsbMitgliedId,mannschaftId);
     }
 
 
@@ -191,7 +221,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMemberId(long dsbMitgliedId) {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID);
     }
 
 
@@ -204,7 +234,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMannschaftMatchId(long mannschaftId, long matchId) {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_MATCH_ID,mannschaftId,matchId);
     }
 
 
@@ -217,7 +247,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMitgliedMatchId(long dsbMitgliedId, long matchId) {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID);
     }
 
 
@@ -229,7 +259,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMatchId(long matchId) {
-        return null;
+        return basicDao.selectEntityList(PASSE, FIND_BY_MATCH_ID);
     }
 
 
