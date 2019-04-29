@@ -101,10 +101,19 @@ public class PasseDAO implements DataAccessObject {
                     + " ORDER BY " + PASSE_TABLE_LFDNR
                     + "=?";
 
+    private static final String FIND_BY_PK =
+            "SELECT * "
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_WETTKAMPF_ID + "=?"
+                    + " WHERE " + PASSE_TABLE_MATCH_NR + "=?"
+                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID + "=?"
+                    + " WHERE " + PASSE_TABLE_LFDNR + "=?"
+                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID + "=?";
+
     private static final String FIND_BY_MATCH_ID =
             "SELECT * "
                     + " FROM " + TABLE
-                    + " WHERE " + "" //MatchID ist noch nicht in der Passetabelle
+                    + " WHERE " + "" // MatchID ist noch nicht in der Passetabelle
                     + "=?";
 
     private static final String FIND_BY_MANNSCHAFT_ID =
@@ -149,23 +158,6 @@ public class PasseDAO implements DataAccessObject {
                     + "=?";
 
 
-
-    /**
-     * Create a new passe entry
-     *
-     * @param passeBE
-     * @param currentKampfrichterUserId
-     *
-     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
-     * and  entities
-     */
-    public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
-        basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
-
-        return basicDao.insertEntity(PASSE, passeBE);
-    }
-
-
     /**
      * Return all passe entries.
      *
@@ -173,6 +165,23 @@ public class PasseDAO implements DataAccessObject {
      */
     public List<PasseBE> findAll() {
         return basicDao.selectEntityList(PASSE, FIND_ALL);
+    }
+
+
+    /**
+     * Select a single passe enttiy by its combined pk
+     *
+     * @param wettkampfId
+     * @param matchNr
+     * @param mannschaftId
+     * @param passeLfdNr
+     * @param dsbMitgliedId
+     *
+     * @return
+     */
+    public PasseBE findByPk(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
+        return basicDao.selectSingleEntity(PASSE, FIND_BY_PK, wettkampfId, matchNr, mannschaftId, passeLfdNr,
+                dsbMitgliedId);
     }
 
 
@@ -196,7 +205,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of all passe from one team in the database; empty list, if no passe are found
      */
     public List<PasseBE> findByTeamId(long teamId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_ID,teamId);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_ID, teamId);
     }
 
 
@@ -209,7 +218,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMemberMannschaftId(long dsbMitgliedId, long mannschaftId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_MANNSCHAFT_ID,dsbMitgliedId,mannschaftId);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_MANNSCHAFT_ID, dsbMitgliedId, mannschaftId);
     }
 
 
@@ -221,7 +230,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMemberId(long dsbMitgliedId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID,dsbMitgliedId);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID, dsbMitgliedId);
     }
 
 
@@ -234,7 +243,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMannschaftMatchId(long mannschaftId, long matchId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_MATCH_ID,mannschaftId,matchId);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_MATCH_ID, mannschaftId, matchId);
     }
 
 
@@ -247,7 +256,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMitgliedMatchId(long dsbMitgliedId, long matchId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID,dsbMitgliedId, matchId);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID, dsbMitgliedId, matchId);
     }
 
 
@@ -260,6 +269,22 @@ public class PasseDAO implements DataAccessObject {
      */
     public List<PasseBE> findByMatchId(long matchId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MATCH_ID, matchId);
+    }
+
+
+    /**
+     * Create a new passe entry
+     *
+     * @param passeBE
+     * @param currentKampfrichterUserId
+     *
+     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
+     * and  entities
+     */
+    public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
+        basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
+
+        return basicDao.insertEntity(PASSE, passeBE);
     }
 
 
