@@ -177,41 +177,46 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId) {
+    public List<PasseBE> findByMemberMannschaftId(long dsbMitgliedId, long mannschaftId) {
+        return null;
+    }
+
+    /**
+     * Return a passe entry with the given ids.
+     *
+     * @param dsbMitgliedId of the mannschaftsmitglied
+     *
+     * @return list of passe from one mitglied in one team; empty list, if no passe are found
+     */
+    public List<PasseBE> findByMemberId(long dsbMitgliedId) {
         return null;
     }
 
 
     /**
-     * Return a passe entry with the given id.
+     * Return a passe entry with the given ids.
      *
-     * @param lfdNr counting number,
+     * @param matchNr of the match,
+     * @param mannschaftId  of the mannschaft
+     * @param wettkampfId of the Wettkampf
      *
-     * @return passe by counting number; empty list, if no passe are found
+     * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public PasseBE findByLfdNr(long lfdNr) {
-        return basicDao.selectSingleEntity(PASSE,FIND_BY_LFDNR,lfdNr);
+    public List<PasseBE> findByMemberWettkampfMatchId(long matchNr,long wettkampfId, long mannschaftId) {
+        return null;
     }
 
-
     /**
-     * Create a new passe in the database.
+     * Return a passe entry with the given ids.
      *
-     * @param passeBE         new passeBE
-     * @param currentMemberId id of the member currently updating the passe
-     * @param mannschaftId    id of the mannschaft
-     * @param wettkampfId     id of the wettkampf
-     * @param matchNr         number of the match
-     * @param lfdNr           counting number
+     * @param dsbMitgliedId of the mannschaftsmitglied,
+     * @param matchNr  of the match
+     * @param wettkampfId of the Wettkampf
      *
-     * @return persisted version of the passe
+     * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public PasseBE create(final PasseBE passeBE, final long currentMemberId, long mannschaftId, long wettkampfId, long matchNr,
-                          long lfdNr) {
-
-        basicDao.setCreationAttributes(passeBE, currentMemberId);
-
-       return basicDao.insertEntity(PASSE,passeBE);
+    public List<PasseBE> findByMannschaftWettkampfMatchId(long dsbMitgliedId,long wettkampfId, long matchNr) {
+        return null;
     }
 
 
@@ -222,13 +227,13 @@ public class PasseDAO implements DataAccessObject {
      * @param currentMemberId id of the member currently updating the passe
      *
      * @return persisted version of the passe
-
+     */
     public PasseBE update(final PasseBE passeBE, final long currentMemberId) {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
 
 
-        return basicDao.updateEntity(PASSE, passeBE,);
-    }*/
+        return basicDao.updateEntity(PASSE, passeBE,"passe_mannschaft_id");
+    }
 
 
     /**
