@@ -28,7 +28,25 @@ public interface PasseComponent {
 
     List<PasseDO> findByWettkampfId(long wettkampfId);
 
+    /**
+     * Return all passe from one Wettkampf
+     *
+     * @param memberId of the member
+     *
+     * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
+     */
 
+     List<PasseDO> findByMemberId(long memberId);
+
+    /**
+     * Return a passe entry with the given ids.
+     *
+     * @param dsbMemberId of the mannschaftsmitglied,
+     * @param mannschaftId of the mannschaft
+     * @return  list of passe from one mitglied in a mannschaft ;
+     * empty list, if no passe are found
+     */
+    List<PasseDO> findByMemberMannschaftId(long dsbMemberId, long mannschaftId);
 
     /**
      * Return all passe entries from one team.
@@ -40,26 +58,33 @@ public interface PasseComponent {
     List<PasseDO> findByTeamId(long teamId);
 
 
+    /**
+     * Return a passe entry with the given ids.
+     *
+     * @param mannschaftId of the mannschaftsmitglied,
+     * @param matchId of the match
+     * @return  list of passe from one mannschaft in a match;
+     * empty list, if no passe are found
+     */
+    List<PasseDO> findByMannschaftMatchId(long mannschaftId, long matchId);
 
     /**
      * Return a passe entry with the given ids.
      *
-     * @param dsbMitgliedId of the mannschaftsmitglied,
-     * @param mannschaftId of the mannschaft
-     * @return  list of passe from one mitglied in one team;
+     * @param dsbMemberId of the mannschaftsmitglied,
+     * @param matchId of the mannschaft
+     * @return  list of passe from one mitglied in a mannschaft ;
      * empty list, if no passe are found
      */
-    List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId);
+     List<PasseDO> findByMitgliedMatchId(long dsbMemberId, long matchId);
 
     /**
-     * Return a passe entry with the given id.
-     *
-     * @param lfdNr counting number,
-     * @return  passe by counting number;
+     * Return a passe entry with the given ids.
+     * @param matchId of the match
+     * @return  list of passe from one mannschaft in a match;
      * empty list, if no passe are found
      */
-    PasseDO findByLfdNr(long lfdNr);
-
+    List<PasseDO> findByMatchId( long matchId);
 
     /**
      * Create a new passe in the database.

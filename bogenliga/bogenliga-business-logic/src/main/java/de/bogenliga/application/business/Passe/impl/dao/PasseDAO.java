@@ -26,30 +26,30 @@ public class PasseDAO implements DataAccessObject {
 
 
     //business entity parameters
-    private static final String PASSE_BE_MANNSCHAFT_ID   =  "passeMannschaftId";
-    private static final String PASSE_BE_WETTKAMPF_ID    =  "passeWettkampfId";
-    private static final String PASSE_BE_MATCH_NR        =  "passeMatchNr";
-    private static final String PASSE_BE_LFDNR          =   "passeLfdnr";
-    private static final String PASSE_BE_DSB_MITGLIED_ID =  "passeDsbMitgliedId";
-    private static final String PASSE_BE_PFEIL_1   = "passeRingzahlPfeil1";
-    private static final String PASSE_BE_PFEIL_2   = "passeRingzahlPfeil2";
-    private static final String PASSE_BE_PFEIL_3   = "passeRingzahlPfeil3";
-    private static final String PASSE_BE_PFEIL_4   = "passeRingzahlPfeil4";
-    private static final String PASSE_BE_PFEIL_5   = "passeRingzahlPfeil5";
-    private static final String PASSE_BE_PFEIL_6   = "passeRingzahlPfeil6";
+    private static final String PASSE_BE_MANNSCHAFT_ID = "passeMannschaftId";
+    private static final String PASSE_BE_WETTKAMPF_ID = "passeWettkampfId";
+    private static final String PASSE_BE_MATCH_NR = "passeMatchNr";
+    private static final String PASSE_BE_LFDNR = "passeLfdnr";
+    private static final String PASSE_BE_DSB_MITGLIED_ID = "passeDsbMitgliedId";
+    private static final String PASSE_BE_PFEIL_1 = "passeRingzahlPfeil1";
+    private static final String PASSE_BE_PFEIL_2 = "passeRingzahlPfeil2";
+    private static final String PASSE_BE_PFEIL_3 = "passeRingzahlPfeil3";
+    private static final String PASSE_BE_PFEIL_4 = "passeRingzahlPfeil4";
+    private static final String PASSE_BE_PFEIL_5 = "passeRingzahlPfeil5";
+    private static final String PASSE_BE_PFEIL_6 = "passeRingzahlPfeil6";
 
-    private static final String PASSE_TABLE_MANNSCHAFT_ID     = "passe_mannschaft_id";
-    private static final String PASSE_TABLE_WETTKAMPF_ID      = "passe_wettkampf_id";
-    private static final String PASSE_TABLE_MATCH_NR          = "passe_match_nr";
-    private static final String PASSE_TABLE_LFDNR            =  "passe_lfdnr";
-    private static final String PASSE_TABLE_DSB_MITGLIED_ID   = "passe_dsb_mitglied_id";
+    private static final String PASSE_TABLE_MANNSCHAFT_ID = "passe_mannschaft_id";
+    private static final String PASSE_TABLE_WETTKAMPF_ID = "passe_wettkampf_id";
+    private static final String PASSE_TABLE_MATCH_NR = "passe_match_nr";
+    private static final String PASSE_TABLE_LFDNR = "passe_lfdnr";
+    private static final String PASSE_TABLE_DSB_MITGLIED_ID = "passe_dsb_mitglied_id";
 
-    private static final String PASSE_TABLE_PFEIL_1   = "passe_ringzahl_pfeil1";
-    private static final String PASSE_TABLE_PFEIL_2   = "passe_ringzahl_pfeil2";
-    private static final String PASSE_TABLE_PFEIL_3   = "passe_ringzahl_pfeil3";
-    private static final String PASSE_TABLE_PFEIL_4   = "passe_ringzahl_pfeil4";
-    private static final String PASSE_TABLE_PFEIL_5   = "passe_ringzahl_pfeil5";
-    private static final String PASSE_TABLE_PFEIL_6   = "passe_ringzahl_pfeil6";
+    private static final String PASSE_TABLE_PFEIL_1 = "passe_ringzahl_pfeil1";
+    private static final String PASSE_TABLE_PFEIL_2 = "passe_ringzahl_pfeil2";
+    private static final String PASSE_TABLE_PFEIL_3 = "passe_ringzahl_pfeil3";
+    private static final String PASSE_TABLE_PFEIL_4 = "passe_ringzahl_pfeil4";
+    private static final String PASSE_TABLE_PFEIL_5 = "passe_ringzahl_pfeil5";
+    private static final String PASSE_TABLE_PFEIL_6 = "passe_ringzahl_pfeil6";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<PasseBE> PASSE = new BusinessEntityConfiguration<>(
@@ -67,6 +67,7 @@ public class PasseDAO implements DataAccessObject {
     public PasseDAO(final BasicDAO basicDao) {
         this.basicDao = basicDao;
     }
+
 
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
@@ -90,33 +91,33 @@ public class PasseDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
+
     /**
      * SQL queries, not sure which ones are needed at all
      */
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM "+TABLE
-                    + " ORDER BY "+ PASSE_TABLE_LFDNR
+                    + " FROM " + TABLE
+                    + " ORDER BY " + PASSE_TABLE_LFDNR
                     + "=?";
 
     private static final String FIND_BY_MANNSCHAFT_ID =
             "SELECT * "
-                    + " FROM "+TABLE
-                    + " WHERE "+PASSE_TABLE_MANNSCHAFT_ID
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
                     + "=?";
 
     private static final String FIND_BY_WETTKAMPF_ID =
             "SELECT * "
-                    + " FROM "+TABLE
-                    + " WHERE "+PASSE_TABLE_WETTKAMPF_ID
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_WETTKAMPF_ID
                     + "=?";
 
     private static final String FIND_BY_LFDNR =
             "SELECT * "
-                    + " FROM "+TABLE
-                    + " WHERE "+PASSE_TABLE_LFDNR
-                    +"= ?";
-
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_LFDNR
+                    + "= ?";
 
 
     /**
@@ -124,7 +125,9 @@ public class PasseDAO implements DataAccessObject {
      *
      * @param passeBE
      * @param currentKampfrichterUserId
-     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter and  entities
+     *
+     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
+     * and  entities
      */
     public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
@@ -179,6 +182,7 @@ public class PasseDAO implements DataAccessObject {
         return null;
     }
 
+
     /**
      * Return a passe entry with the given ids.
      *
@@ -194,26 +198,37 @@ public class PasseDAO implements DataAccessObject {
     /**
      * Return a passe entry with the given ids.
      *
-     * @param matchNr of the match,
-     * @param mannschaftId  of the mannschaft
-     * @param wettkampfId of the Wettkampf
+     * @param matchId      of the match,
+     * @param mannschaftId of the mannschaft
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMemberWettkampfMatchId(long matchNr,long wettkampfId, long mannschaftId) {
+    public List<PasseBE> findByMannschaftMatchId(long mannschaftId, long matchId) {
         return null;
     }
+
 
     /**
      * Return a passe entry with the given ids.
      *
      * @param dsbMitgliedId of the mannschaftsmitglied,
-     * @param matchNr  of the match
-     * @param wettkampfId of the Wettkampf
+     * @param matchId       of the match
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMannschaftWettkampfMatchId(long dsbMitgliedId,long wettkampfId, long matchNr) {
+    public List<PasseBE> findByMitgliedMatchId(long dsbMitgliedId, long matchId) {
+        return null;
+    }
+
+
+    /**
+     * Return a passe entry with the given ids.
+     *
+     * @param matchId of the match
+     *
+     * @return list of passe from one mitglied in one team; empty list, if no passe are found
+     */
+    public List<PasseBE> findByMatchId(long matchId) {
         return null;
     }
 
@@ -230,7 +245,7 @@ public class PasseDAO implements DataAccessObject {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
 
 
-        return basicDao.updateEntity(PASSE, passeBE,"passe_mannschaft_id");
+        return basicDao.updateEntity(PASSE, passeBE, "passe_mannschaft_id");
     }
 
 
