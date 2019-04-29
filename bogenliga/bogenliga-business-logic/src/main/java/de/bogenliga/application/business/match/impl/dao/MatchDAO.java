@@ -121,22 +121,6 @@ public class MatchDAO implements DataAccessObject {
 
 
     /**
-     * Create a new match entry
-     *
-     * @param matchBE
-     * @param currentUserId
-     *
-     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
-     * and  entities
-     */
-    public MatchBE create(final MatchBE matchBE, final Long currentUserId) {
-        basicDao.setCreationAttributes(matchBE, currentUserId);
-
-        return basicDao.insertEntity(MATCH, matchBE);
-    }
-
-
-    /**
      * Return a specific match.
      *
      * @return match with given id
@@ -158,6 +142,7 @@ public class MatchDAO implements DataAccessObject {
                 begegnung, scheibenNummer
         );
     }
+
 
     /**
      * Return all match entries.
@@ -194,6 +179,21 @@ public class MatchDAO implements DataAccessObject {
 
 
     /**
+     * Create a new match entry
+     *
+     * @param matchBE
+     * @param currentUserId
+     *
+     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
+     * and  entities
+     */
+    public MatchBE create(final MatchBE matchBE, final Long currentUserId) {
+        basicDao.setCreationAttributes(matchBE, currentUserId);
+        return basicDao.insertEntity(MATCH, matchBE);
+    }
+
+
+    /**
      * Update an existing match entry
      *
      * @param matchBE
@@ -203,7 +203,6 @@ public class MatchDAO implements DataAccessObject {
      */
     public MatchBE update(final MatchBE matchBE, final Long currentUserId) {
         basicDao.setModificationAttributes(matchBE, currentUserId);
-
         return basicDao.updateEntity(MATCH, matchBE, MATCH_BE_ID);
     }
 
@@ -216,7 +215,6 @@ public class MatchDAO implements DataAccessObject {
      */
     public void delete(final MatchBE matchBE, final Long currentUserId) {
         basicDao.setModificationAttributes(matchBE, currentUserId);
-
         basicDao.deleteEntity(MATCH, matchBE, MATCH_BE_ID);
     }
 
