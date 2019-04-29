@@ -204,7 +204,7 @@ public class MatchDAO implements DataAccessObject {
     public MatchBE update(final MatchBE matchBE, final Long currentUserId) {
         basicDao.setModificationAttributes(matchBE, currentUserId);
 
-        return basicDao.updateEntity(MATCH, matchBE, MATCH_BE_NR);
+        return basicDao.updateEntity(MATCH, matchBE, MATCH_BE_ID);
     }
 
 
@@ -217,7 +217,7 @@ public class MatchDAO implements DataAccessObject {
     public void delete(final MatchBE matchBE, final Long currentUserId) {
         basicDao.setModificationAttributes(matchBE, currentUserId);
 
-        basicDao.deleteEntity(MATCH, matchBE, MATCH_BE_NR);
+        basicDao.deleteEntity(MATCH, matchBE, MATCH_BE_ID);
     }
 
 }
