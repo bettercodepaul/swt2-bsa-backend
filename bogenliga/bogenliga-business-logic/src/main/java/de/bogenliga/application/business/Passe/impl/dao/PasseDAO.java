@@ -247,7 +247,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMitgliedMatchId(long dsbMitgliedId, long matchId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID, matchId);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID,dsbMitgliedId, matchId);
     }
 
 
