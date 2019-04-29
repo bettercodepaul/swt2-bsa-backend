@@ -73,7 +73,7 @@ public class PasseComponentImpl implements PasseComponent {
     /**
      * Return all passe from one Wettkampf
      *
-     * @param teamId
+     * @param teamId of the mannschaft
      *
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
@@ -106,7 +106,7 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMemberMannschaftId(long dsbMemberId, long mannschaftId) {
-        final List<PasseBE> passeBEList = passeDAO.findByMannschaftMatchId(dsbMemberId, mannschaftId);
+        final List<PasseBE> passeBEList = passeDAO.findByMemberMannschaftId(dsbMemberId, mannschaftId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
