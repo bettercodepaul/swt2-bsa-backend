@@ -17,11 +17,21 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class MatchComponentImpl implements MatchComponent {
 
-    private static final String PRECONDITION_MSG_MATCH_NR = "MatchDO nr must not be negative";
-    private static final String PRECONDITION_MSG_MATCH_NR_NULL = "MatchDO nr must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_ID = "wettkampfID must not be null and must not be negative";
-    private static final String PRECONDITION_MSG_CURRENT_USER_ID = "currentUserId must not be null and must not be negative";
-    private static final String PRECONDITION_MSG_MANNSCHAFT_ID = "mannschaftId must not be null and must not be negative";
+    private static final String PRECONDITION_MSG_TEMPLATE = "Match: %s must not be null and must not be negative";
+    public static final String PRECONDITION_MSG_MATCH_ID = String.format(PRECONDITION_MSG_TEMPLATE, "id");
+    public static final String PRECONDITION_MSG_MATCH_DO = String.format(PRECONDITION_MSG_TEMPLATE, "DO");
+    public static final String PRECONDITION_MSG_MATCH_NR = String.format(PRECONDITION_MSG_TEMPLATE, "nr");
+    public static final String PRECONDITION_MSG_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE, "wettkampfId");
+    public static final String PRECONDITION_MSG_CURRENT_USER_ID = String.format(PRECONDITION_MSG_TEMPLATE,
+            "currentUserId");
+    public static final String PRECONDITION_MSG_MANNSCHAFT_ID = String.format(PRECONDITION_MSG_TEMPLATE,
+            "mannschaftId");
+    public static final String PRECONDITION_MSG_BEGEGNUNG = String.format(PRECONDITION_MSG_TEMPLATE, "begegnung");
+    public static final String PRECONDITION_MSG_SCHEIBENNUMMER = String.format(PRECONDITION_MSG_TEMPLATE,
+            "scheibennummer");
+    public static final String PRECONDITION_MSG_SATZPUNKTE = String.format(PRECONDITION_MSG_TEMPLATE, "satzpunkte");
+    public static final String PRECONDITION_MSG_MATCHPUNKTE = String.format(PRECONDITION_MSG_TEMPLATE, "matchpunkte");
+
     private final MatchDAO matchDAO;
 
 
@@ -47,7 +57,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     @Override
     public MatchDO findById(Long id) {
-        Preconditions.checkNotNull(id, PRECONDITION_MSG_MATCH_NR_NULL);
+        Preconditions.checkNotNull(id, PRECONDITION_MSG_MATCH_NR);
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_MATCH_NR);
 
         final MatchBE matchBE = matchDAO.findById(id);
@@ -116,7 +126,7 @@ public class MatchComponentImpl implements MatchComponent {
 
 
     private void checkMatch(MatchDO matchDO) {
-        Preconditions.checkNotNull(matchDO, PRECONDITION_MSG_CURRENT_USER_ID);
+        Preconditions.checkNotNull(matchDO, PRECONDITION_MSG_MATCH_DO);
 
         Preconditions.checkNotNull(matchDO.getMannschaftId(), PRECONDITION_MSG_CURRENT_USER_ID);
         Preconditions.checkArgument(matchDO.getMannschaftId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
