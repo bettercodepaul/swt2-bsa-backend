@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.match.service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -53,7 +54,21 @@ public class MatchService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "schusszettel/{id}",
+    private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
+        final MatchDO matchDo = matchComponent.findById(matchId);
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
+
+        if (addPassen) {
+            List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
+            List<PasseDTO> passen = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+            matchDTO.setPassen(passen);
+        }
+
+        return matchDTO;
+    }
+
+
+    @RequestMapping(value = "{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
@@ -63,13 +78,89 @@ public class MatchService implements ServiceFacade {
 
         LOG.debug("Receive 'findById' request with ID '{}'", matchId);
 
-        final MatchDO matchDo = matchComponent.findById(matchId);
-        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
+        return getMatchFromId(matchId, false);
+    }
 
-        List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
-        List<PasseDTO> passen = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
-        matchDTO.setPassen(passen);
-        return matchDTO;
+
+    /**
+     * There are always 2 matches on a schusszettel form
+     *
+     * @param matchId1
+     * @param matchId2
+     *
+     * @return
+     */
+    @RequestMapping(value = "schusszettel/{idm1}/{idm2}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public List<MatchDTO> findMatchesByIds(@PathVariable("idm1") Long matchId1, @PathVariable("idm2") Long matchId2) {
+        Preconditions.checkArgument(matchId1 >= 0, "Match ID must not be negative.");
+        Preconditions.checkNotNull(matchId1, "Match ID must not be null.");
+
+        Preconditions.checkArgument(matchId2 >= 0, "Match ID must not be negative.");
+        Preconditions.checkNotNull(matchId2, "Match ID must not be null.");
+
+        LOG.debug("Receive 'findMatchesByIds' request with IDs '{}' - '{}'", matchId1, matchId2);
+
+        List<MatchDTO> matches = new ArrayList<>();
+        matches.add(getMatchFromId(matchId1, true));
+        matches.add(getMatchFromId(matchId2, true));
+
+        return matches;
+    }
+
+
+    /**
+     * @param matchDTO1
+     * @param matchDTO2
+     *
+     * @return
+     */
+    @RequestMapping(value = "schusszettel",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public List<MatchDTO> saveMatches(@RequestBody final MatchDTO matchDTO1, @RequestBody final MatchDTO matchDTO2,
+                                      final Principal principal) {
+        Preconditions.checkNotNull(matchDTO1, "MatchDTO1 must not be null.");
+        Preconditions.checkNotNull(matchDTO2, "MatchDTO2 must not be null.");
+
+        Preconditions.checkArgument(matchDTO1.getWettkampfId().equals(matchDTO2.getWettkampfId()),
+                "Match wettkampfIds must be equal.");
+        Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
+                "Match begegnung must be equal.");
+        Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()), "Match numbers must be equal.");
+
+        LOG.debug("Receive 'saveMatches' request with IDs '{}' - '{}'", matchDTO1.getId(), matchDTO2.getId());
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        List<MatchDTO> matches = new ArrayList<>();
+        matches.add(matchDTO1);
+        matches.add(matchDTO2);
+
+        for (MatchDTO matchDTO : matches) {
+            MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
+            matchComponent.update(matchDO, userId);
+            for (PasseDTO passeDTO : matchDTO.getPassen()) {
+                PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
+                if (passeExists(passeDO)) {
+                    passeComponent.update(passeDO, userId);
+                } else {
+                    passeComponent.create(passeDO, userId);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+
+    private boolean passeExists(PasseDO passeDO) {
+        PasseDO existingPasseDO = passeComponent.findByPk(passeDO.getPasseWettkampfId(), passeDO.getPasseMatchNr(),
+                passeDO.getPasseMannschaftId(), passeDO.getPasseLfdnr(), passeDO.getPasseDsbMitgliedId());
+        return existingPasseDO != null;
     }
 
 

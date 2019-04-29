@@ -68,7 +68,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByWettkampfId(long wettkampfId) {
+    public List<PasseDO> findByWettkampfId(Long wettkampfId) {
         final List<PasseBE> passeBEList = passeDAO.findByWettkampfId(wettkampfId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -82,7 +82,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByTeamId(long teamId) {
+    public List<PasseDO> findByTeamId(Long teamId) {
         final List<PasseBE> passeBEList = passeDAO.findByTeamId(teamId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -96,7 +96,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByMemberId(long memberId) {
+    public List<PasseDO> findByMemberId(Long memberId) {
         final List<PasseBE> passeBEList = passeDAO.findByMemberId(memberId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -111,7 +111,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @return list of passe from one mitglied in a mannschaft ; empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByMemberMannschaftId(long dsbMemberId, long mannschaftId) {
+    public List<PasseDO> findByMemberMannschaftId(Long dsbMemberId, Long mannschaftId) {
         final List<PasseBE> passeBEList = passeDAO.findByMemberMannschaftId(dsbMemberId, mannschaftId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -126,7 +126,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @return list of passe from one mitglied in a mannschaft ; empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByMitgliedMatchId(long dsbMemberId, long matchId) {
+    public List<PasseDO> findByMitgliedMatchId(Long dsbMemberId, Long matchId) {
         final List<PasseBE> passeBEList = passeDAO.findByMitgliedMatchId(dsbMemberId, matchId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -141,7 +141,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @return list of passe from one mannschaft in a match; empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByMannschaftMatchId(long mannschaftId, long matchId) {
+    public List<PasseDO> findByMannschaftMatchId(Long mannschaftId, Long matchId) {
         final List<PasseBE> passeBEList = passeDAO.findByMannschaftMatchId(mannschaftId, matchId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -155,9 +155,15 @@ public class PasseComponentImpl implements PasseComponent {
      * @return list of passe from one mannschaft in a match; empty list, if no passe are found
      */
     @Override
-    public List<PasseDO> findByMatchId(long matchId) {
+    public List<PasseDO> findByMatchId(Long matchId) {
         final List<PasseBE> passeBEList = passeDAO.findByMatchId(matchId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+    }
+
+
+    public PasseDO findByPk(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
+        final PasseBE passeBE = passeDAO.findByPk(wettkampfId, matchNr, mannschaftId, passeLfdNr, dsbMitgliedId);
+        return PasseMapper.toPasseDO.apply(passeBE);
     }
 
 
@@ -194,7 +200,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @return persisted version of the passe
      */
     @Override
-    public PasseDO update(PasseDO passeDO, long currentMemberId) {
+    public PasseDO update(PasseDO passeDO, Long currentMemberId) {
         return null;
     }
 
@@ -206,7 +212,7 @@ public class PasseComponentImpl implements PasseComponent {
      * @param currentMemberId id of the member currently updating the passe
      */
     @Override
-    public void delete(PasseDO passeDO, long currentMemberId) {
+    public void delete(PasseDO passeDO, Long currentMemberId) {
 
     }
 }
