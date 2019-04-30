@@ -50,6 +50,7 @@ public class PasseDAO implements DataAccessObject {
     private static final String PASSE_TABLE_PFEIL_4 = "passe_ringzahl_pfeil4";
     private static final String PASSE_TABLE_PFEIL_5 = "passe_ringzahl_pfeil5";
     private static final String PASSE_TABLE_PFEIL_6 = "passe_ringzahl_pfeil6";
+    private static final String PASSE_TABLE_ID = "passe_id";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<PasseBE> PASSE = new BusinessEntityConfiguration<>(
@@ -275,7 +276,7 @@ public class PasseDAO implements DataAccessObject {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
 
 
-        return basicDao.updateEntity(PASSE, passeBE, "passe_mannschaft_id");
+        return basicDao.updateEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
 
 
@@ -287,6 +288,6 @@ public class PasseDAO implements DataAccessObject {
      */
     public void delete(PasseBE passeBE, long currentMemberId) {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
-
+        basicDao.deleteEntity(PASSE,passeBE,PASSE_TABLE_ID);
     }
 }

@@ -41,14 +41,14 @@ public class PasseComponentImplTest {
     private PasseComponentImpl underTest;
 
     @Captor
-    private ArgumentCaptor<PasseBE> ligaBEArgumentCaptor;
+    private ArgumentCaptor<PasseBE> passeBEArgumentCaptor;
 
-    private static final long PASSE_ID = 1;
+    private static final long PASSE_ID = 8;
     private static final long PASSE_MANNSCHAFT_ID = 1;
     private static final long PASSE_WETTKAMPF_ID = 1337;
     private static final long PASSE_LFDR_NR = 2;
-    private static final long PASSE_DSB_MITGLIED_ID = 1;
-    private static final long PASSE_MATCH_NR = 1;
+    private static final long PASSE_DSB_MITGLIED_ID = 98;
+    private static final long PASSE_MATCH_NR = 4;
     private static  final int PASSE_PFEIL_1 = 10;
     private static  final int PASSE_PFEIL_2 = 5;
     private static final OffsetDateTime offsetDateTime = null;
@@ -63,6 +63,7 @@ public class PasseComponentImplTest {
         final PasseBE expectedPasseBE = new PasseBE();
         expectedPasseBE.setId(PASSE_ID);
         expectedPasseBE.setPasseDsbMitgliedId(PASSE_DSB_MITGLIED_ID);
+        expectedPasseBE.setPasseWettkampfId(PASSE_WETTKAMPF_ID);
         expectedPasseBE.setPasseMannschaftId(PASSE_MANNSCHAFT_ID);
         expectedPasseBE.setPasseMatchNr(PASSE_MATCH_NR);
         expectedPasseBE.setPasseLfdnr(PASSE_LFDR_NR);
