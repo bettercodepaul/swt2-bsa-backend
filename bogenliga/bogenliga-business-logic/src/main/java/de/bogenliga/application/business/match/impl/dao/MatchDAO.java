@@ -94,14 +94,14 @@ public class MatchDAO implements DataAccessObject {
     private static final String FIND_BY_ID = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .where(MATCH_TABLE_ID)
+            .whereEquals(MATCH_TABLE_ID)
             .orderBy(MATCH_TABLE_ID)
             .compose().toString();
 
     private static final String FIND_BY_PK = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .where(MATCH_TABLE_NR)
+            .whereEquals(MATCH_TABLE_NR)
             .and(MATCH_TABLE_WETTKAMPF_ID)
             .and(MATCH_TABLE_MANNSCHAFT_ID)
             .and(MATCH_TABLE_BEGEGNUNG)
@@ -112,14 +112,14 @@ public class MatchDAO implements DataAccessObject {
     private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .where(MATCH_TABLE_MANNSCHAFT_ID)
+            .whereEquals(MATCH_TABLE_MANNSCHAFT_ID)
             .orderBy(MATCH_TABLE_ID)
             .compose().toString();
 
     private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .where(MATCH_TABLE_WETTKAMPF_ID)
+            .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
             .orderBy(MATCH_TABLE_ID)
             .compose().toString();
 
