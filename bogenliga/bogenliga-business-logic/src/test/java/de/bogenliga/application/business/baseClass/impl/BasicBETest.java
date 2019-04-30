@@ -26,18 +26,32 @@ public class BasicBETest<T extends BusinessEntity> {
     }
 
 
+    /**
+     * Helper method to test a list of entities containing one entitiy
+     * on null and empty, and calling assertEntity on the first entity
+     * @param bEntities the list of entities
+     */
     public void testMethod(List<T> bEntities) {
         assertList(bEntities);
         assertEntity(bEntities.get(0));
     }
 
 
+    /**
+     * Helper method to test an entity on equality to the expected value
+     * @param entity
+     */
     public void testMethod(T entity)
     {
         assertEntity(entity);
     }
 
 
+    /**
+     *
+     * @param entity an business entity of of which all fields with get methods should
+     *               contain the same value as the expectedBE
+     */
     public void assertEntity(T entity) {
         assertThat(expectedBE).isNotNull();
         try {
