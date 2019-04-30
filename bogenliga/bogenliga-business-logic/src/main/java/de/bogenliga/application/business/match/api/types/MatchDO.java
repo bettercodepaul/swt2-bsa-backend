@@ -11,7 +11,6 @@ public class MatchDO extends CommonDataObject {
 
     private Long nr;
     private Long id;
-    private Long version;
     private Long wettkampfId;
     private Long mannschaftId;
     private Long begegnung;
@@ -27,7 +26,6 @@ public class MatchDO extends CommonDataObject {
                    final Long lastModifiedByUserId, final Long version) {
         this.setId(id);
         this.setNr(nr);
-        this.setVersion(version);
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
         this.setBegegnung(begegnung);
@@ -73,16 +71,6 @@ public class MatchDO extends CommonDataObject {
 
     public void setNr(Long nr) {
         this.nr = nr;
-    }
-
-
-    public Long getVersion() {
-        return version;
-    }
-
-
-    public void setVersion(Long version) {
-        this.version = version;
     }
 
 

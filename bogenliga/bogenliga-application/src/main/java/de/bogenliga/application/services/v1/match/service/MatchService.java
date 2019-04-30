@@ -45,7 +45,7 @@ public class MatchService implements ServiceFacade {
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
     private static final String ERR_EQUAL_TEMPLATE = "MatchService: %s: %s must be equal.";
 
-    // a simple map mapping the dtos methods to related error messages
+    // a simple map mapping DTO's methods to related error messages
     // used in checkPreconditions
     private static final HashMap<String, String> conditionErrors = new HashMap<>();
     static {
@@ -58,6 +58,18 @@ public class MatchService implements ServiceFacade {
         conditionErrors.put("getWettkampfId", MatchComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
         conditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
+
+
+    private static final String SERVICE_FIND_BY_ID = "findById";
+    private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
+    private static final String SERVICE_SAVE_MATCHES = "saveMatches";
+    private static final String SERVICE_CREATE = "create";
+    private static final String SERVICE_UPDATE = "update";
+
+    private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
+    private static final String CHECKED_PARAM_MATCH_DTO_1 = "MatchDTO1";
+    private static final String CHECKED_PARAM_MATCH_DTO_2 = "MatchDTO2";
+
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -120,11 +132,11 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public MatchDTO findById(@PathVariable("id") Long matchId) {
-        Preconditions.checkArgument(matchId >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, "findById", "Match ID"));
-        Preconditions.checkNotNull(matchId, String.format(ERR_NOT_NULL_TEMPLATE, "findById", "Match ID"));
+        Preconditions.checkArgument(matchId >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkNotNull(matchId, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
 
         MatchDTO matchDTO = getMatchFromId(matchId, false);
-        this.log(matchDTO, "findById");
+        this.log(matchDTO, SERVICE_FIND_BY_ID);
         return matchDTO;
     }
 
@@ -143,18 +155,18 @@ public class MatchService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<MatchDTO> findMatchesByIds(@PathVariable("idm1") Long matchId1, @PathVariable("idm2") Long matchId2) {
         Preconditions.checkArgument(matchId1 >= 0,
-                String.format(ERR_NOT_NEGATIVE_TEMPLATE, "findMatchesByIds", "Match ID"));
-        Preconditions.checkNotNull(matchId1, String.format(ERR_NOT_NULL_TEMPLATE, "findMatchesByIds", "Match ID"));
+                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkNotNull(matchId1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
 
         Preconditions.checkArgument(matchId2 >= 0,
-                String.format(ERR_NOT_NEGATIVE_TEMPLATE, "findMatchesByIds", "Match ID"));
-        Preconditions.checkNotNull(matchId2, String.format(ERR_NOT_NULL_TEMPLATE, "findMatchesByIds", "Match ID"));
+                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkNotNull(matchId2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
 
         MatchDTO matchDTO1 = getMatchFromId(matchId1, true);
         MatchDTO matchDTO2 = getMatchFromId(matchId2, true);
 
-        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, "saveMatches", "MatchDTO1"));
-        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, "saveMatches", "MatchDTO2"));
+        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_1));
+        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_2));
         checkPreconditions(matchDTO1);
         checkPreconditions(matchDTO2);
 
@@ -162,8 +174,8 @@ public class MatchService implements ServiceFacade {
         matches.add(matchDTO1);
         matches.add(matchDTO2);
 
-        this.log(matchDTO1, "findMatchesByIds");
-        this.log(matchDTO2, "findMatchesByIds");
+        this.log(matchDTO1, SERVICE_FIND_MATCHES_BY_IDS);
+        this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
 
         return matches;
     }
@@ -181,20 +193,20 @@ public class MatchService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<MatchDTO> saveMatches(@RequestBody final MatchDTO matchDTO1, @RequestBody final MatchDTO matchDTO2,
                                       final Principal principal) {
-        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, "saveMatches", "MatchDTO1"));
-        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, "saveMatches", "MatchDTO2"));
+        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_1));
+        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_2));
         checkPreconditions(matchDTO1);
         checkPreconditions(matchDTO2);
 
         Preconditions.checkArgument(matchDTO1.getWettkampfId().equals(matchDTO2.getWettkampfId()),
-                String.format(ERR_EQUAL_TEMPLATE, "saveMatches", "WettkampfId"));
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
         Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
-                String.format(ERR_EQUAL_TEMPLATE, "saveMatches", "Begegnung"));
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Begegnung"));
         Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()),
-                String.format(ERR_EQUAL_TEMPLATE, "saveMatches", "Numbers"));
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Numbers"));
 
-        this.log(matchDTO1, "saveMatches");
-        this.log(matchDTO2, "saveMatches");
+        this.log(matchDTO1, SERVICE_SAVE_MATCHES);
+        this.log(matchDTO2, SERVICE_SAVE_MATCHES);
 
         final long userId = UserProvider.getCurrentUserId(principal);
 
@@ -240,7 +252,7 @@ public class MatchService implements ServiceFacade {
     public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) {
         checkPreconditions(matchDTO);
 
-        this.log(matchDTO, "create");
+        this.log(matchDTO, SERVICE_CREATE);
 
         final MatchDO newMatch = MatchDTOMapper.toDO.apply(matchDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -265,7 +277,7 @@ public class MatchService implements ServiceFacade {
     public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) {
         checkPreconditions(matchDTO);
 
-        this.log(matchDTO, "update");
+        this.log(matchDTO, SERVICE_UPDATE);
 
         final MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -279,13 +291,13 @@ public class MatchService implements ServiceFacade {
      * Logs received data when request arrives
      *
      * @param matchDTO
-     * @param logType: type of log: delete, create, update, ...
+     * @param fromService: name of the service the log came from
      */
-    private void log(MatchDTO matchDTO, String logType) {
+    private void log(MatchDTO matchDTO, String fromService) {
         LOG.debug(
                 "Received '{}' request for match with id: '{}', WettkampfID: '{}', Begegnung: '{}', MannschaftId: '{}'," +
                         " ScheibenNummer: '{}', Satzpunkte: '{}', Matchpunkte: '{}'",
-                logType,
+                fromService,
                 matchDTO.getId(),
                 matchDTO.getWettkampfId(),
                 matchDTO.getBegegnung(),
