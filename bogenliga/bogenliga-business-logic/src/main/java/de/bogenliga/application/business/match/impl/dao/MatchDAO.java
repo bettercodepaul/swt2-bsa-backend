@@ -102,10 +102,10 @@ public class MatchDAO implements DataAccessObject {
             .selectAll()
             .from(TABLE)
             .whereEquals(MATCH_TABLE_NR)
-            .and(MATCH_TABLE_WETTKAMPF_ID)
-            .and(MATCH_TABLE_MANNSCHAFT_ID)
-            .and(MATCH_TABLE_BEGEGNUNG)
-            .and(MATCH_TABLE_SCHEIBENNUMMER)
+            .andEquals(MATCH_TABLE_WETTKAMPF_ID)
+            .andEquals(MATCH_TABLE_MANNSCHAFT_ID)
+            .andEquals(MATCH_TABLE_BEGEGNUNG)
+            .andEquals(MATCH_TABLE_SCHEIBENNUMMER)
             .orderBy(MATCH_TABLE_NR)
             .compose().toString();
 
@@ -188,8 +188,7 @@ public class MatchDAO implements DataAccessObject {
      * @param matchBE
      * @param currentUserId
      *
-     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
-     * and  entities
+     * @return Business Entity corresponding to the created match entry
      */
     public MatchBE create(final MatchBE matchBE, final Long currentUserId) {
         basicDao.setCreationAttributes(matchBE, currentUserId);
