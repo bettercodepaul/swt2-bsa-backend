@@ -222,7 +222,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMemberId(long dsbMitgliedId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID,dsbMitgliedId);
     }
 
 
@@ -248,7 +248,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMitgliedMatchId(long dsbMitgliedId, long matchId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID,dsbMitgliedId, matchId);
     }
 
 
@@ -260,7 +260,7 @@ public class PasseDAO implements DataAccessObject {
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
     public List<PasseBE> findByMatchId(long matchId) {
-        return basicDao.selectEntityList(PASSE, FIND_BY_MATCH_ID);
+        return basicDao.selectEntityList(PASSE, FIND_BY_MATCH_ID, matchId);
     }
 
 
