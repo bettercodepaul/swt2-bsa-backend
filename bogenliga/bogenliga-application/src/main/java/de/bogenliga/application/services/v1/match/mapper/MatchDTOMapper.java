@@ -13,6 +13,12 @@ import de.bogenliga.application.services.v1.passe.model.PasseDTO;
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
 public class MatchDTOMapper implements DataTransferObjectMapper {
+
+    /**
+     * Empty hidden constructor to prevent instantiation
+     */
+    private MatchDTOMapper () {}
+
     /**
      * I map the {@link ConfigurationDO} object to the {@link ConfigurationDTO} object
      */

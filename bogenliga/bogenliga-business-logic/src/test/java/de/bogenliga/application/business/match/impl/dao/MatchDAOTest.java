@@ -5,13 +5,9 @@ import java.util.List;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
-import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.entity.BusinessEntity;
-import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +23,7 @@ public class MatchDAOTest extends BaseMatchTest {
     private MatchDAO underTest;
 
 
-    private void validateObjectList (List<MatchBE> actual) {
+    private void validateObjectList(List<MatchBE> actual) {
         assertThat(actual)
                 .isNotNull()
                 .isNotEmpty()
