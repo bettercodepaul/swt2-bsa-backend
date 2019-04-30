@@ -85,39 +85,43 @@ public class MatchDAO implements DataAccessObject {
     /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " ORDER BY " + MATCH_TABLE_ID;
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(MATCH_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + MATCH_TABLE_ID
-                    + "=?"
-                    + " ORDER BY " + MATCH_TABLE_ID;
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .where(MATCH_TABLE_ID)
+            .orderBy(MATCH_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_PK =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + MATCH_TABLE_NR + "=?"
-                    + " AND " + MATCH_TABLE_WETTKAMPF_ID + "=?"
-                    + " AND " + MATCH_TABLE_MANNSCHAFT_ID + "=?"
-                    + " AND " + MATCH_TABLE_BEGEGNUNG + "=?"
-                    + " AND " + MATCH_TABLE_SCHEIBENNUMMER + "=?"
-                    + " ORDER BY " + MATCH_TABLE_NR;
+    private static final String FIND_BY_PK = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .where(MATCH_TABLE_NR)
+            .and(MATCH_TABLE_WETTKAMPF_ID)
+            .and(MATCH_TABLE_MANNSCHAFT_ID)
+            .and(MATCH_TABLE_BEGEGNUNG)
+            .and(MATCH_TABLE_SCHEIBENNUMMER)
+            .orderBy(MATCH_TABLE_NR)
+            .compose().toString();
 
-    private static final String FIND_BY_MANNSCHAFT_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + MATCH_TABLE_MANNSCHAFT_ID
-                    + "=?";
+    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .where(MATCH_TABLE_MANNSCHAFT_ID)
+            .orderBy(MATCH_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_WETTKAMPF_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + MATCH_TABLE_WETTKAMPF_ID
-                    + "=?";
+    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .where(MATCH_TABLE_WETTKAMPF_ID)
+            .orderBy(MATCH_TABLE_ID)
+            .compose().toString();
 
 
     /**
