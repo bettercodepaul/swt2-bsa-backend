@@ -37,7 +37,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/match")
+@RequestMapping("v1/match/")
 public class MatchService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(MatchService.class);
 
