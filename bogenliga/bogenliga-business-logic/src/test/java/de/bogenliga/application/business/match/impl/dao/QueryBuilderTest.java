@@ -23,6 +23,54 @@ public class QueryBuilderTest {
 
 
     @Test
+    public void testEmptyStrings() {
+        this.queryBuilder.selectAll();
+        assertThatThrownBy(() -> {
+            this.queryBuilder.from("");
+        }).isInstanceOf(BusinessException.class);
+        this.queryBuilder.from(TABLE_NAME);
+        assertThatThrownBy(() -> {
+            this.queryBuilder.whereEquals("");
+        }).isInstanceOf(BusinessException.class);
+        this.queryBuilder.whereEquals(DEFAULT_FIELD);
+        this.queryBuilder.compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+    }
+
+
+    @Test
+    public void testQueryDependencies() {
+        assertThatThrownBy(() -> {
+            this.queryBuilder.from(TABLE_NAME);
+        }).isInstanceOf(BusinessException.class);
+
+        this.queryBuilder.selectAll();
+
+        assertThatThrownBy(() -> {
+            this.queryBuilder.whereEquals(DEFAULT_FIELD);
+        }).isInstanceOf(BusinessException.class);
+
+        this.queryBuilder.from(TABLE_NAME);
+
+        assertThatThrownBy(() -> {
+            this.queryBuilder.andEquals(DEFAULT_FIELD);
+        }).isInstanceOf(BusinessException.class);
+
+        this.queryBuilder.whereEquals(DEFAULT_FIELD);
+
+        this.queryBuilder.compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+    }
+
+    @Test
     public void testDuplicateWhereClause() {
         this.queryBuilder.selectAll().from(TABLE_NAME).whereEquals(DEFAULT_FIELD);
         assertThatThrownBy(() -> {
@@ -133,7 +181,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_EQUAL_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_EQUAL_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -145,7 +193,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_GT_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_GT_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -157,7 +205,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_GTE_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_GTE_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -169,7 +217,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_LT_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_LT_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -181,7 +229,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_LTE_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_LTE_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -193,7 +241,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_EQUAL_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_EQUAL_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -205,7 +253,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_GT_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_GT_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -217,7 +265,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_GTE_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_GTE_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -229,7 +277,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_LT_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_LT_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -241,7 +289,7 @@ public class QueryBuilderTest {
         String builtQuery = this.queryBuilder.toString();
         assertThat(builtQuery).contains(TABLE_NAME);
         assertThat(builtQuery).contains(DEFAULT_FIELD);
-        assertThat(builtQuery).contains(QueryBuilder.SQL_VALUE_LTE_PLACEHOLDER);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_LTE_COMPARATOR);
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
     }
@@ -282,10 +330,5 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_ORDER_DESC.trim());
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL);
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR);
-    }
-
-
-    @Test
-    public void compose() {
     }
 }
