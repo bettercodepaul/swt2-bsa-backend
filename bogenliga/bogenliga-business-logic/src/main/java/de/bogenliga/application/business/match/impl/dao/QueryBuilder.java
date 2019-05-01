@@ -10,10 +10,16 @@ import de.bogenliga.application.common.validation.Preconditions;
  * <br>
  * - prefer a readable and easy-to-use way to build your queries
  * <br>
- * Does support: Simple, non-nested queries for a single table with currently no individual field selection.
+ * Does support:
+ * Simple, non-nested queries for a single table.
+ * Has some rough validation for the querystring and the sequence the query methods are called.
  * <br>
- * Usage e.g.: new QueryBuilder() .selectAll() .from(TABLE) .where(FIELD) .orderBy(ANOTHER_FIELD)
- * .compose().toString();
+ * Usage e.g.: new QueryBuilder()
+ *                      .selectAll()
+ *                      .from(TABLE)
+ *                      .whereEquals(FIELD)
+ *                      .orderByAsc(ANOTHER_FIELD)
+ *                      .compose().toString();
  * <br> TODO: add support for IN and nested Selects? e.g. ... .whereIn(new QueryBuilder().selectFields()....)
  * </p>
  *
@@ -242,6 +248,11 @@ public class QueryBuilder {
     }
 
 
+    private void ensureComposed() {
+        Preconditions.checkArgument(this.queryString.contains(SQL_QUERY_TERMINATOR), SQL_ERROR_ALREADY_COMPOSED);
+    }
+
+
     private void ensureValidString(String value) {
         Preconditions.checkArgument(value != null, SQL_ERROR_VALUE_EMPTY);
         Preconditions.checkArgument(value.length() > 0, SQL_ERROR_VALUE_EMPTY);
@@ -253,6 +264,7 @@ public class QueryBuilder {
      */
 
     public QueryBuilder compose() {
+        this.ensureNotComposed();
         this.ensureSelect();
         this.ensureFrom();
 
@@ -274,7 +286,7 @@ public class QueryBuilder {
 
 
     public String toString() {
-        Preconditions.checkArgument(this.queryString.contains(SQL_QUERY_TERMINATOR), SQL_ERROR_NOT_COMPOSED);
+        this.ensureComposed();
 
         return this.queryString;
     }
