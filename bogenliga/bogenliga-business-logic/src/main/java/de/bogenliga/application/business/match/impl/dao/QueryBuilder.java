@@ -12,18 +12,16 @@ import de.bogenliga.application.common.validation.Preconditions;
  * <br>
  * Does support: Simple, non-nested queries for a single table with currently no individual field selection.
  * <br>
- *     Usage e.g.: new QueryBuilder()
-*                      .selectAll()
-*                      .from(TABLE)
-*                      .where(FIELD)
-*                      .orderBy(ANOTHER_FIELD)
-*                      .compose().toString();
+ * Usage e.g.: new QueryBuilder() .selectAll() .from(TABLE) .where(FIELD) .orderBy(ANOTHER_FIELD)
+ * .compose().toString();
+ * <br> TODO: add support for IN and nested Selects? e.g. ... .whereIn(new QueryBuilder().selectFields()....)
  * </p>
  *
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
 public class QueryBuilder {
 
+    // Statements/Clauses
     public static final String SQL_SELECT = "SELECT ";
     public static final String SQL_SELECT_ALL = SQL_SELECT + "* ";
     public static final String SQL_FROM = " FROM ";
@@ -32,20 +30,24 @@ public class QueryBuilder {
     public static final String SQL_ORDER_BY = " ORDER BY ";
     public static final String SQL_ORDER_ASC = " ASC ";
     public static final String SQL_ORDER_DESC = " DESC ";
-    public static final String SQL_VALUE_EQUAL_PLACEHOLDER = "=? ";
-    public static final String SQL_VALUE_GT_PLACEHOLDER = ">? ";
-    public static final String SQL_VALUE_GTE_PLACEHOLDER = ">=? ";
-    public static final String SQL_VALUE_LT_PLACEHOLDER = "<? ";
-    public static final String SQL_VALUE_LTE_PLACEHOLDER = "<=? ";
+
+    // Comparators
+    public static final String SQL_EQUAL_COMPARATOR = "=? ";
+    public static final String SQL_GT_COMPARATOR = ">? ";
+    public static final String SQL_GTE_COMPARATOR = ">=? ";
+    public static final String SQL_LT_COMPARATOR = "<? ";
+    public static final String SQL_LTE_COMPARATOR = "<=? ";
 
     public static final String SQL_QUERY_TERMINATOR = ";";
     public static final String SQL_FIELD_SEPARATOR = ", ";
 
+    // Validation/Error Messages
+    private static final String SQL_ERROR_NO_SELECT = "QueryString has no SELECT clause!";
     private static final String SQL_ERROR_NOT_COMPOSED = "QueryString must be composed before usage!";
+    private static final String SQL_ERROR_ALREADY_COMPOSED = "QueryString cannot be modified after composing!";
     private static final String SQL_ERROR_NO_FROM_SELECTION = "QueryString must have a table to select from!";
     private static final String SQL_ERROR_AND_WITHOUT_WHERE = "QueryString must have a WHERE clause in order to have an AND clause!";
-    private static final String SQL_ERROR_FIELD_NAME_EMPTY = "Given field name must not be empty!";
-    private static final String SQL_ERROR_TABLE_NAME_EMPTY = "Given table name must not be empty!";
+    private static final String SQL_ERROR_VALUE_EMPTY = "Given query value must not be empty!";
     private static final String SQL_ERROR_DUPLICATE_WHERE = "QueryString must not already contain a WHERE clause!";
     private static final String SQL_ERROR_DUPLICATE_FROM = "QueryString must not already contain a FROM clause!";
 
@@ -82,8 +84,10 @@ public class QueryBuilder {
 
 
     public QueryBuilder from(final String tableName) {
+        this.ensureSelect();
+        this.ensureNotComposed();
         Preconditions.checkArgument(!this.queryString.contains(SQL_FROM), SQL_ERROR_DUPLICATE_FROM);
-        Preconditions.checkArgument(tableName.length() > 0, SQL_ERROR_TABLE_NAME_EMPTY);
+        this.ensureValidString(tableName);
 
         this.queryString += SQL_FROM + tableName;
         return this;
@@ -102,37 +106,40 @@ public class QueryBuilder {
 
 
     private void validateWhere(String fieldName) {
+        this.ensureSelect();
+        this.ensureFrom();
+        this.ensureNotComposed();
         Preconditions.checkArgument(!this.queryString.contains(SQL_WHERE), SQL_ERROR_DUPLICATE_WHERE);
-        Preconditions.checkArgument(fieldName.length() > 0, SQL_ERROR_FIELD_NAME_EMPTY);
+        this.ensureValidString(fieldName);
     }
 
 
     public QueryBuilder whereEquals(final String fieldName) {
-        this.addWhere(fieldName, SQL_VALUE_EQUAL_PLACEHOLDER);
+        this.addWhere(fieldName, SQL_EQUAL_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder whereGt(final String fieldName) {
-        this.addWhere(fieldName, SQL_VALUE_GT_PLACEHOLDER);
+        this.addWhere(fieldName, SQL_GT_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder whereGte(final String fieldName) {
-        this.addWhere(fieldName, SQL_VALUE_GTE_PLACEHOLDER);
+        this.addWhere(fieldName, SQL_GTE_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder whereLt(final String fieldName) {
-        this.addWhere(fieldName, SQL_VALUE_LT_PLACEHOLDER);
+        this.addWhere(fieldName, SQL_LT_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder whereLte(final String fieldName) {
-        this.addWhere(fieldName, SQL_VALUE_LTE_PLACEHOLDER);
+        this.addWhere(fieldName, SQL_LTE_COMPARATOR);
         return this;
     }
 
@@ -144,7 +151,10 @@ public class QueryBuilder {
      */
 
     private void addAnd(String fieldName, String comparator) {
-        Preconditions.checkArgument(fieldName.length() > 0, SQL_ERROR_FIELD_NAME_EMPTY);
+        this.ensureSelect();
+        this.ensureFrom();
+        this.ensureNotComposed();
+        this.ensureValidString(fieldName);
         Preconditions.checkArgument(this.queryString.contains(SQL_WHERE), SQL_ERROR_AND_WITHOUT_WHERE);
 
         this.queryString += SQL_AND + fieldName + comparator;
@@ -152,31 +162,31 @@ public class QueryBuilder {
 
 
     public QueryBuilder andEquals(final String fieldName) {
-        addAnd(fieldName, SQL_VALUE_EQUAL_PLACEHOLDER);
+        addAnd(fieldName, SQL_EQUAL_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder andGt(final String fieldName) {
-        addAnd(fieldName, SQL_VALUE_GT_PLACEHOLDER);
+        addAnd(fieldName, SQL_GT_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder andGte(final String fieldName) {
-        addAnd(fieldName, SQL_VALUE_GTE_PLACEHOLDER);
+        addAnd(fieldName, SQL_GTE_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder andLt(final String fieldName) {
-        addAnd(fieldName, SQL_VALUE_LT_PLACEHOLDER);
+        addAnd(fieldName, SQL_LT_COMPARATOR);
         return this;
     }
 
 
     public QueryBuilder andLte(final String fieldName) {
-        addAnd(fieldName, SQL_VALUE_LTE_PLACEHOLDER);
+        addAnd(fieldName, SQL_LTE_COMPARATOR);
         return this;
     }
 
@@ -186,7 +196,10 @@ public class QueryBuilder {
      */
 
     private void addOrdering(final String fieldName, final String ordering) {
-        Preconditions.checkArgument(fieldName.length() > 0, SQL_ERROR_FIELD_NAME_EMPTY);
+        this.ensureSelect();
+        this.ensureFrom();
+        this.ensureNotComposed();
+        this.ensureValidString(fieldName);
 
         this.queryString += SQL_ORDER_BY + fieldName + ordering;
     }
@@ -210,16 +223,42 @@ public class QueryBuilder {
     }
 
 
-    public QueryBuilder compose() {
-        this.ensureFrom();
-        this.terminateQuery();
-        this.formatQueryString();
-        return this;
+    /**
+     * General validations
+     */
+
+    private void ensureSelect() {
+        Preconditions.checkArgument(this.queryString.contains(SQL_SELECT), SQL_ERROR_NO_SELECT);
     }
 
 
     private void ensureFrom() {
         Preconditions.checkArgument(this.queryString.contains(SQL_FROM), SQL_ERROR_NO_FROM_SELECTION);
+    }
+
+
+    private void ensureNotComposed() {
+        Preconditions.checkArgument(!this.queryString.contains(SQL_QUERY_TERMINATOR), SQL_ERROR_ALREADY_COMPOSED);
+    }
+
+
+    private void ensureValidString(String value) {
+        Preconditions.checkArgument(value != null, SQL_ERROR_VALUE_EMPTY);
+        Preconditions.checkArgument(value.length() > 0, SQL_ERROR_VALUE_EMPTY);
+    }
+
+
+    /**
+     * Query composition
+     */
+
+    public QueryBuilder compose() {
+        this.ensureSelect();
+        this.ensureFrom();
+
+        this.terminateQuery();
+        this.formatQueryString();
+        return this;
     }
 
 
