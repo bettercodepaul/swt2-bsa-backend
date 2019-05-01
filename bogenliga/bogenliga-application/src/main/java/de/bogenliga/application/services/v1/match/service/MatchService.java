@@ -86,6 +86,157 @@ public class MatchService implements ServiceFacade {
     }
 
 
+    @RequestMapping(value = "{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public MatchDTO findById(@PathVariable("id") Long matchId) {
+        Preconditions.checkArgument(matchId >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkNotNull(matchId, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
+
+        MatchDTO matchDTO = getMatchFromId(matchId, false);
+        this.log(matchDTO, SERVICE_FIND_BY_ID);
+        return matchDTO;
+    }
+
+
+    /**
+     * There are always 2 matches on a schusszettel form
+     *
+     * @param matchId1
+     * @param matchId2
+     *
+     * @return
+     */
+    @RequestMapping(value = "schusszettel/{idm1}/{idm2}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public List<MatchDTO> findMatchesByIds(@PathVariable("idm1") Long matchId1, @PathVariable("idm2") Long matchId2) {
+        this.checkMatchId(matchId1);
+        this.checkMatchId(matchId2);
+
+        MatchDTO matchDTO1 = getMatchFromId(matchId1, true);
+        MatchDTO matchDTO2 = getMatchFromId(matchId2, true);
+
+        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_1));
+        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_2));
+        checkPreconditions(matchDTO1);
+        checkPreconditions(matchDTO2);
+
+        List<MatchDTO> matches = new ArrayList<>();
+        matches.add(matchDTO1);
+        matches.add(matchDTO2);
+
+        this.log(matchDTO1, SERVICE_FIND_MATCHES_BY_IDS);
+        this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
+
+        return matches;
+    }
+
+
+    /**
+     * @param matchDTO1
+     * @param matchDTO2
+     *
+     * @return
+     */
+    @RequestMapping(value = "schusszettel",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public List<MatchDTO> saveMatches(@RequestBody final MatchDTO matchDTO1, @RequestBody final MatchDTO matchDTO2,
+                                      final Principal principal) {
+        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_1));
+        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_2));
+        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "principal"));
+        checkPreconditions(matchDTO1);
+        checkPreconditions(matchDTO2);
+
+        Preconditions.checkArgument(matchDTO1.getWettkampfId().equals(matchDTO2.getWettkampfId()),
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
+        Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Begegnung"));
+        Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()),
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Numbers"));
+
+        this.log(matchDTO1, SERVICE_SAVE_MATCHES);
+        this.log(matchDTO2, SERVICE_SAVE_MATCHES);
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        List<MatchDTO> matches = new ArrayList<>();
+        matches.add(matchDTO1);
+        matches.add(matchDTO2);
+
+        for (MatchDTO matchDTO : matches) {
+            MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
+            matchComponent.update(matchDO, userId);
+            for (PasseDTO passeDTO : matchDTO.getPassen()) {
+                PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
+                if (passeExists(passeDO)) {
+                    passeComponent.update(passeDO, userId);
+                } else {
+                    passeComponent.create(passeDO, userId);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+
+    /**
+     * create-Method() writes a new entry of match into the database
+     *
+     * @param matchDTO
+     *
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) {
+        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, "principal"));
+        checkPreconditions(matchDTO);
+
+        this.log(matchDTO, SERVICE_CREATE);
+
+        final MatchDO newMatch = MatchDTOMapper.toDO.apply(matchDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final MatchDO savedNewMatch = matchComponent.create(newMatch, userId);
+        return MatchDTOMapper.toDTO.apply(savedNewMatch);
+    }
+
+
+    /**
+     * Update-Method changes the chosen match entry in the Database
+     *
+     * @param matchDTO
+     * @param principal
+     *
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) {
+        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, "principal"));
+        checkPreconditions(matchDTO);
+
+        this.log(matchDTO, SERVICE_UPDATE);
+
+        final MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final MatchDO updatedMatchDO = matchComponent.update(matchDO, userId);
+        return MatchDTOMapper.toDTO.apply(updatedMatchDO);
+    }
+
+
     /**
      * A generic way to validate the getter results of each matchDTO method.
      *
@@ -127,107 +278,10 @@ public class MatchService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
-    public MatchDTO findById(@PathVariable("id") Long matchId) {
-        Preconditions.checkArgument(matchId >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
-        Preconditions.checkNotNull(matchId, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
-
-        MatchDTO matchDTO = getMatchFromId(matchId, false);
-        this.log(matchDTO, SERVICE_FIND_BY_ID);
-        return matchDTO;
-    }
-
-
-    /**
-     * There are always 2 matches on a schusszettel form
-     *
-     * @param matchId1
-     * @param matchId2
-     *
-     * @return
-     */
-    @RequestMapping(value = "schusszettel/{idm1}/{idm2}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
-    public List<MatchDTO> findMatchesByIds(@PathVariable("idm1") Long matchId1, @PathVariable("idm2") Long matchId2) {
-        Preconditions.checkArgument(matchId1 >= 0,
+    private void checkMatchId (Long matchId) {
+        Preconditions.checkNotNull(matchId, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkArgument(matchId >= 0,
                 String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
-        Preconditions.checkNotNull(matchId1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
-
-        Preconditions.checkArgument(matchId2 >= 0,
-                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
-        Preconditions.checkNotNull(matchId2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
-
-        MatchDTO matchDTO1 = getMatchFromId(matchId1, true);
-        MatchDTO matchDTO2 = getMatchFromId(matchId2, true);
-
-        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_1));
-        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_2));
-        checkPreconditions(matchDTO1);
-        checkPreconditions(matchDTO2);
-
-        List<MatchDTO> matches = new ArrayList<>();
-        matches.add(matchDTO1);
-        matches.add(matchDTO2);
-
-        this.log(matchDTO1, SERVICE_FIND_MATCHES_BY_IDS);
-        this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
-
-        return matches;
-    }
-
-
-    /**
-     * @param matchDTO1
-     * @param matchDTO2
-     *
-     * @return
-     */
-    @RequestMapping(value = "schusszettel",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
-    public List<MatchDTO> saveMatches(@RequestBody final MatchDTO matchDTO1, @RequestBody final MatchDTO matchDTO2,
-                                      final Principal principal) {
-        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_1));
-        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_2));
-        checkPreconditions(matchDTO1);
-        checkPreconditions(matchDTO2);
-
-        Preconditions.checkArgument(matchDTO1.getWettkampfId().equals(matchDTO2.getWettkampfId()),
-                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
-        Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
-                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Begegnung"));
-        Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()),
-                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Numbers"));
-
-        this.log(matchDTO1, SERVICE_SAVE_MATCHES);
-        this.log(matchDTO2, SERVICE_SAVE_MATCHES);
-
-        final long userId = UserProvider.getCurrentUserId(principal);
-
-        List<MatchDTO> matches = new ArrayList<>();
-        matches.add(matchDTO1);
-        matches.add(matchDTO2);
-
-        for (MatchDTO matchDTO : matches) {
-            MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
-            matchComponent.update(matchDO, userId);
-            for (PasseDTO passeDTO : matchDTO.getPassen()) {
-                PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
-                if (passeExists(passeDO)) {
-                    passeComponent.update(passeDO, userId);
-                } else {
-                    passeComponent.create(passeDO, userId);
-                }
-            }
-        }
-
-        return matches;
     }
 
 
@@ -235,55 +289,6 @@ public class MatchService implements ServiceFacade {
         PasseDO existingPasseDO = passeComponent.findByPk(passeDO.getPasseWettkampfId(), passeDO.getPasseMatchNr(),
                 passeDO.getPasseMannschaftId(), passeDO.getPasseLfdnr(), passeDO.getPasseDsbMitgliedId());
         return existingPasseDO != null;
-    }
-
-
-    /**
-     * create-Method() writes a new entry of match into the database
-     *
-     * @param matchDTO
-     *
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) {
-        checkPreconditions(matchDTO);
-
-        this.log(matchDTO, SERVICE_CREATE);
-
-        final MatchDO newMatch = MatchDTOMapper.toDO.apply(matchDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
-
-        final MatchDO savedNewMatch = matchComponent.create(newMatch, userId);
-        return MatchDTOMapper.toDTO.apply(savedNewMatch);
-    }
-
-
-    /**
-     * Update-Method changes the chosen match entry in the Database
-     *
-     * @param matchDTO
-     * @param principal
-     *
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) {
-        checkPreconditions(matchDTO);
-
-        this.log(matchDTO, SERVICE_UPDATE);
-
-        final MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
-
-        final MatchDO updatedMatchDO = matchComponent.update(matchDO, userId);
-        return MatchDTOMapper.toDTO.apply(updatedMatchDO);
     }
 
 
