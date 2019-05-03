@@ -16,6 +16,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  *
  * Best practice:
  * Define constants for your table column names and required aliases and use them in the query builder api. -> DRY!
+ * If you don't know how something works, check out the QueryBuilderTest. Some common cases are shown there.
  *
  * <br>
  * Usage e.g.: new QueryBuilder()
@@ -34,19 +35,8 @@ import de.bogenliga.application.common.validation.Preconditions;
  *                 .compose().toString()
  *
  * <br> <p>TODO: add support for:</p>
- *     -    single field select (new QueryBuilder().selectField(String field).from[...])                                   Y
- *     -    IN e.g. [...].whereIn(field).andIn(field)                                                                      Y
- *     -    nested Selects e.g.                                                                                            Y
- *     -    *   [...].whereIn(field, new QueryBuilder().selectField().[...])                                               Y
- *     -    *   [...].whereEquals(field, new QueryBuilder().selectField().[...])                                           Y
- *     -    joins                                                                                                          Y
- *     -    functions (e.g. static QueryBuilder.applyFunction(String, function, String field) -> String)                   Y
- *     -    table aliases                                                                                                  Y
- *     -    multi table selection (SELECT [...] FROM tablenameA, tablenameB WHERE [...])                                   Y
  *     -    explicit table names in fields (SELECT tablenameA.field, tablenameB.field FROM [...]) for each method          X
  *     -    comparators etc. for fields of diff tables (WHERE tablenameA.field=tablenameB.field)                           X
- *     -    whereEquals with fixed value (e.g. [...].whereEquals(field, value) -> "[...]WHERE field='Fixed value'[...]")   Y
- *     -    whereTrue (e.g. whereTrue(field) -> "[...]WHERE field=true[...]")                                              Y
  * </p>
  *
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
