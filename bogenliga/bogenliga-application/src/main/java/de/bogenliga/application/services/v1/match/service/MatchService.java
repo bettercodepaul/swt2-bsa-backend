@@ -69,6 +69,7 @@ public class MatchService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String CHECKED_PARAM_MATCH_DTO_1 = "MatchDTO1";
     private static final String CHECKED_PARAM_MATCH_DTO_2 = "MatchDTO2";
+    private static final String CHECKED_PARAM_PRINCIPAL = "principal";
 
 
     private final MatchComponent matchComponent;
@@ -149,7 +150,7 @@ public class MatchService implements ServiceFacade {
                                       final Principal principal) {
         Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_1));
         Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_2));
-        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "principal"));
+        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO1);
         checkPreconditions(matchDTO2);
 
@@ -198,7 +199,7 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) {
-        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, "principal"));
+        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO);
 
         this.log(matchDTO, SERVICE_CREATE);
@@ -224,7 +225,7 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) {
-        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, "principal"));
+        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO);
 
         this.log(matchDTO, SERVICE_UPDATE);
