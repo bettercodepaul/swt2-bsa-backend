@@ -21,6 +21,8 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     private Long veranstaltungSportJahr;
     private Date veranstaltungMeldeDeadline;
     private Long veranstaltungLigaleiterID;
+    private String veranstaltungLigaleiterEmail;
+    private String veranstaltungWettkampftypName;
 
 
     /**
@@ -42,7 +44,9 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                            final Date meldeDeadline,
                            final Long ligaleiterID, final OffsetDateTime createdAtUtc, final Long createdByUserId,
                            final OffsetDateTime lastModifiedAtUtc,
-                           final Long lastModifiedByUserId, final Long version) {
+                           final Long lastModifiedByUserId, final Long version,
+                           final String veranstaltungLigaleiterEmail,
+                           final String veranstaltungWettkampftypName) {
 
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
@@ -55,6 +59,8 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
+        this.veranstaltungLigaleiterEmail = veranstaltungLigaleiterEmail;
+        this.veranstaltungWettkampftypName = veranstaltungWettkampftypName;
     }
 
 
@@ -205,5 +211,25 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+
+    public String getVeranstaltungLigaleiterEmail() {
+        return veranstaltungLigaleiterEmail;
+    }
+
+
+    public void setVeranstaltungLigaleiterEmail(String veranstaltungligaLeiterEmail) {
+        this.veranstaltungLigaleiterEmail = veranstaltungLigaleiterEmail;
+    }
+
+
+    public String getVeranstaltungWettkampftypName() {
+        return veranstaltungWettkampftypName;
+    }
+
+
+    public void setVeranstaltungWettkampftypName(String veranstaltungWettkampftypName) {
+        this.veranstaltungWettkampftypName = veranstaltungWettkampftypName;
     }
 }
