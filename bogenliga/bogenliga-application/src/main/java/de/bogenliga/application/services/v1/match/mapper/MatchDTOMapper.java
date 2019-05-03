@@ -1,23 +1,32 @@
 package de.bogenliga.application.services.v1.match.mapper;
 
+import java.util.ArrayList;
 import java.util.function.Function;
 import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
+import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 
 /**
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
 public class MatchDTOMapper implements DataTransferObjectMapper {
+
+    /**
+     * Empty hidden constructor to prevent instantiation
+     */
+    private MatchDTOMapper () {}
+
     /**
      * I map the {@link ConfigurationDO} object to the {@link ConfigurationDTO} object
      */
     public static final Function<MatchDO, MatchDTO> toDTO = matchDO -> new MatchDTO(
             matchDO.getId(), matchDO.getNr(), matchDO.getVersion(), matchDO.getWettkampfId(),
             matchDO.getMannschaftId(), matchDO.getBegegnung(), matchDO.getScheibenNummer(),
-            matchDO.getMatchpunkte(), matchDO.getSatzpunkte(), null // TODO: prefill with related passen?
+            matchDO.getMatchpunkte(), matchDO.getSatzpunkte(),
+            new ArrayList<PasseDTO>() // init empty, filled when required
     );
 
     /**

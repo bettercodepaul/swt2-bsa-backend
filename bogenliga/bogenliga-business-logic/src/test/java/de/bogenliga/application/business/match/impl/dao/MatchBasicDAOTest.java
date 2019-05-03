@@ -8,10 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.baseClass.impl.BasicBETest;
-import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
+import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static de.bogenliga.application.business.match.impl.business.MatchComponentImplTest.getMatchBE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -20,14 +19,12 @@ import static org.mockito.Mockito.*;
  *
  * @author Kay Scheerer
  */
-public class MatchBasicDAOTest {
+public class MatchBasicDAOTest extends BaseMatchTest {
 
 
     @InjectMocks
     private MatchDAO underTest;
 
-    @Mock
-    private MatchComponentImpl underTest;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

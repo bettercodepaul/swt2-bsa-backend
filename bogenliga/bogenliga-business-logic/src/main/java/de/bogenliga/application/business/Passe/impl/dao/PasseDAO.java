@@ -281,17 +281,20 @@ public class PasseDAO implements DataAccessObject {
 
 
     /**
+     * Create a new passe entry
      *
-     * @param passeBE passe to be created
-     * @param currentKampfrichterUserId current user
+     * @param passeBE
+     * @param currentKampfrichterUserId
      *
-     * @return Business Entity of a Passe
+     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
+     * and  entities
      */
     public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
         return basicDao.insertEntity(PASSE, passeBE);
     }
+
     /**
      *
      * @param passeBE current passe being updated
@@ -300,18 +303,14 @@ public class PasseDAO implements DataAccessObject {
      * @return Business Entity from Passe
      */
     public PasseBE update(final PasseBE passeBE, final long currentKampfrichterUserId) {
-        basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
+        basicDao.setModificationAttributes(passeBE, currentKampfrichterUserId);
 
-        return basicDao.updateEntity(PASSE, passeBE,"passeID");
+        return basicDao.updateEntity(PASSE, passeBE, "passeID");
     }
-    /**
-     * @param passeBE the current passe to be deleted
-     * @param currentKampfrichterUserId the current user
-     */
-    public void delete(final PasseBE passeBE, final long currentKampfrichterUserId) {
-        basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
-        basicDao.deleteEntity(PASSE, passeBE,"passeID");
+    public void delete(PasseBE passeBE, long currentMemberId) {
+        basicDao.setModificationAttributes(passeBE, currentMemberId);
+        basicDao.deleteEntity(PASSE,passeBE,PASSE_TABLE_ID);
     }
 
 }
