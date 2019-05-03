@@ -34,10 +34,10 @@ import java.util.HashMap;
  *
  * <br> <p>TODO: add support for:</p>
  *     -    single field select (new QueryBuilder().selectField(String field).from[...])                                   Y
- *     -    IN e.g. [...].whereIn(field).andIn(field)                                                                      X
- *     -    nested Selects e.g.                                                                                            X
- *     -    *   [...].whereIn(field, new QueryBuilder().selectField().[...])                                               X
- *     -    *   [...].whereEquals(field, new QueryBuilder().selectField().[...])                                           X
+ *     -    IN e.g. [...].whereIn(field).andIn(field)                                                                      Y
+ *     -    nested Selects e.g.                                                                                            Y
+ *     -    *   [...].whereIn(field, new QueryBuilder().selectField().[...])                                               Y
+ *     -    *   [...].whereEquals(field, new QueryBuilder().selectField().[...])                                           Y
  *     -    joins                                                                                                          Y
  *     -    functions (e.g. static QueryBuilder.applyFunction(String, function, String field) -> String)                   Y
  *     -    table aliases                                                                                                  Y
@@ -52,30 +52,33 @@ import java.util.HashMap;
  */
 public class QueryBuilder {
 
+    public static final String SQL_VALUE_PLACEHOLDER = "? ";
+    public static final String SQL_QUERY_TERMINATOR = ";";
+    public static final String SQL_FIELD_SEPARATOR = ", ";
+
     // Statements/Clauses
     public static final String SQL_SELECT = "SELECT ";
-    public static final String SQL_SELECT_ALL = SQL_SELECT + "* ";
+    public static final String SQL_SELECT_ALL = String.format("%s* ", SQL_SELECT);
     public static final String SQL_FROM = " FROM ";
     public static final String SQL_JOIN = " JOIN ";
     public static final String SQL_ON = " ON ";
     public static final String SQL_WHERE = " WHERE ";
     public static final String SQL_AND = " AND ";
+    public static final String SQL_IN = " IN ";
+    public static final String SQL_IN_VALUE = SQL_IN + SQL_VALUE_PLACEHOLDER;
     public static final String SQL_ORDER_BY = " ORDER BY ";
     public static final String SQL_ORDER_ASC = " ASC ";
     public static final String SQL_ORDER_DESC = " DESC ";
 
     // Comparators
     public static final String SQL_EQUALS = " = ";
-    public static final String SQL_EQUAL_COMPARATOR = SQL_EQUALS + "? ";
-    public static final String SQL_GT_COMPARATOR = ">? ";
-    public static final String SQL_GTE_COMPARATOR = ">=? ";
-    public static final String SQL_LT_COMPARATOR = "<? ";
-    public static final String SQL_LTE_COMPARATOR = "<=? ";
+    public static final String SQL_EQUAL_COMPARATOR = String.format("%s? ", SQL_EQUALS);
+    public static final String SQL_GT_COMPARATOR = String.format(">%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_GTE_COMPARATOR = String.format(">=%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_LT_COMPARATOR = String.format("<%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_LTE_COMPARATOR = String.format("<=%s ", SQL_VALUE_PLACEHOLDER);
     public static final String SQL_TRUE_COMPARATOR = SQL_EQUALS + "true ";
     public static final String SQL_FALSE_COMPARATOR = SQL_EQUALS + "false ";
-
-    public static final String SQL_QUERY_TERMINATOR = ";";
-    public static final String SQL_FIELD_SEPARATOR = ", ";
 
     // functionName(parameter)
     private static final String SQL_FUNCTION_TEMPLATE = "%s(%s)";
@@ -91,6 +94,9 @@ public class QueryBuilder {
 
     // t1.column, t2.column -> "ON t1.column = t2.column"
     private static final String SQL_JOIN_ON_TEMPLATE = SQL_ON + "%s" + SQL_EQUALS + "%s";
+
+    // SELECT ... -> (SELECT ...)
+    private static final String SQL_SUB_SELECT_TEMPLATE = "(%s)";
 
     private String queryString;
     private HashMap<String, String> aliases;
@@ -300,7 +306,7 @@ public class QueryBuilder {
 
 
     /**
-     * Equality with fixed given value
+     * Equality with fixed given, static value
      *
      * @param fieldName
      * @param value
@@ -310,6 +316,21 @@ public class QueryBuilder {
     public QueryBuilder whereEquals(final String fieldName, final String value) {
         this.addWhere(fieldName, SQL_EQUALS);
         this.queryString += spaceAround(quote(value));
+        return this;
+    }
+
+
+    /**
+     * Equality with result of sub select, requires single column select in subquery i guess... (use .selectField(...))
+     *
+     * @param fieldName
+     * @param subQuery
+     *
+     * @return
+     */
+    public QueryBuilder whereEquals(final String fieldName, final QueryBuilder subQuery) {
+        this.addWhere(fieldName, SQL_EQUALS);
+        addSubSelect(subQuery);
         return this;
     }
 
@@ -389,7 +410,7 @@ public class QueryBuilder {
     }
 
 
-    private void addWhere(String fieldName, String comparator) {
+    private void addWhere(final String fieldName, final String comparator) {
         this.queryValidator.validateWhere(fieldName);
 
         this.queryString += SQL_WHERE + fieldName + comparator;
@@ -411,6 +432,13 @@ public class QueryBuilder {
     public QueryBuilder andEquals(final String fieldName, final String value) {
         this.addAnd(fieldName, SQL_EQUALS);
         this.queryString += spaceAround(quote(value));
+        return this;
+    }
+
+
+    public QueryBuilder andEquals(final String fieldName, final QueryBuilder subQuery) {
+        this.addAnd(fieldName, SQL_EQUALS);
+        addSubSelect(subQuery);
         return this;
     }
 
@@ -471,10 +499,39 @@ public class QueryBuilder {
     }
 
 
-    private void addAnd(String fieldName, String comparator) {
+    private void addAnd(final String fieldName, final String comparator) {
         this.queryValidator.validateAnd(fieldName);
 
         this.queryString += SQL_AND + fieldName + comparator;
+    }
+
+
+    /**
+     * IN operations
+     */
+
+
+    public QueryBuilder whereIn(final String fieldName) {
+        addWhere(fieldName, SQL_IN_VALUE);
+        return this;
+    }
+
+
+    public QueryBuilder andIn(final String fieldName) {
+        addAnd(fieldName, SQL_IN_VALUE);
+        return this;
+    }
+
+
+    public QueryBuilder whereIn(final String fieldName, final QueryBuilder subQuery) {
+        addWhere(fieldName, addIn(getAsSubSelect(subQuery)));
+        return this;
+    }
+
+
+    public QueryBuilder andIn(final String fieldName, final QueryBuilder subQuery) {
+        addAnd(fieldName, addIn(getAsSubSelect(subQuery)));
+        return this;
     }
 
 
@@ -582,22 +639,42 @@ public class QueryBuilder {
      * Utilities
      */
 
-    private static String spaceAround(String value) {
+    private String asSubSelect(String subQuery) {
+        return String.format(SQL_SUB_SELECT_TEMPLATE, subQuery);
+    }
+
+
+    private String addIn(String subSelect) {
+        return SQL_IN + subSelect;
+    }
+
+
+    private String getAsSubSelect(final QueryBuilder subSelect) {
+        return spaceAround(asSubSelect(subSelect.compose().toString()));
+    }
+
+
+    private void addSubSelect(final QueryBuilder subSelect) {
+        this.queryString += getAsSubSelect(subSelect);
+    }
+
+
+    private static String spaceAround(final String value) {
         return String.format(SQL_SPACED_VALUE_TEMPLATE, value);
     }
 
 
-    private static String quote(String value) {
+    private static String quote(final String value) {
         return String.format(SQL_VALUE_QUOTE_TEMPLATE, value);
     }
 
 
-    private static String withAlias(String alias, String fieldName) {
+    private static String withAlias(final String alias, final String fieldName) {
         return String.format(SQL_FIELD_ALIAS_TEMPLATE, alias, fieldName);
     }
 
 
-    private void registerAlias(String alias, String tableName) {
+    private void registerAlias(final String alias, final String tableName) {
         this.aliases.putIfAbsent(alias, tableName);
     }
 }
