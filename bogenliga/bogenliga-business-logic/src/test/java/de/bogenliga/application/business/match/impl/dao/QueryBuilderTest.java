@@ -433,4 +433,125 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
+
+
+    @Test
+    public void andFrom() {
+        this.queryBuilder.selectAll().from(TABLE_NAME).andFrom(OTHER_TABLE_NAME)
+                .whereEquals(DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
+
+
+    @Test
+    public void andFromAliases() {
+        this.queryBuilder.selectAll().from(TABLE_NAME, TABLE_ALIAS).andFrom(OTHER_TABLE_NAME, OTHER_TABLE_ALIAS)
+                .whereEquals(TABLE_ALIAS, DEFAULT_FIELD, OTHER_TABLE_ALIAS, OTHER_DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
+
+    @Test
+    public void whereEqualsWithSubQuery() {
+        this.queryBuilder.selectAll()
+                .from(TABLE_NAME)
+                .whereEquals(
+                        DEFAULT_FIELD,
+                        new SubQueryBuilder()
+                                .selectField(OTHER_DEFAULT_FIELD)
+                                .from(OTHER_TABLE_NAME)
+                                .whereEquals(OTHER_DEFAULT_FIELD)
+                )
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(OTHER_TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
+
+    @Test
+    public void whereEqualsWithExplicitTable() {
+        this.queryBuilder.selectAll()
+                .from(TABLE_NAME)
+                .whereEquals(TABLE_NAME, DEFAULT_FIELD, OTHER_TABLE_NAME, OTHER_DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(OTHER_TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
+
+    @Test
+    public void whereEqualsWithAliases() {
+        this.queryBuilder.selectAll()
+                .from(TABLE_NAME, TABLE_ALIAS)
+                .andFrom(OTHER_TABLE_NAME, OTHER_TABLE_ALIAS)
+                .whereEquals(TABLE_ALIAS, DEFAULT_FIELD, OTHER_TABLE_ALIAS, OTHER_DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(TABLE_ALIAS);
+        assertThat(builtQuery).contains(OTHER_TABLE_ALIAS);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
+
+    @Test
+    public void andEqualsWithAliases() {
+        this.queryBuilder.selectAll()
+                .from(TABLE_NAME, TABLE_ALIAS)
+                .andFrom(OTHER_TABLE_NAME, OTHER_TABLE_ALIAS)
+                .whereEquals(DEFAULT_FIELD)
+                .andEquals(TABLE_ALIAS, DEFAULT_FIELD, OTHER_TABLE_ALIAS, OTHER_DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(TABLE_ALIAS);
+        assertThat(builtQuery).contains(OTHER_TABLE_ALIAS);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
+
+    @Test
+    public void andTrue() {
+        this.queryBuilder.selectAll()
+                .from(TABLE_NAME)
+                .whereTrue(DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_TRUE_COMPARATOR.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
+
+    @Test
+    public void andFalse() {
+        this.queryBuilder.selectAll()
+                .from(TABLE_NAME)
+                .whereFalse(DEFAULT_FIELD)
+                .compose();
+        String builtQuery = this.queryBuilder.toString();
+        assertThat(builtQuery).contains(TABLE_NAME);
+        assertThat(builtQuery).contains(DEFAULT_FIELD);
+        assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_FALSE_COMPARATOR.trim());
+        assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
+    }
 }
