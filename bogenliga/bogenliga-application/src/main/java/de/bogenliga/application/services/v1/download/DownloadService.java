@@ -66,7 +66,6 @@ public class DownloadService implements ServiceFacade {
      * returns the Setzliste as pdf file for client download
      * <p>
      * @param wettkampfid  from GET-Request: ID for the competition
-     * @param wettkampftag from GET-Request: to identify day of the competition (from GET-Request)
      * Usage:
      * <pre>{@code Request: GET /v1/download/pdf/setzliste?wettkampfid=x&?wettkampftag=y}</pre>
      *
@@ -78,12 +77,10 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final int wettkampfid,
-                                                         @RequestParam("wettkampftag") final int wettkampftag) {
+    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final int wettkampfid) {
         LOG.debug("wettkampfid: " + wettkampfid);
-        LOG.debug("wettkampftag: " + wettkampftag);
 
-        final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid, wettkampftag);
+        final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
         final Resource resource = new InputStreamResource(new ByteArrayInputStream(fileBloB));
         try {
             InputStream is = new ByteArrayInputStream(fileBloB);

@@ -56,17 +56,15 @@ public class SetzlisteDAO implements DataAccessObject {
      * SQL queries
      */
     private static final String GET_TABLE =
-            "SELECT lt.ligatabelle_tabellenplatz, v.verein_name, ms.mannschaft_nummer, vs.veranstaltung_name, wk.wettkampf_tag,"
-                   + " wk.wettkampf_datum, wk.wettkampf_beginn, wk.wettkampf_ort"
-                   + " FROM veranstaltung as vs"
-                   + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
-                   + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
-                   + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
-                   + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
-                   + " WHERE wk.wettkampf_tag = lt.ligatabelle_wettkampf_tag"
-                   + " AND wk.wettkampf_id = ?"
-                   + " AND lt.ligatabelle_wettkampf_tag = ?"
-                   + " ORDER BY lt.ligatabelle_tabellenplatz";
+            "SELECT lt.ligatabelle_tabellenplatz, v.verein_name, ms.mannschaft_nummer, vs.veranstaltung_name, wk.wettkampf_tag, wk.wettkampf_datum, wk.wettkampf_beginn, wk.wettkampf_ort"
+                    + " FROM veranstaltung as vs"
+                    + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
+                    + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
+                    + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
+                    + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
+                    + " WHERE wk.wettkampf_id = ?"
+                    + " AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1"
+                    + " ORDER BY lt.ligatabelle_tabellenplatz";
 
 
 
@@ -107,7 +105,7 @@ public class SetzlisteDAO implements DataAccessObject {
     /**
      * Return all setzliste entries
      */
-    public List<SetzlisteBE> getTable(int wettkampfid, int wettkampftag) {
-        return basicDao.selectEntityList(SETZLISTE, GET_TABLE, wettkampfid, wettkampftag);
+    public List<SetzlisteBE> getTable(int wettkampfid) {
+        return basicDao.selectEntityList(SETZLISTE, GET_TABLE, wettkampfid);
     }
 }
