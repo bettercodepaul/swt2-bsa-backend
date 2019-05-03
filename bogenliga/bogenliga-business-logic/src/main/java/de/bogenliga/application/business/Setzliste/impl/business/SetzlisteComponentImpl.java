@@ -70,8 +70,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             bResult = result.toByteArray();
             LOGGER.debug("Setzliste erstellt");
 
-
-
         } catch (final IOException e) {
             LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
         }
@@ -86,8 +84,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteBEList list with data for the doc
      */
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
-        assert (doc != null);
-        assert (!setzlisteBEList.isEmpty());
         //Structure of setzliste
         final int[][] structure = {
                 {5, 4, 2, 7, 1, 8, 3, 6},
