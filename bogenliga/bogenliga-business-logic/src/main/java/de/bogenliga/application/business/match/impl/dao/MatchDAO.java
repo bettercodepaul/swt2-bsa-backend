@@ -113,7 +113,6 @@ public class MatchDAO implements DataAccessObject {
             .selectAll()
             .from(TABLE)
             .whereEquals(MATCH_TABLE_MANNSCHAFT_ID)
-            .orderBy(MATCH_TABLE_ID)
             .compose().toString();
 
     private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
