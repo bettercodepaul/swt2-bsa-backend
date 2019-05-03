@@ -2,6 +2,8 @@ package de.bogenliga.application.services.v1.match.service;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Before;
@@ -118,6 +120,26 @@ public class MatchServiceTest {
         MatchService.checkPreconditions(actual.get(0));
     }
 
+
+    @Test
+    public void findByMannschaftId() {
+        final MatchDO matchDO = getMatchDO();
+        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
+        when(matchComponent.findByMannschaftId(anyLong())).thenReturn(matchDOList);
+        final List<MatchDTO> actual = underTest.findAllByMannschaftId(MATCH_MANNSCHAFT_ID);
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final MatchDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(matchDO.getId());
+        assertThat(actualDTO.getMannschaftId()).isEqualTo(matchDO.getMannschaftId());
+
+        //verify invocations
+        verify(matchComponent).findByMannschaftId(MATCH_MANNSCHAFT_ID);
+
+        MatchService.checkPreconditions(actualDTO);
+    }
 
     @Test
     public void saveMatches() {
