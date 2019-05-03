@@ -1,8 +1,11 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.constraints.Null;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -123,14 +127,14 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param id the given vereinsId
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(value = "{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequestMapping(value = "byVereinsID/{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
-        final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAllByVereinsId(id);
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVereinsId(id);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -156,8 +160,8 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
-
         final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
+
         return DsbMannschaftDTOMapper.toDTO.apply(dsbMannschaftDO);
     }
 
