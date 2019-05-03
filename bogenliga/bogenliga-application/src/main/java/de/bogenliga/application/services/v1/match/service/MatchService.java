@@ -108,11 +108,11 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "schusszettel/{idm1}/{idm2}",
+    @RequestMapping(value = "schusszettel/{matchId1}/{matchId2}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
-    public List<MatchDTO> findMatchesByIds(@PathVariable("idm1") Long matchId1, @PathVariable("idm2") Long matchId2) {
+    public List<MatchDTO> findMatchesByIds(@PathVariable("matchId1") Long matchId1, @PathVariable("matchId2") Long matchId2) {
         this.checkMatchId(matchId1);
         this.checkMatchId(matchId2);
 
@@ -142,7 +142,7 @@ public class MatchService implements ServiceFacade {
      * @return
      */
     @RequestMapping(value = "schusszettel",
-            method = RequestMethod.GET,
+            method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<MatchDTO> saveMatches(@RequestBody final MatchDTO matchDTO1, @RequestBody final MatchDTO matchDTO2,
