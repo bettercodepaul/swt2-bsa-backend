@@ -51,16 +51,14 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     /**
      * Generates a pdf as binary document
      * @param wettkampfid ID for the competition
-     * @param wettkampftag day of the competition
      * @return document
      */
     @Override
-    public byte[] getPDFasByteArray(final int wettkampfid, final int wettkampftag) {
+    public byte[] getPDFasByteArray(final int wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
-        Preconditions.checkArgument(wettkampftag >= 1, PRECONDITION_WETTKAMPFTAG);
 
         LOGGER.debug("Generate Setzliste");
-        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable(wettkampfid, wettkampftag);
+        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable(wettkampfid);
         byte[] bResult = null;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
@@ -88,6 +86,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteBEList list with data for the doc
      */
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
+        assert (doc != null);
+        assert (!setzlisteBEList.isEmpty());
         //Structure of setzliste
         final int[][] structure = {
                 {5, 4, 2, 7, 1, 8, 3, 6},
