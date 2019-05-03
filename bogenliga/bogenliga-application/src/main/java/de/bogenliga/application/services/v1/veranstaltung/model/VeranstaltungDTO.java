@@ -34,4 +34,63 @@ public class VeranstaltungDTO implements DataTransferObject {
         this.ligaleiterID = ligaleiterID;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public Long getWettkampfTypId() {
+        return wettkampfTypId;
+    }
+
+
+    public void setWettkampfTypId(Long wettkampfTypId) {
+        this.wettkampfTypId = wettkampfTypId;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public Long getSportjahr() {
+        return sportjahr;
+    }
+
+
+    public void setSportjahr(Long sportjahr) {
+        this.sportjahr = sportjahr;
+    }
+
+
+    public Date getMeldeDeadline() {
+        return meldeDeadline;
+    }
+
+
+    public void setMeldeDeadline(Date meldeDeadline) {
+        this.meldeDeadline = meldeDeadline;
+    }
+
+
+    public Long getLigaleiterID() {
+        return ligaleiterID;
+    }
+
+
+    public void setLigaleiterID(Long ligaleiterID) {
+        this.ligaleiterID = ligaleiterID;
+    }
 }
