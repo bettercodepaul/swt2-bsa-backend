@@ -45,10 +45,10 @@ public class DownloadServiceTest {
         when(setzlisteComponent.getPDFasByteArray(WETTKAMPF_ID)).thenReturn(test);
 
         //call test method
-        final ResponseEntity<InputStreamResource> result = DownloadService.downloadSetzlistePdf(WETTKAMPF_ID);
+        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadSetzlistePdf(WETTKAMPF_ID);
 
         //assert result
-        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(actual).isNotNull();
 
         //verify invocations
         verify(setzlisteComponent).getPDFasByteArray(WETTKAMPF_ID);
