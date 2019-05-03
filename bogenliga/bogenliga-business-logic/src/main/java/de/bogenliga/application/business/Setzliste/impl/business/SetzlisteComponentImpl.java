@@ -30,7 +30,6 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
-    private static final String PRECONDITION_WETTKAMPFTAG = "wettkampftag cannot be 0 or negative";
     private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
     private final SetzlisteDAO setzlisteDAO;
 
