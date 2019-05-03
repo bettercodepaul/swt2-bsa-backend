@@ -30,6 +30,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR="veranstaltungsportjahr must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_NAME="veranstaltungname must be not null";
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_EMAIL = "ligaleiter email must be not null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_NAME = "veranstaltungtypname must be not null";
     private final VeranstaltungDAO veranstaltungDAO;
 
     /**
@@ -109,6 +111,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     Preconditions.checkArgument(veranstaltungDO.getVeranstaltungLigaleiterID()>=0,PRECONDITION_MSG_VERANSTALTUNG_LIGA_LEITER_ID);
     Preconditions.checkArgument(veranstaltungDO.getVeranstaltungWettkampftypID()>=0,PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPF_ID);
     Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungSportJahr(),PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
+    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungLigaleiterEmail(),PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_EMAIL);
+    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungWettkampftypName(),PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_NAME);
     }
 }
 

@@ -28,6 +28,8 @@ public class VeranstaltungMapper implements ValueObjectMapper {
         final Long sportJahr = be.getVeranstaltungSportJahr();
         final Date meldeDeadline = be.getVeranstaltungMeldeDeadline();
         final Long ligaleiterID = be.getVeranstaltungLigaleiterID();
+        final String ligaLeiterEmail = be.getVeranstaltungLigaleiterEmail();
+        final String wettkampftypName = be.getVeranstaltungWettkampftypName();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -38,7 +40,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new VeranstaltungDO(id, wettkampfTypID, name, sportJahr, meldeDeadline, ligaleiterID,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, ligaLeiterEmail, wettkampftypName);
     };
 
 
@@ -56,6 +58,8 @@ public class VeranstaltungMapper implements ValueObjectMapper {
        veranstaltungBE.setVeranstaltungName(veranstaltungDO.getVeranstaltungName());
        veranstaltungBE.setVeranstaltungMeldeDeadline(veranstaltungDO.getVeranstaltungMeldeDeadline());
        veranstaltungBE.setVeranstaltungLigaleiterID(veranstaltungDO.getVeranstaltungLigaleiterID());
+       veranstaltungBE.setVeranstaltungLigaleiterEmail(veranstaltungDO.getVeranstaltungLigaleiterEmail());
+       veranstaltungBE.setVeranstaltungWettkampftypName(veranstaltungDO.getVeranstaltungWettkampftypName());
 
        veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
        veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());

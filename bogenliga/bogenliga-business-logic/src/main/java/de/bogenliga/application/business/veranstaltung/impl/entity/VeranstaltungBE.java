@@ -21,6 +21,8 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     private Long veranstaltungKampfrichterAnzahl;
     private Long veranstaltungHoehere;
     private Long veranstaltungLigaleiterID;
+    private String veranstaltungLigaleiterEmail;
+    private String veranstaltungWettkampftypName;
 
     /**
      * Default Constructor of VeranstaltungBE
@@ -99,4 +101,22 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
+    public String getVeranstaltungLigaleiterEmail() {
+        return veranstaltungLigaleiterEmail;
+    }
+
+
+    public void setVeranstaltungLigaleiterEmail(String veranstaltungLigaleiterEmail) {
+        this.veranstaltungLigaleiterEmail = veranstaltungLigaleiterEmail;
+    }
+
+
+    public String getVeranstaltungWettkampftypName() {
+        return veranstaltungWettkampftypName;
+    }
+
+
+    public void setVeranstaltungWettkampftypName(String veranstaltungWettkampftypName) {
+        this.veranstaltungWettkampftypName = veranstaltungWettkampftypName;
+    }
 }
