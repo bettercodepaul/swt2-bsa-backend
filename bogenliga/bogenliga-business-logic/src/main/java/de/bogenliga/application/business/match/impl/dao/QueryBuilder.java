@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.match.impl.dao;
 
 import java.util.HashMap;
+import de.bogenliga.application.common.validation.Preconditions;
 
 /**
  * <p>
@@ -72,13 +73,13 @@ public class QueryBuilder {
 
     // Comparators
     public static final String SQL_EQUALS = " = ";
-    public static final String SQL_EQUAL_COMPARATOR = String.format("%s? ", SQL_EQUALS);
-    public static final String SQL_GT_COMPARATOR = String.format(">%s ", SQL_VALUE_PLACEHOLDER);
-    public static final String SQL_GTE_COMPARATOR = String.format(">=%s ", SQL_VALUE_PLACEHOLDER);
-    public static final String SQL_LT_COMPARATOR = String.format("<%s ", SQL_VALUE_PLACEHOLDER);
-    public static final String SQL_LTE_COMPARATOR = String.format("<=%s ", SQL_VALUE_PLACEHOLDER);
-    public static final String SQL_TRUE_COMPARATOR = SQL_EQUALS + "true ";
-    public static final String SQL_FALSE_COMPARATOR = SQL_EQUALS + "false ";
+    public static final String SQL_EQUAL_COMPARATOR = String.format(" %s? ", SQL_EQUALS);
+    public static final String SQL_GT_COMPARATOR = String.format(" >%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_GTE_COMPARATOR = String.format(" >=%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_LT_COMPARATOR = String.format(" <%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_LTE_COMPARATOR = String.format(" <=%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_TRUE_COMPARATOR = SQL_EQUALS + " true ";
+    public static final String SQL_FALSE_COMPARATOR = SQL_EQUALS + " false ";
 
     // functionName(parameter)
     private static final String SQL_FUNCTION_TEMPLATE = "%s(%s)";
@@ -98,12 +99,19 @@ public class QueryBuilder {
     // SELECT ... -> (SELECT ...)
     private static final String SQL_SUB_SELECT_TEMPLATE = "(%s)";
 
-    private String queryString;
-    private HashMap<String, String> aliases;
-    private QueryValidator queryValidator;
+    protected String queryString;
+    protected HashMap<String, String> aliases;
+    protected QueryValidator queryValidator;
 
 
     public QueryBuilder() {
+        this.queryString = "";
+        this.queryValidator = new QueryValidator(this);
+        this.aliases = new HashMap<>();
+    }
+
+
+    public QueryBuilder(Boolean isSubQuery) {
         this.queryString = "";
         this.queryValidator = new QueryValidator(this);
         this.aliases = new HashMap<>();
@@ -258,22 +266,9 @@ public class QueryBuilder {
      * Functions
      */
 
-    /**
-     * Usage: [...].whereEquals(fieldName).addFunction(functionName)) In case a field value should be equal (or gt, lt,
-     * ...) to the functions result.
-     *
-     * @param functionName
-     *
-     * @return
-     */
-    public QueryBuilder addFunction(String functionName) {
-        this.queryString += spaceAround(String.format(SQL_FUNCTION_TEMPLATE, functionName, ""));
-        return this;
-    }
-
 
     /**
-     * Usage: [...].whereEquals(QueryBuilder.applyFunction(fieldName, functionName)) In case a a function must be
+     * Usage: [...].whereEquals(fieldName, QueryBuilder.applyFunction(otherFieldName, functionName)) In case a a function must be
      * applied to a fields value
      *
      * @param fieldName
@@ -282,6 +277,9 @@ public class QueryBuilder {
      * @return
      */
     public static String applyFunction(String fieldName, String functionName) {
+        Preconditions.checkArgument(functionName != null, "Function name must not be emtpy!");
+        Preconditions.checkArgument(functionName.length() > 0, "Function name must not be emtpy!");
+
         return String.format(SQL_FUNCTION_TEMPLATE, functionName, fieldName);
     }
 
@@ -430,14 +428,14 @@ public class QueryBuilder {
 
 
     public QueryBuilder andEquals(final String fieldName, final String value) {
-        this.addAnd(fieldName, SQL_EQUALS);
+        addAnd(fieldName, SQL_EQUALS);
         this.queryString += spaceAround(quote(value));
         return this;
     }
 
 
     public QueryBuilder andEquals(final String fieldName, final QueryBuilder subQuery) {
-        this.addAnd(fieldName, SQL_EQUALS);
+        addAnd(fieldName, SQL_EQUALS);
         addSubSelect(subQuery);
         return this;
     }
@@ -445,7 +443,7 @@ public class QueryBuilder {
 
     public QueryBuilder andEquals(final String tableName, final String fieldName, final String otherTableName,
                                   final String otherFieldName) {
-        this.addAnd(withAlias(tableName, fieldName), SQL_EQUALS);
+        addAnd(withAlias(tableName, fieldName), SQL_EQUALS);
         this.queryString += spaceAround(quote(withAlias(otherTableName, otherFieldName)));
         return this;
     }
@@ -457,7 +455,7 @@ public class QueryBuilder {
         this.queryValidator.checkHasAlias(tableAlias);
         this.queryValidator.checkHasAlias(otherTableAlias);
 
-        this.addAnd(withAlias(tableAlias, fieldName), SQL_EQUALS);
+        addAnd(withAlias(tableAlias, fieldName), SQL_EQUALS);
         this.queryString += spaceAround(quote(withAlias(otherTableAlias, otherFieldName)));
         return this;
     }
@@ -602,12 +600,12 @@ public class QueryBuilder {
     }
 
 
-    private void terminateQuery() {
+    protected void terminateQuery() {
         this.queryString += SQL_QUERY_TERMINATOR;
     }
 
 
-    private void formatQueryString() {
+    protected void formatQueryString() {
         // replace double spaces with single
         this.queryString = this.queryString.replace("  ", " ");
         this.queryString = this.queryString.replace("  ", " ");
@@ -639,42 +637,42 @@ public class QueryBuilder {
      * Utilities
      */
 
-    private String asSubSelect(String subQuery) {
+    protected String asSubSelect(String subQuery) {
         return String.format(SQL_SUB_SELECT_TEMPLATE, subQuery);
     }
 
 
-    private String addIn(String subSelect) {
+    protected String addIn(String subSelect) {
         return SQL_IN + subSelect;
     }
 
 
-    private String getAsSubSelect(final QueryBuilder subSelect) {
+    protected String getAsSubSelect(final QueryBuilder subSelect) {
         return spaceAround(asSubSelect(subSelect.compose().toString()));
     }
 
 
-    private void addSubSelect(final QueryBuilder subSelect) {
+    protected void addSubSelect(final QueryBuilder subSelect) {
         this.queryString += getAsSubSelect(subSelect);
     }
 
 
-    private static String spaceAround(final String value) {
+    protected static String spaceAround(final String value) {
         return String.format(SQL_SPACED_VALUE_TEMPLATE, value);
     }
 
 
-    private static String quote(final String value) {
+    protected static String quote(final String value) {
         return String.format(SQL_VALUE_QUOTE_TEMPLATE, value);
     }
 
 
-    private static String withAlias(final String alias, final String fieldName) {
+    protected static String withAlias(final String alias, final String fieldName) {
         return String.format(SQL_FIELD_ALIAS_TEMPLATE, alias, fieldName);
     }
 
 
-    private void registerAlias(final String alias, final String tableName) {
+    protected void registerAlias(final String alias, final String tableName) {
         this.aliases.putIfAbsent(alias, tableName);
     }
 }
