@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.Passe.api.PasseComponent;
+import de.bogenliga.application.business.Passe.api.types.PasseDO;
 import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -114,8 +116,7 @@ public class PasseDAO implements DataAccessObject {
     private static final String FIND_BY_MATCH_ID =
             "SELECT * "
                     + " FROM " + TABLE
-                    + " WHERE " + "" // MatchID ist noch nicht in der Passetabelle
-                    + "=?";
+                    + " WHERE " + ""; // MatchID ist noch nicht in der Passetabelle
 
     private static final String FIND_BY_MANNSCHAFT_ID =
             "SELECT * "
@@ -234,6 +235,12 @@ public class PasseDAO implements DataAccessObject {
         return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID, dsbMitgliedId);
     }
 
+    private static final String FIND_BY_LFDNR =
+            "SELECT * "
+                    + " FROM " + TABLE
+                    + " WHERE " + PASSE_TABLE_LFDNR
+                    + "= ?";
+
 
     /**
      * Return a passe entry with the given ids.
@@ -249,7 +256,7 @@ public class PasseDAO implements DataAccessObject {
 
 
     /**
-     * Return a passe entry with the given ids.
+     * <<<<<<< Updated upstream Return a passe entry with the given ids.
      *
      * @param dsbMitgliedId of the mannschaftsmitglied,
      * @param matchId       of the match
@@ -274,45 +281,37 @@ public class PasseDAO implements DataAccessObject {
 
 
     /**
-     * Create a new passe entry
      *
-     * @param passeBE
-     * @param currentKampfrichterUserId
+     * @param passeBE passe to be created
+     * @param currentKampfrichterUserId current user
      *
-     * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
-     * and  entities
+     * @return Business Entity of a Passe
      */
     public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
         return basicDao.insertEntity(PASSE, passeBE);
     }
-
-
     /**
-     * Update an existing passe. The passe is identified by the id's set in passeDO.
      *
-     * @param passeBE         existing passeDO to update
-     * @param currentMemberId id of the member currently updating the passe
+     * @param passeBE current passe being updated
+     * @param currentKampfrichterUserId current user
      *
-     * @return persisted version of the passe
+     * @return Business Entity from Passe
      */
-    public PasseBE update(final PasseBE passeBE, final long currentMemberId) {
-        basicDao.setModificationAttributes(passeBE, currentMemberId);
+    public PasseBE update(final PasseBE passeBE, final long currentKampfrichterUserId) {
+        basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
+        return basicDao.updateEntity(PASSE, passeBE,"passeID");
+    }
+    /**
+     * @param passeBE the current passe to be deleted
+     * @param currentKampfrichterUserId the current user
+     */
+    public void delete(final PasseBE passeBE, final long currentKampfrichterUserId) {
+        basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
-        return basicDao.updateEntity(PASSE, passeBE, PASSE_TABLE_ID);
+        basicDao.deleteEntity(PASSE, passeBE,"passeID");
     }
 
-
-    /**
-     * Delete an existing passe. The passe is identified by the id's set in passeDO.
-     *
-     * @param passeBE         passe to delete
-     * @param currentMemberId id of the member currently updating the passe
-     */
-    public void delete(PasseBE passeBE, long currentMemberId) {
-        basicDao.setModificationAttributes(passeBE, currentMemberId);
-        basicDao.deleteEntity(PASSE,passeBE,PASSE_TABLE_ID);
-    }
 }
