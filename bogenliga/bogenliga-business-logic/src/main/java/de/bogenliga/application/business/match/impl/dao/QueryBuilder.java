@@ -78,8 +78,8 @@ public class QueryBuilder {
     public static final String SQL_GTE_COMPARATOR = String.format(" >=%s ", SQL_VALUE_PLACEHOLDER);
     public static final String SQL_LT_COMPARATOR = String.format(" <%s ", SQL_VALUE_PLACEHOLDER);
     public static final String SQL_LTE_COMPARATOR = String.format(" <=%s ", SQL_VALUE_PLACEHOLDER);
-    public static final String SQL_TRUE_COMPARATOR = SQL_EQUALS + " true ";
-    public static final String SQL_FALSE_COMPARATOR = SQL_EQUALS + " false ";
+    public static final String SQL_TRUE_COMPARATOR = SQL_EQUALS + "true ";
+    public static final String SQL_FALSE_COMPARATOR = SQL_EQUALS + "false ";
 
     // functionName(parameter)
     private static final String SQL_FUNCTION_TEMPLATE = "%s(%s)";
@@ -105,13 +105,6 @@ public class QueryBuilder {
 
 
     public QueryBuilder() {
-        this.queryString = "";
-        this.queryValidator = new QueryValidator(this);
-        this.aliases = new HashMap<>();
-    }
-
-
-    public QueryBuilder(Boolean isSubQuery) {
         this.queryString = "";
         this.queryValidator = new QueryValidator(this);
         this.aliases = new HashMap<>();
@@ -366,6 +359,7 @@ public class QueryBuilder {
                                                final String otherFieldName) {
         this.queryValidator.checkHasAlias(tableAlias);
         this.queryValidator.checkHasAlias(otherTableAlias);
+
         this.addWhere(withAlias(tableAlias, fieldName), SQL_EQUALS);
         this.queryString += spaceAround(quote(withAlias(otherTableAlias, otherFieldName)));
         return this;
