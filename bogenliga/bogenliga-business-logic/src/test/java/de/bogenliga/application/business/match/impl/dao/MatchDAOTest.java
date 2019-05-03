@@ -2,21 +2,15 @@ package de.bogenliga.application.business.match.impl.dao;
 
 import java.util.Collections;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import de.bogenliga.application.business.baseClass.impl.BasicBETest;
-import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
-import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.entity.BusinessEntity;
-import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
-import static de.bogenliga.application.business.match.impl.business.MatchComponentImplTest.*;
-import static de.bogenliga.application.business.match.impl.business.MatchComponentImplTest.getMatchBE;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -29,6 +23,7 @@ public class MatchDAOTest extends BaseMatchTest {
 
     @InjectMocks
     private MatchDAO underTest;
+
     private MatchBE expectedBE;
 
     // Implements generic way to test business entities methods
@@ -43,8 +38,30 @@ public class MatchDAOTest extends BaseMatchTest {
         basicDAOTest.setBE(expectedBE);
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), anyLong())).thenReturn(expectedBE);
-
     }
+
+/*
+    private void validateObjectList(List<MatchBE> actual) {
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+    }
+
+
+    private void assertValid(MatchBE expectedMatchBE, MatchBE actual) {
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(expectedMatchBE.getId()).isEqualTo(MATCH_ID);
+        assertThat(actual.getBegegnung()).isEqualTo(expectedMatchBE.getBegegnung()).isEqualTo(MATCH_BEGEGNUNG);
+        assertThat(actual.getMannschaftId()).isEqualTo(expectedMatchBE.getMannschaftId()).isEqualTo(
+                MATCH_MANNSCHAFT_ID);
+        assertThat(actual.getWettkampfId()).isEqualTo(expectedMatchBE.getWettkampfId()).isEqualTo(MATCH_WETTKAMPF_ID);
+        assertThat(actual.getMatchpunkte()).isEqualTo(expectedMatchBE.getMatchpunkte()).isEqualTo(MATCH_MATCHPUNKTE);
+        assertThat(actual.getSatzpunkte()).isEqualTo(expectedMatchBE.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
+        assertThat(actual.getNr()).isEqualTo(expectedMatchBE.getNr()).isEqualTo(MATCH_NR);
+    }*/
 
 
     @Test

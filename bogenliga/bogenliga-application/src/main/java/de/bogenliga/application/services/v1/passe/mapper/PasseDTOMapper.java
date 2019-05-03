@@ -38,11 +38,11 @@ public class PasseDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<PasseDTO, PasseDO> toDO = passeDTO -> {
         final long id = passeDTO.getId();
-        final long mannschaftsId = passeDTO.getMannschaft_id();
-        final long wettkampfId = passeDTO.getWettkampf_id();
-        final long matchnr = passeDTO.getMatch_nr();
-        final long lfdnr = passeDTO.getLfdnr();
-        final long dsbMitgliedId = passeDTO.getDsb_mitglied_nr();
+        final long mannschaftsId = passeDTO.getMannschaftId();
+        final long wettkampfId = passeDTO.getWettkampfId();
+        final long matchnr = passeDTO.getMatchNr();
+        final long lfdnr = passeDTO.getLfdNr();
+        final long dsbMitgliedId = passeDTO.getDsbMitgliedNr();
         final int pfeil1 = passeDTO.getRingzahl()[0];
         final int pfeil2 = passeDTO.getRingzahl()[1];
         final int pfeil3 = passeDTO.getRingzahl()[2];

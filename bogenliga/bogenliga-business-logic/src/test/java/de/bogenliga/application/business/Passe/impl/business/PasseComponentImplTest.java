@@ -27,6 +27,22 @@ public class PasseComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
+    @Mock
+    private PasseDAO passeDAO;
+
+
+    @Mock
+    private DsbMannschaftDAO dsbMannschaftDAO;
+
+    @Mock
+    private DsbMitgliedDAO dsbMitglieDao;
+
+    @InjectMocks
+    private PasseComponentImpl underTest;
+
+    @Captor
+    private ArgumentCaptor<PasseBE> passeBEArgumentCaptor;
+
     private static final long PASSE_ID = 8;
     private static final long PASSE_MANNSCHAFT_ID = 1;
     private static final long PASSE_WETTKAMPF_ID = 1337;

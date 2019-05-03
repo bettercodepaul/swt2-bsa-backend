@@ -26,9 +26,9 @@ public class MatchDTO implements DataTransferObject {
 
 
     /**
-     * Default constructor
+     * Default constructor, hidden, so only use the one with params...
      */
-    public MatchDTO() {
+    private MatchDTO() {
     }
 
 
