@@ -64,6 +64,7 @@ public class SetzlisteDAO implements DataAccessObject {
                     + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
                     + " WHERE wk.wettkampf_id = ?"
                     + " AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1"
+                    + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
                     + " ORDER BY lt.ligatabelle_tabellenplatz";
 
 
