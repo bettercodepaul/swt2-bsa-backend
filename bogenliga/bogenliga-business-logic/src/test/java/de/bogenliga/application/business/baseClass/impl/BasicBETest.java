@@ -54,6 +54,7 @@ public class BasicBETest<T extends BusinessEntity> {
      */
     public void assertEntity(T entity) {
         assertThat(expectedBE).isNotNull();
+        assertThat(entity).isNotNull();
         try {
             for (Method method : entity.getClass().getDeclaredMethods()) {
                 if (method.getName().contains("get")) {
