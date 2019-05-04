@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.lizenz.dao;
 
 import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -49,18 +50,21 @@ public class LizenzDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<LizenzBE> LIZENZ = new BusinessEntityConfiguration<>(
             LizenzBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    /*
+    /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM lizenz"
-                    + " ORDER BY lizenz_id";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(LIZENZ_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_DSB_MITGLIED_ID =
-            "SELECT * "
-                    + " FROM lizenz"
-                    + " WHERE lizenz_typ = 'Kampfrichter' AND lizenz_dsb_mitglied_id = ?";
+    private static final String FIND_BY_DSB_MITGLIED_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(LIZENZ_TABLE_TYP, "Kampfrichter")
+            .andEquals(LIZENZ_TABLE_DSBMEMBERID)
+            .compose().toString();
 
 
     private final BasicDAO basicDao;

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -25,6 +26,12 @@ public class VereinDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "verein";
+    private static final String TABLE_ALIAS = "v";
+
+    private static final String REGION_TABLE = "region";
+    private static final String REGION_TABLE_ALIAS = "r";
+    private static final String REGION_TABLE_REGION_ID = "region_id";
+    private static final String REGION_TABLE_REGION_NAME = "region_name";
 
     //business entity parameter names
     private static final String VEREIN_BE_ID = "vereinId";
@@ -41,16 +48,22 @@ public class VereinDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<VereinBE> VEREIN = new BusinessEntityConfiguration<>(
             VereinBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    // SQL Queries
-    private static final String FIND_ALL =
-            "SELECT v.*, r.region_name "
-                    + " FROM verein v"
-                    + " JOIN region r on v.verein_region_id=r.region_id"
-                    + " ORDER BY verein_id";
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM verein v"
-                    + " WHERE v.verein_id = ?";
+    /**
+     * SQL queries
+     */
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectFieldsWithAliases(TABLE_ALIAS, "*", REGION_TABLE_ALIAS, REGION_TABLE_REGION_NAME)
+            .from(TABLE, TABLE_ALIAS)
+            .join(REGION_TABLE, REGION_TABLE_ALIAS)
+            .on(TABLE_ALIAS, VEREIN_TABLE_REGION_ID, REGION_TABLE_ALIAS, REGION_TABLE_REGION_ID)
+            .orderBy(VEREIN_TABLE_ID)
+            .compose().toString();
+
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(VEREIN_TABLE_ID)
+            .compose().toString();
 
     private final BasicDAO basicDao;
 

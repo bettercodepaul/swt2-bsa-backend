@@ -44,7 +44,7 @@ public class UserPermissionDAO implements DataAccessObject {
     private static final String FIND_BY_USER_ID =
             "SELECT benutzer.benutzer_id, recht.recht_name "
                     + " FROM benutzer "
-                    + "   LEFT JOIN benutzer_rolle rolle ON benutzer.benutzer_id = rolle.benutzer_rolle_benutzer_id "
+                    + "   LEFT JOIN benutzer_rolle rolle ON benutzer.benutzer_id = rolle.benutzer_rolle_benutzer_id " // TODO add left & right join to QueryBuilder
                     + "   LEFT JOIN rolle_recht rr ON rolle.benutzer_rolle_rolle_id = rr.rolle_recht_rolle_id "
                     + "   LEFT JOIN recht recht ON rr.rolle_recht_recht_id = recht.recht_id "
                     + " WHERE benutzer_id = ? "

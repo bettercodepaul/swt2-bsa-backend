@@ -3,6 +3,7 @@ package de.bogenliga.application.business.Passe.impl.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.management.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.Passe.api.PasseComponent;
 import de.bogenliga.application.business.Passe.api.types.PasseDO;
 import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -98,66 +100,78 @@ public class PasseDAO implements DataAccessObject {
     /**
      * SQL queries, not sure which ones are needed at all
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " ORDER BY " + PASSE_TABLE_LFDNR
-                    + "=?";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(PASSE_TABLE_LFDNR)
+            .compose().toString();
 
-    private static final String FIND_BY_PK =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_WETTKAMPF_ID + "=?"
-                    + " WHERE " + PASSE_TABLE_MATCH_NR + "=?"
-                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID + "=?"
-                    + " WHERE " + PASSE_TABLE_LFDNR + "=?"
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID + "=?";
+    private static final String FIND_BY_PK = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_WETTKAMPF_ID)
+            .andEquals(PASSE_TABLE_MATCH_NR)
+            .andEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .andEquals(PASSE_TABLE_LFDNR)
+            .andEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MATCH_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + ""; // MatchID ist noch nicht in der Passetabelle
+    private static final String FIND_BY_MATCH_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .compose().toString();
+            // "SELECT * " // TODO
+            //         + " FROM " + TABLE
+            //         + " WHERE " + ""; // MatchID ist noch nicht in der Passetabelle
 
-    private static final String FIND_BY_MANNSCHAFT_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
-                    + "=?";
-    private static final String FIND_BY_MEMBER_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
-                    + "=?";
+    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_WETTKAMPF_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_WETTKAMPF_ID
-                    + "=?";
+    private static final String FIND_BY_MEMBER_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MEMBER_MANNSCHAFT_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
-                    + "=? "
-                    + " AND WHERE " + PASSE_TABLE_MANNSCHAFT_ID
-                    + "=?";
+    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_WETTKAMPF_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MANNSCHAFT_MATCH_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
-                    + "=? "
-                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
-                    + "=?";
+    private static final String FIND_BY_MEMBER_MANNSCHAFT_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .andEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MITGLIED_MATCH_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
-                    + "=? "
-                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
-                    + "=?";
+    private static final String FIND_BY_MANNSCHAFT_MATCH_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .compose().toString();
+            // "SELECT * " // TODO
+            //         + " FROM " + TABLE
+            //         + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
+            //         + "=? "
+            //         + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
+            //         + "=?";
+
+    private static final String FIND_BY_MITGLIED_MATCH_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .compose().toString();
+            // "SELECT * " // TODO
+            //         + " FROM " + TABLE
+            //         + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
+            //         + "=? "
+            //         + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
+            //         + "=?";
 
 
     /**

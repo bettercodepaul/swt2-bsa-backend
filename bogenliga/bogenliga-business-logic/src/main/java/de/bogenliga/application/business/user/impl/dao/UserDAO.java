@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -27,8 +28,8 @@ public class UserDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "benutzer";
-    // business entity parameter names
 
+    // business entity parameter names
     private static final String USER_BE_ID = "userId";
     private static final String USER_BE_EMAIL = "userEmail";
     private static final String USER_BE_SALT = "userSalt";
@@ -39,26 +40,35 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_TABLE_SALT = "benutzer_salt";
     private static final String USER_TABLE_PASSWORD = "benutzer_password";
 
+    private static final String USER_EMAIL_QUERY_FUNCTION = "upper";
+
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserBE> USER = new BusinessEntityConfiguration<>(
             UserBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    /*
+    /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM benutzer";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(USER_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM benutzer "
-                    + " WHERE benutzer_id = ?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(USER_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_EMAIL =
-            "SELECT * "
-                    + " FROM benutzer "
-                    + " WHERE upper(benutzer_email) = upper(?)";
+    private static final String FIND_BY_EMAIL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEqualsRaw(
+                    QueryBuilder.applyFunction(USER_TABLE_EMAIL, USER_EMAIL_QUERY_FUNCTION),
+                    QueryBuilder.applyFunction(QueryBuilder.SQL_VALUE_PLACEHOLDER, USER_EMAIL_QUERY_FUNCTION)
+            )
+            .compose().toString();
 
     private final BasicDAO basicDao;
 

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -44,20 +45,17 @@ public class KampfrichterDAO  implements DataAccessObject {
     /*
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM kampfrichter"
-                    + " ORDER BY kampfrichter_benutzer_id";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(KAMPFRICHTER_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM kampfrichter "
-                    + " WHERE kampfrichter_benutzer_id = ?";
-
-    private static final String FIND_KAMPFRICHTER =
-            "SELECT * "
-                    + " FROM lizenz "
-                    + " WHERE lizenz_typ = Kampfrichter AND lizenz_dsb_mitglied_id = ?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(KAMPFRICHTER_TABLE_ID)
+            .compose().toString();
 
     private final BasicDAO basicDao;
 

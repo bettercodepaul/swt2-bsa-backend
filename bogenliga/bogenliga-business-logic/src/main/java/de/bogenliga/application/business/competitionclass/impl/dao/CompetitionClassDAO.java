@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -32,13 +33,13 @@ public class CompetitionClassDAO implements DataAccessObject {
     private static final String COMPETITIONCLASS_BE_NAME = "klasseName";
     private static final String COMPETITIONCLASS_BE_ALTER_MIN = "klasseAlterMin";
     private static final String COMPETITIONCLASS_BE_ALTER_MAX = "klasseAlterMax";
-    private static final String COMPETITIONCLASS_BE_KLASSE_NR = "klasseNr";
+    private static final String COMPETITIONCLASS_BE_NR = "klasseNr";
 
     private static final String COMPETITIONCLASS_TABLE_ID = "klasse_id";
     private static final String COMPETITIONCLASS_TABLE_NAME = "klasse_name";
     private static final String COMPETITIONCLASS_TABLE_ALTER_MIN = "klasse_alter_min";
     private static final String COMPETITIONCLASS_TABLE_ALTER_MAX = "klasse_alter_max";
-    private static final String COMPETITIONCLASS_TABLE_KLASSE_NR = "klasse_nr";
+    private static final String COMPETITIONCLASS_TABLE_NR = "klasse_nr";
 
 
     private static final BusinessEntityConfiguration<CompetitionClassBE> COMPETITIONCLASS = new BusinessEntityConfiguration<>(
@@ -47,11 +48,17 @@ public class CompetitionClassDAO implements DataAccessObject {
     /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * " + " FROM klasse" +  " ORDER BY klasse_nr";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(COMPETITIONCLASS_TABLE_NR)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * " + " FROM klasse" + " WHERE klasse_id = ?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(COMPETITIONCLASS_TABLE_ID)
+            .compose().toString();
 
     private final BasicDAO basicDao;
 
@@ -71,7 +78,7 @@ public class CompetitionClassDAO implements DataAccessObject {
         columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_NAME, COMPETITIONCLASS_BE_NAME);
         columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_ALTER_MIN, COMPETITIONCLASS_BE_ALTER_MIN);
         columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_ALTER_MAX, COMPETITIONCLASS_BE_ALTER_MAX);
-        columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_KLASSE_NR, COMPETITIONCLASS_BE_KLASSE_NR);
+        columnsToFieldsMap.put(COMPETITIONCLASS_TABLE_NR, COMPETITIONCLASS_BE_NR);
 
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 

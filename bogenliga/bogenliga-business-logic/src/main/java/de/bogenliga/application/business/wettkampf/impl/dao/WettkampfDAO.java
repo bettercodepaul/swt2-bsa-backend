@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.wettkampf.impl.dao;
 
 
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -51,18 +52,20 @@ public class WettkampfDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<WettkampfBE> WETTKAMPF = new BusinessEntityConfiguration<>(
             WettkampfBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    /*
+    /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM wettkampf"
-                    + " ORDER BY wettkampf_id";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(WETTKAMPF_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM wettkampf "
-                    + " WHERE wettkampf_id = ?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(WETTKAMPF_TABLE_ID)
+            .compose().toString();
 
     private final BasicDAO basicDao;
 

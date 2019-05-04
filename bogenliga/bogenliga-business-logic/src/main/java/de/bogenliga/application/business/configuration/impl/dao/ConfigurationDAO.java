@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -40,13 +41,16 @@ public class ConfigurationDAO implements DataAccessObject {
     /*
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM configuration";
-    private static final String FIND_BY_KEY =
-            "SELECT * "
-                    + " FROM configuration "
-                    + " WHERE configuration_key = ?";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .compose().toString();
+
+    private static final String FIND_BY_KEY = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(CONFIGURATION_TABLE_KEY)
+            .compose().toString();
 
     private final BasicDAO basicDao;
 

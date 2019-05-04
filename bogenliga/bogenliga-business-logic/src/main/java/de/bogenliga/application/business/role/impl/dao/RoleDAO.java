@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.role.impl.dao;
 
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.business.role.impl.entity.RoleBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -36,6 +37,8 @@ public class RoleDAO implements DataAccessObject {
     private static final String ROLE_TABLE_ID = "rolle_id";
     private static final String ROLE_TABLE_NAME = "rolle_name";
 
+    private static final String ROLE_NAME_QUERY_FUNCTION = "upper";
+
 
 
     // wrap all specific config parameters
@@ -46,15 +49,19 @@ public class RoleDAO implements DataAccessObject {
     /*
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM rolle";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .compose().toString();
 
-    private static final String FIND_BY_NAME =
-            "SELECT * "
-                    + " FROM rolle "
-                    + " WHERE upper(rolle_name) = upper(?)";
-
+    private static final String FIND_BY_NAME = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEqualsRaw(
+                    QueryBuilder.applyFunction(ROLE_TABLE_NAME, ROLE_NAME_QUERY_FUNCTION),
+                    QueryBuilder.applyFunction(QueryBuilder.SQL_VALUE_PLACEHOLDER, ROLE_NAME_QUERY_FUNCTION)
+            )
+            .compose().toString();
 
 
     private final BasicDAO basicDao;

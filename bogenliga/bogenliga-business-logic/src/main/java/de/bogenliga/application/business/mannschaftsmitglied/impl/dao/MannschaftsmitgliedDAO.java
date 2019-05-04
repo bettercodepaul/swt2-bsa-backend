@@ -2,6 +2,7 @@ package de.bogenliga.application.business.mannschaftsmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -28,6 +29,11 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "mannschaftsmitglied";
+    private static final String TABLE_ALIAS = "m";
+
+    private static final String DSB_MITGLIED_TABLE = "dsb_mitglied";
+    private static final String DSB_MITGLIED_TABLE_ALIAS = "d";
+    private static final String DSB_MITGLIED_TABLE_MIGLIED_ID = "dsb_mitglied_id";
     // business entity parameter names
 
     private static final String MANNSCHAFTSMITGLIED_BE_TEAM_ID = "mannschaftId";
@@ -52,27 +58,44 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             MannschaftsmitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
 
-    private static final String FIND_ALL =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
-                    + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    + " ORDER BY mannschaftsmitglied_mannschaft_id";
+    private static final String[] selectedFields = {
+            MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_TABLE_USER_ID,
+            MANNSCHAFTSMITGLIED_TABLE_INSERT, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME
+    };
 
-    private static final String FIND_BY_TEAM_ID =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
-                    + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    + " WHERE mannschaftsmitglied_mannschaft_id = ?";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectFields(selectedFields)
+            .from(TABLE, TABLE_ALIAS)
+            .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
+            .orderBy(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MEMBER_AND_TEAM_ID =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
-                    + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    +" WHERE mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_id=?";
+    private static final String FIND_BY_TEAM_ID = new QueryBuilder()
+            .selectFields(selectedFields)
+            .from(TABLE, TABLE_ALIAS)
+            .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
+            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .compose().toString();
 
-    private static final String FIND_ALL_SCHUETZE_TEAM =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
-                    + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    +" WHERE   mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_eingesetzt= true";
+    private static final String FIND_BY_MEMBER_AND_TEAM_ID = new QueryBuilder()
+            .selectFields(selectedFields)
+            .from(TABLE, TABLE_ALIAS)
+            .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
+            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .compose().toString();
 
-
+    private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
+            .selectFields(selectedFields)
+            .from(TABLE, TABLE_ALIAS)
+            .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
+            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .andTrue(MANNSCHAFTSMITGLIED_TABLE_INSERT)
+            .compose().toString();
 
 
     private final BasicDAO basicDao;

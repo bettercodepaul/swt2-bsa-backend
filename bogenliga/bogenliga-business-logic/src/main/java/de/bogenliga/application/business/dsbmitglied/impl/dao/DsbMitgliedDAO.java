@@ -2,6 +2,8 @@ package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
+import de.bogenliga.application.business.match.impl.dao.SubQueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -29,6 +31,10 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "dsb_mitglied";
+
+    private static final String LIZENZ_TABLE = "lizenz";
+    private static final String LIZENZ_TABLE_DSB_MITGLIED_ID = "lizenz_dsb_mitglied_id";
+    private static final String LIZENZ_TABLE_LIZENZ_TYP = "lizenz_typ";
     // business entity parameter names
 
     private static final String DSBMITGLIED_BE_ID = "dsbMitgliedId";
@@ -56,34 +62,36 @@ public class DsbMitgliedDAO implements DataAccessObject {
     /*
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM dsb_mitglied"
-                    + " ORDER BY dsb_mitglied_id";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(DSBMITGLIED_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM dsb_mitglied "
-                    + " WHERE dsb_mitglied_id = ?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(DSBMITGLIED_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_USER_ID =
-            "SELECT * "
-                    + " FROM dsb_mitglied "
-                    + " WHERE dsb_mitglied_benutzer_id = ?";
+    private static final String FIND_BY_USER_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(DSBMITGLIED_TABLE_USER_ID)
+            .compose().toString();
 
-    private static final String FIND_KAMPFRICHTER =
-            "SELECT * "
-                    + " FROM lizenz "
-                    + " WHERE lizenz_typ = 'Kampfrichter' AND lizenz_dsb_mitglied_id = ?";
-
-    private static final String FIND_DSB_KAMPFRICHTER =
-            "SELECT * FROM dsb_mitglied" +
-                    " WHERE dsb_mitglied_id = (" +
-                    " SELECT lizenz_dsb_mitglied_id" +
-                    " FROM lizenz" +
-                    " WHERE lizenz_dsb_mitglied_id = ?" +
-                    " AND lizenz_typ = 'Kampfrichter'" +
-                    " )";
+    private static final String FIND_DSB_KAMPFRICHTER = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(
+                    DSBMITGLIED_TABLE_ID,
+                    new SubQueryBuilder()
+                            .selectField(LIZENZ_TABLE_DSB_MITGLIED_ID)
+                            .from(LIZENZ_TABLE)
+                            .whereEquals(LIZENZ_TABLE_DSB_MITGLIED_ID)
+                            .andEquals(LIZENZ_TABLE_LIZENZ_TYP, "Kampfrichter")
+            )
+            .compose().toString();
 
     private final BasicDAO basicDao;
 

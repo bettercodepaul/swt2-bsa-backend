@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.user.impl.dao;
 
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.management.Query;
 
 /**
  * DataAccessObject for the user entity in the database.
@@ -30,6 +32,10 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "benutzer_rolle";
+
+    private static final String USER_TABLE = "benutzer";
+
+    private static final String ROLE_TABLE = "rolle";
     // business entity parameter names
 
     private static final String USER_BE_ID = "userId";
@@ -38,40 +44,50 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
     private static final String ROLE_BE_NAME = "roleName";
 
     private static final String USER_TABLE_ID = "benutzer_rolle_benutzer_id";
+    private static final String USER_TABLE_USER_ID = "benutzer_id";
     private static final String ROLE_TABLE_ID = "benutzer_rolle_rolle_id";
+    private static final String ROLE_TABLE_ROLE_ID = "rolle_id";
     private static final String USER_TABLE_EMAIL = "benutzer_email";
     private static final String ROLE_TABLE_NAME = "rolle_name";
+
+    private static final String USER_EMAIL_QUERY_FUNCTION = "upper";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserRoleExtBE> USERROLE = new BusinessEntityConfiguration<>(
             UserRoleExtBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    /*
+    /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email,"
-                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
-                    + " FROM benutzer_rolle, benutzer, rolle "
-                    + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id ";
+    private static final String[] selectedField = {
+            TABLE, USER_TABLE_ID, USER_TABLE, USER_TABLE_EMAIL, TABLE, ROLE_TABLE_ID, ROLE_TABLE, ROLE_TABLE_NAME
+    };
 
-    private static final String FIND_BY_ID =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
-                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
-                    + " FROM benutzer_rolle, benutzer, rolle "
-                    + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = ? "
-                    + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectFieldsWithTableNames(selectedField)
+            .from(TABLE).andFrom(USER_TABLE).andFrom(ROLE_TABLE)
+            .whereEquals(TABLE, USER_TABLE_ID, USER_TABLE, USER_TABLE_USER_ID)
+            .andEquals(TABLE, ROLE_TABLE_ID, ROLE_TABLE, ROLE_TABLE_ROLE_ID)
+            .compose().toString();
 
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectFieldsWithTableNames(selectedField)
+            .from(TABLE).andFrom(USER_TABLE).andFrom(ROLE_TABLE)
+            .whereEquals(QueryBuilder.withAlias(TABLE, USER_TABLE_ID))
+            .andEquals(TABLE, USER_TABLE_ID, USER_TABLE, USER_TABLE_USER_ID)
+            .andEquals(TABLE, ROLE_TABLE_ID, ROLE_TABLE, ROLE_TABLE_ROLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_EMAIL =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
-                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
-                    + " FROM benutzer_rolle, benutzer, rolle "
-                    + " WHERE upper(benutzer.benutzer_email) = upper(?) "
-                    + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id";
+    private static final String FIND_BY_EMAIL = new QueryBuilder()
+            .selectFieldsWithTableNames(selectedField)
+            .from(TABLE).andFrom(USER_TABLE).andFrom(ROLE_TABLE)
+            .whereEqualsRaw(
+                    QueryBuilder.applyFunction(QueryBuilder.withAlias(USER_TABLE, USER_TABLE_EMAIL), USER_EMAIL_QUERY_FUNCTION),
+                    QueryBuilder.applyFunction(QueryBuilder.SQL_VALUE_PLACEHOLDER, USER_EMAIL_QUERY_FUNCTION)
+            )
+            .andEquals(TABLE, USER_TABLE_ID, USER_TABLE, USER_TABLE_USER_ID)
+            .andEquals(TABLE, ROLE_TABLE_ID, ROLE_TABLE, ROLE_TABLE_ROLE_ID)
+            .compose().toString();
 
 
     private final BasicDAO basicDao;

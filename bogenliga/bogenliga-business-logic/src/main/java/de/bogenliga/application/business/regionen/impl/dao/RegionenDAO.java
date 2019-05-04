@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -46,21 +47,25 @@ public class RegionenDAO implements DataAccessObject {
     /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM region"
-                    + " ORDER BY region_id";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(REGION_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM region "
-                    + " WHERE region_id = ?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(REGION_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_ALL_BY_TYPE =
-            "SELECT * "
-                    + " FROM region"
-                    + " WHERE region_typ = ?"
-                    + " ORDER BY region_name";
+    private static final String FIND_ALL_BY_TYPE = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(REGION_TABLE_TYP)
+            .orderBy(REGION_TABLE_NAME)
+            .compose().toString();
+
     private final BasicDAO basicDAO;
 
 

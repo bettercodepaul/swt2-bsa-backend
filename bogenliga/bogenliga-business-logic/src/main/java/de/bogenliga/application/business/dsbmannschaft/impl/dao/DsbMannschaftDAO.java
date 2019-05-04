@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -39,18 +40,20 @@ public class DsbMannschaftDAO implements DataAccessObject {
     private static final BusinessEntityConfiguration<DsbMannschaftBE> MANNSCHAFT = new BusinessEntityConfiguration<>(
             DsbMannschaftBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
-    /*
+    /**
      * SQL queries
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM mannschaft"
-                    + " ORDER BY mannschaft_id";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(MANNSCHAFT_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_ID =
-            "SELECT * "
-                    + " FROM mannschaft"
-                    + " WHERE mannschaft_id = ?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(MANNSCHAFT_TABLE_ID)
+            .compose().toString();
 
     private final BasicDAO basicDao;
 
