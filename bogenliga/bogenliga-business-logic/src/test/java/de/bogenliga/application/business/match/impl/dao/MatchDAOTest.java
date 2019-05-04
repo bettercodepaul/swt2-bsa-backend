@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.match.impl.dao;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,8 +37,17 @@ public class MatchDAOTest extends BaseMatchTest {
 
         expectedBE = getMatchBE();
         basicDAOTest.setBE(expectedBE);
+
         // configure mocks
+
+        // find by id
         when(basicDao.selectSingleEntity(any(), any(), anyLong())).thenReturn(expectedBE);
+        // find by pk
+        when(basicDao.selectSingleEntity(any(), any(), anyLong(), anyLong(), anyLong(), anyLong(), anyLong())).thenReturn(expectedBE);
+        // find by match/wettkampf id
+        when(basicDao.selectEntityList(any(), any(), anyLong())).thenReturn(Collections.singletonList(expectedBE));
+        // find all
+        when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
     }
 
 /*
