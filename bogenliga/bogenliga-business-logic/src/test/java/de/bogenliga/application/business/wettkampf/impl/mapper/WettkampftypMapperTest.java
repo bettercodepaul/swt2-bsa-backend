@@ -5,14 +5,14 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import org.junit.Test;
 
-import static de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest.getWettkampfBE;
-import static de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest.getWettkampfDO;
+import static de.bogenliga.application.business.wettkampf.impl.business.WettkampftypComponentImplTest.getWettkampfBE;
+import static de.bogenliga.application.business.wettkampf.impl.business.WettkampftypComponentImplTest.getWettkampfDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @Author Daniel Schott daniel.schott@student.reutlingen-university.de
  */
-public class WettkampfMapperTest {
+public class WettkampftypMapperTest {
 
 
     private static final long user_Id=13;
