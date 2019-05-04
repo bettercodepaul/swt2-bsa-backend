@@ -4,13 +4,13 @@ import org.junit.Test;
 
 import java.time.OffsetDateTime;
 
-import static de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest.getWettkampfBE;
+import static de.bogenliga.application.business.wettkampf.impl.business.WettkampftypComponentImplTest.getWettkampfBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @Author Daniel Schott daniel.schott@student.reutlingen-university.de
  */
-public class WettkampfBETest {
+public class WettkampftypBETest {
 
     private static final long user_Id=13;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
