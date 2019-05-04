@@ -22,7 +22,8 @@ public class RegionenDO extends CommonDataObject implements DataObject {
 
     public RegionenDO(final Long id, final String regionName, final String regionKuerzel,
                       final String regionType, final Long regionUebergeordnet, final OffsetDateTime createdAtUtc,
-                      final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long lastModifiedByUserId, final Long version){
+                      final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long lastModifiedByUserId,
+                      final Long version){
 
         this.id = id;
         this.regionName = regionName;
@@ -39,6 +40,26 @@ public class RegionenDO extends CommonDataObject implements DataObject {
         this.version = version;
     }
 
+    /**
+     * Constructor with mandatory parameters
+     */
+
+    public RegionenDO(final Long id, final String regionName, final String regionKuerzel,
+                      final String regionType, final Long regionUebergeordnet, final OffsetDateTime createdAtUtc,
+                      final Long createdByUserId, final Long version){
+
+        this.id = id;
+        this.regionName = regionName;
+        this.regionKuerzel = regionKuerzel;
+        this.regionType = regionType;
+        this.regionUebergeordnet = regionUebergeordnet;
+
+        //set param from CommonDataObject
+
+        this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
+        this.version = version;
+    }
 
 
     public RegionenDO(final Long id, final String regionName, final String regionKuerzel,
@@ -53,6 +74,14 @@ public class RegionenDO extends CommonDataObject implements DataObject {
 
     }
 
+    /**
+     * Constuctor with id to delete existing region entries
+     *
+     * @param id Id of existing Verein entry
+     */
+    public RegionenDO(final Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
