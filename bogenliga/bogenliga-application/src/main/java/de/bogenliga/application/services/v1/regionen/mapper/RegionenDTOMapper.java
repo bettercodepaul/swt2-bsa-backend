@@ -32,6 +32,26 @@ public class RegionenDTOMapper implements DataTransferObjectMapper {
         return new RegionenDTO(id, name, kuerzel, typ, uebergeordnet, createdAtUtc,createdByUserId, version);
     };
 
+
+    /**
+     I map the {@link RegionenDTO} to the {@link RegionenDO} object
+     */
+
+    public static final Function<RegionenDTO, RegionenDO> toDO = dto -> {
+        final Long id = dto.getId();
+        final String name = dto.getName();
+        final String kuerzel = dto.getKuerzel();
+        final String typ = dto.getTyp();
+        final Long uebergeordnet = dto.getUebergeordnet();
+        final Long createdByUserId = dto.getCreatedByUserId();
+        final OffsetDateTime createdAtUtc = dto.getCreatedAtUtc();
+        final Long version = dto.getVersion();
+
+        return new RegionenDO(id, name, kuerzel, typ, uebergeordnet,
+                createdAtUtc, createdByUserId, version);
+    };
+
+
     /**
      * Constructor
      */
