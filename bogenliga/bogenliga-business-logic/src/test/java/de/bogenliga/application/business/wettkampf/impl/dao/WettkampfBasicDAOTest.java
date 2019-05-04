@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static de.bogenliga.application.business.wettkampf.impl.business.WettkampftypComponentImplTest.getWettkampfBE;
+import static de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest.getWettkampfBE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

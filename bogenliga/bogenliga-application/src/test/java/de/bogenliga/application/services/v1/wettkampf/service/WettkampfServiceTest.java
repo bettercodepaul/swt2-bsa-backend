@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
  * @Author Daniel Schott daniel.schott@student.reutlingen-university.de
  */
 
-public class WettkampftypServiceTest {
+public class WettkampfServiceTest {
     private static final long user_Id=13;
 
     private static final long wettkampf_Id = 322;
