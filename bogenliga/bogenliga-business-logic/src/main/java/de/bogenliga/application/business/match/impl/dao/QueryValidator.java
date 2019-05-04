@@ -30,57 +30,60 @@ public class QueryValidator {
 
 
     public void validateFrom(final String tableName) {
-        this.ensureSelect();
-        this.ensureNotComposed();
-        this.ensureValidString(tableName);
+        ensureSelect();
+        ensureNotComposed();
+        ensureValidString(tableName);
     }
 
 
     public void validateJoin(final String tableName) {
-        this.ensureSelect();
-        this.ensureFrom();
-        this.ensureNotComposed();
-        this.ensureValidString(tableName);
+        ensureSelect();
+        ensureFrom();
+        ensureNotComposed();
+        ensureValidString(tableName);
     }
 
 
     public void validateOn(String fieldName, String otherFieldName) {
-        this.ensureJoin();
-        this.ensureValidString(fieldName);
-        this.ensureValidString(otherFieldName);
+        ensureJoin();
+        ensureValidString(fieldName);
+        ensureValidString(otherFieldName);
     }
 
 
     public void validateWhere(String fieldName) {
-        this.ensureSelect();
-        this.ensureFrom();
-        this.ensureNotComposed();
-        this.ensureNoWhere();
-        this.ensureValidString(fieldName);
+        ensureSelect();
+        ensureFrom();
+        ensureNotComposed();
+        ensureNoWhere();
+        ensureValidString(fieldName);
     }
 
 
     public void validateAnd(String fieldName) {
-        this.ensureSelect();
-        this.ensureFrom();
-        this.ensureNotComposed();
-        this.ensureValidString(fieldName);
-        this.ensureWhere();
+        ensureSelect();
+        ensureFrom();
+        ensureNotComposed();
+        ensureValidString(fieldName);
+        ensureWhere();
     }
 
 
     public void validateOrdering(String fieldName) {
-        this.ensureSelect();
-        this.ensureFrom();
-        this.ensureNotComposed();
-        this.ensureValidString(fieldName);
+        ensureSelect();
+        ensureFrom();
+        ensureNotComposed();
+        ensureValidString(fieldName);
     }
 
 
     public void isComposable() {
-        this.ensureNotComposed();
-        this.ensureSelect();
-        this.ensureFrom();
+        ensureNotComposed();
+        ensureSelect();
+        ensureFrom();
+        if (hasJoin()) {
+            ensureOn();
+        }
     }
 
 
@@ -129,6 +132,11 @@ public class QueryValidator {
     }
 
 
+    public void ensureOn() {
+        Preconditions.checkArgument(hasOn(), SQL_ERROR_NOT_COMPOSED);
+    }
+
+
     public void ensureValidString(String value) {
         Preconditions.checkArgument(value != null, SQL_ERROR_VALUE_EMPTY);
         Preconditions.checkArgument(value.length() > 0, SQL_ERROR_VALUE_EMPTY);
@@ -152,6 +160,11 @@ public class QueryValidator {
 
     private boolean hasJoin() {
         return getQueryString().contains(QueryBuilder.SQL_JOIN);
+    }
+
+
+    private boolean hasOn() {
+        return getQueryString().contains(QueryBuilder.SQL_ON);
     }
 
 
