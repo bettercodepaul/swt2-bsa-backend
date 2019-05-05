@@ -21,7 +21,7 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
 
     @Override
     public String toString() {
-        return "PasseBE{" +
+        return "MatchBE{" +
                 "id=" + id +
                 "nr=" + nr +
                 "wettkampfId=" + wettkampfId +

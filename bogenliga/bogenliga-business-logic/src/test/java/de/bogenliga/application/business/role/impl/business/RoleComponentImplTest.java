@@ -1,9 +1,7 @@
 package de.bogenliga.application.business.role.impl.business;
 
-import de.bogenliga.application.business.role.api.types.RoleDO;
-import de.bogenliga.application.business.role.impl.business.RoleComponentImpl;
-import de.bogenliga.application.business.role.impl.dao.RoleDAO;
-import de.bogenliga.application.business.role.impl.entity.RoleBE;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,10 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import java.util.Collections;
-import java.util.List;
-
+import de.bogenliga.application.business.role.api.types.RoleDO;
+import de.bogenliga.application.business.role.impl.dao.RoleDAO;
+import de.bogenliga.application.business.role.impl.entity.RoleBE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +42,7 @@ public class RoleComponentImplTest {
     @Test
     public void findAll() {
         // prepare test data
-        final RoleBE expectedBE = new RoleBE();
+        RoleBE expectedBE = new RoleBE();
         expectedBE.setRoleId(ID);
         expectedBE.setRoleName(ROLENAME);
         expectedBE.setVersion(VERSION);
@@ -54,10 +51,10 @@ public class RoleComponentImplTest {
         when(roleDAO.findAll()).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<RoleDO> actual = underTest.findAll();
+        List<RoleDO> actual = underTest.findAll();
 
         // assert result
-        assertThat(actual).isNotNull();
+        assertThat(actual).isNotNull().isNotEmpty();
 
         assertThat(actual.get(0).getId())
                 .isEqualTo(expectedBE.getRoleId());

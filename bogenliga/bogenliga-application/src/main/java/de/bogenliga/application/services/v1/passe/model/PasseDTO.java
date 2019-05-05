@@ -9,30 +9,25 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class PasseDTO implements DataTransferObject {
 
-
     private static final long serialVersionUID = -3582493648923927523L;
 
     private long id;
-    private long mannschaft_id;
-    private long wettkampf_id;
-    private long match_nr;
-    private long lfdnr;
-    private long dsb_mitglied_nr;
+    private long mannschaftId;
+    private long wettkampfId;
+    private long matchNr;
+    private long lfdNr;
+    private long dsbMitgliedNr;
     private int[] ringzahl;
 
 
-    public PasseDTO() {
-    }
-
-
-    public PasseDTO(long id, long mannschaft_id, long wettkampf_id, long match_nr,
-                    long lfdnr, long dsb_mitglied_nr, int[] ringzahl) {
+    public PasseDTO(long id, long mannschaftId, long wettkampfId, long matchNr,
+                    long lfdNr, long dsbMitgliedNr, int[] ringzahl) {
         this.id = id;
-        this.mannschaft_id = mannschaft_id;
-        this.wettkampf_id = wettkampf_id;
-        this.match_nr = match_nr;
-        this.lfdnr = lfdnr;
-        this.dsb_mitglied_nr = dsb_mitglied_nr;
+        this.mannschaftId = mannschaftId;
+        this.wettkampfId = wettkampfId;
+        this.matchNr = matchNr;
+        this.lfdNr = lfdNr;
+        this.dsbMitgliedNr = dsbMitgliedNr;
         this.ringzahl = ringzahl;
     }
 
@@ -47,53 +42,53 @@ public class PasseDTO implements DataTransferObject {
     }
 
 
-    public long getMannschaft_id() {
-        return mannschaft_id;
+    public long getMannschaftId() {
+        return mannschaftId;
     }
 
 
-    public void setMannschaft_id(long mannschaft_id) {
-        this.mannschaft_id = mannschaft_id;
+    public void setMannschaftId(long mannschaftId) {
+        this.mannschaftId = mannschaftId;
     }
 
 
-    public long getWettkampf_id() {
-        return wettkampf_id;
+    public long getWettkampfId() {
+        return wettkampfId;
     }
 
 
-    public void setWettkampf_id(long wettkampf_id) {
-        this.wettkampf_id = wettkampf_id;
+    public void setWettkampfId(long wettkampfId) {
+        this.wettkampfId = wettkampfId;
     }
 
 
-    public long getMatch_nr() {
-        return match_nr;
+    public long getMatchNr() {
+        return matchNr;
     }
 
 
-    public void setMatch_nr(long match_nr) {
-        this.match_nr = match_nr;
+    public void setMatchNr(long matchNr) {
+        this.matchNr = matchNr;
     }
 
 
-    public long getLfdnr() {
-        return lfdnr;
+    public long getLfdNr() {
+        return lfdNr;
     }
 
 
-    public void setLfdnr(long lfdnr) {
-        this.lfdnr = lfdnr;
+    public void setLfdNr(long lfdNr) {
+        this.lfdNr = lfdNr;
     }
 
 
-    public long getDsb_mitglied_nr() {
-        return dsb_mitglied_nr;
+    public long getDsbMitgliedNr() {
+        return dsbMitgliedNr;
     }
 
 
-    public void setDsb_mitglied_nr(long dsb_mitglied_nr) {
-        this.dsb_mitglied_nr = dsb_mitglied_nr;
+    public void setDsbMitgliedNr(long dsbMitgliedNr) {
+        this.dsbMitgliedNr = dsbMitgliedNr;
     }
 
 

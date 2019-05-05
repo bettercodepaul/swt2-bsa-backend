@@ -13,6 +13,11 @@ import de.bogenliga.application.common.time.DateProvider;
  */
 public class MatchMapper implements ValueObjectMapper {
 
+    /**
+     * Empty hidden constructor to prevent instantiation
+     */
+    private MatchMapper () {}
+
     public static final Function<MatchBE, MatchDO> toMatchDO = matchBE -> {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(matchBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(matchBE.getLastModifiedAtUtc());
