@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.match.impl.dao.QueryBuilder;
 import de.bogenliga.application.business.user.impl.entity.UserPermissionBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -27,6 +28,23 @@ public class UserPermissionDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "benutzer";
+    private static final String TABLE_ALIAS = "b";
+
+    private static final String TABLE_RECHT = "recht";
+    private static final String TABLE_RECHT_ALIAS = "r";
+    private static final String TABLE_RECHT_TABLE_NAME = "recht_name";
+    private static final String TABLE_RECHT_TABLE_ID = "recht_id";
+
+    private static final String TABLE_ROLLE_RECHT = "rolle_recht";
+    private static final String TABLE_ROLLE_RECHT_ALIAS = "rr";
+    private static final String TABLE_ROLLE_RECHT_TABLE_ROLLE_RECHT_ROLLE_ID = "rolle_recht_rolle_id";
+    private static final String TABLE_ROLLE_RECHT_TABLE_ROLLE_RECHT_RECHT_ID = "rolle_recht_recht_id";
+
+    private static final String TABLE_USER_ROLLE = "benutzer_rolle";
+    private static final String TABLE_USER_ROLLE_ALIAS = "br";
+    private static final String TABLE_USER_ROLLE_TABLE_USER_ID = "benutzer_rolle_benutzer_id";
+    private static final String TABLE_USER_ROLLE_TABLE_ROLLE_ID = "benutzer_rolle_rolle_id";
+
     // business entity parameter names
 
     private static final String USER_BE_ID = "userId";
@@ -38,18 +56,24 @@ public class UserPermissionDAO implements DataAccessObject {
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserPermissionBE> USER_PERMISSION = new BusinessEntityConfiguration<>(
             UserPermissionBE.class, TABLE, getColumnsToFieldsMap(), LOG);
-    /*
+
+
+    /**
      * SQL queries
      */
-    private static final String FIND_BY_USER_ID =
-            "SELECT benutzer.benutzer_id, recht.recht_name "
-                    + " FROM benutzer "
-                    + "   LEFT JOIN benutzer_rolle rolle ON benutzer.benutzer_id = rolle.benutzer_rolle_benutzer_id " // TODO add left & right join to QueryBuilder
-                    + "   LEFT JOIN rolle_recht rr ON rolle.benutzer_rolle_rolle_id = rr.rolle_recht_rolle_id "
-                    + "   LEFT JOIN recht recht ON rr.rolle_recht_recht_id = recht.recht_id "
-                    + " WHERE benutzer_id = ? "
-                    + " GROUP BY recht_name, benutzer_id "
-                    + " ORDER BY recht_name ASC;";
+    private static final String FIND_BY_USER_ID = new QueryBuilder()
+            .selectFieldsWithAliases(TABLE_ALIAS, USER_TABLE_ID, TABLE_RECHT_ALIAS, TABLE_RECHT_TABLE_NAME)
+            .from(TABLE, TABLE_ALIAS)
+                .joinLeft(TABLE_USER_ROLLE, TABLE_USER_ROLLE_ALIAS)
+                .on(TABLE_ALIAS, USER_TABLE_ID, TABLE_USER_ROLLE_ALIAS, TABLE_USER_ROLLE_TABLE_USER_ID)
+                .joinLeft(TABLE_ROLLE_RECHT, TABLE_ROLLE_RECHT_ALIAS)
+                .on(TABLE_USER_ROLLE_ALIAS, TABLE_USER_ROLLE_TABLE_ROLLE_ID, TABLE_ROLLE_RECHT_ALIAS, TABLE_ROLLE_RECHT_TABLE_ROLLE_RECHT_ROLLE_ID)
+                .joinLeft(TABLE_RECHT, TABLE_RECHT_ALIAS)
+                .on(TABLE_RECHT_ALIAS, TABLE_RECHT_TABLE_ID, TABLE_ROLLE_RECHT_ALIAS, TABLE_ROLLE_RECHT_TABLE_ROLLE_RECHT_RECHT_ID)
+            .whereEquals(USER_TABLE_ID)
+            .groupBy(TABLE_RECHT_TABLE_NAME, USER_TABLE_ID)
+            .orderByAsc(TABLE_RECHT_TABLE_NAME)
+            .compose().toString();
 
 
     private final BasicDAO basicDao;
