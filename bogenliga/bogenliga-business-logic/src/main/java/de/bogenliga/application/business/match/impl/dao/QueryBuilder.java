@@ -9,10 +9,10 @@ import de.bogenliga.application.common.validation.Preconditions;
  * don't want those unhandy raw SQL strings inside your DAO.
  *
  * Does support:
- * Non-nested queries, simple joins with equality, aliases on table names and for field reference.
+ * Simple queries, subselects, simple joins with equality, aliases for table names and fields, grouping and ordering.
  *
  * Best practice:
- * Define constants for your table column names and required aliases and use them in the query builder api. -> DRY
+ * Define constants for your table, table columns and required aliases and use them in the query builder api. -> DRY
  * If you don't know how something works, check out the QueryBuilderTest. Some common cases are shown there.
  *
  * <br>
@@ -142,6 +142,12 @@ public class QueryBuilder {
 
 
     public QueryBuilder selectFieldsWithTableNames(String... fieldNames) {
+        Preconditions.checkArgument(
+                fieldNames.length % 2 == 0,
+                "When using aliases or explicit table names, " +
+                        "make sure each column has its table alias/name (-> even arg count)."
+        );
+
         StringBuilder builder = new StringBuilder(this.queryString);
         builder.append(SQL_SELECT);
         int maxIdx = fieldNames.length - 1;
@@ -167,11 +173,6 @@ public class QueryBuilder {
 
 
     public QueryBuilder selectFieldsWithAliases(String... fieldNames) {
-        Preconditions.checkArgument(
-                fieldNames.length % 2 == 0,
-                "When using aliases, make sure each column has its table alias (-> even arg count)."
-        );
-
         return this.selectFieldsWithTableNames(fieldNames);
     }
 
