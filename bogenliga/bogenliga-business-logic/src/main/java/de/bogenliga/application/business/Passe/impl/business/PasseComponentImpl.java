@@ -23,9 +23,14 @@ public class PasseComponentImpl implements PasseComponent {
     private static final String PRECONDITION_PASSEDO = "PasseDO must not be null";
     private static final String PRECONDITION_PASSE_MANNSCHAFT_ID = "passe_mannschaft_id must not be null";
     private static final String PRECONDITION_DSBMITGLIED_MITGLIED_ID = "PasseDO_dsb_mitglied_id must not be null";
-
+    private static final String PRECONDITION_PASSE_WETTKAMPF_ID = "Wettkampf_ID must not be null";
+    private static final String PRECONDITION_PASSE_LFDNR = "LFDNR must not be null";
     private static final String PRECONDITION_PASSE_MANNSCHAFT_ID_NEGATIV = "MannschaftsmitgliedDO_Mannschaft_ID must not be negativ";
     private static final String PRECONDITION_PASSE_DSB_MITGLIED_ID_NEGATIV = "PasseDO_Dsb_Mitglied_ID must not be negativ";
+    private static final String PRECONDITION_PASSE_WETTKAMPF_ID_NEGATIV = "Wettkampf_ID must not be negativ";
+    private static final String PRECONDITION_PASSE_LFDNR_NEGATIV = "LFDNR must not be negativ";
+    private static final String PRECONDITION_CURRENT_USER_ID = "currentUserId must not be null and must not be negative";
+
 
 
     private final PasseDAO passeDAO;
@@ -66,6 +71,9 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByWettkampfId(long wettkampfId) {
+        Preconditions.checkNotNull(wettkampfId, PRECONDITION_PASSE_WETTKAMPF_ID);
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_PASSE_WETTKAMPF_ID_NEGATIV);
+
         final List<PasseBE> passeBEList = passeDAO.findByWettkampfId(wettkampfId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -80,6 +88,9 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByTeamId(long teamId) {
+        Preconditions.checkNotNull(teamId, PRECONDITION_PASSE_MANNSCHAFT_ID);
+        Preconditions.checkArgument(teamId >= 0, PRECONDITION_PASSE_DSB_MITGLIED_ID_NEGATIV);
+
         final List<PasseBE> passeBEList = passeDAO.findByTeamId(teamId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -95,6 +106,11 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMemberAndTeamId(long dsbMitgliedId, long mannschaftId) {
+        Preconditions.checkNotNull(dsbMitgliedId, PRECONDITION_DSBMITGLIED_MITGLIED_ID);
+        Preconditions.checkNotNull(mannschaftId, PRECONDITION_PASSE_MANNSCHAFT_ID);
+        Preconditions.checkArgument(dsbMitgliedId >= 0, PRECONDITION_PASSE_DSB_MITGLIED_ID_NEGATIV);
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_PASSE_MANNSCHAFT_ID_NEGATIV);
+
         final List<PasseBE> passeBEList = passeDAO.findByMemberAndTeamId(dsbMitgliedId, mannschaftId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -109,6 +125,9 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public PasseDO findByLfdNr(long lfdNr) {
+        Preconditions.checkNotNull(lfdNr, PRECONDITION_PASSE_LFDNR);
+        Preconditions.checkArgument(lfdNr >= 0, PRECONDITION_PASSE_LFDNR_NEGATIV);
+
         final PasseBE passeBE = passeDAO.findByLfdNr(lfdNr);
         return PasseMapper.toPasseDO.apply(passeBE);
     }
@@ -121,9 +140,15 @@ public class PasseComponentImpl implements PasseComponent {
      * @param currentUserId the current user creating
      *
      * @return persisted version of the passe
+     *
+     * toDo: evtl Precondition für alle passeDo Attribute
+     *
      */
     @Override
     public PasseDO create(PasseDO passeDO, final Long currentUserId) {
+        Preconditions.checkNotNull(passeDO, PRECONDITION_PASSEDO);
+        Preconditions.checkNotNull(currentUserId, PRECONDITION_CURRENT_USER_ID);
+
         final PasseBE passeBE = new PasseBE();
         passeBE.setCreatedByUserId(passeDO.getCreatedByUserId());
 

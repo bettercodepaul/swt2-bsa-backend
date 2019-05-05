@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Yannik Prigl
  */
 public class PasseDTO implements DataTransferObject {
 
@@ -20,10 +20,13 @@ public class PasseDTO implements DataTransferObject {
     private long dsb_mitglied_nr;
     private int[] ringzahl;
 
-    public PasseDTO(){}
 
-    public PasseDTO(long id,long mannschaft_id, long wettkampf_id, long match_nr,
-                    long lfdnr, long dsb_mitglied_nr, int[] ringzahl){
+    public PasseDTO() {
+    }
+
+
+    public PasseDTO(long id, long mannschaft_id, long wettkampf_id, long match_nr,
+                    long lfdnr, long dsb_mitglied_nr, int[] ringzahl) {
         this.id = id;
         this.mannschaft_id = mannschaft_id;
         this.wettkampf_id = wettkampf_id;
@@ -32,6 +35,7 @@ public class PasseDTO implements DataTransferObject {
         this.dsb_mitglied_nr = dsb_mitglied_nr;
         this.ringzahl = ringzahl;
     }
+
 
     public long getId() {
         return id;

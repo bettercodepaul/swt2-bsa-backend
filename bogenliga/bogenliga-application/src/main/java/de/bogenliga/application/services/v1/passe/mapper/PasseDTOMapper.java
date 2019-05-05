@@ -8,7 +8,7 @@ import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Yannik Prigl
  */
 public class PasseDTOMapper implements DataTransferObjectMapper {
 
