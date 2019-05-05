@@ -44,6 +44,7 @@ public class MatchService implements ServiceFacade {
     private static final String ERR_NOT_NULL_TEMPLATE = "MatchService: %s: %s must not be null.";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
     private static final String ERR_EQUAL_TEMPLATE = "MatchService: %s: %s must be equal.";
+    private static final String ERR_SIZE_TEMPLATE = "MatchService: %s: %s must have a size of %d.";
 
     // a simple map mapping DTO's methods to related error messages
     // used in checkPreconditions
@@ -67,6 +68,7 @@ public class MatchService implements ServiceFacade {
     private static final String SERVICE_UPDATE = "update";
 
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
+    private static final String CHECKED_PARAM_MATCH_DTO_LIST = "matchDTOs";
     private static final String CHECKED_PARAM_MATCH_DTO_1 = "MatchDTO1";
     private static final String CHECKED_PARAM_MATCH_DTO_2 = "MatchDTO2";
     private static final String CHECKED_PARAM_PRINCIPAL = "principal";
@@ -137,8 +139,7 @@ public class MatchService implements ServiceFacade {
 
 
     /**
-     * @param matchDTO1
-     * @param matchDTO2
+     * @param matchDTOs
      *
      * @return
      */
@@ -146,11 +147,19 @@ public class MatchService implements ServiceFacade {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
-    public List<MatchDTO> saveMatches(@RequestBody final MatchDTO matchDTO1, @RequestBody final MatchDTO matchDTO2,
-                                      final Principal principal) {
+    public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) {
+        Preconditions.checkNotNull(matchDTOs, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST));
+        Preconditions.checkArgument(matchDTOs.size() == 2, String.format(
+                ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST, 2
+        ));
+        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_PRINCIPAL));
+
+        MatchDTO matchDTO1, matchDTO2;
+        matchDTO1 = matchDTOs.get(0);
+        matchDTO2 = matchDTOs.get(1);
+
         Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_1));
         Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_2));
-        Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO1);
         checkPreconditions(matchDTO2);
 
