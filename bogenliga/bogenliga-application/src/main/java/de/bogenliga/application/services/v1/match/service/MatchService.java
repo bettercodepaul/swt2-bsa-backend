@@ -92,7 +92,7 @@ public class MatchService implements ServiceFacade {
     @RequestMapping(value = "{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public MatchDTO findById(@PathVariable("id") Long matchId) {
         Preconditions.checkArgument(matchId >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
         Preconditions.checkNotNull(matchId, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
@@ -114,7 +114,7 @@ public class MatchService implements ServiceFacade {
     @RequestMapping(value = "schusszettel/{matchId1}/{matchId2}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<MatchDTO> findMatchesByIds(@PathVariable("matchId1") Long matchId1, @PathVariable("matchId2") Long matchId2) {
         this.checkMatchId(matchId1);
         this.checkMatchId(matchId2);
@@ -146,7 +146,7 @@ public class MatchService implements ServiceFacade {
     @RequestMapping(value = "schusszettel",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) {
         Preconditions.checkNotNull(matchDTOs, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST));
         Preconditions.checkArgument(matchDTOs.size() == 2, String.format(
@@ -206,7 +206,7 @@ public class MatchService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) {
         Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO);
@@ -232,7 +232,7 @@ public class MatchService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) {
         Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO);
