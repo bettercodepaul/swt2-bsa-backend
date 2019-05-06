@@ -25,11 +25,12 @@ public class PasseDTOMapper implements DataTransferObjectMapper {
         final long mannschaftsId = passeDO.getPasseMannschaftId();
         final long wettkampfId = passeDO.getPasseWettkampfId();
         final long matchnr = passeDO.getPasseMatchNr();
+        final long matchid = passeDO.getPasseMatchId();
         final long lfdnr = passeDO.getPasseLfdnr();
         final long dsbMitgliedId = passeDO.getPasseDsbMitgliedId();
         final int[] ringzahl = {passeDO.getPfeil1(), passeDO.getPfeil2(), passeDO.getPfeil3(),
                 passeDO.getPfeil4(), passeDO.getPfeil5(), passeDO.getPfeil6()};
-        return new PasseDTO(id, mannschaftsId, wettkampfId, matchnr,
+        return new PasseDTO(id, mannschaftsId, wettkampfId, matchnr,matchid,
                 lfdnr, dsbMitgliedId, ringzahl);
     };
 
@@ -41,6 +42,7 @@ public class PasseDTOMapper implements DataTransferObjectMapper {
         final long mannschaftsId = passeDTO.getMannschaftId();
         final long wettkampfId = passeDTO.getWettkampfId();
         final long matchnr = passeDTO.getMatchNr();
+        final long matchId = passeDTO.getMatchId();
         final long lfdnr = passeDTO.getLfdNr();
         final long dsbMitgliedId = passeDTO.getDsbMitgliedNr();
         final int pfeil1 = passeDTO.getRingzahl()[0];
@@ -50,7 +52,7 @@ public class PasseDTOMapper implements DataTransferObjectMapper {
         final int pfeil5 = passeDTO.getRingzahl()[4];
         final int pfeil6 = passeDTO.getRingzahl()[5];
 
-        return new PasseDO(id,mannschaftsId,wettkampfId,matchnr,
+        return new PasseDO(id,mannschaftsId,wettkampfId,matchnr,matchId,
                 lfdnr,dsbMitgliedId,pfeil1,pfeil2,pfeil3,pfeil4,pfeil5,pfeil6);
     };
 }
