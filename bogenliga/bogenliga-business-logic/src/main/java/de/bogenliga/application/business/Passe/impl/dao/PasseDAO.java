@@ -119,7 +119,8 @@ public class PasseDAO implements DataAccessObject {
     private static final String FIND_BY_MATCH_ID =
             "SELECT * "
                     + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_MATCH_ID; // MatchID ist noch nicht in der Passetabelle
+                    + " WHERE " + PASSE_TABLE_MATCH_ID
+                    + "=?";
 
     private static final String FIND_BY_MANNSCHAFT_ID =
             "SELECT * "
@@ -238,6 +239,7 @@ public class PasseDAO implements DataAccessObject {
         return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID, dsbMitgliedId);
     }
 
+
     private static final String FIND_BY_LFDNR =
             "SELECT * "
                     + " FROM " + TABLE
@@ -259,7 +261,6 @@ public class PasseDAO implements DataAccessObject {
 
 
     /**
-     *
      * @param dsbMitgliedId of the mannschaftsmitglied,
      * @param matchId       of the match
      *
@@ -297,9 +298,9 @@ public class PasseDAO implements DataAccessObject {
         return basicDao.insertEntity(PASSE, passeBE);
     }
 
+
     /**
-     *
-     * @param passeBE current passe being updated
+     * @param passeBE                   current passe being updated
      * @param currentKampfrichterUserId current user
      *
      * @return Business Entity from Passe
@@ -310,9 +311,10 @@ public class PasseDAO implements DataAccessObject {
         return basicDao.updateEntity(PASSE, passeBE, "passeID");
     }
 
+
     public void delete(PasseBE passeBE, long currentMemberId) {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
-        basicDao.deleteEntity(PASSE,passeBE,PASSE_TABLE_ID);
+        basicDao.deleteEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
 
 }
