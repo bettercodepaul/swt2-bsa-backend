@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.baseClass.impl.BasicBETest;
+import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -36,14 +36,14 @@ public class MatchBasicDAOTest extends BaseMatchTest {
     private static final long USER = 0;
 
     // Implements generic way to test business entities methods
-    private BasicBETest<MatchBE> basicDAOTest;
+    private BasicTest<MatchBE> basicDAOTest;
 
 
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        basicDAOTest = new BasicBETest<>();
-        basicDAOTest.setBE(expectedBE);
+        basicDAOTest = new BasicTest<>();
+        basicDAOTest.setEntity(expectedBE);
 
     }
 

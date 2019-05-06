@@ -1,14 +1,11 @@
 package de.bogenliga.application.business.match.impl.dao;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import de.bogenliga.application.business.baseClass.impl.BasicBETest;
+import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -28,16 +25,16 @@ public class MatchDAOTest extends BaseMatchTest {
     private MatchBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicBETest<MatchBE> basicDAOTest;
+    private BasicTest<MatchBE> basicDAOTest;
 
 
     @Before
     public void testSetup() {
-        basicDAOTest = new BasicBETest<>();
+        basicDAOTest = new BasicTest<>();
 
         expectedBE = getMatchBE();
-        basicDAOTest.setBE(expectedBE);
 
+        basicDAOTest.setEntity(expectedBE);
         // configure mocks
 
         // find by id
