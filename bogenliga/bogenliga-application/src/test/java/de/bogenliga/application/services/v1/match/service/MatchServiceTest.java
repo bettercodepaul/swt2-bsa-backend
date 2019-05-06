@@ -84,6 +84,7 @@ public class MatchServiceTest {
                 MATCH_MANNSCHAFT_ID,
                 MATCH_WETTKAMPF_ID,
                 MATCH_NR,
+                MATCH_ID,
                 PASSE_LFDR_NR,
                 PASSE_DSB_MITGLIED_ID,
                 PASSE_PFEIL_1,

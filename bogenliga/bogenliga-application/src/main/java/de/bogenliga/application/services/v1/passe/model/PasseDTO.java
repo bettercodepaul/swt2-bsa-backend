@@ -16,21 +16,35 @@ public class PasseDTO implements DataTransferObject {
     private long mannschaftId;
     private long wettkampfId;
     private long matchNr;
+    private long matchId;
     private long lfdNr;
     private long dsbMitgliedNr;
     private int[] ringzahl;
 
     public PasseDTO(){}
 
-    public PasseDTO(long id, long mannschaftId, long wettkampfId, long matchNr,
+
+
+
+    public PasseDTO(long id, long mannschaftId, long wettkampfId, long matchNr, long matchid,
                     long lfdNr, long dsbMitgliedNr, int[] ringzahl){
         this.id = id;
         this.mannschaftId = mannschaftId;
         this.wettkampfId = wettkampfId;
         this.matchNr = matchNr;
+        this.matchId = matchid;
         this.lfdNr = lfdNr;
         this.dsbMitgliedNr = dsbMitgliedNr;
         this.ringzahl = ringzahl;
+    }
+
+    public long getMatchId() {
+        return matchId;
+    }
+
+
+    public void setMatchId(long matchId) {
+        this.matchId = matchId;
     }
 
     public long getId() {
