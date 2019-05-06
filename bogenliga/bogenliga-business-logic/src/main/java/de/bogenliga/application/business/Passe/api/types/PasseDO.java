@@ -5,6 +5,7 @@ import de.bogenliga.application.common.component.types.CommonDataObject;
 
 /**
  * Contains the values of the Passe business entity.
+ *
  * @author Kay Scheerer
  */
 public class PasseDO extends CommonDataObject {
@@ -14,6 +15,7 @@ public class PasseDO extends CommonDataObject {
     private Long passeMannschaftId;
     private Long passeWettkampfId;
     private Long passeMatchNr;
+    private Long passeMatchId;
     private Long passeLfdnr;
     private Long passeDsbMitgliedId;
 
@@ -25,14 +27,17 @@ public class PasseDO extends CommonDataObject {
     private Integer pfeil6;
 
 
-     public PasseDO(Long id, Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeLfdnr,
-        Long passeDsbMitgliedId, Integer pfeil1, Integer pfeil2, Integer pfeil3, Integer pfeil4, Integer pfeil5, Integer pfeil6, final OffsetDateTime createdAtUtc,
-                    final Long createdByUserId, final OffsetDateTime lastModifiedUtc,
-                    final Long lastModifiedByUserId, final Long version){
+    public PasseDO(Long id, Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeMatchId,
+                   Long passeLfdnr,
+                   Long passeDsbMitgliedId, Integer pfeil1, Integer pfeil2, Integer pfeil3, Integer pfeil4,
+                   Integer pfeil5, Integer pfeil6, final OffsetDateTime createdAtUtc,
+                   final Long createdByUserId, final OffsetDateTime lastModifiedUtc,
+                   final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.passeMannschaftId = passeMannschaftId;
         this.passeWettkampfId = passeWettkampfId;
         this.passeMatchNr = passeMatchNr;
+        this.passeMatchId = passeMatchId;
         this.passeLfdnr = passeLfdnr;
         this.passeDsbMitgliedId = passeDsbMitgliedId;
         this.pfeil1 = pfeil1;
@@ -50,12 +55,15 @@ public class PasseDO extends CommonDataObject {
     }
 
 
-    public PasseDO(Long id, Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeLfdnr,
-                   Long passeDsbMitgliedId, Integer pfeil1, Integer pfeil2, Integer pfeil3, Integer pfeil4, Integer pfeil5, Integer pfeil6) {
+    public PasseDO(Long id, Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeMatchId,
+                   Long passeLfdnr,
+                   Long passeDsbMitgliedId, Integer pfeil1, Integer pfeil2, Integer pfeil3, Integer pfeil4,
+                   Integer pfeil5, Integer pfeil6) {
         this.id = id;
         this.passeMannschaftId = passeMannschaftId;
         this.passeWettkampfId = passeWettkampfId;
         this.passeMatchNr = passeMatchNr;
+        this.passeMatchId = passeMatchId;
         this.passeLfdnr = passeLfdnr;
         this.passeDsbMitgliedId = passeDsbMitgliedId;
         this.pfeil1 = pfeil1;
@@ -114,6 +122,16 @@ public class PasseDO extends CommonDataObject {
 
     public void setPfeil5(Integer pfeil5) {
         this.pfeil5 = pfeil5;
+    }
+
+
+    public Long getPasseMatchId() {
+        return passeMatchId;
+    }
+
+
+    public void setPasseMatchId(Long passeMatchId) {
+        this.passeMatchId = passeMatchId;
     }
 
 
