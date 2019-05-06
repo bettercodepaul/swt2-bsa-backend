@@ -31,6 +31,7 @@ public class PasseDAO implements DataAccessObject {
     private static final String PASSE_BE_MANNSCHAFT_ID = "passeMannschaftId";
     private static final String PASSE_BE_WETTKAMPF_ID = "passeWettkampfId";
     private static final String PASSE_BE_MATCH_NR = "passeMatchNr";
+    private static final String PASSE_BE_MATCH_ID = "passeMatchId";
     private static final String PASSE_BE_LFDNR = "passeLfdnr";
     private static final String PASSE_BE_DSB_MITGLIED_ID = "passeDsbMitgliedId";
     private static final String PASSE_BE_PFEIL_1 = "passeRingzahlPfeil1";
@@ -43,6 +44,7 @@ public class PasseDAO implements DataAccessObject {
     private static final String PASSE_TABLE_MANNSCHAFT_ID = "passe_mannschaft_id";
     private static final String PASSE_TABLE_WETTKAMPF_ID = "passe_wettkampf_id";
     private static final String PASSE_TABLE_MATCH_NR = "passe_match_nr";
+    private static final String PASSE_TABLE_MATCH_ID = "passe_match_id";
     private static final String PASSE_TABLE_LFDNR = "passe_lfdnr";
     private static final String PASSE_TABLE_DSB_MITGLIED_ID = "passe_dsb_mitglied_id";
 
@@ -79,6 +81,7 @@ public class PasseDAO implements DataAccessObject {
         columnsToFieldsMap.put(PASSE_TABLE_MANNSCHAFT_ID, PASSE_BE_MANNSCHAFT_ID);
         columnsToFieldsMap.put(PASSE_TABLE_WETTKAMPF_ID, PASSE_BE_WETTKAMPF_ID);
         columnsToFieldsMap.put(PASSE_TABLE_MATCH_NR, PASSE_BE_MATCH_NR);
+        columnsToFieldsMap.put(PASSE_TABLE_MATCH_ID, PASSE_BE_MATCH_ID);
         columnsToFieldsMap.put(PASSE_TABLE_LFDNR, PASSE_BE_LFDNR);
         columnsToFieldsMap.put(PASSE_TABLE_DSB_MITGLIED_ID, PASSE_BE_DSB_MITGLIED_ID);
         columnsToFieldsMap.put(PASSE_TABLE_PFEIL_1, PASSE_BE_PFEIL_1);
@@ -116,7 +119,7 @@ public class PasseDAO implements DataAccessObject {
     private static final String FIND_BY_MATCH_ID =
             "SELECT * "
                     + " FROM " + TABLE
-                    + " WHERE " + ""; // MatchID ist noch nicht in der Passetabelle
+                    + " WHERE " + PASSE_TABLE_MATCH_ID; // MatchID ist noch nicht in der Passetabelle
 
     private static final String FIND_BY_MANNSCHAFT_ID =
             "SELECT * "
@@ -148,7 +151,7 @@ public class PasseDAO implements DataAccessObject {
                     + " FROM " + TABLE
                     + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
                     + "=? "
-                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
+                    + " AND WHERE " + PASSE_TABLE_MATCH_ID
                     + "=?";
 
     private static final String FIND_BY_MITGLIED_MATCH_ID =
@@ -156,7 +159,7 @@ public class PasseDAO implements DataAccessObject {
                     + " FROM " + TABLE
                     + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
                     + "=? "
-                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
+                    + " AND WHERE " + PASSE_TABLE_MATCH_ID
                     + "=?";
 
 
@@ -256,7 +259,6 @@ public class PasseDAO implements DataAccessObject {
 
 
     /**
-     * <<<<<<< Updated upstream Return a passe entry with the given ids.
      *
      * @param dsbMitgliedId of the mannschaftsmitglied,
      * @param matchId       of the match

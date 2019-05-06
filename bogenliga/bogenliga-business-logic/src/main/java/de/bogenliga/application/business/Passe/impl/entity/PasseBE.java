@@ -15,6 +15,7 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
     private long passeMannschaftId;
     private long passeWettkampfId;
     private long passeMatchNr;
+    private long passeMatchId;
     private long passeLfdnr;
     private long passeDsbMitgliedId;
 
@@ -77,6 +78,16 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
 
     public long getPasseMatchNr() {
         return passeMatchNr;
+    }
+
+
+    public long getPasseMatchId() {
+        return passeMatchId;
+    }
+
+
+    public void setPasseMatchId(long passeMatchId) {
+        this.passeMatchId = passeMatchId;
     }
 
 

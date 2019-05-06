@@ -24,6 +24,7 @@ public class PasseMapper implements ValueObjectMapper {
                 passeBE.getPasseMannschaftId(),
                 passeBE.getPasseWettkampfId(),
                 passeBE.getPasseMatchNr(),
+                passeBE.getPasseMatchId(),
                 passeBE.getPasseLfdnr(),
                 passeBE.getPasseDsbMitgliedId(),
                 passeBE.getPfeil1(),
@@ -50,6 +51,7 @@ public class PasseMapper implements ValueObjectMapper {
         passeBE.setPasseMannschaftId(passeDO.getPasseMannschaftId());
         passeBE.setPasseWettkampfId(passeDO.getPasseWettkampfId());
         passeBE.setPasseMatchNr(passeDO.getPasseMatchNr());
+        passeBE.setPasseMatchId(passeDO.getPasseMatchId());
         passeBE.setPasseLfdnr(passeDO.getPasseLfdnr());
         passeBE.setPasseDsbMitgliedId(passeDO.getPasseDsbMitgliedId());
         passeBE.setPfeil1(passeDO.getPfeil1());
