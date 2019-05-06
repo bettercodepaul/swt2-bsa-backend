@@ -13,6 +13,7 @@ CREATE TABLE passe (
   -- denormalisiert
   passe_wettkampf_id    DECIMAL(19, 0) NOT NULL, --Fremdschlüsselbezug zum wettkampf
   passe_match_nr        DECIMAL(1, 0)  NOT NULL,
+  passe_match_id        DECIMAL(19, 0)  NOT NULL, --id vom zugehörigen match
   passe_lfdnr           DECIMAL(4, 0)  NOT NULL,
   passe_dsb_mitglied_id DECIMAL(19, 0) NOT NULL, --Fremdschlüsselbezug zum dsb_mitglied
 
@@ -44,6 +45,9 @@ CREATE TABLE passe (
   -- schema: fk_{current table name}_{foreign key origin table name}
   CONSTRAINT fk_passe_wettkampf FOREIGN KEY (passe_wettkampf_id) REFERENCES wettkampf (wettkampf_id)
   ON DELETE CASCADE, -- das Löschen eines Wettkampfs löscht auch die zugehörigen Passen
+
+  CONSTRAINT fk_match_id FOREIGN KEY (passe_match_id) REFERENCES match (match_id)
+  ON DELETE CASCADE,
 
   CONSTRAINT fk_passe_dsb_mitglied FOREIGN KEY (passe_dsb_mitglied_id) REFERENCES dsb_mitglied (dsb_mitglied_id)
   ON DELETE CASCADE, -- das Löschen eines dsb_mitglieds löscht auch dessen Pfeilwerte
