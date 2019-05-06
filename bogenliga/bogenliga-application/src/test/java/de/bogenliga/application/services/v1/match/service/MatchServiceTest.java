@@ -123,7 +123,10 @@ public class MatchServiceTest {
     public void saveMatches() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
-        final List<MatchDTO> actual = underTest.saveMatches(matchDTO, matchDTO, principal);
+        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        matches.add(matchDTO);
+        matches.add(matchDTO);
+        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0));
     }
@@ -148,7 +151,10 @@ public class MatchServiceTest {
 
         when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR), anyLong())).thenReturn(passe1);
         when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR + 1), anyLong())).thenReturn(passe2);
-        final List<MatchDTO> actual = underTest.saveMatches(matchDTO, matchDTO, principal);
+        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        matches.add(matchDTO);
+        matches.add(matchDTO);
+        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0));
         MatchService.checkPreconditions(actual.get(1));
@@ -178,7 +184,10 @@ public class MatchServiceTest {
         // passe don't exist yet in DB, return null...
         when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR), anyLong())).thenReturn(null);
         when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR + 1), anyLong())).thenReturn(null);
-        final List<MatchDTO> actual = underTest.saveMatches(matchDTO, matchDTO, principal);
+        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        matches.add(matchDTO);
+        matches.add(matchDTO);
+        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0));
         MatchService.checkPreconditions(actual.get(1));
