@@ -253,14 +253,15 @@ public class MatchService implements ServiceFacade {
      * @param matchDTO
      */
     public static void checkPreconditions(final MatchDTO matchDTO) {
+        Preconditions.checkNotNull(matchDTO, String.format(ERR_NOT_NULL_TEMPLATE, "checkPreconditions", "matchDTO"));
         Method[] methods = matchDTO.getClass().getDeclaredMethods();
         for (Method m : methods) {
             if (m.getName().startsWith("get")) {
                 String errMsg = conditionErrors.get(m.getName());
                 if (errMsg != null) {
                     try {
-                        Preconditions.checkArgument(((Long) m.invoke(matchDTO)) >= 0, errMsg);
                         Preconditions.checkNotNull(m.invoke(matchDTO), errMsg);
+                        Preconditions.checkArgument(((Long) m.invoke(matchDTO)) >= 0, errMsg);
                     } catch (IllegalAccessException | InvocationTargetException | ClassCastException e) {
                         LOG.debug(
                                 "Couldn't check precondition on object {} for method {}",
