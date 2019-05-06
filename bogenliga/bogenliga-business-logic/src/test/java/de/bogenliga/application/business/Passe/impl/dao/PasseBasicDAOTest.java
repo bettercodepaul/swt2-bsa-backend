@@ -8,9 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
-import de.bogenliga.application.business.baseClass.impl.BasicBETest;
+import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static de.bogenliga.application.business.Passe.impl.business.PasseComponentImplTest.getPasseBE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -20,7 +19,7 @@ import static org.mockito.Mockito.*;
  *
  * @author Kay Scheerer
  */
-public class PasseBasicDAOTest {
+public class PasseBasicDAOTest extends PasseBaseDAOTest{
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -33,14 +32,14 @@ public class PasseBasicDAOTest {
     private PasseBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicBETest<PasseBE> basicDAOTest;
+    private BasicTest<PasseBE> basicDAOTest;
 
 
     @Before
     public void testSetup() {
         expectedBE = getPasseBE();
-        basicDAOTest = new BasicBETest<>();
-        basicDAOTest.setBE(expectedBE);
+        basicDAOTest = new BasicTest<>();
+        basicDAOTest.setEntity(expectedBE);
     }
 
 
