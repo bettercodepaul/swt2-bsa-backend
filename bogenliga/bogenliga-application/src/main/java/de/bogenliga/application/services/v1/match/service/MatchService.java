@@ -69,8 +69,6 @@ public class MatchService implements ServiceFacade {
 
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String CHECKED_PARAM_MATCH_DTO_LIST = "matchDTOs";
-    private static final String CHECKED_PARAM_MATCH_DTO_1 = "MatchDTO1";
-    private static final String CHECKED_PARAM_MATCH_DTO_2 = "MatchDTO2";
     private static final String CHECKED_PARAM_PRINCIPAL = "principal";
 
 
@@ -122,8 +120,6 @@ public class MatchService implements ServiceFacade {
         MatchDTO matchDTO1 = getMatchFromId(matchId1, true);
         MatchDTO matchDTO2 = getMatchFromId(matchId2, true);
 
-        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_1));
-        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_DTO_2));
         checkPreconditions(matchDTO1);
         checkPreconditions(matchDTO2);
 
@@ -158,8 +154,6 @@ public class MatchService implements ServiceFacade {
         matchDTO1 = matchDTOs.get(0);
         matchDTO2 = matchDTOs.get(1);
 
-        Preconditions.checkNotNull(matchDTO1, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_1));
-        Preconditions.checkNotNull(matchDTO2, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_2));
         checkPreconditions(matchDTO1);
         checkPreconditions(matchDTO2);
 
@@ -183,6 +177,7 @@ public class MatchService implements ServiceFacade {
             MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
             matchComponent.update(matchDO, userId);
             for (PasseDTO passeDTO : matchDTO.getPassen()) {
+                Preconditions.checkNotNull(passeDTO, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "passeDTO"));
                 PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
                 if (passeExists(passeDO)) {
                     passeComponent.update(passeDO, userId);
@@ -260,8 +255,9 @@ public class MatchService implements ServiceFacade {
                 String errMsg = conditionErrors.get(m.getName());
                 if (errMsg != null) {
                     try {
-                        Preconditions.checkNotNull(m.invoke(matchDTO), errMsg);
-                        Preconditions.checkArgument(((Long) m.invoke(matchDTO)) >= 0, errMsg);
+                        Object returnValue = m.invoke(matchDTO);
+                        Preconditions.checkNotNull(returnValue, errMsg);
+                        Preconditions.checkArgument(((Long) returnValue) >= 0, errMsg);
                     } catch (IllegalAccessException | InvocationTargetException | ClassCastException e) {
                         LOG.debug(
                                 "Couldn't check precondition on object {} for method {}",
