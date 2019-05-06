@@ -9,6 +9,8 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -61,6 +63,12 @@ public class MatchComponentImpl implements MatchComponent {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_MATCH_NR);
 
         final MatchBE matchBE = matchDAO.findById(id);
+
+        if (matchBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No match found for ID '%s'", id));
+        }
+
         return MatchMapper.toMatchDO.apply(matchBE);
     }
 
@@ -68,6 +76,15 @@ public class MatchComponentImpl implements MatchComponent {
     @Override
     public MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer) {
         final MatchBE matchBE = matchDAO.findByPk(nr, wettkampfId, mannschaftId, begegnung, scheibenNummer);
+
+        if (matchBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No match found with attributes nr: '%d', wettkampfId: %d, mannschaftId: %d, " +
+                                    "begegnung: %d, scheibenNummer: %d",
+                            nr, wettkampfId, mannschaftId, begegnung, scheibenNummer)
+            );
+        }
+
         return MatchMapper.toMatchDO.apply(matchBE);
     }
 
