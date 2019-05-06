@@ -111,10 +111,10 @@ public class PasseDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM " + TABLE
                     + " WHERE " + PASSE_TABLE_WETTKAMPF_ID + "=?"
-                    + " WHERE " + PASSE_TABLE_MATCH_NR + "=?"
-                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID + "=?"
-                    + " WHERE " + PASSE_TABLE_LFDNR + "=?"
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID + "=?";
+                    + "AND WHERE " + PASSE_TABLE_MATCH_NR + "=?"
+                    + "AND WHERE " + PASSE_TABLE_MANNSCHAFT_ID + "=?"
+                    + "AND WHERE " + PASSE_TABLE_LFDNR + "=?"
+                    + "AND WHERE " + PASSE_TABLE_DSB_MITGLIED_ID + "=?";
 
     private static final String FIND_BY_MATCH_ID =
             "SELECT * "
