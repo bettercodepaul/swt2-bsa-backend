@@ -6,6 +6,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class MatchService implements ServiceFacade {
 
     // a simple map mapping DTO's methods to related error messages
     // used in checkPreconditions
-    public static final HashMap<String, String> matchConditionErrors = new HashMap<>();
+    static final Map<String, String> matchConditionErrors = new HashMap<>();
     static {
         matchConditionErrors.put("getBegegnung", MatchComponentImpl.PRECONDITION_MSG_BEGEGNUNG);
         matchConditionErrors.put("getMannschaftId", MatchComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
@@ -59,7 +60,7 @@ public class MatchService implements ServiceFacade {
         matchConditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
 
-    public static final HashMap<String, String> passeConditionErrors = new HashMap<>();
+    private static final Map<String, String> passeConditionErrors = new HashMap<>();
     static {
         passeConditionErrors.put("getLfdNr", PasseComponentImpl.PRECONDITION_MSG_LFD_NR);
         passeConditionErrors.put("getMannschaftId", PasseComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
@@ -99,8 +100,7 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public MatchDTO findById(@PathVariable("id") Long matchId) {
-        Preconditions.checkArgument(matchId >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
-        Preconditions.checkNotNull(matchId, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_ID, CHECKED_PARAM_MATCH_ID));
+        this.checkMatchId(matchId);
 
         MatchDTO matchDTO = getMatchFromId(matchId, false);
         this.log(matchDTO, SERVICE_FIND_BY_ID);
@@ -151,6 +151,7 @@ public class MatchService implements ServiceFacade {
      */
     @RequestMapping(value = "schusszettel",
             method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) {
@@ -160,9 +161,8 @@ public class MatchService implements ServiceFacade {
         ));
         Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_PRINCIPAL));
 
-        MatchDTO matchDTO1, matchDTO2;
-        matchDTO1 = matchDTOs.get(0);
-        matchDTO2 = matchDTOs.get(1);
+        MatchDTO matchDTO1 = matchDTOs.get(0);
+        MatchDTO matchDTO2 = matchDTOs.get(1);
 
         checkPreconditions(matchDTO1, matchConditionErrors);
         checkPreconditions(matchDTO2, matchConditionErrors);
@@ -255,11 +255,11 @@ public class MatchService implements ServiceFacade {
 
 
     /**
-     * A generic way to validate the getter results of each matchDTO method.
+     * A generic way to validate the getter results of each dto method.
      *
      * @param dto
      */
-    public static void checkPreconditions(final DataTransferObject dto, final HashMap<String, String> conditionErrors) {
+    public static void checkPreconditions(final DataTransferObject dto, final Map<String, String> conditionErrors) {
         Preconditions.checkNotNull(dto, String.format(ERR_NOT_NULL_TEMPLATE, "checkPreconditions", "matchDTO"));
         Method[] methods = dto.getClass().getDeclaredMethods();
         for (Method m : methods) {
