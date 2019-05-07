@@ -3,6 +3,8 @@ package de.bogenliga.application.business.baseClass.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -14,12 +16,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
  */
 public class BasicComponentTest<T, B> {
     private T expectedEntity;
-
+    private static Logger LOG;
     private Method method;
 
 
     public BasicComponentTest(T expectedEntity) {
         this.expectedEntity = expectedEntity;
+
+        LoggerFactory.getLogger(expectedEntity.getClass());
+        LOG = LoggerFactory.getLogger(expectedEntity.getClass());
     }
 
 
@@ -123,6 +128,11 @@ public class BasicComponentTest<T, B> {
      * @param value the params which differ for each method
      */
     private void assertExceptionBadInput(int i, Object... value) throws IllegalAccessException {
+        LOG.debug("Method: "+method.getName());
+        LOG.debug("Entity which throws: "+expectedEntity.getClass());
+        for(Object v : value) {
+            LOG.debug("Parameter values: " + v.toString());
+        }
         assertThatExceptionOfType(InvocationTargetException.class)
                 .isThrownBy(() -> method.invoke(expectedEntity, value))
                 .withCauseInstanceOf(BusinessException.class);
