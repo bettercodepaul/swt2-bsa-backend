@@ -56,7 +56,7 @@ public class DsbMannschaftDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM mannschaft"
                     + " WHERE mannschaft_verein_id = ?"
-                    + " ORDER BY mannschaft_id";
+                    + " ORDER BY mannschaft_nummer";
 
     private final BasicDAO basicDao;
 
