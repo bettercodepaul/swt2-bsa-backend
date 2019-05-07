@@ -30,6 +30,7 @@ public class MannschaftsmitgliedServiceTest {
     private static final long USER = 0;
     private static final long ID = 1893;
 
+    private static long id = 1;
     private static long mannschaftsId = 1;
     private static long dsbMitgliedId = 100;
     private static boolean dsbMitgliedEingesetzt = true;
@@ -61,7 +62,7 @@ public class MannschaftsmitgliedServiceTest {
 
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         return new MannschaftsmitgliedDO(
-                mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt,dsbMitgliedVorname,dsbMitgliedNachname
+                id, mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt,dsbMitgliedVorname,dsbMitgliedNachname
         );
     }
 

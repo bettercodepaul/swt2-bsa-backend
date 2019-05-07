@@ -43,8 +43,6 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
      * dependency injection with {@link Autowired}
      * @param mannschaftsmitgliedDAO to access the database and return dsbmitglied representations
      */
-
-
     @Autowired
     public MannschaftsmitgliedComponentImpl(final MannschaftsmitgliedDAO mannschaftsmitgliedDAO) { this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO; }
 
@@ -55,8 +53,6 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
 
     }
-
-
 
 
     @Override
