@@ -5,7 +5,6 @@
 
 # Bogenliga Application
 
-Ja wirklich. Ich bin eine coole Anwendung.
 
 ## Content
 
@@ -27,7 +26,8 @@ Use ```mvnw``` instead of ```mvn``` commands.
 3. Run Spring Boot
     - go to the bogenliga-application directory: ```cd bogenliga-application```
     - run: ```mvn spring-boot:run```
-
+4. Open Swagger API documentation
+    - http://localhost:9000/swagger-ui.html
    
 ## References
 
