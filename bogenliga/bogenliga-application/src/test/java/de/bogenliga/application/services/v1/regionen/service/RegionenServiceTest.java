@@ -79,10 +79,10 @@ public class RegionenServiceTest {
     private static RegionenDTO getRegionenDTO() {
         final RegionenDTO regionenDTO = new RegionenDTO();
         regionenDTO.setId(ID);
-        regionenDTO.setName(regionName);
-        regionenDTO.setKuerzel(regionKuerzel);
-        regionenDTO.setTyp(regionTyp);
-        regionenDTO.setUebergeordnet(regionUebergeordnet);
+        regionenDTO.setRegionName(regionName);
+        regionenDTO.setRegionKuerzel(regionKuerzel);
+        regionenDTO.setRegionTyp(regionTyp);
+        regionenDTO.setRegionUebergeordnet(regionUebergeordnet);
         return regionenDTO;
     }
 
@@ -115,7 +115,7 @@ public class RegionenServiceTest {
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(regionenDO.getId());
-        assertThat(actualDTO.getName()).isEqualTo(regionenDO.getRegionName());
+        assertThat(actualDTO.getRegionName()).isEqualTo(regionenDO.getRegionName());
 
         //verify invocations
         verify(regionenComponent).findAll();
@@ -143,6 +143,6 @@ public class RegionenServiceTest {
         final RegionenDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getTyp()).isEqualTo(regionenDO.getRegionType());
+        assertThat(actualDTO.getRegionTyp()).isEqualTo(regionenDO.getRegionType());
     }
 }
