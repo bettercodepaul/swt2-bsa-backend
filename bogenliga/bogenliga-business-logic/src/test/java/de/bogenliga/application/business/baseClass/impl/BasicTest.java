@@ -5,16 +5,19 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * TODO [AL] class documentation
+ * Basic Test class to test to entities on equality by checking every get-Method on same return value
  *
  * @author Kay Scheerer
  */
 public class BasicTest<T, B> {
     private T expectedEntity;
     private HashMap<String, Object> valuesToMethodNames;
+    private static Logger LOG;
 
 
     public void assertList(List<B> list) {
@@ -29,17 +32,23 @@ public class BasicTest<T, B> {
     public BasicTest(T expectedEntity, HashMap<String, Object> valuesToMethodNames) {
         this.expectedEntity = expectedEntity;
         this.valuesToMethodNames = valuesToMethodNames;
+        LoggerFactory.getLogger(expectedEntity.getClass());
+        LOG = LoggerFactory.getLogger(expectedEntity.getClass());
     }
 
 
     /**
      * Tests all methods of a class which contain "find" in their name invokes a method with just ones as parameters,
      * mock should always return the BE defined with mocks
-     * @param component Takes a ComponentImplementation and checks all methods if the returing DO is equal to the expected BE that is returned by the BasicDAO
+     *
+     * @param component Takes a ComponentImplementation and checks all methods if the returing DO is equal to the
+     *                  expected BE that is returned by the BasicDAO
+     *
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    public void testAllFindMethodOfComponentImpl(Object component) throws InvocationTargetException, IllegalAccessException {
+    public void testAllFindMethodOfComponentImpl(
+            Object component) throws InvocationTargetException, IllegalAccessException {
         for (Method m : component.getClass().getDeclaredMethods()) {
             if (m.getName().contains("find")) {
                 int count = m.getParameterCount();
@@ -55,13 +64,15 @@ public class BasicTest<T, B> {
         }
     }
 
+
     /**
      * Helper method to test a list of entities containing one entitiy on null and empty, and calling assertEntity on
      * the first entity
      *
      * @param bEntities the list of entities
      */
-    public void testAllFieldsOnEqualToExpectedEntity(List<B> bEntities) throws InvocationTargetException, IllegalAccessException {
+    public void testAllFieldsOnEqualToExpectedEntity(
+            List<B> bEntities) throws InvocationTargetException, IllegalAccessException {
         assertList(bEntities);
         assertEntity(bEntities.get(0));
     }
@@ -72,7 +83,8 @@ public class BasicTest<T, B> {
      *
      * @param entity
      */
-    public void testAllFieldsOnEqualToExpectedEntity(B entity) throws InvocationTargetException, IllegalAccessException {
+    public void testAllFieldsOnEqualToExpectedEntity(
+            B entity) throws InvocationTargetException, IllegalAccessException {
         assertEntity(entity);
     }
 
@@ -97,12 +109,12 @@ public class BasicTest<T, B> {
                         Object actual = method.invoke(entity);
                         Object expected = m.invoke(expectedEntity);
                         assertThat(actual).isEqualTo(expected);
-                        System.out.println("actual == expected =");
-                        System.out.println(actual + " == " + expected + " =" + actual.equals(expected));
+                        LOG.debug("actual == expected =");
+                        LOG.debug(actual + " == " + expected + " =" + actual.equals(expected));
                         Object setFirst = valuesToMethodNames.get(m.getName());
                         assertThat(method.invoke(entity)).isEqualTo(setFirst);
-                        System.out.println("actual == valuefromHashMap =");
-                        System.out.println(actual + " == " + setFirst + " =" + actual.equals(setFirst));
+                        LOG.debug("actual == valuefromHashMap =");
+                        LOG.debug(actual + " == " + setFirst + " =" + actual.equals(setFirst));
                     }
                 }
             }

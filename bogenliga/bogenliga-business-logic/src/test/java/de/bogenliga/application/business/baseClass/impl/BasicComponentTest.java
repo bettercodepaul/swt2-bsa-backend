@@ -43,6 +43,9 @@ public class BasicComponentTest<T, B> {
     }
 
 
+    /**
+     * Tests delete method of componentImpl
+     */
     public void testDeleteMethod(
             B entityDO) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         method = expectedEntity.getClass().getDeclaredMethod("delete", entityDO.getClass(), Long.class);
@@ -51,6 +54,9 @@ public class BasicComponentTest<T, B> {
     }
 
 
+    /**
+     * Tests create and update method of componentImpl
+     */
     private B testCreationMethods(B entityDO) throws InvocationTargetException, IllegalAccessException {
         B be = (B) method.invoke(expectedEntity, entityDO, 1L);
         testUpdateMethods(entityDO);
@@ -58,6 +64,9 @@ public class BasicComponentTest<T, B> {
     }
 
 
+    /**
+     * Tests delete, create and update method of componentImpl on false parameters
+     */
     private void testUpdateMethods(B entityDO) throws IllegalAccessException {
         Object[] param = new Object[]{entityDO, -1L};
         assertExceptionBadInput(1, param);
