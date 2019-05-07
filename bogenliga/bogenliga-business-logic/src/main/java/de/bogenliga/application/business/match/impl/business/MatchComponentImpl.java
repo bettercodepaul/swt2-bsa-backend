@@ -151,12 +151,6 @@ public class MatchComponentImpl implements MatchComponent {
 
         Preconditions.checkNotNull(matchDO.getScheibenNummer(), PRECONDITION_MSG_CURRENT_USER_ID);
         Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
-
-        Preconditions.checkNotNull(matchDO.getSatzpunkte(), PRECONDITION_MSG_CURRENT_USER_ID);
-        Preconditions.checkArgument(matchDO.getSatzpunkte() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
-
-        Preconditions.checkNotNull(matchDO.getMatchpunkte(), PRECONDITION_MSG_CURRENT_USER_ID);
-        Preconditions.checkArgument(matchDO.getMatchpunkte() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
     }
 
 
