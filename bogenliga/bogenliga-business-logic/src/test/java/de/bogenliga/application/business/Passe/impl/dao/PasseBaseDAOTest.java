@@ -12,6 +12,7 @@ import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
  */
 public class PasseBaseDAOTest {
 
+    private static final long PASSE_ID = 11;
     private static final long PASSE_MANNSCHAFT_ID = 1;
     private static final long PASSE_WETTKAMPF_ID = 1337;
     private static final long PASSE_LFDR_NR = 2;
@@ -31,6 +32,7 @@ public class PasseBaseDAOTest {
 
 
     public PasseBaseDAOTest() {
+        valuesToMethodMap.put("getId", PASSE_ID);
         valuesToMethodMap.put("getPasseMannschaftId", PASSE_MANNSCHAFT_ID);
         valuesToMethodMap.put("getPasseWettkampfId", PASSE_WETTKAMPF_ID);
         valuesToMethodMap.put("getPasseMatchNr", PASSE_MATCH_NR);
@@ -53,6 +55,7 @@ public class PasseBaseDAOTest {
 
     public static PasseBE getPasseBE() {
         final PasseBE expectedPasseBE = new PasseBE();
+        expectedPasseBE.setId(PASSE_ID);
         expectedPasseBE.setPasseDsbMitgliedId(PASSE_DSB_MITGLIED_ID);
         expectedPasseBE.setPasseWettkampfId(PASSE_WETTKAMPF_ID);
         expectedPasseBE.setPasseMannschaftId(PASSE_MANNSCHAFT_ID);
@@ -73,7 +76,7 @@ public class PasseBaseDAOTest {
 
 
     public static PasseDO getPasseDO() {
-        final PasseDO expectedPasseDO = new PasseDO(
+        final PasseDO expectedPasseDO = new PasseDO(PASSE_ID,
                 PASSE_MANNSCHAFT_ID, PASSE_WETTKAMPF_ID, PASSE_MATCH_NR, PASSE_MATCH_ID, PASSE_LFDR_NR,
                 PASSE_DSB_MITGLIED_ID, PASSE_PFEIL_1, PASSE_PFEIL_2, 0, 0, 0, 0, offsetDateTime,
                 USER, offsetDateTime, USER, VERSION);

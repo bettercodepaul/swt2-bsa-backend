@@ -28,6 +28,7 @@ public class PasseDAO implements DataAccessObject {
 
     //business entity parameters
     private static final String PASSE_BE_MANNSCHAFT_ID = "passeMannschaftId";
+    private static final String PASSE_BE_ID = "passe_id";
     private static final String PASSE_BE_WETTKAMPF_ID = "passeWettkampfId";
     private static final String PASSE_BE_MATCH_NR = "passeMatchNr";
     private static final String PASSE_BE_MATCH_ID = "passeMatchId";
@@ -40,6 +41,7 @@ public class PasseDAO implements DataAccessObject {
     private static final String PASSE_BE_PFEIL_5 = "passeRingzahlPfeil5";
     private static final String PASSE_BE_PFEIL_6 = "passeRingzahlPfeil6";
 
+    private static final String PASSE_TABLE_ID = "passe_id";
     private static final String PASSE_TABLE_MANNSCHAFT_ID = "passe_mannschaft_id";
     private static final String PASSE_TABLE_WETTKAMPF_ID = "passe_wettkampf_id";
     private static final String PASSE_TABLE_MATCH_NR = "passe_match_nr";
@@ -53,7 +55,6 @@ public class PasseDAO implements DataAccessObject {
     private static final String PASSE_TABLE_PFEIL_4 = "passe_ringzahl_pfeil4";
     private static final String PASSE_TABLE_PFEIL_5 = "passe_ringzahl_pfeil5";
     private static final String PASSE_TABLE_PFEIL_6 = "passe_ringzahl_pfeil6";
-    private static final String PASSE_TABLE_ID = "passe_id";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<PasseBE> PASSE = new BusinessEntityConfiguration<>(
@@ -78,6 +79,7 @@ public class PasseDAO implements DataAccessObject {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(PASSE_TABLE_MANNSCHAFT_ID, PASSE_BE_MANNSCHAFT_ID);
+        columnsToFieldsMap.put(PASSE_TABLE_ID, PASSE_BE_ID);
         columnsToFieldsMap.put(PASSE_TABLE_WETTKAMPF_ID, PASSE_BE_WETTKAMPF_ID);
         columnsToFieldsMap.put(PASSE_TABLE_MATCH_NR, PASSE_BE_MATCH_NR);
         columnsToFieldsMap.put(PASSE_TABLE_MATCH_ID, PASSE_BE_MATCH_ID);
@@ -104,6 +106,12 @@ public class PasseDAO implements DataAccessObject {
             .selectAll()
             .from(TABLE)
             .orderBy(PASSE_TABLE_LFDNR)
+            .compose().toString();
+
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_ID)
             .compose().toString();
 
     private static final String FIND_BY_PK = new QueryBuilder()
@@ -282,6 +290,18 @@ public class PasseDAO implements DataAccessObject {
 
 
     /**
+     * Return a passe entry with the given ids.
+     *
+     * @param passeId of the passe
+     *
+     * @return list of passe from one mitglied in one team; empty list, if no passe are found
+     */
+    public PasseBE findByPasseId(Long passeId) {
+        return basicDao.selectSingleEntity(PASSE, FIND_BY_ID, passeId);
+    }
+
+
+    /**
      * Create a new passe entry
      *
      * @param passeBE
@@ -314,5 +334,6 @@ public class PasseDAO implements DataAccessObject {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
         basicDao.deleteEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
+
 
 }
