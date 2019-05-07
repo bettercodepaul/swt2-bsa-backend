@@ -10,9 +10,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
-public class BasicComponentTest<T> {
+public class BasicComponentTest<T, B> {
     private T expectedEntity;
 
     private Method method;
@@ -20,6 +20,49 @@ public class BasicComponentTest<T> {
 
     public BasicComponentTest(T expectedEntity) {
         this.expectedEntity = expectedEntity;
+    }
+
+
+    /**
+     * Tests create method of componentImpl
+     */
+    public B testCreateMethod(
+            B entityDO) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        method = expectedEntity.getClass().getDeclaredMethod("create", entityDO.getClass(), Long.class);
+        return testCreationMethods(entityDO);
+    }
+
+
+    /**
+     * Tests update method of componentImpl
+     */
+    public B testUpdateMethod(
+            B entityDO) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        method = expectedEntity.getClass().getDeclaredMethod("update", entityDO.getClass(), Long.class);
+        return testCreationMethods(entityDO);
+    }
+
+
+    public void testDeleteMethod(
+            B entityDO) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        method = expectedEntity.getClass().getDeclaredMethod("delete", entityDO.getClass(), Long.class);
+        testCreationMethods(entityDO);
+        testUpdateMethods(entityDO);
+    }
+
+
+    private B testCreationMethods(B entityDO) throws InvocationTargetException, IllegalAccessException {
+        B be = (B) method.invoke(expectedEntity, entityDO, 1L);
+        testUpdateMethods(entityDO);
+        return be;
+    }
+
+
+    private void testUpdateMethods(B entityDO) throws IllegalAccessException {
+        Object[] param = new Object[]{entityDO, -1L};
+        assertExceptionBadInput(1, param);
+        param = new Object[]{entityDO, null};
+        assertExceptionBadInput(1, param);
     }
 
 
@@ -70,7 +113,7 @@ public class BasicComponentTest<T> {
      *
      * @param value the params which differ for each method
      */
-    private void assertExceptionBadInput(int i, Long... value) throws IllegalAccessException {
+    private void assertExceptionBadInput(int i, Object... value) throws IllegalAccessException {
         assertThatExceptionOfType(InvocationTargetException.class)
                 .isThrownBy(() -> method.invoke(expectedEntity, value))
                 .withCauseInstanceOf(BusinessException.class);
