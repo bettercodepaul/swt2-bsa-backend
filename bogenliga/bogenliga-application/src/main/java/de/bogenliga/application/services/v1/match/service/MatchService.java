@@ -254,6 +254,18 @@ public class MatchService implements ServiceFacade {
         return mannschaftsmitgliedDOS.get(passeDTO.getSchuetzeNr() - 1).getDsbMitgliedId();
     }
 
+    private Integer getSchuetzeNrFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
+        int idx = 0;
+        Integer schuetzeNr = 0;
+        for (MannschaftsmitgliedDO mmdo: mannschaftsmitgliedDOS) {
+            if (mmdo.getDsbMitgliedId().equals(passeDTO.getDsbMitgliedId())) {
+                schuetzeNr = idx + 1;
+            }
+            idx++;
+        }
+        return schuetzeNr;
+    }
+
 
     /**
      * create-Method() writes a new entry of match into the database
@@ -344,6 +356,14 @@ public class MatchService implements ServiceFacade {
         if (addPassen) {
             List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+
+            // reverse map the schuetzeNr to the passeDTO
+            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
+                    mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
+            for (PasseDTO passeDTO: passeDTOs) {
+                passeDTO.setSchuetzeNr(getSchuetzeNrFor(passeDTO, mannschaftsmitgliedDOS));
+            }
+
             matchDTO.setPassen(passeDTOs);
         }
 
