@@ -53,7 +53,7 @@ public class MatchBasicDAOTest extends BaseMatchTest {
     public void create() {
         when(basicDao.insertEntity(any(), any())).thenReturn(expectedBE);
         try {
-            basicDAOTest.testMethod(underTest.create(expectedBE, USER));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.create(expectedBE, USER));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -68,7 +68,7 @@ public class MatchBasicDAOTest extends BaseMatchTest {
     public void update() {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(expectedBE);
         try {
-            basicDAOTest.testMethod(underTest.update(expectedBE, USER));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.update(expectedBE, USER));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

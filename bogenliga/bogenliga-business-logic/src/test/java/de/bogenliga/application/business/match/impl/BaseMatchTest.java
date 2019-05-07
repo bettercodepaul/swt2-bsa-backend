@@ -5,12 +5,13 @@ import java.util.List;
 import org.junit.Rule;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 
 /**
  * TODO [AL] class documentation
  *
- * @author Dominik Halle, HSRT MKI SS19 - SWT2
+ * @author Dominik Halle & Kay Scheerer, HSRT MKI SS19 - SWT2
  */
 public abstract class BaseMatchTest {
     @Rule
@@ -42,6 +43,12 @@ public abstract class BaseMatchTest {
     }
 
 
+    protected MatchDO getMatchDO() {
+        return new MatchDO(MATCH_ID, MATCH_NR, MATCH_WETTKAMPF_ID, MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
+                MATCH_SCHEIBENNUMMER, MATCH_MATCHPUNKTE, MATCH_SATZPUNKTE);
+    }
+
+
     public BaseMatchTest() {
         valuesToMethodMap.put("getId", MATCH_ID);
         valuesToMethodMap.put("getNr", MATCH_NR);
@@ -54,7 +61,7 @@ public abstract class BaseMatchTest {
     }
 
 
-    public HashMap<String,Object> getValuesToMethodMap() {
+    public HashMap<String, Object> getValuesToMethodMap() {
         return valuesToMethodMap;
     }
 }
