@@ -29,6 +29,15 @@ public interface WettkampfComponent extends ComponentFacade {
     WettkampfDO findById(long id);
 
     /**
+     * Return all wettkaempfe entries with the given mannschafts-id.
+     *
+     * @param id of the mannschaft
+     * @return  wettkampf entries with the given mannschafts-id;
+     * empty list, if no wettkampf is found
+     */
+    List<WettkampfDO> findAllWettkaempfeByMannschaftsId(long id);
+
+    /**
      * Create a new wettkampf in the database.
      *
      * @param wettkampfDO new wettkampf

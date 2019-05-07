@@ -66,6 +66,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
 
     @Override
+    public List<WettkampfDO> findAllWettkaempfeByMannschaftsId(long id) {
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+        final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(id);
+        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+    }
+
+
+    @Override
     public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentWettkampfID) {
         checkDsbMitgliedDO(wettkampfDO, currentWettkampfID);
 

@@ -24,6 +24,9 @@ public class WettkampfDTO implements DataTransferObject {
     private Long createdByUserId;
     private Long version;
 
+
+
+
     public WettkampfDTO(Long wettkampfId, Long veranstaltungsId, String datum, String wettkampfOrt,
                         String wettkampfBeginn, Long wettkampfTag,
                         Long wettkampfDisziplinId, Long wettkampfTypId,
@@ -150,5 +153,23 @@ public class WettkampfDTO implements DataTransferObject {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+
+    @Override
+    public String toString() {
+        return "WettkampfDTO{" +
+                "id='" + this.id + '\'' +
+                ", veranstaltungId='" + this.veranstaltungsId + '\'' +
+                ", datum='" + this.datum + '\'' +
+                ", wettkampfOrt='" + this.wettkampfOrt + '\'' +
+                ", wettkampfBeginn='" + this.wettkampfBeginn + '\'' +
+                ", wettkampfTag='" + this.wettkampfTag + '\'' +
+                ", wettkampfDisziplinId='" + this.wettkampfDisziplinId + '\'' +
+                ", wettkampfTypId='" + this.wettkampfTypId + '\'' +
+                ", createdAtUtc='" + this.createdAtUtc + '\'' +
+                ", createdByUserId='" + this.createdByUserId + '\'' +
+                ", version='" + this.version + '\'' +
+                "}";
     }
 }
