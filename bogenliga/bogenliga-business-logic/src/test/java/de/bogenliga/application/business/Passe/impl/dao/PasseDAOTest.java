@@ -41,10 +41,9 @@ public class PasseDAOTest extends PasseBaseDAOTest {
 
     @Before
     public void testSetup() {
-        basicDAOTest = new BasicTest<>();
-
         expectedBE = getPasseBE();
-        basicDAOTest.setEntity(expectedBE);
+        basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
+
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
     }

@@ -2,13 +2,19 @@ package de.bogenliga.application.business.baseClass.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.junit.Rule;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
@@ -18,7 +24,13 @@ import static org.mockito.Mockito.*;
  */
 public class BasicTest<T> {
     private T expectedEntity;
+    private HashMap<String, Object> valuesToMethodNames;
 
+    /**
+     * @param method the method to be invoked
+     */
+    @Mock
+    private Method method;
 
     public void assertList(List<T> list) {
         // assert result
@@ -26,6 +38,12 @@ public class BasicTest<T> {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(1);
+    }
+
+
+    public BasicTest(T expectedEntity, HashMap<String, Object> valuesToMethodNames) {
+        this.expectedEntity = expectedEntity;
+        this.valuesToMethodNames = valuesToMethodNames;
     }
 
 
@@ -52,7 +70,7 @@ public class BasicTest<T> {
 
 
     /**
-     * @param entity an business entity of of which all fields with get methods should contain the same value as the
+     * @param entity a business entity of of which all fields with get methods should contain the same value as the
      *               expectedEntity
      */
     public void assertEntity(T entity) {
@@ -63,11 +81,13 @@ public class BasicTest<T> {
                     for (Method m : expectedEntity.getClass().getDeclaredMethods()) {
 
                         if (m.getName().equals(method.getName())) {
-                            System.out.println(method.getName());
-                            System.out.println(method.invoke(entity));
-                            System.out.println(m.getName());
-                            System.out.println(m.invoke(expectedEntity));
+
+                            /**asserts that the method from the first entity () is equal to the
+                             output of the expected entity (getPasseBE() from PasseBaseDAOTest)
+                             is equal to the value set at first (e.g. PasseBaseDAOTest)
+                             */
                             assertThat(method.invoke(entity)).isEqualTo(m.invoke(expectedEntity));
+                            assertThat(method.invoke(entity)).isEqualTo(valuesToMethodNames.get(m.getName()));
                         }
                     }
                 }
@@ -81,75 +101,8 @@ public class BasicTest<T> {
     }
 
 
-    public void assertException() throws InvocationTargetException, IllegalAccessException {
-
-        for (Method method : expectedEntity.getClass().getDeclaredMethods()) {
-            if (method.getName().contains("find")) {
-                int count = method.getParameterCount();
-                switch (count) {
-                    case 0:
-                        assertExceptionNull(method);
-                    case 1:
-                        assertExceptionPerMethod(method,  -1L);
-                    case 2:
-                        assertExceptionPerMethod(method, -1L, -1L);
-                    case 3:
-                        assertExceptionPerMethod(method, -1L, -1L, -1L);
-                    case 4:
-                        assertExceptionPerMethod(method, -1L, -1L, -1L, -1L);
-                    case 5:
-                        assertExceptionPerMethod(method, -1L, -1L, -1L, -1L, -1L);
-                    case 6:
-                        assertExceptionPerMethod(method,  -1L, -1L, -1L, -1L, -1L, -1L);
-                    case 7:
-                        assertExceptionPerMethod(method,  -1L, -1L, -1L, -1L, -1L, -1L, -1L);
-                }
-            }
-        }
-    }
-
-
-    /**
-     * @param method
-     * @param value
-     */
-    private void assertExceptionPerMethod(Method method,Long... value) throws InvocationTargetException, IllegalAccessException {
-        assertExceptionNegative(method, value);
-        assertExceptionNull(method, value);
-    }
-
-
-    /**
-     * This tests if exceptions are thrown by component classes
-     *
-     * @param method the method to be invoked to throw exception
-     * @param value  the params which differ for each method
-     */
-    private void assertExceptionNegative(Method method, Long... value) {
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> method.invoke(expectedEntity, value))
-                .withMessageContaining("must not be negative")
-                .withNoCause();
-    }
-
-
-    /**
-     * @param method
-     * @param value
-     *
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     */
-    private void assertExceptionNull(Method method,
-                                    Long... value) throws InvocationTargetException, IllegalAccessException {
-        // configure mocks
-        when(method.invoke(expectedEntity, value)).thenReturn(null);
-
-        // call test method
-        Assertions.assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> method.invoke(expectedEntity, value))
-                .withMessageContaining("NOT_FOUND")
-                .withNoCause();
+    public void setValuesToMethodNames(HashMap<String, Object> valuesToMethodNames) {
+        this.valuesToMethodNames = valuesToMethodNames;
     }
 
 

@@ -11,7 +11,6 @@ import de.bogenliga.application.common.component.types.CommonDataObject;
 public class PasseDO extends CommonDataObject {
     private static final long serialVersionUID = 4713470931564147295L;
 
-    private Long id;
     private Long passeMannschaftId;
     private Long passeWettkampfId;
     private Long passeMatchNr;
@@ -27,13 +26,12 @@ public class PasseDO extends CommonDataObject {
     private Integer pfeil6;
 
 
-    public PasseDO(Long id, Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeMatchId,
+    public PasseDO(Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeMatchId,
                    Long passeLfdnr,
                    Long passeDsbMitgliedId, Integer pfeil1, Integer pfeil2, Integer pfeil3, Integer pfeil4,
                    Integer pfeil5, Integer pfeil6, final OffsetDateTime createdAtUtc,
                    final Long createdByUserId, final OffsetDateTime lastModifiedUtc,
                    final Long lastModifiedByUserId, final Long version) {
-        this.id = id;
         this.passeMannschaftId = passeMannschaftId;
         this.passeWettkampfId = passeWettkampfId;
         this.passeMatchNr = passeMatchNr;
@@ -55,11 +53,10 @@ public class PasseDO extends CommonDataObject {
     }
 
 
-    public PasseDO(Long id, Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeMatchId,
+    public PasseDO(Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeMatchId,
                    Long passeLfdnr,
                    Long passeDsbMitgliedId, Integer pfeil1, Integer pfeil2, Integer pfeil3, Integer pfeil4,
                    Integer pfeil5, Integer pfeil6) {
-        this.id = id;
         this.passeMannschaftId = passeMannschaftId;
         this.passeWettkampfId = passeWettkampfId;
         this.passeMatchNr = passeMatchNr;
@@ -142,16 +139,6 @@ public class PasseDO extends CommonDataObject {
 
     public void setPfeil6(Integer pfeil6) {
         this.pfeil6 = pfeil6;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
 
