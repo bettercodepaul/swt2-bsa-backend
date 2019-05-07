@@ -2,6 +2,8 @@ package de.bogenliga.application.business.match.impl.dao;
 
 import org.junit.Before;
 import org.junit.Test;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
+import de.bogenliga.application.common.database.queries.SubQueryBuilder;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
