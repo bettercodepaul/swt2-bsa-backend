@@ -96,9 +96,9 @@ public class RegionenService implements ServiceFacade {
 
         LOG.debug("Receive  'update' request with id '{}', name '{}'; kuerzel '{}', uebergeordnete_region '{}' ",
                 regionenDTO.getId(),
-                regionenDTO.getName(),
-                regionenDTO.getKuerzel(),
-                regionenDTO.getUebergeordnet());
+                regionenDTO.getRegionName(),
+                regionenDTO.getRegionKuerzel(),
+                regionenDTO.getRegionUebergeordnet());
 
 
         final RegionenDO newRegionenDo = RegionenDTOMapper.toDO.apply(regionenDTO);
@@ -131,11 +131,11 @@ public class RegionenService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}'",
-                regionenDTO.getName(),
+                regionenDTO.getRegionName(),
                 regionenDTO.getId(),
-                regionenDTO.getKuerzel(),
-                regionenDTO.getTyp(),
-                regionenDTO.getUebergeordnet(),
+                regionenDTO.getRegionKuerzel(),
+                regionenDTO.getRegionTyp(),
+                regionenDTO.getRegionUebergeordnet(),
                 userId);
 
         final RegionenDO regionenDO = RegionenDTOMapper.toDO.apply(regionenDTO);
@@ -181,7 +181,7 @@ public class RegionenService implements ServiceFacade {
 
     private void checkPreconditions(@RequestBody final RegionenDTO regionenDTO) {
         Preconditions.checkNotNull(regionenDTO, PRECONDITION_MSG_REGION);
-        Preconditions.checkNotNull(regionenDTO.getName(), PRECONDITION_MSG_NAME);
+        Preconditions.checkNotNull(regionenDTO.getRegionName(), PRECONDITION_MSG_NAME);
         Preconditions.checkNotNull(regionenDTO.getId(), PRECONDITION_MSG_REGION_DSB_IDENTIFIER);
     }
 }
