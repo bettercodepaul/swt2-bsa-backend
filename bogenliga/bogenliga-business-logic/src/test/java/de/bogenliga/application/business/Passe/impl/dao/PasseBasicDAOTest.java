@@ -38,8 +38,7 @@ public class PasseBasicDAOTest extends PasseBaseDAOTest{
     @Before
     public void testSetup() {
         expectedBE = getPasseBE();
-        basicDAOTest = new BasicTest<>();
-        basicDAOTest.setEntity(expectedBE);
+        basicDAOTest = new BasicTest<>(expectedBE,getValuesToMethodMap());
     }
 
 
