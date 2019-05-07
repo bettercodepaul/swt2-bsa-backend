@@ -30,6 +30,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static final String TABLE = "mannschaftsmitglied";
     // business entity parameter names
 
+    private static final String MANNSCHAFTSMITGLIED_BE_ID = "id";
     private static final String MANNSCHAFTSMITGLIED_BE_TEAM_ID = "mannschaftId";
     private static final String MANNSCHAFTSMITGLIED_BE_USER_ID = "dsbMitgliedId";
     private static final String MANNSCHAFTSMITGLIED_BE_INSERT = "dsbMitgliedEingesetzt";
@@ -39,6 +40,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_BE_SURNAME = "dsbMitgliedNachname";
 
 
+    private static final String MANNSCHAFTSMITGLIED_TABLE_ID = "mannschaftsmitglied_id";
     private static final String MANNSCHAFTSMITGLIED_TABLE_TEAM_ID = "mannschaftsmitglied_mannschaft_id";
     private static final String MANNSCHAFTSMITGLIED_TABLE_USER_ID = "mannschaftsmitglied_dsb_mitglied_id";
     private static final String MANNSCHAFTSMITGLIED_TABLE_INSERT = "mannschaftsmitglied_dsb_mitglied_eingesetzt";
@@ -53,24 +55,25 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     private static final String FIND_ALL =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
                     + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
                     + " ORDER BY mannschaftsmitglied_mannschaft_id";
 
     private static final String FIND_BY_TEAM_ID =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
                     + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
                     + " WHERE mannschaftsmitglied_mannschaft_id = ?";
 
     private static final String FIND_BY_MEMBER_AND_TEAM_ID =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
+            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
                     + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
                     +" WHERE mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_id=?";
 
     private static final String FIND_ALL_SCHUETZE_TEAM =
-            "SELECT mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
                     + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    +" WHERE   mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_eingesetzt= true";
+                    +" WHERE   mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_eingesetzt= true"
+                    + " ORDER BY mannschaftsmitglied_id";
 
 
 
@@ -87,6 +90,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
+        columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_BE_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_BE_TEAM_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_USER_ID,MANNSCHAFTSMITGLIED_BE_USER_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_INSERT, MANNSCHAFTSMITGLIED_BE_INSERT);
@@ -159,6 +163,4 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     public boolean checkExistingSchuetze(long teamId, final long memberId){
         return findByMemberAndTeamId(teamId,memberId).isDsbMitgliedEingesetzt();
     }
-
-
 }

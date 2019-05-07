@@ -15,10 +15,10 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     private static final long serialVersionUID =123;
 
 
-
     /**
      * business parameter
      */
+    private Long id;
     private Long mannschaftId;
     private Long dsbMitgliedId;
     private boolean dsbMitgliedEingesetzt;
@@ -39,10 +39,12 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      * @param version
      */
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt,final String dsbMitgliedVorname,final String dsbMitgliedNachname, final OffsetDateTime createdAtUtc,
-                         final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                         final Long lastModifiedByUserId, final Long version) {
+    public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt,
+                                 final String dsbMitgliedVorname,final String dsbMitgliedNachname, final OffsetDateTime createdAtUtc,
+                                 final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
+                                 final Long lastModifiedByUserId, final Long version) {
         this.mannschaftId = mannschaftId;
+        this.id = id;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
         this.dsbMitgliedVorname=dsbMitgliedVorname;
@@ -66,9 +68,10 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      */
 
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final OffsetDateTime createdAtUtc,
+    public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId, final OffsetDateTime createdAtUtc,
                                  final Long createdByUserId, final Long version) {
         this.mannschaftId = mannschaftId;
+        this.id = id;
         this.dsbMitgliedId = dsbMitgliedId;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
@@ -82,8 +85,11 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      * @param dsbMitgliedEingesetzt
      */
 
-    public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId, final boolean dsbMitgliedEingesetzt, final String dsbMitgliedVorname, final String dsbMitgliedNachname) {
+    public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId,
+                                 final boolean dsbMitgliedEingesetzt, final String dsbMitgliedVorname,
+                                 final String dsbMitgliedNachname) {
         this.mannschaftId = mannschaftId;
+        this.id = id;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
         this.dsbMitgliedVorname= dsbMitgliedVorname;
@@ -143,6 +149,16 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
 
     public void setDsbMitgliedNachname(){
         this.dsbMitgliedNachname=dsbMitgliedNachname;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 

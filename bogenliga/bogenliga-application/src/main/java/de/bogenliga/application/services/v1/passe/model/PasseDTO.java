@@ -15,6 +15,9 @@ public class PasseDTO implements DataTransferObject {
     private Long dsbMitgliedId;
     private Integer[] ringzahl;
 
+    // used for mapping to the mannschaftsmitglied_id to set the dsbMitgliedId later...
+    private Integer schuetzeNr;
+
 
     public PasseDTO() {
     }
@@ -30,6 +33,20 @@ public class PasseDTO implements DataTransferObject {
         this.lfdNr = lfdNr;
         this.dsbMitgliedId = dsbMitgliedId;
         this.ringzahl = ringzahl;
+    }
+
+
+    public PasseDTO(Long id, Long mannschaftId, Long wettkampfId, Long matchNr, Long matchid,
+                    Long lfdNr, Integer schuetzeNr, Long dsbMitgliedId, Integer[] ringzahl) {
+        this.id = id;
+        this.mannschaftId = mannschaftId;
+        this.wettkampfId = wettkampfId;
+        this.matchNr = matchNr;
+        this.matchId = matchid;
+        this.lfdNr = lfdNr;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.ringzahl = ringzahl;
+        this.schuetzeNr = schuetzeNr;
     }
 
 
@@ -110,5 +127,15 @@ public class PasseDTO implements DataTransferObject {
 
     public void setRingzahl(Integer[] ringzahl) {
         this.ringzahl = ringzahl;
+    }
+
+
+    public Integer getSchuetzeNr() {
+        return schuetzeNr;
+    }
+
+
+    public void setSchuetzeNr(Integer schuetzeNr) {
+        this.schuetzeNr = schuetzeNr;
     }
 }

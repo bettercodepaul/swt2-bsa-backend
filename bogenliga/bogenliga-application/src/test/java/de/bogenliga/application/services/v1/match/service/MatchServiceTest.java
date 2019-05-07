@@ -13,6 +13,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.Passe.api.PasseComponent;
 import de.bogenliga.application.business.Passe.api.types.PasseDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -42,6 +44,9 @@ public class MatchServiceTest {
     @Mock
     private MatchComponent matchComponent;
 
+    @Mock
+    private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+
     @InjectMocks
     private MatchService underTest;
 
@@ -59,11 +64,20 @@ public class MatchServiceTest {
     private static final Long PASSE_ID_1 = 1L;
     private static final Long PASSE_ID_2 = 2L;
     private static final Long PASSE_LFDR_NR = 2L;
+    private static final Integer PASSE_SCHUETZE_NR_1 = 1;
+    private static final Integer PASSE_SCHUETZE_NR_2 = 2;
     private static final Long PASSE_DSB_MITGLIED_ID = 1L;
     private static final Integer PASSE_PFEIL_1 = 10;
     private static final Integer PASSE_PFEIL_2 = 5;
-    private static final Long VERSION = 2L;
 
+    private static final Long MM_ID_1 = 1L;
+    private static final Long MM_ID_2 = 2L;
+    private static final Long MM_ID_3 = 3L;
+    private static final Long MM_mannschaftsId = 1L;
+    private static final Long MM_dsbMitgliedId = 100L;
+    private static final Boolean MM_dsbMitgliedEingesetzt = true;
+    private static final String MM_dsbMitgliedVorname = "Foo";
+    private static final String MM_dsbMitgliedNachname= "Bar";
 
     protected MatchDO getMatchDO() {
         return new MatchDO(
@@ -92,6 +106,32 @@ public class MatchServiceTest {
                 PASSE_PFEIL_2,
                 null, null, null, null
         );
+    }
+
+    protected MannschaftsmitgliedDO getMMDO (Long id) {
+        return new MannschaftsmitgliedDO(
+                id,
+                MM_mannschaftsId,
+                MM_dsbMitgliedId,
+                MM_dsbMitgliedEingesetzt,
+                MM_dsbMitgliedVorname,
+                MM_dsbMitgliedNachname
+        );
+    }
+
+    protected List<MannschaftsmitgliedDO> getMannschaftsMitglieder () {
+        List<MannschaftsmitgliedDO> mmdos = new ArrayList<>();
+        mmdos.add(getMMDO(MM_ID_1));
+        mmdos.add(getMMDO(MM_ID_2));
+        mmdos.add(getMMDO(MM_ID_3));
+        return mmdos;
+    }
+
+
+    protected PasseDTO getPasseDTO(Long id, Integer nr) {
+        PasseDTO passeDTO = PasseDTOMapper.toDTO.apply(getPasseDO(id));
+        passeDTO.setSchuetzeNr(nr);
+        return passeDTO;
     }
 
 
@@ -145,9 +185,12 @@ public class MatchServiceTest {
     public void saveMatches() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
-        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
+
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
@@ -158,9 +201,12 @@ public class MatchServiceTest {
     public void saveMatches_Null() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
-        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(null);
         matches.add(matchDTO);
+
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+
         assertThatThrownBy(() -> {
             underTest.saveMatches(matches, principal);
         }).isInstanceOf(BusinessException.class);
@@ -170,22 +216,24 @@ public class MatchServiceTest {
     public void saveMatches_WithPasseUpdate() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
-        List<PasseDO> passeDOS = new ArrayList<>();
 
-        PasseDO passe1 = getPasseDO(PASSE_ID_1);
-        PasseDO passe2 = getPasseDO(PASSE_ID_2);
+        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, PASSE_SCHUETZE_NR_1);
+        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, PASSE_SCHUETZE_NR_2);
         // change lfdnr of passe2 to make them distinguishable
-        passe2.setPasseLfdnr(PASSE_LFDR_NR + 1);
+        passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
-        passeDOS.add(passe1);
-        passeDOS.add(passe2);
-        List<PasseDTO> passeDTOS = passeDOS.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+        List<PasseDTO> passeDTOS = new ArrayList<>();
+        passeDTOS.add(passe1);
+        passeDTOS.add(passe2);
 
         matchDTO.setPassen(passeDTOS);
 
-        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
+
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
@@ -199,22 +247,23 @@ public class MatchServiceTest {
     public void saveMatches_WithPasseUpdate_Null() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
-        List<PasseDO> passeDOS = new ArrayList<>();
 
-        PasseDO passe1 = getPasseDO(PASSE_ID_1);
-        PasseDO passe2 = getPasseDO(PASSE_ID_2);
+        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, PASSE_SCHUETZE_NR_1);
+        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, PASSE_SCHUETZE_NR_2);
         // change lfdnr of passe2 to make them distinguishable
-        passe2.setPasseLfdnr(PASSE_LFDR_NR + 1);
+        passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
-        passeDOS.add(passe1);
-        passeDOS.add(passe2);
-        List<PasseDTO> passeDTOS = passeDOS.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+        List<PasseDTO> passeDTOS = new ArrayList<>();
+        passeDTOS.add(passe1);
+        passeDTOS.add(passe2);
 
         passeDTOS.set(0, null);
 
         matchDTO.setPassen(passeDTOS);
 
-        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+
+        ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
         assertThatThrownBy(() -> {
@@ -227,22 +276,24 @@ public class MatchServiceTest {
     public void saveMatches_WithPasseCreate() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
-        List<PasseDO> passeDOS = new ArrayList<>();
 
-        PasseDO passe1 = getPasseDO(null);
-        PasseDO passe2 = getPasseDO(null);
+        PasseDTO passe1 = getPasseDTO(null, PASSE_SCHUETZE_NR_1);
+        PasseDTO passe2 = getPasseDTO(null, PASSE_SCHUETZE_NR_2);
         // change lfdnr of passe2 to make them distinguishable
-        passe2.setPasseLfdnr(PASSE_LFDR_NR + 1);
+        passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
-        passeDOS.add(passe1);
-        passeDOS.add(passe2);
-        List<PasseDTO> passeDTOS = passeDOS.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+        List<PasseDTO> passeDTOS = new ArrayList<>();
+        passeDTOS.add(passe1);
+        passeDTOS.add(passe2);
 
         matchDTO.setPassen(passeDTOS);
 
-        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
+
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
