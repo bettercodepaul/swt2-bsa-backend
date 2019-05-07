@@ -42,7 +42,7 @@ public class MatchBasicDAOTest extends BaseMatchTest {
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        basicDAOTest = new BasicTest<>();
+        basicDAOTest = new BasicTest<>(expectedBE,getValuesToMethodMap());
         basicDAOTest.setEntity(expectedBE);
 
     }
