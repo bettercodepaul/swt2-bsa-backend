@@ -2,37 +2,22 @@ package de.bogenliga.application.business.baseClass.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import org.assertj.core.api.Assertions;
-import org.junit.Rule;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.dao.DataAccessObject;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.mockito.Mockito.*;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Kay Scheerer
  */
-public class BasicTest<T> {
+public class BasicTest<T, B> {
     private T expectedEntity;
     private HashMap<String, Object> valuesToMethodNames;
 
-    /**
-     * @param method the method to be invoked
-     */
-    @Mock
-    private Method method;
 
-    public void assertList(List<T> list) {
+    public void assertList(List<B> list) {
         // assert result
         assertThat(list)
                 .isNotNull()
@@ -48,12 +33,36 @@ public class BasicTest<T> {
 
 
     /**
+     * Tests all methods of a class which contain "find" in their name invokes a method with just ones as parameters,
+     * mock should always return the BE defined with mocks
+     * @param component Takes a ComponentImplementation and checks all methods if the returing DO is equal to the expected BE that is returned by the BasicDAO
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public void testAllFindMethodOfComponentImpl(Object component) throws InvocationTargetException, IllegalAccessException {
+        for (Method m : component.getClass().getDeclaredMethods()) {
+            if (m.getName().contains("find")) {
+                int count = m.getParameterCount();
+                Long[] arr = new Long[count];
+                Arrays.fill(arr, 1L);
+                Object o = m.invoke(component, arr);
+                if (o instanceof List) {
+                    testMethod((List<B>) o);
+                } else {
+                    testMethod((B) o);
+                }
+            }
+        }
+    }
+
+
+    /**
      * Helper method to test a list of entities containing one entitiy on null and empty, and calling assertEntity on
      * the first entity
      *
      * @param bEntities the list of entities
      */
-    public void testMethod(List<T> bEntities) {
+    public void testMethod(List<B> bEntities) throws InvocationTargetException, IllegalAccessException {
         assertList(bEntities);
         assertEntity(bEntities.get(0));
     }
@@ -64,7 +73,7 @@ public class BasicTest<T> {
      *
      * @param entity
      */
-    public void testMethod(T entity) {
+    public void testMethod(B entity) throws InvocationTargetException, IllegalAccessException {
         assertEntity(entity);
     }
 
@@ -73,30 +82,30 @@ public class BasicTest<T> {
      * @param entity a business entity of of which all fields with get methods should contain the same value as the
      *               expectedEntity
      */
-    public void assertEntity(T entity) {
+    public void assertEntity(B entity) throws InvocationTargetException, IllegalAccessException {
         assertThat(expectedEntity).isNotNull();
-        try {
-            for (Method method : entity.getClass().getDeclaredMethods()) {
-                if (method.getName().contains("get")) {
-                    for (Method m : expectedEntity.getClass().getDeclaredMethods()) {
+        for (Method method : entity.getClass().getDeclaredMethods()) {
+            if (method.getName().contains("get")) {
+                for (Method m : expectedEntity.getClass().getDeclaredMethods()) {
 
-                        if (m.getName().equals(method.getName())) {
+                    if (m.getName().equals(method.getName())) {
 
-                            /**asserts that the method from the first entity () is equal to the
-                             output of the expected entity (getPasseBE() from PasseBaseDAOTest)
-                             is equal to the value set at first (e.g. PasseBaseDAOTest)
-                             */
-                            assertThat(method.invoke(entity)).isEqualTo(m.invoke(expectedEntity));
-                            assertThat(method.invoke(entity)).isEqualTo(valuesToMethodNames.get(m.getName()));
-                        }
+                        /**asserts that the method from the first entity () is equal to the
+                         output of the expected entity (getPasseBE() from PasseBaseDAOTest)
+                         is equal to the value set at first (e.g. PasseBaseDAOTest)
+                         */
+                        Object actual = method.invoke(entity);
+                        Object expected = m.invoke(expectedEntity);
+                        assertThat(actual).isEqualTo(expected);
+                        System.out.println("actual == expected =");
+                        System.out.println(actual + " == " + expected + " =" + actual.equals(expected));
+                        Object setFirst = valuesToMethodNames.get(m.getName());
+                        assertThat(method.invoke(entity)).isEqualTo(setFirst);
+                        System.out.println("actual == valuefromHashMap =");
+                        System.out.println(actual + " == " + setFirst + " =" + actual.equals(setFirst));
                     }
                 }
             }
-
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
         }
     }
 

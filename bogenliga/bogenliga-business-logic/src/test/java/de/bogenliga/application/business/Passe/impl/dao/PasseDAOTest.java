@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.Passe.impl.dao;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +37,7 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     private PasseBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicTest<PasseBE> basicDAOTest;
+    private BasicTest<PasseBE,PasseBE> basicDAOTest;
 
 
     @Before
@@ -58,39 +59,81 @@ public class PasseDAOTest extends PasseBaseDAOTest {
 
     @Test
     public void testfindAll() {
-        basicDAOTest.testMethod(underTest.findAll());
+        try {
+            basicDAOTest.testMethod(underTest.findAll());
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByMatchId() {
-        basicDAOTest.testMethod(underTest.findByMatchId(4));
+        try {
+            basicDAOTest.testMethod(underTest.findByMatchId(4));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByMemberId() {
-        basicDAOTest.testMethod(underTest.findByMemberId(98));
+        try {
+            basicDAOTest.testMethod(underTest.findByMemberId(98));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByTeamId() {
-        basicDAOTest.testMethod(underTest.findByTeamId(1));
+        try {
+            basicDAOTest.testMethod(underTest.findByTeamId(1));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void findByMannschaftMatchId() {
-        basicDAOTest.testMethod(underTest.findByMannschaftMatchId(1,4));
+        try {
+            basicDAOTest.testMethod(underTest.findByMannschaftMatchId(1,4));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void findByMemberMannschaftId() {
-        basicDAOTest.testMethod(underTest.findByMemberMannschaftId(98,1));
+        try {
+            basicDAOTest.testMethod(underTest.findByMemberMannschaftId(98,1));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void findByWettkampfId() {
-        basicDAOTest.testMethod(underTest.findByWettkampfId(1337));
+        try {
+            basicDAOTest.testMethod(underTest.findByWettkampfId(1337));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

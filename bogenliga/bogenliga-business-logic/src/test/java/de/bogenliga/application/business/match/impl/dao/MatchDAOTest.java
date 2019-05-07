@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.match.impl.dao;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,18 +26,19 @@ public class MatchDAOTest extends BaseMatchTest {
     private MatchBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicTest<MatchBE> basicDAOTest;
+    private BasicTest<MatchBE, MatchBE> basicDAOTest;
 
 
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        basicDAOTest = new BasicTest<>(expectedBE,getValuesToMethodMap());
+        basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
         // configure mocks
         // find by id
         when(basicDao.selectSingleEntity(any(), any(), anyLong())).thenReturn(expectedBE);
         // find by pk
-        when(basicDao.selectSingleEntity(any(), any(), anyLong(), anyLong(), anyLong(), anyLong(), anyLong())).thenReturn(expectedBE);
+        when(basicDao.selectSingleEntity(any(), any(), anyLong(), anyLong(), anyLong(), anyLong(),
+                anyLong())).thenReturn(expectedBE);
         // find by match/wettkampf id
         when(basicDao.selectEntityList(any(), any(), anyLong())).thenReturn(Collections.singletonList(expectedBE));
         // find all
@@ -69,35 +71,65 @@ public class MatchDAOTest extends BaseMatchTest {
 
     @Test
     public void findById() {
-        basicDAOTest.testMethod(underTest.findById(MATCH_ID));
+        try {
+            basicDAOTest.testMethod(underTest.findById(MATCH_ID));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByPk() {
-        basicDAOTest.testMethod(underTest.findByPk(
-                MATCH_NR, MATCH_WETTKAMPF_ID,
-                MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
-                MATCH_SCHEIBENNUMMER
-        ));
+        try {
+            basicDAOTest.testMethod(underTest.findByPk(
+                    MATCH_NR, MATCH_WETTKAMPF_ID,
+                    MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
+                    MATCH_SCHEIBENNUMMER
+            ));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findAll() {
-        basicDAOTest.testMethod(underTest.findAll());
+        try {
+            basicDAOTest.testMethod(underTest.findAll());
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByWettkampfId() {
-        basicDAOTest.testMethod(underTest.findByWettkampfId(MATCH_WETTKAMPF_ID));
+        try {
+            basicDAOTest.testMethod(underTest.findByWettkampfId(MATCH_WETTKAMPF_ID));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByMannschaftId() {
-        basicDAOTest.testMethod(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
+        try {
+            basicDAOTest.testMethod(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
