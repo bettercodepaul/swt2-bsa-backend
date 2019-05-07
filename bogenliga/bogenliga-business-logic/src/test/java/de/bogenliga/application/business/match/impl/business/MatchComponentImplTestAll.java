@@ -1,7 +1,8 @@
-package de.bogenliga.application.business.Passe.impl.business;
+package de.bogenliga.application.business.match.impl.business;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -9,22 +10,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.Passe.api.types.PasseDO;
-import de.bogenliga.application.business.Passe.impl.dao.PasseBaseDAOTest;
-import de.bogenliga.application.business.Passe.impl.dao.PasseDAO;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
 import de.bogenliga.application.business.baseClass.impl.BasicComponentTest;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
+import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.match.impl.BaseMatchTest;
+import de.bogenliga.application.business.match.impl.dao.MatchDAO;
+import de.bogenliga.application.business.match.impl.entity.MatchBE;
+import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static org.mockito.ArgumentMatchers.any;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Kay Scheerer Tests for PasseComponentImpl
+ * @author Kay Scheerer
  */
-public class PasseComponentImplTest extends PasseBaseDAOTest {
+public class MatchComponentImplTestAll extends BaseMatchTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -33,21 +35,21 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
     private BasicDAO basicDAO;
 
     @InjectMocks
-    private PasseDAO passeDAO;
+    private MatchDAO matchDAO;
 
-    private PasseBE expectedBE;
+    private MatchBE expectedBE;
 
-    private PasseComponentImpl underTest;
+    private MatchComponentImpl underTest;
 
 
-    private BasicComponentTest<PasseComponentImpl, PasseDO> basicComponentTest;
-    private BasicTest<PasseBE, PasseDO> basicTest;
+    private BasicComponentTest<MatchComponentImpl, MatchDO> basicComponentTest;
+    private BasicTest<MatchBE, MatchDO> basicTest;
 
 
     @Before
     public void testSetup() {
-        expectedBE = getPasseBE();
-        underTest = new PasseComponentImpl(passeDAO);
+        expectedBE = getMatchBE();
+        underTest = new MatchComponentImpl(matchDAO);
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
     }
@@ -74,24 +76,23 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
     @Test
     public void testCreateOnCorrectness() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         when(basicDAO.insertEntity(any(), any())).thenReturn(expectedBE);
-        PasseDO p = basicComponentTest.testCreateMethod(getPasseDO());
-        BasicTest b = new BasicTest<PasseDO, PasseBE>(p, getValuesToMethodMap());
-        b.assertEntity(getPasseBE());
+        MatchDO p = basicComponentTest.testCreateMethod(getMatchDO());
+        BasicTest b = new BasicTest<MatchDO, MatchBE>(p, getValuesToMethodMap());
+        b.assertEntity(getMatchBE());
     }
 
 
     @Test
     public void testUpdateOnCorrectness() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         when(basicDAO.updateEntity(any(), any(), any())).thenReturn(expectedBE);
-        PasseDO p = basicComponentTest.testUpdateMethod(getPasseDO());
-        BasicTest b = new BasicTest<PasseDO, PasseBE>(p, getValuesToMethodMap());
-        b.assertEntity(getPasseBE());
+        MatchDO p = basicComponentTest.testUpdateMethod(getMatchDO());
+        BasicTest b = new BasicTest<MatchDO, MatchBE>(p, getValuesToMethodMap());
+        b.assertEntity(getMatchBE());
     }
 
 
     @Test
     public void testDelete() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        basicComponentTest.testDeleteMethod(getPasseDO());
+        basicComponentTest.testDeleteMethod(getMatchDO());
     }
-
 }

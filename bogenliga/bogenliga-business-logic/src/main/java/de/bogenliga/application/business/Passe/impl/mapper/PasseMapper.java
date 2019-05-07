@@ -6,6 +6,8 @@ import java.util.function.Function;
 import de.bogenliga.application.business.Passe.api.types.PasseDO;
 import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
@@ -18,7 +20,9 @@ public class PasseMapper implements ValueObjectMapper {
     public static final Function<PasseBE, PasseDO> toPasseDO = passeBE -> {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(passeBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(passeBE.getLastModifiedAtUtc());
-
+        if (passeBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,"Entity could not be found with the given IDs");
+        }
         return new PasseDO(
                 passeBE.getId(),
                 passeBE.getPasseMannschaftId(),
@@ -42,7 +46,9 @@ public class PasseMapper implements ValueObjectMapper {
 
 
     public static final Function<PasseDO, PasseBE> toPasseBE = passeDO -> {
-
+        if (passeDO == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,"Entity could not be found with the given IDs");
+        }
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(passeDO.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(passeDO.getLastModifiedAtUtc());
 
