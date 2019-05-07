@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.business;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
@@ -9,6 +10,8 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -31,6 +34,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
 
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
+    private final VeranstaltungDAO veranstaltungDAO;
 
 
     /**
@@ -41,9 +45,10 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
      */
 
     @Autowired
-    public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO) {
+    public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO, final VeranstaltungDAO veranstaltungDAO) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
+        this.veranstaltungDAO = veranstaltungDAO;
     }
 
     public DsbMannschaftDAO getDAO(){
@@ -133,7 +138,4 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
         Preconditions.checkArgument(dsbMannschaftDO.getVeranstaltungId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
 
     }
-
-
-
 }
