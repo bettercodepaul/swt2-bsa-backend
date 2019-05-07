@@ -15,8 +15,6 @@ import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.mockito.ArgumentMatchers.any;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +35,7 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     private PasseBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicTest<PasseBE,PasseBE> basicDAOTest;
+    private BasicTest<PasseBE, PasseBE> basicDAOTest;
 
 
     @Before
@@ -60,7 +58,7 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void testfindAll() {
         try {
-            basicDAOTest.testMethod(underTest.findAll());
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findAll());
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -72,7 +70,7 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByMatchId() {
         try {
-            basicDAOTest.testMethod(underTest.findByMatchId(4));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMatchId(4));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -84,7 +82,7 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByMemberId() {
         try {
-            basicDAOTest.testMethod(underTest.findByMemberId(98));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMemberId(98));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -96,29 +94,34 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByTeamId() {
         try {
-            basicDAOTest.testMethod(underTest.findByTeamId(1));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByTeamId(1));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }
+
 
     @Test
     public void findByMannschaftMatchId() {
         try {
-            basicDAOTest.testMethod(underTest.findByMannschaftMatchId(1,4));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftMatchId(1, 4));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }
+
 
     @Test
     public void findByMemberMannschaftId() {
         try {
-            basicDAOTest.testMethod(underTest.findByMemberMannschaftId(98,1));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMemberMannschaftId(98, 1));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -126,10 +129,12 @@ public class PasseDAOTest extends PasseBaseDAOTest {
         }
     }
 
+
     @Test
     public void findByWettkampfId() {
         try {
-            basicDAOTest.testMethod(underTest.findByWettkampfId(1337));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByWettkampfId(1337));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

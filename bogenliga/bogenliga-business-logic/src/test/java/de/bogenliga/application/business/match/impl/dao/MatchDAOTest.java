@@ -72,7 +72,7 @@ public class MatchDAOTest extends BaseMatchTest {
     @Test
     public void findById() {
         try {
-            basicDAOTest.testMethod(underTest.findById(MATCH_ID));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findById(MATCH_ID));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -84,7 +84,7 @@ public class MatchDAOTest extends BaseMatchTest {
     @Test
     public void findByPk() {
         try {
-            basicDAOTest.testMethod(underTest.findByPk(
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByPk(
                     MATCH_NR, MATCH_WETTKAMPF_ID,
                     MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
                     MATCH_SCHEIBENNUMMER
@@ -100,7 +100,7 @@ public class MatchDAOTest extends BaseMatchTest {
     @Test
     public void findAll() {
         try {
-            basicDAOTest.testMethod(underTest.findAll());
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findAll());
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -112,7 +112,7 @@ public class MatchDAOTest extends BaseMatchTest {
     @Test
     public void findByWettkampfId() {
         try {
-            basicDAOTest.testMethod(underTest.findByWettkampfId(MATCH_WETTKAMPF_ID));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByWettkampfId(MATCH_WETTKAMPF_ID));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -124,7 +124,7 @@ public class MatchDAOTest extends BaseMatchTest {
     @Test
     public void findByMannschaftId() {
         try {
-            basicDAOTest.testMethod(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

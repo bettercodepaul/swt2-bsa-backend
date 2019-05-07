@@ -47,14 +47,13 @@ public class BasicTest<T, B> {
                 Arrays.fill(arr, 1L);
                 Object o = m.invoke(component, arr);
                 if (o instanceof List) {
-                    testMethod((List<B>) o);
+                    testAllFieldsOnEqualToExpectedEntity((List<B>) o);
                 } else {
-                    testMethod((B) o);
+                    testAllFieldsOnEqualToExpectedEntity((B) o);
                 }
             }
         }
     }
-
 
     /**
      * Helper method to test a list of entities containing one entitiy on null and empty, and calling assertEntity on
@@ -62,7 +61,7 @@ public class BasicTest<T, B> {
      *
      * @param bEntities the list of entities
      */
-    public void testMethod(List<B> bEntities) throws InvocationTargetException, IllegalAccessException {
+    public void testAllFieldsOnEqualToExpectedEntity(List<B> bEntities) throws InvocationTargetException, IllegalAccessException {
         assertList(bEntities);
         assertEntity(bEntities.get(0));
     }
@@ -73,7 +72,7 @@ public class BasicTest<T, B> {
      *
      * @param entity
      */
-    public void testMethod(B entity) throws InvocationTargetException, IllegalAccessException {
+    public void testAllFieldsOnEqualToExpectedEntity(B entity) throws InvocationTargetException, IllegalAccessException {
         assertEntity(entity);
     }
 
@@ -84,6 +83,7 @@ public class BasicTest<T, B> {
      */
     public void assertEntity(B entity) throws InvocationTargetException, IllegalAccessException {
         assertThat(expectedEntity).isNotNull();
+        assertThat(entity).isNotNull();
         for (Method method : entity.getClass().getDeclaredMethods()) {
             if (method.getName().contains("get")) {
                 for (Method m : expectedEntity.getClass().getDeclaredMethods()) {
