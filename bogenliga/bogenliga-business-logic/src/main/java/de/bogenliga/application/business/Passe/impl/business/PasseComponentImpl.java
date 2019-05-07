@@ -177,6 +177,11 @@ public class PasseComponentImpl implements PasseComponent {
     }
 
 
+    /**
+     *  Finds a passe by its ID
+     * @param passeId
+     * @return a DO witht he given ID
+     */
     public PasseDO findByPasseId(Long passeId) {
         checkPreconditions(passeId, "passeId");
         final PasseBE passeBE = passeDAO.findByPasseId(passeId);
@@ -184,6 +189,15 @@ public class PasseComponentImpl implements PasseComponent {
     }
 
 
+    /**
+     *
+     * @param wettkampfId
+     * @param matchNr
+     * @param mannschaftId
+     * @param passeLfdNr
+     * @param dsbMitgliedId
+     * @return a passe with the given PK
+     */
     public PasseDO findByPk(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
         checkPreconditions(wettkampfId, "wettkampfId");
         checkPreconditions(matchNr, "matchNr");
@@ -205,6 +219,7 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public PasseDO create(PasseDO passeDO, final Long currentUserId) {
+        checkPasseDO(passeDO);
         checkPreconditions(currentUserId, "currentUserId");
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
 
@@ -223,11 +238,28 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public PasseDO update(PasseDO passeDO, Long currentMemberId) {
+        checkPasseDO(passeDO);
         checkPreconditions(currentMemberId, "currentMemberId");
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
 
         final PasseBE persistedPasseBE = passeDAO.update(passeBE, currentMemberId);
         return PasseMapper.toPasseDO.apply(persistedPasseBE);
+    }
+
+
+    /**
+     * checks if fields of a DO are null or negative
+     * @param passeDO the DO to check
+     */
+    public void checkPasseDO(PasseDO passeDO) {
+        checkPreconditions(passeDO.getPasseMannschaftId(), "passeMannschaftId");
+        checkPreconditions(passeDO.getPasseWettkampfId(), "passeMannschaftId");
+        checkPreconditions(passeDO.getPasseMatchNr(), "passeMannschaftId");
+        checkPreconditions(passeDO.getPasseMatchId(), "passeMannschaftId");
+        checkPreconditions(passeDO.getPasseLfdnr(), "passeMannschaftId");
+        checkPreconditions(passeDO.getPasseDsbMitgliedId(), "passeMannschaftId");
+        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil1");
+        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil2");
     }
 
 
