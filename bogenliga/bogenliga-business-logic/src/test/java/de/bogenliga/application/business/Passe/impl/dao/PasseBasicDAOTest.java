@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.Passe.impl.dao;
 
+import java.lang.reflect.InvocationTargetException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class PasseBasicDAOTest extends PasseBaseDAOTest{
     private PasseBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicTest<PasseBE> basicDAOTest;
+    private BasicTest<PasseBE,PasseBE> basicDAOTest;
 
 
     @Before
@@ -45,7 +46,13 @@ public class PasseBasicDAOTest extends PasseBaseDAOTest{
     @Test
     public void create() {
         when(basicDao.insertEntity(any(), any())).thenReturn(expectedBE);
-        basicDAOTest.testMethod(underTest.create(expectedBE, USER));
+        try {
+            basicDAOTest.testMethod(underTest.create(expectedBE, USER));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         // verify invocations
         verify(basicDao).insertEntity(any(), eq(expectedBE));
     }
@@ -54,7 +61,13 @@ public class PasseBasicDAOTest extends PasseBaseDAOTest{
     @Test
     public void update() {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(expectedBE);
-        basicDAOTest.testMethod(underTest.update(expectedBE, USER));
+        try {
+            basicDAOTest.testMethod(underTest.update(expectedBE, USER));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         verify(basicDao).updateEntity(any(), eq(expectedBE), any());
     }
 
