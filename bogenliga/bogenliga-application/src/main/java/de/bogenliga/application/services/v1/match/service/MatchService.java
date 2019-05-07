@@ -53,8 +53,6 @@ public class MatchService implements ServiceFacade {
         conditionErrors.put("getBegegnung", MatchComponentImpl.PRECONDITION_MSG_BEGEGNUNG);
         conditionErrors.put("getId", MatchComponentImpl.PRECONDITION_MSG_MATCH_ID);
         conditionErrors.put("getMannschaftId", MatchComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
-        conditionErrors.put("getMatchpunkte", MatchComponentImpl.PRECONDITION_MSG_MATCHPUNKTE);
-        conditionErrors.put("getSatzpunkte", MatchComponentImpl.PRECONDITION_MSG_SATZPUNKTE);
         conditionErrors.put("getScheibenNummer", MatchComponentImpl.PRECONDITION_MSG_SCHEIBENNUMMER);
         conditionErrors.put("getWettkampfId", MatchComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
         conditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);

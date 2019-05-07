@@ -31,8 +31,6 @@ public class MatchComponentImpl implements MatchComponent {
     public static final String PRECONDITION_MSG_BEGEGNUNG = String.format(PRECONDITION_MSG_TEMPLATE, "begegnung");
     public static final String PRECONDITION_MSG_SCHEIBENNUMMER = String.format(PRECONDITION_MSG_TEMPLATE,
             "scheibennummer");
-    public static final String PRECONDITION_MSG_SATZPUNKTE = String.format(PRECONDITION_MSG_TEMPLATE, "satzpunkte");
-    public static final String PRECONDITION_MSG_MATCHPUNKTE = String.format(PRECONDITION_MSG_TEMPLATE, "matchpunkte");
 
     private final MatchDAO matchDAO;
 
