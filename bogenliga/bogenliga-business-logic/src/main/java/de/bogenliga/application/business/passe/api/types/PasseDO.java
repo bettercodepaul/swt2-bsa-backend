@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.Passe.api.types;
+package de.bogenliga.application.business.passe.api.types;
 
 import java.time.OffsetDateTime;
 import de.bogenliga.application.common.component.types.CommonDataObject;

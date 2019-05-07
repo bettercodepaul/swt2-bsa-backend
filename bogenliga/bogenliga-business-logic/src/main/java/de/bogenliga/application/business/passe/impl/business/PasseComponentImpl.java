@@ -1,14 +1,14 @@
-package de.bogenliga.application.business.Passe.impl.business;
+package de.bogenliga.application.business.passe.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.Passe.api.PasseComponent;
-import de.bogenliga.application.business.Passe.api.types.PasseDO;
-import de.bogenliga.application.business.Passe.impl.dao.PasseDAO;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
-import de.bogenliga.application.business.Passe.impl.mapper.PasseMapper;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.passe.impl.dao.PasseDAO;
+import de.bogenliga.application.business.passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.passe.impl.mapper.PasseMapper;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**

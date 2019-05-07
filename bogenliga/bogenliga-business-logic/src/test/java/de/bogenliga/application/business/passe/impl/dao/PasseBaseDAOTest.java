@@ -1,9 +1,9 @@
-package de.bogenliga.application.business.Passe.impl.dao;
+package de.bogenliga.application.business.passe.impl.dao;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
-import de.bogenliga.application.business.Passe.api.types.PasseDO;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 
 /**
  * TODO [AL] class documentation
