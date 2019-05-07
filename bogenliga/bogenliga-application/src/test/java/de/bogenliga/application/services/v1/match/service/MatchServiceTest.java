@@ -45,7 +45,6 @@ public class MatchServiceTest {
     @InjectMocks
     private MatchService underTest;
 
-
     protected static final Long MATCH_ID = 1L;
     protected static final Long MATCH_NR = 1L;
     protected static final Long MATCH_BEGEGNUNG = 1L;

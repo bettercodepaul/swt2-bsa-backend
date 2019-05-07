@@ -177,6 +177,13 @@ public class PasseComponentImpl implements PasseComponent {
     }
 
 
+    public PasseDO findByPasseId(Long passeId) {
+        checkPreconditions(passeId, "passeId");
+        final PasseBE passeBE = passeDAO.findByPasseId(passeId);
+        return PasseMapper.toPasseDO.apply(passeBE);
+    }
+
+
     public PasseDO findByPk(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
         checkPreconditions(wettkampfId, "wettkampfId");
         checkPreconditions(matchNr, "matchNr");

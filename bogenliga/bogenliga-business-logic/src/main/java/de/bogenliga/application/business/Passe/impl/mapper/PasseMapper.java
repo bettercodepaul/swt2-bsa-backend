@@ -20,6 +20,7 @@ public class PasseMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(passeBE.getLastModifiedAtUtc());
 
         return new PasseDO(
+                passeBE.getId(),
                 passeBE.getPasseMannschaftId(),
                 passeBE.getPasseWettkampfId(),
                 passeBE.getPasseMatchNr(),
@@ -46,6 +47,7 @@ public class PasseMapper implements ValueObjectMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(passeDO.getLastModifiedAtUtc());
 
         PasseBE passeBE = new PasseBE();
+        passeBE.setId(passeDO.getId());
         passeBE.setPasseMannschaftId(passeDO.getPasseMannschaftId());
         passeBE.setPasseWettkampfId(passeDO.getPasseWettkampfId());
         passeBE.setPasseMatchNr(passeDO.getPasseMatchNr());
