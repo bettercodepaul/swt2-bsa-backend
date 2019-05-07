@@ -53,6 +53,8 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VeranstaltungDTO> findAll(){
+
+        LOG.debug("Received 'findAll' request for Veranstaltung");
         final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findAll();
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
