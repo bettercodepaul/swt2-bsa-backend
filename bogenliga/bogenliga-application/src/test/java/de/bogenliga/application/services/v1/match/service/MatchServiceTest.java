@@ -15,11 +15,13 @@ import de.bogenliga.application.business.Passe.api.PasseComponent;
 import de.bogenliga.application.business.Passe.api.types.PasseDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -111,12 +113,32 @@ public class MatchServiceTest {
 
 
     @Test
+    public void findById_Null() {
+        when(matchComponent.findById(anyLong())).thenReturn(null);
+        // expect a NPE as the null-state should be checked in MatchComponentImpl
+        assertThatThrownBy(() -> {
+            underTest.findById(MATCH_ID);
+        }).isInstanceOf(NullPointerException.class);
+    }
+
+
+    @Test
     public void findMatchesByIds() {
         MatchDO matchDO1 = getMatchDO();
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
         final List<MatchDTO> actual = underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0));
+    }
+
+
+    @Test
+    public void findMatchesByIds_Null() {
+        when(matchComponent.findById(anyLong())).thenReturn(null);
+        // expect a NPE as the null-state should be checked in MatchComponentImpl
+        assertThatThrownBy(() -> {
+            underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
+        }).isInstanceOf(NullPointerException.class);
     }
 
 
@@ -132,6 +154,18 @@ public class MatchServiceTest {
         MatchService.checkPreconditions(actual.get(0));
     }
 
+
+    @Test
+    public void saveMatches_Null() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        matches.add(null);
+        matches.add(matchDTO);
+        assertThatThrownBy(() -> {
+            underTest.saveMatches(matches, principal);
+        }).isInstanceOf(BusinessException.class);
+    }
 
     @Test
     public void saveMatches_WithPasseUpdate() {
@@ -162,6 +196,35 @@ public class MatchServiceTest {
 
         // make sure update was called twice per passed DTO
         verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
+    }
+
+    @Test
+    public void saveMatches_WithPasseUpdate_Null() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+        List<PasseDO> passeDOS = new ArrayList<>();
+
+        PasseDO passe1 = getPasseDO(PASSE_ID_1);
+        PasseDO passe2 = getPasseDO(PASSE_ID_2);
+        // change lfdnr of passe2 to make them distinguishable
+        passe2.setPasseLfdnr(PASSE_LFDR_NR + 1);
+
+        passeDOS.add(passe1);
+        passeDOS.add(passe2);
+        List<PasseDTO> passeDTOS = passeDOS.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+
+        passeDTOS.set(0, null);
+
+        matchDTO.setPassen(passeDTOS);
+
+        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR), anyLong())).thenReturn(passe1);
+        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR + 1), anyLong())).thenReturn(passe2);
+        ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
+        matches.add(matchDTO);
+        matches.add(matchDTO);
+        assertThatThrownBy(() -> {
+            underTest.saveMatches(matches, principal);
+        }).isInstanceOf(BusinessException.class);
     }
 
 
@@ -210,6 +273,14 @@ public class MatchServiceTest {
 
 
     @Test
+    public void create_Null() {
+        assertThatThrownBy(() -> {
+            underTest.create(null, principal);
+        }).isInstanceOf(BusinessException.class);
+    }
+
+
+    @Test
     public void update() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
@@ -217,5 +288,13 @@ public class MatchServiceTest {
         final MatchDTO actual = underTest.update(matchDTO, principal);
         assertThat(actual).isNotNull();
         MatchService.checkPreconditions(actual);
+    }
+
+
+    @Test
+    public void update_Null() {
+        assertThatThrownBy(() -> {
+            underTest.update(null, principal);
+        }).isInstanceOf(BusinessException.class);
     }
 }
