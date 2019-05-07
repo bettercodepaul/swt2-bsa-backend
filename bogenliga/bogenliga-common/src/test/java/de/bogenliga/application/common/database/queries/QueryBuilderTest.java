@@ -1,9 +1,7 @@
-package de.bogenliga.application.business.match.impl.dao;
+package de.bogenliga.application.common.database.queries;
 
 import org.junit.Before;
 import org.junit.Test;
-import de.bogenliga.application.common.database.queries.QueryBuilder;
-import de.bogenliga.application.common.database.queries.SubQueryBuilder;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
@@ -462,6 +460,7 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
 
+
     @Test
     public void whereEqualsWithSubQuery() {
         this.queryBuilder.selectAll()
@@ -482,6 +481,7 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
 
+
     @Test
     public void whereEqualsWithExplicitTable() {
         this.queryBuilder.selectAll()
@@ -495,6 +495,7 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
+
 
     @Test
     public void whereEqualsWithAliases() {
@@ -511,6 +512,7 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_SELECT_ALL.trim());
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
+
 
     @Test
     public void andEqualsWithAliases() {
@@ -529,6 +531,7 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
 
+
     @Test
     public void andTrue() {
         this.queryBuilder.selectAll()
@@ -542,6 +545,7 @@ public class QueryBuilderTest {
         assertThat(builtQuery).contains(QueryBuilder.SQL_TRUE_COMPARATOR.trim());
         assertThat(builtQuery).contains(QueryBuilder.SQL_QUERY_TERMINATOR.trim());
     }
+
 
     @Test
     public void andFalse() {
