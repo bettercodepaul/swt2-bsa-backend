@@ -1,61 +1,42 @@
 package de.bogenliga.application.business.Passe.impl.business;
 
-import java.lang.reflect.InvocationTargetException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.Passe.impl.dao.PasseDAO;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
-import de.bogenliga.application.business.baseClass.impl.BasicTest;
-import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.baseClass.impl.BasicComponentTest;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Kay Scheerer
+ * Tests for PasseComponentImpl
  */
 public class PasseComponentImplTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock
-    private PasseDAO passeDAO;
-
-    @Mock
-    private DsbMannschaftDAO dsbMannschaftDAO;
-
-    @Mock
-    private DsbMitgliedDAO dsbMitglieDao;
-
     @InjectMocks
     private PasseComponentImpl underTest;
 
 
-    private BasicTest<PasseComponentImpl> basicTest;
+    private BasicComponentTest<PasseComponentImpl> basicTest;
 
 
     @Before
     public void testSetup() {
-        basicTest = new BasicTest<>();
-        basicTest.setEntity(underTest);
+        basicTest = new BasicComponentTest<>(underTest);
 
     }
 
 
-    @Test(expected = Test.None.class /* no exception expected */)
-    public void test() {
+    @Test
+    public void testAllMethods() {
         try {
             basicTest.assertException();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

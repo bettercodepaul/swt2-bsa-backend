@@ -30,13 +30,9 @@ public class MatchDAOTest extends BaseMatchTest {
 
     @Before
     public void testSetup() {
-        basicDAOTest = new BasicTest<>();
-
         expectedBE = getMatchBE();
-
-        basicDAOTest.setEntity(expectedBE);
+        basicDAOTest = new BasicTest<>(expectedBE,getValuesToMethodMap());
         // configure mocks
-
         // find by id
         when(basicDao.selectSingleEntity(any(), any(), anyLong())).thenReturn(expectedBE);
         // find by pk
