@@ -20,7 +20,6 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class MatchComponentImpl implements MatchComponent {
 
     private static final String PRECONDITION_MSG_TEMPLATE = "Match: %s must not be null and must not be negative";
-    public static final String PRECONDITION_MSG_MATCH_ID = String.format(PRECONDITION_MSG_TEMPLATE, "id");
     public static final String PRECONDITION_MSG_MATCH_DO = String.format(PRECONDITION_MSG_TEMPLATE, "DO");
     public static final String PRECONDITION_MSG_MATCH_NR = String.format(PRECONDITION_MSG_TEMPLATE, "nr");
     public static final String PRECONDITION_MSG_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE, "wettkampfId");
