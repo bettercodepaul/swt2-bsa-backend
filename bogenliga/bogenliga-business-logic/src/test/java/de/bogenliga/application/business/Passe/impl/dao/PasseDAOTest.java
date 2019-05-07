@@ -15,8 +15,6 @@ import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.mockito.ArgumentMatchers.any;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +35,7 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     private PasseBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicTest<PasseBE,PasseBE> basicDAOTest;
+    private BasicTest<PasseBE, PasseBE> basicDAOTest;
 
 
     @Before
@@ -97,17 +95,20 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     public void findByTeamId() {
         try {
             basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByTeamId(1));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }
+
 
     @Test
     public void findByMannschaftMatchId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftMatchId(1,4));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftMatchId(1, 4));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -115,21 +116,25 @@ public class PasseDAOTest extends PasseBaseDAOTest {
         }
     }
 
+
     @Test
     public void findByMemberMannschaftId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMemberMannschaftId(98,1));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMemberMannschaftId(98, 1));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }
+
 
     @Test
     public void findByWettkampfId() {
         try {
             basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByWettkampfId(1337));
+
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

@@ -17,6 +17,15 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class PasseComponentImpl implements PasseComponent {
 
+    private static final String PRECONDITION_MSG_TEMPLATE = "Match: %s must not be null and must not be negative";
+    public static final String PRECONDITION_MSG_MATCH_NR = String.format(PRECONDITION_MSG_TEMPLATE, "matchNr");
+    public static final String PRECONDITION_MSG_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE, "wettkampfId");
+    public static final String PRECONDITION_MSG_MANNSCHAFT_ID = String.format(PRECONDITION_MSG_TEMPLATE,
+            "mannschaftId");
+    public static final String PRECONDITION_MSG_LFD_NR = String.format(PRECONDITION_MSG_TEMPLATE, "lfdNr");
+    public static final String PRECONDITION_MSG_DSB_MITGLIED_ID = String.format(PRECONDITION_MSG_TEMPLATE,
+            "dsbMitgliedId");
+
     private final PasseDAO passeDAO;
 
 

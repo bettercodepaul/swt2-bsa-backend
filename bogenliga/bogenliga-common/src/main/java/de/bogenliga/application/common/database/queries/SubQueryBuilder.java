@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.match.impl.dao;
+package de.bogenliga.application.common.database.queries;
 
 /**
  * This is a simple variation of the default QueryBuilder.
