@@ -11,6 +11,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 8445258747402691960L;
 
+    private Long id;
     private long passeMannschaftId;
     private long passeWettkampfId;
     private long passeMatchNr;
@@ -29,6 +30,7 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
     @Override
     public String toString() {
         return "PasseBE{" +
+                ", PasseId=" + id +
                 ", passeMannschaftId=" + passeMannschaftId +
                 ", passeWettkampfId=" + passeWettkampfId +
                 ", passeMatchNr=" + passeMatchNr +
@@ -43,7 +45,6 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
                 ", pfeil6=" + pfeil6 +
                 '}';
     }
-
 
 
     public long getPasseMannschaftId() {
@@ -163,5 +164,15 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
 
     public void setPfeil6(int pfeil6) {
         this.pfeil6 = pfeil6;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public Long getId() {
+        return id;
     }
 }
