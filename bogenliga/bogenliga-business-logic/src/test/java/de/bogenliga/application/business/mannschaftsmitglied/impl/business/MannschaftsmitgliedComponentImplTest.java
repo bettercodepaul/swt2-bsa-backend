@@ -37,6 +37,7 @@ public class MannschaftsmitgliedComponentImplTest {
 
 
 
+    private static final Long MM_ID = 1001L;
     private static final Long MANNSCHAFTSID = 1111L;
     private static final Long DSB_MITGLIED_ID = 2222L;
     private static final Boolean DSB_MITGLIED_EINGESTZT = true;
@@ -71,6 +72,7 @@ public class MannschaftsmitgliedComponentImplTest {
 
     public static MannschaftsmitgliedDO getMannschatfsmitgliedDO(){
         return new MannschaftsmitgliedDO(
+                    MM_ID,
                     MANNSCHAFTSID,
                     DSB_MITGLIED_ID,
                     DSB_MITGLIED_EINGESTZT,
@@ -214,7 +216,9 @@ public class MannschaftsmitgliedComponentImplTest {
     public void create_with_mandatory_parameters() {
 
         final OffsetDateTime dateTime = OffsetDateTime.now();
-        final MannschaftsmitgliedDO input = new MannschaftsmitgliedDO(MANNSCHAFTSID,
+        final MannschaftsmitgliedDO input = new MannschaftsmitgliedDO(
+                MM_ID,
+                MANNSCHAFTSID,
                 DSB_MITGLIED_ID,
                 dateTime,
                 USER,

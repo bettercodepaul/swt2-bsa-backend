@@ -3,7 +3,10 @@ package de.bogenliga.application.services.v1.mannschaftsmitglied.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class MannschaftsMitgliedDTO implements DataTransferObject {
+    private static final long serialVersionUID = 3599079471852195486L;
 
+
+    private Long id;
     private Long mannschaftsId;
     private Long dsbMitgliedId;
     private boolean dsbMitgliedEingesetzt;
@@ -15,9 +18,10 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
     }
 
 
-    public MannschaftsMitgliedDTO(final long mannschaftsId, final long dsbMitgliedId,
+    public MannschaftsMitgliedDTO(final long id, final long mannschaftsId, final long dsbMitgliedId,
                                   final boolean dsbMitgliedEingesetzt,
                                   final String dsbMitgliedVorname, final String getDsbMitgliedNachname) {
+        this.id = id;
         this.mannschaftsId = mannschaftsId;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
@@ -71,4 +75,13 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
         this.dsbMitgliedNachname=dsbMitgliedNachname;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
