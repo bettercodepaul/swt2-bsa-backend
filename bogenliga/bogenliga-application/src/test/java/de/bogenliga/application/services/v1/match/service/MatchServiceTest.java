@@ -90,7 +90,7 @@ public class MatchServiceTest {
                 PASSE_DSB_MITGLIED_ID,
                 PASSE_PFEIL_1,
                 PASSE_PFEIL_2,
-                0,0,0,0
+                null, null, null, null
         );
     }
 
@@ -107,7 +107,7 @@ public class MatchServiceTest {
         when(matchComponent.findById(anyLong())).thenReturn(matchDO);
         final MatchDTO actual = underTest.findById(MATCH_ID);
         assertThat(actual).isNotNull();
-        MatchService.checkPreconditions(actual);
+        MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
     }
 
 
@@ -127,7 +127,7 @@ public class MatchServiceTest {
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
         final List<MatchDTO> actual = underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0));
+        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
     }
 
 
@@ -150,7 +150,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0));
+        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
     }
 
 
@@ -183,15 +183,13 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
-        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR), anyLong())).thenReturn(passe1);
-        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR + 1), anyLong())).thenReturn(passe2);
         ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
         matches.add(matchDTO);
         matches.add(matchDTO);
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0));
-        MatchService.checkPreconditions(actual.get(1));
+        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+        MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
 
         // make sure update was called twice per passed DTO
         verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
@@ -216,8 +214,6 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
-        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR), anyLong())).thenReturn(passe1);
-        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR + 1), anyLong())).thenReturn(passe2);
         ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
         matches.add(matchDTO);
         matches.add(matchDTO);
@@ -233,8 +229,8 @@ public class MatchServiceTest {
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         List<PasseDO> passeDOS = new ArrayList<>();
 
-        PasseDO passe1 = getPasseDO(PASSE_ID_1);
-        PasseDO passe2 = getPasseDO(PASSE_ID_2);
+        PasseDO passe1 = getPasseDO(null);
+        PasseDO passe2 = getPasseDO(null);
         // change lfdnr of passe2 to make them distinguishable
         passe2.setPasseLfdnr(PASSE_LFDR_NR + 1);
 
@@ -244,16 +240,13 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
-        // passe don't exist yet in DB, return null...
-        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR), anyLong())).thenReturn(null);
-        when(passeComponent.findByPk(anyLong(), anyLong(), anyLong(), eq(PASSE_LFDR_NR + 1), anyLong())).thenReturn(null);
         ArrayList<MatchDTO> matches = new ArrayList<MatchDTO>();
         matches.add(matchDTO);
         matches.add(matchDTO);
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0));
-        MatchService.checkPreconditions(actual.get(1));
+        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+        MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
 
         // make sure create was called twice per passed DTO
         verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
@@ -267,7 +260,7 @@ public class MatchServiceTest {
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
         final MatchDTO actual = underTest.create(matchDTO, principal);
         assertThat(actual).isNotNull();
-        MatchService.checkPreconditions(actual);
+        MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
     }
 
 
@@ -286,7 +279,7 @@ public class MatchServiceTest {
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
         final MatchDTO actual = underTest.update(matchDTO, principal);
         assertThat(actual).isNotNull();
-        MatchService.checkPreconditions(actual);
+        MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
     }
 
 

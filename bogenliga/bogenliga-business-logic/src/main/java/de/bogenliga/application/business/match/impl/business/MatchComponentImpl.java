@@ -20,7 +20,6 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class MatchComponentImpl implements MatchComponent {
 
     private static final String PRECONDITION_MSG_TEMPLATE = "Match: %s must not be null and must not be negative";
-    public static final String PRECONDITION_MSG_MATCH_ID = String.format(PRECONDITION_MSG_TEMPLATE, "id");
     public static final String PRECONDITION_MSG_MATCH_DO = String.format(PRECONDITION_MSG_TEMPLATE, "DO");
     public static final String PRECONDITION_MSG_MATCH_NR = String.format(PRECONDITION_MSG_TEMPLATE, "nr");
     public static final String PRECONDITION_MSG_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE, "wettkampfId");
@@ -31,8 +30,6 @@ public class MatchComponentImpl implements MatchComponent {
     public static final String PRECONDITION_MSG_BEGEGNUNG = String.format(PRECONDITION_MSG_TEMPLATE, "begegnung");
     public static final String PRECONDITION_MSG_SCHEIBENNUMMER = String.format(PRECONDITION_MSG_TEMPLATE,
             "scheibennummer");
-    public static final String PRECONDITION_MSG_SATZPUNKTE = String.format(PRECONDITION_MSG_TEMPLATE, "satzpunkte");
-    public static final String PRECONDITION_MSG_MATCHPUNKTE = String.format(PRECONDITION_MSG_TEMPLATE, "matchpunkte");
 
     private final MatchDAO matchDAO;
 
@@ -153,12 +150,6 @@ public class MatchComponentImpl implements MatchComponent {
 
         Preconditions.checkNotNull(matchDO.getScheibenNummer(), PRECONDITION_MSG_CURRENT_USER_ID);
         Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
-
-        Preconditions.checkNotNull(matchDO.getSatzpunkte(), PRECONDITION_MSG_CURRENT_USER_ID);
-        Preconditions.checkArgument(matchDO.getSatzpunkte() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
-
-        Preconditions.checkNotNull(matchDO.getMatchpunkte(), PRECONDITION_MSG_CURRENT_USER_ID);
-        Preconditions.checkArgument(matchDO.getMatchpunkte() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
     }
 
 

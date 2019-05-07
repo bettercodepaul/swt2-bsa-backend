@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.Passe.api.PasseComponent;
 import de.bogenliga.application.business.Passe.api.types.PasseDO;
+import de.bogenliga.application.business.Passe.impl.business.PasseComponentImpl;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
+import de.bogenliga.application.common.service.types.DataTransferObject;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
@@ -48,18 +50,23 @@ public class MatchService implements ServiceFacade {
 
     // a simple map mapping DTO's methods to related error messages
     // used in checkPreconditions
-    private static final HashMap<String, String> conditionErrors = new HashMap<>();
+    public static final HashMap<String, String> matchConditionErrors = new HashMap<>();
     static {
-        conditionErrors.put("getBegegnung", MatchComponentImpl.PRECONDITION_MSG_BEGEGNUNG);
-        conditionErrors.put("getId", MatchComponentImpl.PRECONDITION_MSG_MATCH_ID);
-        conditionErrors.put("getMannschaftId", MatchComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
-        conditionErrors.put("getMatchpunkte", MatchComponentImpl.PRECONDITION_MSG_MATCHPUNKTE);
-        conditionErrors.put("getSatzpunkte", MatchComponentImpl.PRECONDITION_MSG_SATZPUNKTE);
-        conditionErrors.put("getScheibenNummer", MatchComponentImpl.PRECONDITION_MSG_SCHEIBENNUMMER);
-        conditionErrors.put("getWettkampfId", MatchComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
-        conditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);
+        matchConditionErrors.put("getBegegnung", MatchComponentImpl.PRECONDITION_MSG_BEGEGNUNG);
+        matchConditionErrors.put("getMannschaftId", MatchComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
+        matchConditionErrors.put("getScheibenNummer", MatchComponentImpl.PRECONDITION_MSG_SCHEIBENNUMMER);
+        matchConditionErrors.put("getWettkampfId", MatchComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
+        matchConditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
 
+    public static final HashMap<String, String> passeConditionErrors = new HashMap<>();
+    static {
+        passeConditionErrors.put("getLfdNr", PasseComponentImpl.PRECONDITION_MSG_LFD_NR);
+        passeConditionErrors.put("getMannschaftId", PasseComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
+        matchConditionErrors.put("getWettkampfId", PasseComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
+        passeConditionErrors.put("getDsbMitgliedId", PasseComponentImpl.PRECONDITION_MSG_DSB_MITGLIED_ID);
+        passeConditionErrors.put("getMatchNr", PasseComponentImpl.PRECONDITION_MSG_MATCH_NR);
+    }
 
     private static final String SERVICE_FIND_BY_ID = "findById";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
@@ -120,8 +127,8 @@ public class MatchService implements ServiceFacade {
         MatchDTO matchDTO1 = getMatchFromId(matchId1, true);
         MatchDTO matchDTO2 = getMatchFromId(matchId2, true);
 
-        checkPreconditions(matchDTO1);
-        checkPreconditions(matchDTO2);
+        checkPreconditions(matchDTO1, matchConditionErrors);
+        checkPreconditions(matchDTO2, matchConditionErrors);
 
         List<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO1);
@@ -135,6 +142,9 @@ public class MatchService implements ServiceFacade {
 
 
     /**
+     * Save the two edited matches from the findMatchesByIds service.
+     * Also save the passe objects in case there are some.
+     *
      * @param matchDTOs
      *
      * @return
@@ -154,9 +164,11 @@ public class MatchService implements ServiceFacade {
         matchDTO1 = matchDTOs.get(0);
         matchDTO2 = matchDTOs.get(1);
 
-        checkPreconditions(matchDTO1);
-        checkPreconditions(matchDTO2);
+        checkPreconditions(matchDTO1, matchConditionErrors);
+        checkPreconditions(matchDTO2, matchConditionErrors);
 
+        // make sure the matches are from the same wettkampf, begegnung and have the same number.
+        // checkout the Setzliste example for more information
         Preconditions.checkArgument(matchDTO1.getWettkampfId().equals(matchDTO2.getWettkampfId()),
                 String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
         Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
@@ -177,7 +189,7 @@ public class MatchService implements ServiceFacade {
             MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
             matchComponent.update(matchDO, userId);
             for (PasseDTO passeDTO : matchDTO.getPassen()) {
-                Preconditions.checkNotNull(passeDTO, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "passeDTO"));
+                checkPreconditions(passeDTO, passeConditionErrors);
                 PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
                 if (passeExists(passeDO)) {
                     passeComponent.update(passeDO, userId);
@@ -204,7 +216,7 @@ public class MatchService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) {
         Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, CHECKED_PARAM_PRINCIPAL));
-        checkPreconditions(matchDTO);
+        checkPreconditions(matchDTO, matchConditionErrors);
 
         this.log(matchDTO, SERVICE_CREATE);
 
@@ -230,7 +242,7 @@ public class MatchService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) {
         Preconditions.checkNotNull(principal, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, CHECKED_PARAM_PRINCIPAL));
-        checkPreconditions(matchDTO);
+        checkPreconditions(matchDTO, matchConditionErrors);
 
         this.log(matchDTO, SERVICE_UPDATE);
 
@@ -245,23 +257,23 @@ public class MatchService implements ServiceFacade {
     /**
      * A generic way to validate the getter results of each matchDTO method.
      *
-     * @param matchDTO
+     * @param dto
      */
-    public static void checkPreconditions(final MatchDTO matchDTO) {
-        Preconditions.checkNotNull(matchDTO, String.format(ERR_NOT_NULL_TEMPLATE, "checkPreconditions", "matchDTO"));
-        Method[] methods = matchDTO.getClass().getDeclaredMethods();
+    public static void checkPreconditions(final DataTransferObject dto, final HashMap<String, String> conditionErrors) {
+        Preconditions.checkNotNull(dto, String.format(ERR_NOT_NULL_TEMPLATE, "checkPreconditions", "matchDTO"));
+        Method[] methods = dto.getClass().getDeclaredMethods();
         for (Method m : methods) {
             if (m.getName().startsWith("get")) {
                 String errMsg = conditionErrors.get(m.getName());
                 if (errMsg != null) {
                     try {
-                        Object returnValue = m.invoke(matchDTO);
+                        Object returnValue = m.invoke(dto);
                         Preconditions.checkNotNull(returnValue, errMsg);
                         Preconditions.checkArgument(((Long) returnValue) >= 0, errMsg);
                     } catch (IllegalAccessException | InvocationTargetException | ClassCastException e) {
                         LOG.debug(
                                 "Couldn't check precondition on object {} for method {}",
-                                matchDTO.getClass().getSimpleName(),
+                                dto.getClass().getSimpleName(),
                                 m.getName()
                         );
                     }
@@ -293,9 +305,7 @@ public class MatchService implements ServiceFacade {
 
 
     private boolean passeExists(PasseDO passeDO) {
-        PasseDO existingPasseDO = passeComponent.findByPk(passeDO.getPasseWettkampfId(), passeDO.getPasseMatchNr(),
-                passeDO.getPasseMannschaftId(), passeDO.getPasseLfdnr(), passeDO.getPasseDsbMitgliedId());
-        return existingPasseDO != null;
+        return passeDO.getId() != null;
     }
 
 

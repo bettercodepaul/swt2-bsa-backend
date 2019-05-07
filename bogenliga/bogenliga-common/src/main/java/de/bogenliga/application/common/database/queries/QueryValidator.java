@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.match.impl.dao;
+package de.bogenliga.application.common.database.queries;
 
 
 import de.bogenliga.application.common.validation.Preconditions;

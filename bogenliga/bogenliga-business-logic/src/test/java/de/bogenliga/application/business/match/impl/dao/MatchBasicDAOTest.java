@@ -37,13 +37,13 @@ public class MatchBasicDAOTest extends BaseMatchTest {
     private static final long USER = 0;
 
     // Implements generic way to test business entities methods
-    private BasicTest<MatchBE,MatchBE> basicDAOTest;
+    private BasicTest<MatchBE, MatchBE> basicDAOTest;
 
 
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        basicDAOTest = new BasicTest<>(expectedBE,getValuesToMethodMap());
+        basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
         basicDAOTest.setEntity(expectedBE);
 
     }
