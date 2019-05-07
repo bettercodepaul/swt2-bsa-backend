@@ -18,6 +18,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
 
     public static final Function<MannschaftsmitgliedBE, MannschaftsmitgliedDO> toMannschaftsmitgliedDO = be -> {
 
+        final Long id = be.getId();
         final Long mannschaftId = be.getMannschaftId();
         final Long mitgliedId = be.getDsbMitgliedId();
         final boolean mitgliedEingesetzt = be.isDsbMitgliedEingesetzt();
@@ -32,7 +33,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new MannschaftsmitgliedDO(mannschaftId, mitgliedId, mitgliedEingesetzt,mitgliedVorname,mitgliedNachname,
+        return new MannschaftsmitgliedDO(id, mannschaftId, mitgliedId, mitgliedEingesetzt,mitgliedVorname,mitgliedNachname,
                 createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
@@ -46,6 +47,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
 
         MannschaftsmitgliedBE mannschaftsmitgliedBE = new MannschaftsmitgliedBE();
 
+        mannschaftsmitgliedBE.setId(mannschaftsmitgliedDO.getId());
         mannschaftsmitgliedBE.setMannschaftId(mannschaftsmitgliedDO.getMannschaftId());
         mannschaftsmitgliedBE.setDsbMitgliedId(mannschaftsmitgliedDO.getDsbMitgliedId());
         mannschaftsmitgliedBE.setDsbMitgliedEingesetzt(mannschaftsmitgliedDO.isDsbMitgliedEingesetzt());
