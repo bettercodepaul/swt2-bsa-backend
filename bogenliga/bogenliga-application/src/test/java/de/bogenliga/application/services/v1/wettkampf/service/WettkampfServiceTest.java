@@ -46,6 +46,7 @@ public class WettkampfServiceTest {
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
     private static final long wettkampf_Wettkampftyp_Id = 1;
+    private static final long mannschafts_id = 1;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private static final long version = 1234;
 
@@ -170,6 +171,32 @@ public class WettkampfServiceTest {
 
         // verify invocations
         verify(wettkampfComponent).findById(wettkampf_Id);
+    }
+
+    @Test
+    public void findAllWettkaempfeByMannschaftsId() {
+        // prepare test data
+        final WettkampfDO wettkampfDO = getWettkampfDO();
+        final List<WettkampfDO> wettkampfDOList= Collections.singletonList(wettkampfDO);
+
+        // configure mocks
+        when(wettkampfComponent.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(wettkampfDOList);
+
+        // call test method
+        final List<WettkampfDTO> actual = underTest.findAllWettkaempfeByMannschaftsId(mannschafts_id);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final WettkampfDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(wettkampfDO.getId());
+
+        // verify invocations
+        verify(wettkampfComponent).findAllWettkaempfeByMannschaftsId(mannschafts_id);
     }
 
     @Test

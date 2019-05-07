@@ -70,7 +70,6 @@ public class VeranstaltungService implements ServiceFacade {
         LOG.debug("Receive 'findById' with requested ID '{}'", id);
 
         final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(id);
-
         return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
     }
 }
