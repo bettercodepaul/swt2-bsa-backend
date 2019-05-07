@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.Passe.impl.dao;
+package de.bogenliga.application.business.passe.impl.dao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;

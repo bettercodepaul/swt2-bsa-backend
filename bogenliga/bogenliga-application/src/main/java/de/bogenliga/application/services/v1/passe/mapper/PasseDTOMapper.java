@@ -1,7 +1,7 @@
 package de.bogenliga.application.services.v1.passe.mapper;
 
 import java.util.function.Function;
-import de.bogenliga.application.business.Passe.api.types.PasseDO;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 

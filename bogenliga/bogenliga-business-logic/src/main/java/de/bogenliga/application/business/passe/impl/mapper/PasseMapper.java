@@ -1,10 +1,10 @@
-package de.bogenliga.application.business.Passe.impl.mapper;
+package de.bogenliga.application.business.passe.impl.mapper;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import de.bogenliga.application.business.Passe.api.types.PasseDO;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;

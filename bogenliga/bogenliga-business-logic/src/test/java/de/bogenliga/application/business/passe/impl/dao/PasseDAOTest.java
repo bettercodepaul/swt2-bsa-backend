@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.Passe.impl.dao;
+package de.bogenliga.application.business.passe.impl.dao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.mockito.ArgumentMatchers.any;
