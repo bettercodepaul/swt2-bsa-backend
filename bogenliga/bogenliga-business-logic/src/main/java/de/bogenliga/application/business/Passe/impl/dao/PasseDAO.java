@@ -95,6 +95,8 @@ public class PasseDAO implements DataAccessObject {
 
         return columnsToFieldsMap;
     }
+
+
     /**
      * SQL queries, not sure which ones are needed at all
      */
@@ -179,7 +181,7 @@ public class PasseDAO implements DataAccessObject {
      * @param passeLfdNr
      * @param dsbMitgliedId
      *
-     * @return
+     * @return a single passe found under the primary key
      */
     public PasseBE findByPk(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
         return basicDao.selectSingleEntity(PASSE, FIND_BY_PK, wettkampfId, matchNr, mannschaftId, passeLfdNr,
