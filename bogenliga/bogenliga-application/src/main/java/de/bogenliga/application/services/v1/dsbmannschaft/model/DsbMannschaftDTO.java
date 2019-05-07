@@ -28,37 +28,37 @@ public class DsbMannschaftDTO implements DataTransferObject {
     }
 
 
-    public DsbMannschaftDTO(final Long id, final long vereinId, final long nummer,
-                            final long benutzerId, final long veranstaltungId) {
+    public DsbMannschaftDTO(Long id, Long vereinId, Long nummer,
+                            Long benutzerId, Long veranstaltungId) {
         this.id = id;
-        this. vereinId=vereinId;
+        this.vereinId = vereinId;
         this.nummer = nummer;
         this.benutzerId=benutzerId;
         this.veranstaltungId=veranstaltungId;
 
     }
-    public long getId(){ return id; }
+    public Long getId(){ return id; }
 
-    public void setId(final long id){this.id=id;}
-
-
-    public long getVereinId(){return vereinId;}
-
-    public void setVereinId(final long vereinId){this.vereinId=vereinId;}
+    public void setId(Long id){this.id=id;}
 
 
-    public long getNummer(){return nummer;}
+    public Long getVereinId(){return vereinId;}
 
-    public void setNummer(final long nummer){this.nummer=nummer;}
-
-
-    public long getBenutzerId(){return benutzerId;}
-
-    public void setBenutzerId(final long benutzerId){this.benutzerId=benutzerId;}
+    public void setVereinId(Long vereinId){this.vereinId=vereinId;}
 
 
-    public long getVeranstaltungId(){return veranstaltungId;}
+    public Long getNummer(){return nummer;}
 
-    public void setVeranstaltungId(final long veranstaltungId){this.veranstaltungId=veranstaltungId;}
+    public void setNummer(Long nummer){this.nummer=nummer;}
+
+
+    public Long getBenutzerId(){return benutzerId;}
+
+    public void setBenutzerId(Long benutzerId){this.benutzerId=benutzerId;}
+
+
+    public Long getVeranstaltungId(){return veranstaltungId;}
+
+    public void setVeranstaltungId(Long veranstaltungId){this.veranstaltungId=veranstaltungId;}
 
 }
