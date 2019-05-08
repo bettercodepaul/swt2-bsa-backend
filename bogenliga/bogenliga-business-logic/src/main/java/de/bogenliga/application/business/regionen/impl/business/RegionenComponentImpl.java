@@ -93,6 +93,5 @@ public class RegionenComponentImpl implements RegionenComponent {
         Preconditions.checkNotNull(regionenDO, PRECONDITION_MSG_REGION);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_REGION_DSB_MITGLIED_NOT_NEG);
         Preconditions.checkNotNull(regionenDO.getRegionName(), PRECONDITION_MSG_REGION_NAME);
-        Preconditions.checkNotNull(regionenDO.getId(), PRECONDITION_MSG_REGION_ID);
     }
 }
