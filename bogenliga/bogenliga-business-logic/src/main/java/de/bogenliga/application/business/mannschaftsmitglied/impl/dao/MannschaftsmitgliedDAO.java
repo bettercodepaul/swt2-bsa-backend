@@ -153,7 +153,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     public MannschaftsmitgliedBE findByMemberAndTeamId(long teamId, final long memberId) {
         MannschaftsmitgliedBE test;
-        test = basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, teamId, memberId);
+        test = basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, memberId, teamId);
         return test;
     }
 

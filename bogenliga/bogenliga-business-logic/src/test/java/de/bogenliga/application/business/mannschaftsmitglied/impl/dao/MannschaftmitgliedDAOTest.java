@@ -47,16 +47,10 @@ public class MannschaftmitgliedDAOTest extends MannschaftsmitgliedBaseDAOTest {
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
-        Map values = getValuesToMethodMap();
-
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
     }
 
 
-    @After
-    public void tearDown() {
-        // verify invocations
-        verify(basicDao).selectEntityList(any(), any(), any());
-    }
 
 
     @Test
