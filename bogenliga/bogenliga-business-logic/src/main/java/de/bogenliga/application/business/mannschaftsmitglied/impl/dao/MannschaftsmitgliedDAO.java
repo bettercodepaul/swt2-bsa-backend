@@ -29,12 +29,12 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     private static final String DSB_MITGLIED_TABLE = "dsb_mitglied";
     private static final String DSB_MITGLIED_TABLE_ALIAS = "d";
-    private static final String DSB_MITGLIED_TABLE_MIGLIED_ID = "dsb_mitglied_id";
+    private static final String DSB_MITGLIED_TABLE_MITGLIED_ID = "dsb_mitglied_id";
     // business entity parameter names
 
     private static final String MANNSCHAFTSMITGLIED_BE_ID = "id";
     private static final String MANNSCHAFTSMITGLIED_BE_TEAM_ID = "mannschaftId";
-    private static final String MANNSCHAFTSMITGLIED_BE_USER_ID = "dsbMitgliedId";
+    private static final String MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID = "dsbMitgliedId";
     private static final String MANNSCHAFTSMITGLIED_BE_INSERT = "dsbMitgliedEingesetzt";
 
     // new: important for the join with dsb_mitglied
@@ -43,23 +43,24 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     private static final String MANNSCHAFTSMITGLIED_TABLE_ID = "mannschaftsmitglied_id";
     private static final String MANNSCHAFTSMITGLIED_TABLE_TEAM_ID = "mannschaftsmitglied_mannschaft_id";
-    private static final String MANNSCHAFTSMITGLIED_TABLE_USER_ID = "mannschaftsmitglied_dsb_mitglied_id";
-    private static final String MANNSCHAFTSMITGLIED_TABLE_INSERT = "mannschaftsmitglied_dsb_mitglied_eingesetzt";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID = "mannschaftsmitglied_dsb_mitglied_id";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_EMPLOYED = "mannschaftsmitglied_dsb_mitglied_eingesetzt";
 
     // new: important for the join with dsb_mitglied
     private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
     private static final String DSBMITGLIED_TABLE_SURNAME = "dsb_mitglied_nachname";
 
     private static final String[] selectedFields = {
-            MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_TABLE_USER_ID,
-            MANNSCHAFTSMITGLIED_TABLE_INSERT, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME
+            MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID,
+            MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME
     };
 
     private static final String FIND_ALL = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
-            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, DSB_MITGLIED_TABLE_ALIAS,
+                    DSB_MITGLIED_TABLE_MITGLIED_ID)
             .orderBy(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .compose().toString();
 
@@ -67,7 +68,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
-            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, DSB_MITGLIED_TABLE_ALIAS,
+                    DSB_MITGLIED_TABLE_MITGLIED_ID)
             .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .compose().toString();
 
@@ -75,8 +77,9 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
-            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
-            .whereEquals(MANNSCHAFTSMITGLIED_BE_USER_ID)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, DSB_MITGLIED_TABLE_ALIAS,
+                    DSB_MITGLIED_TABLE_MITGLIED_ID)
+            .whereEquals(MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID)
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .compose().toString();
 
@@ -84,8 +87,9 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
-            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
-            .whereGteRaw(MANNSCHAFTSMITGLIED_TABLE_INSERT, "1") // true means 1 and vv.
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, DSB_MITGLIED_TABLE_ALIAS,
+                    DSB_MITGLIED_TABLE_MITGLIED_ID)
+            .whereGteRaw(MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, "1")
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
             .compose().toString();
@@ -110,8 +114,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_BE_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_BE_TEAM_ID);
-        columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_USER_ID, MANNSCHAFTSMITGLIED_BE_USER_ID);
-        columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_INSERT, MANNSCHAFTSMITGLIED_BE_INSERT);
+        columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
+        columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, MANNSCHAFTSMITGLIED_BE_INSERT);
 
         // new: important for the join with dsb_mitglied
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
@@ -165,14 +169,14 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_USER_ID);
+        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
     }
 
 
     public void delete(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-        basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_USER_ID);
+        basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
     }
 
 

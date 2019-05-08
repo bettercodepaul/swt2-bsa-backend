@@ -12,6 +12,7 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
 
+
     public MannschaftsMitgliedDTO() {
     }
 
@@ -48,7 +49,7 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
     }
 
 
-    public Integer isDsbMitgliedEingesetzt() {
+    public Integer getDsbMitgliedEingesetzt() {
         return dsbMitgliedEingesetzt;
     }
 
@@ -57,20 +58,24 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 
-    public String getDsbMitgliedVorname(){
+
+    public String getDsbMitgliedVorname() {
         return dsbMitgliedVorname;
     }
 
-    public void setDsbMitgliedVorname(String dsbMitgliedVorname){
-        this.dsbMitgliedVorname=dsbMitgliedVorname;
+
+    public void setDsbMitgliedVorname(String dsbMitgliedVorname) {
+        this.dsbMitgliedVorname = dsbMitgliedVorname;
     }
 
-    public String getDsbMitgliedNachname(){
+
+    public String getDsbMitgliedNachname() {
         return dsbMitgliedNachname;
     }
 
-    public void setDsbMitgliedNachname(String dsbMitgliedNachname){
-        this.dsbMitgliedNachname=dsbMitgliedNachname;
+
+    public void setDsbMitgliedNachname(String dsbMitgliedNachname) {
+        this.dsbMitgliedNachname = dsbMitgliedNachname;
     }
 
 

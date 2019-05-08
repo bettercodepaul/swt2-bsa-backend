@@ -116,7 +116,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
                 mannschaftsMitgliedDTO.getMannschaftsId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
-                mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt());
+                mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
 
         final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
                 mannschaftsMitgliedDTO);
@@ -142,7 +142,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         LOG.debug("Receive 'create' request with mannschaftsId '{}', dsbMitgliedId '{}', DsbMitgliedEingesetzt '{}',",
                 mannschaftsMitgliedDTO.getMannschaftsId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
-                mannschaftsMitgliedDTO.isDsbMitgliedEingesetzt());
+                mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
 
         final MannschaftsmitgliedDO newMannschaftsMitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
                 mannschaftsMitgliedDTO);
