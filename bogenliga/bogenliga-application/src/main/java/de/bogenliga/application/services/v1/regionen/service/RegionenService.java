@@ -96,10 +96,11 @@ public class RegionenService implements ServiceFacade {
         checkPreconditions(regionenDTO);
         Preconditions.checkArgument(regionenDTO.getId() >= 0, PRECONDITION_MSG_REGION_ID);
 
-        LOG.debug("Receive  'update' request with id '{}', name '{}'; kuerzel '{}', uebergeordnete_region '{}' ",
+        LOG.debug("Receive  'update' request with id '{}', name '{}'; kuerzel '{}',typ '{}'; uebergeordnete_region '{}' ",
                 regionenDTO.getId(),
                 regionenDTO.getRegionName(),
                 regionenDTO.getRegionKuerzel(),
+                regionenDTO.getRegionTyp(),
                 regionenDTO.getRegionUebergeordnet());
 
 
