@@ -210,6 +210,9 @@ public class MatchService implements ServiceFacade {
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
 
         System.out.println("Anzahl Schützen: " + mannschaftsmitgliedDOS.size());
+        for (MannschaftsmitgliedDO mmdo: mannschaftsmitgliedDOS) {
+            System.out.println("Schütze: " + mmdo.getId() + " mit dsbMitgliedId " + mmdo.getDsbMitgliedId());
+        }
 
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
                 String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
@@ -226,7 +229,7 @@ public class MatchService implements ServiceFacade {
         passeDTO.setDsbMitgliedId(getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
 
         Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
-                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "dsbMitgliedId"));
+                String.format(ERR_NOT_NULL_TEMPLATE, "createOrUpdatePasse", "dsbMitgliedId"));
 
         PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
         if (passeExists(passeDO)) {
