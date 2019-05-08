@@ -76,7 +76,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
             .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
-            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .whereEquals(MANNSCHAFTSMITGLIED_BE_USER_ID)
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .compose().toString();
 
