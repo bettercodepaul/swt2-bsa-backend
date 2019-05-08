@@ -5,16 +5,13 @@ import static de.bogenliga.application.business.mannschaftsmitglied.impl.busines
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Philip Dengler,
  */
 public class MannschaftsmitgliedBETest {
 
-    private static final long  USER =0;
-    private static final long MANNSCHHAFT_ID = 1111;
-    private static final long DSB_MITGLIED_ID = 22222;
-    private static final boolean DSB_MITGLIED_EINGESETZT = true;
+    private static final Long MANNSCHHAFT_ID = 1111L;
+    private static final Long DSB_MITGLIED_ID = 22222L;
+    private static final Integer DSB_MITGLIED_EINGESETZT = 1;
 
 
     @Test
@@ -30,12 +27,12 @@ public class MannschaftsmitgliedBETest {
                 .isNotEmpty()
                 .contains(Long.toString(MANNSCHHAFT_ID))
                 .contains(Long.toString(DSB_MITGLIED_ID))
-                .contains(Boolean.toString(DSB_MITGLIED_EINGESETZT));
+                .contains(Integer.toString(DSB_MITGLIED_EINGESETZT));
     }
 
 
     @Test
-    public void assertToString_withoutMitgliedEingesetzt(){
+    public void assertToString_withoutMitgliedEingesetzt() {
         final MannschaftsmitgliedBE underTest = getMannschatfsmitgliedBE();
         underTest.setMannschaftId(MANNSCHHAFT_ID);
         underTest.setDsbMitgliedId(DSB_MITGLIED_ID);
