@@ -26,7 +26,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * todo
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long MannschaftsmitgliederMannschaftsId);
 
 
 
@@ -37,7 +37,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * empty list, if no mannschaftsmitglied is found
      */
 
-    List<MannschaftsmitgliedDO> findByTeamId(long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findByTeamId(Long MannschaftsmitgliederMannschaftsId);
 
 
 
@@ -49,7 +49,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @return single mannschaftsmitglied entry with the given id;
      * null, if no mannschaftsmitglied is found
      */
-    MannschaftsmitgliedDO findByMemberAndTeamId(long MannschaftsmitgliedMannschaftId, long MannschaftsmitgliedMitgliedId);
+    MannschaftsmitgliedDO findByMemberAndTeamId(Long MannschaftsmitgliedMannschaftId, Long MannschaftsmitgliedMitgliedId);
 
 
 
@@ -60,7 +60,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @param currentMemberId
      * @return persisted version of the mannschaftsmitglied
      */
-    MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
+    MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO, Long currentMemberId);
 
 
 
@@ -71,7 +71,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @param currentMemberId
      * @return persisted version of the mannschaftsmitglied
      */
-    MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
+    MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO, Long currentMemberId);
 
 
     /**
@@ -80,8 +80,8 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @param mannschaftsmitgliedDO mannschaftsmitglied to delete
      * @param currentMemberId
      */
-    void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, long currentMemberId);
+    void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, Long currentMemberId);
 
-    boolean checkExistingSchuetze(long teamId, long memberId);
+    boolean checkExistingSchuetze(Long teamId, Long memberId);
 
 }
