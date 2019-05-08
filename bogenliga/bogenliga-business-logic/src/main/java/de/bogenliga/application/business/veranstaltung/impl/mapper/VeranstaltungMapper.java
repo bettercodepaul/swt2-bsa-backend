@@ -65,6 +65,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
        veranstaltungBE.setVeranstaltungMeldeDeadline(veranstaltungDO.getVeranstaltungMeldeDeadline());
        veranstaltungBE.setVeranstaltungLigaleiterID(veranstaltungDO.getVeranstaltungLigaleiterID());
        veranstaltungBE.setVeranstaltungLigaID(veranstaltungDO.getVeranstaltungLigaID());
+       veranstaltungBE.setVeranstaltungWettkampftypName(veranstaltungDO.getVeranstaltungWettkampftypName());
 
        veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
        veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());

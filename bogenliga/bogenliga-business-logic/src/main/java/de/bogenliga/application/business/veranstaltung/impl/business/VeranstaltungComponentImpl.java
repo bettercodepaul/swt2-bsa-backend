@@ -71,12 +71,25 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     public List<VeranstaltungDO> findAll() {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll();
+        final List <String> cacheList = new ArrayList<String>();
+
 
         for (int i = 0; i < veranstaltungBEList.size(); i++) {
 
             returnList.add(i, notNull(veranstaltungBEList.get(i)));
 
         }
+        /*
+        for(int x = 0;x<returnList.size();x++){
+            cacheList.add(wettkampftypDAO.findById(returnList.get(x).getVeranstaltungWettkampftypID()).getName());
+            System.out.println("test: " + cacheList.get(x));
+            System.out.println("test2: " + returnList.get(x).getVeranstaltungWettkampftypID());
+        }*/
+        System.out.println("test3:" + wettkampftypDAO.findAll());
+
+
+
+
         return returnList;
     }
 
