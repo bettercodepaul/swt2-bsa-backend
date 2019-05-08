@@ -55,25 +55,25 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     private static final String FIND_ALL =
-            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
                     + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    + " ORDER BY mannschaftsmitglied_mannschaft_id";
+                    + " ORDER BY mannschaftsmitglied_mannschaft_id;";
 
     private static final String FIND_BY_TEAM_ID =
-            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
                     + " FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    + " WHERE mannschaftsmitglied_mannschaft_id = ?";
+                    + " WHERE mannschaftsmitglied_mannschaft_id = ?;";
 
     private static final String FIND_BY_MEMBER_AND_TEAM_ID =
             "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
                     + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    +" WHERE mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_id=?";
+                    +" WHERE mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_id=?;";
 
     private static final String FIND_ALL_SCHUETZE_TEAM =
-            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname"
+            "SELECT mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, dsb_mitglied_vorname, dsb_mitglied_nachname "
                     + "FROM mannschaftsmitglied m join dsb_mitglied d on m.mannschaftsmitglied_dsb_mitglied_id = d.dsb_mitglied_id"
-                    +" WHERE   mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_eingesetzt= true"
-                    + " ORDER BY mannschaftsmitglied_id";
+                    +" WHERE   mannschaftsmitglied_mannschaft_id =? AND mannschaftsmitglied_dsb_mitglied_eingesetzt=1"
+                    + " ORDER BY mannschaftsmitglied_id;";
 
 
 
