@@ -85,7 +85,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
             .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_USER_ID, DSB_MITGLIED_TABLE_ALIAS, DSB_MITGLIED_TABLE_MIGLIED_ID)
-            .whereEqualsRaw(MANNSCHAFTSMITGLIED_TABLE_INSERT, "1") // true means 1 and vv.
+            .whereGteRaw(MANNSCHAFTSMITGLIED_TABLE_INSERT, "1") // true means 1 and vv.
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
             .compose().toString();
@@ -113,15 +113,12 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_USER_ID, MANNSCHAFTSMITGLIED_BE_USER_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_INSERT, MANNSCHAFTSMITGLIED_BE_INSERT);
 
-        System.out.println("test");
         // new: important for the join with dsb_mitglied
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME, DSBMITGLIED_BE_SURNAME);
 
-
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
-
         return columnsToFieldsMap;
     }
 
@@ -180,6 +177,6 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     public boolean checkExistingSchuetze(long teamId, final long memberId) {
-        return findByMemberAndTeamId(teamId, memberId).isDsbMitgliedEingesetzt();
+        return findByMemberAndTeamId(teamId, memberId).getDsbMitgliedEingesetzt() > 0;
     }
 }

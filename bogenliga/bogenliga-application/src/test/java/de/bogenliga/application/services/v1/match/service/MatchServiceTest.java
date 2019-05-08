@@ -74,7 +74,7 @@ public class MatchServiceTest {
     private static final Long MM_ID_3 = 3L;
     private static final Long MM_mannschaftsId = 1L;
     private static final Long MM_dsbMitgliedId = 100L;
-    private static final Boolean MM_dsbMitgliedEingesetzt = true;
+    private static final Integer MM_dsbMitgliedEingesetzt = 1;
     private static final String MM_dsbMitgliedVorname = "Foo";
     private static final String MM_dsbMitgliedNachname= "Bar";
 

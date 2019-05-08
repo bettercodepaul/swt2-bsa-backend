@@ -80,9 +80,10 @@ public class QueryBuilder {
 
     // Comparators
     public static final String SQL_EQUALS = " = ";
+    public static final String SQL_GTE = " >= ";
     public static final String SQL_EQUAL_COMPARATOR = String.format(" %s? ", SQL_EQUALS);
     public static final String SQL_GT_COMPARATOR = String.format(" >%s ", SQL_VALUE_PLACEHOLDER);
-    public static final String SQL_GTE_COMPARATOR = String.format(" >=%s ", SQL_VALUE_PLACEHOLDER);
+    public static final String SQL_GTE_COMPARATOR = String.format(" %s%s ", SQL_GTE, SQL_VALUE_PLACEHOLDER);
     public static final String SQL_LT_COMPARATOR = String.format(" <%s ", SQL_VALUE_PLACEHOLDER);
     public static final String SQL_LTE_COMPARATOR = String.format(" <=%s ", SQL_VALUE_PLACEHOLDER);
     public static final String SQL_TRUE_COMPARATOR = SQL_EQUALS + "true ";
@@ -450,6 +451,13 @@ public class QueryBuilder {
 
     public QueryBuilder whereGte(final String fieldName) {
         this.addWhere(fieldName, SQL_GTE_COMPARATOR);
+        return this;
+    }
+
+
+    public QueryBuilder whereGteRaw(final String fieldName, final String value) {
+        this.addWhere(fieldName, SQL_GTE);
+        this.queryString += spaceAround(value);
         return this;
     }
 

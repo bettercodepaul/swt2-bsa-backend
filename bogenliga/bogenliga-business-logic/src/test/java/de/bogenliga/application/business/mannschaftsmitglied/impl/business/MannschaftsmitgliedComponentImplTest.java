@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.mannschaftsmitglied.impl.business;
 
-import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -20,13 +19,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Philip Dengler,
  */
 public class MannschaftsmitgliedComponentImplTest {
@@ -36,11 +31,10 @@ public class MannschaftsmitgliedComponentImplTest {
     private static final Long VERSION = 0L;
 
 
-
     private static final Long MM_ID = 1001L;
     private static final Long MANNSCHAFTSID = 1111L;
     private static final Long DSB_MITGLIED_ID = 2222L;
-    private static final Boolean DSB_MITGLIED_EINGESTZT = true;
+    private static final Integer DSB_MITGLIED_EINGESETZT = 1;
     private static final String DSB_MITGLIED_VORNSME = "Mario";
     private static final String DSB_MItglied_Nachname = "Gomez";
 
@@ -55,30 +49,31 @@ public class MannschaftsmitgliedComponentImplTest {
     private ArgumentCaptor<MannschaftsmitgliedBE> mannschaftsmitgliedBEArgumentCaptor;
 
 
-
     /***
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
      */
-    public static  MannschaftsmitgliedBE getMannschatfsmitgliedBE(){
+    public static MannschaftsmitgliedBE getMannschatfsmitgliedBE() {
         final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
         expectedBE.setMannschaftId(MANNSCHAFTSID);
         expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
-        expectedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESTZT);
+        expectedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESETZT);
 
         return expectedBE;
 
     }
 
-    public static MannschaftsmitgliedDO getMannschatfsmitgliedDO(){
+
+    public static MannschaftsmitgliedDO getMannschatfsmitgliedDO() {
         return new MannschaftsmitgliedDO(
-                    MM_ID,
-                    MANNSCHAFTSID,
-                    DSB_MITGLIED_ID,
-                    DSB_MITGLIED_EINGESTZT,
-                     DSB_MITGLIED_VORNSME,
-                    DSB_MItglied_Nachname);
+                MM_ID,
+                MANNSCHAFTSID,
+                DSB_MITGLIED_ID,
+                DSB_MITGLIED_EINGESETZT,
+                DSB_MITGLIED_VORNSME,
+                DSB_MItglied_Nachname);
     }
+
 
     @Test
     public void findAll() {
@@ -104,12 +99,13 @@ public class MannschaftsmitgliedComponentImplTest {
                 .isEqualTo(expectedBE.getMannschaftId());
         assertThat(actual.get(0).getDsbMitgliedId())
                 .isEqualTo(expectedBE.getDsbMitgliedId());
-        assertThat(actual.get(0).isDsbMitgliedEingesetzt())
-                .isEqualTo(expectedBE.isDsbMitgliedEingesetzt());
+        assertThat(actual.get(0).getDsbMitgliedEingesetzt())
+                .isEqualTo(expectedBE.getDsbMitgliedEingesetzt());
     }
 
+
     @Test
-    public void findAllSchuetzeInTeam(){
+    public void findAllSchuetzeInTeam() {
 
         final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
         final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
@@ -127,21 +123,21 @@ public class MannschaftsmitgliedComponentImplTest {
                 .hasSize(1);
         assertThat(actual.get(0).getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
-        assertThat(actual.get(0).isDsbMitgliedEingesetzt()).isEqualTo(expectedBE.isDsbMitgliedEingesetzt());
-
+        assertThat(actual.get(0).getDsbMitgliedEingesetzt()).isEqualTo(expectedBE.getDsbMitgliedEingesetzt());
 
 
     }
 
+
     @Test
-    public void findByMemberAndTeamId(){
+    public void findByMemberAndTeamId() {
 
         final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
 
 
         // configure mocks
-        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID,DSB_MITGLIED_ID)).thenReturn(expectedBE);
-        final MannschaftsmitgliedDO actual = underTest.findByMemberAndTeamId(MANNSCHAFTSID,DSB_MITGLIED_ID);
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID, DSB_MITGLIED_ID)).thenReturn(expectedBE);
+        final MannschaftsmitgliedDO actual = underTest.findByMemberAndTeamId(MANNSCHAFTSID, DSB_MITGLIED_ID);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
@@ -149,8 +145,9 @@ public class MannschaftsmitgliedComponentImplTest {
 
     }
 
+
     @Test
-    public void findByTeamId(){
+    public void findByTeamId() {
         final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
         final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
 
@@ -166,20 +163,20 @@ public class MannschaftsmitgliedComponentImplTest {
 
     }
 
+
     @Test
     public void checkExistingSchuetze() {
 
         final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
         // configure mocks
-        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID,DSB_MITGLIED_ID)).thenReturn(expectedBE);
-        final boolean actual = underTest.checkExistingSchuetze(MANNSCHAFTSID,DSB_MITGLIED_ID);
-        assertThat(actual);
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID, DSB_MITGLIED_ID)).thenReturn(expectedBE);
+        final boolean actual = underTest.checkExistingSchuetze(MANNSCHAFTSID, DSB_MITGLIED_ID);
+        assertThat(actual).isTrue();
     }
 
 
-
     @Test
-    public void create(){
+    public void create() {
 
         final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
 
@@ -210,8 +207,6 @@ public class MannschaftsmitgliedComponentImplTest {
     }
 
 
-
-
     @Test
     public void create_with_mandatory_parameters() {
 
@@ -227,7 +222,7 @@ public class MannschaftsmitgliedComponentImplTest {
         final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
         expectedBE.setMannschaftId(MANNSCHAFTSID);
         expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
-        expectedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESTZT);
+        expectedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESETZT);
 
 
         when(mannschaftsmitgliedDAO.create(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
@@ -250,31 +245,24 @@ public class MannschaftsmitgliedComponentImplTest {
 
         assertThat(persistedBE.getMannschaftId())
                 .isEqualTo(input.getMannschaftId());
-
     }
+
 
     @Test
     public void create_withoutInput_shouldThrowException() {
-        // prepare test data
-
-        // configure mocks
-
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(null, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
-        // assert result
-
         // verify invocations
         verifyZeroInteractions(mannschaftsmitgliedDAO);
     }
 
 
-
     @Test
-    public void update(){
+    public void update() {
 
         final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
 
@@ -298,22 +286,15 @@ public class MannschaftsmitgliedComponentImplTest {
 
     @Test
     public void update_withoutInput_shouldThrowException() {
-        // prepare test data
-
-        // configure mocks
-
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.update(null, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
-        // assert result
-
         // verify invocations
         verifyZeroInteractions(mannschaftsmitgliedDAO);
     }
-
 
 
     @Test
@@ -321,14 +302,8 @@ public class MannschaftsmitgliedComponentImplTest {
         // prepare test data
         final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
 
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
-
-        // configure mocks
-
         // call test method
         underTest.delete(input, USER);
-
-        // assert result
 
         // verify invocations
         verify(mannschaftsmitgliedDAO).delete(mannschaftsmitgliedBEArgumentCaptor.capture(), anyLong());
@@ -341,24 +316,16 @@ public class MannschaftsmitgliedComponentImplTest {
                 .isEqualTo(input.getMannschaftId());
     }
 
+
     @Test
     public void delete_withoutInput_shouldThrowException() {
-        // prepare test data
-
-        // configure mocks
-
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.delete(null, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
-        // assert result
-
         // verify invocations
         verifyZeroInteractions(mannschaftsmitgliedDAO);
     }
-
-
-
 }

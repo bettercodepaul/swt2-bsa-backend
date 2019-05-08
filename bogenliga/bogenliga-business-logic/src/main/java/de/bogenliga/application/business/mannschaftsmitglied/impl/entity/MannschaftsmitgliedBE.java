@@ -3,11 +3,7 @@ package de.bogenliga.application.business.mannschaftsmitglied.impl.entity;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
-/**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
+
 public class MannschaftsmitgliedBE extends CommonBusinessEntity implements BusinessEntity {
 
     private static final long serialVersionUID = 2616130134662239870L;
@@ -15,7 +11,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     private Long id;
     private Long mannschaftId;
     private Long dsbMitgliedId;
-    private boolean dsbMitgliedEingesetzt;
+    private Integer dsbMitgliedEingesetzt;
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
 
@@ -48,12 +44,12 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     }
 
 
-    public boolean isDsbMitgliedEingesetzt() {
+    public Integer getDsbMitgliedEingesetzt() {
         return dsbMitgliedEingesetzt;
     }
 
 
-    public void setDsbMitgliedEingesetzt(final boolean dsbMitgliedEingesetzt) {
+    public void setDsbMitgliedEingesetzt(final Integer dsbMitgliedEingesetzt) {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 

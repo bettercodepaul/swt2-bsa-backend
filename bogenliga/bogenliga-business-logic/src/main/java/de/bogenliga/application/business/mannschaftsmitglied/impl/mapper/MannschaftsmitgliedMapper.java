@@ -21,7 +21,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         final Long id = be.getId();
         final Long mannschaftId = be.getMannschaftId();
         final Long mitgliedId = be.getDsbMitgliedId();
-        final boolean mitgliedEingesetzt = be.isDsbMitgliedEingesetzt();
+        final Integer mitgliedEingesetzt = be.getDsbMitgliedEingesetzt();
         final String mitgliedVorname = be.getDsbMitgliedVorname();
         final String mitgliedNachname = be.getDsbMitgliedNachname();
 
@@ -50,7 +50,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         mannschaftsmitgliedBE.setId(mannschaftsmitgliedDO.getId());
         mannschaftsmitgliedBE.setMannschaftId(mannschaftsmitgliedDO.getMannschaftId());
         mannschaftsmitgliedBE.setDsbMitgliedId(mannschaftsmitgliedDO.getDsbMitgliedId());
-        mannschaftsmitgliedBE.setDsbMitgliedEingesetzt(mannschaftsmitgliedDO.isDsbMitgliedEingesetzt());
+        mannschaftsmitgliedBE.setDsbMitgliedEingesetzt(mannschaftsmitgliedDO.getDsbMitgliedEingesetzt());
         mannschaftsmitgliedBE.setDsbMitgliedVorname(mannschaftsmitgliedDO.getDsbMitgliedVorname());
         mannschaftsmitgliedBE.setDsbMitgliedNachname(mannschaftsmitgliedDO.getDsbMitgliedNachname());
 

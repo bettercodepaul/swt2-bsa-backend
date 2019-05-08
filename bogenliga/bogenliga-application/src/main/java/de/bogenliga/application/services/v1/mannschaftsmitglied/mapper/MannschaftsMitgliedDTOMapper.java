@@ -12,7 +12,7 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
         final Long id = mannschaftsMitgliedDO.getId();
         final Long mannschaftId = mannschaftsMitgliedDO.getMannschaftId();
         final Long dsbMitgliedId = mannschaftsMitgliedDO.getDsbMitgliedId();
-        final boolean dsbMitgliedEingesetzt = mannschaftsMitgliedDO.isDsbMitgliedEingesetzt();
+        final Integer dsbMitgliedEingesetzt = mannschaftsMitgliedDO.getDsbMitgliedEingesetzt();
         final String dsbMitgliedVorname = mannschaftsMitgliedDO.getDsbMitgliedVorname();
         final String dsbMitgliedNachname = mannschaftsMitgliedDO.getDsbMitgliedNachname();
 
@@ -24,7 +24,7 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
         final Long id = dto.getId();
         final Long mannschaftId = dto.getMannschaftsId();
         final Long dsbMitgliedId = dto.getDsbMitgliedId();
-        final boolean dsbMitgliedEingesetzt = dto.isDsbMitgliedEingesetzt();
+        final Integer dsbMitgliedEingesetzt = dto.isDsbMitgliedEingesetzt();
         final String dsbMitgliedVorname = dto.getDsbMitgliedVorname();
         final String dsbMitgliedNachname = dto.getDsbMitgliedNachname();
 

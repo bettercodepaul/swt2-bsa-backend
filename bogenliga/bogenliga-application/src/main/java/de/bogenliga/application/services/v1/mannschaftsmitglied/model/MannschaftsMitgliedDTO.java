@@ -5,21 +5,19 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class MannschaftsMitgliedDTO implements DataTransferObject {
     private static final long serialVersionUID = 3599079471852195486L;
 
-
     private Long id;
     private Long mannschaftsId;
     private Long dsbMitgliedId;
-    private boolean dsbMitgliedEingesetzt;
+    private Integer dsbMitgliedEingesetzt;
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
-
 
     public MannschaftsMitgliedDTO() {
     }
 
 
-    public MannschaftsMitgliedDTO(final long id, final long mannschaftsId, final long dsbMitgliedId,
-                                  final boolean dsbMitgliedEingesetzt,
+    public MannschaftsMitgliedDTO(final Long id, final Long mannschaftsId, final Long dsbMitgliedId,
+                                  final Integer dsbMitgliedEingesetzt,
                                   final String dsbMitgliedVorname, final String getDsbMitgliedNachname) {
         this.id = id;
         this.mannschaftsId = mannschaftsId;
@@ -30,32 +28,32 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
     }
 
 
-    public long getMannschaftsId() {
+    public Long getMannschaftsId() {
         return mannschaftsId;
     }
 
 
-    public void setMannschaftsId(long mannschaftsId) {
+    public void setMannschaftsId(Long mannschaftsId) {
         this.mannschaftsId = mannschaftsId;
     }
 
 
-    public long getDsbMitgliedId() {
+    public Long getDsbMitgliedId() {
         return dsbMitgliedId;
     }
 
 
-    public void setDsbMitgliedId(long dsbMitgliedId) {
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
         this.dsbMitgliedId = dsbMitgliedId;
     }
 
 
-    public boolean isDsbMitgliedEingesetzt() {
+    public Integer isDsbMitgliedEingesetzt() {
         return dsbMitgliedEingesetzt;
     }
 
 
-    public void setDsbMitgliedEingesetzt(boolean dsbMitgliedEingesetzt) {
+    public void setDsbMitgliedEingesetzt(Integer dsbMitgliedEingesetzt) {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 

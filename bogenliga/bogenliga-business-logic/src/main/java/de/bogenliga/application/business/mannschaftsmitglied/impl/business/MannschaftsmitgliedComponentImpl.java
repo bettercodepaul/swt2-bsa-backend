@@ -3,10 +3,6 @@ package de.bogenliga.application.business.mannschaftsmitglied.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
@@ -17,11 +13,7 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.stereotype.Component;
 
-/**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
+
 @Component
 public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComponent {
 
@@ -156,7 +148,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
         final MannschaftsmitgliedBE result = mannschaftsmitgliedDAO.findByMemberAndTeamId(mannschaftId,mitgliedId);
 
-        return result.isDsbMitgliedEingesetzt();
+        return result.getDsbMitgliedEingesetzt() > 0;
     }
 
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO, final Long parameter) {
