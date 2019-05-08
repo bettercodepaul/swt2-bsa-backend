@@ -26,7 +26,7 @@ public class RegionenDAO implements DataAccessObject {
     private static final String TABLE = "region";
 
     //business entity parameters
-    private static final String REGION_BE_ID = "regionID";
+    private static final String REGION_BE_ID = "regionId";
     private static final String REGION_BE_NAME = "regionName";
     private static final String REGION_BE_KUERZEL = "regionKuerzel";
     private static final String REGION_BE_TYP = "regionTyp";
@@ -158,12 +158,10 @@ public class RegionenDAO implements DataAccessObject {
      * @param currentDsbMitglied Id of the user deleting the database entry
      */
     public void delete(final RegionenBE regionenBE, final long currentDsbMitglied) {
-        basicDAO.setModificationAttributes(regionenBE, currentDsbMitglied);
 
+        basicDAO.setModificationAttributes(regionenBE, currentDsbMitglied);
         basicDAO.deleteEntity(REGIONEN, regionenBE, REGION_BE_ID);
 
-        System.out.println("-____________REGIONEN DAO________________-");
-        System.out.println("________________ "+regionenBE.getRegionId());
     }
 
 
