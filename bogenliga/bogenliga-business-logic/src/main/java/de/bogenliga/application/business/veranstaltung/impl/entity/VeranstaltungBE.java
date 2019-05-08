@@ -15,6 +15,7 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     private static final long serialVersionUID = -7987623598712368L;
     private Long veranstaltungID;
     private Long veranstaltungWettkampftypID;
+    private String veranstaltungWettkampftypName;
     private String veranstaltungName;
     private Long veranstaltungSportJahr;
     private Date veranstaltungMeldeDeadline;
@@ -112,5 +113,12 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
+    public String getVeranstaltungWettkampftypName() {
+        return veranstaltungWettkampftypName;
+    }
 
+
+    public void setVeranstaltungWettkampftypName(String veranstaltungWettkampftypName) {
+        this.veranstaltungWettkampftypName = veranstaltungWettkampftypName;
+    }
 }

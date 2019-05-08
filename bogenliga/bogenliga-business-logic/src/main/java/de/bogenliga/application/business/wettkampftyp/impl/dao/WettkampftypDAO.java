@@ -35,7 +35,7 @@ public class WettkampftypDAO implements DataAccessObject {
 
 
     private static final String WETTKAMPFTYP_TABLE_ID = "wettkampftyp_id";
-    private static final String WETTKAMPFTYP_TANBLE_NAME= "wettkampftyp_name";
+    private static final String WETTKAMPFTYP_TABLE_NAME= "wettkampftyp_name";
 
 
     // wrap all specific config parameters
@@ -75,7 +75,7 @@ public class WettkampftypDAO implements DataAccessObject {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(WETTKAMPFTYP_TABLE_ID, WETTKAMPFTYP_BE_ID);
-        columnsToFieldsMap.put(WETTKAMPFTYP_BE_NAME, WETTKAMPFTYP_TANBLE_NAME);
+        columnsToFieldsMap.put(WETTKAMPFTYP_TABLE_NAME,WETTKAMPFTYP_BE_NAME);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -87,7 +87,9 @@ public class WettkampftypDAO implements DataAccessObject {
      * Return all Wettkampftyp entries
      */
     public List<WettkampftypBE> findAll() {
+        System.out.println("in der DAO-Klasse von wettkampf" + basicDao.selectEntityList(WETTKAMPFTYP, FIND_ALL));
         return basicDao.selectEntityList(WETTKAMPFTYP, FIND_ALL);
+
     }
 
 
