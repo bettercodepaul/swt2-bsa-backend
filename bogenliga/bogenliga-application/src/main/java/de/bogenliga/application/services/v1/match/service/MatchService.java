@@ -69,7 +69,6 @@ public class MatchService implements ServiceFacade {
         passeConditionErrors.put("getLfdNr", PasseComponentImpl.PRECONDITION_MSG_LFD_NR);
         passeConditionErrors.put("getMannschaftId", PasseComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
         matchConditionErrors.put("getWettkampfId", PasseComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
-        passeConditionErrors.put("getDsbMitgliedId", PasseComponentImpl.PRECONDITION_MSG_DSB_MITGLIED_ID);
         passeConditionErrors.put("getMatchNr", PasseComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
 
@@ -209,6 +208,8 @@ public class MatchService implements ServiceFacade {
         matchComponent.update(matchDO, userId);
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
+
+        System.out.println("Anzahl Schützen: " + mannschaftsmitgliedDOS.size());
 
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
                 String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
