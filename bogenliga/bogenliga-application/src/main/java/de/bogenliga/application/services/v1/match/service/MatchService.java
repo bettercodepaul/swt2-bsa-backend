@@ -69,7 +69,6 @@ public class MatchService implements ServiceFacade {
         passeConditionErrors.put("getLfdNr", PasseComponentImpl.PRECONDITION_MSG_LFD_NR);
         passeConditionErrors.put("getMannschaftId", PasseComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
         matchConditionErrors.put("getWettkampfId", PasseComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
-        passeConditionErrors.put("getDsbMitgliedId", PasseComponentImpl.PRECONDITION_MSG_DSB_MITGLIED_ID);
         passeConditionErrors.put("getMatchNr", PasseComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
 
@@ -210,6 +209,8 @@ public class MatchService implements ServiceFacade {
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
 
+        System.out.println("Anzahl Schützen: " + mannschaftsmitgliedDOS.size());
+
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
                 String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
 
@@ -329,18 +330,20 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(dto, String.format(ERR_NOT_NULL_TEMPLATE, "checkPreconditions", "matchDTO"));
         Method[] methods = dto.getClass().getDeclaredMethods();
         for (Method m : methods) {
-            if (m.getName().startsWith("get")) {
-                String errMsg = conditionErrors.get(m.getName());
+            String methodName = m.getName();
+            if (methodName.startsWith("get")) {
+                String errMsg = conditionErrors.get(methodName);
                 if (errMsg != null) {
                     try {
                         Object returnValue = m.invoke(dto);
+                        System.out.println("Method val: " + returnValue + "; Method: " + methodName);
                         Preconditions.checkNotNull(returnValue, errMsg);
                         Preconditions.checkArgument(((Long) returnValue) >= 0, errMsg);
                     } catch (IllegalAccessException | InvocationTargetException | ClassCastException e) {
                         LOG.debug(
                                 "Couldn't check precondition on object {} for method {}",
                                 dto.getClass().getSimpleName(),
-                                m.getName()
+                                methodName
                         );
                     }
                 }
