@@ -145,6 +145,9 @@ public class BasicComponentTest<T, B> {
             if (v != null) {
                 LOG.debug("Parameter values: " + v.toString());
             }
+            else{
+                LOG.debug("Parameter values: null");
+            }
         }
         assertThatExceptionOfType(InvocationTargetException.class)
                 .isThrownBy(() -> method.invoke(expectedEntity, value))
