@@ -161,6 +161,9 @@ public class RegionenDAO implements DataAccessObject {
         basicDAO.setModificationAttributes(regionenBE, currentDsbMitglied);
 
         basicDAO.deleteEntity(REGIONEN, regionenBE, REGION_BE_ID);
+
+        System.out.println("-____________REGIONEN DAO________________-");
+        System.out.println("________________ "+regionenBE.getRegionId());
     }
 
 
