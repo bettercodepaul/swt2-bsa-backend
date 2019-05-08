@@ -3,6 +3,8 @@ package de.bogenliga.application.business.baseClass.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -14,12 +16,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
  */
 public class BasicComponentTest<T, B> {
     private T expectedEntity;
-
+    private static Logger LOG;
     private Method method;
 
 
     public BasicComponentTest(T expectedEntity) {
         this.expectedEntity = expectedEntity;
+
+        LoggerFactory.getLogger(expectedEntity.getClass());
+        LOG = LoggerFactory.getLogger(expectedEntity.getClass());
     }
 
 
@@ -28,7 +33,7 @@ public class BasicComponentTest<T, B> {
      */
     public B testCreateMethod(
             B entityDO) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        method = expectedEntity.getClass().getDeclaredMethod("create", entityDO.getClass(), Long.class);
+        getMethod("create", entityDO);
         return testCreationMethods(entityDO);
     }
 
@@ -37,9 +42,9 @@ public class BasicComponentTest<T, B> {
      * Tests update method of componentImpl
      */
     public B testUpdateMethod(
-            B entityDO) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        method = expectedEntity.getClass().getDeclaredMethod("update", entityDO.getClass(), Long.class);
-        return testCreationMethods(entityDO);
+            B entity) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        getMethod("update", entity);
+        return testCreationMethods(entity);
     }
 
 
@@ -47,19 +52,29 @@ public class BasicComponentTest<T, B> {
      * Tests delete method of componentImpl
      */
     public void testDeleteMethod(
-            B entityDO) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        method = expectedEntity.getClass().getDeclaredMethod("delete", entityDO.getClass(), Long.class);
-        testCreationMethods(entityDO);
-        testUpdateMethods(entityDO);
+            B entity) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+        getMethod("delete", entity);
+        testCreationMethods(entity);
+        testUpdateMethods(entity);
+    }
+
+
+    private void getMethod(String name, B entity) throws NoSuchMethodException {
+        try {
+            method = expectedEntity.getClass().getDeclaredMethod(name, entity.getClass(), Long.class);
+        } catch (NoSuchMethodException nos) {
+            method = expectedEntity.getClass().getDeclaredMethod(name, entity.getClass(), Long.TYPE);
+        }
     }
 
 
     /**
      * Tests create and update method of componentImpl
      */
-    private B testCreationMethods(B entityDO) throws InvocationTargetException, IllegalAccessException {
-        B be = (B) method.invoke(expectedEntity, entityDO, 1L);
-        testUpdateMethods(entityDO);
+    private B testCreationMethods(B entity) throws InvocationTargetException, IllegalAccessException {
+        B be = (B) method.invoke(expectedEntity, entity, 1L);
+        testUpdateMethods(entity);
         return be;
     }
 
@@ -123,6 +138,14 @@ public class BasicComponentTest<T, B> {
      * @param value the params which differ for each method
      */
     private void assertExceptionBadInput(int i, Object... value) throws IllegalAccessException {
+
+        LOG.debug("Method: " + method.getName());
+        LOG.debug("Entity which throws: " + expectedEntity.getClass());
+        for (Object v : value) {
+            if (v != null) {
+                LOG.debug("Parameter values: " + v.toString());
+            }
+        }
         assertThatExceptionOfType(InvocationTargetException.class)
                 .isThrownBy(() -> method.invoke(expectedEntity, value))
                 .withCauseInstanceOf(BusinessException.class);
