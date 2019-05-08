@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.veranstaltung.impl.mapper;
 
+import de.bogenliga.application.business.liga.impl.entity.LigaBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -7,6 +9,8 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -17,31 +21,33 @@ import de.bogenliga.application.common.time.DateProvider;
  */
 public class VeranstaltungMapper implements ValueObjectMapper {
 
+
     /**
-     * Mapps a Veranstaltung Business Entity to a Veranstaltung Data Object
+     * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
+     *
      */
-    public static final Function<VeranstaltungBE, VeranstaltungDO> toVeranstaltungDO= be -> {
+    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserBE userBE, WettkampftypBE wettkamptypBE, LigaBE ligaBE){
 
-        final Long id = be.getVeranstaltungID();
-        final Long wettkampfTypID = be.getVeranstaltungWettkampftypID();
-        final String name= be.getVeranstaltungName();
-        final Long sportJahr = be.getVeranstaltungSportJahr();
-        final Date meldeDeadline = be.getVeranstaltungMeldeDeadline();
-        final Long ligaleiterID = be.getVeranstaltungLigaleiterID();
-        final String ligaLeiterEmail = be.getVeranstaltungLigaleiterEmail();
-        final String wettkampftypName = be.getVeranstaltungWettkampftypName();
+        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getCreatedAtUtc());
+        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getLastModifiedAtUtc());
 
-        // technical parameter
-        Long createdByUserId = be.getCreatedByUserId();
-        Long lastModifiedByUserId = be.getLastModifiedByUserId();
-        Long version = be.getVersion();
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO(
+                veranstaltungBE.getVeranstaltungID(),
+                veranstaltungBE.getVeranstaltungWettkampftypID(),
+                veranstaltungBE.getVeranstaltungName(),
+                veranstaltungBE.getVeranstaltungSportJahr(),
+                veranstaltungBE.getVeranstaltungMeldeDeadline(),
+                veranstaltungBE.getVeranstaltungLigaleiterID(),
+                veranstaltungBE.getVeranstaltungLigaID(),
+                userBE.getUserEmail(),
+                wettkamptypBE.getName(),
+                ligaBE.getLigaName()
+        );
+        veranstaltungDO.setCreatedAtUtc(createdAtUtc);
+        veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);
+        return veranstaltungDO;
 
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
-        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
-
-        return new VeranstaltungDO(id, wettkampfTypID, name, sportJahr, meldeDeadline, ligaleiterID,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, ligaLeiterEmail, wettkampftypName);
-    };
+    }
 
 
     /**
@@ -58,8 +64,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
        veranstaltungBE.setVeranstaltungName(veranstaltungDO.getVeranstaltungName());
        veranstaltungBE.setVeranstaltungMeldeDeadline(veranstaltungDO.getVeranstaltungMeldeDeadline());
        veranstaltungBE.setVeranstaltungLigaleiterID(veranstaltungDO.getVeranstaltungLigaleiterID());
-       veranstaltungBE.setVeranstaltungLigaleiterEmail(veranstaltungDO.getVeranstaltungLigaleiterEmail());
-       veranstaltungBE.setVeranstaltungWettkampftypName(veranstaltungDO.getVeranstaltungWettkampftypName());
+       veranstaltungBE.setVeranstaltungLigaID(veranstaltungDO.getVeranstaltungLigaID());
 
        veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
        veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());
