@@ -29,9 +29,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterId";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltungLigaId";
 
-    private static final String BENUTZER_BE_BENUTZER_EMAIL= "veranstaltungLigaleiterEmail";
 
-    private static final String WETTKAMPFTYP_BE_WETTKAMPFTYP_NAME= "veranstaltungWettkampftypName";
 
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
@@ -42,9 +40,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_TABLE_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
     private static final String VERANSTALTUNG_TABLE_LIGA_ID = "veranstaltung_liga_id";
 
-    private static final String BENUTZER_TABLE_BENUTZER_EMAIL= "benutzer_email";
 
-    private static final String WETTKAMPFTYP_TABLE_WETTKAMPFTYP_NAME= "wettkampftyp_name";
 
 
     // define the logger context
@@ -65,10 +61,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      */
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM veranstaltung, benutzer, wettkampftyp"
-                    + " WHERE veranstaltung.veranstaltung_ligaleiter_id =  benutzer.benutzer_id"
-                    + " AND veranstaltung.veranstaltung_liga_id = liga.liga_id"
-                    + " AND veranstaltung.veranstaltung_wettkampftyp_id = wettkampftyp.wettkampftyp_id"
+                    + " FROM veranstaltung"
                     + " ORDER BY veranstaltung.veranstaltung_id";
 
     private static final String FIND_BY_ID =
@@ -103,8 +96,6 @@ public class VeranstaltungDAO implements DataAccessObject{
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
 
 
-        columnsToFieldsMap.put(BENUTZER_TABLE_BENUTZER_EMAIL, BENUTZER_BE_BENUTZER_EMAIL);
-        columnsToFieldsMap.put(WETTKAMPFTYP_TABLE_WETTKAMPFTYP_NAME, WETTKAMPFTYP_BE_WETTKAMPFTYP_NAME);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
