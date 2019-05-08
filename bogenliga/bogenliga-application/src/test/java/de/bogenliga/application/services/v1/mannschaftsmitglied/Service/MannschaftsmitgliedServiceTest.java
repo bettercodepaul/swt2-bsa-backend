@@ -144,7 +144,7 @@ public class MannschaftsmitgliedServiceTest {
                 .hasSize(1);
         assertThat(actual.get(0).getMannschaftsId()).isEqualTo(mannschaftsmitgliedDO.getMannschaftId());
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedId());
-        assertThat(actual.get(0).isDsbMitgliedEingesetzt()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedEingesetzt());
+        assertThat(actual.get(0).getDsbMitgliedEingesetzt()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedEingesetzt());
     }
 
 

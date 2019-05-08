@@ -16,13 +16,13 @@ public class MannschaftsmitgliedBaseDAOTest {
     protected static Long id = 1L;
     protected static Long mannschaftId = 2L;
     protected static Long dsbMitgliedId = 3L;
-    protected static boolean dsbMitgliedEingesetzt = true;
+    protected static Integer dsbMitgliedEingesetzt = 1;
     protected static String dsbMitgliedVorname = "Max";
     protected static String dsbMitgliedNachname = "Mustermann";
 
     private static final OffsetDateTime offsetDateTime = null;
-    private static final long USER = 4;
-    private static final long VERSION = 5;
+    private static final Long USER = 4L;
+    private static final Long VERSION = 5L;
     private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
 
 
