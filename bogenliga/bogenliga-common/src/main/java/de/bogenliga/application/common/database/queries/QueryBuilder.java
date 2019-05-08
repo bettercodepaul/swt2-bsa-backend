@@ -5,17 +5,14 @@ import de.bogenliga.application.common.validation.Preconditions;
 
 /**
  * <p>
- * "Not so simple anymore" query builder utility class. Use it in case you:
- * <br>
- * - don't want those unhandy raw SQL strings inside your DAO
- * <br>
- * - prefer a readable and easy-to-use way to build your queries
- * <br>
+ * "Not so simple anymore" query builder utility class. Use it in case you
+ * don't want those unhandy raw SQL strings inside your DAO.
+ *
  * Does support:
- * Non-nested queries, simple joins with equality, aliases on table names and for field reference.
+ * Simple queries, subselects, simple joins with equality, aliases for table names and fields, grouping and ordering.
  *
  * Best practice:
- * Define constants for your table column names and required aliases and use them in the query builder api. -> DRY!
+ * Define constants for your table, table columns and required aliases and use them in the query builder api. -> DRY
  * If you don't know how something works, check out the QueryBuilderTest. Some common cases are shown there.
  *
  * <br>
@@ -25,18 +22,35 @@ import de.bogenliga.application.common.validation.Preconditions;
  *                      .whereEquals(FIELD)
  *                      .orderByAsc(ANOTHER_FIELD)
  *                      .compose().toString();
- * Advanced usage (but without constants):
- *      new QueryBuilder()
- *                 .selectFields("mannschaftsmitglied_mannschaft_id", "mannschaftsmitglied_dsb_mitglied_id", "mannschaftsmitglied_dsb_mitglied_eingesetzt", "dsb_mitglied_vorname")
- *                 .from(TABLE, "m").join("sdb_mitglied", "d")
- *                 .on("m", "mannschaftsmitglied_dsb_mitglied_id", "d", "dsb_mitglied_id")
- *                 .whereEquals("mannschaftsmitglied_mannschaft_id")
- *                 .andTrue("mannschaftsmitglied_dsb_mitglied_eingesetzt")
- *                 .compose().toString()
  *
- * <br> <p>TODO: add support for:</p>
- *     -    explicit table names in fields (SELECT tablenameA.field, tablenameB.field FROM [...]) for each method          X
- *     -    comparators etc. for fields of diff tables (WHERE tablenameA.field=tablenameB.field)                           X
+ * Advanced usage:
+ *      new QueryBuilder()
+ *             .selectFieldsWithAliases(TABLE_ALIAS, FIELD, OTHER_TABLE_ALIAS, OTHER_FIELD)
+ *             .from(TABLE, TABLE_ALIAS)
+ *                 .joinLeft(OTHER_TABLE, OTHER_TABLE_ALIAS)
+ *                 .on(TABLE_ALIAS, FIELD, OTHER_TABLE_ALIAS, OTHER_FIELD)
+ *             .whereEquals(
+ *                  ANOTHER_FIELD,
+ *                  new SubQueryBuilder()
+ *                          .selectField(YET_ANOTHER_FIELD)
+ *                          .from(YET_ANOTHER_TABLE)
+ *                          .whereEquals(YET_ANOTHER_FIELD)
+ *             )
+ *             .groupBy(FIELD)
+ *             .orderByAsc(FIELD)
+ *             .compose().toString();
+ *
+ *      Result: SELECT t1.field, t2.other_field
+ *              FROM table t1
+ *              LEFT JOIN other_table t2
+ *              ON t1.field = t2.other_field
+ *              WHERE another_field = (
+ *                  SELECT yet_another_field
+ *                  FROM yet_another_table
+ *                  WHERE yet_another_field = ?
+ *              )
+ *              GROUP BY field
+ *              ORDER BY field ASC;
  * </p>
  *
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
@@ -53,10 +67,13 @@ public class QueryBuilder {
     public static final String SQL_FROM = " FROM ";
     public static final String SQL_JOIN = " JOIN ";
     public static final String SQL_ON = " ON ";
+    public static final String SQL_LEFT_JOIN = " LEFT " + SQL_JOIN;
+    public static final String SQL_RIGHT_JOIN = " RIGHT " + SQL_JOIN;
     public static final String SQL_WHERE = " WHERE ";
     public static final String SQL_AND = " AND ";
     public static final String SQL_IN = " IN ";
     public static final String SQL_IN_VALUE = SQL_IN + SQL_VALUE_PLACEHOLDER;
+    public static final String SQL_GROUP_BY = " GROUP BY ";
     public static final String SQL_ORDER_BY = " ORDER BY ";
     public static final String SQL_ORDER_ASC = " ASC ";
     public static final String SQL_ORDER_DESC = " DESC ";
@@ -118,12 +135,32 @@ public class QueryBuilder {
 
 
     public QueryBuilder selectFields(String... fieldNames) {
+        this.queryString += SQL_SELECT;
+        this.queryString += getFieldList(fieldNames);
+        return this;
+    }
+
+
+    public QueryBuilder selectFieldsWithTableNames(String... fieldNames) {
+        Preconditions.checkArgument(
+                fieldNames.length % 2 == 0,
+                "When using aliases or explicit table names, " +
+                        "make sure each column has its table alias/name (-> even arg count)."
+        );
+
         StringBuilder builder = new StringBuilder(this.queryString);
         builder.append(SQL_SELECT);
         int maxIdx = fieldNames.length - 1;
         String lastItem = fieldNames[maxIdx];
-        for (String fieldName : fieldNames) {
-            builder.append(fieldName);
+        for (int i = 0; i < fieldNames.length; i += 2) {
+            String fieldName = fieldNames[i];
+            if (i + 1 < fieldNames.length) {
+                String alias = fieldName;
+                fieldName = fieldNames[i + 1];
+                builder.append(withAlias(alias, fieldName));
+            } else {
+                builder.append(fieldName);
+            }
             if (!fieldName.equals(lastItem)) {
                 builder.append(SQL_FIELD_SEPARATOR);
             } else {
@@ -132,6 +169,11 @@ public class QueryBuilder {
         }
         this.queryString = builder.toString();
         return this;
+    }
+
+
+    public QueryBuilder selectFieldsWithAliases(String... fieldNames) {
+        return this.selectFieldsWithTableNames(fieldNames);
     }
 
 
@@ -202,16 +244,37 @@ public class QueryBuilder {
      */
 
     public QueryBuilder join(String otherTableName) {
-        this.addJoin(otherTableName);
+        this.addJoin(SQL_JOIN, otherTableName);
         return this;
     }
 
 
     public QueryBuilder join(String otherTableName, String otherTableAlias) {
-        this.registerAlias(otherTableAlias, otherTableName);
+        this.addJoinWithAlias(SQL_JOIN, otherTableName, otherTableAlias);
+        return this;
+    }
 
-        this.addJoin(otherTableName);
-        this.queryString += spaceAround(otherTableAlias);
+
+    public QueryBuilder joinLeft(String otherTableName) {
+        this.addJoin(SQL_LEFT_JOIN, otherTableName);
+        return this;
+    }
+
+
+    public QueryBuilder joinLeft(String otherTableName, String otherTableAlias) {
+        this.addJoinWithAlias(SQL_LEFT_JOIN, otherTableName, otherTableAlias);
+        return this;
+    }
+
+
+    public QueryBuilder joinRight(String otherTableName) {
+        this.addJoin(SQL_RIGHT_JOIN, otherTableName);
+        return this;
+    }
+
+
+    public QueryBuilder joinRight(String otherTableName, String otherTableAlias) {
+        this.addJoinWithAlias(SQL_RIGHT_JOIN, otherTableName, otherTableAlias);
         return this;
     }
 
@@ -231,10 +294,18 @@ public class QueryBuilder {
     }
 
 
-    private void addJoin(String otherTableName) {
+    private void addJoinWithAlias(String joinType, String otherTableName, String otherTableAlias) {
+        this.registerAlias(otherTableAlias, otherTableName);
+
+        this.addJoin(joinType, otherTableName);
+        this.queryString += spaceAround(otherTableAlias);
+    }
+
+
+    private void addJoin(String joinType, String otherTableName) {
         this.queryValidator.validateJoin(otherTableName);
 
-        this.queryString += SQL_JOIN + spaceAround(otherTableName);
+        this.queryString += joinType + spaceAround(otherTableName);
     }
 
 
@@ -251,8 +322,8 @@ public class QueryBuilder {
 
 
     /**
-     * Usage: [...].whereEquals(fieldName, QueryBuilder.applyFunction(otherFieldName, functionName)) In case a a function must be
-     * applied to a fields value
+     * Usage: [...].whereEquals(fieldName, QueryBuilder.applyFunction(otherFieldName, functionName)) In case a a
+     * function must be applied to a fields value
      *
      * @param fieldName
      * @param functionName
@@ -263,7 +334,7 @@ public class QueryBuilder {
         Preconditions.checkArgument(functionName != null, "Function name must not be emtpy!");
         Preconditions.checkArgument(functionName.length() > 0, "Function name must not be emtpy!");
 
-        return String.format(SQL_FUNCTION_TEMPLATE, functionName, fieldName);
+        return String.format(SQL_FUNCTION_TEMPLATE, functionName.trim(), fieldName.trim());
     }
 
 
@@ -302,6 +373,21 @@ public class QueryBuilder {
 
 
     /**
+     * Equality with raw value e.g. result of a function, so no quoting
+     *
+     * @param fieldName
+     * @param value
+     *
+     * @return
+     */
+    public QueryBuilder whereEqualsRaw(final String fieldName, final String value) {
+        this.addWhere(fieldName, SQL_EQUALS);
+        this.queryString += spaceAround(value);
+        return this;
+    }
+
+
+    /**
      * Equality with result of sub select, requires single column select in subquery i guess... (use .selectField(...))
      *
      * @param fieldName
@@ -329,7 +415,7 @@ public class QueryBuilder {
     public QueryBuilder whereEquals(final String tableName, final String fieldName, final String otherTableName,
                                     final String otherFieldName) {
         this.addWhere(withAlias(tableName, fieldName), SQL_EQUALS);
-        this.queryString += spaceAround(quote(withAlias(otherTableName, otherFieldName)));
+        this.queryString += spaceAround(withAlias(otherTableName, otherFieldName));
         return this;
     }
 
@@ -351,7 +437,7 @@ public class QueryBuilder {
         this.queryValidator.checkHasAlias(otherTableAlias);
 
         this.addWhere(withAlias(tableAlias, fieldName), SQL_EQUALS);
-        this.queryString += spaceAround(quote(withAlias(otherTableAlias, otherFieldName)));
+        this.queryString += spaceAround(withAlias(otherTableAlias, otherFieldName));
         return this;
     }
 
@@ -428,7 +514,7 @@ public class QueryBuilder {
     public QueryBuilder andEquals(final String tableName, final String fieldName, final String otherTableName,
                                   final String otherFieldName) {
         addAnd(withAlias(tableName, fieldName), SQL_EQUALS);
-        this.queryString += spaceAround(quote(withAlias(otherTableName, otherFieldName)));
+        this.queryString += spaceAround(withAlias(otherTableName, otherFieldName));
         return this;
     }
 
@@ -440,7 +526,7 @@ public class QueryBuilder {
         this.queryValidator.checkHasAlias(otherTableAlias);
 
         addAnd(withAlias(tableAlias, fieldName), SQL_EQUALS);
-        this.queryString += spaceAround(quote(withAlias(otherTableAlias, otherFieldName)));
+        this.queryString += spaceAround(withAlias(otherTableAlias, otherFieldName));
         return this;
     }
 
@@ -513,6 +599,16 @@ public class QueryBuilder {
 
     public QueryBuilder andIn(final String fieldName, final QueryBuilder subQuery) {
         addAnd(fieldName, addIn(getAsSubSelect(subQuery)));
+        return this;
+    }
+
+
+    /**
+     * GROUP BY operations
+     */
+
+    public QueryBuilder groupBy(final String... fieldNames) {
+        this.queryString += SQL_GROUP_BY + getFieldList(fieldNames);
         return this;
     }
 
@@ -621,6 +717,22 @@ public class QueryBuilder {
      * Utilities
      */
 
+    protected String getFieldList(String[] fieldNames) {
+        StringBuilder builder = new StringBuilder();
+        int maxIdx = fieldNames.length - 1;
+        String lastItem = fieldNames[maxIdx];
+        for (String fieldName : fieldNames) {
+            builder.append(fieldName);
+            if (!fieldName.equals(lastItem)) {
+                builder.append(SQL_FIELD_SEPARATOR);
+            } else {
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+
     protected String asSubSelect(String subQuery) {
         return String.format(SQL_SUB_SELECT_TEMPLATE, subQuery);
     }
@@ -651,7 +763,7 @@ public class QueryBuilder {
     }
 
 
-    protected static String withAlias(final String alias, final String fieldName) {
+    public static String withAlias(final String alias, final String fieldName) {
         return String.format(SQL_FIELD_ALIAS_TEMPLATE, alias, fieldName);
     }
 
