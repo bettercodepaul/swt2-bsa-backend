@@ -2,7 +2,10 @@ package de.bogenliga.application.services.v1.regionen.mapper;
 
 import java.time.OffsetDateTime;
 import java.util.function.Function;
+import org.springframework.beans.factory.annotation.Autowired;
+import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
+import de.bogenliga.application.business.regionen.impl.business.RegionenComponentImpl;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.regionen.model.RegionenDTO;
 
@@ -27,7 +30,7 @@ public class RegionenDTOMapper implements DataTransferObjectMapper {
         final Long version = regionenDO.getVersion();
 
 
-        return new RegionenDTO(id, regionName, kuerzel, typ, uebergeordnet, createdAtUtc,createdByUserId, version);
+        return new RegionenDTO(id, regionName, kuerzel, typ, uebergeordnet,null, createdAtUtc,createdByUserId, version);
     };
 
 
@@ -56,4 +59,5 @@ public class RegionenDTOMapper implements DataTransferObjectMapper {
     private RegionenDTOMapper(){
         //empty
     }
+
 }

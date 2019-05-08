@@ -15,6 +15,7 @@ public class RegionenDTO implements DataTransferObject {
     private String regionKuerzel;
     private String regionTyp;
     private Long regionUebergeordnet;
+    private String regionUebergeordnetAsName;
     private OffsetDateTime createdAtUtc;
     private Long createdByUserId;
     private Long version;
@@ -36,17 +37,19 @@ public class RegionenDTO implements DataTransferObject {
      * @param regionKuerzel
      * @param regionTyp
      * @param regionUebergeordnet
+     * @param regionUebergeordnetAsName
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
     public RegionenDTO(Long id, String regionName, String regionKuerzel, String regionTyp, Long regionUebergeordnet,
-                       OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
+                       String regionUebergeordnetAsName, OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
         this.id = id;
         this.regionName = regionName;
         this.regionKuerzel = regionKuerzel;
         this.regionTyp = regionTyp;
         this.regionUebergeordnet = regionUebergeordnet;
+        this.regionUebergeordnetAsName = regionUebergeordnetAsName;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -98,8 +101,14 @@ public class RegionenDTO implements DataTransferObject {
     }
 
 
-    public void setRegionUebergeordnet(Long regionUebergeordnet) {
-        this.regionUebergeordnet = regionUebergeordnet;
+    public void setRegionUebergeordnet(Long regionUebergeordnet) { this.regionUebergeordnet = regionUebergeordnet;}
+
+
+    public String getRegionUebergeordnetAsName() { return regionUebergeordnetAsName; }
+
+
+    public void setRegionUebergeordnetAsName(String regionUebergeordnetAsName) {
+        this.regionUebergeordnetAsName = regionUebergeordnetAsName;
     }
 
 
