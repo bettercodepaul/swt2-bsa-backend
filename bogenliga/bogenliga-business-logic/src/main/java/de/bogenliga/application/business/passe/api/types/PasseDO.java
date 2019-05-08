@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.passe.api.types;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 
 /**
@@ -23,6 +24,20 @@ public class PasseDO extends CommonDataObject {
     private Integer pfeil2;
     private Integer pfeil3;
     private Integer pfeil4;
+
+
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getPasseMannschaftId(), getPasseWettkampfId(), getPasseMatchNr(),
+                getPasseMatchId(),
+                getPasseLfdnr(), getPasseDsbMitgliedId(), getPfeil1(), getPfeil2(), getPfeil3(), getPfeil4(),
+                getPfeil5(),
+                getPfeil6());
+    }
+
+
     private Integer pfeil5;
     private Integer pfeil6;
 
@@ -202,5 +217,30 @@ public class PasseDO extends CommonDataObject {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PasseDO)) {
+            return false;
+        }
+        PasseDO passeDO = (PasseDO) o;
+        return Objects.equals(getId(), passeDO.getId()) &&
+                Objects.equals(getPasseMannschaftId(), passeDO.getPasseMannschaftId()) &&
+                Objects.equals(getPasseWettkampfId(), passeDO.getPasseWettkampfId()) &&
+                Objects.equals(getPasseMatchNr(), passeDO.getPasseMatchNr()) &&
+                Objects.equals(getPasseMatchId(), passeDO.getPasseMatchId()) &&
+                Objects.equals(getPasseLfdnr(), passeDO.getPasseLfdnr()) &&
+                Objects.equals(getPasseDsbMitgliedId(), passeDO.getPasseDsbMitgliedId()) &&
+                Objects.equals(getPfeil1(), passeDO.getPfeil1()) &&
+                Objects.equals(getPfeil2(), passeDO.getPfeil2()) &&
+                Objects.equals(getPfeil3(), passeDO.getPfeil3()) &&
+                Objects.equals(getPfeil4(), passeDO.getPfeil4()) &&
+                Objects.equals(getPfeil5(), passeDO.getPfeil5()) &&
+                Objects.equals(getPfeil6(), passeDO.getPfeil6());
     }
 }
