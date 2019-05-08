@@ -41,7 +41,9 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION = "Region must not be null";
     private static final String PRECONDITION_MSG_REGION_ID = "Region ID must not be negative";
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
-    private static final String PRECONDITION_MSG_REGION_DSB_IDENTIFIER = "Region dsb Identifier must not be null";
+    private static final String PRECONDITION_MSG_REGION_Kuerzel = "Region Contraction must not be null";
+    private static final String PRECONDITION_MSG_REGION_Uebergeordnet = "Region Uebergeordnet(id oder name) must not be null or invalid";
+
 
     private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
 
@@ -182,6 +184,42 @@ public class RegionenService implements ServiceFacade {
     private void checkPreconditions(@RequestBody final RegionenDTO regionenDTO) {
         Preconditions.checkNotNull(regionenDTO, PRECONDITION_MSG_REGION);
         Preconditions.checkNotNull(regionenDTO.getRegionName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkNotNull(regionenDTO.getId(), PRECONDITION_MSG_REGION_DSB_IDENTIFIER);
+        Preconditions.checkNotNull(regionenDTO.getRegionKuerzel(), PRECONDITION_MSG_REGION_Kuerzel);
+        Preconditions.checkNotNull(regionenDTO.getRegionTyp(), PRECONDITION_MSG_REGION_TYPE);
+    }
+
+    private List<RegionenDTO> syncUebergeordnetWithUebergeordnetAsName(List<RegionenDTO> regionenDTOs){
+        regionenDTOs.stream().forEach(region -> syncSingle(region, regionenDTOs));
+        return regionenDTOs;
+    }
+
+    private void syncSingle(RegionenDTO currentRegion, List<RegionenDTO> regions){
+        RegionenDTO superordinateRegion = null;
+        List<RegionenDTO> possibleRegions = null;
+        //Case: The region has a superordinate name but not yet the id
+        if(currentRegion.getRegionUebergeordnet() == null
+                && currentRegion.getRegionUebergeordnetAsName()!=null){
+            //search for the region with the name of the regionUebergeordnetAsName field
+            possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
+                .collect(Collectors.toList());
+
+            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
+            Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
+
+            currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
+
+        //Case: The region has a superordinate id but not its corresponding name
+        }else if(currentRegion.getRegionUebergeordnet() != null
+                && currentRegion.getRegionUebergeordnetAsName()==null){
+            possibleRegions = regions.stream().filter((region)->region.getId()
+                    .equals(currentRegion.getRegionUebergeordnet())).collect(
+                    Collectors.toList());
+
+            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
+            Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
+
+            currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
+
+        }
     }
 }
