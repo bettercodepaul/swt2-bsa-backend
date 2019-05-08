@@ -37,6 +37,16 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
 
 
+    private final String PRECONDITION_MSG_TEMPLATE_NULL = "Mannschaftsmitglied: %s must not be null";
+
+    private final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Mannschaftsmitglied: %s must not be negative";
+
+
+    public void checkPreconditions(final Long id, String iDIdentifier) {
+        Preconditions.checkNotNull(id, String.format(PRECONDITION_MSG_TEMPLATE_NULL, iDIdentifier));
+        Preconditions.checkArgument(id >= 0, String.format(PRECONDITION_MSG_TEMPLATE_NEGATIVE, iDIdentifier));
+    }
+
     /**
      * Constructor
      *
@@ -56,7 +66,8 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
     @Override
-    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(long mannschaftsId) {
+    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long mannschaftsId) {
+        checkPreconditions(mannschaftsId,"mannschaftsId");
         final List<MannschaftsmitgliedBE>  mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeam(mannschaftsId);
         return  mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
     }
@@ -64,14 +75,17 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
     @Override
-    public List<MannschaftsmitgliedDO> findByTeamId(long mannschaftsId){
+    public List<MannschaftsmitgliedDO> findByTeamId(Long mannschaftsId){
+        checkPreconditions(mannschaftsId,"mannschaftsId");
         final List<MannschaftsmitgliedBE>  mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findByTeamId(mannschaftsId);
         return  mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(Collectors.toList());
     }
 
 
     @Override
-    public MannschaftsmitgliedDO findByMemberAndTeamId(long mannschaftId, long mitgliedId) {
+    public MannschaftsmitgliedDO findByMemberAndTeamId(Long mannschaftId, Long mitgliedId) {
+        checkPreconditions(mannschaftId,"mannschaftsId");
+        checkPreconditions(mitgliedId,"mitgliedId");
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
         Preconditions.checkArgument(mitgliedId>=0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
 
@@ -88,7 +102,8 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     @Override
     public MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO,
-                               final long currentMemberId) {
+                               final Long currentMemberId) {
+        checkPreconditions(currentMemberId,"currentMemberId");
         checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMemberId);
 
 
@@ -102,7 +117,8 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     @Override
     public MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO,
-                                final long currentMemberId) {
+                                final Long currentMemberId) {
+        checkPreconditions(currentMemberId,"currentMemberId");
 
         checkMannschaftsmitgliedDO(mannschaftsmitgliedDO, currentMemberId);
 
@@ -120,7 +136,8 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
     @Override
-    public void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, final long currentMemberId) {
+    public void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, final Long currentMemberId) {
+        checkPreconditions(currentMemberId,"currentMemberId");
 
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
         Preconditions.checkArgument(mannschaftsmitgliedDO.getMannschaftId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID);
@@ -133,7 +150,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     }
 
     @Override
-    public boolean checkExistingSchuetze(long mannschaftId, final long mitgliedId){
+    public boolean checkExistingSchuetze(Long mannschaftId, final Long mitgliedId){
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
         Preconditions.checkArgument(mitgliedId>=0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
 
@@ -142,7 +159,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         return result.isDsbMitgliedEingesetzt();
     }
 
-    private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO, final long parameter) {
+    private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO, final Long parameter) {
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
         Preconditions.checkNotNull(mannschaftsmitgliedDO.getMannschaftId(), PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID);
         Preconditions.checkNotNull(mannschaftsmitgliedDO.getDsbMitgliedId(), PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID);
