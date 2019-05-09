@@ -1,8 +1,11 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.constraints.Null;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -33,7 +37,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class DsbMannschaftService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT = "DsbMannschaftDO must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMitgliedDO ID must not be null";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaft Verein ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaft Nummer must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID = "DsbMannschaft Benutzer Id must not be null";
@@ -44,7 +48,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMitglied Veranstaltung Id must not be negative";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
 
 
 
@@ -103,6 +107,37 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
 
+    /**
+     * I return the dsbMannschaft entries of the database with the given vereinsId.
+     *
+     * Usage:
+     * <pre>{@Code Request: GET /v1/dsbmannschaft}</pre>
+     * <pre>{@Code Response:
+     * [
+     *  {
+     *      "id": "app.bogenliga.frontend.autorefresh.active",
+     *      "value": "true"
+     *  },
+     *  {
+     *      "id": "app.bogenliga.frontend.autorefresh.interval",
+     *      "value": 10
+     *  }
+     * ]
+     * }</pre>
+     * @param id the given vereinsId
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+    @RequestMapping(value = "byVereinsID/{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVereinsId(id);
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     /**
      * I return the dsbMannschaft entry of the database with a specific id.
@@ -125,8 +160,8 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
-
         final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
+
         return DsbMannschaftDTOMapper.toDTO.apply(dsbMannschaftDO);
     }
 
@@ -157,31 +192,22 @@ public class DsbMannschaftService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
-
         checkPreconditions(dsbMannschaftDTO);
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
-        LOG.debug("Receive 'create' request with id '{}', verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
+        LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
-                dsbMannschaftDTO.getId(),
                 dsbMannschaftDTO.getVereinId(),
                 dsbMannschaftDTO.getNummer(),
-                dsbMannschaftDTO.getBenutzerId(),
+                userId,
                 dsbMannschaftDTO.getVeranstaltungId());
 
-
-
         final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
-
-        final long userId = UserProvider.getCurrentUserId(principal);
 
         final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
         return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
     }
-
-
-
-
-
 
 
     /**
@@ -204,9 +230,9 @@ public class DsbMannschaftService implements ServiceFacade {
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
 
-        LOG.debug("Receive 'create' request with id '{}', verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
+        LOG.debug("Receive 'create' request with verein nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
-                dsbMannschaftDTO.getId(),
+               // dsbMannschaftDTO.getId(),
                 dsbMannschaftDTO.getVereinId(),
                 dsbMannschaftDTO.getNummer(),
                 dsbMannschaftDTO.getBenutzerId(),
@@ -241,22 +267,22 @@ public class DsbMannschaftService implements ServiceFacade {
 
     private void checkPreconditions(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO) {
         Preconditions.checkNotNull(dsbMannschaftDTO, PRECONDITION_MSG_DSBMANNSCHAFT);
-        Preconditions.checkNotNull(dsbMannschaftDTO.getId(), PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+        //Preconditions.checkNotNull(dsbMannschaftDTO.getId(), PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         Preconditions.checkNotNull(dsbMannschaftDTO.getVereinId(), PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkNotNull(dsbMannschaftDTO.getNummer(), PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
         Preconditions.checkNotNull(dsbMannschaftDTO.getVeranstaltungId(), PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
-        Preconditions.checkNotNull(dsbMannschaftDTO.getBenutzerId(), PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
+        //Preconditions.checkNotNull(dsbMannschaftDTO.getBenutzerId(), PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
 
 
 
-        Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0,
-                PRECONDITION_MSG_DSBMANNSCHAFT_ID_NEGATIVE);
+        //Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0,
+        //        PRECONDITION_MSG_DSBMANNSCHAFT_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getNummer() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE);
-        Preconditions.checkArgument(dsbMannschaftDTO.getBenutzerId() >= 0,
-                PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
+        //Preconditions.checkArgument(dsbMannschaftDTO.getBenutzerId() >= 0,
+        //        PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getVeranstaltungId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE);
 

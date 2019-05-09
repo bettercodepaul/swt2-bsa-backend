@@ -11,6 +11,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class LigaDTO implements DataTransferObject {
 
+
     private Long id;
     private String name;
     private Long regionId;

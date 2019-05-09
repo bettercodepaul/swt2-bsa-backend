@@ -22,11 +22,11 @@ public class VeranstaltungDAO implements DataAccessObject{
 
 
     private static final String VERANSTALTUNG_BE_ID = "veranstaltungID";
-    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltungWettkampftypId";
+    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltungWettkampftypID";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltungName";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltungSportJahr";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltungMeldedeadline";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterId";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltungMeldeDeadline";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterID";
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
@@ -59,8 +59,9 @@ public class VeranstaltungDAO implements DataAccessObject{
 
     private static final String FIND_BY_ID =
             "SELECT * "
-                    + " FROM veranstaltung "
+                    + " FROM veranstaltung"
                     + " WHERE veranstaltung_id = ?";
+
 
     private final BasicDAO basicDao;
 

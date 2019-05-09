@@ -33,7 +33,6 @@ public class VereinComponentImpl implements VereinComponent {
     private final VereinDAO vereinDAO;
     private final RegionenDAO regionenDAO;
 
-
     @Autowired
     public VereinComponentImpl(VereinDAO vereinDAO, RegionenDAO regionenDao) {
         this.vereinDAO = vereinDAO;

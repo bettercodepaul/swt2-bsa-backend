@@ -34,8 +34,8 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param version
      */
 
-    public DsbMannschaftDO(final Long id, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId, final OffsetDateTime createdAtUtc,
-                         final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
+    public DsbMannschaftDO(final Long id, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId,
+                           final OffsetDateTime createdAtUtc, final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                          final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.vereinId=vereinId;
