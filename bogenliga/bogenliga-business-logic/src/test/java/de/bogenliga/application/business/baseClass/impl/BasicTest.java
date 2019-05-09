@@ -98,7 +98,8 @@ public class BasicTest<T, B> {
     public void assertEntity(B entity) throws InvocationTargetException, IllegalAccessException {
         assertThat(expectedEntity).isNotNull();
         assertThat(entity).isNotNull();
-        LOG.debug("Testing class: " + entity.getClass());
+        LOG.debug("Testing class (actual entity given by method parameter): " + entity.getClass());
+        LOG.debug("Testing class (expected entity given by constructor): " + expectedEntity.getClass());
         for (Method method : entity.getClass().getDeclaredMethods()) {
             ArrayList<Method> arr = new ArrayList<>(Arrays.asList(expectedEntity.getClass().getDeclaredMethods()));
             if (method.getName().contains("get")) {
