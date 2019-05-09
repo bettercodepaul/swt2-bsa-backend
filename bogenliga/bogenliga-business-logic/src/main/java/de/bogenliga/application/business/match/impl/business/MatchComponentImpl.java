@@ -31,6 +31,13 @@ public class MatchComponentImpl implements MatchComponent {
     public static final String PRECONDITION_MSG_SCHEIBENNUMMER = String.format(PRECONDITION_MSG_TEMPLATE,
             "scheibennummer");
 
+    /**
+     * (Kay Scheerer)
+     * this method would make the preconditions way easier to check before each SQL
+     */
+    private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
+    private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
+
     private final MatchDAO matchDAO;
 
 
@@ -45,15 +52,6 @@ public class MatchComponentImpl implements MatchComponent {
     public MatchComponentImpl(final MatchDAO matchDAO) {
         this.matchDAO = matchDAO;
     }
-
-
-    /**
-     * (Kay Scheerer)
-     * this method would make the preconditions way easier to check before each SQL
-     */
-    private final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
-
-    private final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
 
     public void checkPreconditions(final Long id, String iDIdentifier) {
