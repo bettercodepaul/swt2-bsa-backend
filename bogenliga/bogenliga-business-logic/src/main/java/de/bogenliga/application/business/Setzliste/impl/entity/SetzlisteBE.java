@@ -100,15 +100,14 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
 
     @Override
     public String toString() {
-        return "setzliste{" +
-                ", ligatabelleTabellenplatz='" + ligatabelleTabellenplatz + '\'' +
-                ", vereinName='" + vereinName + '\'' +
-                ", mannschaftNummer='" + mannschaftNummer + '\'' +
-                ", veranstaltungName='" + veranstaltungName + '\'' +
-                ", wettkampfTag='" + wettkampfTag + '\'' +
-                ", wettkampfDatum='" + wettkampfDatum + '\'' +
-                ", wettkampfBeginn=" + wettkampfBeginn +
-                ", wettkampfOrt=" + wettkampfOrt +
-                '}';
+        return "setzliste{ligatabelleTabellenplatz='" + ligatabelleTabellenplatz +
+                "', vereinName='" + vereinName +
+                "', mannschaftNummer='" + mannschaftNummer +
+                "', veranstaltungName='" + veranstaltungName +
+                "', wettkampfTag='" + wettkampfTag +
+                "', wettkampfDatum='" + wettkampfDatum +
+                "', wettkampfBeginn='" + wettkampfBeginn +
+                "', wettkampfOrt='" + wettkampfOrt +
+                "'}";
     }
 }
