@@ -1,14 +1,15 @@
 package de.bogenliga.application.business.match.impl.dao;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -22,7 +23,29 @@ public class MatchDAOTest extends BaseMatchTest {
     @InjectMocks
     private MatchDAO underTest;
 
+    private MatchBE expectedBE;
 
+    // Implements generic way to test business entities methods
+    private BasicTest<MatchBE, MatchBE> basicDAOTest;
+
+
+    @Before
+    public void testSetup() {
+        expectedBE = getMatchBE();
+        basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
+        // configure mocks
+        // find by id
+        when(basicDao.selectSingleEntity(any(), any(), anyLong())).thenReturn(expectedBE);
+        // find by pk
+        when(basicDao.selectSingleEntity(any(), any(), anyLong(), anyLong(), anyLong(), anyLong(),
+                anyLong())).thenReturn(expectedBE);
+        // find by match/wettkampf id
+        when(basicDao.selectEntityList(any(), any(), anyLong())).thenReturn(Collections.singletonList(expectedBE));
+        // find all
+        when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
+    }
+
+/*
     private void validateObjectList(List<MatchBE> actual) {
         assertThat(actual)
                 .isNotNull()
@@ -43,113 +66,71 @@ public class MatchDAOTest extends BaseMatchTest {
         assertThat(actual.getMatchpunkte()).isEqualTo(expectedMatchBE.getMatchpunkte()).isEqualTo(MATCH_MATCHPUNKTE);
         assertThat(actual.getSatzpunkte()).isEqualTo(expectedMatchBE.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
         assertThat(actual.getNr()).isEqualTo(expectedMatchBE.getNr()).isEqualTo(MATCH_NR);
-    }
+    }*/
 
 
     @Test
     public void findById() {
-        final MatchBE expectedMatchBE = getMatchBE();
-
-        // configure mocks to return the expectedMatchBE when findById is called
-        when(basicDao.selectSingleEntity(any(), any(), anyLong())).thenReturn(expectedMatchBE);
-
-        final MatchBE actual = underTest.findById(MATCH_ID);
-
-        // assert result
-        assertValid(expectedMatchBE, actual);
+        try {
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findById(MATCH_ID));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByPk() {
-        final MatchBE expectedMatchBE = getMatchBE();
-
-        // configure mocks to return the expectedMatchBE when findById is called
-        when(basicDao.selectSingleEntity(
-                any(), any(), anyLong(), anyLong(), anyLong(), anyLong(), anyLong())
-        ).thenReturn(expectedMatchBE);
-
-        final MatchBE actual = underTest.findByPk(
-                MATCH_NR, MATCH_WETTKAMPF_ID,
-                MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
-                MATCH_SCHEIBENNUMMER
-        );
-
-        // assert result
-        assertValid(expectedMatchBE, actual);
+        try {
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByPk(
+                    MATCH_NR, MATCH_WETTKAMPF_ID,
+                    MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
+                    MATCH_SCHEIBENNUMMER
+            ));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findAll() {
-        final MatchBE expectedMatchBE = getMatchBE();
-
-        // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedMatchBE));
-
-        // call test method
-        final List<MatchBE> actual = underTest.findAll();
-
-        // assert result
-        validateObjectList(actual);
+        try {
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findAll());
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByWettkampfId() {
-        final MatchBE expectedMatchBE = getMatchBE();
-
-        // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedMatchBE));
-
-        // call test method
-        final List<MatchBE> actual = underTest.findByWettkampfId(MATCH_WETTKAMPF_ID);
-
-        // assert result
-        validateObjectList(actual);
+        try {
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByWettkampfId(MATCH_WETTKAMPF_ID));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void findByMannschaftId() {
-        final MatchBE expectedMatchBE = getMatchBE();
-
-        // configure mocks
-        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedMatchBE));
-
-        // call test method
-        final List<MatchBE> actual = underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID);
-
-        // assert result
-        validateObjectList(actual);
+        try {
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    @Test
-    public void create() {
-        final MatchBE expectedMatchBE = getMatchBE();
-        when(basicDao.insertEntity(any(), any())).thenReturn(expectedMatchBE);
-        MatchBE actual = underTest.create(expectedMatchBE, CURRENT_USER_ID);
-
-        // assert result
-        assertValid(expectedMatchBE, actual);
-    }
-
-
-    @Test
-    public void update() {
-        final MatchBE expectedMatchBE = getMatchBE();
-        when(basicDao.updateEntity(any(), any(), any())).thenReturn(expectedMatchBE);
-        MatchBE actual = underTest.update(expectedMatchBE, CURRENT_USER_ID);
-
-        // assert result
-        assertValid(expectedMatchBE, actual);
-    }
-
-
-    @Test
-    public void delete() {
-        final MatchBE expectedMatchBE = getMatchBE();
-        underTest.delete(expectedMatchBE, CURRENT_USER_ID);
-    }
 }

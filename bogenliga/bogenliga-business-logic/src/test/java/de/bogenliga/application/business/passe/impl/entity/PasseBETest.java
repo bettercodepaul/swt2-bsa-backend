@@ -1,8 +1,7 @@
-package de.bogenliga.application.business.Passe.impl.entity;
+package de.bogenliga.application.business.passe.impl.entity;
 
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 /**
  * TODO [AL] class documentation

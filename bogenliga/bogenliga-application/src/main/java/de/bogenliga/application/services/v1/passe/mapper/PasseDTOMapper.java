@@ -1,19 +1,14 @@
 package de.bogenliga.application.services.v1.passe.mapper;
 
 import java.util.function.Function;
-import de.bogenliga.application.business.Passe.api.types.PasseDO;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 
-/**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
+
 public class PasseDTOMapper implements DataTransferObjectMapper {
 
-
-    public PasseDTOMapper() {
+    private PasseDTOMapper() {
     }
 
 
@@ -21,37 +16,30 @@ public class PasseDTOMapper implements DataTransferObjectMapper {
      * Map {@link PasseDO} to {@link PasseDTO}
      */
     public static final Function<PasseDO, PasseDTO> toDTO = passeDO -> {
-        final long id = passeDO.getId();
-        final long mannschaftsId = passeDO.getPasseMannschaftId();
-        final long wettkampfId = passeDO.getPasseWettkampfId();
-        final long matchnr = passeDO.getPasseMatchNr();
-        final long lfdnr = passeDO.getPasseLfdnr();
-        final long dsbMitgliedId = passeDO.getPasseDsbMitgliedId();
-        final int[] ringzahl = {passeDO.getPfeil1(), passeDO.getPfeil2(), passeDO.getPfeil3(),
-                passeDO.getPfeil4(), passeDO.getPfeil5(), passeDO.getPfeil6()};
-        return new PasseDTO(id, mannschaftsId, wettkampfId, matchnr,
-                lfdnr, dsbMitgliedId, ringzahl);
+        final Integer[] ringzahlen = {
+                passeDO.getPfeil1(), passeDO.getPfeil2(), passeDO.getPfeil3(),
+                passeDO.getPfeil4(), passeDO.getPfeil5(), passeDO.getPfeil6()
+        };
+
+        return new PasseDTO(
+                passeDO.getId(), passeDO.getPasseMannschaftId(), passeDO.getPasseWettkampfId(),
+                passeDO.getPasseMatchNr(), passeDO.getPasseMatchId(),
+                passeDO.getPasseLfdnr(), passeDO.getPasseDsbMitgliedId(),
+                ringzahlen
+        );
     };
 
     /**
      * Map {@Link PasseDTO} to {@Link PasseDO}
      */
     public static final Function<PasseDTO, PasseDO> toDO = passeDTO -> {
-        final long id = passeDTO.getId();
-        final long mannschaftsId = passeDTO.getMannschaftId();
-        final long wettkampfId = passeDTO.getWettkampfId();
-        final long matchnr = passeDTO.getMatchNr();
-        final long lfdnr = passeDTO.getLfdNr();
-        final long dsbMitgliedId = passeDTO.getDsbMitgliedNr();
-        final int pfeil1 = passeDTO.getRingzahl()[0];
-        final int pfeil2 = passeDTO.getRingzahl()[1];
-        final int pfeil3 = passeDTO.getRingzahl()[2];
-        final int pfeil4 = passeDTO.getRingzahl()[3];
-        final int pfeil5 = passeDTO.getRingzahl()[4];
-        final int pfeil6 = passeDTO.getRingzahl()[5];
+        Integer[] ringzahlen = passeDTO.getRingzahl();
 
-        return new PasseDO(id,mannschaftsId,wettkampfId,matchnr,
-                lfdnr,dsbMitgliedId,pfeil1,pfeil2,pfeil3,pfeil4,pfeil5,pfeil6);
+        return new PasseDO(
+                passeDTO.getId(), passeDTO.getMannschaftId(), passeDTO.getWettkampfId(),
+                passeDTO.getMatchNr(), passeDTO.getMatchId(),
+                passeDTO.getLfdNr(), passeDTO.getDsbMitgliedId(),
+                ringzahlen[0], ringzahlen[1], ringzahlen[2], ringzahlen[3], ringzahlen[4], ringzahlen[5]
+        );
     };
 }
-

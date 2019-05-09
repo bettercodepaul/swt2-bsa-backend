@@ -15,6 +15,9 @@ public class MatchDTO implements DataTransferObject {
     private Long version;
     private Long wettkampfId;
     private Long mannschaftId;
+
+    // actually verein name...
+    private String mannschaftName;
     private Long begegnung;
     private Long scheibenNummer;
     private Long matchpunkte;
@@ -74,6 +77,16 @@ public class MatchDTO implements DataTransferObject {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+
+    public String getMannschaftName() {
+        return mannschaftName;
+    }
+
+
+    public void setMannschaftName(String mannschaftName) {
+        this.mannschaftName = mannschaftName;
     }
 
 
