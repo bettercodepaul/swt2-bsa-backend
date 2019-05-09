@@ -26,11 +26,11 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
 
-    private final String PRECONDITION_MSG_TEMPLATE_NULL = "Mannschaftsmitglied: %s must not be null";
-    private final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Mannschaftsmitglied: %s must not be negative";
-    private final String PRECONDITION_FIELD_MANNSCHAFT_ID = "mannschaftsId";
-    private final String PRECONDITION_FIELD_MITGLIED_ID = "mitgliedId";
-    private final String PRECONDITION_FIELD_USER_ID = "currentUserId";
+    private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Mannschaftsmitglied: %s must not be null";
+    private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Mannschaftsmitglied: %s must not be negative";
+    private static final String PRECONDITION_FIELD_MANNSCHAFT_ID = "mannschaftsId";
+    private static final String PRECONDITION_FIELD_MITGLIED_ID = "mitgliedId";
+    private static final String PRECONDITION_FIELD_USER_ID = "currentUserId";
 
 
     public void checkPreconditions(final Long id, String iDIdentifier) {

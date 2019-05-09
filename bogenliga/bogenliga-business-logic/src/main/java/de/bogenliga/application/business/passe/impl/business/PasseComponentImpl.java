@@ -17,21 +17,22 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class PasseComponentImpl implements PasseComponent {
 
-    private static final String PRECONDITION_MSG_TEMPLATE = "Match: %s must not be null and must not be negative";
-    public static final String PRECONDITION_MSG_MATCH_NR = String.format(PRECONDITION_MSG_TEMPLATE, "matchNr");
-    public static final String PRECONDITION_MSG_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE, "wettkampfId");
-    public static final String PRECONDITION_MSG_MANNSCHAFT_ID = String.format(PRECONDITION_MSG_TEMPLATE,
-            "mannschaftId");
-    public static final String PRECONDITION_MSG_LFD_NR = String.format(PRECONDITION_MSG_TEMPLATE, "lfdNr");
-    public static final String PRECONDITION_MSG_DSB_MITGLIED_ID = String.format(PRECONDITION_MSG_TEMPLATE,
-            "dsbMitgliedId");
-
     public static final String PRECONDITION_FIElD_MITGLIED_ID = "dsbMemberId";
     public static final String PRECONDITION_FIElD_WETTKAMPF_ID = "wettkampfId";
     public static final String PRECONDITION_FIElD_MANNSCHAFT_ID = "mannschaftId";
     public static final String PRECONDITION_FIElD_MATCH_ID = "matchId";
     public static final String PRECONDITION_FIElD_MATCH_NR = "matchNr";
-    public static final String PRECONDITION_FIElD_LFD_NR = "passeLfdNr";
+    public static final String PRECONDITION_FIElD_LFD_NR = "lfdNr";
+
+    private static final String PRECONDITION_MSG_TEMPLATE = "Match: %s must not be null and must not be negative";
+    public static final String PRECONDITION_MSG_MATCH_NR = String.format(PRECONDITION_MSG_TEMPLATE, PRECONDITION_FIElD_MATCH_NR);
+    public static final String PRECONDITION_MSG_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE, PRECONDITION_FIElD_WETTKAMPF_ID);
+    public static final String PRECONDITION_MSG_MANNSCHAFT_ID = String.format(PRECONDITION_MSG_TEMPLATE,
+            PRECONDITION_FIElD_MANNSCHAFT_ID);
+    public static final String PRECONDITION_MSG_LFD_NR = String.format(PRECONDITION_MSG_TEMPLATE, PRECONDITION_FIElD_LFD_NR);
+
+    private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
+    private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
     private final PasseDAO passeDAO;
 
@@ -48,10 +49,6 @@ public class PasseComponentImpl implements PasseComponent {
         this.passeDAO = passeDAO;
     }
 
-
-    private final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
-
-    private final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
 
     public void checkPreconditions(final Long id, String iDIdentifier) {
