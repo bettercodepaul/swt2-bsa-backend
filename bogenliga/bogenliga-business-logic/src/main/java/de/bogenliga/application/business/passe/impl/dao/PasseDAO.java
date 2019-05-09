@@ -34,12 +34,12 @@ public class PasseDAO implements DataAccessObject {
     private static final String PASSE_BE_MATCH_ID = "passeMatchId";
     private static final String PASSE_BE_LFDNR = "passeLfdnr";
     private static final String PASSE_BE_DSB_MITGLIED_ID = "passeDsbMitgliedId";
-    private static final String PASSE_BE_PFEIL_1 = "passe_ringzahl_pfeil1";
-    private static final String PASSE_BE_PFEIL_2 = "passe_ringzahl_pfeil2";
-    private static final String PASSE_BE_PFEIL_3 = "passe_ringzahl_pfeil3";
-    private static final String PASSE_BE_PFEIL_4 = "passe_ringzahl_pfeil4";
-    private static final String PASSE_BE_PFEIL_5 = "passe_ringzahl_pfeil5";
-    private static final String PASSE_BE_PFEIL_6 = "passe_ringzahl_pfeil6";
+    private static final String PASSE_BE_PFEIL_1 = "pfeil1";
+    private static final String PASSE_BE_PFEIL_2 = "pfeil2";
+    private static final String PASSE_BE_PFEIL_3 = "pfeil3";
+    private static final String PASSE_BE_PFEIL_4 = "pfeil4";
+    private static final String PASSE_BE_PFEIL_5 = "pfeil5";
+    private static final String PASSE_BE_PFEIL_6 = "pfeil6";
 
     private static final String PASSE_TABLE_ID = "passe_id";
     private static final String PASSE_TABLE_MANNSCHAFT_ID = "passe_mannschaft_id";

@@ -4,7 +4,6 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * TODO [AL] class documentation
  *
  * @author Kay Scheerer
  */
@@ -19,36 +18,39 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
     private Long passeLfdnr;
     private Long passeDsbMitgliedId;
 
-    private Integer passe_ringzahl_pfeil1;
-    private Integer passe_ringzahl_pfeil2;
-    private Integer passe_ringzahl_pfeil3;
-    private Integer passe_ringzahl_pfeil4;
-    private Integer passe_ringzahl_pfeil5;
-    private Integer passe_ringzahl_pfeil6;
+    private Integer pfeil1;
+    private Integer pfeil2;
+    private Integer pfeil3;
+    private Integer pfeil4;
+    private Integer pfeil5;
+    private Integer pfeil6;
+
+
+
+
+
+    public Long getPasseMannschaftId() {
+        return passeMannschaftId;
+    }
 
 
     @Override
     public String toString() {
         return "PasseBE{" +
-                ", PasseId=" + id +
+                "id=" + id +
                 ", passeMannschaftId=" + passeMannschaftId +
                 ", passeWettkampfId=" + passeWettkampfId +
                 ", passeMatchNr=" + passeMatchNr +
                 ", passeMatchId=" + passeMatchId +
                 ", passeLfdnr=" + passeLfdnr +
                 ", passeDsbMitgliedId=" + passeDsbMitgliedId +
-                ", passe_ringzahl_pfeil1=" + passe_ringzahl_pfeil1 +
-                ", passe_ringzahl_pfeil2=" + passe_ringzahl_pfeil2 +
-                ", passe_ringzahl_pfeil3=" + passe_ringzahl_pfeil3 +
-                ", passe_ringzahl_pfeil4=" + passe_ringzahl_pfeil4 +
-                ", passe_ringzahl_pfeil5=" + passe_ringzahl_pfeil5 +
-                ", passe_ringzahl_pfeil6=" + passe_ringzahl_pfeil6 +
+                ", pfeil1=" + pfeil1 +
+                ", pfeil2=" + pfeil2 +
+                ", pfeil3=" + pfeil3 +
+                ", pfeil4=" + pfeil4 +
+                ", pfeil5=" + pfeil5 +
+                ", pfeil6=" + pfeil6 +
                 '}';
-    }
-
-
-    public Long getPasseMannschaftId() {
-        return passeMannschaftId;
     }
 
 
@@ -108,62 +110,62 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
 
 
     public Integer getPfeil1() {
-        return passe_ringzahl_pfeil1;
+        return pfeil1;
     }
 
 
     public void setPfeil1(Integer pfeil1) {
-        this.passe_ringzahl_pfeil1 = pfeil1;
+        this.pfeil1 = pfeil1;
     }
 
 
     public Integer getPfeil2() {
-        return passe_ringzahl_pfeil2;
+        return pfeil2;
     }
 
 
     public void setPfeil2(Integer pfeil2) {
-        this.passe_ringzahl_pfeil2 = pfeil2;
+        this.pfeil2 = pfeil2;
     }
 
 
     public Integer getPfeil3() {
-        return passe_ringzahl_pfeil3;
+        return pfeil3;
     }
 
 
     public void setPfeil3(Integer pfeil3) {
-        this.passe_ringzahl_pfeil3 = pfeil3;
+        this.pfeil3 = pfeil3;
     }
 
 
     public Integer getPfeil4() {
-        return passe_ringzahl_pfeil4;
+        return pfeil4;
     }
 
 
     public void setPfeil4(Integer pfeil4) {
-        this.passe_ringzahl_pfeil4 = pfeil4;
+        this.pfeil4 = pfeil4;
     }
 
 
     public Integer getPfeil5() {
-        return passe_ringzahl_pfeil5;
+        return pfeil5;
     }
 
 
     public void setPfeil5(Integer pfeil5) {
-        this.passe_ringzahl_pfeil5 = pfeil5;
+        this.pfeil5 = pfeil5;
     }
 
 
     public Integer getPfeil6() {
-        return passe_ringzahl_pfeil6;
+        return pfeil6;
     }
 
 
     public void setPfeil6(Integer pfeil6) {
-        this.passe_ringzahl_pfeil6 = pfeil6;
+        this.pfeil6 = pfeil6;
     }
 
 
