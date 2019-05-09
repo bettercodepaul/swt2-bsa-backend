@@ -54,8 +54,8 @@ public class WettkampftypBasicDAOTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        assertThat(actual.get(0).getId())
-                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getwettkampftypID())
+                .isEqualTo(expectedBE.getwettkampftypID());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -68,8 +68,8 @@ public class WettkampftypBasicDAOTest {
     public void findById() {
         // prepare test data
         final WettkampftypBE expectedBE = new WettkampftypBE();
-        expectedBE.setId(wettkampftyp_Id);
-        expectedBE.setName(wettkampftyp_Name);
+        expectedBE.setwettkampftypID(wettkampftyp_Id);
+        expectedBE.setwettkampftypname(wettkampftyp_Name);
 
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
@@ -80,10 +80,10 @@ public class WettkampftypBasicDAOTest {
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
-                .isEqualTo(expectedBE.getId());
-        assertThat(actual.getName())
-                .isEqualTo(expectedBE.getName());
+        assertThat(actual.getwettkampftypID())
+                .isEqualTo(expectedBE.getwettkampftypID());
+        assertThat(actual.getwettkampftypname())
+                .isEqualTo(expectedBE.getwettkampftypname());
 
         // verify invocations
         verify(basicDao).selectSingleEntity(any(), any(), any());
@@ -94,8 +94,8 @@ public class WettkampftypBasicDAOTest {
     public void create() {
         // prepare test data
         final WettkampftypBE input = new WettkampftypBE();
-        input.setId(wettkampftyp_Id);
-        input.setName(wettkampftyp_Name);
+        input.setwettkampftypID(wettkampftyp_Id);
+        input.setwettkampftypname(wettkampftyp_Name);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
@@ -106,10 +106,10 @@ public class WettkampftypBasicDAOTest {
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
-                .isEqualTo(input.getId());
-        assertThat(actual.getName())
-                .isEqualTo(input.getName());
+        assertThat(actual.getwettkampftypID())
+                .isEqualTo(input.getwettkampftypID());
+        assertThat(actual.getwettkampftypname())
+                .isEqualTo(input.getwettkampftypname());
 
         // verify invocations
         verify(basicDao).insertEntity(any(), eq(input));
@@ -120,8 +120,8 @@ public class WettkampftypBasicDAOTest {
     public void update() {
         // prepare test data
         final WettkampftypBE input = new WettkampftypBE();
-        input.setId(wettkampftyp_Id);
-        input.setName(wettkampftyp_Name);
+        input.setwettkampftypID(wettkampftyp_Id);
+        input.setwettkampftypname(wettkampftyp_Name);
 
         // configure mocks
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
@@ -132,10 +132,10 @@ public class WettkampftypBasicDAOTest {
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
-                .isEqualTo(input.getId());
-        assertThat(actual.getName())
-                .isEqualTo(input.getName());
+        assertThat(actual.getwettkampftypID())
+                .isEqualTo(input.getwettkampftypID());
+        assertThat(actual.getwettkampftypname())
+                .isEqualTo(input.getwettkampftypname());
 
         // verify invocations
         verify(basicDao).updateEntity(any(), eq(input), any());
@@ -146,8 +146,8 @@ public class WettkampftypBasicDAOTest {
     public void delete() {
         // prepare test data
         final WettkampftypBE input = new WettkampftypBE();
-        input.setId(wettkampftyp_Id);
-        input.setName(wettkampftyp_Name);
+        input.setwettkampftypID(wettkampftyp_Id);
+        input.setwettkampftypname(wettkampftyp_Name);
 
         // configure mocks
 

@@ -1,17 +1,25 @@
 package de.bogenliga.application.business.wettkampftyp.impl.dao;
 
 
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.dbutils.BeanProcessor;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.common.component.dao.BasicBeanListHandler;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
+import de.bogenliga.application.common.database.tx.TransactionManager;
 
 /**
  * DataAccessObject for the wettkampftyp entity in the database.
@@ -57,16 +65,20 @@ public class WettkampftypDAO implements DataAccessObject {
 
     private final BasicDAO basicDao;
 
+    private final TransactionManager transactionManager;
+    private final QueryRunner run = new QueryRunner();
+
     /**
      * Initialize the transaction manager to provide a database connection
      *
      * @param basicDao to handle the commonly used database operations
+     * @param transactionManager to handle custom database transactions
      */
     @Autowired
-    public WettkampftypDAO(final BasicDAO basicDao) {
+    public WettkampftypDAO(final BasicDAO basicDao, final TransactionManager transactionManager) {
         this.basicDao = basicDao;
+        this.transactionManager = transactionManager;
     }
-
 
 
 
@@ -87,11 +99,9 @@ public class WettkampftypDAO implements DataAccessObject {
      * Return all Wettkampftyp entries
      */
     public List<WettkampftypBE> findAll() {
-        System.out.println("in der DAO-Klasse von wettkampf" + basicDao.selectEntityList(WETTKAMPFTYP, FIND_ALL));
         return basicDao.selectEntityList(WETTKAMPFTYP, FIND_ALL);
 
     }
-
 
     /**
      * Return Wettkampftyp entry with specific id

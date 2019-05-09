@@ -21,8 +21,8 @@ public class WettkampftypMapper implements ValueObjectMapper {
      */
     public static final Function<WettkampftypBE, WettkampftypDO> toWettkampftypDO = be -> {
 
-        final Long id = be.getId();
-        final String name = be.getName();
+        final Long id = be.getwettkampftypID();
+        final String name = be.getwettkampftypname();
 
 
         // technical parameter
@@ -45,8 +45,8 @@ public class WettkampftypMapper implements ValueObjectMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(wettkampftypDO.getLastModifiedAtUtc());
 
         WettkampftypBE wettkampftypBe = new WettkampftypBE();
-        wettkampftypBe.setId(wettkampftypDO.getId());
-        wettkampftypBe.setName(wettkampftypDO.getName());
+        wettkampftypBe.setwettkampftypID(wettkampftypDO.getId());
+        wettkampftypBe.setwettkampftypname(wettkampftypDO.getName());
 
 
 

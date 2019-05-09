@@ -62,8 +62,8 @@ public class WettkampftypServiceTest {
      */
     public static WettkampftypBE getWettkampftypBE() {
         final WettkampftypBE expectedBE = new WettkampftypBE();
-        expectedBE.setId(wettkampftyp_Id);
-        expectedBE.setName(wettkampftyp_Name);
+        expectedBE.setwettkampftypID(wettkampftyp_Id);
+        expectedBE.setwettkampftypname(wettkampftyp_Name);
 
         return expectedBE;
     }
