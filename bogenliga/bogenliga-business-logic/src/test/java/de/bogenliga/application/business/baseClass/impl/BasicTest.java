@@ -2,9 +2,11 @@ package de.bogenliga.application.business.baseClass.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -96,55 +98,63 @@ public class BasicTest<T, B> {
     public void assertEntity(B entity) throws InvocationTargetException, IllegalAccessException {
         assertThat(expectedEntity).isNotNull();
         assertThat(entity).isNotNull();
-        LOG.debug("Testing class: "+entity.getClass());
+        LOG.debug("Testing class: " + entity.getClass());
         for (Method method : entity.getClass().getDeclaredMethods()) {
+            ArrayList<Method> arr = new ArrayList<>(Arrays.asList(expectedEntity.getClass().getDeclaredMethods()));
             if (method.getName().contains("get")) {
-                for (Method m : expectedEntity.getClass().getDeclaredMethods()) {
+                LOG.debug("Method being tested: " + method.getName());
+                Optional<Method> optionalM = arr.stream()
+                        .filter((x) -> x.getName().equals(method.getName()))
+                        .findFirst();
+                if (!optionalM.isPresent()) {
+                    LOG.debug("Expected entity doesn't implement the method: " + method.getName());
+                }
+                assertThat(optionalM.isPresent());
 
-                    if (m.getName().equals(method.getName())) {
-                        LOG.debug("Method being tested: " + m.getName());
+                if (valuesToMethodNames.containsKey(method.getName())) {
+                    LOG.debug(
+                            "Method is not given in the Hashmap, please insert the name of the method: " + method.getName() + " in the Hashmap given to" +
+                                    "BasicTest class constructor");
+                }
+                Method m = optionalM.get();
 
-                        /**asserts that the method from the first entity () is equal to the
-                         output of the expected entity (getPasseBE() from PasseBaseDAOTest)
-                         is equal to the value set at first (e.g. PasseBaseDAOTest)
-                         */
-                        Object actual = method.invoke(entity);
-                        Object expected = m.invoke(expectedEntity);
-                        assertThat(actual).isEqualTo(expected);
-                        LOG.debug("actual == expected =");
-                        if (actual == null && expected == null) {
-                            LOG.debug("null == null =true");
-                        } else if (actual == null) {
-                            LOG.debug(
-                                    "The parameter returned by getter : " + m.getName() + " for the actual returned object is null. ");
-                        } else if (expected == null) {
-                            LOG.debug(
-                                    "The parameter returned by getter : " + m.getName() + " for the expected entity returned is null. ");
-                        }
-                        Object setFirst = valuesToMethodNames.get(m.getName());
-                        LOG.debug("actual == valuefromHashMap =");
-                        if (actual == null && setFirst == null) {
-                            LOG.debug("null == null =true");
-                        } else if (actual == null) {
-                            LOG.debug(
-                                    "The parameter returned by getter : " + m.getName() + " for the actual returned object is null. ");
-                        } else if (setFirst == null) {
-                            LOG.debug(
-                                    "The parameter set first : " + m.getName() + " for the expected entity at start was null. " +
-                                            "Please check if the values in the Hashmap are correct");
-                        }
-                        assertThat(method.invoke(entity)).isEqualTo(setFirst);
-                        if (actual != null) {
-                            LOG.debug(actual + " == " + setFirst + " =" + actual.equals(setFirst));
-                        } else {
-                            LOG.debug("The parameter returned by getter : " + m.getName() + " is null. ");
-                        }
-                    }
+                /**asserts that the method from the first entity () is equal to the
+                 output of the expected entity (getPasseBE() from PasseBaseDAOTest)
+                 is equal to the value set at first (e.g. PasseBaseDAOTest)
+                 */
+                Object actual = method.invoke(entity);
+                Object expected = m.invoke(expectedEntity);
+                assertThat(actual).isEqualTo(expected);
+                LOG.debug("actual == expected =");
+                if (actual == null && expected == null) {
+                    LOG.debug("null == null =true");
+                } else if (actual == null) {
+                    LOG.debug(
+                            "The parameter returned by getter : " + m.getName() + " for the actual returned object is null. ");
+                } else if (expected == null) {
+                    LOG.debug(
+                            "The parameter returned by getter : " + m.getName() + " for the expected entity returned is null. ");
+                }
+                Object setFirst = valuesToMethodNames.get(m.getName());
+                LOG.debug("actual == valuefromHashMap =");
+                if (actual == null && setFirst == null) {
+                    LOG.debug("null == null =true");
+                } else if (actual == null) {
+                    LOG.debug(
+                            "The parameter returned by getter : " + m.getName() + " for the actual returned object is null. ");
+                } else if (setFirst == null) {
+                    LOG.debug(
+                            "The parameter set inside the Hashmap, which determines the input, is null. " +
+                                    "Please check if the values in the Hashmap given to BasicTest are correct");
+                }
+                assertThat(method.invoke(entity)).isEqualTo(setFirst);
+                if (actual != null) {
+                    LOG.debug(actual + " == " + setFirst + " =" + actual.equals(setFirst));
+                } else {
+                    LOG.debug("The parameter returned by getter : " + m.getName() + " is null. ");
                 }
             }
         }
-
-
     }
 
 
