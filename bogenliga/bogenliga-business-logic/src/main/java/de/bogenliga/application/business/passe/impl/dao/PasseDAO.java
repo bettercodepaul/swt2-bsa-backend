@@ -28,18 +28,18 @@ public class PasseDAO implements DataAccessObject {
 
     //business entity parameters
     private static final String PASSE_BE_MANNSCHAFT_ID = "passeMannschaftId";
-    private static final String PASSE_BE_ID = "passe_id";
+    private static final String PASSE_BE_ID = "id";
     private static final String PASSE_BE_WETTKAMPF_ID = "passeWettkampfId";
     private static final String PASSE_BE_MATCH_NR = "passeMatchNr";
     private static final String PASSE_BE_MATCH_ID = "passeMatchId";
     private static final String PASSE_BE_LFDNR = "passeLfdnr";
     private static final String PASSE_BE_DSB_MITGLIED_ID = "passeDsbMitgliedId";
-    private static final String PASSE_BE_PFEIL_1 = "passeRingzahlPfeil1";
-    private static final String PASSE_BE_PFEIL_2 = "passeRingzahlPfeil2";
-    private static final String PASSE_BE_PFEIL_3 = "passeRingzahlPfeil3";
-    private static final String PASSE_BE_PFEIL_4 = "passeRingzahlPfeil4";
-    private static final String PASSE_BE_PFEIL_5 = "passeRingzahlPfeil5";
-    private static final String PASSE_BE_PFEIL_6 = "passeRingzahlPfeil6";
+    private static final String PASSE_BE_PFEIL_1 = "passe_ringzahl_pfeil1";
+    private static final String PASSE_BE_PFEIL_2 = "passe_ringzahl_pfeil2";
+    private static final String PASSE_BE_PFEIL_3 = "passe_ringzahl_pfeil3";
+    private static final String PASSE_BE_PFEIL_4 = "passe_ringzahl_pfeil4";
+    private static final String PASSE_BE_PFEIL_5 = "passe_ringzahl_pfeil5";
+    private static final String PASSE_BE_PFEIL_6 = "passe_ringzahl_pfeil6";
 
     private static final String PASSE_TABLE_ID = "passe_id";
     private static final String PASSE_TABLE_MANNSCHAFT_ID = "passe_mannschaft_id";
