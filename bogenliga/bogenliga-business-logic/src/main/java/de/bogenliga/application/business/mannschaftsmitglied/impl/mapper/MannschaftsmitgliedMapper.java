@@ -9,18 +9,16 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
- *
  * @author Philip Dengler
  */
 public class MannschaftsmitgliedMapper implements ValueObjectMapper {
 
 
-
     public static final Function<MannschaftsmitgliedBE, MannschaftsmitgliedDO> toMannschaftsmitgliedDO = be -> {
-
+        final Long id = be.getId();
         final Long mannschaftId = be.getMannschaftId();
         final Long mitgliedId = be.getDsbMitgliedId();
-        final boolean mitgliedEingesetzt = be.isDsbMitgliedEingesetzt();
+        final Integer mitgliedEingesetzt = be.getDsbMitgliedEingesetzt();
         final String mitgliedVorname = be.getDsbMitgliedVorname();
         final String mitgliedNachname = be.getDsbMitgliedNachname();
 
@@ -32,10 +30,9 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new MannschaftsmitgliedDO(mannschaftId, mitgliedId, mitgliedEingesetzt,mitgliedVorname,mitgliedNachname,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new MannschaftsmitgliedDO(id, mannschaftId, mitgliedId, mitgliedEingesetzt, mitgliedVorname,
+                mitgliedNachname,  createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
-
 
 
     public static final Function<MannschaftsmitgliedDO, MannschaftsmitgliedBE> toMannschaftsmitgliedBE = mannschaftsmitgliedDO -> {
@@ -46,9 +43,10 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
 
         MannschaftsmitgliedBE mannschaftsmitgliedBE = new MannschaftsmitgliedBE();
 
+        mannschaftsmitgliedBE.setId(mannschaftsmitgliedDO.getId());
         mannschaftsmitgliedBE.setMannschaftId(mannschaftsmitgliedDO.getMannschaftId());
         mannschaftsmitgliedBE.setDsbMitgliedId(mannschaftsmitgliedDO.getDsbMitgliedId());
-        mannschaftsmitgliedBE.setDsbMitgliedEingesetzt(mannschaftsmitgliedDO.isDsbMitgliedEingesetzt());
+        mannschaftsmitgliedBE.setDsbMitgliedEingesetzt(mannschaftsmitgliedDO.getDsbMitgliedEingesetzt());
         mannschaftsmitgliedBE.setDsbMitgliedVorname(mannschaftsmitgliedDO.getDsbMitgliedVorname());
         mannschaftsmitgliedBE.setDsbMitgliedNachname(mannschaftsmitgliedDO.getDsbMitgliedNachname());
 
@@ -61,15 +59,10 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         return mannschaftsmitgliedBE;
     };
 
-        /**
-         * Private constructor
-         */
+
+    /**
+     * Private constructor
+     */
     private MannschaftsmitgliedMapper() {
-            // empty
-        // private constructor
-        }
-
-
-
-
+    }
 }

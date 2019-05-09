@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.Passe.impl.dao;
+package de.bogenliga.application.business.passe.impl.dao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import de.bogenliga.application.business.Passe.impl.entity.PasseBE;
+import de.bogenliga.application.business.passe.impl.entity.PasseBE;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -27,20 +28,24 @@ public class PasseDAO implements DataAccessObject {
 
     //business entity parameters
     private static final String PASSE_BE_MANNSCHAFT_ID = "passeMannschaftId";
+    private static final String PASSE_BE_ID = "id";
     private static final String PASSE_BE_WETTKAMPF_ID = "passeWettkampfId";
     private static final String PASSE_BE_MATCH_NR = "passeMatchNr";
+    private static final String PASSE_BE_MATCH_ID = "passeMatchId";
     private static final String PASSE_BE_LFDNR = "passeLfdnr";
     private static final String PASSE_BE_DSB_MITGLIED_ID = "passeDsbMitgliedId";
-    private static final String PASSE_BE_PFEIL_1 = "passeRingzahlPfeil1";
-    private static final String PASSE_BE_PFEIL_2 = "passeRingzahlPfeil2";
-    private static final String PASSE_BE_PFEIL_3 = "passeRingzahlPfeil3";
-    private static final String PASSE_BE_PFEIL_4 = "passeRingzahlPfeil4";
-    private static final String PASSE_BE_PFEIL_5 = "passeRingzahlPfeil5";
-    private static final String PASSE_BE_PFEIL_6 = "passeRingzahlPfeil6";
+    private static final String PASSE_BE_PFEIL_1 = "pfeil1";
+    private static final String PASSE_BE_PFEIL_2 = "pfeil2";
+    private static final String PASSE_BE_PFEIL_3 = "pfeil3";
+    private static final String PASSE_BE_PFEIL_4 = "pfeil4";
+    private static final String PASSE_BE_PFEIL_5 = "pfeil5";
+    private static final String PASSE_BE_PFEIL_6 = "pfeil6";
 
+    private static final String PASSE_TABLE_ID = "passe_id";
     private static final String PASSE_TABLE_MANNSCHAFT_ID = "passe_mannschaft_id";
     private static final String PASSE_TABLE_WETTKAMPF_ID = "passe_wettkampf_id";
     private static final String PASSE_TABLE_MATCH_NR = "passe_match_nr";
+    private static final String PASSE_TABLE_MATCH_ID = "passe_match_id";
     private static final String PASSE_TABLE_LFDNR = "passe_lfdnr";
     private static final String PASSE_TABLE_DSB_MITGLIED_ID = "passe_dsb_mitglied_id";
 
@@ -74,8 +79,10 @@ public class PasseDAO implements DataAccessObject {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(PASSE_TABLE_MANNSCHAFT_ID, PASSE_BE_MANNSCHAFT_ID);
+        columnsToFieldsMap.put(PASSE_TABLE_ID, PASSE_BE_ID);
         columnsToFieldsMap.put(PASSE_TABLE_WETTKAMPF_ID, PASSE_BE_WETTKAMPF_ID);
         columnsToFieldsMap.put(PASSE_TABLE_MATCH_NR, PASSE_BE_MATCH_NR);
+        columnsToFieldsMap.put(PASSE_TABLE_MATCH_ID, PASSE_BE_MATCH_ID);
         columnsToFieldsMap.put(PASSE_TABLE_LFDNR, PASSE_BE_LFDNR);
         columnsToFieldsMap.put(PASSE_TABLE_DSB_MITGLIED_ID, PASSE_BE_DSB_MITGLIED_ID);
         columnsToFieldsMap.put(PASSE_TABLE_PFEIL_1, PASSE_BE_PFEIL_1);
@@ -95,67 +102,72 @@ public class PasseDAO implements DataAccessObject {
     /**
      * SQL queries, not sure which ones are needed at all
      */
-    private static final String FIND_ALL =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " ORDER BY " + PASSE_TABLE_LFDNR
-                    + "=?";
+    private static final String FIND_ALL = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .orderBy(PASSE_TABLE_LFDNR)
+            .compose().toString();
 
-    private static final String FIND_BY_PK =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_WETTKAMPF_ID + "=?"
-                    + " WHERE " + PASSE_TABLE_MATCH_NR + "=?"
-                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID + "=?"
-                    + " WHERE " + PASSE_TABLE_LFDNR + "=?"
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID + "=?";
+    private static final String FIND_BY_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MATCH_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + "" // MatchID ist noch nicht in der Passetabelle
-                    + "=?";
+    private static final String FIND_BY_PK = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_WETTKAMPF_ID)
+            .andEquals(PASSE_TABLE_MATCH_NR)
+            .andEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .andEquals(PASSE_TABLE_LFDNR)
+            .andEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MANNSCHAFT_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
-                    + "=?";
-    private static final String FIND_BY_MEMBER_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
-                    + "=?";
+    private static final String FIND_BY_MATCH_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_MATCH_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_WETTKAMPF_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_WETTKAMPF_ID
-                    + "=?";
+    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MEMBER_MANNSCHAFT_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
-                    + "=? "
-                    + " AND WHERE " + PASSE_TABLE_MANNSCHAFT_ID
-                    + "=?";
+    private static final String FIND_BY_MEMBER_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MANNSCHAFT_MATCH_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_MANNSCHAFT_ID
-                    + "=? "
-                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
-                    + "=?";
+    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_WETTKAMPF_ID)
+            .compose().toString();
 
-    private static final String FIND_BY_MITGLIED_MATCH_ID =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_DSB_MITGLIED_ID
-                    + "=? "
-                    + " AND WHERE " + "" //PASSE_TABLE_MATCH_ID
-                    + "=?";
+    private static final String FIND_BY_MEMBER_MANNSCHAFT_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .andEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .compose().toString();
+
+    private static final String FIND_BY_MANNSCHAFT_MATCH_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_MANNSCHAFT_ID)
+            .andEquals(PASSE_TABLE_MATCH_ID)
+            .compose().toString();
+
+    private static final String FIND_BY_MITGLIED_MATCH_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .andEquals(PASSE_TABLE_MATCH_ID)
+            .compose().toString();
 
 
     /**
@@ -177,7 +189,7 @@ public class PasseDAO implements DataAccessObject {
      * @param passeLfdNr
      * @param dsbMitgliedId
      *
-     * @return
+     * @return a single passe found under the primary key
      */
     public PasseBE findByPk(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
         return basicDao.selectSingleEntity(PASSE, FIND_BY_PK, wettkampfId, matchNr, mannschaftId, passeLfdNr,
@@ -192,7 +204,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
-    public List<PasseBE> findByWettkampfId(long wettkampfId) {
+    public List<PasseBE> findByWettkampfId(Long wettkampfId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_WETTKAMPF_ID, wettkampfId);
     }
 
@@ -204,7 +216,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of all passe from one team in the database; empty list, if no passe are found
      */
-    public List<PasseBE> findByTeamId(long teamId) {
+    public List<PasseBE> findByTeamId(Long teamId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_ID, teamId);
     }
 
@@ -217,7 +229,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMemberMannschaftId(long dsbMitgliedId, long mannschaftId) {
+    public List<PasseBE> findByMemberMannschaftId(Long dsbMitgliedId, Long mannschaftId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_MANNSCHAFT_ID, dsbMitgliedId, mannschaftId);
     }
 
@@ -229,7 +241,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMemberId(long dsbMitgliedId) {
+    public List<PasseBE> findByMemberId(Long dsbMitgliedId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID, dsbMitgliedId);
     }
 
@@ -242,20 +254,18 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMannschaftMatchId(long mannschaftId, long matchId) {
+    public List<PasseBE> findByMannschaftMatchId(Long mannschaftId, Long matchId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_MATCH_ID, mannschaftId, matchId);
     }
 
 
     /**
-     * Return a passe entry with the given ids.
-     *
      * @param dsbMitgliedId of the mannschaftsmitglied,
      * @param matchId       of the match
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMitgliedMatchId(long dsbMitgliedId, long matchId) {
+    public List<PasseBE> findByMitgliedMatchId(Long dsbMitgliedId, Long matchId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID, dsbMitgliedId, matchId);
     }
 
@@ -267,8 +277,20 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMatchId(long matchId) {
+    public List<PasseBE> findByMatchId(Long matchId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MATCH_ID, matchId);
+    }
+
+
+    /**
+     * Return a passe entry with the given ids.
+     *
+     * @param passeId of the passe
+     *
+     * @return list of passe from one mitglied in one team; empty list, if no passe are found
+     */
+    public PasseBE findByPasseId(Long passeId) {
+        return basicDao.selectSingleEntity(PASSE, FIND_BY_ID, passeId);
     }
 
 
@@ -281,7 +303,7 @@ public class PasseDAO implements DataAccessObject {
      * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
      * and  entities
      */
-    public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
+    public PasseBE create(final PasseBE passeBE, final Long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
         return basicDao.insertEntity(PASSE, passeBE);
@@ -289,29 +311,22 @@ public class PasseDAO implements DataAccessObject {
 
 
     /**
-     * Update an existing passe. The passe is identified by the id's set in passeDO.
+     * @param passeBE                   current passe being updated
+     * @param currentKampfrichterUserId current user
      *
-     * @param passeBE         existing passeDO to update
-     * @param currentMemberId id of the member currently updating the passe
-     *
-     * @return persisted version of the passe
+     * @return Business Entity from Passe
      */
-    public PasseBE update(final PasseBE passeBE, final long currentMemberId) {
-        basicDao.setModificationAttributes(passeBE, currentMemberId);
+    public PasseBE update(final PasseBE passeBE, final Long currentKampfrichterUserId) {
+        basicDao.setModificationAttributes(passeBE, currentKampfrichterUserId);
 
-
-        return basicDao.updateEntity(PASSE, passeBE, "passe_mannschaft_id");
+        return basicDao.updateEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
 
 
-    /**
-     * Delete an existing passe. The passe is identified by the id's set in passeDO.
-     *
-     * @param passeBE         passe to delete
-     * @param currentMemberId id of the member currently updating the passe
-     */
-    public void delete(PasseBE passeBE, long currentMemberId) {
+    public void delete(PasseBE passeBE, Long currentMemberId) {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
-
+        basicDao.deleteEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
+
+
 }

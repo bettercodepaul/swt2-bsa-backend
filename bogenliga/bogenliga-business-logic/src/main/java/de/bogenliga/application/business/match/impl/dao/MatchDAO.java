@@ -11,6 +11,7 @@ import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
  * @author Dominik Halle, HSRT MKI SS19 - SWT2

@@ -1,7 +1,7 @@
-package de.bogenliga.application.business.Passe.api;
+package de.bogenliga.application.business.passe.api;
 
 import java.util.List;
-import de.bogenliga.application.business.Passe.api.types.PasseDO;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 
 /**
  * TODO [AL] class documentation

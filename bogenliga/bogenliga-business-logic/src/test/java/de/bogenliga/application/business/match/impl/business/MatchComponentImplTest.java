@@ -10,7 +10,9 @@ import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -82,6 +84,27 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
 
     @Test
+    public void findById_Null_Return() {
+        when(matchDAO.findById(anyLong())).thenReturn(null);
+
+        assertThatThrownBy(() -> {
+            underTest.findById(MATCH_ID);
+        }).isInstanceOf(BusinessException.class);
+    }
+
+
+    @Test
+    public void findById_Null_Param() {
+        MatchBE expectedMatchBE = getMatchBE();
+        when(matchDAO.findById(any())).thenReturn(expectedMatchBE);
+
+        assertThatThrownBy(() -> {
+            underTest.findById(null);
+        }).isInstanceOf(BusinessException.class);
+    }
+
+
+    @Test
     public void findByPk() {
         MatchBE expectedMatchBE = getMatchBE();
 
@@ -104,6 +127,22 @@ public class MatchComponentImplTest extends BaseMatchTest {
                 MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
                 MATCH_SCHEIBENNUMMER
         );
+    }
+
+
+    @Test
+    public void findByPk_Null_Return() {
+        when(matchDAO.findByPk(
+                anyLong(), anyLong(), anyLong(), anyLong(), anyLong()
+        )).thenReturn(null);
+
+        assertThatThrownBy(() -> {
+            underTest.findByPk(
+                    MATCH_NR, MATCH_WETTKAMPF_ID,
+                    MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
+                    MATCH_SCHEIBENNUMMER
+            );
+        }).isInstanceOf(BusinessException.class);
     }
 
 

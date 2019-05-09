@@ -3,17 +3,14 @@ package de.bogenliga.application.business.mannschaftsmitglied.impl.entity;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
-/**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
-public class MannschaftsmitgliedBE extends CommonBusinessEntity implements BusinessEntity {
 
+public class MannschaftsmitgliedBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 2616130134662239870L;
+
+    private Long id;
     private Long mannschaftId;
     private Long dsbMitgliedId;
-    private boolean dsbMitgliedEingesetzt;
+    private Integer dsbMitgliedEingesetzt;
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
 
@@ -22,7 +19,6 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
      * Constructor
      */
     public MannschaftsmitgliedBE() {
-        // empty
     }
 
 
@@ -31,7 +27,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     }
 
 
-    public void setMannschaftId(final long mannschaftId) {
+    public void setMannschaftId(final Long mannschaftId) {
         this.mannschaftId = mannschaftId;
     }
 
@@ -41,17 +37,17 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     }
 
 
-    public void setDsbMitgliedId(final long dsbMitgliedId) {
+    public void setDsbMitgliedId(final Long dsbMitgliedId) {
         this.dsbMitgliedId = dsbMitgliedId;
     }
 
 
-    public boolean isDsbMitgliedEingesetzt() {
+    public Integer getDsbMitgliedEingesetzt() {
         return dsbMitgliedEingesetzt;
     }
 
 
-    public void setDsbMitgliedEingesetzt(final boolean dsbMitgliedEingesetzt) {
+    public void setDsbMitgliedEingesetzt(final Integer dsbMitgliedEingesetzt) {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 
@@ -71,6 +67,16 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     }
 
 
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
     public void setDsbMitgliedNachname(final String dsbMitgliedNachname) {
         this.dsbMitgliedNachname = dsbMitgliedNachname;
     }
@@ -79,6 +85,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     @Override
     public String toString() {
         return "MannschaftsmitgliedBE{" +
+                "id=" + id +
                 "mannschaftId=" + mannschaftId +
                 ", dsbMitgliedId=" + dsbMitgliedId +
                 ", dsbMitgliedEingesetzt=" + dsbMitgliedEingesetzt +
