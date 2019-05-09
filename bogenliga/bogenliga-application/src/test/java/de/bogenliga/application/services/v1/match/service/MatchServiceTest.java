@@ -199,7 +199,7 @@ public class MatchServiceTest {
         //verify invocations
         verify(matchComponent).findByMannschaftId(MATCH_MANNSCHAFT_ID);
 
-        MatchService.checkPreconditions(actualDTO);
+        MatchService.checkPreconditions(actualDTO, MatchService.matchConditionErrors);
     }
 
     @Test
