@@ -9,22 +9,22 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * @author Kay Scheerer
  */
 public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
-    private static final long serialVersionUID = 8445258747402691960L;
+    private static final Long serialVersionUID = 8445258747402691960L;
 
     private Long id;
-    private long passeMannschaftId;
-    private long passeWettkampfId;
-    private long passeMatchNr;
-    private long passeMatchId;
-    private long passeLfdnr;
-    private long passeDsbMitgliedId;
+    private Long passeMannschaftId;
+    private Long passeWettkampfId;
+    private Long passeMatchNr;
+    private Long passeMatchId;
+    private Long passeLfdnr;
+    private Long passeDsbMitgliedId;
 
-    private int pfeil1;
-    private int pfeil2;
-    private int pfeil3;
-    private int pfeil4;
-    private int pfeil5;
-    private int pfeil6;
+    private Integer passe_ringzahl_pfeil1;
+    private Integer passe_ringzahl_pfeil2;
+    private Integer passe_ringzahl_pfeil3;
+    private Integer passe_ringzahl_pfeil4;
+    private Integer passe_ringzahl_pfeil5;
+    private Integer passe_ringzahl_pfeil6;
 
 
     @Override
@@ -37,133 +37,133 @@ public class PasseBE extends CommonBusinessEntity implements BusinessEntity {
                 ", passeMatchId=" + passeMatchId +
                 ", passeLfdnr=" + passeLfdnr +
                 ", passeDsbMitgliedId=" + passeDsbMitgliedId +
-                ", pfeil1=" + pfeil1 +
-                ", pfeil2=" + pfeil2 +
-                ", pfeil3=" + pfeil3 +
-                ", pfeil4=" + pfeil4 +
-                ", pfeil5=" + pfeil5 +
-                ", pfeil6=" + pfeil6 +
+                ", passe_ringzahl_pfeil1=" + passe_ringzahl_pfeil1 +
+                ", passe_ringzahl_pfeil2=" + passe_ringzahl_pfeil2 +
+                ", passe_ringzahl_pfeil3=" + passe_ringzahl_pfeil3 +
+                ", passe_ringzahl_pfeil4=" + passe_ringzahl_pfeil4 +
+                ", passe_ringzahl_pfeil5=" + passe_ringzahl_pfeil5 +
+                ", passe_ringzahl_pfeil6=" + passe_ringzahl_pfeil6 +
                 '}';
     }
 
 
-    public long getPasseMannschaftId() {
+    public Long getPasseMannschaftId() {
         return passeMannschaftId;
     }
 
 
-    public void setPasseMannschaftId(long passeMannschaftId) {
+    public void setPasseMannschaftId(Long passeMannschaftId) {
         this.passeMannschaftId = passeMannschaftId;
     }
 
 
-    public long getPasseWettkampfId() {
+    public Long getPasseWettkampfId() {
         return passeWettkampfId;
     }
 
 
-    public void setPasseWettkampfId(long passeWettkampfId) {
+    public void setPasseWettkampfId(Long passeWettkampfId) {
         this.passeWettkampfId = passeWettkampfId;
     }
 
 
-    public long getPasseMatchNr() {
+    public Long getPasseMatchNr() {
         return passeMatchNr;
     }
 
 
-    public long getPasseMatchId() {
+    public Long getPasseMatchId() {
         return passeMatchId;
     }
 
 
-    public void setPasseMatchId(long passeMatchId) {
+    public void setPasseMatchId(Long passeMatchId) {
         this.passeMatchId = passeMatchId;
     }
 
 
-    public void setPasseMatchNr(long passeMatchNr) {
+    public void setPasseMatchNr(Long passeMatchNr) {
         this.passeMatchNr = passeMatchNr;
     }
 
 
-    public long getPasseLfdnr() {
+    public Long getPasseLfdnr() {
         return passeLfdnr;
     }
 
 
-    public void setPasseLfdnr(long passeLfdnr) {
+    public void setPasseLfdnr(Long passeLfdnr) {
         this.passeLfdnr = passeLfdnr;
     }
 
 
-    public long getPasseDsbMitgliedId() {
+    public Long getPasseDsbMitgliedId() {
         return passeDsbMitgliedId;
     }
 
 
-    public void setPasseDsbMitgliedId(long passeDsbMitgliedId) {
+    public void setPasseDsbMitgliedId(Long passeDsbMitgliedId) {
         this.passeDsbMitgliedId = passeDsbMitgliedId;
     }
 
 
-    public int getPfeil1() {
-        return pfeil1;
+    public Integer getPfeil1() {
+        return passe_ringzahl_pfeil1;
     }
 
 
-    public void setPfeil1(int pfeil1) {
-        this.pfeil1 = pfeil1;
+    public void setPfeil1(Integer pfeil1) {
+        this.passe_ringzahl_pfeil1 = pfeil1;
     }
 
 
-    public int getPfeil2() {
-        return pfeil2;
+    public Integer getPfeil2() {
+        return passe_ringzahl_pfeil2;
     }
 
 
-    public void setPfeil2(int pfeil2) {
-        this.pfeil2 = pfeil2;
+    public void setPfeil2(Integer pfeil2) {
+        this.passe_ringzahl_pfeil2 = pfeil2;
     }
 
 
-    public int getPfeil3() {
-        return pfeil3;
+    public Integer getPfeil3() {
+        return passe_ringzahl_pfeil3;
     }
 
 
-    public void setPfeil3(int pfeil3) {
-        this.pfeil3 = pfeil3;
+    public void setPfeil3(Integer pfeil3) {
+        this.passe_ringzahl_pfeil3 = pfeil3;
     }
 
 
-    public int getPfeil4() {
-        return pfeil4;
+    public Integer getPfeil4() {
+        return passe_ringzahl_pfeil4;
     }
 
 
-    public void setPfeil4(int pfeil4) {
-        this.pfeil4 = pfeil4;
+    public void setPfeil4(Integer pfeil4) {
+        this.passe_ringzahl_pfeil4 = pfeil4;
     }
 
 
-    public int getPfeil5() {
-        return pfeil5;
+    public Integer getPfeil5() {
+        return passe_ringzahl_pfeil5;
     }
 
 
-    public void setPfeil5(int pfeil5) {
-        this.pfeil5 = pfeil5;
+    public void setPfeil5(Integer pfeil5) {
+        this.passe_ringzahl_pfeil5 = pfeil5;
     }
 
 
-    public int getPfeil6() {
-        return pfeil6;
+    public Integer getPfeil6() {
+        return passe_ringzahl_pfeil6;
     }
 
 
-    public void setPfeil6(int pfeil6) {
-        this.pfeil6 = pfeil6;
+    public void setPfeil6(Integer pfeil6) {
+        this.passe_ringzahl_pfeil6 = pfeil6;
     }
 
 
