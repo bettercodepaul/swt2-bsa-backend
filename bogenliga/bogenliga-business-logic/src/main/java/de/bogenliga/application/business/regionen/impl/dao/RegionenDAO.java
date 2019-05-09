@@ -26,7 +26,7 @@ public class RegionenDAO implements DataAccessObject {
     private static final String TABLE = "region";
 
     //business entity parameters
-    private static final String REGION_BE_ID = "regionID";
+    private static final String REGION_BE_ID = "regionId";
     private static final String REGION_BE_NAME = "regionName";
     private static final String REGION_BE_KUERZEL = "regionKuerzel";
     private static final String REGION_BE_TYP = "regionTyp";
@@ -120,6 +120,55 @@ public class RegionenDAO implements DataAccessObject {
         return basicDAO.selectSingleEntity(REGIONEN, FIND_BY_ID, id);
     }
 
+
+    /**
+     * Creates a region database entry
+     *
+     * @param regionenBE             Region Business Entity to be persisted in the database
+     * @param currentDsbMitgliedId Id of the user creating the entry
+     *
+     * @return returns the created region
+     */
+    public RegionenBE create(final RegionenBE regionenBE, final long currentDsbMitgliedId) {
+        basicDAO.setCreationAttributes(regionenBE, currentDsbMitgliedId);
+
+        System.out.println("______________");
+        System.out.println("Regionen ID: " + regionenBE.getRegionId());
+        System.out.println("Regionenname: "+ regionenBE.getRegionName());
+        System.out.println("Regionentyp: "+ regionenBE.getRegionTyp());
+        System.out.println("Regionenuebergeordnet: "+ regionenBE.getRegionUebergeordnet());
+        System.out.println("__________________________");
+        return basicDAO.insertEntity(REGIONEN, regionenBE);
+    }
+
+
+    /**
+     * Updates a region by the given properties
+     *
+     * @param regionenBE           Region Business Entity to be changed in the database
+     * @param currentDsbMitglied Id of the user updating the database entry
+     *
+     * @return returns the updated region
+     */
+    public RegionenBE update(final RegionenBE regionenBE, final long currentDsbMitglied) {
+        basicDAO.setModificationAttributes(regionenBE, currentDsbMitglied);
+
+        return basicDAO.updateEntity(REGIONEN, regionenBE, REGION_BE_ID);
+    }
+
+
+    /**
+     * Deletes a region depending on the id
+     *
+     * @param regionenBE           region Business entity to identify the region to be deleted
+     * @param currentDsbMitglied Id of the user deleting the database entry
+     */
+    public void delete(final RegionenBE regionenBE, final long currentDsbMitglied) {
+
+        basicDAO.setModificationAttributes(regionenBE, currentDsbMitglied);
+        basicDAO.deleteEntity(REGIONEN, regionenBE, REGION_BE_ID);
+
+    }
 
 
 }

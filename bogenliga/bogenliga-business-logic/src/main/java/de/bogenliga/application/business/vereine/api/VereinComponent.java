@@ -19,9 +19,9 @@ public interface VereinComponent extends ComponentFacade {
     List<VereinDO> findAll();
 
     /**
-     * Returns a "Verein" with the given id
+     * Returns a "Region" with the given id
      *
-     * @param vereinId ID of the verein to be queried from the database.
+     * @param vereinId ID of the region to be queried from the database.
      *
      * @return returns the queried verein
      */

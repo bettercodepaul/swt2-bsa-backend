@@ -85,7 +85,17 @@ public class MatchDAO implements DataAccessObject {
 
     /**
      * SQL queries
+     *
+     *
      */
+
+
+    private static final String FIND_BY_MANNSCHAFT_ID =
+            "SELECT DISTINCT match_wettkampf_id, match_mannschaft_id"
+                    + " FROM match "
+                    + " WHERE match_mannschaft_id = ?";
+
+
     private static final String FIND_ALL = new QueryBuilder()
             .selectAll()
             .from(TABLE)
@@ -110,12 +120,11 @@ public class MatchDAO implements DataAccessObject {
             .orderBy(MATCH_TABLE_NR)
             .compose().toString();
 
-    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
-            .selectAll()
-            .from(TABLE)
-            .whereEquals(MATCH_TABLE_MANNSCHAFT_ID)
-            .orderBy(MATCH_TABLE_ID)
-            .compose().toString();
+//    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
+//            .selectAll()
+//            .from(TABLE)
+//            .whereEquals(MATCH_TABLE_MANNSCHAFT_ID)
+//            .compose().toString();
 
     private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
             .selectAll()

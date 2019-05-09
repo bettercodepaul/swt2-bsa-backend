@@ -98,5 +98,15 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
         this.veranstaltungLigaleiterID = veranstaltungLigaleiterID;
     }
 
-
+    @Override
+    public String toString() {
+        return "VeranstaltungBE{" +
+                "veranstaltung_id='" + this.veranstaltungID + '\'' +
+                ", wettkampf_id='" + veranstaltungWettkampftypID + '\'' +
+                ", name='" + veranstaltungName + '\'' +
+                ", sportjahr='" + this.veranstaltungSportJahr + '\'' +
+                ", meldedeadline='" + this.veranstaltungMeldeDeadline + '\'' +
+                ", ligaleiter_id='" + this.veranstaltungLigaleiterID + '\'' +
+                "}";
+    }
 }

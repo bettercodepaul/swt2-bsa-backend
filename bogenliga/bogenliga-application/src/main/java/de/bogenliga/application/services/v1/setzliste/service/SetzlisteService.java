@@ -81,7 +81,7 @@ public class SetzlisteService implements ServiceFacade {
     //, "wettkampftag" }
     //, @RequestParam("wettkampftag") String wettkampftag)
     //   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequestMapping(method = RequestMethod.POST)
+    /*@RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ResponseEntity<InputStreamResource> getTableByVars(@RequestParam Map<String, String> requestParams) {
         LOG.debug("setzliste works...");
@@ -99,7 +99,7 @@ public class SetzlisteService implements ServiceFacade {
         return ResponseEntity.ok().contentLength(r)
                 .contentType(MediaType.parseMediaType("application/pdf"))
                 .body(new InputStreamResource(is));
-    }
+    }*/
 
 /*    @RequestMapping(method = RequestMethod.POST)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
@@ -131,37 +131,37 @@ public class SetzlisteService implements ServiceFacade {
         return "blaaaa";
     }
 
+    /*
+        /**
+         * I return all dsbMitglied entries of the database. TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom
+         * Admin oder auf Testdaten verwendet werden!
+         * <p>
+         * Usage:
+         * <pre>{@code Request: GET /v1/dsbmitglied}</pre>
+         * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMitlgied angepasst werden
+         * [
+         *  {
+         *    "id": "app.bogenliga.frontend.autorefresh.active",
+         *    "value": "true"
+         *  },
+         *  {
+         *    "id": "app.bogenliga.frontend.autorefresh.interval",
+         *    "value": "10"
+         *  }
+         * ]
+         * }
+         * </pre>
+         *
+         * @return list of {@link SetzlisteDTO} as JSON
 
-    /**
-     * I return all dsbMitglied entries of the database. TODO ACHTUNG: Darf wegen Datenschutz in dieser Form nur vom
-     * Admin oder auf Testdaten verwendet werden!
-     * <p>
-     * Usage:
-     * <pre>{@code Request: GET /v1/dsbmitglied}</pre>
-     * <pre>{@code Response: TODO Beispielpayload bezieht sich auf Config, muss noch für DSBMitlgied angepasst werden
-     * [
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  },
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.interval",
-     *    "value": "10"
-     *  }
-     * ]
-     * }
-     * </pre>
-     *
-     * @return list of {@link SetzlisteDTO} as JSON
-     */
-    @RequestMapping(method = RequestMethod.GET,
+   @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public String getTable() {
         LOG.warn("### Setzliste Service #####");
         // String s = setzlisteComponent.getTable(0, 0);
         return "Hello Setzliste!";
-    }
+    }*/
 
 
 //    public List<SetzlisteDTO> getTable() {
