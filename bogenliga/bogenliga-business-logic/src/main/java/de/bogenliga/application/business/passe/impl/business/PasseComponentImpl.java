@@ -26,6 +26,13 @@ public class PasseComponentImpl implements PasseComponent {
     public static final String PRECONDITION_MSG_DSB_MITGLIED_ID = String.format(PRECONDITION_MSG_TEMPLATE,
             "dsbMitgliedId");
 
+    public static final String PRECONDITION_FIElD_MITGLIED_ID = "dsbMemberId";
+    public static final String PRECONDITION_FIElD_WETTKAMPF_ID = "wettkampfId";
+    public static final String PRECONDITION_FIElD_MANNSCHAFT_ID = "mannschaftId";
+    public static final String PRECONDITION_FIElD_MATCH_ID = "matchId";
+    public static final String PRECONDITION_FIElD_MATCH_NR = "matchNr";
+    public static final String PRECONDITION_FIElD_LFD_NR = "passeLfdNr";
+
     private final PasseDAO passeDAO;
 
 
@@ -75,7 +82,7 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByWettkampfId(Long wettkampfId) {
-        checkPreconditions(wettkampfId, "wettkampf_Id");
+        checkPreconditions(wettkampfId, PRECONDITION_FIElD_WETTKAMPF_ID);
         final List<PasseBE> passeBEList = passeDAO.findByWettkampfId(wettkampfId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -90,7 +97,7 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByTeamId(Long teamId) {
-        checkPreconditions(teamId, "mannschaft_Id");
+        checkPreconditions(teamId, PRECONDITION_FIElD_MANNSCHAFT_ID);
         final List<PasseBE> passeBEList = passeDAO.findByTeamId(teamId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -105,7 +112,7 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMemberId(Long memberId) {
-        checkPreconditions(memberId, "member_Id");
+        checkPreconditions(memberId, PRECONDITION_FIElD_MITGLIED_ID);
         final List<PasseBE> passeBEList = passeDAO.findByMemberId(memberId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -121,8 +128,8 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMemberMannschaftId(Long dsbMemberId, Long mannschaftId) {
-        checkPreconditions(dsbMemberId, "dsbMember_Id");
-        checkPreconditions(mannschaftId, "mannschaft_Id");
+        checkPreconditions(dsbMemberId, PRECONDITION_FIElD_MITGLIED_ID);
+        checkPreconditions(mannschaftId, PRECONDITION_FIElD_MANNSCHAFT_ID);
         final List<PasseBE> passeBEList = passeDAO.findByMemberMannschaftId(dsbMemberId, mannschaftId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -138,8 +145,8 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMitgliedMatchId(Long dsbMemberId, Long matchId) {
-        checkPreconditions(dsbMemberId, "dsbMember_Id");
-        checkPreconditions(matchId, "match_Id");
+        checkPreconditions(dsbMemberId, PRECONDITION_FIElD_MITGLIED_ID);
+        checkPreconditions(matchId, PRECONDITION_FIElD_MATCH_ID);
         final List<PasseBE> passeBEList = passeDAO.findByMitgliedMatchId(dsbMemberId, matchId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -155,8 +162,8 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMannschaftMatchId(Long mannschaftId, Long matchId) {
-        checkPreconditions(matchId, "match_Id");
-        checkPreconditions(mannschaftId, "mannschaft_Id");
+        checkPreconditions(matchId, PRECONDITION_FIElD_MATCH_ID);
+        checkPreconditions(mannschaftId, PRECONDITION_FIElD_MANNSCHAFT_ID);
         final List<PasseBE> passeBEList = passeDAO.findByMannschaftMatchId(mannschaftId, matchId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -171,7 +178,7 @@ public class PasseComponentImpl implements PasseComponent {
      */
     @Override
     public List<PasseDO> findByMatchId(Long matchId) {
-        checkPreconditions(matchId, "match_Id");
+        checkPreconditions(matchId, PRECONDITION_FIElD_MATCH_ID);
         final List<PasseBE> passeBEList = passeDAO.findByMatchId(matchId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
@@ -199,11 +206,11 @@ public class PasseComponentImpl implements PasseComponent {
      * @return a passe with the given PK
      */
     public PasseDO findByPk(Long wettkampfId, Long matchNr, Long mannschaftId, Long passeLfdNr, Long dsbMitgliedId) {
-        checkPreconditions(wettkampfId, "wettkampfId");
-        checkPreconditions(matchNr, "matchNr");
-        checkPreconditions(mannschaftId, "mannschaftId");
-        checkPreconditions(passeLfdNr, "passeLfdNr");
-        checkPreconditions(dsbMitgliedId, "dsbMitgliedId");
+        checkPreconditions(wettkampfId, PRECONDITION_FIElD_WETTKAMPF_ID);
+        checkPreconditions(matchNr, PRECONDITION_FIElD_MATCH_NR);
+        checkPreconditions(mannschaftId, PRECONDITION_FIElD_MANNSCHAFT_ID);
+        checkPreconditions(passeLfdNr, PRECONDITION_FIElD_LFD_NR);
+        checkPreconditions(dsbMitgliedId, PRECONDITION_FIElD_MITGLIED_ID);
         final PasseBE passeBE = passeDAO.findByPk(wettkampfId, matchNr, mannschaftId, passeLfdNr, dsbMitgliedId);
         return PasseMapper.toPasseDO.apply(passeBE);
     }
