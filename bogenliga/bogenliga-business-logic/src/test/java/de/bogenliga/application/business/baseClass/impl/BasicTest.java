@@ -110,7 +110,7 @@ public class BasicTest<T, B> {
                 if (!optionalM.isPresent()) {
                     LOG.debug("Expected entity doesn't implement the method: " + method.getName());
                 }
-                assertThat(optionalM.isPresent());
+                assertThat(optionalM.isPresent()).isTrue();
 
                 if (valuesToMethodNames.containsKey(method.getName())) {
                     LOG.debug(
