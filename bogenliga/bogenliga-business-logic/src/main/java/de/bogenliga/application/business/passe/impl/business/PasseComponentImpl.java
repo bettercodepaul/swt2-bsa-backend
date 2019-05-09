@@ -259,12 +259,12 @@ public class PasseComponentImpl implements PasseComponent {
      * @param passeDO the DO to check
      */
     public void checkPasseDO(PasseDO passeDO) {
-        checkPreconditions(passeDO.getPasseMannschaftId(), "passeMannschaftId");
-        checkPreconditions(passeDO.getPasseWettkampfId(), "passeMannschaftId");
-        checkPreconditions(passeDO.getPasseMatchNr(), "passeMannschaftId");
-        checkPreconditions(passeDO.getPasseMatchId(), "passeMannschaftId");
-        checkPreconditions(passeDO.getPasseLfdnr(), "passeMannschaftId");
-        checkPreconditions(passeDO.getPasseDsbMitgliedId(), "passeMannschaftId");
+        checkPreconditions(passeDO.getPasseMannschaftId(), "MannschaftId");
+        checkPreconditions(passeDO.getPasseWettkampfId(), "WettkampfId");
+        checkPreconditions(passeDO.getPasseMatchNr(), "MatchNr");
+        checkPreconditions(passeDO.getPasseMatchId(), "MatchId");
+        checkPreconditions(passeDO.getPasseLfdnr(), "Lfdnr");
+        checkPreconditions(passeDO.getPasseDsbMitgliedId(), "DsbMitgliedId");
         checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil1");
         checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil2");
     }
