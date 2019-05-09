@@ -109,7 +109,6 @@ public class VeranstaltungDAO implements DataAccessObject{
      */
     public List<VeranstaltungBE> findAll()
     {
-        System.out.println("in der dao klasse von veranstaltung" + basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL).toString());
         return basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
     }
 

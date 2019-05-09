@@ -32,8 +32,8 @@ public class WettkampftypMapperTest {
 
         final WettkampftypBE actual = WettkampftypMapper.toWettkampftypBE.apply(wettkampftypDO);
 
-        assertThat(actual.getId()).isEqualTo(wettkampftyp_Id);
-        assertThat(actual.getName()).isEqualTo(wettkampftyp_Name);
+        assertThat(actual.getwettkampftypID()).isEqualTo(wettkampftyp_Id);
+        assertThat(actual.getwettkampftypname()).isEqualTo(wettkampftyp_Name);
     }
 
     @Test

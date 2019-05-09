@@ -37,7 +37,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_LEITER_ID ="VeranstaltungLigaLeiterId must not be null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_MELDE_DEADLINE=" veranstaltungMeldeDeadline must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPF_ID="Veranstaltungwettkampfid must be not null";
-   private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID="Veranstaltungligaid must be not null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID="Veranstaltungligaid must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR="veranstaltungsportjahr must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_NAME="veranstaltungname must be not null";
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
@@ -85,11 +85,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
             System.out.println("test: " + cacheList.get(x));
             System.out.println("test2: " + returnList.get(x).getVeranstaltungWettkampftypID());
         }*/
-        System.out.println("test3:" + wettkampftypDAO.findAll());
-
-
-
-
         return returnList;
     }
 

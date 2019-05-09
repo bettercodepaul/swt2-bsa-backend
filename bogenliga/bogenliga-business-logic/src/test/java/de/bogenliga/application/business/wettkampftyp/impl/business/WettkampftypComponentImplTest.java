@@ -49,8 +49,8 @@ public class WettkampftypComponentImplTest {
      */
     public static WettkampftypBE getWettkampftypBE() {
         final WettkampftypBE expectedBE = new WettkampftypBE();
-        expectedBE.setId(wettkampftyp_Id);
-        expectedBE.setName(wettkampftyp_Name);
+        expectedBE.setwettkampftypID(wettkampftyp_Id);
+        expectedBE.setwettkampftypname(wettkampftyp_Name);
 
         return expectedBE;
     }
@@ -89,9 +89,9 @@ public class WettkampftypComponentImplTest {
         assertThat(actual.get(0)).isNotNull();
 
         assertThat(actual.get(0).getId())
-                .isEqualTo(expectedBE.getId());
+                .isEqualTo(expectedBE.getwettkampftypID());
         assertThat(actual.get(0).getName())
-                .isEqualTo(expectedBE.getName());
+                .isEqualTo(expectedBE.getwettkampftypname());
 
         // verify invocations
         verify(wettkampftypDAO).findAll();
@@ -112,7 +112,7 @@ public class WettkampftypComponentImplTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getId())
-                .isEqualTo(expectedBE.getId());
+                .isEqualTo(expectedBE.getwettkampftypID());
 
         // verify invocations
         verify(wettkampftypDAO).findById(wettkampftyp_Id);
@@ -144,7 +144,7 @@ public class WettkampftypComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getId())
+        assertThat(persistedBE.getwettkampftypID())
                 .isEqualTo(input.getId());
     }
 
@@ -169,7 +169,7 @@ public class WettkampftypComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getId())
+        assertThat(persistedBE.getwettkampftypID())
                 .isEqualTo(input.getId());
     }
 }

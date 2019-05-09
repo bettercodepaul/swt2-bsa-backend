@@ -40,7 +40,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 veranstaltungBE.getVeranstaltungLigaleiterID(),
                 veranstaltungBE.getVeranstaltungLigaID(),
                 userBE.getUserEmail(),
-                wettkamptypBE.getName(),
+                wettkamptypBE.getwettkampftypname(),
                 ligaBE.getLigaName()
         );
         veranstaltungDO.setCreatedAtUtc(createdAtUtc);

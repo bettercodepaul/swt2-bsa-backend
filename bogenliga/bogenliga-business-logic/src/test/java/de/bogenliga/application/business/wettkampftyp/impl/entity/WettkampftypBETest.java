@@ -23,8 +23,8 @@ public class WettkampftypBETest {
     @Test
     public void assertToString() {
         final WettkampftypBE underTest = getWettkampftypBE();
-        underTest.setId(wettkampftyp_Id);
-        underTest.setName(wettkampftyp_Name);
+        underTest.setwettkampftypID(wettkampftyp_Id);
+        underTest.setwettkampftypname(wettkampftyp_Name);
 
         final String actual = underTest.toString();
 

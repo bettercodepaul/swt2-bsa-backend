@@ -16,42 +16,39 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 public class WettkampftypBE extends CommonBusinessEntity implements BusinessEntity {
 
     private static final long serialVersionUID = 7307883175430867611L;
-    private Long id;
-    private String name;
+    private Long wettkampftypID;
+    private String wettkampftypname;
 
 
     /**
      * Constructor
      */
-    public WettkampftypBE(/*final Long id, final String name*/) {
-        //this.id = id;
-        //his.name = name;
+    public WettkampftypBE() { }
+
+
+    public Long getwettkampftypID() {
+        return wettkampftypID;
     }
 
 
-    public Long getId() {
-        return id;
+    public void setwettkampftypID(final Long wettkampftypID) {
+        this.wettkampftypID = wettkampftypID;
     }
 
 
-    public void setId(final Long id) {
-        this.id = id;
+    public String getwettkampftypname() {
+        return wettkampftypname;
     }
 
 
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
+    public void setwettkampftypname(String name) {
+        this.wettkampftypname = name;
     }
 
 
     @Override
     public String toString() {
-        return "Wettkampftyp ID = " + getId() + "\n" +
-                "Wettkampftyp Name  =  " + getName();
+        return "Wettkampftyp ID = " + getwettkampftypID() + "\n" +
+                "Wettkampftyp Name  =  " + getwettkampftypname();
     }
 }
