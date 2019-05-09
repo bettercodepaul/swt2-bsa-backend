@@ -2,8 +2,6 @@ package de.bogenliga.application.business.mannschaftsmitglied.impl.dao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.Map;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,7 +49,10 @@ public class MannschaftmitgliedDAOTest extends MannschaftsmitgliedBaseDAOTest {
     }
 
 
-
+@Test
+public void findAll() throws InvocationTargetException, IllegalAccessException {
+        basicDAOTest.testAllFindMethods(underTest);
+}
 
     @Test
     public void testfindAll() {

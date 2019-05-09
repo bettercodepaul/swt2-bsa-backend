@@ -16,7 +16,6 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.Mannsch
 import de.bogenliga.application.business.baseClass.impl.BasicComponentTest;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static de.bogenliga.application.business.mannschaftsmitglied.impl.MannschaftsmitgliedBaseDAOTest.getMannschaftsmitgliedBE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -68,7 +67,7 @@ public class MannschaftsmitgliedComponentImplTestAll extends Mannschaftsmitglied
     public void testAllMethodsOnCorrectness() throws InvocationTargetException, IllegalAccessException {
         when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
-        basicTest.testAllFindMethodOfComponentImpl(underTest);
+        basicTest.testAllFindMethods(underTest);
     }
 
 
