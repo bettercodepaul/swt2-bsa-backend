@@ -68,10 +68,10 @@ public class PasseMapper implements ValueObjectMapper {
         passeBE.setPasseDsbMitgliedId(passeDO.getPasseDsbMitgliedId());
         passeBE.setPfeil1(passeDO.getPfeil1());
         passeBE.setPfeil2(passeDO.getPfeil2());
-        passeBE.setPfeil3(passeDO.getPfeil3());
+   /**     passeBE.setPfeil3(passeDO.getPfeil3());
         passeBE.setPfeil4(passeDO.getPfeil4());
         passeBE.setPfeil5(passeDO.getPfeil5());
-        passeBE.setPfeil6(passeDO.getPfeil6());
+        passeBE.setPfeil6(passeDO.getPfeil6());*/
         passeBE.setCreatedAtUtc(createdAtUtcTimestamp);
         passeBE.setCreatedByUserId(passeDO.getCreatedByUserId());
         passeBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
