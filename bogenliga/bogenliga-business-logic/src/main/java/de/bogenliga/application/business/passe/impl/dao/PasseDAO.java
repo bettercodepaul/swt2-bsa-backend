@@ -204,7 +204,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
-    public List<PasseBE> findByWettkampfId(long wettkampfId) {
+    public List<PasseBE> findByWettkampfId(Long wettkampfId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_WETTKAMPF_ID, wettkampfId);
     }
 
@@ -216,7 +216,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of all passe from one team in the database; empty list, if no passe are found
      */
-    public List<PasseBE> findByTeamId(long teamId) {
+    public List<PasseBE> findByTeamId(Long teamId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_ID, teamId);
     }
 
@@ -229,7 +229,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMemberMannschaftId(long dsbMitgliedId, long mannschaftId) {
+    public List<PasseBE> findByMemberMannschaftId(Long dsbMitgliedId, Long mannschaftId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_MANNSCHAFT_ID, dsbMitgliedId, mannschaftId);
     }
 
@@ -241,7 +241,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMemberId(long dsbMitgliedId) {
+    public List<PasseBE> findByMemberId(Long dsbMitgliedId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MEMBER_ID, dsbMitgliedId);
     }
 
@@ -261,7 +261,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMannschaftMatchId(long mannschaftId, long matchId) {
+    public List<PasseBE> findByMannschaftMatchId(Long mannschaftId, Long matchId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MANNSCHAFT_MATCH_ID, mannschaftId, matchId);
     }
 
@@ -272,7 +272,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMitgliedMatchId(long dsbMitgliedId, long matchId) {
+    public List<PasseBE> findByMitgliedMatchId(Long dsbMitgliedId, Long matchId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MITGLIED_MATCH_ID, dsbMitgliedId, matchId);
     }
 
@@ -284,7 +284,7 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return list of passe from one mitglied in one team; empty list, if no passe are found
      */
-    public List<PasseBE> findByMatchId(long matchId) {
+    public List<PasseBE> findByMatchId(Long matchId) {
         return basicDao.selectEntityList(PASSE, FIND_BY_MATCH_ID, matchId);
     }
 
@@ -310,7 +310,7 @@ public class PasseDAO implements DataAccessObject {
      * @return Business Entity corresponding to the created kampfrichter entry (should only be created by Veranstalter
      * and  entities
      */
-    public PasseBE create(final PasseBE passeBE, final long currentKampfrichterUserId) {
+    public PasseBE create(final PasseBE passeBE, final Long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
         return basicDao.insertEntity(PASSE, passeBE);
@@ -323,14 +323,14 @@ public class PasseDAO implements DataAccessObject {
      *
      * @return Business Entity from Passe
      */
-    public PasseBE update(final PasseBE passeBE, final long currentKampfrichterUserId) {
+    public PasseBE update(final PasseBE passeBE, final Long currentKampfrichterUserId) {
         basicDao.setModificationAttributes(passeBE, currentKampfrichterUserId);
 
-        return basicDao.updateEntity(PASSE, passeBE, "passeID");
+        return basicDao.updateEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
 
 
-    public void delete(PasseBE passeBE, long currentMemberId) {
+    public void delete(PasseBE passeBE, Long currentMemberId) {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
         basicDao.deleteEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
