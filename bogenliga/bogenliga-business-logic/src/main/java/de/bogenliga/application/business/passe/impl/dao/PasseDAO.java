@@ -246,13 +246,6 @@ public class PasseDAO implements DataAccessObject {
     }
 
 
-    private static final String FIND_BY_LFDNR =
-            "SELECT * "
-                    + " FROM " + TABLE
-                    + " WHERE " + PASSE_TABLE_LFDNR
-                    + "= ?";
-
-
     /**
      * Return a passe entry with the given ids.
      *
