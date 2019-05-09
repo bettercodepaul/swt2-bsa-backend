@@ -5,7 +5,6 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 
 public class MannschaftsmitgliedBE extends CommonBusinessEntity implements BusinessEntity {
-
     private static final long serialVersionUID = 2616130134662239870L;
 
     private Long id;
@@ -20,7 +19,6 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
      * Constructor
      */
     public MannschaftsmitgliedBE() {
-        // empty
     }
 
 
@@ -29,7 +27,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     }
 
 
-    public void setMannschaftId(final long mannschaftId) {
+    public void setMannschaftId(final Long mannschaftId) {
         this.mannschaftId = mannschaftId;
     }
 
@@ -39,7 +37,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     }
 
 
-    public void setDsbMitgliedId(final long dsbMitgliedId) {
+    public void setDsbMitgliedId(final Long dsbMitgliedId) {
         this.dsbMitgliedId = dsbMitgliedId;
     }
 

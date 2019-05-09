@@ -9,15 +9,12 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
- *
  * @author Philip Dengler
  */
 public class MannschaftsmitgliedMapper implements ValueObjectMapper {
 
 
-
     public static final Function<MannschaftsmitgliedBE, MannschaftsmitgliedDO> toMannschaftsmitgliedDO = be -> {
-
         final Long id = be.getId();
         final Long mannschaftId = be.getMannschaftId();
         final Long mitgliedId = be.getDsbMitgliedId();
@@ -33,10 +30,9 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new MannschaftsmitgliedDO(id, mannschaftId, mitgliedId, mitgliedEingesetzt,mitgliedVorname,mitgliedNachname,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new MannschaftsmitgliedDO(id, mannschaftId, mitgliedId, mitgliedEingesetzt, mitgliedVorname,
+                mitgliedNachname,  createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
-
 
 
     public static final Function<MannschaftsmitgliedDO, MannschaftsmitgliedBE> toMannschaftsmitgliedBE = mannschaftsmitgliedDO -> {
@@ -63,15 +59,10 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         return mannschaftsmitgliedBE;
     };
 
-        /**
-         * Private constructor
-         */
+
+    /**
+     * Private constructor
+     */
     private MannschaftsmitgliedMapper() {
-            // empty
-        // private constructor
-        }
-
-
-
-
+    }
 }

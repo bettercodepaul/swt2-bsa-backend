@@ -209,9 +209,9 @@ public class MatchService implements ServiceFacade {
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
 
-        System.out.println("Anzahl Schützen: " + mannschaftsmitgliedDOS.size());
+        LOG.debug("Anzahl Schützen: {}", mannschaftsmitgliedDOS.size());
         for (MannschaftsmitgliedDO mmdo: mannschaftsmitgliedDOS) {
-            System.out.println("Schütze: " + mmdo.getId() + " mit dsbMitgliedId " + mmdo.getDsbMitgliedId());
+            LOG.debug("Schütze: {} mit dsbMitgliedId {}", mmdo.getId(), mmdo.getDsbMitgliedId());
         }
 
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
@@ -339,7 +339,6 @@ public class MatchService implements ServiceFacade {
                 if (errMsg != null) {
                     try {
                         Object returnValue = m.invoke(dto);
-                        System.out.println("Method val: " + returnValue + "; Method: " + methodName);
                         Preconditions.checkNotNull(returnValue, errMsg);
                         Preconditions.checkArgument(((Long) returnValue) >= 0, errMsg);
                     } catch (IllegalAccessException | InvocationTargetException | ClassCastException e) {
@@ -368,6 +367,8 @@ public class MatchService implements ServiceFacade {
                     mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
             for (PasseDTO passeDTO: passeDTOs) {
                 passeDTO.setSchuetzeNr(getSchuetzeNrFor(passeDTO, mannschaftsmitgliedDOS));
+                Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
+                        String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
 
             matchDTO.setPassen(passeDTOs);
