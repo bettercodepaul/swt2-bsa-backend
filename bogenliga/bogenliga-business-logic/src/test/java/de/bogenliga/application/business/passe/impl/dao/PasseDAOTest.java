@@ -70,7 +70,8 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByMatchId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMatchId(4));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findByMatchId((Long) getValuesToMethodMap().get("findByMatchId")));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -82,7 +83,8 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByMemberId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMemberId(98));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findByMemberId((Long) getValuesToMethodMap().get("getPasseDsbMitgliedId")));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -94,7 +96,8 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByTeamId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByTeamId(1));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findByTeamId((Long) getValuesToMethodMap().get("getPasseMannschaftId")));
 
         } catch (InvocationTargetException e) {
             e.printStackTrace();
@@ -107,7 +110,9 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByMannschaftMatchId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftMatchId(1, 4));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findByMannschaftMatchId((Long) getValuesToMethodMap().get("getPasseMannschaftId"),
+                            (Long) getValuesToMethodMap().get("getPasseMatchId")));
 
         } catch (InvocationTargetException e) {
             e.printStackTrace();
@@ -120,7 +125,9 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByMemberMannschaftId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMemberMannschaftId(98, 1));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findByMemberMannschaftId((Long) getValuesToMethodMap().get("getPasseDsbMitgliedId"),
+                            (Long) getValuesToMethodMap().get("getPasseMatchId")));
 
         } catch (InvocationTargetException e) {
             e.printStackTrace();
@@ -133,7 +140,8 @@ public class PasseDAOTest extends PasseBaseDAOTest {
     @Test
     public void findByWettkampfId() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByWettkampfId(1337));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findByWettkampfId((Long) getValuesToMethodMap().get("getPasseWettkampfId")));
 
         } catch (InvocationTargetException e) {
             e.printStackTrace();
