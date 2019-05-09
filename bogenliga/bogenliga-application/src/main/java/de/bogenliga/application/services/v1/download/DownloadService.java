@@ -24,6 +24,7 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
+
 /**
  * I´m a REST resource and handle download requests over the HTTP protocol.
  *

@@ -86,6 +86,20 @@ public class WettkampfService implements ServiceFacade {
         return WettkampfDTOMapper.toDTO.apply(wettkampfDO);
     }
 
+
+    /**
+     * findAllWettkaempfeByMannschaftsId-Method gives back all Wettkämpfe according to a MannschaftsId.
+     *
+     * @return wettkampfDoList - List filled with Data Objects of Wettkämpfe
+     */
+    @RequestMapping(value = "byMannschaftsId/{id}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<WettkampfDTO> findAllWettkaempfeByMannschaftsId(@PathVariable("id") final long id) {
+        final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findAllWettkaempfeByMannschaftsId(id);
+        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
     /**
      * create-Method() writes a new entry of Wettkampf into the database
      * @param wettkampfDTO

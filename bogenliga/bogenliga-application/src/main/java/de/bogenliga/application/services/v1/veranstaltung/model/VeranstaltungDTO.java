@@ -18,6 +18,81 @@ public class VeranstaltungDTO implements DataTransferObject {
     private Long sportjahr;
     private Date meldeDeadline;
     private Long ligaleiterID;
+    private Long version;
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public Long getWettkampfTypId() {
+        return wettkampfTypId;
+    }
+
+
+    public void setWettkampfTypId(Long wettkampfTypId) {
+        this.wettkampfTypId = wettkampfTypId;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public Long getSportjahr() {
+        return sportjahr;
+    }
+
+
+    public void setSportjahr(Long sportjahr) {
+        this.sportjahr = sportjahr;
+    }
+
+
+    public Date getMeldeDeadline() {
+        return meldeDeadline;
+    }
+
+
+    public void setMeldeDeadline(Date meldeDeadline) {
+        this.meldeDeadline = meldeDeadline;
+    }
+
+
+    public Long getLigaleiterID() {
+        return ligaleiterID;
+    }
+
+
+    public void setLigaleiterID(Long ligaleiterID) {
+        this.ligaleiterID = ligaleiterID;
+    }
+
+
+    public Long getVersion() {
+        return version;
+    }
+
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+
+    public VeranstaltungDTO() {
+    }
 
 
     /**
@@ -32,6 +107,19 @@ public class VeranstaltungDTO implements DataTransferObject {
         this.sportjahr = sportjahr;
         this.meldeDeadline = meldeDeadline;
         this.ligaleiterID = ligaleiterID;
+        this.version = 1L;
     }
 
+
+    @Override
+    public String toString() {
+        return "VeranstaltungDTO{" +
+                "veranstaltung_id='" + this.id + '\'' +
+                ", wettkampf_id='" + wettkampfTypId + '\'' +
+                ", name='" + name + '\'' +
+                ", sportjahr='" + this.sportjahr + '\'' +
+                ", meldedeadline='" + this.meldeDeadline + '\'' +
+                ", ligaleiter_id='" + this.ligaleiterID + '\'' +
+                "}";
+    }
 }

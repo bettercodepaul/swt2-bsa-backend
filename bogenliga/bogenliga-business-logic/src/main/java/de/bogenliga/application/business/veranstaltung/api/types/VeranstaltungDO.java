@@ -206,4 +206,17 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     public void setVersion(Long version) {
         this.version = version;
     }
+
+
+    @Override
+    public String toString() {
+        return "VeranstaltungBE{" +
+                "veranstaltung_id='" + this.veranstaltungID + '\'' +
+                ", wettkampf_id='" + veranstaltungWettkampftypID + '\'' +
+                ", name='" + veranstaltungName + '\'' +
+                ", sportjahr='" + this.veranstaltungSportJahr + '\'' +
+                ", meldedeadline='" + this.veranstaltungMeldeDeadline + '\'' +
+                ", ligaleiter_id='" + this.veranstaltungLigaleiterID + '\'' +
+                "}";
+    }
 }
