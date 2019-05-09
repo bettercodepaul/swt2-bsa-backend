@@ -30,7 +30,7 @@ public class MannschaftsmitgliedBaseDAOTest {
         valuesToMethodMap.put("getId", id);
         valuesToMethodMap.put("getMannschaftId", mannschaftId);
         valuesToMethodMap.put("getDsbMitgliedId", dsbMitgliedId);
-        valuesToMethodMap.put("isDsbMitgliedEingesetzt", dsbMitgliedEingesetzt);
+        valuesToMethodMap.put("getDsbMitgliedEingesetzt", dsbMitgliedEingesetzt);
         valuesToMethodMap.put("getDsbMitgliedVorname", dsbMitgliedVorname);
         valuesToMethodMap.put("getDsbMitgliedNachname", dsbMitgliedNachname);
     }
