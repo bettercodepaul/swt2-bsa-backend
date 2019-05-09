@@ -2,7 +2,6 @@ package de.bogenliga.application.business.passe.impl.dao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,108 +44,17 @@ public class PasseDAOTest extends PasseBaseDAOTest {
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
     }
 
 
-    @After
-    public void tearDown() {
-        // verify invocations
-        verify(basicDao).selectEntityList(any(), any(), any());
-    }
-
-
+    /**
+     * Tests all find methods if the DAO implements all method
+     * inside the hashmap (getValuesToMethodMap())
+     * and returns the correct output
+     */
     @Test
-    public void testfindAll() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findAll());
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void findByMatchId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findByMatchId((Long) getValuesToMethodMap().get("findByMatchId")));
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void findByMemberId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findByMemberId((Long) getValuesToMethodMap().get("getPasseDsbMitgliedId")));
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void findByTeamId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findByTeamId((Long) getValuesToMethodMap().get("getPasseMannschaftId")));
-
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void findByMannschaftMatchId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findByMannschaftMatchId((Long) getValuesToMethodMap().get("getPasseMannschaftId"),
-                            (Long) getValuesToMethodMap().get("getPasseMatchId")));
-
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void findByMemberMannschaftId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findByMemberMannschaftId((Long) getValuesToMethodMap().get("getPasseDsbMitgliedId"),
-                            (Long) getValuesToMethodMap().get("getPasseMatchId")));
-
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void findByWettkampfId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findByWettkampfId((Long) getValuesToMethodMap().get("getPasseWettkampfId")));
-
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public void findAll() throws InvocationTargetException, IllegalAccessException {
+        basicDAOTest.testAllFindMethods(underTest);
     }
 }

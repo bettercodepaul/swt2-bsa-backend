@@ -67,7 +67,7 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
     public void testAllMethodsOnCorrectness() throws InvocationTargetException, IllegalAccessException {
         when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
-        basicTest.testAllFindMethodOfComponentImpl(underTest);
+        basicTest.testAllFindMethods(underTest);
     }
 
 
