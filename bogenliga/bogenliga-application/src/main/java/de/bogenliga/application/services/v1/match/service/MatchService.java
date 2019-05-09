@@ -74,6 +74,7 @@ public class MatchService implements ServiceFacade {
 
     private static final String SERVICE_FIND_BY_ID = "findById";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
+    private static final String SERVICE_FIND_BY_MANNSCHAFT_ID = "findByMannschaftId";
     private static final String SERVICE_SAVE_MATCHES = "saveMatches";
     private static final String SERVICE_CREATE = "create";
     private static final String SERVICE_UPDATE = "update";
@@ -147,6 +148,42 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
 
         return matches;
+    }
+
+
+    /**
+     * I return the match entries of the database with the given mannschaftId.
+     *
+     * Usage:
+     * <pre>{@Code Request: GET /v1/match/byMannschaftsId/{id}}</pre>
+     * <pre>{@Code Response:
+     * [
+     *  {
+     *      "id": "app.bogenliga.frontend.autorefresh.active",
+     *      "value": "true"
+     *  },
+     *  {
+     *      "id": "app.bogenliga.frontend.autorefresh.interval",
+     *      "value": 10
+     *  }
+     * ]
+     * }</pre>
+     * @param id the given mannschaftId
+     * @return list of {@link MatchDTO} as JSON
+     */
+
+    @RequestMapping(value = "byMannschaftsId/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public List<MatchDTO> findAllByMannschaftId(@PathVariable("id") final Long id) {
+        Preconditions.checkArgument(id >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkNotNull(id, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
+
+        LOG.debug("Receive 'findAllByMannschaftId' request with ID '{}'", id);
+
+        List <MatchDO> matchDOList = matchComponent.findByMannschaftId(id);
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 

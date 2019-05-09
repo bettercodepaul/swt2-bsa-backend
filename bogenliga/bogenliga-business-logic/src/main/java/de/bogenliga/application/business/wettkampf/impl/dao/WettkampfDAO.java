@@ -29,23 +29,23 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String TABLE = "wettkampf";
 
     //business entity parameter names
-    private static final String WETTKAMPF_BE_ID = "wettkampfID";
-    private static final String WETTKAMPF_BE_VERANSTALTUNGS_ID= "wettkampfVeranstaltungsID";
-    private static final String WETTKAMPF_BE_WETTKAMPF_DATUM= "wettkampfDatum";
+    private static final String WETTKAMPF_BE_ID = "id";
+    private static final String WETTKAMPF_BE_VERANSTALTUNGS_ID= "veranstaltungsId";
+    private static final String WETTKAMPF_BE_WETTKAMPF_DATUM= "datum";
     private static final String WETTKAMPF_BE_WETTKAMPF_ORT= "wettkampfOrt";
     private static final String WETTKAMPF_BE_WETTKAMPF_BEGINN = "wettkampfBeginn";
     private static final String WETTKAMPF_BE_WETTKAMPF_TAG = "wettkampfTag";
-    private static final String WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinID";
-    private static final String WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampfTypID";
+    private static final String WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinId";
+    private static final String WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampfTypId";
 
-    private static final String WETTKAMPF_TABLE_ID = "wettkampf_iD";
-    private static final String WETTKAMPF_TABLE_VERANSTALTUNGS_ID= "wettkampf_veranstaltungs_id";
+    private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
+    private static final String WETTKAMPF_TABLE_VERANSTALTUNGS_ID= "wettkampf_veranstaltung_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DATUM= "wettkampf_datum";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_ORT= "wettkampf_ort";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_BEGINN = "wettkampf_beginn";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_TAG = "wettkampf_tag";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampftyp_id";
+    private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampf_wettkampftyp_id";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<WettkampfBE> WETTKAMPF = new BusinessEntityConfiguration<>(
@@ -63,6 +63,15 @@ public class WettkampfDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM wettkampf "
                     + " WHERE wettkampf_id = ?";
+
+    private static final String FIND_ALL_BY_MANNSCHAFTS_ID =
+            "SELECT * "
+                    + " FROM wettkampf "
+                    + " WHERE wettkampf_id IN ("
+                    + " SELECT match_wettkampf_id"
+                        + " FROM match"
+                        + " WHERE match_mannschaft_id = ?)";
+
 
     private final BasicDAO basicDao;
 
@@ -84,11 +93,11 @@ public class WettkampfDAO implements DataAccessObject {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(WETTKAMPF_TABLE_ID, WETTKAMPF_BE_ID);
-        columnsToFieldsMap.put(WETTKAMPF_BE_VERANSTALTUNGS_ID, WETTKAMPF_BE_VERANSTALTUNGS_ID);
+        columnsToFieldsMap.put(WETTKAMPF_TABLE_VERANSTALTUNGS_ID, WETTKAMPF_BE_VERANSTALTUNGS_ID);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_BEGINN, WETTKAMPF_BE_WETTKAMPF_BEGINN);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_DATUM, WETTKAMPF_BE_WETTKAMPF_DATUM);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID, WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID);
-        columnsToFieldsMap.put(WETTKAMPF_BE_WETTKAMPF_ORT, WETTKAMPF_BE_WETTKAMPF_ORT);
+        columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_ORT, WETTKAMPF_BE_WETTKAMPF_ORT);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_TAG, WETTKAMPF_BE_WETTKAMPF_TAG);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID, WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID);
 
@@ -115,6 +124,12 @@ public class WettkampfDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(WETTKAMPF, FIND_BY_ID, id);
     }
 
+    /**
+     * Return all Wettkampf entries according to the given mannschafts-Id
+     */
+    public List<WettkampfBE> findAllWettkaempfeByMannschaftsId(final long id) {
+        return basicDao.selectEntityList(WETTKAMPF, FIND_ALL_BY_MANNSCHAFTS_ID, id);
+    }
 
     /**
      * Create a new Wettkampf entry

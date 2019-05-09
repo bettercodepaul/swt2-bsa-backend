@@ -40,7 +40,6 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
     public static final Function<DsbMannschaftDTO, DsbMannschaftDO> toDO = dto -> {
 
 
-
         final Long dsbMannschaftId = dto.getId();
         final Long dsbMannschaftVereinId = dto.getVereinId();
         final Long dsbMannschaftNummer = dto.getNummer();
