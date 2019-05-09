@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.passe.impl.business.PasseComponentImpl;
@@ -26,6 +28,8 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.types.Mannschaf
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.service.types.DataTransferObject;
@@ -87,6 +91,8 @@ public class MatchService implements ServiceFacade {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final DsbMannschaftComponent mannschaftComponent;
+    private final VereinComponent vereinComponent;
 
 
     /**
@@ -97,9 +103,13 @@ public class MatchService implements ServiceFacade {
     @Autowired
     public MatchService(final MatchComponent matchComponent,
                         final PasseComponent passeComponent,
+                        final VereinComponent vereinComponent,
+                        final DsbMannschaftComponent mannschaftComponent,
                         final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
+        this.vereinComponent = vereinComponent;
+        this.mannschaftComponent = mannschaftComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
@@ -395,7 +405,12 @@ public class MatchService implements ServiceFacade {
         final MatchDO matchDo = matchComponent.findById(matchId);
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
 
+        // the match is shown on the Schusszettel, add passen and mannschaft name
         if (addPassen) {
+            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
+            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+            matchDTO.setMannschaftName(vereinDO.getName());
+
             List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 

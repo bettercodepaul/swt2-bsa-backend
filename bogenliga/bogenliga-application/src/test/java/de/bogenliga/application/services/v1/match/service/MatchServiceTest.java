@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.match.service;
 
 import java.security.Principal;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,12 +13,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
@@ -38,6 +43,12 @@ public class MatchServiceTest {
 
     @Mock
     private PasseComponent passeComponent;
+
+    @Mock
+    private VereinComponent vereinComponent;
+
+    @Mock
+    private DsbMannschaftComponent mannschaftComponent;
 
     @Mock
     private Principal principal;
@@ -80,6 +91,23 @@ public class MatchServiceTest {
     private static final String MM_dsbMitgliedVorname = "Foo";
     private static final String MM_dsbMitgliedNachname= "Bar";
 
+
+    private static final Long M_id = 2222L;
+    private static final Long M_vereinId=101010L;
+    private static final Long M_nummer=111L;
+    private static final Long M_benutzerId=12L;
+    private static final Long M_veranstaltungId=1L;
+
+    private static final Long VEREIN_USER = 1L;
+    private static final Long VERSION = 0L;
+    private static final String VEREIN_NAME = "Test Verein";
+    private static final Long VEREIN_ID = 1L;
+    private static final String VEREIN_DSB_IDENTIFIER = "id";
+    private static final Long REGION_ID = 0L;
+    private static final String REGION_NAME = "";
+    private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
+
+
     protected MatchDO getMatchDO() {
         return new MatchDO(
                 MATCH_ID,
@@ -117,6 +145,31 @@ public class MatchServiceTest {
                 MM_dsbMitgliedEingesetzt,
                 MM_dsbMitgliedVorname,
                 MM_dsbMitgliedNachname
+        );
+    }
+
+    protected VereinDO getVereinDO(Long id) {
+        return new VereinDO(
+                id,
+                VEREIN_NAME,
+                VEREIN_DSB_IDENTIFIER,
+                REGION_ID,
+                REGION_NAME,
+                VEREIN_OFFSETDATETIME,
+                VEREIN_USER,
+                VEREIN_OFFSETDATETIME,
+                VEREIN_USER,
+                VERSION
+        );
+    }
+
+    protected DsbMannschaftDO getMannschaftDO(Long id) {
+        return new DsbMannschaftDO(
+                id,
+                M_vereinId,
+                M_nummer,
+                M_benutzerId,
+                M_veranstaltungId
         );
     }
 
@@ -165,7 +218,11 @@ public class MatchServiceTest {
     @Test
     public void findMatchesByIds() {
         MatchDO matchDO1 = getMatchDO();
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
+        VereinDO vereinDO = getVereinDO(VEREIN_ID);
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         final List<MatchDTO> actual = underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
