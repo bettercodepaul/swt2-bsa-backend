@@ -76,7 +76,6 @@ public class DownloadService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final int wettkampfid) {
         LOG.debug("wettkampfid: " + wettkampfid);
