@@ -73,7 +73,16 @@ public class SetzlisteDAO implements DataAccessObject {
                     + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
                     + " ORDER BY lt.ligatabelle_tabellenplatz";
 
-    private static final String GET_TABLE_BY_WETTKAMPF_ID = new QueryBuilder().toString();
+    private static final String GET_TABLE_BY_WETTKAMPF_ID = "SELECT lt.ligatabelle_tabellenplatz, ms.mannschaft_id, wk.wettkampf_id"
+            + " FROM veranstaltung as vs"
+            + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
+            + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
+            + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
+            + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
+            + " WHERE wk.wettkampf_id = ?"
+            + " AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1"
+            + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
+            + " ORDER BY lt.ligatabelle_tabellenplatz";
 
     private final BasicDAO basicDao;
 
@@ -96,6 +105,7 @@ public class SetzlisteDAO implements DataAccessObject {
         columnsToFieldsMap.put(WETTKAMPF_TABLE_ID, SETZLISTE_BE_WETTKAMPF_ID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_ID, SETZLISTE_BE_MANNSCHAFT_ID);
         columnsToFieldsMap.put(LIGATABELLE_TABLE_TABELLENPLATZ, SETZLISTE_BE_TABELLENPLATZ);
+        //
         columnsToFieldsMap.put(VEREIN_TABLE_NAME, VEREIN_BE_NAME);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NR, MANNSCHAFT_BE_NR);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_NAME, VERANSTALTUNG_BE_NAME);
@@ -116,5 +126,9 @@ public class SetzlisteDAO implements DataAccessObject {
      */
     public List<SetzlisteBE> getTable(int wettkampfid) {
         return basicDao.selectEntityList(SETZLISTE, GET_TABLE, wettkampfid);
+    }
+
+    public List<SetzlisteBE> getTableByWettkampfID(int wettkampfid) {
+        return basicDao.selectEntityList(SETZLISTE, GET_TABLE_BY_WETTKAMPF_ID, wettkampfid);
     }
 }
