@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.Setzliste.impl.entity;
 
-import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 import java.sql.Date;
@@ -13,9 +12,12 @@ import java.sql.Date;
  *
  * @see CommonBusinessEntity
  */
-public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity {
+public class SetzlisteBE extends CommonBusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
+    private Integer wettkampfid;
+    private Integer mannschaftid;
     private Integer ligatabelleTabellenplatz;
+
     private String vereinName;
     private Integer mannschaftNummer;
     private String veranstaltungName;
@@ -96,6 +98,18 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
 
     public void setWettkampfOrt(String wettkampfOrt) {
         this.wettkampfOrt = wettkampfOrt;
+    }
+
+    public Integer getWettkampfid() { return wettkampfid; }
+
+    public void setWettkampfid(Integer wettkampfid) { this.wettkampfid = wettkampfid; }
+
+    public Integer getMannschaftid() {
+        return mannschaftid;
+    }
+
+    public void setMannschaftid(Integer mannschaftid) {
+        this.mannschaftid = mannschaftid;
     }
 
     @Override

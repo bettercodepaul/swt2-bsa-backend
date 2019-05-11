@@ -4,6 +4,7 @@ import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,11 @@ public class SetzlisteDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "veranstaltung";
-    // business entity parameter names
 
-    private static final String LIGATABELLE_BE_TABELLENPLATZ = "ligatabelleTabellenplatz";
+    // business entity parameter names
+    private static final String SETZLISTE_BE_TABELLENPLATZ = "ligatabelleTabellenplatz";
+    private static final String SETZLISTE_BE_WETTKAMPF_ID = "wettkampfid";
+    private static final String SETZLISTE_BE_MANNSCHAFT_ID = "wettkampfid";
     private static final String VEREIN_BE_NAME = "vereinName";
     private static final String MANNSCHAFT_BE_NR = "mannschaftNummer";
     private static final String VERANSTALTUNG_BE_NAME = "veranstaltungName";
@@ -39,10 +42,13 @@ public class SetzlisteDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_BEGINN = "wettkampfBeginn";
     private static final String WETTKAMPF_BE_ORT = "wettkampfOrt";
 
+    // table columns
     private static final String LIGATABELLE_TABLE_TABELLENPLATZ = "ligatabelle_tabellenplatz";
     private static final String VEREIN_TABLE_NAME = "verein_name";
+    private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
     private static final String MANNSCHAFT_TABLE_NR = "mannschaft_nummer";
     private static final String VERANSTALTUNG_TABLE_NAME = "veranstaltung_name";
+    private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
     private static final String WETTKAMPF_TABLE_TAG = "wettkampf_tag";
     private static final String WETTKAMPF_TABLE_DATUM = "wettkampf_datum";
     private static final String WETTKAMPF_TABLE_BEGINN = "wettkampf_beginn";
@@ -67,7 +73,7 @@ public class SetzlisteDAO implements DataAccessObject {
                     + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
                     + " ORDER BY lt.ligatabelle_tabellenplatz";
 
-
+    private static final String GET_TABLE_BY_WETTKAMPF_ID = new QueryBuilder().toString();
 
     private final BasicDAO basicDao;
 
@@ -87,7 +93,9 @@ public class SetzlisteDAO implements DataAccessObject {
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
-        columnsToFieldsMap.put(LIGATABELLE_TABLE_TABELLENPLATZ, LIGATABELLE_BE_TABELLENPLATZ);
+        columnsToFieldsMap.put(WETTKAMPF_TABLE_ID, SETZLISTE_BE_WETTKAMPF_ID);
+        columnsToFieldsMap.put(MANNSCHAFT_TABLE_ID, SETZLISTE_BE_MANNSCHAFT_ID);
+        columnsToFieldsMap.put(LIGATABELLE_TABLE_TABELLENPLATZ, SETZLISTE_BE_TABELLENPLATZ);
         columnsToFieldsMap.put(VEREIN_TABLE_NAME, VEREIN_BE_NAME);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_NR, MANNSCHAFT_BE_NR);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_NAME, VERANSTALTUNG_BE_NAME);
