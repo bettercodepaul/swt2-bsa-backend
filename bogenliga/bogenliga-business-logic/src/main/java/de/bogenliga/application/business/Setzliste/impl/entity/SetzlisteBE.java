@@ -14,8 +14,8 @@ import java.sql.Date;
  */
 public class SetzlisteBE extends CommonBusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private Integer wettkampfid;
-    private Integer mannschaftid;
+    private Long wettkampfid;
+    private Long mannschaftid;
     private Integer ligatabelleTabellenplatz;
 
     private String vereinName;
@@ -100,15 +100,15 @@ public class SetzlisteBE extends CommonBusinessEntity {
         this.wettkampfOrt = wettkampfOrt;
     }
 
-    public Integer getWettkampfid() { return wettkampfid; }
+    public Long getWettkampfid() { return wettkampfid; }
 
-    public void setWettkampfid(Integer wettkampfid) { this.wettkampfid = wettkampfid; }
+    public void setWettkampfid(Long wettkampfid) { this.wettkampfid = wettkampfid; }
 
-    public Integer getMannschaftid() {
+    public Long getMannschaftid() {
         return mannschaftid;
     }
 
-    public void setMannschaftid(Integer mannschaftid) {
+    public void setMannschaftid(Long mannschaftid) {
         this.mannschaftid = mannschaftid;
     }
 
