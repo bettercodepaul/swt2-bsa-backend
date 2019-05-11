@@ -2,14 +2,10 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
-import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -81,9 +77,9 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         }
         /*
         for(int x = 0;x<returnList.size();x++){
-            cacheList.add(wettkampftypDAO.findById(returnList.get(x).getVeranstaltungWettkampftypID()).getName());
+            cacheList.add(wettkampftypDAO.findById(returnList.get(x).getVeranstaltung_wettkampftyp_id()).getName());
             System.out.println("test: " + cacheList.get(x));
-            System.out.println("test2: " + returnList.get(x).getVeranstaltungWettkampftypID());
+            System.out.println("test2: " + returnList.get(x).getVeranstaltung_wettkampftyp_id());
         }*/
         return returnList;
     }
@@ -108,20 +104,21 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         checkVeranstaltungDO(veranstaltungDO,currentDsbMitgliedId);
         Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >=0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
-        final VeranstaltungBE veranstaltungBE;
-        final VeranstaltungBE persistedVeranstaltungBE;
+        final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+        final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
 
-        return null;
+        return notNull(persistedVeranstaltungBE);
     }
 
     @Override
     public VeranstaltungDO create (final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId){
         checkVeranstaltungDO(veranstaltungDO,currentDsbMitgliedId);
-        Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+        final VeranstaltungBE presistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
 
-     return null;
+     return notNull(presistedVeranstaltungBE);
     }
     @Override
     public void delete(final VeranstaltungDO veranstltungDO, final long currentDsbMitgliedId) {
@@ -139,15 +136,13 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     Preconditions.checkNotNull(veranstaltungDO,PRECONDITION_MSG_VERANSTALTUNG);
     Preconditions.checkArgument(currentDsbMitgliedId>=0,PRECONDITION_MSG_CURRENT_DSBMITGLIED);
     Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungName(),PRECONDITION_MSG_VERANSTALTUNG_NAME);
-    Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >=0,PRECONDITION_MSG_VERANSTALTUNG_ID);
+   //
     Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungMeldeDeadline(),PRECONDITION_MSG_VERANSTALTUNG_MELDE_DEADLINE);
     Preconditions.checkArgument(veranstaltungDO.getVeranstaltungLigaleiterID()>=0,PRECONDITION_MSG_VERANSTALTUNG_LIGA_LEITER_ID);
     Preconditions.checkArgument(veranstaltungDO.getVeranstaltungWettkampftypID()>=0,PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPF_ID);
     Preconditions.checkArgument(veranstaltungDO.getVeranstaltungLigaID()>=0,PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
     Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungSportJahr(),PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
-    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungLigaleiterEmail(),PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_EMAIL);
-    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungWettkampftypName(),PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_NAME);
-    Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungLigaName(),PRECONDITION_MSG_VERANSTALTUNG_LIGA_NAME);
+
     }
 
     private VeranstaltungDO notNull(VeranstaltungBE veranstaltungBE) {
@@ -155,14 +150,14 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         WettkampftypBE tempWettkampftypBE = new WettkampftypBE();
         UserBE tempUserBE = new UserBE();
 
-        if (veranstaltungBE.getVeranstaltungLigaID() != null) {
-            tempLigaBE = ligaDAO.findById(veranstaltungBE.getVeranstaltungLigaID());
+        if (veranstaltungBE.getVeranstaltung_liga_id() != null) {
+            tempLigaBE = ligaDAO.findById(veranstaltungBE.getVeranstaltung_liga_id());
         }
-        if (veranstaltungBE.getVeranstaltungWettkampftypID() != null) {
-            tempWettkampftypBE = wettkampftypDAO.findById(veranstaltungBE.getVeranstaltungWettkampftypID());
+        if (veranstaltungBE.getVeranstaltung_wettkampftyp_id() != null) {
+            tempWettkampftypBE = wettkampftypDAO.findById(veranstaltungBE.getVeranstaltung_wettkampftyp_id());
         }
-        if(veranstaltungBE.getVeranstaltungLigaleiterID() != null) {
-            tempUserBE = userDAO.findById(veranstaltungBE.getVeranstaltungLigaleiterID());
+        if(veranstaltungBE.getVeranstaltung_ligaleiter_id() != null) {
+            tempUserBE = userDAO.findById(veranstaltungBE.getVeranstaltung_ligaleiter_id());
         }
 
 

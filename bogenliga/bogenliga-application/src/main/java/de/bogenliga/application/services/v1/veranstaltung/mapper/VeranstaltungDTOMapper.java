@@ -27,7 +27,7 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
         final Long veranstaltungSportjahr = veranstaltungDO.getVeranstaltungSportJahr();
         final Date veranstaltungMeldeDeadline = veranstaltungDO.getVeranstaltungMeldeDeadline();
         final Long veranstaltungLigaleiterId = veranstaltungDO.getVeranstaltungLigaleiterID();
-        final long veranstaltungLigaId = veranstaltungDO.getVeranstaltungLigaID();
+        final Long veranstaltungLigaId = veranstaltungDO.getVeranstaltungLigaID();
         final String veranstaltungLigaleiterEmail = veranstaltungDO.getVeranstaltungLigaleiterEmail();
         final String veranstaltungWettkampftypName = veranstaltungDO.getVeranstaltungWettkampftypName();
         final String veranstaltungLigaName = veranstaltungDO.getVeranstaltungLigaName();
@@ -41,18 +41,17 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<VeranstaltungDTO, VeranstaltungDO> toDO = dto -> {
 
-        VeranstaltungDO veranstaltungDO = new VeranstaltungDO(
-                dto.getId(),
-                dto.getWettkampfTypId(),
-                dto.getName(),
-                dto.getSportjahr(),
-                dto.getMeldeDeadline(),
-                dto.getLigaleiterID(),
-                dto.getLigaID(),
-                dto.getLigaleiterEmail(),
-                dto.getWettkampftypName(),
-                dto.getLigaName()
-        );
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+                veranstaltungDO.setVeranstaltungID(dto.getId());
+                veranstaltungDO.setVeranstaltungWettkampftypID(dto.getWettkampfTypId());
+                veranstaltungDO.setVeranstaltungName(dto.getName());
+                veranstaltungDO.setVeranstaltungSportJahr(dto.getSportjahr());
+                veranstaltungDO.setVeranstaltungMeldeDeadline(dto.getMeldeDeadline());
+                veranstaltungDO.setVeranstaltungLigaleiterID(dto.getLigaleiterID());
+                veranstaltungDO.setVeranstaltungLigaID(dto.getLigaID());
+
+
+
 
 
         return veranstaltungDO;
