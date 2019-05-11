@@ -138,14 +138,15 @@ public class VeranstaltungService implements ServiceFacade {
                           final Principal principal) {
 
         LOG.debug(
-                "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypId '{}', sportjahr '{}', meldedeadline '{}', ligaleiterId '{}', ligaId '{}', wettkampftypname'{}', ligaleiteremail'{}', liganame'{}'",
+                "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypId '{}', sportjahr '{}', meldedeadline '{}', ligaleiterId '{}', ligaId '{}'",
                 veranstaltungDTO.getId(),
                 veranstaltungDTO.getName(),
                 veranstaltungDTO.getWettkampfTypId(),
                 veranstaltungDTO.getSportjahr(),
                 veranstaltungDTO.getMeldeDeadline(),
                 veranstaltungDTO.getLigaleiterID(),
-                veranstaltungDTO.getLigaID());
+                veranstaltungDTO.getLigaID()
+                );
 
 
 
