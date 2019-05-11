@@ -21,20 +21,19 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 public class VeranstaltungDAO implements DataAccessObject{
 
 
-    private static final String VERANSTALTUNG_BE_ID = "veranstaltungID";
-    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltungWettkampftypId";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltungName";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltungSportJahr";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltungMeldedeadline";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterId";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltungLigaId";
-    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_NAME= "veranstaltungWettkampftypName";
+    private static final String VERANSTALTUNG_BE_ID = "veranstaltung_id";
+    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltung_name";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltung_sportjahr";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltung_meldedeadline";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltung_liga_id";
+
 
 
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
-    private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_NAME= "veranstaltung_wettkampftyp_name";
     private static final String VERANSTALTUNG_TABLE_NAME= "veranstaltung_name";
     private static final String VERANSTALTUNG_TABLE_SPORTJAHR = "veranstaltung_sportjahr";
     private static final String VERANSTALTUNG_TABLE_MELDEDEADLINE = "veranstaltung_meldedeadline";
@@ -94,7 +93,7 @@ public class VeranstaltungDAO implements DataAccessObject{
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_MELDEDEADLINE, VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGALEITER_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
-        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_WETTKAMPFTYP_NAME, VERANSTALTUNG_BE_WETTKAMPFTYP_NAME);
+
 
 
         // add technical columns

@@ -27,6 +27,19 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     private String veranstaltungLigaName;
 
 
+    public VeranstaltungDO() {
+
+        //empty
+
+    }
+
+    public VeranstaltungDO(final Long id) {
+
+        this.veranstaltungID = id;
+
+    }
+
+
     /**
      * Constructor with all parameters
      *
@@ -96,12 +109,39 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
 
     }
 
+    /**
+     * Constructor without technical parameters
+     *
+     * @param id
+     * @param wettkampfTypID
+     * @param name
+     * @param sportJahr
+     * @param meldeDeadline
+     * @param ligaleiterID
+     */
+    public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
+                           final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version) {
+
+        this.veranstaltungID = id;
+        this.veranstaltungWettkampftypID = wettkampfTypID;
+        this.veranstaltungName = name;
+        this.veranstaltungSportJahr = sportJahr;
+        this.veranstaltungMeldeDeadline = meldeDeadline;
+        this.veranstaltungLigaleiterID = ligaleiterID;
+        this.veranstaltungLigaID = ligaID;
+        this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
+        this.version = version;
+
+
+    }
+
 
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungID, veranstaltungWettkampftypID, veranstaltungName, veranstaltungSportJahr,
                 veranstaltungMeldeDeadline,
-                veranstaltungLigaleiterID, veranstaltungLigaID, veranstaltungLigaleiterEmail, veranstaltungWettkampftypName,
+                veranstaltungLigaleiterID, veranstaltungLigaID, veranstaltungLigaleiterEmail, veranstaltungWettkampftypName, veranstaltungLigaName,
                 createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
