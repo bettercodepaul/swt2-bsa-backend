@@ -60,6 +60,15 @@ public class BasicComponentTest<T, B> {
     }
 
 
+    /**
+     * Gets the method with the parameter name in the class T (first generic type)
+     * Used to return methods of components "update", "create" or "delete"
+     * In case the create method was implemented without the wrapper-class of long, it will take the non-wrapper class
+     *
+     * @param name name of the method, for example "delete"
+     * @param entity the entity which will be a paramter of the method given
+     * @throws NoSuchMethodException in case the method was called with false parameters, or the method doesn't exist
+     */
     private void getMethod(String name, B entity) throws NoSuchMethodException {
         try {
             method = expectedEntity.getClass().getDeclaredMethod(name, entity.getClass(), Long.class);
