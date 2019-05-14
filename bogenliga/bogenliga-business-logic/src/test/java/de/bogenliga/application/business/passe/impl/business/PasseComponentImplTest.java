@@ -54,12 +54,8 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
 
 
     @Test
-    public void testAllMethodsOnPreconditions() {
-        try {
+    public void testAllMethodsOnPreconditions() throws IllegalAccessException {
             basicComponentTest.assertException();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 
 
