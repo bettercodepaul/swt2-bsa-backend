@@ -84,6 +84,65 @@ public final class SQL {
     }
 
 
+    private static Field[] getAllFields(Object updateObj) {
+        Class startClass = updateObj.getClass();
+        List<Field> currentClassFields = new ArrayList<>();
+        currentClassFields.addAll(Arrays.asList(startClass.getDeclaredFields()));
+
+        Class superclass = startClass.getSuperclass();
+        if (superclass != null && superclass == CommonBusinessEntity.class) {
+            currentClassFields.addAll(Arrays.asList(superclass.getDeclaredFields()));
+        }
+        Field[] fields = new Field[currentClassFields.size()];
+        return currentClassFields.toArray(fields);
+    }
+
+
+    /**
+     * Überprüft ob die Felder der Tabelle geupdatet werden dürfen
+     *
+     * @param fName name des feldes
+     *
+     * @return
+     */
+    private static boolean isUpdatableField(String fName) {
+        return !fName.equals("createdAtUtc")
+                && !fName.equals("createdByUserId")
+                && !fName.equals("version");
+    }
+
+
+    /**
+     * searchs for a method, including the first super class
+     *
+     * @param obj   the object to look for the method
+     * @param field the of which the getter is searched
+     * @param name  the name of the field
+     *
+     * @return
+     *
+     * @throws NoSuchMethodException
+     */
+    private static Method getGetterMethod(Object obj, Field field, String name) throws NoSuchMethodException {
+
+        final String getterName = retrieveGetterName(field, name);
+        Method getter;
+        try {
+            getter = obj.getClass().getDeclaredMethod(getterName);
+        } catch (NoSuchMethodException e) {
+            // if it's a method of the superclass CommonBusinessEntity
+            if (obj.getClass().getSuperclass() == CommonBusinessEntity.class) {
+                getter = obj.getClass().getSuperclass().getDeclaredMethod(getterName);
+            } else {
+                throw new NoSuchMethodException(e.getStackTrace().toString());
+            }
+
+        }
+
+        return getter;
+    }
+
+
     private static Object appendFieldsToSelectStatement(final Object selectObj, final String fieldSelector,
                                                         final Map<String, String> columnToFieldMapping,
                                                         final StringBuilder sql,
@@ -94,8 +153,8 @@ public final class SQL {
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
-                final Method getter = getGetterMethod(selectObj, field, fName);
-
+                final String getterName = retrieveGetterName(field, fName);
+                final Method getter = selectObj.getClass().getDeclaredMethod(getterName);
                 final Object value = getter.invoke(selectObj);
 
                 if (fName.equals("id") || fName.equals(fieldSelector)) {
@@ -166,7 +225,7 @@ public final class SQL {
             }
 
             sql.append(" (");
-            final Field[] fields = getAllFields(insertObj);
+            final Field[] fields = insertObj.getClass().getDeclaredFields();
 
             appendFieldsToInsertStatement(insertObj, columnToFieldMapping, sql, values, para, fields);
 
@@ -195,65 +254,6 @@ public final class SQL {
      */
     public static SQLWithParameter updateSQL(final Object updateObj) {
         return updateSQL(updateObj, null, null, Collections.emptyMap());
-    }
-
-
-    private static Field[] getAllFields(Object updateObj) {
-        Class startClass = updateObj.getClass();
-        List<Field> currentClassFields = new ArrayList<>();
-        currentClassFields.addAll(Arrays.asList(startClass.getDeclaredFields()));
-
-        Class superclass = startClass.getSuperclass();
-        if (superclass != null && superclass == CommonBusinessEntity.class) {
-            currentClassFields.addAll(Arrays.asList(superclass.getDeclaredFields()));
-        }
-        Field[] fields = new Field[currentClassFields.size()];
-        return currentClassFields.toArray(fields);
-    }
-
-
-    /**
-     * Überprüft ob die Felder der Tabelle geupdatet werden dürfen
-     *
-     * @param fName name des feldes
-     *
-     * @return
-     */
-    private static boolean isUpdatableField(String fName) {
-        return !fName.equals("createdAtUtc")
-                && !fName.equals("createdByUserId")
-                && !fName.equals("version");
-    }
-
-
-    /**
-     * searchs for a method, including the first super class
-     *
-     * @param obj   the object to look for the method
-     * @param field the of which the getter is searched
-     * @param name  the name of the field
-     *
-     * @return
-     *
-     * @throws NoSuchMethodException
-     */
-    private static Method getGetterMethod(Object obj, Field field, String name) throws NoSuchMethodException {
-
-        final String getterName = retrieveGetterName(field, name);
-        Method getter;
-        try {
-            getter = obj.getClass().getDeclaredMethod(getterName);
-        } catch (NoSuchMethodException e) {
-            // if it's a method of the superclass CommonBusinessEntity
-            if (obj.getClass().getSuperclass() == CommonBusinessEntity.class) {
-                getter = obj.getClass().getSuperclass().getDeclaredMethod(getterName);
-            } else {
-                throw new NoSuchMethodException(e.getStackTrace().toString());
-            }
-
-        }
-
-        return getter;
     }
 
 
@@ -368,7 +368,7 @@ public final class SQL {
                 sql.append(tName);
             }
 
-            final Field[] fields = getAllFields(updateObj);
+            final Field[] fields = updateObj.getClass().getDeclaredFields();
 
             idValue = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
@@ -415,9 +415,9 @@ public final class SQL {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
-                if (!VERSION.equals(fName) && isUpdatableField(fName)) {
-                    final Method getter = getGetterMethod(insertObj, field, fName);
-
+                if (!VERSION.equals(fName)) {
+                    final String getterName = retrieveGetterName(field, fName);
+                    final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
                     Object value = getter.invoke(insertObj);
 
                     if (fName.equals("id") || Objects.isNull(value)) {
@@ -481,8 +481,8 @@ public final class SQL {
                 final String fName = field.getName();
 
                 if (!VERSION.equals(fName) && isUpdatableField(fName)) {
-                    final Method getter = getGetterMethod(updateObj, field, fName);
 
+                    final Method getter = getGetterMethod(updateObj, field, fName);
                     Object value = getter.invoke(updateObj);
 
                     if (fName.equals("id") || fName.equals(fieldSelector)) {
@@ -525,8 +525,8 @@ public final class SQL {
 
                 if (!VERSION.equals(fName) && fName.equals(identifier)) {
 
-                    final Method getter = getGetterMethod(updateObj, field, fName);
-
+                    final String getterName = retrieveGetterName(field, fName);
+                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
 
                     Object value = getter.invoke(updateObj);
 
