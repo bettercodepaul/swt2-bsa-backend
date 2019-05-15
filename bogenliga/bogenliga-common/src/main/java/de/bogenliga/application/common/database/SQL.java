@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -44,13 +45,13 @@ public final class SQL {
         final StringBuilder sql = new StringBuilder();
         final List<Object> para = new ArrayList<>();
 
-        sql.append("SELECT ");
+        sql.append("SELECT *");
 
         try {
-            final Field[] fields = selectObj.getClass().getDeclaredFields();
-
-            final Object idValue = appendFieldsToSelectStatement(selectObj, fieldSelector, columnToFieldMapping, sql,
-                    fields);
+            final Field[] fields = getAllFields(selectObj);
+            final Object idValue = findFieldSelectorValue(selectObj, fieldSelector, fields);
+            //final Object idValue = appendFieldsToSelectStatement(selectObj, fieldSelector, columnToFieldMapping, sql,
+            //        fields);
 
             sql.append(" FROM ");
 
@@ -143,6 +144,23 @@ public final class SQL {
     }
 
 
+    private static Object findFieldSelectorValue(final Object selectObj, final String fieldSelector,
+                                                 final Field[] fields) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        for (final Field field : fields) {
+            if (isMappableField(field)) {
+                final String fName = field.getName();
+                final Method getter = getGetterMethod(selectObj, field, fName);
+                final Object value = getter.invoke(selectObj);
+                if (fName.equals("id") || fName.equals(fieldSelector)) {
+                    return value;
+                }
+            }
+
+        }
+        throw new NoSuchMethodException("fieldSelector doesn't exist");
+    }
+
+
     private static Object appendFieldsToSelectStatement(final Object selectObj, final String fieldSelector,
                                                         final Map<String, String> columnToFieldMapping,
                                                         final StringBuilder sql,
@@ -153,8 +171,7 @@ public final class SQL {
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
-                final String getterName = retrieveGetterName(field, fName);
-                final Method getter = selectObj.getClass().getDeclaredMethod(getterName);
+                final Method getter = getGetterMethod(selectObj, field, fName);
                 final Object value = getter.invoke(selectObj);
 
                 if (fName.equals("id") || fName.equals(fieldSelector)) {
