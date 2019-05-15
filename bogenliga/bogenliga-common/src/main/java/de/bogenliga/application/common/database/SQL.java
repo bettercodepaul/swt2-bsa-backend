@@ -5,16 +5,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
- * Helper-Klasse um fuer komplexe SQL Spalten-Eindeutigkeit herzustellen, indem
- * jeder Spalte der zugehoerige Tabellenname mit _ vorangestellt wird.
+ * Helper-Klasse um fuer komplexe SQL Spalten-Eindeutigkeit herzustellen, indem jeder Spalte der zugehoerige
+ * Tabellenname mit _ vorangestellt wird.
  *
  * @author Alexander Jost
  */
@@ -25,14 +27,14 @@ public final class SQL {
 
 
     /**
-     * Baut ein SELECT version FROM table_name WHERE <fieldSelector> = ?; aus dem uebergebenen
-     * Object.
-     * Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
+     * Baut ein SELECT version FROM table_name WHERE <fieldSelector> = ?; aus dem uebergebenen Object. Fuer die
+     * ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
      *
-     * @param selectObj Object, fuer das das Statement gebaut wird
-     * @param tableName Tabellenname, falls abweichend vom Object-Namen
-     * @param fieldSelector Selektor für eine Zeile, falls abweichend von "id"
+     * @param selectObj            Object, fuer das das Statement gebaut wird
+     * @param tableName            Tabellenname, falls abweichend vom Object-Namen
+     * @param fieldSelector        Selektor für eine Zeile, falls abweichend von "id"
      * @param columnToFieldMapping Mapping zwischen Object-Parameternamen und Tabellen-Spaltennamen
+     *
      * @return SELECT SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter selectSQL(final Object selectObj, final String tableName,
@@ -92,8 +94,8 @@ public final class SQL {
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
-                final String getterName = retrieveGetterName(field, fName);
-                final Method getter = selectObj.getClass().getDeclaredMethod(getterName);
+                final Method getter = getGetterMethod(selectObj, field, fName);
+
                 final Object value = getter.invoke(selectObj);
 
                 if (fName.equals("id") || fName.equals(fieldSelector)) {
@@ -117,10 +119,10 @@ public final class SQL {
 
     /**
      * Baut ein INSERT INTO table_name (column1, column2, column3,...) VALUES (?, ?, ?,...); aus dem uebergebenen
-     * Object.
-     * Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
+     * Object. Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
      *
      * @param insertObj Object, fuer das das Statement gebaut wird
+     *
      * @return INSERT SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter insertSQL(final Object insertObj) {
@@ -129,19 +131,19 @@ public final class SQL {
 
 
     /**
-     * Baut ein INSERT INTO {table_name} ({column1}, {column2}, {column3},...) VALUES (?, ?, ?,...);
-     * aus dem uebergebenen Object.
-     * Fuer die ?-Parameter werden die Werte in der richtigen Reihenfolge ermittelt.
-     *
+     * Baut ein INSERT INTO {table_name} ({column1}, {column2}, {column3},...) VALUES (?, ?, ?,...); aus dem
+     * uebergebenen Object. Fuer die ?-Parameter werden die Werte in der richtigen Reihenfolge ermittelt.
+     * <p>
      * Die Bezeichnungen im Object (Klassenname und Parameternamen) koennen von den Bezeichnungen in der Datenbank
      * abweichen.
-     *
-     * Die Platzhalter fuer den Tabellennamen {table_name} wird durch {@code tableName} ersetzt.
-     * Die Platzhalter fuer die Spalten {column1} werden ueber das {@code columnToFieldMapping} aufgeloest.
+     * <p>
+     * Die Platzhalter fuer den Tabellennamen {table_name} wird durch {@code tableName} ersetzt. Die Platzhalter fuer
+     * die Spalten {column1} werden ueber das {@code columnToFieldMapping} aufgeloest.
      *
      * @param insertObj            Object, fuer das das Statement gebaut wird
      * @param tableName            Definiert den Tabellennamen für das Object
      * @param columnToFieldMapping Definiert die Spaltennamen für die Object Parameter
+     *
      * @return INSERT SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter insertSQL(final Object insertObj, final String tableName,
@@ -164,7 +166,7 @@ public final class SQL {
             }
 
             sql.append(" (");
-            final Field[] fields = insertObj.getClass().getDeclaredFields();
+            final Field[] fields = getAllFields(insertObj);
 
             appendFieldsToInsertStatement(insertObj, columnToFieldMapping, sql, values, para, fields);
 
@@ -184,11 +186,11 @@ public final class SQL {
 
 
     /**
-     * Baut ein UPDATE table_name SET column1=?,column2=?,column3=?,...) WHERE
-     * id = ?; aus dem uebergebenen Object. Fuer die ?-Parameter werden auch die
-     * Werte in der richtigen Reihenfolge ermittelt.
+     * Baut ein UPDATE table_name SET column1=?,column2=?,column3=?,...) WHERE id = ?; aus dem uebergebenen Object. Fuer
+     * die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
      *
      * @param updateObj Object, fuer das das Statement gebaut wird
+     *
      * @return UPDATE SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter updateSQL(final Object updateObj) {
@@ -196,22 +198,81 @@ public final class SQL {
     }
 
 
+    private static Field[] getAllFields(Object updateObj) {
+        Class startClass = updateObj.getClass();
+        List<Field> currentClassFields = new ArrayList<>();
+        currentClassFields.addAll(Arrays.asList(startClass.getDeclaredFields()));
+
+        Class superclass = startClass.getSuperclass();
+        if (superclass != null && superclass == CommonBusinessEntity.class) {
+            currentClassFields.addAll(Arrays.asList(superclass.getDeclaredFields()));
+        }
+        Field[] fields = new Field[currentClassFields.size()];
+        return currentClassFields.toArray(fields);
+    }
+
+
     /**
-     * Baut ein UPDATE {table_name} SET {column1}=?, {column2}=?, {column3}=?, ...) WHERE {fieldSelector} = ?;
-     * aus dem uebergebenen Object.
-     * Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
+     * Überprüft ob die Felder der Tabelle geupdatet werden dürfen
      *
+     * @param fName name des feldes
+     *
+     * @return
+     */
+    private static boolean isUpdatableField(String fName) {
+        return !fName.equals("createdAtUtc")
+                && !fName.equals("createdByUserId")
+                && !fName.equals("version");
+    }
+
+
+    /**
+     * searchs for a method, including the first super class
+     *
+     * @param obj   the object to look for the method
+     * @param field the of which the getter is searched
+     * @param name  the name of the field
+     *
+     * @return
+     *
+     * @throws NoSuchMethodException
+     */
+    private static Method getGetterMethod(Object obj, Field field, String name) throws NoSuchMethodException {
+
+        final String getterName = retrieveGetterName(field, name);
+        Method getter;
+        try {
+            getter = obj.getClass().getDeclaredMethod(getterName);
+        } catch (NoSuchMethodException e) {
+            // if it's a method of the superclass CommonBusinessEntity
+            if (obj.getClass().getSuperclass() == CommonBusinessEntity.class) {
+                getter = obj.getClass().getSuperclass().getDeclaredMethod(getterName);
+            } else {
+                throw new NoSuchMethodException(e.getStackTrace().toString());
+            }
+
+        }
+
+        return getter;
+    }
+
+
+    /**
+     * Baut ein UPDATE {table_name} SET {column1}=?, {column2}=?, {column3}=?, ...) WHERE {fieldSelector} = ?; aus dem
+     * uebergebenen Object. Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
+     * <p>
      * Die Bezeichnungen im Object (Klassenname und Parameternamen) koennen von den Bezeichnungen in der Datenbank
      * abweichen.
-     *
-     * Der Platzhalter fuer den Tabellennamen {table_name} wird durch {@code tableName} ersetzt.
-     * Die Platzhalter fuer die Spalten {column1} werden ueber das {@code columnToFieldMapping} aufgeloest.
-     * Der Platzhalter fuer den Identifier {fieldSelector} wird durch {@code fieldSelector} ersetzt.
+     * <p>
+     * Der Platzhalter fuer den Tabellennamen {table_name} wird durch {@code tableName} ersetzt. Die Platzhalter fuer
+     * die Spalten {column1} werden ueber das {@code columnToFieldMapping} aufgeloest. Der Platzhalter fuer den
+     * Identifier {fieldSelector} wird durch {@code fieldSelector} ersetzt.
      *
      * @param updateObj            Object, fuer das das Statement gebaut wird
      * @param tableName            Definiert den Tabellennamen für das Object
      * @param fieldSelector        Definiert den Identifier fuer die betroffene Zeile
      * @param columnToFieldMapping Definiert die Spaltennamen für die Object Parameter
+     *
      * @return UPDATE SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter updateSQL(final Object updateObj, final String tableName,
@@ -233,7 +294,7 @@ public final class SQL {
             }
 
             sql.append(" SET ");
-            final Field[] fields = updateObj.getClass().getDeclaredFields();
+            final Field[] fields = getAllFields(updateObj);
 
             idValue = appendFieldsToUpdateStatement(updateObj, fieldSelector, columnToFieldMapping, sql, para, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
@@ -258,10 +319,11 @@ public final class SQL {
 
 
     /**
-     * Baut ein DELETE FROM table_name WHERE id = ?; aus dem uebergebenen Object.
-     * Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
+     * Baut ein DELETE FROM table_name WHERE id = ?; aus dem uebergebenen Object. Fuer die ?-Parameter werden auch die
+     * Werte in der richtigen Reihenfolge ermittelt.
      *
      * @param updateObj Object, fuer das das Statement gebaut wird
+     *
      * @return DELETE SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter deleteSQL(final Object updateObj) {
@@ -270,20 +332,21 @@ public final class SQL {
 
 
     /**
-     * Baut ein DELETE FROM {table_name} WHERE {fieldSelector} = ?; aus dem uebergebenen Object.
-     * Fuer die ?-Parameter werden auch die Werte in der richtigen Reihenfolge ermittelt.
-     *
+     * Baut ein DELETE FROM {table_name} WHERE {fieldSelector} = ?; aus dem uebergebenen Object. Fuer die ?-Parameter
+     * werden auch die Werte in der richtigen Reihenfolge ermittelt.
+     * <p>
      * Die Bezeichnungen im Object (Klassenname und Parameternamen) koennen von den Bezeichnungen in der Datenbank
      * abweichen.
-     *
-     * Der Platzhalter fuer den Tabellennamen {table_name} wird durch {@code tableName} ersetzt.
-     * Der Platzhalter fuer den Identifier {fieldSelector} wird durch {@code fieldSelector} ersetzt.
+     * <p>
+     * Der Platzhalter fuer den Tabellennamen {table_name} wird durch {@code tableName} ersetzt. Der Platzhalter fuer
+     * den Identifier {fieldSelector} wird durch {@code fieldSelector} ersetzt.
      *
      * @param updateObj            Object, fuer das das Statement gebaut wird
      * @param tableName            Definiert den Tabellennamen für das Object
      * @param fieldSelector        Definiert den Identifier fuer die betroffene Zeile
-     * @param columnToFieldMapping Definiert die Spaltennamen für die Object Parameter.
-     *                             Auch der {@code fieldSelector} wird mit diesem Mapping konvertiert.
+     * @param columnToFieldMapping Definiert die Spaltennamen für die Object Parameter. Auch der {@code fieldSelector}
+     *                             wird mit diesem Mapping konvertiert.
+     *
      * @return DELETE SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter deleteSQL(final Object updateObj, final String tableName,
@@ -305,7 +368,7 @@ public final class SQL {
                 sql.append(tName);
             }
 
-            final Field[] fields = updateObj.getClass().getDeclaredFields();
+            final Field[] fields = getAllFields(updateObj);
 
             idValue = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
@@ -333,6 +396,7 @@ public final class SQL {
      * Checks if the given field can be mapped. Only non-transient non-static fields can be mapped types the data base.
      *
      * @param field a field
+     *
      * @return <code>true</code> if the field can be mapped, <code>false</code> otherwise
      */
     private static boolean isMappableField(final Field field) {
@@ -351,9 +415,9 @@ public final class SQL {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
-                if (!VERSION.equals(fName)) {
-                    final String getterName = retrieveGetterName(field, fName);
-                    final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
+                if (!VERSION.equals(fName) && isUpdatableField(fName)) {
+                    final Method getter = getGetterMethod(insertObj, field, fName);
+
                     Object value = getter.invoke(insertObj);
 
                     if (fName.equals("id") || Objects.isNull(value)) {
@@ -416,9 +480,9 @@ public final class SQL {
             if (isMappableField(field)) {
                 final String fName = field.getName();
 
-                if (!VERSION.equals(fName)) {
-                    final String getterName = retrieveGetterName(field, fName);
-                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                if (!VERSION.equals(fName) && isUpdatableField(fName)) {
+                    final Method getter = getGetterMethod(updateObj, field, fName);
+
                     Object value = getter.invoke(updateObj);
 
                     if (fName.equals("id") || fName.equals(fieldSelector)) {
@@ -461,8 +525,8 @@ public final class SQL {
 
                 if (!VERSION.equals(fName) && fName.equals(identifier)) {
 
-                    final String getterName = retrieveGetterName(field, fName);
-                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                    final Method getter = getGetterMethod(updateObj, field, fName);
+
 
                     Object value = getter.invoke(updateObj);
 
@@ -481,7 +545,7 @@ public final class SQL {
 
     /**
      * Private Klasse mit dem SQL-Statement und der Parameter-Liste.
-     *
+     * <p>
      * Die Parameter koennen der Reihe nach in die ?-Parameter-Platzhalter im SQL-Statement eingefuegt werden.
      */
     public class SQLWithParameter {
