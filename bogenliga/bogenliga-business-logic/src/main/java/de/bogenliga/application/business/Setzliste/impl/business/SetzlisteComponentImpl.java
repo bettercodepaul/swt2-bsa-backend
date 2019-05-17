@@ -70,7 +70,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @return document
      */
     @Override
-    public byte[] getPDFasByteArray(final int wettkampfid) {
+    public byte[] getPDFasByteArray(final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable(wettkampfid);
@@ -94,18 +94,22 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
 
     @Override
-    public boolean generateSetzlisteForWettkampf(int wettkampfid) {
+    public boolean generateSetzlisteForWettkampf(final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         boolean bReturn = false;
 
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
+
         if (!setzlisteBEList.isEmpty()){
             List<MatchDO> matches = matchComponent.findByWettkampfId(setzlisteBEList.get(0).getWettkampfid());
             if (matches.isEmpty()){
+                //itarate thorugh matches
                 for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++){
+                    //iterate through target boards
                     for (int j = 0; i < SETZLISTE_STRUCTURE[i].length; i++){
-
+                        long begegnung = Math.round((float) (j+1) / 2);
+                        MatchDO matchDO = matchComponent.findByPk((long) i+1, wettkampfid, getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j],setzlisteBEList), begegnung, (long) j+1);
                     }
                 }
                 bReturn = true;
@@ -194,6 +198,20 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         doc.close();
     }
 
+    /**
+     * help function to get table entry
+     * @param tablepos Postition in table
+     * @param setzlisteBEList list with data
+     * @return index if found, otherwise -1
+     */
+    private long getTeamIDByTablePos(final int tablepos, final List<SetzlisteBE> setzlisteBEList) {
+        for (int i = 0; i < setzlisteBEList.size(); i++) {
+            if (setzlisteBEList.get(i).getLigatabelleTabellenplatz() == tablepos) {
+                return setzlisteBEList.get(i).getMannschaftid();
+            }
+        }
+        return -1;
+    }
 
     /**
      * help function to get table entry

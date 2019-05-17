@@ -77,7 +77,7 @@ public class DownloadService implements ServiceFacade {
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final int wettkampfid) {
+    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
         LOG.debug("wettkampfid: " + wettkampfid);
 
         final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
