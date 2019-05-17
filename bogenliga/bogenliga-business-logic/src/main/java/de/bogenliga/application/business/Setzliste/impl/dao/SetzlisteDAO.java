@@ -34,25 +34,11 @@ public class SetzlisteDAO implements DataAccessObject {
     private static final String SETZLISTE_BE_TABELLENPLATZ = "ligatabelleTabellenplatz";
     private static final String SETZLISTE_BE_WETTKAMPF_ID = "wettkampfid";
     private static final String SETZLISTE_BE_MANNSCHAFT_ID = "mannschaftid";
-    private static final String VEREIN_BE_NAME = "vereinName";
-    private static final String MANNSCHAFT_BE_NR = "mannschaftNummer";
-    private static final String VERANSTALTUNG_BE_NAME = "veranstaltungName";
-    private static final String WETTKAMPF_BE_TAG = "wettkampfTag";
-    private static final String WETTKAMPF_BE_DATUM = "wettkampfDatum";
-    private static final String WETTKAMPF_BE_BEGINN = "wettkampfBeginn";
-    private static final String WETTKAMPF_BE_ORT = "wettkampfOrt";
 
     // table columns
     private static final String LIGATABELLE_TABLE_TABELLENPLATZ = "ligatabelle_tabellenplatz";
-    private static final String VEREIN_TABLE_NAME = "verein_name";
-    private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
-    private static final String MANNSCHAFT_TABLE_NR = "mannschaft_nummer";
-    private static final String VERANSTALTUNG_TABLE_NAME = "veranstaltung_name";
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
-    private static final String WETTKAMPF_TABLE_TAG = "wettkampf_tag";
-    private static final String WETTKAMPF_TABLE_DATUM = "wettkampf_datum";
-    private static final String WETTKAMPF_TABLE_BEGINN = "wettkampf_beginn";
-    private static final String WETTKAMPF_TABLE_ORT = "wettkampf_ort";
+    private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<SetzlisteBE> SETZLISTE = new BusinessEntityConfiguration<>(
@@ -105,15 +91,6 @@ public class SetzlisteDAO implements DataAccessObject {
         columnsToFieldsMap.put(WETTKAMPF_TABLE_ID, SETZLISTE_BE_WETTKAMPF_ID);
         columnsToFieldsMap.put(MANNSCHAFT_TABLE_ID, SETZLISTE_BE_MANNSCHAFT_ID);
         columnsToFieldsMap.put(LIGATABELLE_TABLE_TABELLENPLATZ, SETZLISTE_BE_TABELLENPLATZ);
-        //
-        columnsToFieldsMap.put(VEREIN_TABLE_NAME, VEREIN_BE_NAME);
-        columnsToFieldsMap.put(MANNSCHAFT_TABLE_NR, MANNSCHAFT_BE_NR);
-        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_NAME, VERANSTALTUNG_BE_NAME);
-        columnsToFieldsMap.put(WETTKAMPF_TABLE_TAG, WETTKAMPF_BE_TAG);
-        columnsToFieldsMap.put(WETTKAMPF_TABLE_DATUM, WETTKAMPF_BE_DATUM);
-        columnsToFieldsMap.put(WETTKAMPF_TABLE_BEGINN, WETTKAMPF_BE_BEGINN);
-        columnsToFieldsMap.put(WETTKAMPF_TABLE_ORT, WETTKAMPF_BE_ORT);
-
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 

@@ -33,10 +33,13 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
  * Implementation of {@link SetzlisteComponent}
+ *
+ * @author Michael Hesse, michael_maximilian.hesse@student.reutlingen-university.de
  */
 @Component
 public class SetzlisteComponentImpl implements SetzlisteComponent {
@@ -51,10 +54,11 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
 
-
-    //Structure of setzliste
-    //index 1: Match
-    //index 2: Scheibe
+    /**
+     * Structure of setzliste
+     * dim 1: Match
+     * dim 2: Scheibe
+     */
     private final int[][] SETZLISTE_STRUCTURE = {
             {5, 4, 2, 7, 1, 8, 3, 6},
             {3, 5, 8, 4, 7, 1, 6, 2},
@@ -84,17 +88,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
 
-    /**
-     * Generates a pdf as binary document
-     * @param wettkampfid ID for the competition
-     * @return document
-     */
     @Override
     public byte[] getPDFasByteArray(final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
-        byte[] bResult = null;
+        byte[] bResult;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
@@ -107,18 +106,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         } catch (final IOException e) {
             LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF Setzliste konnte nicht erstellt werden: " + e);
         }
 
         return bResult;
     }
 
-
-    /**
-     * <p>Creates matches in database based on the structure of Setzliste if matches don't exist
-     *
-     * </p>
-     * @param wettkampfid ID for the competition
-     */
     @Override
     public void generateMatchesBySetzliste(final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
@@ -130,7 +123,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 //itarate thorugh matches
                 for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++){
                     //iterate through target boards
-                    for (int j = 0; i < SETZLISTE_STRUCTURE[i].length; i++) {
+                    for (int j = 0; j < SETZLISTE_STRUCTURE[i].length; j++) {
                         final long begegnung = Math.round((float) (j + 1) / 2);
                         final long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
                         MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null);
@@ -139,8 +132,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 }
             }
             else{
-                LOGGER.error("matches existieren in db");
-                throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches existieren bereits");
+                LOGGER.debug(matchDOList.get(0).getId().toString());
+                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Matches existieren bereits");
             }
         }
         else{
@@ -233,26 +226,9 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @return index if found, otherwise -1
      */
     private long getTeamIDByTablePos(final int tablepos, final List<SetzlisteBE> setzlisteBEList) {
-        for (int i = 0; i < setzlisteBEList.size(); i++) {
-            if (setzlisteBEList.get(i).getLigatabelleTabellenplatz() == tablepos) {
-                LOGGER.debug(setzlisteBEList.get(i).getLigatabelleTabellenplatz().toString());
-                LOGGER.debug(setzlisteBEList.get(i).toString());
-                return setzlisteBEList.get(i).getMannschaftid();
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * help function to get table entry
-     * @param tabellenplatz index in table
-     * @param setzlisteBEList list with data
-     * @return index if found, otherwise -1
-     */
-    private int getTableEntry(final int tabellenplatz, final List<SetzlisteBE> setzlisteBEList) {
-        for (int i = 0; i < setzlisteBEList.size(); i++) {
-            if (setzlisteBEList.get(i).getLigatabelleTabellenplatz() == tabellenplatz) {
-                return i;
+        for (SetzlisteBE setzlisteBE : setzlisteBEList) {
+            if (setzlisteBE.getLigatabelleTabellenplatz() == tablepos) {
+                return setzlisteBE.getMannschaftid();
             }
         }
         return -1;
@@ -260,15 +236,15 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     /**
      * help funktion to get team name
-     * @param tabellenplatz index in table
+     * @param tablepos index in table
      * @param setzlisteBEList list with data
      * @return name of the team
      */
-    private String getTeamName(final int tabellenplatz, final List<SetzlisteBE> setzlisteBEList) {
-        final long teamID = getTeamIDByTablePos(tabellenplatz,setzlisteBEList);
+    private String getTeamName(final int tablepos, final List<SetzlisteBE> setzlisteBEList) {
+        final long teamID = getTeamIDByTablePos(tablepos,setzlisteBEList);
         if (teamID == -1) {
-            LOGGER.error("Cannot find Mannschaftsname.");
-            return "Error";
+            LOGGER.error("Cannot find team for tablepos");
+            return "ERROR";
         } else {
             DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
             VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
