@@ -21,8 +21,16 @@ import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.Setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -38,6 +46,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     private final SetzlisteDAO setzlisteDAO;
     private final MatchComponent matchComponent;
+    private final WettkampfComponent wettkampfComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final VereinComponent vereinComponent;
 
 
     //Structure of setzliste
@@ -60,9 +72,15 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteDAO to access the database and return setzliste representations
      */
     @Autowired
-    public SetzlisteComponentImpl(final SetzlisteDAO setzlisteDAO, final MatchComponent matchComponent) {
+    public SetzlisteComponentImpl(final SetzlisteDAO setzlisteDAO, final MatchComponent matchComponent,
+                                  final WettkampfComponent wettkampfComponent, final VeranstaltungComponent veranstaltungComponent,
+                                  final DsbMannschaftComponent dsbMannschaftComponent, VereinComponent vereinComponent) {
         this.setzlisteDAO = setzlisteDAO;
         this.matchComponent = matchComponent;
+        this.wettkampfComponent = wettkampfComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.vereinComponent = vereinComponent;
     }
 
 
@@ -75,7 +93,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     public byte[] getPDFasByteArray(final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTable(wettkampfid);
+        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
         byte[] bResult = null;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
@@ -143,18 +161,18 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         //description
         final DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
         final DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid());
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId());
         String dateFormatted = null;
         try {
-            dateFormatted = sdF2.format(sdF.parse(setzlisteBEList.get(0).getWettkampfDatum().toString()));
+            dateFormatted = sdF2.format(sdF.parse(wettkampfDO.getDatum()));
         } catch (final ParseException e) {
             LOGGER.error("Error: ", e);
         }
         doc.add(new Paragraph("Setzliste " +
-                setzlisteBEList.get(0).getWettkampfTag() + ". Wettkampf " + setzlisteBEList.get(
-                0).getVeranstaltungName()));
+                wettkampfDO.getWettkampfTag() + ". Wettkampf " + veranstaltungDO.getVeranstaltungName()));
         doc.add(new Paragraph("am " + dateFormatted + " in"));
-        doc.add(new Paragraph(setzlisteBEList.get(0).getWettkampfOrt() + ", " + setzlisteBEList.get(
-                0).getWettkampfBeginn() + " Uhr"));
+        doc.add(new Paragraph(wettkampfDO.getWettkampfOrt() + ", " + wettkampfDO.getWettkampfBeginn() + " Uhr"));
 
         doc.add(new Paragraph(""));
         doc.add(new Paragraph(""));
@@ -217,6 +235,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private long getTeamIDByTablePos(final int tablepos, final List<SetzlisteBE> setzlisteBEList) {
         for (int i = 0; i < setzlisteBEList.size(); i++) {
             if (setzlisteBEList.get(i).getLigatabelleTabellenplatz() == tablepos) {
+                LOGGER.debug(setzlisteBEList.get(i).getLigatabelleTabellenplatz().toString());
+                LOGGER.debug(setzlisteBEList.get(i).toString());
                 return setzlisteBEList.get(i).getMannschaftid();
             }
         }
@@ -245,16 +265,17 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @return name of the team
      */
     private String getTeamName(final int tabellenplatz, final List<SetzlisteBE> setzlisteBEList) {
-        final int rowIndex = getTableEntry(tabellenplatz, setzlisteBEList);
-        if (rowIndex == -1) {
+        final long teamID = getTeamIDByTablePos(tabellenplatz,setzlisteBEList);
+        if (teamID == -1) {
             LOGGER.error("Cannot find Mannschaftsname.");
             return "Error";
         } else {
-            if (setzlisteBEList.get(rowIndex).getMannschaftNummer() > 1) {
-                return setzlisteBEList.get(rowIndex).getVereinName() + " " + setzlisteBEList.get(
-                        rowIndex).getMannschaftNummer();
+            DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
+            VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
+            if (dsbMannschaftDO.getNummer() > 1) {
+                return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
             } else {
-                return setzlisteBEList.get(rowIndex).getVereinName();
+                return vereinDO.getName();
             }
         }
     }
