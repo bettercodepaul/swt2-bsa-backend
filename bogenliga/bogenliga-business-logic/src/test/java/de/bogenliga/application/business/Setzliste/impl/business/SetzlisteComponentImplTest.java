@@ -26,13 +26,8 @@ import static org.mockito.Mockito.*;
  */
 public class SetzlisteComponentImplTest {
 
-    private static final int WETTKAMPFID = 1;
-    private static final String vereinName = "TestVerein";
-    private static final String veranstaltungName = "TestVeranstaltung";
-    private static final Integer wettkampfTag = 1;
-    private static final Date wettkampfDatum = new Date(987654321098L);
-    private static final String wettkampfBeginn = "13.00";
-    private static final String wettkampfOrt = "Reutlingen";
+    private static final long MANNSCHAFTSID = 5;
+    private static final long WETTKAMPFID = 30;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -71,13 +66,8 @@ public class SetzlisteComponentImplTest {
         for (int i = 1; i <= 8; i++){
             SetzlisteBE element = new SetzlisteBE();
             element.setLigatabelleTabellenplatz(i);
-            element.setVereinName(vereinName+i);
-            element.setMannschaftNummer(i);
-            element.setVeranstaltungName(veranstaltungName);
-            element.setWettkampfTag(wettkampfTag);
-            element.setWettkampfDatum(wettkampfDatum);
-            element.setWettkampfBeginn(wettkampfBeginn);
-            element.setWettkampfOrt(wettkampfOrt);
+            element.setMannschaftid(MANNSCHAFTSID+i);
+            element.setWettkampfid(WETTKAMPFID);
             result.add(element);
         }
         return result;

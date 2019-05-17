@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.Setzliste.impl.dao;
 
-import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Rule;
@@ -20,13 +19,8 @@ import static org.mockito.Mockito.*;
  */
 public class SetzlisteDAOTest {
     private static final Integer LIGATABELLE_TABELLENPLATZ = 1;
-    private static final String VEREIN_NAME = "Testverein";
-    private static final Integer MANNSCHAFT_NUMMER = 1;
-    private static final String VERANSTALTUNG_NAME = "Testveranstaltung";
-    private static final Integer WETTKAMPF_TAG = 1;
-    private static final Date WETTKAMPF_DATUM = new Date(9876543210987L);
-    private static final String WETTKAMPF_BEGINN = "Jetzt";
-    private static final String WETTKAMPF_ORT = "Testort";
+    private static final long MANNSCHAFTSID = 5;
+    private static final long WETTKAMPFID = 30;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -41,13 +35,8 @@ public class SetzlisteDAOTest {
         //Prepare testdata
         final SetzlisteBE setzlisteBE = new SetzlisteBE();
         setzlisteBE.setLigatabelleTabellenplatz(LIGATABELLE_TABELLENPLATZ);
-        setzlisteBE.setMannschaftNummer(MANNSCHAFT_NUMMER);
-        setzlisteBE.setVeranstaltungName(VERANSTALTUNG_NAME);
-        setzlisteBE.setVereinName(VEREIN_NAME);
-        setzlisteBE.setWettkampfBeginn(WETTKAMPF_BEGINN);
-        setzlisteBE.setWettkampfDatum(WETTKAMPF_DATUM);
-        setzlisteBE.setWettkampfOrt(WETTKAMPF_ORT);
-        setzlisteBE.setWettkampfTag(WETTKAMPF_TAG);
+        setzlisteBE.setWettkampfid(WETTKAMPFID);
+        setzlisteBE.setMannschaftid(MANNSCHAFTSID);
 
         //configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(setzlisteBE));
@@ -64,13 +53,8 @@ public class SetzlisteDAOTest {
 
             assertThat(actual).isNotNull();
             assertThat(actual.get(0).getLigatabelleTabellenplatz()).isEqualTo(setzlisteBE.getLigatabelleTabellenplatz());
-            assertThat(actual.get(0).getMannschaftNummer()).isEqualTo(setzlisteBE.getMannschaftNummer());
-            assertThat(actual.get(0).getVeranstaltungName()).isEqualTo(setzlisteBE.getVeranstaltungName());
-            assertThat(actual.get(0).getVereinName()).isEqualTo(setzlisteBE.getVereinName());
-            assertThat(actual.get(0).getWettkampfBeginn()).isEqualTo(setzlisteBE.getWettkampfBeginn());
-            assertThat(actual.get(0).getWettkampfDatum()).isEqualTo(setzlisteBE.getWettkampfDatum());
-            assertThat(actual.get(0).getWettkampfOrt()).isEqualTo(setzlisteBE.getWettkampfOrt());
-            assertThat(actual.get(0).getWettkampfTag()).isEqualTo(setzlisteBE.getWettkampfTag());
+            assertThat(actual.get(0).getMannschaftid()).isEqualTo(setzlisteBE.getMannschaftid());
+            assertThat(actual.get(0).getWettkampfid()).isEqualTo(setzlisteBE.getWettkampfid());
 
 
         //Verify invocations
