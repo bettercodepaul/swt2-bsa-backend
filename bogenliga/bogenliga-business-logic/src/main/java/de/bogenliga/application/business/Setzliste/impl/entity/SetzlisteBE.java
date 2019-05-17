@@ -115,6 +115,8 @@ public class SetzlisteBE extends CommonBusinessEntity {
     @Override
     public String toString() {
         return "setzliste{ligatabelleTabellenplatz='" + ligatabelleTabellenplatz +
+                "', WettkampfID='" + wettkampfid +
+                "', MannschaftID='" + mannschaftid +
                 "', vereinName='" + vereinName +
                 "', mannschaftNummer='" + mannschaftNummer +
                 "', veranstaltungName='" + veranstaltungName +

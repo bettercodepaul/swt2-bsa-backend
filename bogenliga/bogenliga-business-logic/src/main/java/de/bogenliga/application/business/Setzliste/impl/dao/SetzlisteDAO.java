@@ -33,7 +33,7 @@ public class SetzlisteDAO implements DataAccessObject {
     // business entity parameter names
     private static final String SETZLISTE_BE_TABELLENPLATZ = "ligatabelleTabellenplatz";
     private static final String SETZLISTE_BE_WETTKAMPF_ID = "wettkampfid";
-    private static final String SETZLISTE_BE_MANNSCHAFT_ID = "wettkampfid";
+    private static final String SETZLISTE_BE_MANNSCHAFT_ID = "mannschaftid";
     private static final String VEREIN_BE_NAME = "vereinName";
     private static final String MANNSCHAFT_BE_NR = "mannschaftNummer";
     private static final String VERANSTALTUNG_BE_NAME = "veranstaltungName";
