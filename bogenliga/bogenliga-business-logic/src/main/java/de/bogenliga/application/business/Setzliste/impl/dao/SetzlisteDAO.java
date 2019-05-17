@@ -124,11 +124,11 @@ public class SetzlisteDAO implements DataAccessObject {
     /**
      * Return all setzliste entries
      */
-    public List<SetzlisteBE> getTable(int wettkampfid) {
+    public List<SetzlisteBE> getTable(long wettkampfid) {
         return basicDao.selectEntityList(SETZLISTE, GET_TABLE, wettkampfid);
     }
 
-    public List<SetzlisteBE> getTableByWettkampfID(int wettkampfid) {
+    public List<SetzlisteBE> getTableByWettkampfID(long wettkampfid) {
         return basicDao.selectEntityList(SETZLISTE, GET_TABLE_BY_WETTKAMPF_ID, wettkampfid);
     }
 }
