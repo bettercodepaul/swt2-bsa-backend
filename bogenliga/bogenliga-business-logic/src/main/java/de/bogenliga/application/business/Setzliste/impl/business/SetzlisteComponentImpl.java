@@ -23,6 +23,8 @@ import de.bogenliga.application.business.Setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -93,32 +95,40 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
 
+    /**
+     * <p>Creates matches in database based on the structure of Setzliste if matches don't exist
+     *
+     * </p>
+     * @param wettkampfid ID for the competition
+     */
     @Override
-    public boolean generateSetzlisteForWettkampf(final long wettkampfid) {
+    public void generateMatchesBySetzliste(final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-        boolean bReturn = false;
-
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
-
         if (!setzlisteBEList.isEmpty()){
-            List<MatchDO> matches = matchComponent.findByWettkampfId(setzlisteBEList.get(0).getWettkampfid());
-            if (matches.isEmpty()){
+            List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
+            if (matchDOList.isEmpty()){
                 //itarate thorugh matches
                 for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++){
                     //iterate through target boards
-                    for (int j = 0; i < SETZLISTE_STRUCTURE[i].length; i++){
-                        long begegnung = Math.round((float) (j+1) / 2);
-                        MatchDO matchDO = matchComponent.findByPk((long) i+1, wettkampfid, getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j],setzlisteBEList), begegnung, (long) j+1);
+                    for (int j = 0; i < SETZLISTE_STRUCTURE[i].length; i++) {
+                        final long begegnung = Math.round((float) (j + 1) / 2);
+                        final long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
+                        MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null);
+                        matchComponent.create(newMatchDO, (long) 0);
                     }
                 }
-                bReturn = true;
+            }
+            else{
+                LOGGER.error("matches existieren in db");
+                throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches existieren bereits");
             }
         }
         else{
             LOGGER.error("Setzliste leer");
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf oder die Tabelleneinträge existieren noch nicht");
         }
-        return bReturn;
     }
 
 
