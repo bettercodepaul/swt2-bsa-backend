@@ -19,6 +19,7 @@ public class MatchDTO implements DataTransferObject {
     // actually verein name...
     private String mannschaftName;
     private Long begegnung;
+    private Long wettkampfTypId;
     private Long scheibenNummer;
     private Long matchpunkte;
     private Long satzpunkte;
@@ -157,5 +158,15 @@ public class MatchDTO implements DataTransferObject {
 
     public void setPassen(List<PasseDTO> passen) {
         this.passen = passen;
+    }
+
+
+    public Long getWettkampfTypId() {
+        return wettkampfTypId;
+    }
+
+
+    public void setWettkampfTypId(Long wettkampfTypId) {
+        this.wettkampfTypId = wettkampfTypId;
     }
 }
