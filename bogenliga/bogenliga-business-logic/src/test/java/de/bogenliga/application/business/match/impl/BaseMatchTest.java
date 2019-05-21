@@ -25,6 +25,12 @@ public abstract class BaseMatchTest {
     protected static final Long MATCH_SCHEIBENNUMMER = 3L;
     protected static final Long MATCH_MATCHPUNKTE = 6L;
     protected static final Long MATCH_SATZPUNKTE = 3L;
+    protected static final Long MATCH_FEHLER_SATZ_1 = 0L;
+    protected static final Long MATCH_FEHLER_SATZ_2 = 10L;
+    protected static final Long MATCH_FEHLER_SATZ_3 = 0L;
+    protected static final Long MATCH_FEHLER_SATZ_4 = 10L;
+    protected static final Long MATCH_FEHLER_SATZ_5 = 0L;
+
     protected static final Long CURRENT_USER_ID = 1L;
     private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
 
@@ -38,6 +44,11 @@ public abstract class BaseMatchTest {
         matchBE.setWettkampfId(MATCH_WETTKAMPF_ID);
         matchBE.setMatchpunkte(MATCH_MATCHPUNKTE);
         matchBE.setScheibenNummer(MATCH_SCHEIBENNUMMER);
+        matchBE.setFehlerSatz1(MATCH_FEHLER_SATZ_1);
+        matchBE.setFehlerSatz2(MATCH_FEHLER_SATZ_2);
+        matchBE.setFehlerSatz3(MATCH_FEHLER_SATZ_3);
+        matchBE.setFehlerSatz4(MATCH_FEHLER_SATZ_4);
+        matchBE.setFehlerSatz5(MATCH_FEHLER_SATZ_5);
         matchBE.setSatzpunkte(MATCH_SATZPUNKTE);
         return matchBE;
     }
@@ -45,7 +56,8 @@ public abstract class BaseMatchTest {
 
     protected MatchDO getMatchDO() {
         return new MatchDO(MATCH_ID, MATCH_NR, MATCH_WETTKAMPF_ID, MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
-                MATCH_SCHEIBENNUMMER, MATCH_MATCHPUNKTE, MATCH_SATZPUNKTE);
+                MATCH_SCHEIBENNUMMER, MATCH_MATCHPUNKTE, MATCH_SATZPUNKTE, MATCH_FEHLER_SATZ_1, MATCH_FEHLER_SATZ_2,
+                MATCH_FEHLER_SATZ_3, MATCH_FEHLER_SATZ_4, MATCH_FEHLER_SATZ_5);
     }
 
 
@@ -58,6 +70,11 @@ public abstract class BaseMatchTest {
         valuesToMethodMap.put("getMatchpunkte", MATCH_MATCHPUNKTE);
         valuesToMethodMap.put("getScheibenNummer", MATCH_SCHEIBENNUMMER);
         valuesToMethodMap.put("getSatzpunkte", MATCH_SATZPUNKTE);
+        valuesToMethodMap.put("getFehlerSatz1", MATCH_FEHLER_SATZ_1);
+        valuesToMethodMap.put("getFehlerSatz2", MATCH_FEHLER_SATZ_2);
+        valuesToMethodMap.put("getFehlerSatz3", MATCH_FEHLER_SATZ_3);
+        valuesToMethodMap.put("getFehlerSatz4", MATCH_FEHLER_SATZ_4);
+        valuesToMethodMap.put("getFehlerSatz5", MATCH_FEHLER_SATZ_5);
     }
 
 
