@@ -17,6 +17,11 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     private Long begegnung;
     private Long matchpunkte;
     private Long satzpunkte;
+    private Long fehlerSatz1;
+    private Long fehlerSatz2;
+    private Long fehlerSatz3;
+    private Long fehlerSatz4;
+    private Long fehlerSatz5;
 
 
     @Override
@@ -30,6 +35,11 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
                 "begegnung=" + begegnung +
                 "matchpunkte=" + matchpunkte +
                 "satzpunkte=" + satzpunkte +
+                "fehlerSatz1=" + fehlerSatz1 +
+                "fehlerSatz2=" + fehlerSatz2 +
+                "fehlerSatz3=" + fehlerSatz3 +
+                "fehlerSatz4=" + fehlerSatz4 +
+                "fehlerSatz5=" + fehlerSatz5 +
                 '}';
     }
 
@@ -113,4 +123,53 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
         this.satzpunkte = satzpunkte;
     }
 
+
+    public Long getFehlerSatz1() {
+        return fehlerSatz1;
+    }
+
+
+    public void setFehlerSatz1(Long fehlerSatz1) {
+        this.fehlerSatz1 = fehlerSatz1;
+    }
+
+
+    public Long getFehlerSatz2() {
+        return fehlerSatz2;
+    }
+
+
+    public void setFehlerSatz2(Long fehlerSatz2) {
+        this.fehlerSatz2 = fehlerSatz2;
+    }
+
+
+    public Long getFehlerSatz3() {
+        return fehlerSatz3;
+    }
+
+
+    public void setFehlerSatz3(Long fehlerSatz3) {
+        this.fehlerSatz3 = fehlerSatz3;
+    }
+
+
+    public Long getFehlerSatz4() {
+        return fehlerSatz4;
+    }
+
+
+    public void setFehlerSatz4(Long fehlerSatz4) {
+        this.fehlerSatz4 = fehlerSatz4;
+    }
+
+
+    public Long getFehlerSatz5() {
+        return fehlerSatz5;
+    }
+
+
+    public void setFehlerSatz5(Long fehlerSatz5) {
+        this.fehlerSatz5 = fehlerSatz5;
+    }
 }
