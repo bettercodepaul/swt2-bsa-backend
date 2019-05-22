@@ -32,6 +32,7 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.service.types.DataTransferObject;
@@ -154,6 +155,7 @@ public class MatchService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<MatchDTO> findMatchesByIds(@PathVariable("matchId1") Long matchId1,
                                            @PathVariable("matchId2") Long matchId2) {
+        System.out.println("Test #############");
         this.checkMatchId(matchId1);
         this.checkMatchId(matchId2);
 
@@ -418,7 +420,8 @@ public class MatchService implements ServiceFacade {
         final MatchDO matchDo = matchComponent.findById(matchId);
         final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(wettkampfComponent.findById(matchDo.getWettkampfId()));
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-        final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId()));
+       WettkampfTypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
+        final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
         matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
 
         // the match is shown on the Schusszettel, add passen and mannschaft name

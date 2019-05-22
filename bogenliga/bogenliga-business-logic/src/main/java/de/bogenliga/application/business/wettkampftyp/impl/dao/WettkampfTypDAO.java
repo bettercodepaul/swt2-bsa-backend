@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -13,10 +14,10 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
+@Repository
 public class WettkampfTypDAO implements DataAccessObject {
     //define logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfTypDAO.class);
@@ -26,8 +27,8 @@ public class WettkampfTypDAO implements DataAccessObject {
 
 
     //business entity parameters
-    private static final String WETTKAMPFTYP_BE_ID = "wettkampftypId";
-    private static final String WETTKAMPFTYP_BE_NAME = "wettkampftypId";
+    private static final String WETTKAMPFTYP_BE_ID = "id";
+    private static final String WETTKAMPFTYP_BE_NAME = "name";
 
     private static final String WETTKAMPFTYP_TABLE_ID = "wettkampftyp_id";
     private static final String WETTKAMPFTYP_TABLE_NAME = "wettkampftyp_name";
