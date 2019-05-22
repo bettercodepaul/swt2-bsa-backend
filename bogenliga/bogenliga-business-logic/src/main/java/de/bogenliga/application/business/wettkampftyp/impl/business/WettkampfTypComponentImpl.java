@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.business.wettkampftyp.impl.mapper.WettkampfTypMapper;
 import de.bogenliga.application.common.validation.Preconditions;
 
@@ -50,7 +51,8 @@ public class WettkampfTypComponentImpl implements WettkampfTypComponent {
     @Override
     public WettkampfTypDO findById(Long wettkampfTypId) {
         checkPreconditions(wettkampfTypId, "wettkampfTypId");
-        return WettkampfTypMapper.toWettkampfTypDO.apply(wettkampfTypDAO.findByWettkampfId(wettkampfTypId));
+        WettkampfTypBE wettkampfTypBE = wettkampfTypDAO.findByWettkampfId(wettkampfTypId);
+        return WettkampfTypMapper.toWettkampfTypDO.apply(wettkampfTypBE);
     }
 
 

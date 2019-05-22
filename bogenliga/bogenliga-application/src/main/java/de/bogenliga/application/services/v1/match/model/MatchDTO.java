@@ -29,15 +29,8 @@ public class MatchDTO implements DataTransferObject {
     private List<PasseDTO> passen;
 
 
-    /**
-     * Default constructor, hidden, so only use the one with params...
-     */
-    private MatchDTO() {
-    }
-
-
     public MatchDTO(Long id, Long nr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
-                    Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen, String wettkampfTyp) {
+                    Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen) {
         this.setId(id);
         this.setNr(nr);
         this.setVersion(version);
@@ -48,7 +41,6 @@ public class MatchDTO implements DataTransferObject {
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
         this.setPassen(passen);
-        this.setWettkampfTyp(wettkampfTyp);
     }
 
 
