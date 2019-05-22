@@ -31,7 +31,7 @@ import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.service.types.DataTransferObject;
@@ -40,6 +40,10 @@ import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
+import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
+import de.bogenliga.application.services.v1.wettkampftyp.mapper.WettkampfTypDTOMapper;
+import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -94,6 +98,7 @@ public class MatchService implements ServiceFacade {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final WettkampfComponent wettkampfComponent;
+    private final WettkampfTypComponent wettkampfTypComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final DsbMannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
@@ -110,13 +115,15 @@ public class MatchService implements ServiceFacade {
                         final VereinComponent vereinComponent,
                         final WettkampfComponent wettkampfComponent,
                         final DsbMannschaftComponent mannschaftComponent,
-                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
+                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                        final WettkampfTypComponent wettkampftypComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.mannschaftComponent = mannschaftComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
+        this.wettkampfTypComponent = wettkampftypComponent;
     }
 
 
@@ -409,9 +416,10 @@ public class MatchService implements ServiceFacade {
 
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
         final MatchDO matchDo = matchComponent.findById(matchId);
-        final WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDo.getWettkampfId());
+        final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(wettkampfComponent.findById(matchDo.getWettkampfId()));
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-        matchDTO.setWettkampfTypId(wettkampfDO.getWettkampfTypId());
+        final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId()));
+        matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
 
         // the match is shown on the Schusszettel, add passen and mannschaft name
         if (addPassen) {
