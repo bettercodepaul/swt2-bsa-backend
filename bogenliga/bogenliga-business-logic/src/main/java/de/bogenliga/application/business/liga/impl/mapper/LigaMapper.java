@@ -25,14 +25,16 @@ public class LigaMapper implements ValueObjectMapper {
             OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
             OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
 
-           LigaDO ligaDO = new LigaDO(ligaBE.getLigaId(),
+           LigaDO ligaDO = new LigaDO(
+                   ligaBE.getLigaId(),
                    ligaBE.getLigaName(),
                    regionenBE.getRegionId(),
                    regionenBE.getRegionName(),
                    ligaBE.getLigaUebergeordnetId(),
                    uebergeordnetLiga.getLigaName(),
                    userBE.getUserId(),
-                   userBE.getUserEmail());
+                   userBE.getUserEmail()
+           );
             ligaDO.setCreatedAtUtc(createdAtUtc);
             ligaDO.setLastModifiedAtUtc(lastModifiedAtUtc);
             return ligaDO;
