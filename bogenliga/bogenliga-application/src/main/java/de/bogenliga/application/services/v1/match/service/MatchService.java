@@ -31,8 +31,8 @@ import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.service.types.DataTransferObject;
@@ -43,8 +43,8 @@ import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
-import de.bogenliga.application.services.v1.wettkampftyp.mapper.WettkampfTypDTOMapper;
-import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
+import de.bogenliga.application.services.v1.wettkampftyp.mapper.WettkampftypDTOMapper;
+import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -99,7 +99,7 @@ public class MatchService implements ServiceFacade {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final WettkampfComponent wettkampfComponent;
-    private final WettkampfTypComponent wettkampfTypComponent;
+    private final WettkampftypComponent wettkampfTypComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final DsbMannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
@@ -117,7 +117,7 @@ public class MatchService implements ServiceFacade {
                         final WettkampfComponent wettkampfComponent,
                         final DsbMannschaftComponent mannschaftComponent,
                         final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                        final WettkampfTypComponent wettkampftypComponent) {
+                        final WettkampftypComponent wettkampftypComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.vereinComponent = vereinComponent;
@@ -155,7 +155,6 @@ public class MatchService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<MatchDTO> findMatchesByIds(@PathVariable("matchId1") Long matchId1,
                                            @PathVariable("matchId2") Long matchId2) {
-        System.out.println("Test #############");
         this.checkMatchId(matchId1);
         this.checkMatchId(matchId2);
 
@@ -420,8 +419,8 @@ public class MatchService implements ServiceFacade {
         final MatchDO matchDo = matchComponent.findById(matchId);
         final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(wettkampfComponent.findById(matchDo.getWettkampfId()));
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-       WettkampfTypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
-        final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
+        WettkampftypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
+        final WettkampftypDTO wettkampfTypDTO = WettkampftypDTOMapper.toDTO.apply(wettDO);
         matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
 
         // the match is shown on the Schusszettel, add passen and mannschaft name
