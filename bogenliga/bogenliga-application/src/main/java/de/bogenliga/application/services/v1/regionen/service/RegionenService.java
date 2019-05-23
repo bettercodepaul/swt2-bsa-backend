@@ -133,6 +133,10 @@ public class RegionenService implements ServiceFacade {
         checkPreconditions(regionenDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
+        //debug
+        System.out.println("ANFRAGE:"+regionenDTO.getRegionName()+", "+regionenDTO.getId()+", "+regionenDTO.getRegionKuerzel()+
+                ", "+regionenDTO.getRegionTyp()+", "+regionenDTO.getRegionUebergeordnet()+", "+userId);
+
         LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}'",
                 regionenDTO.getRegionName(),
                 regionenDTO.getId(),
