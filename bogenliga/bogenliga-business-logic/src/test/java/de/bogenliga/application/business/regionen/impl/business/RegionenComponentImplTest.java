@@ -86,7 +86,7 @@ public class RegionenComponentImplTest {
                 .isEqualTo(expectedBE.getRegionKuerzel());
         assertThat(actual.get(0).getRegionName())
                 .isEqualTo(expectedBE.getRegionName());
-        assertThat(actual.get(0).getRegionType())
+        assertThat(actual.get(0).getRegionTyp())
                 .isEqualTo(expectedBE.getRegionTyp());
         assertThat(actual.get(0).getRegionUebergeordnet())
                 .isEqualTo(expectedBE.getRegionUebergeordnet());
@@ -122,7 +122,7 @@ public class RegionenComponentImplTest {
                 .isEqualTo(expectedBE.getRegionKuerzel());
         assertThat(actual.get(0).getRegionName())
                 .isEqualTo(expectedBE.getRegionName());
-        assertThat(actual.get(0).getRegionType())
+        assertThat(actual.get(0).getRegionTyp())
                 .isEqualTo(expectedBE.getRegionTyp());
         assertThat(actual.get(0).getRegionUebergeordnet())
                 .isEqualTo(expectedBE.getRegionUebergeordnet());

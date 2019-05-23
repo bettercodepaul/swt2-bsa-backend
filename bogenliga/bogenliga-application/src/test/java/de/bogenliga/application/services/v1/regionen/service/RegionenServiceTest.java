@@ -143,6 +143,6 @@ public class RegionenServiceTest {
         final RegionenDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getRegionTyp()).isEqualTo(regionenDO.getRegionType());
+        assertThat(actualDTO.getRegionTyp()).isEqualTo(regionenDO.getRegionTyp());
     }
 }

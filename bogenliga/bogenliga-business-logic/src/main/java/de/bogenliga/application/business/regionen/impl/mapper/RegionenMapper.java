@@ -48,7 +48,7 @@ public class RegionenMapper implements ValueObjectMapper {
         regionenBE.setRegionId(regionenDO.getId());
         regionenBE.setRegionName(regionenDO.getRegionName());
         regionenBE.setRegionKuerzel(regionenDO.getRegionKuerzel());
-        regionenBE.setRegionTyp(regionenDO.getRegionType());
+        regionenBE.setRegionTyp(regionenDO.getRegionTyp());
         regionenBE.setRegionUebergeordnet(regionenDO.getRegionUebergeordnet());
 
         regionenBE.setCreatedAtUtc(createdAtUtcTimestamp);
