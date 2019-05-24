@@ -20,7 +20,7 @@ public class VeranstaltungComponentImplTest {
     private static Date veranstaltungMeldeDeadline = date;
     private static Long veranstaltungLigaleiterID = 10L;
 
-    public static VeranstaltungDO veranstaltungDO() {
+    public static VeranstaltungDO getVeranstaltungDO() {
         return new VeranstaltungDO( veranstaltungID,
                 veranstaltungWettkampftypID,
                 veranstaltungName,

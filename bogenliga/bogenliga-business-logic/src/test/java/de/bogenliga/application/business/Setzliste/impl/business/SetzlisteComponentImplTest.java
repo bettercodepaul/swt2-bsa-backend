@@ -17,6 +17,21 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.Setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
+import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
+import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImpl;
+import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
+import static de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest.getWettkampfDO;
 import static org.mockito.Mockito.*;
 
 /**
@@ -34,6 +49,16 @@ public class SetzlisteComponentImplTest {
 
     @Mock
     private SetzlisteDAO SetzlisteDAO;
+    @Mock
+    private MatchComponent matchComponent;
+    @Mock
+    private WettkampfComponent wettkampfComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+    @Mock
+    private DsbMannschaftComponent dsbMannschaftComponent;
+    @Mock
+    private VereinComponent vereinComponent;
 
 
     @InjectMocks
@@ -47,9 +72,15 @@ public class SetzlisteComponentImplTest {
     public void getPDFasByteArray() {
 
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
 
         //configure Mocks
-        when(SetzlisteDAO.getTable(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid())).thenReturn(wettkampfDO);
+        //when(veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId())).thenReturn(veranstaltungDO);
+        when(dsbMannschaftComponent.findById(any())).thenReturn(dsbMannschaftDO);
 
         //call test method
         final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
@@ -58,10 +89,30 @@ public class SetzlisteComponentImplTest {
         Assertions.assertThat(actual).isNotEmpty();
 
         //verify invocations
-        verify(SetzlisteDAO).getTable(WETTKAMPFID);
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
     }
 
-    private List<SetzlisteBE> getSetzlisteBEList(){
+
+    @Test
+    public void generateMatchesBySetzliste() {
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+        //final List<MatchDO> matchDOList= MatchComponentImplTest;
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        //when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+
+        //call test method
+        underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
+
+    public static List<SetzlisteBE> getSetzlisteBEList(){
         List<SetzlisteBE> result = new ArrayList<>();
         for (int i = 1; i <= 8; i++){
             SetzlisteBE element = new SetzlisteBE();
