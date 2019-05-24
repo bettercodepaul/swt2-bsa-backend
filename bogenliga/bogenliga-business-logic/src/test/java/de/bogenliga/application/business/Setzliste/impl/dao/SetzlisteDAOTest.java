@@ -31,7 +31,7 @@ public class SetzlisteDAOTest {
 
 
     @Test
-    public void getTable() {
+    public void getTableByWettkampfID() {
         //Prepare testdata
         final SetzlisteBE setzlisteBE = new SetzlisteBE();
         setzlisteBE.setLigatabelleTabellenplatz(LIGATABELLE_TABELLENPLATZ);
@@ -42,7 +42,7 @@ public class SetzlisteDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(setzlisteBE));
 
         //Call test method
-        final List<SetzlisteBE> actual = underTest.getTable(0);
+        final List<SetzlisteBE> actual = underTest.getTableByWettkampfID(0);
         for (SetzlisteBE entity : actual) {
             System.out.println(entity.toString());
         }
