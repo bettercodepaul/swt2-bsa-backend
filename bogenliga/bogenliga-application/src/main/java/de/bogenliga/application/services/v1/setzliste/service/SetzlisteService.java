@@ -49,9 +49,9 @@ public class SetzlisteService implements ServiceFacade {
 
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
-            path = "pdf/setzliste")
+            path = "generate")
     public @ResponseBody
-    void downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
+    void generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
         this.setzlisteComponent.generateMatchesBySetzliste(wettkampfid);
     }
 }
