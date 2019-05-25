@@ -36,6 +36,7 @@ import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest.getWettkampfDO;
 import static org.mockito.Mockito.*;
 
@@ -98,6 +99,24 @@ public class SetzlisteComponentImplTest {
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
     }
 
+    @Test(expected = BusinessException.class)
+    public void getPDFasByteArray_SetzlisteEmpty() {
+        final List<SetzlisteBE> setzlisteBEList = new ArrayList<>();
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+
+        //call test method
+        final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isEmpty();
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
 
     @Test
     public void generateMatchesBySetzliste() {
@@ -120,6 +139,25 @@ public class SetzlisteComponentImplTest {
         for (MatchDO actualMatchDO: actual) {
             Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
         }
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
+    @Test(expected = BusinessException.class)
+    public void generateMatchesBySetzliste_SetzlisteEmpty() {
+        final List<SetzlisteBE> setzlisteBEList = new ArrayList<>();
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isEmpty();
 
         //verify invocations
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
