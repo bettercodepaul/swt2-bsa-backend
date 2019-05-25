@@ -32,7 +32,6 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 
@@ -113,12 +112,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
     @Override
-    public void generateMatchesBySetzliste(final long wettkampfid) {
+    public List<MatchDO> generateMatchesBySetzliste(final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
+        List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
         if (!setzlisteBEList.isEmpty()){
-            List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
             if (matchDOList.isEmpty()){
                 //itarate thorugh matches
                 for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++){
@@ -127,19 +126,18 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                         final long begegnung = Math.round((float) (j + 1) / 2);
                         final long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
                         MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null);
-                        matchComponent.create(newMatchDO, (long) 0);
+                        matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
                     }
                 }
             }
             else{
-                LOGGER.debug(matchDOList.get(0).getId().toString());
-                throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "Matches existieren bereits");
+                LOGGER.debug("Es exisitieren bereits Matches für den Wettkampf mit ID " + wettkampfid);
             }
         }
         else{
-            LOGGER.error("Setzliste leer");
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf oder die Tabelleneinträge existieren noch nicht");
+            LOGGER.error("Setzliste leer - Der Wettkampf mit ID " + + wettkampfid + " oder die Tabelleneinträge vom vorherigen Wettkampf existieren noch nicht");
         }
+        return matchDOList;
     }
 
 
