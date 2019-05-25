@@ -22,6 +22,8 @@ public interface SetzlisteComponent extends ComponentFacade {
      *
      * </p>
      * @param wettkampfid ID for the competition
+     *
+     * @return List of matches for the competition
      */
     List<MatchDO> generateMatchesBySetzliste(long wettkampfid);
 
