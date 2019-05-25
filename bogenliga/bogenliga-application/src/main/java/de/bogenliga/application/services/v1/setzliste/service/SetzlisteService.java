@@ -49,7 +49,7 @@ public class SetzlisteService implements ServiceFacade {
 
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
-            path = "generate")
+            path = "/generate")
     public @ResponseBody
     void generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
         this.setzlisteComponent.generateMatchesBySetzliste(wettkampfid);
