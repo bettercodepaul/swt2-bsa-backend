@@ -22,12 +22,16 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
 import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImpl;
 import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.vereine.impl.business.VereinComponentImplTest;
+import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
@@ -75,12 +79,14 @@ public class SetzlisteComponentImplTest {
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
         DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
 
         //configure Mocks
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
         when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid())).thenReturn(wettkampfDO);
-        //when(veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId())).thenReturn(veranstaltungDO);
-        when(dsbMannschaftComponent.findById(any())).thenReturn(dsbMannschaftDO);
+        when(veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId())).thenReturn(veranstaltungDO);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
 
         //call test method
         final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
@@ -96,12 +102,12 @@ public class SetzlisteComponentImplTest {
     @Test
     public void generateMatchesBySetzliste() {
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
-        //final List<MatchDO> matchDOList= MatchComponentImplTest;
+        final List<MatchDO> matchDOList = new ArrayList<>();
 
 
         //configure Mocks
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
-        //when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+        when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
 
         //call test method
         underTest.generateMatchesBySetzliste(WETTKAMPFID);
