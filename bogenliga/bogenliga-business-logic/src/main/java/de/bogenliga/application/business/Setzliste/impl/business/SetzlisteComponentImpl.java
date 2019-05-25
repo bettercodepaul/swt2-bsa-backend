@@ -94,21 +94,26 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
         byte[] bResult;
-        try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
-             final PdfWriter writer = new PdfWriter(result);
-             final PdfDocument pdfDocument = new PdfDocument(writer);
-             final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
+        if (!setzlisteBEList.isEmpty()) {
+            try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 final PdfWriter writer = new PdfWriter(result);
+                 final PdfDocument pdfDocument = new PdfDocument(writer);
+                 final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
 
-            generateDoc(doc, setzlisteBEList);
+                generateDoc(doc, setzlisteBEList);
 
-            bResult = result.toByteArray();
-            LOGGER.debug("Setzliste erstellt");
+                bResult = result.toByteArray();
+                LOGGER.debug("Setzliste erstellt");
 
-        } catch (final IOException e) {
-            LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
-            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF Setzliste konnte nicht erstellt werden: " + e);
+            } catch (final IOException e) {
+                LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF Setzliste konnte nicht erstellt werden: " + e);
+            }
         }
-
+        else{
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
         return bResult;
     }
 
