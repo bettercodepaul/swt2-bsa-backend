@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.Setzliste.api;
 
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface SetzlisteComponent extends ComponentFacade {
      * </p>
      * @param wettkampfid ID for the competition
      */
-    void generateMatchesBySetzliste(long wettkampfid);
+    List<MatchDO> generateMatchesBySetzliste(long wettkampfid);
 
 
 }
