@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Logger;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,9 +40,8 @@ import static de.bogenliga.application.business.wettkampf.impl.business.Wettkamp
 import static org.mockito.Mockito.*;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Michael Hesse, michael_maximilian.hesse@student.reutlingen-university.de
  */
 public class SetzlisteComponentImplTest {
 
@@ -103,6 +103,38 @@ public class SetzlisteComponentImplTest {
     public void generateMatchesBySetzliste() {
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
         final List<MatchDO> matchDOList = new ArrayList<>();
+        final MatchDO matchDO = MatchComponentImplTest.getMatchDO();
+        matchDO.setWettkampfId(WETTKAMPFID);
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+        when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).hasSize(56);
+        for (MatchDO actualMatchDO: actual) {
+            Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
+        }
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
+    @Test
+    public void generateMatchesBySetzliste_MatchesExist() {
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+        final List<MatchDO> matchDOList = new ArrayList<>();
+        for(int i=1;i<5;i++){
+            MatchDO matchDO = MatchComponentImplTest.getMatchDO();
+            matchDO.setWettkampfId(WETTKAMPFID);
+            matchDOList.add(matchDO);
+        }
 
 
         //configure Mocks
@@ -110,7 +142,13 @@ public class SetzlisteComponentImplTest {
         when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
 
         //call test method
-        underTest.generateMatchesBySetzliste(WETTKAMPFID);
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).hasSize(4);
+        for (MatchDO actualMatchDO: actual) {
+            Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
+        }
 
         //verify invocations
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);

@@ -32,6 +32,7 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 
@@ -131,11 +132,11 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 }
             }
             else{
-                LOGGER.debug("Es exisitieren bereits Matches für den Wettkampf mit ID " + wettkampfid);
+                LOGGER.debug("Matches existieren bereits");
             }
         }
         else{
-            LOGGER.error("Setzliste leer - Der Wettkampf mit ID " + + wettkampfid + " oder die Tabelleneinträge vom vorherigen Wettkampf existieren noch nicht");
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
         return matchDOList;
     }
