@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
@@ -12,6 +14,8 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -32,6 +36,8 @@ public class RegionenComponentImplTest {
     private RegionenDAO regionenDAO;
     @InjectMocks
     private RegionenComponentImpl underTest;
+    @Captor
+    private ArgumentCaptor<RegionenBE> regionBEArgumentCaptor;
 
 
     public static RegionenBE getRegionenBE() {
@@ -129,6 +135,244 @@ public class RegionenComponentImplTest {
 
         // verify invocations
         verify(regionenDAO).findAllByType(REGION_TYP);
+    }
+
+
+    @Test
+    public void findById_whenEverythingIsSet() {
+        // prepare test data
+        final RegionenBE expectedBE = getRegionenBE();
+
+        // configure mocks
+        when(regionenDAO.findById(REGION_ID)).thenReturn(expectedBE);
+
+        // call test method
+        final RegionenDO actual = underTest.findById(REGION_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(expectedBE.getRegionId());
+        assertThat(actual.getRegionName()).isEqualTo(expectedBE.getRegionName());
+        assertThat(actual.getRegionKuerzel()).isEqualTo(expectedBE.getRegionKuerzel());
+        assertThat(actual.getRegionUebergeordnet()).isEqualTo(expectedBE.getRegionUebergeordnet());
+
+        // verify invocations
+        verify(regionenDAO).findById(REGION_ID);
+    }
+
+
+    @Test
+    public void findById_whenAttributesAreNull() {
+        // prepare test data
+        final RegionenBE expectedBE = getRegionenBE();
+
+        expectedBE.setRegionName(null);
+        expectedBE.setRegionKuerzel(null);
+
+        // configure mocks
+        when(regionenDAO.findById(anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final RegionenDO actual = underTest.findById(REGION_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(expectedBE.getRegionId());
+        assertThat(actual.getRegionName()).isEqualTo(expectedBE.getRegionName());
+        assertThat(actual.getRegionName()).isEqualTo(null);
+        assertThat(actual.getRegionKuerzel()).isEqualTo(expectedBE.getRegionKuerzel());
+        assertThat(actual.getRegionKuerzel()).isEqualTo(null);
+        assertThat(actual.getRegionTyp()).isEqualTo(expectedBE.getRegionTyp());
+        assertThat(actual.getRegionUebergeordnet()).isEqualTo(expectedBE.getRegionUebergeordnet());
+
+        // verify invocation
+        verify(regionenDAO).findById(REGION_ID);
+    }
+
+
+    @Test
+    public void create__whenEverythingIsSet() {
+        // prepare test data
+        final RegionenDO input = getRegionenDO();
+        final RegionenBE expectedBE = getRegionenBE();
+
+        // configure mocks
+        when(regionenDAO.create(any(RegionenBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final RegionenDO actual = underTest.create(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getRegionName()).isEqualTo(input.getRegionName());
+        assertThat(actual.getRegionKuerzel()).isEqualTo(input.getRegionKuerzel());
+        assertThat(actual.getRegionTyp()).isEqualTo(input.getRegionTyp());
+        assertThat(actual.getRegionUebergeordnet()).isEqualTo(input.getRegionUebergeordnet());
+
+        // verify invocations
+        verify(regionenDAO).create(regionBEArgumentCaptor.capture(), anyLong());
+        final RegionenBE persistedBE = regionBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getRegionId()).isEqualTo(input.getId());
+        assertThat(persistedBE.getRegionName()).isEqualTo(expectedBE.getRegionName());
+        assertThat(persistedBE.getRegionKuerzel()).isEqualTo(expectedBE.getRegionKuerzel());
+        assertThat(persistedBE.getRegionTyp()).isEqualTo(expectedBE.getRegionTyp());
+        assertThat(persistedBE.getRegionUebergeordnet()).isEqualTo(expectedBE.getRegionUebergeordnet());
+
+        // test mapping of do
+        assertThat(actual.getRegionName()).isEqualTo(expectedBE.getRegionName());
+        assertThat(actual.getRegionKuerzel()).isEqualTo(expectedBE.getRegionKuerzel());
+        assertThat(actual.getRegionTyp()).isEqualTo(expectedBE.getRegionTyp());
+    }
+
+
+    @Test
+    public void create_whenArgumentsAreNull() {
+        // prepare test data
+        final RegionenDO input = getRegionenDO();
+        final RegionenBE expectedBE = getRegionenBE();
+
+        expectedBE.setRegionKuerzel(null);
+        input.setRegionKuerzel(null);
+
+        // configure mocks
+        when(regionenDAO.create(any(RegionenBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final RegionenDO actual = underTest.create(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getRegionName()).isEqualTo(input.getRegionName());
+        assertThat(actual.getRegionKuerzel()).isEqualTo(input.getRegionKuerzel());
+
+        // verify invocations
+        verify(regionenDAO).create(regionBEArgumentCaptor.capture(), anyLong());
+        final RegionenBE persistedBE = regionBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getRegionId()).isEqualTo(input.getId());
+        assertThat(persistedBE.getRegionName()).isEqualTo(expectedBE.getRegionName());
+        assertThat(persistedBE.getRegionKuerzel()).isEqualTo(null);
+    }
+
+
+    @Test
+    public void create_withoutRegionname_shouldThrowException() {
+        // prepare test data
+        final RegionenDO input = getRegionenDO();
+        input.setId(REGION_ID);
+        input.setRegionName(null);
+
+        // configure mocks
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(input, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verifyZeroInteractions(regionenDAO);
+    }
+
+
+    @Test
+    public void create_withoutInput_shouldThrowException() {
+        // prepare test data
+
+        // configure mocks
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(null, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verifyZeroInteractions(regionenDAO);
+    }
+
+
+    @Test
+    public void update() {
+        // prepare test data
+        final RegionenDO input = getRegionenDO();
+        final RegionenBE expectedBE = getRegionenBE();
+
+        // configure mocks
+        when(regionenDAO.update(any(RegionenBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final RegionenDO actual = underTest.update(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getRegionName()).isEqualTo(input.getRegionName());
+
+        // verify invocations
+        verify(regionenDAO).update(regionBEArgumentCaptor.capture(), anyLong());
+
+        final RegionenBE persistedBE = regionBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getRegionId()).isEqualTo(input.getId());
+        assertThat(persistedBE.getRegionName()).isEqualTo(input.getRegionName());
+    }
+
+
+    @Test
+    public void delete() {
+        // prepare test data
+        final RegionenDO input = getRegionenDO();
+
+        // configure mocks
+
+        // call test method
+        underTest.delete(input, USER);
+
+        // assert result
+
+        // verify invocations
+        verify(regionenDAO).delete(regionBEArgumentCaptor.capture(), anyLong());
+
+        final RegionenBE persistedBE = regionBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+        assertThat(persistedBE.getRegionId()).isEqualTo(input.getId());
+        assertThat(persistedBE.getRegionName()).isEqualTo(input.getRegionName());
+        assertThat(persistedBE.getRegionKuerzel()).isEqualTo(input.getRegionKuerzel());
+    }
+
+
+    @Test
+    public void delete_withoutInput_shouldThrowException() {
+        // prepare test data
+
+        // configure mocks
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.delete(null, USER))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // assert result
+
+        // verify invocations
+        verifyZeroInteractions(regionenDAO);
     }
 
 }
