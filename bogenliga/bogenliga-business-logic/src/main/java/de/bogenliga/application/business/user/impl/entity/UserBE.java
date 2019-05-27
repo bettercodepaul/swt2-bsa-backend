@@ -23,13 +23,12 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     private String userEmail;
     private String userSalt;
     private String userPassword;
-    private boolean isUsing2FA = true;
+    private boolean using2FA = true;
     private String secret;
 
 
 
     public UserBE(){
-        // empty constructor
         this.secret = Base32.random();
     }
 
@@ -86,12 +85,12 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
 
 
     public boolean isUsing2FA() {
-        return isUsing2FA;
+        return using2FA;
     }
 
 
     public void setUsing2FA(boolean using2FA) {
-        isUsing2FA = using2FA;
+        this.using2FA = using2FA;
     }
 
 
@@ -99,8 +98,4 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
         return secret;
     }
 
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
 }

@@ -12,6 +12,8 @@ public class UserCredentialsDTO implements DataTransferObject {
     private static final long serialVersionUID = 7100904135169446743L;
     private String username;
     private String password;
+    private String code;
+    private boolean isUsing2FA;
 
 
     public String getUsername() {
@@ -27,5 +29,25 @@ public class UserCredentialsDTO implements DataTransferObject {
     }
     public void setPassword(final String password) {
         this.password = password;
+    }
+
+
+    public String getCode() {
+        return code;
+    }
+
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+
+    public boolean isUsing2FA() {
+        return isUsing2FA;
+    }
+
+
+    public void setUsing2FA(boolean using2FA) {
+        isUsing2FA = using2FA;
     }
 }

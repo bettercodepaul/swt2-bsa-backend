@@ -99,7 +99,8 @@ public class UserService implements ServiceFacade {
         ErrorDTO errorDetails = null;
         try {
             final Authentication authentication = webSecurityConfiguration.authenticationManagerBean()
-                    .authenticate(new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(credentials.getUsername(),
+                            credentials.getPassword()));
 
             if (authentication.isAuthenticated()) {
                 // create payload
@@ -121,10 +122,10 @@ public class UserService implements ServiceFacade {
         }
 
         // return error details from authentication or a default error
-        errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
+        errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS,
+                "Sign in failed");
         return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
     }
-
 
 
     @RequestMapping(
@@ -132,15 +133,17 @@ public class UserService implements ServiceFacade {
             value = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
-        final String jwt =  JwtTokenProvider.resolveToken(requestWithHeader);
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
 
         return jwtTokenProvider.resolveUserSignInDTO(jwt);
     }
+
 
     /**
      * Returns the user profile for a given id.
      *
      * @param id
+     *
      * @return
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -155,10 +158,9 @@ public class UserService implements ServiceFacade {
     }
 
 
-
     /**
      * I persist a new password for the current user and return this user entry.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: PUT /v1/user
      * Body:
@@ -173,8 +175,10 @@ public class UserService implements ServiceFacade {
      *    "value": "true"
      *  }
      * }</pre>
+     *
      * @param uptcredentials of the request body
-     * @return  {@link UserDTO} as JSON
+     *
+     * @return {@link UserDTO} as JSON
      */
 
 
@@ -182,7 +186,8 @@ public class UserService implements ServiceFacade {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO update(final HttpServletRequest requestWithHeader, @RequestBody final UserChangeCredentialsDTO uptcredentials) {
+    public UserDTO update(final HttpServletRequest requestWithHeader,
+                          @RequestBody final UserChangeCredentialsDTO uptcredentials) {
         Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getNewPassword(), "New password must not be null or empty");
@@ -199,7 +204,8 @@ public class UserService implements ServiceFacade {
         userDO.setId(userId);
 
         //update password
-        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(), uptcredentials.getNewPassword(), userId);
+        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(),
+                uptcredentials.getNewPassword(), userId);
 
         //prepare return DTO
         final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
@@ -213,7 +219,8 @@ public class UserService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserRoleDTO updateRole(final HttpServletRequest requestWithHeader, @RequestBody final UserRoleDTO updatedUserRole) {
+    public UserRoleDTO updateRole(final HttpServletRequest requestWithHeader,
+                                  @RequestBody final UserRoleDTO updatedUserRole) {
         Preconditions.checkNotNull(updatedUserRole, "UserRole-Definition must not be null");
         Preconditions.checkNotNull(updatedUserRole.getId(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(updatedUserRole.getRoleId(), PRECONDITION_MSG_ROLE_ID);
@@ -234,24 +241,16 @@ public class UserService implements ServiceFacade {
         return userUpdatedDTO;
     }
 
+
     /**
      * I return all user entries of the database.
-
-     *
+     * <p>
+     * <p>
      * Usage:
      * <pre>{@code Request: GET /v1/user}</pre>
-     *
-     * [
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  },
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.interval",
-     *    "value": "10"
-     *  }
-     * ]
-     * }
+     * <p>
+     * [ { "id": "app.bogenliga.frontend.autorefresh.active", "value": "true" }, { "id":
+     * "app.bogenliga.frontend.autorefresh.interval", "value": "10" } ] }
      * </pre>
      *
      * @return list of {@link UserDTO} as JSON
@@ -264,24 +263,16 @@ public class UserService implements ServiceFacade {
         return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+
     /**
      * I return a specific user-role entries of the database.
-
-     *
+     * <p>
+     * <p>
      * Usage:
      * <pre>{@code Request: GET /v1/user/userrole/id}</pre>
-     *
-     * [
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  },
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.interval",
-     *    "value": "10"
-     *  }
-     * ]
-     * }
+     * <p>
+     * [ { "id": "app.bogenliga.frontend.autorefresh.active", "value": "true" }, { "id":
+     * "app.bogenliga.frontend.autorefresh.interval", "value": "10" } ] }
      * </pre>
      *
      * @return list of {@link UserDTO} as JSON
@@ -300,11 +291,9 @@ public class UserService implements ServiceFacade {
     }
 
 
-
-
     /**
      * I persist a new user and return this user entry.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: POST /v1/user
      * Body:
@@ -319,8 +308,10 @@ public class UserService implements ServiceFacade {
      *    "value": "true"
      *  }
      * }</pre>
+     *
      * @param userCredentialsDTO of the request body
-     * @return  {@link UserDTO} as JSON
+     *
+     * @return {@link UserDTO} as JSON
      */
 
 
@@ -329,26 +320,30 @@ public class UserService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserDTO create(final HttpServletRequest requestWithHeader, @RequestBody final UserCredentialsDTO userCredentialsDTO) {
+    public UserDTO create(final HttpServletRequest requestWithHeader,
+                          @RequestBody final UserCredentialsDTO userCredentialsDTO) {
 
         Preconditions.checkNotNull(userCredentialsDTO, "User Credentials must not be null");
         Preconditions.checkNotNull(userCredentialsDTO.getUsername(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userCredentialsDTO.getPassword(), PRECONDITION_MSG_USER_EMAIL);
 
-        LOG.debug("Receive 'create' request with username '{}', password '{}'",
+        LOG.debug("Receive 'create' request with username '{}', password '{}', using2FA {}",
                 userCredentialsDTO.getUsername(),
-                userCredentialsDTO.getPassword());
+                userCredentialsDTO.getPassword(),
+                userCredentialsDTO.isUsing2FA());
+
+        userCredentialsDTO.getCode();
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
         // user anlegen
-        final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(), userCredentialsDTO.getPassword(), userId);
+        final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(),
+                userCredentialsDTO.getPassword(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
         final UserRoleDO userRoleCreatedDO = userRoleComponent.create(userCreatedDO.getId(), userId);
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
-
 
 
 }
