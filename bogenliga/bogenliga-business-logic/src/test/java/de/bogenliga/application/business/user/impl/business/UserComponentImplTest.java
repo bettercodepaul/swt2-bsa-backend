@@ -40,7 +40,7 @@ public class UserComponentImplTest {
     private static final String PWDHASH = "pwdhash";
     private static final String NEWPWDHASH = "newpwdhash";
     private static final Long USER = 1L;
-    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", null, 0L, null, 0L, 0L);
+    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", false, null, null, 0L, null, 0L, 0L);
 
 
     @Rule
@@ -68,6 +68,8 @@ public class UserComponentImplTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
+
         expectedBE.setVersion(VERSION);
 
         // configure mocks
@@ -105,6 +107,7 @@ public class UserComponentImplTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(VERSION);
 
 
@@ -173,6 +176,7 @@ public class UserComponentImplTest {
         final UserDO userDO = new UserDO();
         userDO.setEmail(EMAIL);
         userDO.setId(ID);
+        userDO.setUsing2FA(false);
 
         // configure mocks
         when(technicalUserBA.getSystemUser()).thenReturn(userDO);
@@ -217,6 +221,7 @@ public class UserComponentImplTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(VERSION);
 
 
@@ -364,6 +369,7 @@ public class UserComponentImplTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(VERSION);
         expectedBE.setCreatedAtUtc(timestamp);
         expectedBE.setLastModifiedAtUtc(timestamp);
@@ -475,6 +481,7 @@ public class UserComponentImplTest {
         inputBE.setUserPassword(PWDHASH);
         inputBE.setUserSalt(SALT);
         inputBE.setUserEmail(EMAIL);
+        inputBE.setUsing2FA(false);
         inputBE.setVersion(VERSION);
         inputBE.setCreatedAtUtc(timestamp);
         inputBE.setLastModifiedAtUtc(timestamp);
@@ -485,6 +492,7 @@ public class UserComponentImplTest {
         expectedBE.setUserId(ID);
         expectedBE.setUserPassword(PWDHASH);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(NEWVERSION);
         expectedBE.setCreatedAtUtc(timestamp);
         expectedBE.setLastModifiedAtUtc(timestamp);

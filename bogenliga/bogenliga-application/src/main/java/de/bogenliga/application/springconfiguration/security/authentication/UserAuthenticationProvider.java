@@ -4,15 +4,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jboss.aerogear.security.otp.Totp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.user.impl.business.CustomAuthenticationProvider;
+import de.bogenliga.application.business.user.impl.business.CustomWebAuthenticationDetails;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -20,9 +28,8 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 
 /**
  * I´m a custom authentication provider for Spring Security.
- *
+ * <p>
  * I authenticate the user credentials with the persisted user information from the database.
- *
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  * @see <a href="https://www.baeldung.com/spring-security-authentication-provider">
@@ -41,6 +48,14 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         this.userComponent = userComponent;
     }
 
+    private boolean isValidLong(String code) {
+        try {
+            Long.parseLong(code);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public Authentication authenticate(final Authentication authentication) {
@@ -49,8 +64,17 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         final String password = authentication.getCredentials().toString();
         final List<UserPermission> permissions;
 
+        UserDO user = userComponent.findByEmail(username);
         ErrorDTO errorDTO = null;
         try {
+            if (user.isUsing2FA()) {
+                String verificationCode = ((CustomWebAuthenticationDetails) authentication.getDetails())
+                        .getVerificationCode();
+                Totp totp = new Totp(user.getSecrect());
+                if (!isValidLong(verificationCode) || !totp.verify(verificationCode)) {
+                    throw new BadCredentialsException("Invalid verfication code");
+                }
+            }
             final UserWithPermissionsDO userDO = userComponent.signIn(username, password);
 
             if (userDO != null) {
@@ -78,6 +102,13 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         return invalidAuth;
     }
 
+    /*@Bean
+    public DaoAuthenticationProvider authProvider() {
+        CustomAuthenticationProvider authProvider = new CustomAuthenticationProvider();
+        authProvider.setUserDetailsService(getUserDetailsService());
+        authProvider.setPasswordEncoder(getPasswordEncoder());
+        return authProvider;
+    }*/
 
     @Override
     public boolean supports(final Class<?> authentication) {

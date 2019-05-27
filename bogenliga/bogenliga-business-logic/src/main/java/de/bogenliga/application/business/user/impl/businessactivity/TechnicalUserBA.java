@@ -12,7 +12,7 @@ import de.bogenliga.application.common.component.businessactivity.BusinessActivi
 @Component
 public class TechnicalUserBA implements BusinessActivity {
 
-    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", null, 0L, null, 0L, 0L);
+    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", false, null, null, 0L, null, 0L, 0L);
 
 
     /**
@@ -29,6 +29,7 @@ public class TechnicalUserBA implements BusinessActivity {
      * I validate, if the given user is a technical user.
      *
      * @param userDO to be checked
+     *
      * @return true, if the user matches one of the statically defined technical users.
      */
     public boolean isTechnicalUser(final UserDO userDO) {
