@@ -590,7 +590,7 @@ public class UserServiceTest {
         userCredentialsDTO.setPassword(PASSWORD);
 
         // configure mocks
-        when(userComponent.create(anyString(), anyString(), anyLong())).thenReturn(userCreatedDO);
+        when(userComponent.create(anyString(), anyString(), anyLong(), any())).thenReturn(userCreatedDO);
         when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
 
         // call test method

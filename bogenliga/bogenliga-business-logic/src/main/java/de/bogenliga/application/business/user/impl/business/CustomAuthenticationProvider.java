@@ -3,6 +3,7 @@ package de.bogenliga.application.business.user.impl.business;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -54,5 +55,13 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
     @Override
     public boolean supports(Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider(){
+        CustomAuthenticationProvider authProvider = new CustomAuthenticationProvider();
+        authProvider.setUserDetailsService(getUserDetailsService());
+        authProvider.setPasswordEncoder(getPasswordEncoder());
+        return authProvider;
     }
 }

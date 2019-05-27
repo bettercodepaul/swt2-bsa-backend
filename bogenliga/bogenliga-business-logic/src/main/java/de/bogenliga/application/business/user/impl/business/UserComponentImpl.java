@@ -142,7 +142,7 @@ public class UserComponentImpl implements UserComponent {
      * @param  currentUserId aktueller User mit den Rechten zur Neuanlage
      */
     @Override
-    public UserDO create(final String email, final String password, final Long currentUserId) {
+    public UserDO create(final String email, final String password, final Long currentUserId, final boolean isUsing2FA) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_NULL);
@@ -153,12 +153,14 @@ public class UserComponentImpl implements UserComponent {
         result.setUserEmail(email);
         result.setUserSalt(salt);
         result.setUserPassword(pwdhash);
+        result.setUsing2FA(isUsing2FA);
 
         final UserBE persistedUserBE = userDAO.create(result, currentUserId);
 
 
         return UserMapper.toUserDO.apply(persistedUserBE);
     }
+
 
 
     /**
