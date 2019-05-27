@@ -19,6 +19,7 @@ public class MatchDTO implements DataTransferObject {
     // actually verein name...
     private String mannschaftName;
     private Long begegnung;
+    private String wettkampfTyp;
     private Long scheibenNummer;
     private Long matchpunkte;
     private Long satzpunkte;
@@ -26,13 +27,6 @@ public class MatchDTO implements DataTransferObject {
     // used to transport related passe objects to the frontend or to save them from the
     // table form (schusszettel) to the database
     private List<PasseDTO> passen;
-
-
-    /**
-     * Default constructor, hidden, so only use the one with params...
-     */
-    private MatchDTO() {
-    }
 
 
     public MatchDTO(Long id, Long nr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
@@ -157,5 +151,15 @@ public class MatchDTO implements DataTransferObject {
 
     public void setPassen(List<PasseDTO> passen) {
         this.passen = passen;
+    }
+
+
+    public String getWettkampfTyp() {
+        return wettkampfTyp;
+    }
+
+
+    public void setWettkampfTyp(String wettkampfTyp) {
+        this.wettkampfTyp = wettkampfTyp;
     }
 }
