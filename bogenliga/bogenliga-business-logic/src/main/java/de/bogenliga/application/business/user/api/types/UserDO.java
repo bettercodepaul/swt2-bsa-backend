@@ -18,7 +18,8 @@ public class UserDO extends CommonDataObject implements DataObject {
      */
     private Long id;
     private String email;
-
+    private boolean using2FA;
+    private String secrect;
 
     /**
      * Constructor with optional parameters
@@ -31,11 +32,13 @@ public class UserDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with mandatory parameters
      */
-    public UserDO(final Long id, final String email, final OffsetDateTime createdAtUtc,
+    public UserDO(final Long id, final String email, boolean using2FA, String secret, final OffsetDateTime createdAtUtc,
                   final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                   final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.email = email;
+        this.using2FA = using2FA;
+        this.secrect = secret;
 
         // set parameter from CommonDataObject
         this.createdAtUtc = createdAtUtc;
@@ -88,5 +91,25 @@ public class UserDO extends CommonDataObject implements DataObject {
                 Objects.equals(getCreatedByUserId(), userDO.getCreatedByUserId()) &&
                 Objects.equals(getLastModifiedAtUtc(), userDO.getLastModifiedAtUtc()) &&
                 Objects.equals(getLastModifiedByUserId(), userDO.getLastModifiedByUserId());
+    }
+
+
+    public boolean isUsing2FA() {
+        return using2FA;
+    }
+
+
+    public void setUsing2FA(boolean using2FA) {
+        this.using2FA = using2FA;
+    }
+
+
+    public String getSecrect() {
+        return secrect;
+    }
+
+
+    public void setSecrect(String secrect) {
+        this.secrect = secrect;
     }
 }
