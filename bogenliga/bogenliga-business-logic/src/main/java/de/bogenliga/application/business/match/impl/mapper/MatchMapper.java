@@ -36,7 +36,6 @@ public class MatchMapper implements ValueObjectMapper {
                 matchBE.getStrafPunkteSatz3(),
                 matchBE.getStrafPunkteSatz4(),
                 matchBE.getStrafPunkteSatz5(),
-
                 createdAtUtc,
                 matchBE.getCreatedByUserId(),
                 lastModifiedUtc,

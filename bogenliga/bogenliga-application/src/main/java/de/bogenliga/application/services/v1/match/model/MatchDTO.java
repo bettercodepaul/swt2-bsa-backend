@@ -36,7 +36,8 @@ public class MatchDTO implements DataTransferObject {
 
 
     public MatchDTO(Long id, Long nr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
-                    Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen, Long strafPunkteSatz1,
+                    Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen,
+                    Long strafPunkteSatz1,
                     Long strafPunkteSatz2, Long strafPunkteSatz3, Long strafPunkteSatz4, Long strafPunkteSatz5) {
         this.setId(id);
         this.setNr(nr);

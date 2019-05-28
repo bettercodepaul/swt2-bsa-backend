@@ -64,6 +64,7 @@ public class MatchDO extends CommonDataObject {
         this.setScheibenNummer(scheibenNummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
+
         this.setStrafPunkteSatz1(strafPunkteSatz1);
         this.setStrafPunkteSatz2(strafPunkteSatz2);
         this.setStrafPunkteSatz3(strafPunkteSatz3);
