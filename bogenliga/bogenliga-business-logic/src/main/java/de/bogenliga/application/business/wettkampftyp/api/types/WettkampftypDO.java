@@ -17,10 +17,7 @@ public class WettkampftypDO extends CommonDataObject implements DataObject {
     private Long id;
     private String name;
 
-    public WettkampftypDO(final Long id, final String name){
-        this.id = id;
-        this.name = name;
-    }
+
 
     public WettkampftypDO(final Long id, final String name,
                        final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
