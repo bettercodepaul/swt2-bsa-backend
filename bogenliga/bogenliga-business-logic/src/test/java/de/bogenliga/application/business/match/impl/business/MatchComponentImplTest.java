@@ -46,11 +46,16 @@ public class MatchComponentImplTest extends BaseMatchTest {
         assertThat(actual.getWettkampfId()).isEqualTo(expectedMatchBE.getWettkampfId()).isEqualTo(MATCH_WETTKAMPF_ID);
         assertThat(actual.getMatchpunkte()).isEqualTo(expectedMatchBE.getMatchpunkte()).isEqualTo(MATCH_MATCHPUNKTE);
         assertThat(actual.getSatzpunkte()).isEqualTo(expectedMatchBE.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
-        assertThat(actual.getFehlerSatz1()).isEqualTo(expectedMatchBE.getFehlerSatz1()).isEqualTo(MATCH_FEHLER_SATZ_1);
-        assertThat(actual.getFehlerSatz2()).isEqualTo(expectedMatchBE.getFehlerSatz2()).isEqualTo(MATCH_FEHLER_SATZ_2);
-        assertThat(actual.getFehlerSatz3()).isEqualTo(expectedMatchBE.getFehlerSatz3()).isEqualTo(MATCH_FEHLER_SATZ_3);
-        assertThat(actual.getFehlerSatz4()).isEqualTo(expectedMatchBE.getFehlerSatz4()).isEqualTo(MATCH_FEHLER_SATZ_4);
-        assertThat(actual.getFehlerSatz5()).isEqualTo(expectedMatchBE.getFehlerSatz5()).isEqualTo(MATCH_FEHLER_SATZ_5);
+        assertThat(actual.getStrafPunktSatz1()).isEqualTo(expectedMatchBE.getStrafPunktSatz1()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_1);
+        assertThat(actual.getStrafPunktSatz2()).isEqualTo(expectedMatchBE.getStrafPunktSatz2()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_2);
+        assertThat(actual.getStrafPunktSatz3()).isEqualTo(expectedMatchBE.getStrafPunktSatz3()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_3);
+        assertThat(actual.getStrafPunktSatz4()).isEqualTo(expectedMatchBE.getStrafPunktSatz4()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_4);
+        assertThat(actual.getStrafPunktSatz5()).isEqualTo(expectedMatchBE.getStrafPunktSatz5()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_5);
 
         assertThat(actual.getNr()).isEqualTo(expectedMatchBE.getNr()).isEqualTo(MATCH_NR);
     }

@@ -49,11 +49,11 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_BEGEGNUNG = "match_begegnung";
     private static final String MATCH_TABLE_MATCHPUNKTE = "match_matchpunkte";
     private static final String MATCH_TABLE_SATZPUNKTE = "match_satzpunkte";
-    private static final String MATCH_TABLE_FEHLERSATZ1 = "match_fehler_satz_1";
-    private static final String MATCH_TABLE_FEHLERSATZ2 = "match_fehler_satz_2";
-    private static final String MATCH_TABLE_FEHLERSATZ3 = "match_fehler_satz_3";
-    private static final String MATCH_TABLE_FEHLERSATZ4 = "match_fehler_satz_4";
-    private static final String MATCH_TABLE_FEHLERSATZ5 = "match_fehler_satz_5";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ1 = "match_srafpunkt_satz_1";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ2 = "match_strafpunkt_satz_2";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ3 = "match_fehler_satz_3";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ4 = "match_fehler_satz_4";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ5 = "match_fehler_satz_5";
 
 
     // wrap all specific config parameters
@@ -86,11 +86,11 @@ public class MatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_SCHEIBENNUMMER, MATCH_BE_SCHEIBENNUMMER);
         columnsToFieldsMap.put(MATCH_TABLE_MATCHPUNKTE, MATCH_BE_MATCHPUNKTE);
         columnsToFieldsMap.put(MATCH_TABLE_SATZPUNKTE, MATCH_BE_SATZPUNKTE);
-        columnsToFieldsMap.put(MATCH_TABLE_FEHLERSATZ1, MATCH_BE_FEHLERSATZ1);
-        columnsToFieldsMap.put(MATCH_TABLE_FEHLERSATZ2, MATCH_BE_FEHLERSATZ2);
-        columnsToFieldsMap.put(MATCH_TABLE_FEHLERSATZ3, MATCH_BE_FEHLERSATZ3);
-        columnsToFieldsMap.put(MATCH_TABLE_FEHLERSATZ4, MATCH_BE_FEHLERSATZ4);
-        columnsToFieldsMap.put(MATCH_TABLE_FEHLERSATZ5, MATCH_BE_FEHLERSATZ5);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ1, MATCH_BE_FEHLERSATZ1);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ2, MATCH_BE_FEHLERSATZ2);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ3, MATCH_BE_FEHLERSATZ3);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ4, MATCH_BE_FEHLERSATZ4);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ5, MATCH_BE_FEHLERSATZ5);
 
 
         // add technical columns

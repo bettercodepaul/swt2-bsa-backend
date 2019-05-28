@@ -20,11 +20,11 @@ CREATE TABLE match (
   match_scheibennummer DECIMAL(2, 0)  NOT NULL,
   match_matchpunkte    DECIMAL(1, 0)  NULL,
   match_satzpunkte     DECIMAL(1, 0)  NULL,
-  match_fehler_satz_1 DECIMAL(2, 0) NULL,
-  match_fehler_satz_2 DECIMAL(2, 0) NULL,
-  match_fehler_satz_3 DECIMAL(2, 0) NULL,
-  match_fehler_satz_4 DECIMAL(2, 0) NULL,
-  match_fehler_satz_5 DECIMAL(2, 0) NULL,
+  match_strafpunkt_satz_1 DECIMAL(2, 0) NULL,
+  match_strafpunkt_satz_2 DECIMAL(2, 0) NULL,
+  match_strafpunkt_satz_3 DECIMAL(2, 0) NULL,
+  match_strafpunkt_satz_4 DECIMAL(2, 0) NULL,
+  match_strafpunkt_satz_5 DECIMAL(2, 0) NULL,
 
   -- an auto-incremented unique attribute, for easier internal access
   match_id             DECIMAL(19,0)  NOT NULL    DEFAULT nextval('sq_match_id'),
