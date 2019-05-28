@@ -20,11 +20,16 @@ public class MatchMapperTest extends BaseMatchTest {
         assertThat(matchBE.getWettkampfId()).isEqualTo(matchBEMapped.getWettkampfId()).isEqualTo(MATCH_WETTKAMPF_ID);
         assertThat(matchBE.getMatchpunkte()).isEqualTo(matchBEMapped.getMatchpunkte()).isEqualTo(MATCH_MATCHPUNKTE);
         assertThat(matchBE.getSatzpunkte()).isEqualTo(matchBEMapped.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
-        assertThat(matchBE.getFehlerSatz1()).isEqualTo(matchBEMapped.getFehlerSatz1()).isEqualTo(MATCH_FEHLER_SATZ_1);
-        assertThat(matchBE.getFehlerSatz1()).isEqualTo(matchBEMapped.getFehlerSatz2()).isEqualTo(MATCH_FEHLER_SATZ_2);
-        assertThat(matchBE.getFehlerSatz1()).isEqualTo(matchBEMapped.getFehlerSatz3()).isEqualTo(MATCH_FEHLER_SATZ_3);
-        assertThat(matchBE.getFehlerSatz1()).isEqualTo(matchBEMapped.getFehlerSatz4()).isEqualTo(MATCH_FEHLER_SATZ_4);
-        assertThat(matchBE.getFehlerSatz1()).isEqualTo(matchBEMapped.getFehlerSatz5()).isEqualTo(MATCH_FEHLER_SATZ_5);
+        assertThat(matchBE.getStrafPunktSatz1()).isEqualTo(matchBEMapped.getStrafPunktSatz1()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_1);
+        assertThat(matchBE.getStrafPunktSatz1()).isEqualTo(matchBEMapped.getStrafPunktSatz2()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_2);
+        assertThat(matchBE.getStrafPunktSatz1()).isEqualTo(matchBEMapped.getStrafPunktSatz3()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_3);
+        assertThat(matchBE.getStrafPunktSatz1()).isEqualTo(matchBEMapped.getStrafPunktSatz4()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_4);
+        assertThat(matchBE.getStrafPunktSatz1()).isEqualTo(matchBEMapped.getStrafPunktSatz5()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_5);
         assertThat(matchBE.getNr()).isEqualTo(matchBEMapped.getNr()).isEqualTo(MATCH_NR);
     }
 
@@ -38,11 +43,16 @@ public class MatchMapperTest extends BaseMatchTest {
         assertThat(matchBE.getWettkampfId()).isEqualTo(matchDOMapped.getWettkampfId()).isEqualTo(MATCH_WETTKAMPF_ID);
         assertThat(matchBE.getMatchpunkte()).isEqualTo(matchDOMapped.getMatchpunkte()).isEqualTo(MATCH_MATCHPUNKTE);
         assertThat(matchBE.getSatzpunkte()).isEqualTo(matchDOMapped.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
-        assertThat(matchBE.getFehlerSatz1()).isEqualTo(matchDOMapped.getFehlerSatz1()).isEqualTo(MATCH_FEHLER_SATZ_1);
-        assertThat(matchBE.getFehlerSatz2()).isEqualTo(matchDOMapped.getFehlerSatz2()).isEqualTo(MATCH_FEHLER_SATZ_2);
-        assertThat(matchBE.getFehlerSatz3()).isEqualTo(matchDOMapped.getFehlerSatz3()).isEqualTo(MATCH_FEHLER_SATZ_3);
-        assertThat(matchBE.getFehlerSatz4()).isEqualTo(matchDOMapped.getFehlerSatz4()).isEqualTo(MATCH_FEHLER_SATZ_4);
-        assertThat(matchBE.getFehlerSatz5()).isEqualTo(matchDOMapped.getFehlerSatz5()).isEqualTo(MATCH_FEHLER_SATZ_5);
+        assertThat(matchBE.getStrafPunktSatz1()).isEqualTo(matchDOMapped.getStrafPunktSatz1()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_1);
+        assertThat(matchBE.getStrafPunktSatz2()).isEqualTo(matchDOMapped.getStrafPunktSatz2()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_2);
+        assertThat(matchBE.getStrafPunktSatz3()).isEqualTo(matchDOMapped.getStrafPunktSatz3()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_3);
+        assertThat(matchBE.getStrafPunktSatz4()).isEqualTo(matchDOMapped.getStrafPunktSatz4()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_4);
+        assertThat(matchBE.getStrafPunktSatz5()).isEqualTo(matchDOMapped.getStrafPunktSatz5()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_5);
         assertThat(matchBE.getNr()).isEqualTo(matchDOMapped.getNr()).isEqualTo(MATCH_NR);
     }
 

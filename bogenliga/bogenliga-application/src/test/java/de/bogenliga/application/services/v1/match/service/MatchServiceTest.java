@@ -82,6 +82,12 @@ public class MatchServiceTest {
     protected static final Long MATCH_SATZPUNKTE = 3L;
     protected static final Long CURRENT_USER_ID = 1L;
 
+    protected static final Long MATCH_STRAFPUNKTE_SATZ1 = 10L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ2 = 0L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ3 = 20L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ4 = 0L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ5 = 0L;
+
 
     private static final Long PASSE_ID_1 = 1L;
     private static final Long PASSE_ID_2 = 2L;
@@ -137,7 +143,12 @@ public class MatchServiceTest {
                 MATCH_WETTKAMPF_ID,
                 MATCH_MATCHPUNKTE,
                 MATCH_SCHEIBENNUMMER,
-                MATCH_SATZPUNKTE
+                MATCH_SATZPUNKTE,
+                MATCH_STRAFPUNKTE_SATZ1,
+                MATCH_STRAFPUNKTE_SATZ2,
+                MATCH_STRAFPUNKTE_SATZ3,
+                MATCH_STRAFPUNKTE_SATZ4,
+                MATCH_STRAFPUNKTE_SATZ5
         );
     }
 
