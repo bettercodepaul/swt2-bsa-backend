@@ -17,11 +17,11 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     private Long begegnung;
     private Long matchpunkte;
     private Long satzpunkte;
-    private Long fehlerSatz1;
-    private Long fehlerSatz2;
-    private Long fehlerSatz3;
-    private Long fehlerSatz4;
-    private Long fehlerSatz5;
+    private Long strafPunktSatz1;
+    private Long strafPunktSatz2;
+    private Long strafPunktSatz3;
+    private Long strafPunktSatz4;
+    private Long strafPunktSatz5;
 
 
     @Override
@@ -35,11 +35,11 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
                 "begegnung=" + begegnung +
                 "matchpunkte=" + matchpunkte +
                 "satzpunkte=" + satzpunkte +
-                "fehlerSatz1=" + fehlerSatz1 +
-                "fehlerSatz2=" + fehlerSatz2 +
-                "fehlerSatz3=" + fehlerSatz3 +
-                "fehlerSatz4=" + fehlerSatz4 +
-                "fehlerSatz5=" + fehlerSatz5 +
+                "strafPunktSatz1=" + strafPunktSatz1 +
+                "strafPunktSatz2=" + strafPunktSatz2 +
+                "strafPunktSatz3=" + strafPunktSatz3 +
+                "strafPunktSatz4=" + strafPunktSatz4 +
+                "strafPunktSatz5=" + strafPunktSatz5 +
                 '}';
     }
 
@@ -124,52 +124,52 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public Long getFehlerSatz1() {
-        return fehlerSatz1;
+    public Long getStrafPunktSatz1() {
+        return strafPunktSatz1;
     }
 
 
-    public void setFehlerSatz1(Long fehlerSatz1) {
-        this.fehlerSatz1 = fehlerSatz1;
+    public void setStrafPunktSatz1(Long strafPunktSatz1) {
+        this.strafPunktSatz1 = strafPunktSatz1;
     }
 
 
-    public Long getFehlerSatz2() {
-        return fehlerSatz2;
+    public Long getStrafPunktSatz2() {
+        return strafPunktSatz2;
     }
 
 
-    public void setFehlerSatz2(Long fehlerSatz2) {
-        this.fehlerSatz2 = fehlerSatz2;
+    public void setStrafPunktSatz2(Long strafPunktSatz2) {
+        this.strafPunktSatz2 = strafPunktSatz2;
     }
 
 
-    public Long getFehlerSatz3() {
-        return fehlerSatz3;
+    public Long getStrafPunktSatz3() {
+        return strafPunktSatz3;
     }
 
 
-    public void setFehlerSatz3(Long fehlerSatz3) {
-        this.fehlerSatz3 = fehlerSatz3;
+    public void setStrafPunktSatz3(Long strafPunktSatz3) {
+        this.strafPunktSatz3 = strafPunktSatz3;
     }
 
 
-    public Long getFehlerSatz4() {
-        return fehlerSatz4;
+    public Long getStrafPunktSatz4() {
+        return strafPunktSatz4;
     }
 
 
-    public void setFehlerSatz4(Long fehlerSatz4) {
-        this.fehlerSatz4 = fehlerSatz4;
+    public void setStrafPunktSatz4(Long strafPunktSatz4) {
+        this.strafPunktSatz4 = strafPunktSatz4;
     }
 
 
-    public Long getFehlerSatz5() {
-        return fehlerSatz5;
+    public Long getStrafPunktSatz5() {
+        return strafPunktSatz5;
     }
 
 
-    public void setFehlerSatz5(Long fehlerSatz5) {
-        this.fehlerSatz5 = fehlerSatz5;
+    public void setStrafPunktSatz5(Long strafPunktSatz5) {
+        this.strafPunktSatz5 = strafPunktSatz5;
     }
 }

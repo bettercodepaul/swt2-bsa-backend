@@ -24,6 +24,12 @@ public class MatchDTO implements DataTransferObject {
     private Long matchpunkte;
     private Long satzpunkte;
 
+    private Long strafPunkteSatz1;
+    private Long strafPunkteSatz2;
+    private Long strafPunkteSatz3;
+    private Long strafPunkteSatz4;
+    private Long strafPunkteSatz5;
+
     // used to transport related passe objects to the frontend or to save them from the
     // table form (schusszettel) to the database
     private List<PasseDTO> passen;
@@ -37,7 +43,8 @@ public class MatchDTO implements DataTransferObject {
 
 
     public MatchDTO(Long id, Long nr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
-                    Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen) {
+                    Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen, Long strafPunkteSatz1,
+                    Long strafPunkteSatz2, Long strafPunkteSatz3, Long strafPunkteSatz4, Long strafPunkteSatz5) {
         this.setId(id);
         this.setNr(nr);
         this.setVersion(version);
@@ -48,6 +55,11 @@ public class MatchDTO implements DataTransferObject {
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
         this.setPassen(passen);
+        this.setStrafPunkteSatz1(strafPunkteSatz1);
+        this.setStrafPunkteSatz2(strafPunkteSatz2);
+        this.setStrafPunkteSatz3(strafPunkteSatz3);
+        this.setStrafPunkteSatz4(strafPunkteSatz4);
+        this.setStrafPunkteSatz5(strafPunkteSatz5);
     }
 
 
@@ -168,5 +180,55 @@ public class MatchDTO implements DataTransferObject {
 
     public void setWettkampfTypId(Long wettkampfTypId) {
         this.wettkampfTypId = wettkampfTypId;
+    }
+
+
+    public Long getStrafPunkteSatz1() {
+        return strafPunkteSatz1;
+    }
+
+
+    public void setStrafPunkteSatz1(Long strafPunkteSatz1) {
+        this.strafPunkteSatz1 = strafPunkteSatz1;
+    }
+
+
+    public Long getStrafPunkteSatz2() {
+        return strafPunkteSatz2;
+    }
+
+
+    public void setStrafPunkteSatz2(Long strafPunkteSatz2) {
+        this.strafPunkteSatz2 = strafPunkteSatz2;
+    }
+
+
+    public Long getStrafPunkteSatz3() {
+        return strafPunkteSatz3;
+    }
+
+
+    public void setStrafPunkteSatz3(Long strafPunkteSatz3) {
+        this.strafPunkteSatz3 = strafPunkteSatz3;
+    }
+
+
+    public Long getStrafPunkteSatz4() {
+        return strafPunkteSatz4;
+    }
+
+
+    public void setStrafPunkteSatz4(Long strafPunkteSatz4) {
+        this.strafPunkteSatz4 = strafPunkteSatz4;
+    }
+
+
+    public Long getStrafPunkteSatz5() {
+        return strafPunkteSatz5;
+    }
+
+
+    public void setStrafPunkteSatz5(Long strafPunkteSatz5) {
+        this.strafPunkteSatz5 = strafPunkteSatz5;
     }
 }
