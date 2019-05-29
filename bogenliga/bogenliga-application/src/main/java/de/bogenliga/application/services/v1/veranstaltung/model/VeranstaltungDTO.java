@@ -42,6 +42,10 @@ public class VeranstaltungDTO implements DataTransferObject {
         this.ligaName = ligaName;
     }
 
+    public VeranstaltungDTO() {
+        //empty
+    }
+
 
     public Long getId() {
         return id;
