@@ -211,12 +211,7 @@ public class RegionenService implements ServiceFacade {
      * @return the same list of RegionDTOs, but all IDs and uebergeordnetAsName are matching correctly.
      */
     private List<RegionenDTO> syncUebergeordnetWithUebergeordnetAsName(List<RegionenDTO> regionenDTOs){
-        System.out.println("Start Translating...");
-        regionenDTOs.forEach(region -> System.out.print(region.getId()+":"+region.getRegionName()+", "));
         regionenDTOs.stream().forEach(region -> syncSingleWithDTOs(region, regionenDTOs));
-        regionenDTOs.forEach(region -> System.out.println(region.getId()+":"+region.getRegionName()+ ":"+
-                region.getRegionUebergeordnet()+":"+region.getRegionUebergeordnetAsName() + ", "));
-        System.out.println("Finished Translation.");
         return regionenDTOs;
     }
 
@@ -229,12 +224,7 @@ public class RegionenService implements ServiceFacade {
      * @return the same list of RegionDTOs, but all IDs and uebergeordnetAsName are matching correctly.
      */
     private List<RegionenDTO> syncUebergeordnetWithUebergeordnetAsName(List<RegionenDTO> regionenDTOsToSync, List<RegionenDO> allRegionenDos ){
-        System.out.println("Start Translating...");
-        regionenDTOsToSync.forEach(region -> System.out.print(region.getId()+":"+region.getRegionName()+", "));
         regionenDTOsToSync.stream().forEach(region -> syncSingleWithDOs(region, allRegionenDos));
-        regionenDTOsToSync.forEach(region -> System.out.println(region.getId()+":"+region.getRegionName()+ ":"+
-                region.getRegionUebergeordnet()+":"+region.getRegionUebergeordnetAsName() + ", "));
-        System.out.println("Finished Translation.");
         return regionenDTOsToSync;
     }
 
@@ -250,13 +240,11 @@ public class RegionenService implements ServiceFacade {
      * @return the same currentRegion, but the ID is matching to the uebergeordnetAsName.
      */
     private RegionenDTO syncSingleWithDTOs(RegionenDTO currentRegion, List<RegionenDTO> regions){
-        //System.out.println("Current: "+ currentRegion +", all: "+regions.size());
         List<RegionenDTO> possibleRegions = null;
         //Case: The region has a superordinate name but not yet the id
         if(currentRegion.getRegionUebergeordnet() == null
                 && currentRegion.getRegionUebergeordnetAsName()!=null){
-            //System.out.println("Translation 1, name is: "+ currentRegion.getRegionUebergeordnetAsName());
-            //search for the region with the name of the regionUebergeordnetAsName field
+
             possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
                 .collect(Collectors.toList());
 
@@ -264,22 +252,18 @@ public class RegionenService implements ServiceFacade {
             Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
 
             currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
-            //System.out.println("Translated "+currentRegion.getRegionName()+": Name to ID: "+ currentRegion.getRegionUebergeordnetAsName()+" : "+currentRegion.getRegionUebergeordnet());
-        //Case: The region has a superordinate id but not its corresponding name
+            //Case: The region has a superordinate id but not its corresponding name
         }else if(currentRegion.getRegionUebergeordnet() != null
                 && currentRegion.getRegionUebergeordnetAsName()==null){
-            //System.out.println("Translation 2, Id is: "+ currentRegion.getRegionUebergeordnet());
+
             possibleRegions = regions.stream().filter(region -> region.getId() ==
                     currentRegion.getRegionUebergeordnet()).collect(
                     Collectors.toList());
-            //System.out.println("possibleRegions: "+possibleRegions.size());
+
             Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
             Preconditions.checkArgument(!possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
 
             currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
-            //System.out.println("Translated "+currentRegion.getRegionName()+": ID to Name: "+ currentRegion.getRegionUebergeordnet() +" : "+currentRegion.getRegionUebergeordnetAsName());
-
-
         }
         return currentRegion;
     }
@@ -301,7 +285,7 @@ public class RegionenService implements ServiceFacade {
         //Case: The region has a superordinate name but not yet the id
         if(currentRegion.getRegionUebergeordnet() == null
                 && currentRegion.getRegionUebergeordnetAsName()!=null){
-            //System.out.println("Translation 1, name is: "+ currentRegion.getRegionUebergeordnetAsName());
+
             //search for the region with the name of the regionUebergeordnetAsName field
             possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
                     .collect(Collectors.toList());
@@ -310,22 +294,18 @@ public class RegionenService implements ServiceFacade {
             Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
 
             currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
-            //System.out.println("Translated "+currentRegion.getRegionName()+": Name to ID: "+ currentRegion.getRegionUebergeordnetAsName()+" : "+currentRegion.getRegionUebergeordnet());
-            //Case: The region has a superordinate id but not its corresponding name
+        //Case: The region has a superordinate id but not its corresponding name
         }else if(currentRegion.getRegionUebergeordnet() != null
                 && currentRegion.getRegionUebergeordnetAsName()==null){
-            //System.out.println("Translation 2, Id is: "+ currentRegion.getRegionUebergeordnet());
+
             possibleRegions = regions.stream().filter(region -> region.getId() ==
                     currentRegion.getRegionUebergeordnet()).collect(
                     Collectors.toList());
-            //System.out.println("possibleRegions: "+possibleRegions.size());
+
             Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
             Preconditions.checkArgument(!possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
 
             currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
-            //System.out.println("Translated "+currentRegion.getRegionName()+": ID to Name: "+ currentRegion.getRegionUebergeordnet() +" : "+currentRegion.getRegionUebergeordnetAsName());
-
-
         }
         return currentRegion;
     }
