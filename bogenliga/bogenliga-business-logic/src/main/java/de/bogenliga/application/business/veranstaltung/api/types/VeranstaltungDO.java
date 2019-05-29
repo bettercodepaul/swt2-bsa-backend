@@ -21,6 +21,23 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     private Long veranstaltungSportJahr;
     private Date veranstaltungMeldeDeadline;
     private Long veranstaltungLigaleiterID;
+    private Long veranstaltungLigaID;
+    private String veranstaltungLigaleiterEmail;
+    private String veranstaltungWettkampftypName;
+    private String veranstaltungLigaName;
+
+
+    public VeranstaltungDO() {
+
+        //empty
+
+    }
+
+    public VeranstaltungDO(final Long id) {
+
+        this.veranstaltungID = id;
+
+    }
 
 
     /**
@@ -40,9 +57,13 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
                            final Date meldeDeadline,
-                           final Long ligaleiterID, final OffsetDateTime createdAtUtc, final Long createdByUserId,
+                           final Long ligaleiterID, final Long ligaID,
+                           final OffsetDateTime createdAtUtc, final Long createdByUserId,
                            final OffsetDateTime lastModifiedAtUtc,
-                           final Long lastModifiedByUserId, final Long version) {
+                           final Long lastModifiedByUserId, final Long version,
+                           final String ligaleiterEmail,
+                           final String wettkampftypName,
+                           final String ligaName) {
 
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
@@ -50,11 +71,15 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.veranstaltungSportJahr = sportJahr;
         this.veranstaltungMeldeDeadline = meldeDeadline;
         this.veranstaltungLigaleiterID = ligaleiterID;
+        this.veranstaltungLigaID = ligaID;
         this.createdByUserId = createdByUserId;
         this.createdAtUtc = createdAtUtc;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
+        this.veranstaltungLigaleiterEmail = ligaleiterEmail;
+        this.veranstaltungWettkampftypName = wettkampftypName;
+        this.veranstaltungLigaName = ligaName;
     }
 
 
@@ -69,7 +94,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param ligaleiterID
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
-                           final Date meldeDeadline, final Long ligaleiterID) {
+                           final Date meldeDeadline, final Long ligaleiterID, final Long ligaID, final String ligaleiterEmail, final String wettkampftypName, final String ligaName) {
 
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
@@ -77,6 +102,37 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.veranstaltungSportJahr = sportJahr;
         this.veranstaltungMeldeDeadline = meldeDeadline;
         this.veranstaltungLigaleiterID = ligaleiterID;
+        this.veranstaltungLigaID = ligaID;
+        this.veranstaltungLigaleiterEmail = ligaleiterEmail;
+        this.veranstaltungWettkampftypName = wettkampftypName;
+        this.veranstaltungLigaName = ligaName;
+
+    }
+
+    /**
+     * Constructor without technical parameters
+     *
+     * @param id
+     * @param wettkampfTypID
+     * @param name
+     * @param sportJahr
+     * @param meldeDeadline
+     * @param ligaleiterID
+     */
+    public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
+                           final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version) {
+
+        this.veranstaltungID = id;
+        this.veranstaltungWettkampftypID = wettkampfTypID;
+        this.veranstaltungName = name;
+        this.veranstaltungSportJahr = sportJahr;
+        this.veranstaltungMeldeDeadline = meldeDeadline;
+        this.veranstaltungLigaleiterID = ligaleiterID;
+        this.veranstaltungLigaID = ligaID;
+        this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
+        this.version = version;
+
 
     }
 
@@ -85,7 +141,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     public int hashCode() {
         return Objects.hash(veranstaltungID, veranstaltungWettkampftypID, veranstaltungName, veranstaltungSportJahr,
                 veranstaltungMeldeDeadline,
-                veranstaltungLigaleiterID,
+                veranstaltungLigaleiterID, veranstaltungLigaID, veranstaltungLigaleiterEmail, veranstaltungWettkampftypName, veranstaltungLigaName,
                 createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
@@ -100,7 +156,11 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                     this.getVeranstaltungName() == that.getVeranstaltungName() &&
                     this.getVeranstaltungSportJahr().equals(that.getVeranstaltungSportJahr()) &&
                     this.getVeranstaltungMeldeDeadline() == that.getVeranstaltungMeldeDeadline() &&
-                    this.getVeranstaltungLigaleiterID() == that.getVeranstaltungLigaleiterID());
+                    this.getVeranstaltungLigaleiterID() == that.getVeranstaltungLigaleiterID() &&
+                    this.getVeranstaltungLigaID() == that.getVeranstaltungLigaID() &&
+                    this.getVeranstaltungLigaleiterEmail() == that.getVeranstaltungLigaleiterEmail() &&
+                    this.getVeranstaltungWettkampftypName() == that.getVeranstaltungWettkampftypName() &&
+                    this.getVeranstaltungLigaName() == that.getVeranstaltungLigaName());
         }
         return false;
 
@@ -208,15 +268,59 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     }
 
 
+    public String getVeranstaltungLigaleiterEmail() {
+        return veranstaltungLigaleiterEmail;
+    }
+
+
+    public void setVeranstaltungLigaleiterEmail(String veranstaltungligaLeiterEmail) {
+        this.veranstaltungLigaleiterEmail = veranstaltungLigaleiterEmail;
+    }
+
+
+    public String getVeranstaltungWettkampftypName() {
+        return veranstaltungWettkampftypName;
+    }
+
+
+    public void setVeranstaltungWettkampftypName(String veranstaltungWettkampftypName) {
+        this.veranstaltungWettkampftypName = veranstaltungWettkampftypName;
+    }
+
+
+    public Long getVeranstaltungLigaID() {
+        return veranstaltungLigaID;
+    }
+
+
+    public void setVeranstaltungLigaID(Long veranstaltungLigaID) {
+        this.veranstaltungLigaID = veranstaltungLigaID;
+    }
+
+
+    public String getVeranstaltungLigaName() {
+        return veranstaltungLigaName;
+    }
+
+
+    public void setVeranstaltungLigaName(String veranstaltungLigaName) {
+        this.veranstaltungLigaName = veranstaltungLigaName;
+    }
+
+
     @Override
     public String toString() {
-        return "VeranstaltungBE{" +
-                "veranstaltung_id='" + this.veranstaltungID + '\'' +
-                ", wettkampf_id='" + veranstaltungWettkampftypID + '\'' +
-                ", name='" + veranstaltungName + '\'' +
-                ", sportjahr='" + this.veranstaltungSportJahr + '\'' +
-                ", meldedeadline='" + this.veranstaltungMeldeDeadline + '\'' +
-                ", ligaleiter_id='" + this.veranstaltungLigaleiterID + '\'' +
+        return "VeranstaltungDO{" +
+                "veranstaltungID ='" + this.veranstaltungID + '\'' +
+                ", veranstaltungWettkampftypID='" + this.veranstaltungWettkampftypID + '\'' +
+                ", veranstaltungName='" + this.veranstaltungName + '\'' +
+                ", veranstaltungSportJahr='" + this.veranstaltungSportJahr + '\'' +
+                ", veranstaltungMeldeDeadline='" + this.veranstaltungMeldeDeadline + '\'' +
+                ", veranstaltungLigaleiterID='" + this.veranstaltungLigaleiterID + '\'' +
+                ", veranstaltungLigaID='" + this.veranstaltungLigaID + '\'' +
+                ", veranstaltungLigaleiterEmail ='" + this.veranstaltungLigaleiterEmail + '\'' +
+                ", veranstaltungWettkampftypName ='" + this.veranstaltungWettkampftypName + '\'' +
+                ", veranstaltungLigaName ='" + this.veranstaltungLigaName + '\'' +
                 "}";
     }
 }
