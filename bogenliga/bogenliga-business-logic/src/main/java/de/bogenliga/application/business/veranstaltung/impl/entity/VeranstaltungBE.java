@@ -13,14 +13,15 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
 
 
     private static final long serialVersionUID = -7987623598712368L;
-    private Long veranstaltungID;
-    private Long veranstaltungWettkampftypID;
-    private String veranstaltungName;
-    private Long veranstaltungSportJahr;
-    private Date veranstaltungMeldeDeadline;
-    private Long veranstaltungKampfrichterAnzahl;
-    private Long veranstaltungHoehere;
-    private Long veranstaltungLigaleiterID;
+    private Long veranstaltung_id;
+    private Long veranstaltung_wettkampftyp_id;
+    private String veranstaltung_name;
+    private Long veranstaltung_sportjahr;
+    private Date veranstaltung_meldeDeadline;
+    private Long veranstaltung_ligaleiter_id;
+    private Long veranstaltung_liga_id;
+
+
 
     /**
      * Default Constructor of VeranstaltungBE
@@ -34,79 +35,79 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
         return serialVersionUID;
     }
 
-    public Long getVeranstaltungID() {
-        return veranstaltungID;
+    public Long getVeranstaltung_id() {
+        return veranstaltung_id;
     }
 
-    public void setVeranstaltungID(Long veranstaltungID) {
-        this.veranstaltungID = veranstaltungID;
+    public void setVeranstaltung_id(Long veranstaltung_id) {
+        this.veranstaltung_id = veranstaltung_id;
     }
 
-    public Long getVeranstaltungWettkampftypID() {
-        return veranstaltungWettkampftypID;
+    public Long getVeranstaltung_wettkampftyp_id() {
+        return veranstaltung_wettkampftyp_id;
     }
 
-    public void setVeranstaltungWettkampftypID(Long veranstaltungWettkampftypID) {
-        this.veranstaltungWettkampftypID = veranstaltungWettkampftypID;
+    public void setVeranstaltung_wettkampftyp_id(Long veranstaltung_wettkampftyp_id) {
+        this.veranstaltung_wettkampftyp_id = veranstaltung_wettkampftyp_id;
     }
 
-    public String getVeranstaltungName() {
-        return veranstaltungName;
+    public String getVeranstaltung_name() {
+        return veranstaltung_name;
     }
 
-    public void setVeranstaltungName(String veranstaltungName) {
-        this.veranstaltungName = veranstaltungName;
+    public void setVeranstaltung_name(String veranstaltung_name) {
+        this.veranstaltung_name = veranstaltung_name;
     }
 
-    public Long getVeranstaltungSportJahr() {
-        return veranstaltungSportJahr;
+    public Long getVeranstaltung_sportjahr() {
+        return veranstaltung_sportjahr;
     }
 
-    public void setVeranstaltungSportJahr(Long veranstaltungSportJahr) {
-        this.veranstaltungSportJahr = veranstaltungSportJahr;
+    public void setVeranstaltung_sportjahr(Long veranstaltung_sportjahr) {
+        this.veranstaltung_sportjahr = veranstaltung_sportjahr;
     }
 
-    public Date getVeranstaltungMeldeDeadline() {
-        return veranstaltungMeldeDeadline;
+    public Date getVeranstaltung_meldeDeadline() {
+        return veranstaltung_meldeDeadline;
     }
 
-    public void setVeranstaltungMeldeDeadline(Date veranstaltungMeldeDeadline) {
-        this.veranstaltungMeldeDeadline = veranstaltungMeldeDeadline;
+    public void setVeranstaltung_meldeDeadline(Date veranstaltung_meldeDeadline) {
+        this.veranstaltung_meldeDeadline = veranstaltung_meldeDeadline;
     }
 
-    public Long getVeranstaltungKampfrichterAnzahl() {
-        return veranstaltungKampfrichterAnzahl;
+
+    public Long getVeranstaltung_ligaleiter_id() {
+        return veranstaltung_ligaleiter_id;
     }
 
-    public void setVeranstaltungKampfrichterAnzahl(Long veranstaltungKampfrichterAnzahl) {
-        this.veranstaltungKampfrichterAnzahl = veranstaltungKampfrichterAnzahl;
+    public void setVeranstaltung_ligaleiter_id(Long veranstaltung_ligaleiter_id) {
+        this.veranstaltung_ligaleiter_id = veranstaltung_ligaleiter_id;
     }
 
-    public Long getVeranstaltungHoehere() {
-        return veranstaltungHoehere;
+
+    public Long getVeranstaltung_liga_id() {
+        return veranstaltung_liga_id;
     }
 
-    public void setVeranstaltungHoehere(Long veranstaltungHoehere) {
-        this.veranstaltungHoehere = veranstaltungHoehere;
+
+    public void setVeranstaltung_liga_id(Long veranstaltung_liga_id) {
+        this.veranstaltung_liga_id = veranstaltung_liga_id;
     }
 
-    public Long getVeranstaltungLigaleiterID() {
-        return veranstaltungLigaleiterID;
-    }
-
-    public void setVeranstaltungLigaleiterID(Long veranstaltungLigaleiterID) {
-        this.veranstaltungLigaleiterID = veranstaltungLigaleiterID;
-    }
 
     @Override
     public String toString() {
         return "VeranstaltungBE{" +
-                "veranstaltung_id='" + this.veranstaltungID + '\'' +
-                ", wettkampf_id='" + veranstaltungWettkampftypID + '\'' +
-                ", name='" + veranstaltungName + '\'' +
-                ", sportjahr='" + this.veranstaltungSportJahr + '\'' +
-                ", meldedeadline='" + this.veranstaltungMeldeDeadline + '\'' +
-                ", ligaleiter_id='" + this.veranstaltungLigaleiterID + '\'' +
+                "veranstaltung_id='" + this.veranstaltung_id + '\'' +
+                ", wettkampf_id='" + this.veranstaltung_wettkampftyp_id + '\'' +
+                ", name='" + this.veranstaltung_name + '\'' +
+                ", sportjahr='" + this.veranstaltung_sportjahr + '\'' +
+                ", meldedeadline='" + this.veranstaltung_meldeDeadline + '\'' +
+                ", ligaleiter_id='" + this.veranstaltung_ligaleiter_id + '\'' +
+                ", liga_id='" + this.veranstaltung_liga_id + '\''
                 "}";
     }
 }
+
+
+

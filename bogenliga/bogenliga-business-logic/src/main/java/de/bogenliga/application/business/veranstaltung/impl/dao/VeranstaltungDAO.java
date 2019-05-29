@@ -21,12 +21,16 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 public class VeranstaltungDAO implements DataAccessObject{
 
 
-    private static final String VERANSTALTUNG_BE_ID = "veranstaltungID";
-    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltungWettkampftypID";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltungName";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltungSportJahr";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltungMeldeDeadline";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterID";
+    private static final String VERANSTALTUNG_BE_ID = "veranstaltung_id";
+    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltung_name";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltung_sportjahr";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltung_meldedeadline";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltung_liga_id";
+
+
+
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
@@ -34,6 +38,8 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_TABLE_SPORTJAHR = "veranstaltung_sportjahr";
     private static final String VERANSTALTUNG_TABLE_MELDEDEADLINE = "veranstaltung_meldedeadline";
     private static final String VERANSTALTUNG_TABLE_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
+    private static final String VERANSTALTUNG_TABLE_LIGA_ID = "veranstaltung_liga_id";
+
 
 
     // define the logger context
@@ -55,13 +61,12 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM veranstaltung"
-                    + " ORDER BY veranstaltung_id";
+                    + " ORDER BY veranstaltung.veranstaltung_id";
 
     private static final String FIND_BY_ID =
             "SELECT * "
-                    + " FROM veranstaltung"
+                    + " FROM veranstaltung "
                     + " WHERE veranstaltung_id = ?";
-
 
     private final BasicDAO basicDao;
 
@@ -87,6 +92,9 @@ public class VeranstaltungDAO implements DataAccessObject{
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_SPORTJAHR, VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_MELDEDEADLINE, VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGALEITER_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID);
+        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
+
+
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -98,7 +106,8 @@ public class VeranstaltungDAO implements DataAccessObject{
     /**
      * Return all Veranstaltung entries from the database
      */
-    public List<VeranstaltungBE> findAll() {
+    public List<VeranstaltungBE> findAll()
+    {
         return basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
     }
 
