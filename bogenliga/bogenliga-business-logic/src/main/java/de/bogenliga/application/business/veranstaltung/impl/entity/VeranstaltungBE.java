@@ -104,7 +104,7 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
                 ", sportjahr='" + this.veranstaltung_sportjahr + '\'' +
                 ", meldedeadline='" + this.veranstaltung_meldeDeadline + '\'' +
                 ", ligaleiter_id='" + this.veranstaltung_ligaleiter_id + '\'' +
-                ", liga_id='" + this.veranstaltung_liga_id + '\''
+                ", liga_id='" + this.veranstaltung_liga_id + '\''+
                 "}";
     }
 }
