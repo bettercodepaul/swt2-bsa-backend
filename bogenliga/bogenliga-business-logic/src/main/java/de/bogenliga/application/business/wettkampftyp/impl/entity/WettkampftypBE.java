@@ -23,7 +23,9 @@ public class WettkampftypBE extends CommonBusinessEntity implements BusinessEnti
     /**
      * Constructor
      */
-    public WettkampftypBE() { }
+    public WettkampftypBE() {
+        //empty constructor
+    }
 
 
     public Long getwettkampftypID() {
