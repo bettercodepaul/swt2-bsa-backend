@@ -10,16 +10,19 @@ import de.bogenliga.application.common.component.types.DataObject;
  *
  * @author Arthur Huber
  */
-public class WettkampftypDO extends CommonDataObject implements DataObject {
+public class WettkampfTypDO extends CommonDataObject implements DataObject {
 
 
     private static final long serialVersionUID = -3541537678685603149L;
     private Long id;
     private String name;
 
+    public WettkampfTypDO (final Long id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-
-    public WettkampftypDO(final Long id, final String name,
+    public WettkampfTypDO(final Long id, final String name,
                        final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
         this.id = id;
         this.name = name;
@@ -41,7 +44,7 @@ public class WettkampftypDO extends CommonDataObject implements DataObject {
      * @param lastModifiedByUserId
      * @param version
      */
-    public WettkampftypDO(final Long id, final String name,
+    public WettkampfTypDO(final Long id, final String name,
                        final OffsetDateTime createdAtUtc, final Long createdByUserId,
                        final OffsetDateTime lastModifiedAtUtc,
                        final Long lastModifiedByUserId,
@@ -59,7 +62,7 @@ public class WettkampftypDO extends CommonDataObject implements DataObject {
      *
      * @param id
      */
-    public WettkampftypDO(final Long id) {
+    public WettkampfTypDO(final Long id) {
         this.id = id;
     }
 
@@ -97,8 +100,8 @@ public class WettkampftypDO extends CommonDataObject implements DataObject {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof WettkampftypDO) {
-            final WettkampftypDO that = (WettkampftypDO) o;
+        if (o instanceof WettkampfTypDO) {
+            final WettkampfTypDO that = (WettkampfTypDO) o;
             return (Objects.equals(getId(), that.getId()) &&
                     Objects.equals(getName(), that.getName()));
         }
