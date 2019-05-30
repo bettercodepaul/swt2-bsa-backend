@@ -80,6 +80,7 @@ public class QueryBuilder {
 
     // Comparators
     public static final String SQL_EQUALS = " = ";
+    public static final String SQL_GT = " > ";
     public static final String SQL_GTE = " >= ";
     public static final String SQL_EQUAL_COMPARATOR = String.format(" %s? ", SQL_EQUALS);
     public static final String SQL_GT_COMPARATOR = String.format(" >%s ", SQL_VALUE_PLACEHOLDER);
@@ -541,6 +542,19 @@ public class QueryBuilder {
 
     public QueryBuilder andGt(final String fieldName) {
         addAnd(fieldName, SQL_GT_COMPARATOR);
+        return this;
+    }
+
+    public QueryBuilder andGtRaw(final String fieldName, final String value) {
+        addAnd(fieldName, SQL_GT);
+        this.queryString += value;
+        return this;
+    }
+
+
+    public QueryBuilder andGtRawWithAlias(final String tableAlias, final String fieldName, final String value) {
+        addAnd(withAlias(tableAlias, fieldName), SQL_GT_COMPARATOR);
+        this.queryString += value;
         return this;
     }
 

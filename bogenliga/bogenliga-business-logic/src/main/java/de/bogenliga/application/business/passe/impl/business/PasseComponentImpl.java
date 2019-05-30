@@ -276,4 +276,11 @@ public class PasseComponentImpl implements PasseComponent {
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
         passeDAO.delete(passeBE, currentMemberId);
     }
+
+
+    @Override
+    public List<PasseDO> findByWettkampfIdAndMember(Long wettkampfId, Long dsbMitgliedId) {
+        final List<PasseBE> passeBEList = passeDAO.findByWettkampfIdAndMember(wettkampfId, dsbMitgliedId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+    }
 }

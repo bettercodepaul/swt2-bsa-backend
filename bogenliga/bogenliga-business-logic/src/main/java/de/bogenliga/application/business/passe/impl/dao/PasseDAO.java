@@ -169,6 +169,13 @@ public class PasseDAO implements DataAccessObject {
             .andEquals(PASSE_TABLE_MATCH_ID)
             .compose().toString();
 
+    private static final String FIND_BY_WETTKAMPF_AND_MEMBER = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(PASSE_TABLE_WETTKAMPF_ID)
+            .andEquals(PASSE_TABLE_DSB_MITGLIED_ID)
+            .compose().toString();
+
 
     /**
      * Return all passe entries.
@@ -329,4 +336,7 @@ public class PasseDAO implements DataAccessObject {
     }
 
 
+    public List<PasseBE> findByWettkampfIdAndMember(Long wettkampfId, Long dsbMitgliedId) {
+        return basicDao.selectEntityList(PASSE, FIND_BY_WETTKAMPF_AND_MEMBER, wettkampfId, dsbMitgliedId);
+    }
 }

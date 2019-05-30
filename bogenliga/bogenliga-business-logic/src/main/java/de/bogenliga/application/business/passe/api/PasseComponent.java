@@ -119,4 +119,7 @@ public interface PasseComponent {
      * @param currentMemberId id of the member currently updating the passe
      */
     void delete(PasseDO passeDO, Long currentMemberId);
+
+
+    List<PasseDO> findByWettkampfIdAndMember(Long wettkampfId, Long dsbMitgliedId);
 }

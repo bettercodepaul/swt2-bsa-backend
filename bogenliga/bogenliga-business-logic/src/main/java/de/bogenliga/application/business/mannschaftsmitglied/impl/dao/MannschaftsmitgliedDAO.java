@@ -83,6 +83,18 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .compose().toString();
 
+    private static final String FIND_PARTICIPATION_IN_LIGA = new QueryBuilder()
+            .selectFields(selectedFields)
+            .from(TABLE, TABLE_ALIAS)
+            .join("mannschaft", "m")
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, "m","mannschaft_id")
+            .join("veranstaltung", "v")
+            .on("m", "mannschaft_veranstaltung_id", "v","veranstaltung_id")
+            .whereEquals("mm", "mannschaftsmitglied_dsb_mitglied_id")
+            .andEquals("v", "veranstaltung_liga_id")
+            .andGtRawWithAlias("mm", "mannschaftsmitglied_dsb_mitglied_eingesetzt", "0")
+            .compose().toString();
+
     private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
@@ -182,5 +194,9 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     public boolean checkExistingSchuetze(long teamId, final long memberId) {
         return findByMemberAndTeamId(teamId, memberId).getDsbMitgliedEingesetzt() > 0;
+    }
+
+    public List<MannschaftsmitgliedBE> findParticipationsInLiga(Long dsbMitlgiedId, Long ligaId) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_PARTICIPATION_IN_LIGA, dsbMitlgiedId, ligaId);
     }
 }

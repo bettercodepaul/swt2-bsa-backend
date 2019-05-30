@@ -164,6 +164,16 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     }
 
 
+    @Override
+    public List<MannschaftsmitgliedDO> findParticipationsInLiga(Long dsbMitlgiedId, Long ligaId) {
+        final List<MannschaftsmitgliedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findParticipationsInLiga(
+                dsbMitlgiedId, ligaId
+        );
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
+                Collectors.toList());
+    }
+
+
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO) {
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
         Preconditions.checkNotNull(mannschaftsmitgliedDO.getMannschaftId(),
