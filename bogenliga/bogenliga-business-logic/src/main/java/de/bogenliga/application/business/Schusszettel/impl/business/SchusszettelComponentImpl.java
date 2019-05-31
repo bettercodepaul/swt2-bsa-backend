@@ -13,9 +13,10 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
-import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -33,12 +34,20 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
 
     private final MatchComponent matchComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final VereinComponent vereinComponent;
+
+
     private long WettkampfID;
 
 
     @Autowired
-    public SchusszettelComponentImpl(final MatchComponent matchComponent) {
+    public SchusszettelComponentImpl(final MatchComponent matchComponent,
+                                     final DsbMannschaftComponent dsbMannschaftComponent,
+                                     final VereinComponent vereinComponent) {
         this.matchComponent = matchComponent;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.vereinComponent = vereinComponent;
     }
 
 
@@ -70,10 +79,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
              final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
 
             //iterate through matches
-            for (int i = 0; i<=7; i++){
+            for (long i = 1; i<=7; i++){
                 //iterate through begegnungen
-                for(int k = 0; k<=4; k++){
-                    //generateSchusszettelPage(doc, i, k);
+                for(long k = 1; k<=4; k++){
+                    generateSchusszettelPage(doc, getMatchDOsForPage(matchDOList , i, k));
                 }
             }
 
@@ -85,6 +94,22 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         }
         return ret;
 
+    }
+
+    private MatchDO[] getMatchDOsForPage(List<MatchDO> matchDOList, long matchNr, long begegnung){
+        MatchDO[] ret = new MatchDO[2];
+        long startScheibenNrBegegnung = (begegnung * 2) - 1 ;
+        for(MatchDO match : matchDOList){
+            if(match.getNr() == matchNr && match.getBegegnung() == begegnung){
+                if(match.getScheibenNummer() == startScheibenNrBegegnung){
+                    ret[0] = match;
+                }
+                if(match.getScheibenNummer() == startScheibenNrBegegnung + 1){
+                    ret[1] = match;
+                }
+            }
+        }
+        return ret;
     }
 
     /**
