@@ -11,9 +11,13 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
+import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
@@ -165,19 +169,13 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         // doc.setLeftMargin(5.0F);
         // doc.setRightMargin(5.0F);
 
+        // Create Tables
+        final Table tableHead = new Table(UnitValue.createPercentArray(3));
+
         // Headline
-        doc
-            .add(new Div().setWidth(UnitValue.createPercentValue(33.3F))
-                .add(new Paragraph(mannschaftName1))
-            );
-        doc
-            .add(new Div().setWidth(UnitValue.createPercentValue(33.3F))
-                .add(new Paragraph(wettkampfDO1.getWettkampfTag() + ". Wettkampf"))
-            );
-        doc
-            .add(new Div().setWidth(UnitValue.createPercentValue(33.3F))
-                .add(new Paragraph("Scheibe " + matchDO1.getScheibenNummer()))
-            );
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(mannschaftName1)));
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(wettkampfDO1.getWettkampfTag() + ". Wettkampf")));
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe " + matchDO1.getScheibenNummer())));
 
         // Border
         doc
