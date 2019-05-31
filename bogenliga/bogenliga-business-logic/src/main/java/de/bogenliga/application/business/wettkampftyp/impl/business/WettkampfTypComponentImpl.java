@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampftypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import de.bogenliga.application.business.wettkampftyp.impl.mapper.WettkampftypMapper;
@@ -39,14 +39,14 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
 
 
     @Override
-    public List<WettkampftypDO> findAll() {
+    public List<WettkampfTypDO> findAll() {
         final List<WettkampftypBE> wettkampftypBEList = wettkampftypDAO.findAll();
-        return wettkampftypBEList.stream().map(WettkampftypMapper.toWettkampftypDO).collect(Collectors.toList());
+        return wettkampftypBEList.stream().map(WettkampftypMapper.toWettkampfTypDO).collect(Collectors.toList());
     }
 
 
     @Override
-    public WettkampftypDO findById(final long id) {
+    public WettkampfTypDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
 
         final WettkampftypBE result = wettkampftypDAO.findById(id);
@@ -56,35 +56,35 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
                     String.format("No result found for ID '%s'", id));
         }
 
-        return WettkampftypMapper.toWettkampftypDO.apply(result);
+        return WettkampftypMapper.toWettkampfTypDO.apply(result);
     }
 
 
     @Override
-    public WettkampftypDO create(final WettkampftypDO wettkampftypDO, final long currentWettkampftypID) {
+    public WettkampfTypDO create(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
         checkDsbMitgliedDO(wettkampftypDO, currentWettkampftypID);
 
         final WettkampftypBE wettkampftypBE = WettkampftypMapper.toWettkampftypBE.apply(wettkampftypDO);
         final WettkampftypBE persistedWettkampftypBe = wettkampftypDAO.create(wettkampftypBE, currentWettkampftypID);
 
-        return WettkampftypMapper.toWettkampftypDO.apply(persistedWettkampftypBe);
+        return WettkampftypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
     }
 
 
     @Override
-    public WettkampftypDO update(final WettkampftypDO wettkampftypDO, final long currentWettkampftypID) {
+    public WettkampfTypDO update(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
         checkDsbMitgliedDO(wettkampftypDO, currentWettkampftypID);
         Preconditions.checkArgument(wettkampftypDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
 
         final WettkampftypBE wettkampftypBE = WettkampftypMapper.toWettkampftypBE.apply(wettkampftypDO);
         final WettkampftypBE persistedWettkampftypBe = wettkampftypDAO.update(wettkampftypBE, currentWettkampftypID);
 
-        return WettkampftypMapper.toWettkampftypDO.apply(persistedWettkampftypBe);
+        return WettkampftypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
     }
 
 
     @Override
-    public void delete(final WettkampftypDO wettkampftypDO, final long currentWettkampftypID) {
+    public void delete(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
         Preconditions.checkNotNull(wettkampftypDO, PRECONDITION_MSG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(wettkampftypDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(currentWettkampftypID >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
@@ -95,7 +95,7 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
 
     }
 
-    private void checkDsbMitgliedDO(final WettkampftypDO wettkampftypDO, final long currentWettkampftypID) {
+    private void checkDsbMitgliedDO(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
         Preconditions.checkNotNull(wettkampftypDO, PRECONDITION_MSG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(currentWettkampftypID >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
         Preconditions.checkNotNull(wettkampftypDO.getName(), PRECONDITION_MSG_WETTKAMPFTYP_NAME);

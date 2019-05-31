@@ -26,7 +26,7 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
@@ -213,8 +213,8 @@ public class MatchServiceTest {
     }
 
 
-    protected WettkampftypDO getWettkampftypDO(Long id) {
-        return new WettkampftypDO(id, W_name);
+    protected WettkampfTypDO getWettkampfTypDO(Long id) {
+        return new WettkampfTypDO(id, W_name);
     }
 
 
@@ -244,7 +244,7 @@ public class MatchServiceTest {
     public void findById() {
         MatchDO matchDO1 = getMatchDO();
         DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
-        WettkampftypDO wettkampftypDO = getWettkampftypDO(W_typId);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
         WettkampfDO wettkampfDO = getWettkampfDO(W_id);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
@@ -272,7 +272,7 @@ public class MatchServiceTest {
     public void findMatchesByIds() {
         MatchDO matchDO1 = getMatchDO();
         DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
-        WettkampftypDO wettkampftypDO = getWettkampftypDO(W_typId);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
         WettkampfDO wettkampfDO = getWettkampfDO(W_id);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
