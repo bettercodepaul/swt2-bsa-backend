@@ -7,10 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.colorspace.PdfDeviceCs;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.BlockElement;
+import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
@@ -21,10 +27,12 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
+import jdk.nashorn.internal.ir.Block;
 
 /**
  * * Implementation of {@link SchusszettelComponent}
@@ -137,6 +145,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         DsbMannschaftDO dsbMannschaftDO1 = dsbMannschaftComponent.findById(matchDO1.getMannschaftId());
         VereinDO vereinDO1 = vereinComponent.findById(dsbMannschaftDO1.getVereinId());
+        WettkampfDO wettkampfDO1 = wettkampfComponent.findById(matchDO1.getWettkampfId());
 
         if (dsbMannschaftDO1.getNummer() > 1) {
             mannschaftName1 = vereinDO1.getName() + " " + dsbMannschaftDO1.getNummer();
@@ -144,15 +153,50 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             mannschaftName1 = vereinDO1.getName();
         }
 
-        doc.add(new Paragraph(mannschaftName1));
-
         DsbMannschaftDO dsbMannschaftDO2 = dsbMannschaftComponent.findById(matchDO2.getMannschaftId());
         VereinDO vereinDO2 = vereinComponent.findById(dsbMannschaftDO2.getVereinId());
+        WettkampfDO wettkampfDO2 = wettkampfComponent.findById(matchDO2.getWettkampfId());
 
         if (dsbMannschaftDO2.getNummer() > 1) {
             mannschaftName2 = vereinDO2.getName() + " " + dsbMannschaftDO2.getNummer();
         } else {
             mannschaftName2 = vereinDO2.getName();
         }
+
+        doc.setLeftMargin(5);
+        doc.setRightMargin(5);
+
+        // Headline
+        doc
+            .add(new Div().setWidth(66.6F)
+                .add(new Paragraph(mannschaftName1)));
+        doc
+            .add(new Div().setWidth(66.6F)
+                .add(new Paragraph(wettkampfDO1.getWettkampfTag() + ". Wettkampf")));
+        doc
+            .add(new Div().setWidth(66.6F)
+                .add(new Paragraph("Scheibe " + matchDO1.getScheibenNummer())));
+
+        // Border
+        doc
+            .add(new Div().setWidth(200.0F).setBorder(new SolidBorder(1))
+
+        // Content first row
+            .add(new Div().setWidth(100.0F)
+                .add(new Div().setWidth(50.0F)
+                    .add(new Paragraph(matchDO1.getBegegnung() + " Match")))
+                .add(new Div().setWidth(50.0F)
+                    .add(new Paragraph(mannschaftName1)
+                    .add(new Paragraph("gegen")
+                    .add(new Paragraph(mannschaftName2))))))
+
+            .add(new Div().setWidth(100.0F)
+                .add()
+            )
+        // Content second row
+
+        // Content third row
+
+        );
     }
 }
