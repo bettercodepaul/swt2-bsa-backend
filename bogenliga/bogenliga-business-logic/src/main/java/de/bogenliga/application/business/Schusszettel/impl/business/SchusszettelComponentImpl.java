@@ -17,6 +17,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -26,6 +27,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  * * Implementation of {@link SchusszettelComponent}
  *
  * @author Michael Hesse, michael_maximilian.hesse@student.reutlingen-university.de
+ * @author Robin Müller, robin.mueller@student.reutlingen-university.de
  */
 @Component
 public class SchusszettelComponentImpl implements SchusszettelComponent {
@@ -36,6 +38,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
+    private final WettkampfComponent wettkampfComponent;
 
 
     private long WettkampfID;
@@ -44,10 +47,12 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
                                      final DsbMannschaftComponent dsbMannschaftComponent,
-                                     final VereinComponent vereinComponent) {
+                                     final VereinComponent vereinComponent,
+                                     final WettkampfComponent wettkampfComponent) {
         this.matchComponent = matchComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
+        this.wettkampfComponent = wettkampfComponent;
     }
 
 
@@ -96,6 +101,11 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
     }
 
+    /**
+     * <p>internal function to return two matches for one Schusszettel page
+     * </p>
+     * @param matchDOList list of matches for competition
+     */
     private MatchDO[] getMatchDOsForPage(List<MatchDO> matchDOList, long matchNr, long begegnung){
         MatchDO[] ret = new MatchDO[2];
         long startScheibenNrBegegnung = (begegnung * 2) - 1 ;
