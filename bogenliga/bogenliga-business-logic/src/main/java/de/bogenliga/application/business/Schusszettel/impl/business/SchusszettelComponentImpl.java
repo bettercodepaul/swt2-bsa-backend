@@ -18,6 +18,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
@@ -163,70 +164,26 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             mannschaftName2 = vereinDO2.getName();
         }
 
-        // doc.setLeftMargin(5.0F);
-        // doc.setRightMargin(5.0F);
-
         // Create Tables
-        final Table tableHead = new Table(UnitValue.createPercentArray(3));
+        final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
+        final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
+        final Table tableSecondRow = new Table(UnitValue.createPercentArray(5), true);
+        final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
 
         // Headline
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(mannschaftName1)));
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(wettkampfDO1.getWettkampfTag() + ". Wettkampf")));
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe " + matchDO1.getScheibenNummer())));
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT).add(new Paragraph(mannschaftName1)));
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph(wettkampfDO1.getWettkampfTag() + ". Wettkampf")));
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT).add(new Paragraph("Scheibe " + matchDO1.getScheibenNummer())));
 
-        // Border
-        doc
-            .add(new Div().setWidth(UnitValue.createPercentValue(100.0F)).setBorder(new SolidBorder(1))
+        doc.add(tableHead);
 
-        // Content first row
-            .add(new Div().setWidth(UnitValue.createPercentValue(50.0F))
-                .add(new Div().setWidth(UnitValue.createPercentValue(50.0F))
-                    .add(new Paragraph(matchDO1.getBegegnung() + " Match")))
-                .add(new Div().setWidth(UnitValue.createPercentValue(50.0F))
-                    .add(new Paragraph(mannschaftName1))
-                    .add(new Paragraph("gegen"))
-                    .add(new Paragraph(mannschaftName2))
-                )
-            )
-            .add(new Div().setWidth(UnitValue.createPercentValue(50.0F))
-                .add(new Div().setWidth(UnitValue.createPercentValue(100.0F))
-                    .add(new Div().setWidth(UnitValue.createPercentValue(66.6F))
-                        .add(new Div().setWidth(UnitValue.createPercentValue(20.0F))
-                            .add(new Paragraph("1.S.Pkte").setWidth(UnitValue.createPercentValue(80.0F)))
-                        )
-                        .add(new Div().setWidth(UnitValue.createPercentValue(20.0F))
-                            .add(new Paragraph("2.S.Pkte").setWidth(UnitValue.createPercentValue(80.0F)))
-                        )
-                        .add(new Div().setWidth(UnitValue.createPercentValue(20.0F))
-                            .add(new Paragraph("3.S.Pkte").setWidth(UnitValue.createPercentValue(80.0F)))
-                        )
-                        .add(new Div().setWidth(UnitValue.createPercentValue(20.0F))
-                            .add(new Paragraph("4.S.Pkte").setWidth(UnitValue.createPercentValue(80.0F)))
-                        )
-                        .add(new Div().setWidth(UnitValue.createPercentValue(20.0F))
-                            .add(new Paragraph("5.S.Pkte").setWidth(UnitValue.createPercentValue(80.0F)))
-                        )
-                    )
-                    .add(new Div().setWidth(UnitValue.createPercentValue(33.3F))
-                        .add(new Div().setWidth(UnitValue.createPercentValue(50.0F))
-                            .add(new Paragraph("Summe S.Pkte").setWidth(UnitValue.createPercentValue(80.0F)))
-                        )
-                        .add(new Div().setWidth(UnitValue.createPercentValue(50.0F))
-                            .add(new Paragraph("Matchpkte").setWidth(UnitValue.createPercentValue(80.0F)))
-                        )
-                    )
-                )
-                .add(new Div().setWidth(UnitValue.createPercentValue(100.0F))
-                )
-                .add(new Div().setWidth(UnitValue.createPercentValue(100.0F))
-                )
-            )
-        // Content second row
+        // Thirst row
+        doc.add(tableFirstRow);
 
-        // Content third row
+        // Second row
+        doc.add(tableSecondRow);
 
-        );
-
-        doc.add(new Paragraph(mannschaftName2));
+        // Third row
+        doc.add(tableThirdRow);
     }
 }
