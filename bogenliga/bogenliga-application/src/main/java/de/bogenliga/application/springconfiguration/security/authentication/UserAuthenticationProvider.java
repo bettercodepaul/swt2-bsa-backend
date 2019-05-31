@@ -8,19 +8,14 @@ import org.jboss.aerogear.security.otp.Totp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.business.user.impl.business.CustomAuthenticationProvider;
-import de.bogenliga.application.business.user.impl.business.CustomWebAuthenticationDetails;
-import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -48,6 +43,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         this.userComponent = userComponent;
     }
 
+
     private boolean isValidLong(String code) {
         try {
             Long.parseLong(code);
@@ -56,6 +52,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         }
         return true;
     }
+
 
     @Override
     public Authentication authenticate(final Authentication authentication) {
@@ -67,14 +64,17 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         UserDO user = userComponent.findByEmail(username);
         ErrorDTO errorDTO = null;
         try {
+            if (user == null) {
+                throw new BadCredentialsException("Invalid E-Mail");
+            }
             if (user.isUsing2FA()) {
-                String verificationCode = ((CustomWebAuthenticationDetails) authentication.getDetails())
-                        .getVerificationCode();
-                Totp totp = new Totp(user.getSecrect());
+                String verificationCode = (String) authentication.getDetails();
+                Totp totp = new Totp(user.getSecret());
                 if (!isValidLong(verificationCode) || !totp.verify(verificationCode)) {
-                    throw new BadCredentialsException("Invalid verfication code");
+                    throw new BadCredentialsException("Invalid verification code");
                 }
             }
+
             final UserWithPermissionsDO userDO = userComponent.signIn(username, password);
 
             if (userDO != null) {
@@ -89,6 +89,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
             }
         } catch (final BusinessException e) {
             errorDTO = new ErrorDTO(e.getErrorCode(), e.getParameters(), e.getMessage());
+
         } catch (final RuntimeException e) { // NOSONAR
             LOG.warn("An unexpected error occured", e);
             // null will be returned
@@ -109,6 +110,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         authProvider.setPasswordEncoder(getPasswordEncoder());
         return authProvider;
     }*/
+
 
     @Override
     public boolean supports(final Class<?> authentication) {

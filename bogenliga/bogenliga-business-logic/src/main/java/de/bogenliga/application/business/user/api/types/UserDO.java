@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.user.api.types;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import de.bogenliga.application.common.component.types.CommonDataObject;
@@ -19,7 +21,8 @@ public class UserDO extends CommonDataObject implements DataObject {
     private Long id;
     private String email;
     private boolean using2FA;
-    private String secrect;
+    private String secret;
+    private String qrCode;
 
     /**
      * Constructor with optional parameters
@@ -38,7 +41,7 @@ public class UserDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.email = email;
         this.using2FA = using2FA;
-        this.secrect = secret;
+        this.secret = secret;
 
         // set parameter from CommonDataObject
         this.createdAtUtc = createdAtUtc;
@@ -104,12 +107,31 @@ public class UserDO extends CommonDataObject implements DataObject {
     }
 
 
-    public String getSecrect() {
-        return secrect;
+    public String getSecret() {
+        return secret;
     }
 
 
-    public void setSecrect(String secrect) {
-        this.secrect = secrect;
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
+
+
+    public String getQrCode() {
+        String appName = "Bogenschussapp";
+        String prefix =
+                "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
+        try {
+            return prefix + URLEncoder.encode(String.format(
+                    "otpauth://totp/%s:%s?secret=%s&issuer=%s",
+                    appName, getEmail(), getSecret(), appName),
+                    "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "QR Code could not be loaded";
+    }
+
+
+
 }

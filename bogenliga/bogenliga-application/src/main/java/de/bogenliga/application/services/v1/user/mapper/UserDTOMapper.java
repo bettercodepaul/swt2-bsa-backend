@@ -69,6 +69,7 @@ public final class UserDTOMapper implements DataTransferObjectMapper {
         userDTO.setId(dob.getId());
         userDTO.setVersion(dob.getVersion());
         userDTO.setEmail(dob.getEmail());
+        userDTO.setQrCode(dob.getSecret());
 
         return userDTO;
     };

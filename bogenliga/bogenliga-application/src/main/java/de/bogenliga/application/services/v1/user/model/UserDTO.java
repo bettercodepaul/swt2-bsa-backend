@@ -13,7 +13,7 @@ public class UserDTO implements DataTransferObject {
     private Long id;
     private Long version;
     private String email;
-
+    private String qrCode;
 
     /**
      * Default constructor
@@ -71,5 +71,15 @@ public class UserDTO implements DataTransferObject {
 
     public void setVersion(final Long version) {
         this.version = version;
+    }
+
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }
