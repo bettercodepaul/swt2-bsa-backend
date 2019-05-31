@@ -87,13 +87,16 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
-             final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
+             final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
             //iterate through matches
             for (long i = 1; i<=7; i++){
                 //iterate through begegnungen
                 for(long k = 1; k<=4; k++){
-                    generateSchusszettelPage(doc, getMatchDOsForPage(matchDOList , i, k));
+                    MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList , i, k);
+                    if(matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
+                        generateSchusszettelPage(doc, matchesBegegnung);
+                    }
                 }
             }
 
@@ -135,8 +138,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      */
     private void generateSchusszettelPage(Document doc, MatchDO[] matchDOS) {
         String mannschaftName1, mannschaftName2;
-        MatchDO matchDO1 = matchDOS[1];
-        MatchDO matchDO2 = matchDOS[2];
+        MatchDO matchDO1 = matchDOS[0];
+        MatchDO matchDO2 = matchDOS[1];
 
         DsbMannschaftDO dsbMannschaftDO1 = dsbMannschaftComponent.findById(matchDO1.getMannschaftId());
         VereinDO vereinDO1 = vereinComponent.findById(dsbMannschaftDO1.getVereinId());
