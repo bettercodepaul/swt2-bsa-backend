@@ -159,15 +159,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         // Headline
         tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-            .add(new Paragraph(mannschaftName1))
+            .add(new Paragraph(mannschaftName1).setBold().setFontSize(18.0F))
         );
 
         tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-            .add(new Paragraph(wettkampfTag + ". Wettkampf"))
+            .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(18.0F))
         );
 
         tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-            .add(new Paragraph("Scheibe " + matchDOs[0].getScheibenNummer()))
+            .add(new Paragraph("Scheibe " + matchDOs[0].getScheibenNummer()).setBold().setFontSize(18.0F))
         );
 
         // Add to table
@@ -175,7 +175,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         // First row
         tableFirstRow.addCell(new Cell().setWidth(UnitValue.createPercentValue(50.0F)).setBorder(Border.NO_BORDER)
-            .add(new Paragraph(matchDOs[0].getBegegnung() + ". Match"))
+            .add(new Paragraph(""))
+            .add(new Paragraph(matchDOs[0].getBegegnung() + ". Match").setBold().setFontSize(20.0F))
+            .add(new Paragraph(""))
         );
 
         tableFirstRow.addCell(new Cell().setWidth(UnitValue.createPercentValue(50.0F)).setBorder(Border.NO_BORDER)
@@ -192,19 +194,19 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         // Third row
         tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph(mannschaftName1))
+            .add(new Paragraph(mannschaftName1).setBold().setFontSize(16.0F))
         );
 
         tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph(mannschaftName2))
+            .add(new Paragraph(mannschaftName2).setBold().setFontSize(16.0F))
         );
 
         tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph("Unterschrift"))
+            .add(new Paragraph("Unterschrift").setFontSize(12.0F))
         );
 
         tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph("Unterschrift"))
+            .add(new Paragraph("Unterschrift").setFontSize(12.0F))
         );
 
         // Add to div
