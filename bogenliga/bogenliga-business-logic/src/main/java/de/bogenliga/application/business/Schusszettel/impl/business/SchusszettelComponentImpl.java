@@ -15,6 +15,7 @@ import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.Setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -46,23 +47,37 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         this.WettkampfID = wettkampfid;
+        List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
 
         byte[] bResult;
+        if (matchDOList.size() != 0) {
+            bResult = generateDoc().toByteArray();
+        }else{
+            throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
+        }
+        return bResult;
+    }
+
+    /**
+     * <p>writes a Schusszettel document for the Wettkamnpf
+     * </p>
+     */
+    private ByteArrayOutputStream generateDoc() {
+        ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
-                 final PdfWriter writer = new PdfWriter(result);
-                 final PdfDocument pdfDocument = new PdfDocument(writer);
-                 final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
+             final PdfWriter writer = new PdfWriter(result);
+             final PdfDocument pdfDocument = new PdfDocument(writer);
+             final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
 
-                //generateDoc(doc, setzlisteBEList);
+            ret = result;
 
-                bResult = result.toByteArray();
-
-            } catch (final IOException e) {
-                LOGGER.error("document could not be generated");
+        } catch (final IOException e) {
+            LOGGER.error("document could not be generated");
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "PDF Schusszettel konnte nicht erstellt werden: " + e);
-            }
-        return bResult;
+        }
+        return ret;
+
     }
 
     /**
@@ -70,7 +85,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-    private void generateSchusszettelPage(Document doc) {
+    private void generateSchusszettelPage(Document doc, long matchNr, long begegnung) {
 
     }
 }
