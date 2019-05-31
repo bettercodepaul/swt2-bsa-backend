@@ -11,11 +11,8 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.Style;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -29,7 +26,6 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -105,7 +101,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     }
                 }
             }
-
+            doc.close();
             ret = result;
 
         } catch (final IOException e) {
@@ -142,30 +138,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-    private void generateSchusszettelPage(Document doc, MatchDO[] matchDOS) {
-        String mannschaftName1, mannschaftName2;
-        MatchDO matchDO1 = matchDOS[0];
-        MatchDO matchDO2 = matchDOS[1];
+    private void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
 
-        DsbMannschaftDO dsbMannschaftDO1 = dsbMannschaftComponent.findById(matchDO1.getMannschaftId());
-        VereinDO vereinDO1 = vereinComponent.findById(dsbMannschaftDO1.getVereinId());
-        WettkampfDO wettkampfDO1 = wettkampfComponent.findById(matchDO1.getWettkampfId());
+        MatchDO matchDO1 = matchDOs[0];
+        MatchDO matchDO2 = matchDOs[1];
 
-        if (dsbMannschaftDO1.getNummer() > 1) {
-            mannschaftName1 = vereinDO1.getName() + " " + dsbMannschaftDO1.getNummer();
-        } else {
-            mannschaftName1 = vereinDO1.getName();
-        }
+        String mannschaftName1 = getMannschaftsNameByID(matchDOs[0].getMannschaftId());
+        String mannschaftName2 = getMannschaftsNameByID(matchDOs[1].getMannschaftId());
 
-        DsbMannschaftDO dsbMannschaftDO2 = dsbMannschaftComponent.findById(matchDO2.getMannschaftId());
-        VereinDO vereinDO2 = vereinComponent.findById(dsbMannschaftDO2.getVereinId());
-        WettkampfDO wettkampfDO2 = wettkampfComponent.findById(matchDO2.getWettkampfId());
-
-        if (dsbMannschaftDO2.getNummer() > 1) {
-            mannschaftName2 = vereinDO2.getName() + " " + dsbMannschaftDO2.getNummer();
-        } else {
-            mannschaftName2 = vereinDO2.getName();
-        }
+        Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
 
         // Create Tables
         final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
@@ -175,7 +156,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         // Headline
         tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT).add(new Paragraph(mannschaftName1)));
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph(wettkampfDO1.getWettkampfTag() + ". Wettkampf")));
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph(wettkampfTag + ". Wettkampf")));
         tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT).add(new Paragraph("Scheibe " + matchDO1.getScheibenNummer())));
 
         doc.add(tableHead);
@@ -188,5 +169,18 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         // Third row
         doc.add(tableThirdRow);
+    }
+
+    private String getMannschaftsNameByID(long mannschaftID){
+        String mannschaftName;
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftID);
+        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
+
+        if (dsbMannschaftDO.getNummer() > 1) {
+            mannschaftName = vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        } else {
+            mannschaftName = vereinDO.getName();
+        }
+        return mannschaftName;
     }
 }
