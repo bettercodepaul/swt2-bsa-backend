@@ -11,12 +11,15 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -128,6 +131,28 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * @param doc document to write
      */
     private void generateSchusszettelPage(Document doc, MatchDO[] matchDOS) {
+        String mannschaftName1, mannschaftName2;
+        MatchDO matchDO1 = matchDOS[1];
+        MatchDO matchDO2 = matchDOS[2];
 
+        DsbMannschaftDO dsbMannschaftDO1 = dsbMannschaftComponent.findById(matchDO1.getMannschaftId());
+        VereinDO vereinDO1 = vereinComponent.findById(dsbMannschaftDO1.getVereinId());
+
+        if (dsbMannschaftDO1.getNummer() > 1) {
+            mannschaftName1 = vereinDO1.getName() + " " + dsbMannschaftDO1.getNummer();
+        } else {
+            mannschaftName1 = vereinDO1.getName();
+        }
+
+        doc.add(new Paragraph(mannschaftName1));
+
+        DsbMannschaftDO dsbMannschaftDO2 = dsbMannschaftComponent.findById(matchDO2.getMannschaftId());
+        VereinDO vereinDO2 = vereinComponent.findById(dsbMannschaftDO2.getVereinId());
+
+        if (dsbMannschaftDO2.getNummer() > 1) {
+            mannschaftName2 = vereinDO2.getName() + " " + dsbMannschaftDO2.getNummer();
+        } else {
+            mannschaftName2 = vereinDO2.getName();
+        }
     }
 }
