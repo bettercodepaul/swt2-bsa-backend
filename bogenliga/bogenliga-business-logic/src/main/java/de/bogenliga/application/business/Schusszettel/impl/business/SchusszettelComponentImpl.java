@@ -3,27 +3,24 @@ package de.bogenliga.application.business.Schusszettel.impl.business;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.parser.listener.TextChunk;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
-import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -46,16 +43,11 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class SchusszettelComponentImpl implements SchusszettelComponent {
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
-    private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
 
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
-
-
-    private long WettkampfID;
-
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -68,12 +60,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         this.wettkampfComponent = wettkampfComponent;
     }
 
-
     @Override
     public byte[] getAllSchusszettelPDFasByteArray(long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-        this.WettkampfID = wettkampfid;
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
 
         byte[] bResult;
@@ -146,81 +136,170 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-
     private void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
-        String mannschaftName1 = getMannschaftsNameByID(matchDOs[0].getMannschaftId());
-        String mannschaftName2 = getMannschaftsNameByID(matchDOs[1].getMannschaftId());
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
+        String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
-        // Create Tables
-        final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
-        final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
-        final Table tableFirstRow1 = new Table(UnitValue.createPercentArray(2), true);
-        final Table tableFirstRow2 = new Table(UnitValue.createPercentArray(7), true);
-        final Table tableSecondRow = new Table(UnitValue.createPercentArray(1), true);
-        final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
+        for (int i = 1; i <= 2; i++) {
+            // Generate tables
+            final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
+            final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
+            final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(2), true);
+            final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
+            final Table tableSecondRow = new Table(UnitValue.createPercentArray(1), true);
+            final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
 
-        // Headline
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-            .add(new Paragraph(mannschaftName1).setBold().setFontSize(18.0F))
-        );
+            // Table head
+            tableHead
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                   .add(new Paragraph(mannschaftName[i - 1]).setBold().setFontSize(12.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
+                    .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
+                    .add(new Paragraph("Scheibe " + matchDOs[0].getScheibenNummer()).setBold().setFontSize(12.0F))
+                )
+            ;
 
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-            .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(18.0F))
-        );
+            // First row
 
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-            .add(new Paragraph("Scheibe " + matchDOs[0].getScheibenNummer()).setBold().setFontSize(18.0F))
-        );
+            // First part
+            tableFirstRowFirstPart.setWidth(UnitValue.createPercentValue(100.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("\n"))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                   .add(new Paragraph(mannschaftName[i - 1]).setBold())
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(16.0F)
+                    .add(new Paragraph(matchDOs[0].getNr() + ". Match"))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("gegen").setBold())
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("\n"))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(mannschaftName[i % 2]).setBold())
+                )
+            ;
 
+            // Second part
+            tableFirstRowSecondPart.setWidth(UnitValue.createPercentValue(100.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("1.S.Pkte").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("2.S.Pkte").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("3.S.Pkte").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("4.S.Pkte").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("5.S.Pkte").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("Summe").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("Matchpkte").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+                .addCell(new Cell().setBorder(new SolidBorder(Border.SOLID)).setHeight(15.0F)
+                    .add(new Paragraph(""))
+                )
+            ;
 
-        // First row
+            // Second row
 
-        tableFirstRow1
-                .addCell(new Paragraph("\n")).setBorder(Border.NO_BORDER)
-                .addCell(new Paragraph(mannschaftName1)).setBorder(Border.NO_BORDER)
-                .addCell(new Paragraph(matchDOs[0].getBegegnung() + ". Match").setBold().setFontSize(20.0F)).setBorder(Border.NO_BORDER)
-                .addCell(new Paragraph("gegen")).setBorder(Border.NO_BORDER)
-                .addCell(new Paragraph("\n")).setBorder(Border.NO_BORDER)
-                .addCell(new Paragraph(mannschaftName2)).setBorder(Border.NO_BORDER)
-        .setWidth(UnitValue.createPercentValue(50.0f))
-        .setBorder(Border.NO_BORDER);
+            // Third row
+            tableThirdRow
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(mannschaftName[0]).setBold())
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph(mannschaftName[1]).setBold())
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("\n"))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("\n"))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("Unterschrift").setFontSize(10.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("Unterschrift").setFontSize(10.0F))
+                )
+            ;
 
-        //Todo: tableFirstRow2
+            // Add subtables to main table
+            tableFirstRow.setHeight(UnitValue.createPercentValue(10.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableFirstRowFirstPart)
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableFirstRowSecondPart)
+                )
+            ;
 
-        // Second row
-
-        // Third row
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph(mannschaftName1).setBold().setFontSize(16.0F))
-        );
-
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph(mannschaftName2).setBold().setFontSize(16.0F))
-        );
-
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph("Unterschrift").setFontSize(12.0F))
-        );
-
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph("Unterschrift").setFontSize(12.0F))
-        );
-
-        tableFirstRow.addCell(new Cell().add(tableFirstRow1));
-        tableFirstRow.addCell(new Cell().add(tableFirstRow2));
-
-        // Add to div
-        doc.add(new Div().setHeight(UnitValue.createPercentValue(50.0f))
-            .add(tableHead)
-            .add(new Div().setBorder(new SolidBorder(Border.SOLID))
-                .add(tableFirstRow)
-                .add(tableSecondRow)
-                .add(tableThirdRow)
-            )
-        );
+            // Add to all to document
+            doc
+                .add(new Div().setMargin(10.0F)
+                    .add(tableHead)
+                    .add(new Div().setBorder(new SolidBorder(Border.SOLID))
+                        .add(tableFirstRow)
+                        .add(tableSecondRow)
+                        .add(tableThirdRow)
+                    )
+                )
+            ;
+        }
     }
-
 
     private String getMannschaftsNameByID(long mannschaftID){
         String mannschaftName;
