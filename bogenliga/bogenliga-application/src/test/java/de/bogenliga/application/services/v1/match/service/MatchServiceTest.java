@@ -359,6 +359,9 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
@@ -403,6 +406,9 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
@@ -432,6 +438,9 @@ public class MatchServiceTest {
         passeDTOS.set(0, null);
 
         matchDTO.setPassen(passeDTOS);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
@@ -463,6 +472,9 @@ public class MatchServiceTest {
         ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
@@ -554,11 +566,26 @@ public class MatchServiceTest {
 
         boolean result = underTest.isUebergeordnetVon(topLiga, currentLiga, ligen);
         assertThat(result).isTrue();
+        result = underTest.isUebergeordnetVon(currentLiga, topLiga, ligen);
+        assertThat(result).isFalse();
+        result = underTest.isUebergeordnetVon(midLiga, topLiga, ligen);
+        assertThat(result).isFalse();
+        result = underTest.isUebergeordnetVon(topLiga, midLiga, ligen);
+        assertThat(result).isTrue();
     }
 
 
     @Test
     public void hasShotSameDay() {
+        when(passeComponent.findByWettkampfIdAndMember(anyLong(), anyLong())).thenReturn(Collections.singletonList(getPasseDO(1L)));
+        MannschaftsmitgliedDO mmdo = getMMDO(1L);
+        WettkampfDO wdo = getWettkampfDO(1L);
+        boolean result = underTest.hasShotSameDay(mmdo, wdo);
+        assertThat(result).isTrue();
+
+        when(passeComponent.findByWettkampfIdAndMember(anyLong(), anyLong())).thenReturn(new ArrayList<>());
+        result = underTest.hasShotSameDay(mmdo, wdo);
+        assertThat(result).isFalse();
     }
 
 
