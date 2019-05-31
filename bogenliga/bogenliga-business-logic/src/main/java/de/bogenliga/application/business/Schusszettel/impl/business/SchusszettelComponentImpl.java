@@ -12,7 +12,10 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -138,14 +141,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
+
     private void generateSchusszettelPage(Document doc, MatchDO[] matchDOs) {
-
-        MatchDO matchDO1 = matchDOs[0];
-        MatchDO matchDO2 = matchDOs[1];
-
         String mannschaftName1 = getMannschaftsNameByID(matchDOs[0].getMannschaftId());
         String mannschaftName2 = getMannschaftsNameByID(matchDOs[1].getMannschaftId());
-
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
 
         // Create Tables
@@ -155,25 +154,63 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
 
         // Headline
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT).add(new Paragraph(mannschaftName1)));
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph(wettkampfTag + ". Wettkampf")));
-        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT).add(new Paragraph("Scheibe " + matchDO1.getScheibenNummer())));
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+            .add(new Paragraph(mannschaftName1))
+        );
 
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
+            .add(new Paragraph(wettkampfTag + ". Wettkampf"))
+        );
+
+        tableHead.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
+            .add(new Paragraph("Scheibe " + matchDOs[0].getScheibenNummer()))
+        );
+
+        // Add to table
         doc.add(tableHead);
 
-        // Thirst row
-        doc.add(tableFirstRow);
+        // First row
+        tableFirstRow.addCell(new Cell().setWidth(UnitValue.createPercentValue(50.0F)).setBorder(Border.NO_BORDER)
+            .add(new Paragraph(matchDOs[0].getBegegnung() + ". Match"))
+        );
+
+        tableFirstRow.addCell(new Cell().setWidth(UnitValue.createPercentValue(50.0F)).setBorder(Border.NO_BORDER)
+            .add(new Paragraph(mannschaftName1))
+            .add(new Paragraph("gegen"))
+            .add(new Paragraph(mannschaftName2))
+        );
+
+        tableFirstRow.addCell(new Cell().setBorder(Border.NO_BORDER)
+            .add(new Paragraph("Image"))
+        );
 
         // Second row
-        doc.add(tableSecondRow);
 
         // Third row
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT).add(new Paragraph(mannschaftName1)));
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT).add(new Paragraph(mannschaftName2)));
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph("Unterschrift")));
-        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph("Unterschrift")));
-        doc.add(tableThirdRow);
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
+            .add(new Paragraph(mannschaftName1))
+        );
+
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
+            .add(new Paragraph(mannschaftName2))
+        );
+
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
+            .add(new Paragraph("Unterschrift"))
+        );
+
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER)
+            .add(new Paragraph("Unterschrift"))
+        );
+
+        // Add to div
+        doc.add(new Div().setBorder(new SolidBorder(Border.SOLID))
+            .add(tableFirstRow)
+            .add(tableSecondRow)
+            .add(tableThirdRow)
+        );
     }
+
 
     private String getMannschaftsNameByID(long mannschaftID){
         String mannschaftName;
