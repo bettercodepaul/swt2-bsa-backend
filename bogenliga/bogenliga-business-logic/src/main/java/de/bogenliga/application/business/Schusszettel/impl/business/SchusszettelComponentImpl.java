@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.parser.listener.TextChunk;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.AreaBreak;
@@ -154,6 +155,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         // Create Tables
         final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
         final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
+        final Table tableFirstRow1 = new Table(UnitValue.createPercentArray(2), true);
+        final Table tableFirstRow2 = new Table(UnitValue.createPercentArray(7), true);
         final Table tableSecondRow = new Table(UnitValue.createPercentArray(1), true);
         final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
 
@@ -170,25 +173,20 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             .add(new Paragraph("Scheibe " + matchDOs[0].getScheibenNummer()).setBold().setFontSize(18.0F))
         );
 
-        // Add to table
-        doc.add(tableHead);
 
         // First row
-        tableFirstRow.addCell(new Cell().setWidth(UnitValue.createPercentValue(50.0F)).setBorder(Border.NO_BORDER)
-            .add(new Paragraph(""))
-            .add(new Paragraph(matchDOs[0].getBegegnung() + ". Match").setBold().setFontSize(20.0F))
-            .add(new Paragraph(""))
-        );
 
-        tableFirstRow.addCell(new Cell().setWidth(UnitValue.createPercentValue(50.0F)).setBorder(Border.NO_BORDER)
-            .add(new Paragraph(mannschaftName1))
-            .add(new Paragraph("gegen"))
-            .add(new Paragraph(mannschaftName2))
-        );
+        tableFirstRow1
+                .addCell(new Paragraph("\n")).setBorder(Border.NO_BORDER)
+                .addCell(new Paragraph(mannschaftName1)).setBorder(Border.NO_BORDER)
+                .addCell(new Paragraph(matchDOs[0].getBegegnung() + ". Match").setBold().setFontSize(20.0F)).setBorder(Border.NO_BORDER)
+                .addCell(new Paragraph("gegen")).setBorder(Border.NO_BORDER)
+                .addCell(new Paragraph("\n")).setBorder(Border.NO_BORDER)
+                .addCell(new Paragraph(mannschaftName2)).setBorder(Border.NO_BORDER)
+        .setWidth(UnitValue.createPercentValue(50.0f))
+        .setBorder(Border.NO_BORDER);
 
-        tableFirstRow.addCell(new Cell().setBorder(Border.NO_BORDER)
-            .add(new Paragraph("Image"))
-        );
+        //Todo: tableFirstRow2
 
         // Second row
 
@@ -209,11 +207,17 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             .add(new Paragraph("Unterschrift").setFontSize(12.0F))
         );
 
+        tableFirstRow.addCell(new Cell().add(tableFirstRow1));
+        tableFirstRow.addCell(new Cell().add(tableFirstRow2));
+
         // Add to div
-        doc.add(new Div().setBorder(new SolidBorder(Border.SOLID))
-            .add(tableFirstRow)
-            .add(tableSecondRow)
-            .add(tableThirdRow)
+        doc.add(new Div().setHeight(UnitValue.createPercentValue(50.0f))
+            .add(tableHead)
+            .add(new Div().setBorder(new SolidBorder(Border.SOLID))
+                .add(tableFirstRow)
+                .add(tableSecondRow)
+                .add(tableThirdRow)
+            )
         );
     }
 
