@@ -32,7 +32,7 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.service.types.DataTransferObject;
@@ -419,7 +419,7 @@ public class MatchService implements ServiceFacade {
         final MatchDO matchDo = matchComponent.findById(matchId);
         final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(wettkampfComponent.findById(matchDo.getWettkampfId()));
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-        WettkampftypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
+        WettkampfTypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
         final WettkampftypDTO wettkampfTypDTO = WettkampftypDTOMapper.toDTO.apply(wettDO);
         matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
 

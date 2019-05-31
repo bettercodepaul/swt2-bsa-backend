@@ -1,13 +1,13 @@
 package de.bogenliga.application.services.v1.wettkampftyp.mapper;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
 
 
 /**
- * I map the {@link WettkampftypDO} and {@link WettkampftypDTO} objects
+ * I map the {@link WettkampfTypDO} and {@link WettkampftypDTO} objects
  *
  * @author Marvin Holm, Daniel Schott
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
@@ -17,10 +17,10 @@ import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
 public class WettkampftypDTOMapper implements DataTransferObjectMapper {
 
     /**
-     * I map the {@link WettkampftypDO} to the {@link WettkampftypDTO} object
+     * I map the {@link WettkampfTypDO} to the {@link WettkampftypDTO} object
      */
 
-    public static final Function<WettkampftypDO, WettkampftypDTO> toDTO = wettkampftypDO -> {
+    public static final Function<WettkampfTypDO, WettkampftypDTO> toDTO = wettkampftypDO -> {
         final Long wettkampftypId = wettkampftypDO.getId();
         final String name = wettkampftypDO.getName();
 
@@ -34,9 +34,9 @@ public class WettkampftypDTOMapper implements DataTransferObjectMapper {
 
 
     /**
-     * maps the {@link WettkampftypDTO} to the {@link WettkampftypDO} object
+     * maps the {@link WettkampftypDTO} to the {@link WettkampfTypDO} object
      */
-    public static final Function<WettkampftypDTO, WettkampftypDO> toDO = wettkampftypDTO -> {
+    public static final Function<WettkampftypDTO, WettkampfTypDO> toDO = wettkampftypDTO -> {
 
         final Long wettkampftypId = wettkampftypDTO.getId();
         final String name = wettkampftypDTO.getName();
@@ -45,7 +45,7 @@ public class WettkampftypDTOMapper implements DataTransferObjectMapper {
         final OffsetDateTime createdAtUtc = wettkampftypDTO.getCreatedAtUtc();
         final Long version = wettkampftypDTO.getVersion();
 
-        return new WettkampftypDO(wettkampftypId, name, createdAtUtc,createdByUserId, version);
+        return new WettkampfTypDO(wettkampftypId, name, createdAtUtc,createdByUserId, version);
     };
 
 
