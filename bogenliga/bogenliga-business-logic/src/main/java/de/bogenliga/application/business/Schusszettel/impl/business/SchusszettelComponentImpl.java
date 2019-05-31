@@ -160,7 +160,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-                    .add(new Paragraph("Scheibe " + matchDOs[0].getScheibenNummer()).setBold().setFontSize(12.0F))
+                    .add(new Paragraph("Scheibe " + matchDOs[i - 1].getScheibenNummer()).setBold().setFontSize(12.0F))
                 )
             ;
 
