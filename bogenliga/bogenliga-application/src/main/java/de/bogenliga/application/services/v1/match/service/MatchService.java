@@ -309,7 +309,7 @@ public class MatchService implements ServiceFacade {
      * @param mmdo
      * @param matchDO
      */
-    private void validateMitgliedStatus(MannschaftsmitgliedDO mmdo, MatchDO matchDO) {
+    protected void validateMitgliedStatus(MannschaftsmitgliedDO mmdo, MatchDO matchDO) {
         WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDO.getWettkampfId());
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId());
         int participCount;
@@ -343,7 +343,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    private int hasShotHigherLeague(MannschaftsmitgliedDO mmdo, VeranstaltungDO veranstaltungDO) {
+    protected int hasShotHigherLeague(MannschaftsmitgliedDO mmdo, VeranstaltungDO veranstaltungDO) {
         Long currentLigaId = veranstaltungDO.getVeranstaltungLigaID();
         LigaDO currentLiga = ligaComponent.findById(currentLigaId);
         List<LigaDO> ligen = ligaComponent.findAll().stream()
@@ -361,7 +361,15 @@ public class MatchService implements ServiceFacade {
     }
 
 
-    private boolean isUebergeordnetVon(LigaDO gesuchtLigaDO, LigaDO currentLiga, List<LigaDO> ligen) {
+    /**
+     * Überprüft, obj die gesuchtLiga eine übergordnete Liga von currentLiga ist.
+     * Da dies über meherere Ligen laufen kann, muss der aufruf rekursiv erfolgen.
+     * @param gesuchtLigaDO
+     * @param currentLiga
+     * @param ligen
+     * @return
+     */
+    protected boolean isUebergeordnetVon(LigaDO gesuchtLigaDO, LigaDO currentLiga, List<LigaDO> ligen) {
         // wenn keine Liga mehr drüber ist, kanns nicht weiter gehen
         if (currentLiga.getLigaUebergeordnetId() == null) {
             return false;
@@ -390,7 +398,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    private boolean hasShotSameDay(MannschaftsmitgliedDO mmdo, WettkampfDO wettkampfDO) {
+    protected boolean hasShotSameDay(MannschaftsmitgliedDO mmdo, WettkampfDO wettkampfDO) {
         return passeComponent.findByWettkampfIdAndMember(wettkampfDO.getId(), mmdo.getDsbMitgliedId()).size() > 0;
     }
 

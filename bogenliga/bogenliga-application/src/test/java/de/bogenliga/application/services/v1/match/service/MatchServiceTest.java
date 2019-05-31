@@ -1,9 +1,11 @@
 package de.bogenliga.application.services.v1.match.service;
 
+import java.lang.reflect.Array;
 import java.security.Principal;
+import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
@@ -15,12 +17,16 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.passe.api.PasseComponent;
-import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -28,6 +34,8 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.services.v1.liga.service.LigaService;
+import de.bogenliga.application.services.v1.liga.service.LigaServiceTest;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
@@ -59,6 +67,12 @@ public class MatchServiceTest {
 
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
+
+    @Mock
+    private LigaComponent ligaComponent;
+
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
 
     @Mock
     private Principal principal;
@@ -133,6 +147,26 @@ public class MatchServiceTest {
     private static final String REGION_NAME = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
 
+    private static final Long VERANST_ID = 1L;
+    private static final String VERANST_NAME = "TestVeranst";
+    private static final Long VERANST_WETT_TYP_ID = 1L;
+    private static final Long VERANST_SPORTJAHR = 2019L;
+    private static final Date VERANST_MELDEDEADLINE = new Date(1L);
+    private static final Long VERANST_LIGA_ID = 1L;
+    private static final Long VERANST_LIGALEITER_ID = 1L;
+    private static final String VERANST_LIGALEITER_EMAIL = "ll@foobar.de";
+    private static final String VERANST_WETT_TYP_NAME = "TestWettTyp";
+    private static final String VERANST_LIGA_NAME = "TestLiga";
+
+    protected VeranstaltungDO getVeranstaltungDO () {
+        return new VeranstaltungDO(
+                VERANST_ID, VERANST_WETT_TYP_ID, VERANST_NAME,
+                VERANST_SPORTJAHR, VERANST_MELDEDEADLINE,
+                VERANST_LIGALEITER_ID, VERANST_LIGA_ID,
+                VERANST_LIGALEITER_EMAIL, VERANST_WETT_TYP_NAME,
+                VERANST_LIGA_NAME
+        );
+    }
 
     protected MatchDO getMatchDO() {
         return new MatchDO(
@@ -209,7 +243,7 @@ public class MatchServiceTest {
 
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null);
+        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null, null, null);
     }
 
 
@@ -439,6 +473,92 @@ public class MatchServiceTest {
 
         // make sure create was called twice per passed DTO
         verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
+    }
+
+
+    @Test
+    public void validateMitgliedStatus() {
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+
+        LigaDO currentLiga = LigaServiceTest.getLigaDO();
+        currentLiga.setId(3L);
+        currentLiga.setLigaUebergeordnetId(2L);
+
+        LigaDO topLiga = LigaServiceTest.getLigaDO();
+        topLiga.setId(1L);
+        topLiga.setLigaUebergeordnetId(null);
+
+        LigaDO midLiga = LigaServiceTest.getLigaDO();
+        midLiga.setId(2L);
+        midLiga.setLigaUebergeordnetId(1L);
+
+        ArrayList<LigaDO> ligen = new ArrayList<>();
+        ligen.add(midLiga);
+        ligen.add(topLiga);
+        ligen.add(currentLiga);
+
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(ligaComponent.findById(anyLong())).thenReturn(currentLiga);
+
+        underTest.validateMitgliedStatus(getMMDO(3L), getMatchDO());
+    }
+
+
+    @Test
+    public void hasShotHigherLeague() {
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+
+        LigaDO currentLiga = LigaServiceTest.getLigaDO();
+        currentLiga.setId(3L);
+        currentLiga.setLigaUebergeordnetId(2L);
+
+        LigaDO topLiga = LigaServiceTest.getLigaDO();
+        topLiga.setId(1L);
+        topLiga.setLigaUebergeordnetId(null);
+
+        LigaDO midLiga = LigaServiceTest.getLigaDO();
+        midLiga.setId(2L);
+        midLiga.setLigaUebergeordnetId(1L);
+
+        ArrayList<LigaDO> ligen = new ArrayList<>();
+        ligen.add(midLiga);
+        ligen.add(topLiga);
+        ligen.add(currentLiga);
+
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(ligaComponent.findById(anyLong())).thenReturn(currentLiga);
+
+        underTest.hasShotHigherLeague(getMMDO(3L), getVeranstaltungDO());
+    }
+
+
+    @Test
+    public void isUebergeordnetVon() {
+        LigaDO currentLiga = LigaServiceTest.getLigaDO();
+        currentLiga.setId(3L);
+        currentLiga.setLigaUebergeordnetId(2L);
+
+        LigaDO topLiga = LigaServiceTest.getLigaDO();
+        topLiga.setId(1L);
+        topLiga.setLigaUebergeordnetId(null);
+
+        LigaDO midLiga = LigaServiceTest.getLigaDO();
+        midLiga.setId(2L);
+        midLiga.setLigaUebergeordnetId(1L);
+
+        ArrayList<LigaDO> ligen = new ArrayList<>();
+        ligen.add(midLiga);
+        ligen.add(topLiga);
+        ligen.add(currentLiga);
+
+        boolean result = underTest.isUebergeordnetVon(topLiga, currentLiga, ligen);
+        assertThat(result).isTrue();
+    }
+
+
+    @Test
+    public void hasShotSameDay() {
     }
 
 

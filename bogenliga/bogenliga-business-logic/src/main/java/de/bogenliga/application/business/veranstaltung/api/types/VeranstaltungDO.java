@@ -67,14 +67,15 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.veranstaltungMeldeDeadline = meldeDeadline;
         this.veranstaltungLigaleiterID = ligaleiterID;
         this.veranstaltungLigaID = ligaID;
+        this.veranstaltungLigaleiterEmail = ligaleiterEmail;
+        this.veranstaltungWettkampftypName = wettkampftypName;
+        this.veranstaltungLigaName = ligaName;
+
         this.createdByUserId = createdByUserId;
         this.createdAtUtc = createdAtUtc;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
-        this.veranstaltungLigaleiterEmail = ligaleiterEmail;
-        this.veranstaltungWettkampftypName = wettkampftypName;
-        this.veranstaltungLigaName = ligaName;
     }
 
 
