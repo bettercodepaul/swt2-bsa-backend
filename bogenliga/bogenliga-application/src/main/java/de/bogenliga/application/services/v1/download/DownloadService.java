@@ -79,7 +79,7 @@ public class DownloadService implements ServiceFacade {
     ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
         LOG.debug("wettkampfid: " + wettkampfid);
 
-        final byte[] fileBloB = schusszettelComponent.getAllSchusszettelPDFasByteArray(wettkampfid);
+        final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
 
         return generateInputStream(fileBloB);
     }
@@ -101,7 +101,7 @@ public class DownloadService implements ServiceFacade {
     ResponseEntity<InputStreamResource> downloadSchusszettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
         LOG.debug("wettkampfid: " + wettkampfid);
 
-        final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
+        final byte[] fileBloB = schusszettelComponent.getAllSchusszettelPDFasByteArray(wettkampfid);
 
         return generateInputStream(fileBloB);
     }
