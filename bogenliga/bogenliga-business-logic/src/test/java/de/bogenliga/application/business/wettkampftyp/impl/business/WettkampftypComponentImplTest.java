@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImpl;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampftypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
@@ -56,8 +56,8 @@ public class WettkampftypComponentImplTest {
     }
 
 
-    public static WettkampftypDO getWettkampftypDO() {
-        return new WettkampftypDO( wettkampftyp_Id,
+    public static WettkampfTypDO getWettkampfTypDO() {
+        return new WettkampfTypDO( wettkampftyp_Id,
                 wettkampftyp_Name,
 
                 created_At_Utc,
@@ -77,7 +77,7 @@ public class WettkampftypComponentImplTest {
 
 
         // call test method
-        final List<WettkampftypDO> actual = underTest.findAll();
+        final List<WettkampfTypDO> actual = underTest.findAll();
 
 
         // assert result
@@ -106,7 +106,7 @@ public class WettkampftypComponentImplTest {
         when(wettkampftypDAO.findById(wettkampftyp_Id)).thenReturn(expectedBE);
 
         // call test method
-        final WettkampftypDO actual = underTest.findById(wettkampftyp_Id);
+        final WettkampfTypDO actual = underTest.findById(wettkampftyp_Id);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -121,7 +121,7 @@ public class WettkampftypComponentImplTest {
     @Test
     public void create() {
         // prepare test data
-        final WettkampftypDO input = getWettkampftypDO();
+        final WettkampfTypDO input = getWettkampfTypDO();
 
         final WettkampftypBE expectedBE = getWettkampftypBE();
 
@@ -129,7 +129,7 @@ public class WettkampftypComponentImplTest {
         when(wettkampftypDAO.create(any(WettkampftypBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final WettkampftypDO actual = underTest.create(input, user_Id);
+        final WettkampfTypDO actual = underTest.create(input, user_Id);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -151,7 +151,7 @@ public class WettkampftypComponentImplTest {
     @Test
     public void delete() {
         // prepare test data
-        final WettkampftypDO input = getWettkampftypDO();
+        final WettkampfTypDO input = getWettkampfTypDO();
 
         final WettkampftypBE expectedBE = getWettkampftypBE();
 

@@ -24,7 +24,9 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
@@ -80,6 +82,12 @@ public class MatchServiceTest {
     protected static final Long MATCH_SATZPUNKTE = 3L;
     protected static final Long CURRENT_USER_ID = 1L;
 
+    protected static final Long MATCH_STRAFPUNKTE_SATZ1 = 10L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ2 = 0L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ3 = 20L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ4 = 0L;
+    protected static final Long MATCH_STRAFPUNKTE_SATZ5 = 0L;
+
 
     private static final Long PASSE_ID_1 = 1L;
     private static final Long PASSE_ID_2 = 2L;
@@ -97,14 +105,24 @@ public class MatchServiceTest {
     private static final Long MM_dsbMitgliedId = 100L;
     private static final Integer MM_dsbMitgliedEingesetzt = 1;
     private static final String MM_dsbMitgliedVorname = "Foo";
-    private static final String MM_dsbMitgliedNachname= "Bar";
+    private static final String MM_dsbMitgliedNachname = "Bar";
 
+    private static final Long W_id = 5L;
+    private static final String W_name = "Liga_kummulativ";
+
+    private static final Long W_vid = 243L;
+    private static final Long W_typId = 0L;
+    private static final Long W_tag = 5L;
+    private static final String W_datum = "gestern";
+    private static final String W_ort = "Hier";
+    private static final String W_begin = "gestern";
+    private static final Long W_disId = 12345L;
 
     private static final Long M_id = 2222L;
-    private static final Long M_vereinId=101010L;
-    private static final Long M_nummer=111L;
-    private static final Long M_benutzerId=12L;
-    private static final Long M_veranstaltungId=1L;
+    private static final Long M_vereinId = 101010L;
+    private static final Long M_nummer = 111L;
+    private static final Long M_benutzerId = 12L;
+    private static final Long M_veranstaltungId = 1L;
 
     private static final Long VEREIN_USER = 1L;
     private static final Long VERSION = 0L;
@@ -125,7 +143,12 @@ public class MatchServiceTest {
                 MATCH_WETTKAMPF_ID,
                 MATCH_MATCHPUNKTE,
                 MATCH_SCHEIBENNUMMER,
-                MATCH_SATZPUNKTE
+                MATCH_SATZPUNKTE,
+                MATCH_STRAFPUNKTE_SATZ1,
+                MATCH_STRAFPUNKTE_SATZ2,
+                MATCH_STRAFPUNKTE_SATZ3,
+                MATCH_STRAFPUNKTE_SATZ4,
+                MATCH_STRAFPUNKTE_SATZ5
         );
     }
 
@@ -145,7 +168,8 @@ public class MatchServiceTest {
         );
     }
 
-    protected MannschaftsmitgliedDO getMMDO (Long id) {
+
+    protected MannschaftsmitgliedDO getMMDO(Long id) {
         return new MannschaftsmitgliedDO(
                 id,
                 MM_mannschaftsId,
@@ -155,6 +179,7 @@ public class MatchServiceTest {
                 MM_dsbMitgliedNachname
         );
     }
+
 
     protected VereinDO getVereinDO(Long id) {
         return new VereinDO(
@@ -171,6 +196,7 @@ public class MatchServiceTest {
         );
     }
 
+
     protected DsbMannschaftDO getMannschaftDO(Long id) {
         return new DsbMannschaftDO(
                 id,
@@ -181,7 +207,18 @@ public class MatchServiceTest {
         );
     }
 
-    protected List<MannschaftsmitgliedDO> getMannschaftsMitglieder () {
+
+    protected WettkampfDO getWettkampfDO(Long id) {
+        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null);
+    }
+
+
+    protected WettkampfTypDO getWettkampfTypDO(Long id) {
+        return new WettkampfTypDO(id, W_name);
+    }
+
+
+    protected List<MannschaftsmitgliedDO> getMannschaftsMitglieder() {
         List<MannschaftsmitgliedDO> mmdos = new ArrayList<>();
         mmdos.add(getMMDO(MM_ID_1));
         mmdos.add(getMMDO(MM_ID_2));
@@ -205,8 +242,16 @@ public class MatchServiceTest {
 
     @Test
     public void findById() {
-        MatchDO matchDO = getMatchDO();
-        when(matchComponent.findById(anyLong())).thenReturn(matchDO);
+        MatchDO matchDO1 = getMatchDO();
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
+        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
+        VereinDO vereinDO = getVereinDO(VEREIN_ID);
+        when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(wettkampfComponent.findById(MATCH_WETTKAMPF_ID)).thenReturn(wettkampfDO);
+        when(wettkampfTypComponent.findById(W_typId)).thenReturn(wettkampftypDO);
         final MatchDTO actual = underTest.findById(MATCH_ID);
         assertThat(actual).isNotNull();
         MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
@@ -227,10 +272,14 @@ public class MatchServiceTest {
     public void findMatchesByIds() {
         MatchDO matchDO1 = getMatchDO();
         DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
+        WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
+        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
         when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(wettkampfComponent.findById(MATCH_WETTKAMPF_ID)).thenReturn(wettkampfDO);
+        when(wettkampfTypComponent.findById(W_typId)).thenReturn(wettkampftypDO);
         final List<MatchDTO> actual = underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
@@ -267,6 +316,7 @@ public class MatchServiceTest {
         MatchService.checkPreconditions(actualDTO, MatchService.matchConditionErrors);
     }
 
+
     @Test
     public void saveMatches() {
         MatchDO matchDO1 = getMatchDO();
@@ -298,6 +348,7 @@ public class MatchServiceTest {
         }).isInstanceOf(BusinessException.class);
     }
 
+
     @Test
     public void saveMatches_WithPasseUpdate() {
         MatchDO matchDO1 = getMatchDO();
@@ -328,6 +379,7 @@ public class MatchServiceTest {
         // make sure update was called twice per passed DTO
         verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
     }
+
 
     @Test
     public void saveMatches_WithPasseUpdate_Null() {

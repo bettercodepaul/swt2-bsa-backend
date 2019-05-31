@@ -17,6 +17,11 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     private Long begegnung;
     private Long matchpunkte;
     private Long satzpunkte;
+    private Long strafPunktSatz1;
+    private Long strafPunktSatz2;
+    private Long strafPunktSatz3;
+    private Long strafPunktSatz4;
+    private Long strafPunktSatz5;
 
 
     @Override
@@ -30,6 +35,11 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
                 "begegnung=" + begegnung +
                 "matchpunkte=" + matchpunkte +
                 "satzpunkte=" + satzpunkte +
+                "strafPunktSatz1=" + strafPunktSatz1 +
+                "strafPunktSatz2=" + strafPunktSatz2 +
+                "strafPunktSatz3=" + strafPunktSatz3 +
+                "strafPunktSatz4=" + strafPunktSatz4 +
+                "strafPunktSatz5=" + strafPunktSatz5 +
                 '}';
     }
 
@@ -113,4 +123,53 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
         this.satzpunkte = satzpunkte;
     }
 
+
+    public Long getStrafPunktSatz1() {
+        return strafPunktSatz1;
+    }
+
+
+    public void setStrafPunktSatz1(Long strafPunktSatz1) {
+        this.strafPunktSatz1 = strafPunktSatz1;
+    }
+
+
+    public Long getStrafPunktSatz2() {
+        return strafPunktSatz2;
+    }
+
+
+    public void setStrafPunktSatz2(Long strafPunktSatz2) {
+        this.strafPunktSatz2 = strafPunktSatz2;
+    }
+
+
+    public Long getStrafPunktSatz3() {
+        return strafPunktSatz3;
+    }
+
+
+    public void setStrafPunktSatz3(Long strafPunktSatz3) {
+        this.strafPunktSatz3 = strafPunktSatz3;
+    }
+
+
+    public Long getStrafPunktSatz4() {
+        return strafPunktSatz4;
+    }
+
+
+    public void setStrafPunktSatz4(Long strafPunktSatz4) {
+        this.strafPunktSatz4 = strafPunktSatz4;
+    }
+
+
+    public Long getStrafPunktSatz5() {
+        return strafPunktSatz5;
+    }
+
+
+    public void setStrafPunktSatz5(Long strafPunktSatz5) {
+        this.strafPunktSatz5 = strafPunktSatz5;
+    }
 }

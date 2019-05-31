@@ -34,6 +34,11 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_BE_BEGEGNUNG = "begegnung";
     private static final String MATCH_BE_MATCHPUNKTE = "matchpunkte";
     private static final String MATCH_BE_SATZPUNKTE = "satzpunkte";
+    private static final String MATCH_BE_FEHLERSATZ1 = "fehlerSatz1";
+    private static final String MATCH_BE_FEHLERSATZ2 = "fehlerSatz2";
+    private static final String MATCH_BE_FEHLERSATZ3 = "fehlerSatz3";
+    private static final String MATCH_BE_FEHLERSATZ4 = "fehlerSatz4";
+    private static final String MATCH_BE_FEHLERSATZ5 = "fehlerSatz5";
 
     // table columns
     private static final String MATCH_TABLE_ID = "match_id";
@@ -44,6 +49,12 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_BEGEGNUNG = "match_begegnung";
     private static final String MATCH_TABLE_MATCHPUNKTE = "match_matchpunkte";
     private static final String MATCH_TABLE_SATZPUNKTE = "match_satzpunkte";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ1 = "match_srafpunkt_satz_1";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ2 = "match_strafpunkt_satz_2";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ3 = "match_fehler_satz_3";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ4 = "match_fehler_satz_4";
+    private static final String MATCH_TABLE_STRAFPUNKT_SATZ5 = "match_fehler_satz_5";
+
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<MatchBE> MATCH = new BusinessEntityConfiguration<>(
@@ -75,6 +86,12 @@ public class MatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_SCHEIBENNUMMER, MATCH_BE_SCHEIBENNUMMER);
         columnsToFieldsMap.put(MATCH_TABLE_MATCHPUNKTE, MATCH_BE_MATCHPUNKTE);
         columnsToFieldsMap.put(MATCH_TABLE_SATZPUNKTE, MATCH_BE_SATZPUNKTE);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ1, MATCH_BE_FEHLERSATZ1);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ2, MATCH_BE_FEHLERSATZ2);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ3, MATCH_BE_FEHLERSATZ3);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ4, MATCH_BE_FEHLERSATZ4);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ5, MATCH_BE_FEHLERSATZ5);
+
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
