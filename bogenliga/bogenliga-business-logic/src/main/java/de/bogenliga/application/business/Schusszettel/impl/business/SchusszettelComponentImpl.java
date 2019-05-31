@@ -51,7 +51,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         byte[] bResult;
         if (matchDOList.size() != 0) {
-            bResult = generateDoc().toByteArray();
+            bResult = generateDoc(matchDOList).toByteArray();
         }else{
             throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
         }
@@ -62,19 +62,26 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * <p>writes a Schusszettel document for the Wettkamnpf
      * </p>
      */
-    private ByteArrayOutputStream generateDoc() {
+    private ByteArrayOutputStream generateDoc(List<MatchDO> matchDOList) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
 
+            //iterate through matches
+            for (int i = 0; i<=7; i++){
+                //iterate through begegnungen
+                for(int k = 0; k<=4; k++){
+                    //generateSchusszettelPage(doc, i, k);
+                }
+            }
+
             ret = result;
 
         } catch (final IOException e) {
-            LOGGER.error("document could not be generated");
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                    "PDF Schusszettel konnte nicht erstellt werden: " + e);
+                    "PDF Dokument konnte nicht erstellt werden: " + e);
         }
         return ret;
 
@@ -85,7 +92,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * </p>
      * @param doc document to write
      */
-    private void generateSchusszettelPage(Document doc, long matchNr, long begegnung) {
+    private void generateSchusszettelPage(Document doc, MatchDO[] matchDOS) {
 
     }
 }
