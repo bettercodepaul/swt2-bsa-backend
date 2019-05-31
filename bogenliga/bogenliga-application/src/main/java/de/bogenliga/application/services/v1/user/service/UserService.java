@@ -98,9 +98,13 @@ public class UserService implements ServiceFacade {
 
         ErrorDTO errorDetails = null;
         try {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    credentials.getUsername(),
+                    credentials.getPassword());
+            authenticationToken.setDetails(credentials.getCode());
+                    //credentials.getCode());
             final Authentication authentication = webSecurityConfiguration.authenticationManagerBean()
-                    .authenticate(new UsernamePasswordAuthenticationToken(credentials.getUsername(),
-                            credentials.getPassword()));
+                    .authenticate(authenticationToken);
 
             if (authentication.isAuthenticated()) {
                 // create payload

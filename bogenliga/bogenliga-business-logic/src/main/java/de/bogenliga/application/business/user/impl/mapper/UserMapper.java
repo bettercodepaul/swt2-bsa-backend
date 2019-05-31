@@ -66,7 +66,7 @@ public class UserMapper implements ValueObjectMapper {
         userBE.setUserId(vo.getId());
         userBE.setUserEmail(vo.getEmail());
         userBE.setUsing2FA(vo.isUsing2FA());
-        userBE.setSecret(vo.getSecrect());
+        userBE.setSecret(vo.getSecret());
 
         userBE.setCreatedAtUtc(createdAtUtcTimestamp);
         userBE.setCreatedByUserId(vo.getCreatedByUserId());
