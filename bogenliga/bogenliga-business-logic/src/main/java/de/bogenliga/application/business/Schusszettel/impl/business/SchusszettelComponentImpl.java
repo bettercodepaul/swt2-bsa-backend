@@ -151,7 +151,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         // Create Tables
         final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
         final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
-        final Table tableSecondRow = new Table(UnitValue.createPercentArray(5), true);
+        final Table tableSecondRow = new Table(UnitValue.createPercentArray(1), true);
         final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
 
         // Headline
@@ -168,6 +168,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         doc.add(tableSecondRow);
 
         // Third row
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT).add(new Paragraph(mannschaftName1)));
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT).add(new Paragraph(mannschaftName2)));
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph("Unterschrift")));
+        tableThirdRow.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).add(new Paragraph("Unterschrift")));
         doc.add(tableThirdRow);
     }
 
