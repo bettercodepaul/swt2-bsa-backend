@@ -12,6 +12,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
@@ -101,6 +102,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList , i, k);
                     if(matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
                         generateSchusszettelPage(doc, matchesBegegnung);
+                        if(i != 7){
+                            doc.add(new AreaBreak());
+                        }
                     }
                 }
             }
