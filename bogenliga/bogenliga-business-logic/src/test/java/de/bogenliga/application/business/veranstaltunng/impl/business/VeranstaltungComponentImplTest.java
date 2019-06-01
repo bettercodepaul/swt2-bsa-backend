@@ -20,6 +20,7 @@ import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
+import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -38,7 +39,7 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERANSTALTUNG_SPORTJAHR = 2018L;
     private static final Date VERANSTALTUNG_DSB_IDENTIFIER = new Date(1L);
     private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
-    private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);;
+    private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
     private static final Long VERANSTALTUNG_LIGA_ID = 0L;
 
     private static final String VERANSTALTUNG_LIGALEITER_EMAIL = "a@b.c";
@@ -56,6 +57,14 @@ public class VeranstaltungComponentImplTest {
     private static  final Long LIGA_REGION_ID= 1L;
     private static  final Long LIGA_UebergeordneteR_LIGA_ID= 2L;
     private static  final Long LIGA_VERANTWORTLICH_ID = 1L;
+
+
+    private static final Long WETTKAMPF_ID = 0L;
+    private static final Date WETTKAMPF_DATUM = new Date(1L);
+    private  static final String WETTKAMPF_ORT = "München";
+    private static final String WETTKAMPF_BEGINN ="13:00";
+
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -95,6 +104,7 @@ public class VeranstaltungComponentImplTest {
                 VERANSTALTUNG_LIGA_NAME);
     }
 
+
     public static RegionenBE getRegionenBE() { // da ist die region die der Veranstaltung ID entspricht
         RegionenBE regionenBE = new RegionenBE();
         regionenBE.setRegionId(REGION_ID);
@@ -132,6 +142,16 @@ public class VeranstaltungComponentImplTest {
 
         return ligaBE;
     }
+
+    public static WettkampfBE getWettkampfBE(){
+        WettkampfBE wettkampfBE = new WettkampfBE();
+        wettkampfBE.setId(WETTKAMPF_ID);
+        wettkampfBE.setDatum(WETTKAMPF_DATUM);
+        wettkampfBE.setWettkampfBeginn(WETTKAMPF_BEGINN);
+        wettkampfBE.setWettkampfOrt(WETTKAMPF_ORT);
+         return wettkampfBE;
+    }
+
 
     //TODO Fix
    /* @Test
