@@ -141,6 +141,12 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
         for (int i = 1; i <= 2; i++) {
+
+            //Blank lines before seconnd half
+            if (i==2){
+                for(int k=0; k<=3; k++)
+                doc.add(new Paragraph(""));
+            }
             // Generate tables
             final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
             final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
@@ -169,7 +175,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             tableFirstRowFirstPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                   .add(new Paragraph(mannschaftName[i - 1]).setBold())
+                   .add(new Paragraph(mannschaftName[0]).setBold())
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(16.0F)
                     .add(new Paragraph(matchDOs[0].getNr() + ". Match"))
@@ -179,7 +185,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(mannschaftName[i % 2]).setBold())
+                    .add(new Paragraph(mannschaftName[1]).setBold())
                 )
             ;
 
@@ -239,13 +245,13 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .add(new Paragraph("Schütze").setFontSize(8.0F))
                 )
                 .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
-                    .add(new Paragraph("1").setFontSize(12.0F))
+                    .add(new Paragraph("").setFontSize(12.0F))
                 )
                 .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
-                    .add(new Paragraph("2").setFontSize(12.0F))
+                    .add(new Paragraph("").setFontSize(12.0F))
                 )
                 .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
-                    .add(new Paragraph("3").setFontSize(12.0F))
+                    .add(new Paragraph("").setFontSize(12.0F))
                 )
                 // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
