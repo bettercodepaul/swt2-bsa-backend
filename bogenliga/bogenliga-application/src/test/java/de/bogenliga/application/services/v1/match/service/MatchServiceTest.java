@@ -1,11 +1,9 @@
 package de.bogenliga.application.services.v1.match.service;
 
-import java.lang.reflect.Array;
 import java.security.Principal;
 import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
@@ -34,7 +32,6 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.services.v1.liga.service.LigaService;
 import de.bogenliga.application.services.v1.liga.service.LigaServiceTest;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
@@ -158,7 +155,8 @@ public class MatchServiceTest {
     private static final String VERANST_WETT_TYP_NAME = "TestWettTyp";
     private static final String VERANST_LIGA_NAME = "TestLiga";
 
-    protected VeranstaltungDO getVeranstaltungDO () {
+
+    protected VeranstaltungDO getVeranstaltungDO() {
         return new VeranstaltungDO(
                 VERANST_ID, VERANST_WETT_TYP_ID, VERANST_NAME,
                 VERANST_SPORTJAHR, VERANST_MELDEDEADLINE,
@@ -167,6 +165,7 @@ public class MatchServiceTest {
                 VERANST_LIGA_NAME
         );
     }
+
 
     protected MatchDO getMatchDO() {
         return new MatchDO(
@@ -518,6 +517,72 @@ public class MatchServiceTest {
 
 
     @Test
+    public void validateMitgliedStatus_ErrorHigherLeague() {
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+
+        // now the participation count is larger than 1 -> cannot participate in lower league
+        when(mannschaftsmitgliedComponent.findParticipationsInLiga(anyLong(), anyLong()))
+                .thenReturn(Collections.singletonList(getMMDO(4L)));
+
+        LigaDO currentLiga = LigaServiceTest.getLigaDO();
+        currentLiga.setId(3L);
+        currentLiga.setLigaUebergeordnetId(2L);
+
+        LigaDO topLiga = LigaServiceTest.getLigaDO();
+        topLiga.setId(1L);
+        topLiga.setLigaUebergeordnetId(null);
+
+        LigaDO midLiga = LigaServiceTest.getLigaDO();
+        midLiga.setId(2L);
+        midLiga.setLigaUebergeordnetId(1L);
+
+        ArrayList<LigaDO> ligen = new ArrayList<>();
+        ligen.add(midLiga);
+        ligen.add(topLiga);
+        ligen.add(currentLiga);
+
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(ligaComponent.findById(anyLong())).thenReturn(currentLiga);
+
+        assertThatThrownBy(() -> underTest.validateMitgliedStatus(getMMDO(3L), getMatchDO()))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    public void validateMitgliedStatus_ErrorShotSameDay() {
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+
+        when(passeComponent.findByWettkampfIdAndMember(anyLong(), anyLong())).thenReturn(
+                Collections.singletonList(getPasseDO(1L)));
+
+        LigaDO currentLiga = LigaServiceTest.getLigaDO();
+        currentLiga.setId(3L);
+        currentLiga.setLigaUebergeordnetId(2L);
+
+        LigaDO topLiga = LigaServiceTest.getLigaDO();
+        topLiga.setId(1L);
+        topLiga.setLigaUebergeordnetId(null);
+
+        LigaDO midLiga = LigaServiceTest.getLigaDO();
+        midLiga.setId(2L);
+        midLiga.setLigaUebergeordnetId(1L);
+
+        ArrayList<LigaDO> ligen = new ArrayList<>();
+        ligen.add(midLiga);
+        ligen.add(topLiga);
+        ligen.add(currentLiga);
+
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(ligaComponent.findById(anyLong())).thenReturn(currentLiga);
+
+        assertThatThrownBy(() -> underTest.validateMitgliedStatus(getMMDO(3L), getMatchDO()))
+                .isInstanceOf(BusinessException.class);
+    }
+
+
+    @Test
     public void hasShotHigherLeague() {
         when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(4L));
 
@@ -577,7 +642,8 @@ public class MatchServiceTest {
 
     @Test
     public void hasShotSameDay() {
-        when(passeComponent.findByWettkampfIdAndMember(anyLong(), anyLong())).thenReturn(Collections.singletonList(getPasseDO(1L)));
+        when(passeComponent.findByWettkampfIdAndMember(anyLong(), anyLong())).thenReturn(
+                Collections.singletonList(getPasseDO(1L)));
         MannschaftsmitgliedDO mmdo = getMMDO(1L);
         WettkampfDO wdo = getWettkampfDO(1L);
         boolean result = underTest.hasShotSameDay(mmdo, wdo);
