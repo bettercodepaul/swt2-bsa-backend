@@ -31,11 +31,11 @@ public class MatchMapper implements ValueObjectMapper {
                 matchBE.getScheibenNummer(),
                 matchBE.getMatchpunkte(),
                 matchBE.getSatzpunkte(),
-                matchBE.getStrafPunktSatz1(),
-                matchBE.getStrafPunktSatz2(),
-                matchBE.getStrafPunktSatz3(),
-                matchBE.getStrafPunktSatz4(),
-                matchBE.getStrafPunktSatz5(),
+                matchBE.getStrafPunkteSatz1(),
+                matchBE.getStrafPunkteSatz2(),
+                matchBE.getStrafPunkteSatz3(),
+                matchBE.getStrafPunkteSatz4(),
+                matchBE.getStrafPunkteSatz5(),
 
                 createdAtUtc,
                 matchBE.getCreatedByUserId(),
@@ -61,11 +61,11 @@ public class MatchMapper implements ValueObjectMapper {
         matchBE.setBegegnung(matchDO.getBegegnung());
         matchBE.setMatchpunkte(matchDO.getMatchpunkte());
         matchBE.setSatzpunkte(matchDO.getSatzpunkte());
-        matchBE.setStrafPunktSatz1(matchDO.getStrafPunktSatz1());
-        matchBE.setStrafPunktSatz2(matchDO.getStrafPunktSatz2());
-        matchBE.setStrafPunktSatz3(matchDO.getStrafPunktSatz3());
-        matchBE.setStrafPunktSatz4(matchDO.getStrafPunktSatz4());
-        matchBE.setStrafPunktSatz5(matchDO.getStrafPunktSatz5());
+        matchBE.setStrafPunkteSatz1(matchDO.getStrafPunkteSatz1());
+        matchBE.setStrafPunkteSatz2(matchDO.getStrafPunkteSatz2());
+        matchBE.setStrafPunkteSatz3(matchDO.getStrafPunkteSatz3());
+        matchBE.setStrafPunkteSatz4(matchDO.getStrafPunkteSatz4());
+        matchBE.setStrafPunkteSatz5(matchDO.getStrafPunkteSatz5());
 
         matchBE.setCreatedAtUtc(createdAtUtcTimestamp);
         matchBE.setCreatedByUserId(matchDO.getCreatedByUserId());
