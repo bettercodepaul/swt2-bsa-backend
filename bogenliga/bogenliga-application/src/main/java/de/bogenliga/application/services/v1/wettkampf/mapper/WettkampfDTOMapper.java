@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.wettkampf.mapper;
 import java.time.OffsetDateTime;
+import java.sql.Date;
 import java.util.function.Function;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
@@ -23,7 +24,10 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
     public static final Function<WettkampfDO, WettkampfDTO> toDTO = wettkampfDO -> {
         final Long wettkampfId = wettkampfDO.getId();
         final Long veranstaltungsId = wettkampfDO.getVeranstaltungsId();
-        final String datum = wettkampfDO.getDatum();
+
+        final Date datumDate = wettkampfDO.getDatum();
+        final String datum = datumDate.toString();
+
         final String wettkampfOrt = wettkampfDO.getWettkampfOrt();
         final String wettkampfBeginn = wettkampfDO.getWettkampfBeginn();
         final Long wettkampfTag = wettkampfDO.getWettkampfTag();
@@ -46,7 +50,10 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
 
         final Long wettkampfId = wettkampfDTO.getId();
         final Long veranstaltungsId = wettkampfDTO.getVeranstaltungsId();
+
         final String datum = wettkampfDTO.getDatum();
+        Date datumDate = Date.valueOf(datum);
+
         final String wettkampfOrt = wettkampfDTO.getWettkampfOrt();
         final String wettkampfBeginn = wettkampfDTO.getWettkampfBeginn();
         final Long wettkampfTag = wettkampfDTO.getWettkampfTag();
@@ -56,7 +63,7 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final OffsetDateTime createdAtUtc = wettkampfDTO.getCreatedAtUtc();
         final Long version = wettkampfDTO.getVersion();
 
-        return new WettkampfDO(wettkampfId, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
+        return new WettkampfDO(wettkampfId, veranstaltungsId, datumDate, wettkampfOrt, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, createdAtUtc,createdByUserId, version);
     };
 
