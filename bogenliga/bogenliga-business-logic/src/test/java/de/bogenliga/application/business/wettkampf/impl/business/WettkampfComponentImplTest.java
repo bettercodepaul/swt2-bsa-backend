@@ -4,6 +4,7 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.sql.Date;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,7 +30,7 @@ public class WettkampfComponentImplTest {
 
     private static final long wettkampf_Id = 322;
     private static final long wettkampf_Veranstaltung_Id = 0;
-    private static final String wettkampf_Datum = "2019-05-21";
+    private static final Date wettkampf_Datum = new Date(20190521L);
     private static final String wettkampf_Ort ="Sporthalle,72810 Gomaringen";
     private static final String wettkampf_Beginn ="8:00";
     private static final long wettkampf_Tag = 8;

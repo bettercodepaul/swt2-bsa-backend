@@ -18,7 +18,33 @@ public class VeranstaltungDTO implements DataTransferObject {
     private Long sportjahr;
     private Date meldeDeadline;
     private Long ligaleiterID;
-    private Long version;
+    private Long ligaID;
+    private String ligaleiterEmail;
+    private String wettkampftypName;
+    private String ligaName;
+
+
+    /**
+     *
+     */
+    public VeranstaltungDTO(Long id, Long wettkampfTypId, String name, Long sportjahr,
+                            Date meldeDeadline, Long ligaleiterID, Long ligaID, String ligaleiterEmail,
+                            String wettkampftypName, String ligaName) {
+        this.id = id;
+        this.wettkampfTypId = wettkampfTypId;
+        this.name = name;
+        this.sportjahr = sportjahr;
+        this.meldeDeadline = meldeDeadline;
+        this.ligaleiterID = ligaleiterID;
+        this.ligaID = ligaID;
+        this.ligaleiterEmail = ligaleiterEmail;
+        this.wettkampftypName = wettkampftypName;
+        this.ligaName = ligaName;
+    }
+
+    public VeranstaltungDTO() {
+        //empty
+    }
 
 
     public Long getId() {
@@ -81,35 +107,44 @@ public class VeranstaltungDTO implements DataTransferObject {
     }
 
 
-    public Long getVersion() {
-        return version;
+    public String getLigaleiterEmail() {
+        return ligaleiterEmail;
     }
 
 
-    public void setVersion(Long version) {
-        this.version = version;
+    public void setLigaleiterEmail(String ligaleiterEmail) {
+        this.ligaleiterEmail = ligaleiterEmail;
     }
 
 
-    public VeranstaltungDTO() {
+    public String getWettkampftypName() {
+        return wettkampftypName;
     }
 
 
-    /**
-     *
-
-     */
-    public VeranstaltungDTO(Long id, Long wettkampfTypId, String name, Long sportjahr,
-                            Date meldeDeadline, Long ligaleiterID) {
-        this.id = id;
-        this.wettkampfTypId = wettkampfTypId;
-        this.name = name;
-        this.sportjahr = sportjahr;
-        this.meldeDeadline = meldeDeadline;
-        this.ligaleiterID = ligaleiterID;
-        this.version = 1L;
+    public void setWettkampftypName(String wettkampftypName) {
+        this.wettkampftypName = wettkampftypName;
     }
 
+
+    public Long getLigaID() {
+        return ligaID;
+    }
+
+
+    public void setLigaID(Long ligaID) {
+        this.ligaID = ligaID;
+    }
+
+
+    public String getLigaName() {
+        return ligaName;
+    }
+
+
+    public void setLigaName(String ligaName) {
+        this.ligaName = ligaName;
+    }
 
     @Override
     public String toString() {
@@ -120,6 +155,11 @@ public class VeranstaltungDTO implements DataTransferObject {
                 ", sportjahr='" + this.sportjahr + '\'' +
                 ", meldedeadline='" + this.meldeDeadline + '\'' +
                 ", ligaleiter_id='" + this.ligaleiterID + '\'' +
+                ", ligaID ='" + this.ligaID + '\'' +
+                ", ligaleiterEmail ='" + this.ligaleiterEmail + '\'' +
+                ", wettkampftypName ='" + this.wettkampftypName + '\'' +
+                ", ligaName ='" + this.ligaName + '\'' +
                 "}";
+
     }
 }
