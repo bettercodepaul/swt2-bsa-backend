@@ -8,12 +8,14 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
@@ -141,12 +143,17 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
         for (int i = 1; i <= 2; i++) {
-
-            //Blank lines before seconnd half
-            if (i==2){
-                for(int k=0; k<=3; k++)
-                doc.add(new Paragraph(""));
+            //Blank lines before second half
+            if (i == 2) {
+                for(int j = 0; j <= 2; j++) {
+                    if (j == 1) {
+                        doc.add(new LineSeparator(new SolidLine(0.5F)));
+                    } else {
+                        doc.add(new Paragraph("\n"));
+                    }
+                }
             }
+
             // Generate tables
             final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
             final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
@@ -189,6 +196,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 )
             ;
 
+            Border specialBorder = new SolidBorder(Border.SOLID);
+            specialBorder.setWidth(1.5F);
+
             // Second part
             tableFirstRowSecondPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
@@ -218,15 +228,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 .addCell(new Cell().setHeight(25.0F))
                 .addCell(new Cell().setHeight(25.0F))
                 .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
+                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
                 .addCell(new Cell().setHeight(25.0F))
                 .addCell(new Cell().setHeight(25.0F))
                 .addCell(new Cell().setHeight(25.0F))
                 .addCell(new Cell().setHeight(25.0F))
                 .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
+                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
                 // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
@@ -244,16 +254,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
                     .add(new Paragraph("Schütze").setFontSize(8.0F))
                 )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
-                    .add(new Paragraph("").setFontSize(12.0F))
-                )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
-                    .add(new Paragraph("").setFontSize(12.0F))
-                )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
-                    .add(new Paragraph("").setFontSize(12.0F))
-                )
-                // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setHeight(25.0F))
+                // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
@@ -355,7 +359,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .add(new Paragraph("Summe").setFontSize(10.0F))
                 )
                 .addCell(new Cell().setHeight(25.0F))
-                // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+                // Add ten cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -376,6 +380,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
                     .add(new Paragraph(mannschaftName[1]).setBold())
                 )
+                // Two empty cells for text input
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
                     .add(new Paragraph("\n"))
                 )
@@ -412,7 +417,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             // Add all to document
             doc
                 .add(tableHead)
-                .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(10.0F, 0.0F, 10.0F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
+                .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
                     .add(tableFirstRow)
                     .add(tableSecondRow)
                     .add(tableThirdRow)
