@@ -83,6 +83,7 @@ public class WettkampfService implements ServiceFacade {
         LOG.debug("Receive 'findById' request with ID '{}'", id);
 
         final WettkampfDO wettkampfDO= wettkampfComponent.findById(id);
+        wettkampfDO.toString();
         return WettkampfDTOMapper.toDTO.apply(wettkampfDO);
     }
 

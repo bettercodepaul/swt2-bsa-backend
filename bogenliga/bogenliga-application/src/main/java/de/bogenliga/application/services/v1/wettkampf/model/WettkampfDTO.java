@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.wettkampf.model;
 
 import java.time.OffsetDateTime;
+import java.sql.Date;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
  *  *I´m the data transfer object of the wettkampf.
