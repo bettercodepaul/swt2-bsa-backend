@@ -5,10 +5,16 @@ import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.itextpdf.kernel.colors.CalGray;
+import com.itextpdf.kernel.colors.CalRgb;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.DeviceCmyk;
+import com.itextpdf.kernel.colors.DeviceGray;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
+import com.itextpdf.kernel.pdf.colorspace.PdfCieBasedCs;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
@@ -142,12 +148,20 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
 
+        // Generate special settings for some parts
+        Border specialBorder = new SolidBorder(Border.SOLID);
+        specialBorder.setWidth(1.5F);
+
+        SolidLine specialSolidLine = new SolidLine(0.5F);
+        Color specialGrey = new DeviceGray(0.75F);
+        specialSolidLine.setColor(specialGrey);
+
         for (int i = 1; i <= 2; i++) {
             //Blank lines before second half
             if (i == 2) {
                 for(int j = 0; j <= 2; j++) {
                     if (j == 1) {
-                        doc.add(new LineSeparator(new SolidLine(0.5F)));
+                        doc.add(new LineSeparator(specialSolidLine));
                     } else {
                         doc.add(new Paragraph("\n"));
                     }
@@ -195,9 +209,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .add(new Paragraph(mannschaftName[1]).setBold())
                 )
             ;
-
-            Border specialBorder = new SolidBorder(Border.SOLID);
-            specialBorder.setWidth(1.5F);
 
             // Second part
             tableFirstRowSecondPart
