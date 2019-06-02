@@ -42,7 +42,7 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION_ID = "Region ID must not be negative";
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
     private static final String PRECONDITION_MSG_REGION_Kuerzel = "Region Contraction must not be null";
-    
+
 
     private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
 
