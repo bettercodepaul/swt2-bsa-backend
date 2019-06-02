@@ -41,7 +41,7 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION = "Region must not be null";
     private static final String PRECONDITION_MSG_REGION_ID = "Region ID must not be negative";
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
-    private static final String PRECONDITION_MSG_REGION_Kuerzel = "Region Contraction must not be null";
+    private static final String PRECONDITION_MSG_REGION_KUERZEL = "Region Contraction must not be null";
 
 
     private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
@@ -140,7 +140,7 @@ public class RegionenService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         //debug
-        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}'",
+        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}', user '{}'",
                 regionenDTO.getRegionName(),
                 regionenDTO.getId(),
                 regionenDTO.getRegionKuerzel(),
@@ -195,7 +195,7 @@ public class RegionenService implements ServiceFacade {
     private void checkPreconditions(@RequestBody final RegionenDTO regionenDTO) {
         Preconditions.checkNotNull(regionenDTO, PRECONDITION_MSG_REGION);
         Preconditions.checkNotNull(regionenDTO.getRegionName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkNotNull(regionenDTO.getRegionKuerzel(), PRECONDITION_MSG_REGION_Kuerzel);
+        Preconditions.checkNotNull(regionenDTO.getRegionKuerzel(), PRECONDITION_MSG_REGION_KUERZEL);
         Preconditions.checkNotNull(regionenDTO.getRegionTyp(), PRECONDITION_MSG_REGION_TYPE);
     }
 
@@ -241,10 +241,10 @@ public class RegionenService implements ServiceFacade {
         if(currentRegion.getRegionUebergeordnet() == null
                 && currentRegion.getRegionUebergeordnetAsName()!=null){
 
-            possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
+            possibleRegions = regions.stream().filter(region-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
                 .collect(Collectors.toList());
 
-            if(possibleRegions != null && possibleRegions.size() !=0) {
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
             }else{
                 LOG.debug("Mapping of the regionUebergeordnetAsName to the regionUebergeordnet Id failed.");
@@ -258,7 +258,7 @@ public class RegionenService implements ServiceFacade {
                     currentRegion.getRegionUebergeordnet()).collect(
                     Collectors.toList());
 
-            if(possibleRegions != null && possibleRegions.size() !=0) {
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
             }else{
                 LOG.debug("Mapping of the regionUebergeordnet Id to the regionUebergeordnetAsName failed.");
@@ -279,17 +279,16 @@ public class RegionenService implements ServiceFacade {
      * @return the same currentRegion, but the ID is matching to the uebergeordnetAsName.
      */
     private RegionenDTO syncSingleWithDOs(RegionenDTO currentRegion, List<RegionenDO> regions){
-        //System.out.println("Current: "+ currentRegion +", all: "+regions.size());
         List<RegionenDO> possibleRegions = null;
         //Case: The region has a superordinate name but not yet the id
         if(currentRegion.getRegionUebergeordnet() == null
                 && currentRegion.getRegionUebergeordnetAsName()!=null){
 
             //search for the region with the name of the regionUebergeordnetAsName field
-            possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
+            possibleRegions = regions.stream().filter(region-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
                     .collect(Collectors.toList());
 
-            if(possibleRegions != null && possibleRegions.size() !=0) {
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
             }else{
                 LOG.debug("Mapping of the regionUebergeordnetAsName to the regionUebergeordnet Id failed.");
@@ -302,7 +301,7 @@ public class RegionenService implements ServiceFacade {
                     currentRegion.getRegionUebergeordnet()).collect(
                     Collectors.toList());
 
-            if(possibleRegions != null && possibleRegions.size() !=0) {
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
             }else{
                 LOG.debug("Mapping of the regionUebergeordnet Id to the regionUebergeordnetAsName failed.");
