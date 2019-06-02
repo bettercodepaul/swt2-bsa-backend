@@ -42,8 +42,7 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION_ID = "Region ID must not be negative";
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
     private static final String PRECONDITION_MSG_REGION_Kuerzel = "Region Contraction must not be null";
-    private static final String PRECONDITION_MSG_REGION_Uebergeordnet = "Region Uebergeordnet(id oder name) must not be null or invalid";
-
+    
 
     private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
 
@@ -141,9 +140,6 @@ public class RegionenService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         //debug
-        System.out.println("ANFRAGE:"+regionenDTO.getRegionName()+", "+regionenDTO.getId()+", "+regionenDTO.getRegionKuerzel()+
-                ", "+regionenDTO.getRegionTyp()+", "+regionenDTO.getRegionUebergeordnet()+", "+userId);
-
         LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}'",
                 regionenDTO.getRegionName(),
                 regionenDTO.getId(),
@@ -248,10 +244,12 @@ public class RegionenService implements ServiceFacade {
             possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
                 .collect(Collectors.toList());
 
-            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
-            Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
+            if(possibleRegions != null && possibleRegions.size() !=0) {
+                currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnetAsName to the regionUebergeordnet Id failed.");
+            }
 
-            currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
             //Case: The region has a superordinate id but not its corresponding name
         }else if(currentRegion.getRegionUebergeordnet() != null
                 && currentRegion.getRegionUebergeordnetAsName()==null){
@@ -260,10 +258,11 @@ public class RegionenService implements ServiceFacade {
                     currentRegion.getRegionUebergeordnet()).collect(
                     Collectors.toList());
 
-            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
-            Preconditions.checkArgument(!possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
-
-            currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
+            if(possibleRegions != null && possibleRegions.size() !=0) {
+                currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnet Id to the regionUebergeordnetAsName failed.");
+            }
         }
         return currentRegion;
     }
@@ -290,10 +289,11 @@ public class RegionenService implements ServiceFacade {
             possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
                     .collect(Collectors.toList());
 
-            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
-            Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
-
-            currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
+            if(possibleRegions != null && possibleRegions.size() !=0) {
+                currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnetAsName to the regionUebergeordnet Id failed.");
+            }
         //Case: The region has a superordinate id but not its corresponding name
         }else if(currentRegion.getRegionUebergeordnet() != null
                 && currentRegion.getRegionUebergeordnetAsName()==null){
@@ -302,10 +302,11 @@ public class RegionenService implements ServiceFacade {
                     currentRegion.getRegionUebergeordnet()).collect(
                     Collectors.toList());
 
-            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
-            Preconditions.checkArgument(!possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
-
-            currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
+            if(possibleRegions != null && possibleRegions.size() !=0) {
+                currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnet Id to the regionUebergeordnetAsName failed.");
+            }
         }
         return currentRegion;
     }
