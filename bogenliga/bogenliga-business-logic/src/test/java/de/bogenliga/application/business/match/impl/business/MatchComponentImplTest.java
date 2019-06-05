@@ -46,6 +46,17 @@ public class MatchComponentImplTest extends BaseMatchTest {
         assertThat(actual.getWettkampfId()).isEqualTo(expectedMatchBE.getWettkampfId()).isEqualTo(MATCH_WETTKAMPF_ID);
         assertThat(actual.getMatchpunkte()).isEqualTo(expectedMatchBE.getMatchpunkte()).isEqualTo(MATCH_MATCHPUNKTE);
         assertThat(actual.getSatzpunkte()).isEqualTo(expectedMatchBE.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
+        assertThat(actual.getStrafPunkteSatz1()).isEqualTo(expectedMatchBE.getStrafPunkteSatz1()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_1);
+        assertThat(actual.getStrafPunkteSatz2()).isEqualTo(expectedMatchBE.getStrafPunkteSatz2()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_2);
+        assertThat(actual.getStrafPunkteSatz3()).isEqualTo(expectedMatchBE.getStrafPunkteSatz3()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_3);
+        assertThat(actual.getStrafPunkteSatz4()).isEqualTo(expectedMatchBE.getStrafPunkteSatz4()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_4);
+        assertThat(actual.getStrafPunkteSatz5()).isEqualTo(expectedMatchBE.getStrafPunkteSatz5()).isEqualTo(
+                MATCH_STRAFPUNKT_SATZ_5);
+
         assertThat(actual.getNr()).isEqualTo(expectedMatchBE.getNr()).isEqualTo(MATCH_NR);
     }
 

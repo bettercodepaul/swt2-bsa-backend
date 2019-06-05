@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -32,7 +32,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @CrossOrigin
 @RequestMapping("v1/wettkampftyp")
 public class WettkampftypService implements ServiceFacade {
-    private static final String PRECONDITION_MSG_WETTKAMPFTYP = "WettkampftypDO must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPFTYP = "WettkampfTypDO must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPFTYP_ID = "Wettkampftyp ID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPFTYP_NAME = "Wettkampftyp name must not be null";
 
@@ -62,7 +62,7 @@ public class WettkampftypService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<WettkampftypDTO> findAll() {
-        final List<WettkampftypDO> wettkampftypDoList = wettkampftypComponent.findAll();
+        final List<WettkampfTypDO> wettkampftypDoList = wettkampftypComponent.findAll();
         return wettkampftypDoList.stream().map(WettkampftypDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -78,7 +78,7 @@ public class WettkampftypService implements ServiceFacade {
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
 
-        final WettkampftypDO wettkampftypDO= wettkampftypComponent.findById(id);
+        final WettkampfTypDO wettkampftypDO= wettkampftypComponent.findById(id);
         return WettkampftypDTOMapper.toDTO.apply(wettkampftypDO);
     }
 
@@ -100,11 +100,11 @@ public class WettkampftypService implements ServiceFacade {
                 wettkampftypDTO.getId(),
                 wettkampftypDTO.getName());
 
-        final WettkampftypDO newDsbMitgliedDO = WettkampftypDTOMapper.toDO.apply(wettkampftypDTO);
+        final WettkampfTypDO newDsbMitgliedDO = WettkampftypDTOMapper.toDO.apply(wettkampftypDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final WettkampftypDO savedWettkampftypDO= wettkampftypComponent.create(newDsbMitgliedDO, userId);
-        return WettkampftypDTOMapper.toDTO.apply(savedWettkampftypDO);
+        final WettkampfTypDO savedWettkampfTypDO= wettkampftypComponent.create(newDsbMitgliedDO, userId);
+        return WettkampftypDTOMapper.toDTO.apply(savedWettkampfTypDO);
     }
 
     /**
@@ -126,11 +126,11 @@ public class WettkampftypService implements ServiceFacade {
                         wettkampftypDTO.getId(),
                         wettkampftypDTO.getName());
 
-        final WettkampftypDO newWettkampftypDO = WettkampftypDTOMapper.toDO.apply(wettkampftypDTO);
+        final WettkampfTypDO newWettkampfTypDO = WettkampftypDTOMapper.toDO.apply(wettkampftypDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final WettkampftypDO updatedWettkampftypDO = wettkampftypComponent.update(newWettkampftypDO, userId);
-        return WettkampftypDTOMapper.toDTO.apply(updatedWettkampftypDO);
+        final WettkampfTypDO updatedWettkampfTypDO = wettkampftypComponent.update(newWettkampfTypDO, userId);
+        return WettkampftypDTOMapper.toDTO.apply(updatedWettkampfTypDO);
     }
 
     /**
@@ -146,7 +146,7 @@ public class WettkampftypService implements ServiceFacade {
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
         // allow value == null, the value will be ignored
-        final WettkampftypDO wettkampftypDO = new WettkampftypDO(id);
+        final WettkampfTypDO wettkampftypDO = new WettkampfTypDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         wettkampftypComponent.delete(wettkampftypDO, userId);

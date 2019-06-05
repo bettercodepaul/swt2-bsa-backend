@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
 import de.bogenliga.application.services.v1.wettkampftyp.service.WettkampftypService;
@@ -52,7 +52,7 @@ public class WettkampftypServiceTest {
     private WettkampftypService underTest;
 
     @Captor
-    private ArgumentCaptor<WettkampftypDO> wettkampftypDOArgumentCaptor;
+    private ArgumentCaptor<WettkampfTypDO> wettkampftypDOArgumentCaptor;
 
 
 
@@ -68,8 +68,8 @@ public class WettkampftypServiceTest {
         return expectedBE;
     }
 
-    public static WettkampftypDO getWettkampftypDO() {
-        return new WettkampftypDO(
+    public static WettkampfTypDO getWettkampfTypDO() {
+        return new WettkampfTypDO(
                 wettkampftyp_Id,
                 wettkampftyp_Name,
 
@@ -102,8 +102,8 @@ public class WettkampftypServiceTest {
     public void findAll(){
 
         // prepare test data
-        final WettkampftypDO wettkampftypDO= getWettkampftypDO();
-        final List<WettkampftypDO> wettkampftypDOList= Collections.singletonList(wettkampftypDO);
+        final WettkampfTypDO wettkampftypDO= getWettkampfTypDO();
+        final List<WettkampfTypDO> wettkampftypDOList= Collections.singletonList(wettkampftypDO);
 
         // configure mocks
         when(wettkampftypComponent.findAll()).thenReturn(wettkampftypDOList);
@@ -129,7 +129,7 @@ public class WettkampftypServiceTest {
     @Test
     public void findById() {
         // prepare test data
-        final WettkampftypDO wettkampftypDO = getWettkampftypDO();
+        final WettkampfTypDO wettkampftypDO = getWettkampfTypDO();
 
         // configure mocks
         when(wettkampftypComponent.findById(anyLong())).thenReturn(wettkampftypDO);
@@ -150,7 +150,7 @@ public class WettkampftypServiceTest {
         // prepare test data
         final WettkampftypDTO input = getWettkampftypDTO();
 
-        final WettkampftypDO expected = getWettkampftypDO();
+        final WettkampfTypDO expected = getWettkampfTypDO();
 
         // configure mocks
         when(wettkampftypComponent.create(any(), anyLong())).thenReturn(expected);
@@ -165,7 +165,7 @@ public class WettkampftypServiceTest {
         // verify invocations
         verify(wettkampftypComponent).create(wettkampftypDOArgumentCaptor.capture(), anyLong());
 
-        final WettkampftypDO createdDsbMitglied = wettkampftypDOArgumentCaptor.getValue();
+        final WettkampfTypDO createdDsbMitglied = wettkampftypDOArgumentCaptor.getValue();
 
         assertThat(createdDsbMitglied).isNotNull();
         assertThat(createdDsbMitglied.getId()).isEqualTo(input.getId());
@@ -176,7 +176,7 @@ public class WettkampftypServiceTest {
         // prepare test data
         final WettkampftypDTO input = getWettkampftypDTO();
 
-        final WettkampftypDO expected = getWettkampftypDO();
+        final WettkampfTypDO expected = getWettkampfTypDO();
 
         // configure mocks
         when(wettkampftypComponent.update(any(), anyLong())).thenReturn(expected);
@@ -191,7 +191,7 @@ public class WettkampftypServiceTest {
         // verify invocations
         verify(wettkampftypComponent).update(wettkampftypDOArgumentCaptor.capture(), anyLong());
 
-        final WettkampftypDO updatedWettkampftyp = wettkampftypDOArgumentCaptor.getValue();
+        final WettkampfTypDO updatedWettkampftyp = wettkampftypDOArgumentCaptor.getValue();
 
         assertThat(updatedWettkampftyp).isNotNull();
         assertThat(updatedWettkampftyp.getId()).isEqualTo(input.getId());
@@ -200,7 +200,7 @@ public class WettkampftypServiceTest {
     @Test
     public void delete() {
         // prepare test data
-        final WettkampftypDO expected = getWettkampftypDO();
+        final WettkampfTypDO expected = getWettkampfTypDO();
 
         // configure mocks
 
@@ -212,7 +212,7 @@ public class WettkampftypServiceTest {
         // verify invocations
         verify(wettkampftypComponent).delete(wettkampftypDOArgumentCaptor.capture(), anyLong());
 
-        final WettkampftypDO deletedWettkampftyp= wettkampftypDOArgumentCaptor.getValue();
+        final WettkampfTypDO deletedWettkampftyp= wettkampftypDOArgumentCaptor.getValue();
 
         assertThat(deletedWettkampftyp).isNotNull();
         assertThat(deletedWettkampftyp.getId()).isEqualTo(expected.getId());
