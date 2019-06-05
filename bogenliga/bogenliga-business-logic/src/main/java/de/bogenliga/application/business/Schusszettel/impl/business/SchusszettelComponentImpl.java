@@ -5,16 +5,10 @@ import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.itextpdf.kernel.colors.CalGray;
-import com.itextpdf.kernel.colors.CalRgb;
-import com.itextpdf.kernel.colors.Color;
-import com.itextpdf.kernel.colors.DeviceCmyk;
-import com.itextpdf.kernel.colors.DeviceGray;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
-import com.itextpdf.kernel.pdf.colorspace.PdfCieBasedCs;
+import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
@@ -24,10 +18,8 @@ import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
-import com.itextpdf.layout.property.VerticalAlignment;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
@@ -152,16 +144,16 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         Border specialBorder = new SolidBorder(Border.SOLID);
         specialBorder.setWidth(1.5F);
 
-        SolidLine specialSolidLine = new SolidLine(0.5F);
-        Color specialGrey = new DeviceGray(0.75F);
-        specialSolidLine.setColor(specialGrey);
+        DottedLine cutterDottedLine = new DottedLine(0.5F);
+        //Color specialGrey = new DeviceGray(0.75F);
+        //cutterDottedLine.setColor(specialGrey);
 
         for (int i = 1; i <= 2; i++) {
             //Blank lines before second half
             if (i == 2) {
                 for(int j = 0; j <= 2; j++) {
                     if (j == 1) {
-                        doc.add(new LineSeparator(specialSolidLine));
+                        doc.add(new LineSeparator(cutterDottedLine));
                     } else {
                         doc.add(new Paragraph("\n"));
                     }
