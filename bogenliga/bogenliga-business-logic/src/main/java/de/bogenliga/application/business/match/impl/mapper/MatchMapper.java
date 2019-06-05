@@ -31,7 +31,11 @@ public class MatchMapper implements ValueObjectMapper {
                 matchBE.getScheibenNummer(),
                 matchBE.getMatchpunkte(),
                 matchBE.getSatzpunkte(),
-
+                matchBE.getStrafPunkteSatz1(),
+                matchBE.getStrafPunkteSatz2(),
+                matchBE.getStrafPunkteSatz3(),
+                matchBE.getStrafPunkteSatz4(),
+                matchBE.getStrafPunkteSatz5(),
                 createdAtUtc,
                 matchBE.getCreatedByUserId(),
                 lastModifiedUtc,
@@ -56,6 +60,11 @@ public class MatchMapper implements ValueObjectMapper {
         matchBE.setBegegnung(matchDO.getBegegnung());
         matchBE.setMatchpunkte(matchDO.getMatchpunkte());
         matchBE.setSatzpunkte(matchDO.getSatzpunkte());
+        matchBE.setStrafPunkteSatz1(matchDO.getStrafPunkteSatz1());
+        matchBE.setStrafPunkteSatz2(matchDO.getStrafPunkteSatz2());
+        matchBE.setStrafPunkteSatz3(matchDO.getStrafPunkteSatz3());
+        matchBE.setStrafPunkteSatz4(matchDO.getStrafPunkteSatz4());
+        matchBE.setStrafPunkteSatz5(matchDO.getStrafPunkteSatz5());
 
         matchBE.setCreatedAtUtc(createdAtUtcTimestamp);
         matchBE.setCreatedByUserId(matchDO.getCreatedByUserId());

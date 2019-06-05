@@ -6,8 +6,6 @@
  * Die Passe ist eine schwache Entität und basiert auf dem Wettkampf, dem Match und dem Mannschaftsmitglied.
  * Die Spalten sind denormalisiert, um den Zugriff zu beschleunigen (weniger Joins)
  **/
-CREATE SEQUENCE sq_passe_id START WITH 1000 INCREMENT BY 1
-;
 
 CREATE TABLE passe (
 
@@ -16,7 +14,6 @@ CREATE TABLE passe (
     -- denormalisiert
     passe_wettkampf_id    DECIMAL(19, 0) NOT NULL, --Fremdschlüsselbezug zum wettkampf
     passe_match_nr        DECIMAL(1, 0)  NOT NULL,
-    passe_match_id        DECIMAL(19, 0) NOT NULL, --id vom zugehörigen match
     passe_lfdnr           DECIMAL(4, 0)  NOT NULL,
     passe_dsb_mitglied_id DECIMAL(19, 0) NOT NULL, --Fremdschlüsselbezug zum dsb_mitglied
 
@@ -38,9 +35,6 @@ CREATE TABLE passe (
     last_modified_by      DECIMAL(19, 0) NULL     DEFAULT NULL,
     version               DECIMAL(19, 0) NOT NULL DEFAULT 0,
 
-    -- an auto-incremented unique attribute, for easier internal access
-    passe_id              DECIMAL(19, 0) NOT NULL DEFAULT nextval('sq_passe_id'),
-
     -- !!!ACHTUNG: Beispiel für ein Refactoring einer existierenden Tabelle!!!
     -- primary key (pk)
     -- scheme: pk_{column name}
@@ -51,9 +45,6 @@ CREATE TABLE passe (
     -- schema: fk_{current table name}_{foreign key origin table name}
     CONSTRAINT fk_passe_wettkampf FOREIGN KEY (passe_wettkampf_id) REFERENCES wettkampf (wettkampf_id)
         ON DELETE CASCADE,                         -- das Löschen eines Wettkampfs löscht auch die zugehörigen Passen
-
-    CONSTRAINT fk_match_id FOREIGN KEY (passe_match_id) REFERENCES match (match_id)
-        ON DELETE CASCADE,
 
     CONSTRAINT fk_passe_dsb_mitglied FOREIGN KEY (passe_dsb_mitglied_id) REFERENCES dsb_mitglied (dsb_mitglied_id)
         ON DELETE CASCADE,                         -- das Löschen eines dsb_mitglieds löscht auch dessen Pfeilwerte
