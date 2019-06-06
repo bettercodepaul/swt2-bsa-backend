@@ -16,11 +16,11 @@ CREATE TABLE match (
   match_scheibennummer DECIMAL(2, 0)  NOT NULL,
   match_matchpunkte    DECIMAL(1, 0)  NULL,
   match_satzpunkte     DECIMAL(1, 0)  NULL,
-  match_strafpunkt_satz_1 DECIMAL(2, 0) NULL,
-  match_strafpunkt_satz_2 DECIMAL(2, 0) NULL,
-  match_strafpunkt_satz_3 DECIMAL(2, 0) NULL,
-  match_strafpunkt_satz_4 DECIMAL(2, 0) NULL,
-  match_strafpunkt_satz_5 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_1 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_2 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_3 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_4 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_5 DECIMAL(2, 0) NULL,
 
   -- technical columns to track the lifecycle of each row
   -- the "_by" columns references a "benutzer_id" without foreign key constraint
