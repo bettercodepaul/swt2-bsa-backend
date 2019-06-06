@@ -90,6 +90,9 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         } catch (final BusinessException e) {
             errorDTO = new ErrorDTO(e.getErrorCode(), e.getParameters(), e.getMessage());
 
+        } catch (final BadCredentialsException e) {
+            errorDTO = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, e.getMessage());
+
         } catch (final RuntimeException e) { // NOSONAR
             LOG.warn("An unexpected error occured", e);
             // null will be returned
