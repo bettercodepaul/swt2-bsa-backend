@@ -41,8 +41,7 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION = "Region must not be null";
     private static final String PRECONDITION_MSG_REGION_ID = "Region ID must not be negative";
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
-    private static final String PRECONDITION_MSG_REGION_Kuerzel = "Region Contraction must not be null";
-    private static final String PRECONDITION_MSG_REGION_Uebergeordnet = "Region Uebergeordnet(id oder name) must not be null or invalid";
+    private static final String PRECONDITION_MSG_REGION_KUERZEL = "Region Contraction must not be null";
 
 
     private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
@@ -72,7 +71,8 @@ public class RegionenService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<RegionenDTO> findAll() {
         final List<RegionenDO> regionDOList = regionenComponent.findAll();
-        return regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
+        return syncUebergeordnetWithUebergeordnetAsName(
+                regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList()));
     }
 
     @RequestMapping(value = "ID/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,7 +84,7 @@ public class RegionenService implements ServiceFacade {
 
         final RegionenDO regionenDO = regionenComponent.findById(id);
 
-        return RegionenDTOMapper.toDTO.apply(regionenDO);
+        return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(regionenDO),regionenComponent.findAll());
     }
 
 
@@ -103,12 +103,13 @@ public class RegionenService implements ServiceFacade {
                 regionenDTO.getRegionTyp(),
                 regionenDTO.getRegionUebergeordnet());
 
-
+        List<RegionenDO> regionen =regionenComponent.findAll();
+        syncSingleWithDOs(regionenDTO,regionen);
         final RegionenDO newRegionenDo = RegionenDTOMapper.toDO.apply(regionenDTO);
         final long userID = UserProvider.getCurrentUserId(principal);
 
         final RegionenDO updateRegionenDO = regionenComponent.update(newRegionenDo,userID);
-        return RegionenDTOMapper.toDTO.apply(updateRegionenDO);
+        return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(updateRegionenDO), regionen);
     }
 
 
@@ -125,6 +126,12 @@ public class RegionenService implements ServiceFacade {
     }
 
 
+    /**
+     * I am creating a new Region/RegionenDTO to be saved in the Database
+     * @param regionenDTO the new RegionenDTO with the new values.
+     * @param principal the current User, who is locked in
+     * @return the new RegionenDTO
+     */
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -133,13 +140,16 @@ public class RegionenService implements ServiceFacade {
         checkPreconditions(regionenDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}'",
+        //debug
+        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}', user '{}'",
                 regionenDTO.getRegionName(),
                 regionenDTO.getId(),
                 regionenDTO.getRegionKuerzel(),
                 regionenDTO.getRegionTyp(),
                 regionenDTO.getRegionUebergeordnet(),
                 userId);
+
+        syncSingleWithDOs(regionenDTO, regionenComponent.findAll());
 
         final RegionenDO regionenDO = RegionenDTOMapper.toDO.apply(regionenDTO);
         final RegionenDO persistedRegionenDO = regionenComponent.create(regionenDO, userId);
@@ -165,7 +175,8 @@ public class RegionenService implements ServiceFacade {
         checkRegionType(upperCaseType);
 
         final List<RegionenDO> regionenDOList = regionenComponent.findAllByType(upperCaseType);
-        return regionenDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
+        return syncUebergeordnetWithUebergeordnetAsName(regionenDOList.stream().map(RegionenDTOMapper.toDTO)
+                .collect(Collectors.toList()),regionenComponent.findAll());
     }
 
 
@@ -185,42 +196,120 @@ public class RegionenService implements ServiceFacade {
     private void checkPreconditions(@RequestBody final RegionenDTO regionenDTO) {
         Preconditions.checkNotNull(regionenDTO, PRECONDITION_MSG_REGION);
         Preconditions.checkNotNull(regionenDTO.getRegionName(), PRECONDITION_MSG_NAME);
-        Preconditions.checkNotNull(regionenDTO.getRegionKuerzel(), PRECONDITION_MSG_REGION_Kuerzel);
+        Preconditions.checkNotNull(regionenDTO.getRegionKuerzel(), PRECONDITION_MSG_REGION_KUERZEL);
         Preconditions.checkNotNull(regionenDTO.getRegionTyp(), PRECONDITION_MSG_REGION_TYPE);
     }
 
+
+    /**
+     * I am synchronizing the ID with the uebergeordnetAsName of all given RegionenDTOs.
+     * Therefore i am calling the syncSingleWithDTOs for each region.
+     * @param regionenDTOs all Regions as DTOs.
+     * @return the same list of RegionDTOs, but all IDs and uebergeordnetAsName are matching correctly.
+     */
     private List<RegionenDTO> syncUebergeordnetWithUebergeordnetAsName(List<RegionenDTO> regionenDTOs){
-        regionenDTOs.stream().forEach(region -> syncSingle(region, regionenDTOs));
+        regionenDTOs.stream().forEach(region -> syncSingleWithDTOs(region, regionenDTOs));
         return regionenDTOs;
     }
 
-    private void syncSingle(RegionenDTO currentRegion, List<RegionenDTO> regions){
-        RegionenDTO superordinateRegion = null;
+
+    /**
+     * I am synchronizing the ID with the uebergeordnetAsName of all given RegionenDTOs.
+     * Therefore i am calling the syncSingleWithDTOs for each region.
+     * @param regionenDTOsToSync a list of all Regions you want to sync.
+     * @param allRegionenDos a list containing all Regions of the Database
+     * @return the same list of RegionDTOs, but all IDs and uebergeordnetAsName are matching correctly.
+     */
+    private List<RegionenDTO> syncUebergeordnetWithUebergeordnetAsName(List<RegionenDTO> regionenDTOsToSync, List<RegionenDO> allRegionenDos ){
+        regionenDTOsToSync.stream().forEach(region -> syncSingleWithDOs(region, allRegionenDos));
+        return regionenDTOsToSync;
+    }
+
+
+    /**
+     * I am mapping the regionUebergeordnet ID to the matching Name of the corresponding Region.
+     * And the other way around:
+     * regionUebergeordnet --> ID --> getRegionById--> regionName --> regionUebergeordentAsName
+     * regionUebergeordnetAsName --> regionName--> getRegionByName --> ID --> regionUebergeordent
+     * @param currentRegion the RegionDTO, which you want to synchronize
+     * @param regions a list of RegionDTOs to find the matching regionName, therefore the list
+     *                should contain all regions of the database.
+     * @return the same currentRegion, but the ID is matching to the uebergeordnetAsName.
+     */
+    private RegionenDTO syncSingleWithDTOs(RegionenDTO currentRegion, List<RegionenDTO> regions){
         List<RegionenDTO> possibleRegions = null;
         //Case: The region has a superordinate name but not yet the id
         if(currentRegion.getRegionUebergeordnet() == null
                 && currentRegion.getRegionUebergeordnetAsName()!=null){
-            //search for the region with the name of the regionUebergeordnetAsName field
-            possibleRegions = regions.stream().filter((region)-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
+
+            possibleRegions = regions.stream().filter(region-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
                 .collect(Collectors.toList());
 
-            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
-            Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
+                currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnetAsName to the regionUebergeordnet Id failed.");
+            }
 
-            currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
+            //Case: The region has a superordinate id but not its corresponding name
+        }else if(currentRegion.getRegionUebergeordnet() != null
+                && currentRegion.getRegionUebergeordnetAsName()==null){
 
+            possibleRegions = regions.stream().filter(region -> region.getId() ==
+                    currentRegion.getRegionUebergeordnet()).collect(
+                    Collectors.toList());
+
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
+                currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnet Id to the regionUebergeordnetAsName failed.");
+            }
+        }
+        return currentRegion;
+    }
+
+
+    /**
+     * I am mapping the regionUebergeordnet ID to the matching Name of the corresponding Region.
+     * And the other way around:
+     * regionUebergeordnet --> ID --> getRegionById--> regionName --> regionUebergeordentAsName
+     * regionUebergeordnetAsName --> regionName--> getRegionByName --> ID --> regionUebergeordent
+     * @param currentRegion the RegionDTO, which you want to synchronize
+     * @param regions a list of RegionDOs to find the matching regionName, therefore the list
+     *                should contain all regions of the database.
+     * @return the same currentRegion, but the ID is matching to the uebergeordnetAsName.
+     */
+    private RegionenDTO syncSingleWithDOs(RegionenDTO currentRegion, List<RegionenDO> regions){
+        List<RegionenDO> possibleRegions = null;
+        //Case: The region has a superordinate name but not yet the id
+        if(currentRegion.getRegionUebergeordnet() == null
+                && currentRegion.getRegionUebergeordnetAsName()!=null){
+
+            //search for the region with the name of the regionUebergeordnetAsName field
+            possibleRegions = regions.stream().filter(region-> region.getRegionName().equals(currentRegion.getRegionUebergeordnetAsName()))
+                    .collect(Collectors.toList());
+
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
+                currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getId());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnetAsName to the regionUebergeordnet Id failed.");
+            }
         //Case: The region has a superordinate id but not its corresponding name
         }else if(currentRegion.getRegionUebergeordnet() != null
                 && currentRegion.getRegionUebergeordnetAsName()==null){
-            possibleRegions = regions.stream().filter((region)->region.getId()
-                    .equals(currentRegion.getRegionUebergeordnet())).collect(
+
+            possibleRegions = regions.stream().filter(region -> region.getId() ==
+                    currentRegion.getRegionUebergeordnet()).collect(
                     Collectors.toList());
 
-            Preconditions.checkNotNull(possibleRegions, PRECONDITION_MSG_REGION_Uebergeordnet);
-            Preconditions.checkArgument(possibleRegions.isEmpty(), PRECONDITION_MSG_REGION_Uebergeordnet);
-
-            currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
-
+            if(possibleRegions != null && !possibleRegions.isEmpty()) {
+                currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
+            }else{
+                LOG.debug("Mapping of the regionUebergeordnet Id to the regionUebergeordnetAsName failed.");
+            }
         }
+        return currentRegion;
     }
+
+
 }

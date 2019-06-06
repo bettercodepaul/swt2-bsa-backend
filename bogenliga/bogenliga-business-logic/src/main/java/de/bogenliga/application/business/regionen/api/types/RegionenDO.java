@@ -12,7 +12,7 @@ public class RegionenDO extends CommonDataObject implements DataObject {
     private Long id;
     private String regionName;
     private String regionKuerzel;
-    private String regionType;
+    private String regionTyp;
     private Long regionUebergeordnet;
 
 
@@ -28,7 +28,7 @@ public class RegionenDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.regionName = regionName;
         this.regionKuerzel = regionKuerzel;
-        this.regionType = regionType;
+        this.regionTyp = regionType;
         this.regionUebergeordnet = regionUebergeordnet;
 
         //set param from CommonDataObject
@@ -51,7 +51,7 @@ public class RegionenDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.regionName = regionName;
         this.regionKuerzel = regionKuerzel;
-        this.regionType = regionType;
+        this.regionTyp = regionType;
         this.regionUebergeordnet = regionUebergeordnet;
 
         //set param from CommonDataObject
@@ -69,7 +69,7 @@ public class RegionenDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.regionName = regionName;
         this.regionKuerzel = regionKuerzel;
-        this.regionType = regionType;
+        this.regionTyp = regionType;
         this.regionUebergeordnet = regionUebergeordnet;
 
     }
@@ -113,13 +113,13 @@ public class RegionenDO extends CommonDataObject implements DataObject {
     }
 
 
-    public String getRegionType() {
-        return regionType;
+    public String getRegionTyp() {
+        return regionTyp;
     }
 
 
-    public void setRegionType(String regionType) {
-        this.regionType = regionType;
+    public void setRegionTyp(String regionTyp) {
+        this.regionTyp = regionTyp;
     }
 
 
