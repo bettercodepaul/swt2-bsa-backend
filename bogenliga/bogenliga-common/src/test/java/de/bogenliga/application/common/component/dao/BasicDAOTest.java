@@ -42,7 +42,7 @@ public class BasicDAOTest {
     private static final String BE_PARAMETER_ID = "id";
     private static final String BE_PARAMETER_NAME = "name";
 
-    private static final String SQL_QUERY_WITH_PARAMETER = "SELECT table_id, table_name FROM table WHERE table_id = ?;";
+    private static final String SQL_QUERY_WITH_PARAMETER = "SELECT * FROM table WHERE table_id = ?;";
     private static final String SQL_QUERY = "DUMMY SQL QUERY;";
     private static final String PARAMETER = "parameter";
 
@@ -693,7 +693,6 @@ public class BasicDAOTest {
         when(queryRunner.update(
                 eq(connection),
                 anyString(),
-                any(),
                 any()))
                 .thenReturn(affectedRows);
         when(queryRunner.query(
