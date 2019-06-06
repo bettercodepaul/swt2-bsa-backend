@@ -101,24 +101,26 @@ public class BasicTest<T, B> {
     public void assertEntity(B entity) throws InvocationTargetException, IllegalAccessException {
         assertThat(expectedEntity).isNotNull();
         assertThat(entity).isNotNull();
-        LOG.debug("Testing class (actual entity given by method parameter): " + entity.getClass());
-        LOG.debug("Testing class (expected entity given by constructor): " + expectedEntity.getClass());
+        LOG.debug("Testing class (actual entity given by method parameter): " + entity.getClass().getSimpleName());
+        LOG.debug("Testing class (expected entity to be compared given by constructor): " + expectedEntity.getClass().getSimpleName());
         for (Method method : entity.getClass().getDeclaredMethods()) {
             ArrayList<Method> arr = new ArrayList<>(Arrays.asList(expectedEntity.getClass().getDeclaredMethods()));
-            if (method.getName().contains("get")) {
-                LOG.debug("Method being tested: " + method.getName());
+            String mName = method.getName();
+            if (mName.contains("get")) {
+                LOG.debug("Method being tested: " + mName);
                 Optional<Method> optionalM = arr.stream()
-                        .filter((x) -> x.getName().equals(method.getName()))
+                        .filter((x) -> x.getName().equals(mName))
                         .findFirst();
                 if (!optionalM.isPresent()) {
-                    LOG.debug("Expected entity doesn't implement the method: " + method.getName());
+                    LOG.debug("Expected entity doesn't implement the method: " + mName);
                 }
                 assertThat(optionalM.isPresent()).isTrue();
 
-                if (valuesToMethodNames.containsKey(method.getName())) {
+                if (!valuesToMethodNames.containsKey(mName)) {
                     LOG.debug(
                             "Method is not given in the Hashmap, please insert the name of the method: " + method.getName() + " in the Hashmap given to" +
                                     "BasicTest class constructor");
+                    assertThat(valuesToMethodNames.containsKey(mName)).isTrue();
                 }
                 Method m = optionalM.get();
 
@@ -129,7 +131,7 @@ public class BasicTest<T, B> {
                 Object actual = method.invoke(entity);
                 Object expected = m.invoke(expectedEntity);
                 assertThat(actual).isEqualTo(expected);
-                Object setFirst = valuesToMethodNames.get(m.getName());
+                Object setFirst = valuesToMethodNames.get(mName);
 
                 assertThat(method.invoke(entity)).isEqualTo(setFirst);
                 if (actual == null) {
