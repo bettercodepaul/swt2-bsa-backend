@@ -2,6 +2,7 @@ package de.bogenliga.application.business.wettkampf.api.types;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.sql.Date;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
@@ -16,7 +17,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = -3541537678685603149L;
     private Long id;
     private Long veranstaltungsId;
-    private String datum;
+    private Date datum;
     private String wettkampfOrt;
     private String wettkampfBeginn;
     private Long wettkampfTag;
@@ -24,7 +25,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private Long wettkampfTypId;
 
 
-    public WettkampfDO(final Long id, final Long veranstaltungsId, final String datum, final String wettkampfOrt,
+    public WettkampfDO(final Long id, final Long veranstaltungsId, final Date datum, final String wettkampfOrt,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
                        final Long wettkampfTypId,
                        final OffsetDateTime createdAtUtc, final Long createdByUserId,
@@ -61,7 +62,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
      * @param lastModifiedByUserId
      * @param version
      */
-    public WettkampfDO(final Long id, final Long veranstaltungsId, final String datum, final String wettkampfOrt,
+    public WettkampfDO(final Long id, final Long veranstaltungsId, final Date datum, final String wettkampfOrt,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
                        final Long wettkampfTypId,
                        final OffsetDateTime createdAtUtc, final Long createdByUserId,
@@ -118,12 +119,12 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-    public String getDatum() {
+    public Date getDatum() {
         return datum;
     }
 
 
-    public void setDatum(final String datum) {
+    public void setDatum(final Date datum) {
         this.datum = datum;
     }
 
