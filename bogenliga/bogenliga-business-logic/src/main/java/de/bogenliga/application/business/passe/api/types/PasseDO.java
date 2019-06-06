@@ -24,8 +24,8 @@ public class PasseDO extends CommonDataObject {
     private Integer pfeil2;
     private Integer pfeil3;
     private Integer pfeil4;
-
-
+    private Integer pfeil5;
+    private Integer pfeil6;
 
 
     @Override
@@ -36,10 +36,6 @@ public class PasseDO extends CommonDataObject {
                 getPfeil5(),
                 getPfeil6());
     }
-
-
-    private Integer pfeil5;
-    private Integer pfeil6;
 
 
     public PasseDO(Long id,Long passeMannschaftId, Long passeWettkampfId, Long passeMatchNr, Long passeMatchId,
