@@ -43,11 +43,11 @@ public abstract class BaseMatchTest {
         matchBE.setWettkampfId(MATCH_WETTKAMPF_ID);
         matchBE.setMatchpunkte(MATCH_MATCHPUNKTE);
         matchBE.setScheibenNummer(MATCH_SCHEIBENNUMMER);
-        matchBE.setStrafPunktSatz1(MATCH_STRAFPUNKT_SATZ_1);
-        matchBE.setStrafPunktSatz2(MATCH_STRAFPUNKT_SATZ_2);
-        matchBE.setStrafPunktSatz3(MATCH_STRAFPUNKT_SATZ_3);
-        matchBE.setStrafPunktSatz4(MATCH_STRAFPUNKT_SATZ_4);
-        matchBE.setStrafPunktSatz5(MATCH_STRAFPUNKT_SATZ_5);
+        matchBE.setStrafPunkteSatz1(MATCH_STRAFPUNKT_SATZ_1);
+        matchBE.setStrafPunkteSatz2(MATCH_STRAFPUNKT_SATZ_2);
+        matchBE.setStrafPunkteSatz3(MATCH_STRAFPUNKT_SATZ_3);
+        matchBE.setStrafPunkteSatz4(MATCH_STRAFPUNKT_SATZ_4);
+        matchBE.setStrafPunkteSatz5(MATCH_STRAFPUNKT_SATZ_5);
         matchBE.setSatzpunkte(MATCH_SATZPUNKTE);
         return matchBE;
     }
@@ -69,11 +69,11 @@ public abstract class BaseMatchTest {
         valuesToMethodMap.put("getMatchpunkte", MATCH_MATCHPUNKTE);
         valuesToMethodMap.put("getScheibenNummer", MATCH_SCHEIBENNUMMER);
         valuesToMethodMap.put("getSatzpunkte", MATCH_SATZPUNKTE);
-        valuesToMethodMap.put("getStrafPunktSatz1", MATCH_STRAFPUNKT_SATZ_1);
-        valuesToMethodMap.put("getStrafPunktSatz2", MATCH_STRAFPUNKT_SATZ_2);
-        valuesToMethodMap.put("getStrafPunktSatz3", MATCH_STRAFPUNKT_SATZ_3);
-        valuesToMethodMap.put("getStrafPunktSatz4", MATCH_STRAFPUNKT_SATZ_4);
-        valuesToMethodMap.put("getStrafPunktSatz5", MATCH_STRAFPUNKT_SATZ_5);
+        valuesToMethodMap.put("getStrafPunkteSatz1", MATCH_STRAFPUNKT_SATZ_1);
+        valuesToMethodMap.put("getStrafPunkteSatz2", MATCH_STRAFPUNKT_SATZ_2);
+        valuesToMethodMap.put("getStrafPunkteSatz3", MATCH_STRAFPUNKT_SATZ_3);
+        valuesToMethodMap.put("getStrafPunkteSatz4", MATCH_STRAFPUNKT_SATZ_4);
+        valuesToMethodMap.put("getStrafPunkteSatz5", MATCH_STRAFPUNKT_SATZ_5);
     }
 
 
