@@ -85,7 +85,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{teamId}/{memberId}",
+    @RequestMapping(value = "{memberId}/{teamId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
@@ -94,12 +94,26 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         Preconditions.checkArgument(mannschaftsId > 0, "ID must not be negative.");
         Preconditions.checkArgument(mitgliedId > 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'findById' request with ID '{}'", mannschaftsId);
+        LOG.debug("Receive 'findByMemberAndTeamId' request with memberID '{}' and teamID '{}'", mitgliedId, mannschaftsId);
 
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByMemberAndTeamId(
                 mannschaftsId, mitgliedId);
         System.out.println(MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO));
         return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
+    }
+
+
+    @RequestMapping(value = "/byMemberId/{memberId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    public List<MannschaftsMitgliedDTO> findByMemberId(@PathVariable("memberId") final long memberId) {
+        Preconditions.checkArgument(memberId > 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'findByMemberId' request with ID '{}'", memberId);
+
+        final List<MannschaftsmitgliedDO> mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByMemberId(memberId);
+        return mannschaftsmitgliedDO.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -169,6 +183,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
     }
+
+
 
 // TODO: what's the purpose of this????
     //@RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
