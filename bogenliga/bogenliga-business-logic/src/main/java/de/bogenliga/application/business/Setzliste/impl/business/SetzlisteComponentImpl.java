@@ -3,7 +3,6 @@ package de.bogenliga.application.business.Setzliste.impl.business;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import org.slf4j.Logger;
@@ -76,9 +75,9 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteDAO to access the database and return setzliste representations
      */
     @Autowired
-    public SetzlisteComponentImpl(final SetzlisteDAO setzlisteDAO, final MatchComponent matchComponent,
-                                  final WettkampfComponent wettkampfComponent, final VeranstaltungComponent veranstaltungComponent,
-                                  final DsbMannschaftComponent dsbMannschaftComponent, VereinComponent vereinComponent) {
+    public SetzlisteComponentImpl(SetzlisteDAO setzlisteDAO, MatchComponent matchComponent,
+                                  WettkampfComponent wettkampfComponent, VeranstaltungComponent veranstaltungComponent,
+                                  DsbMannschaftComponent dsbMannschaftComponent, VereinComponent vereinComponent) {
         this.setzlisteDAO = setzlisteDAO;
         this.matchComponent = matchComponent;
         this.wettkampfComponent = wettkampfComponent;
@@ -89,23 +88,23 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
 
     @Override
-    public byte[] getPDFasByteArray(final long wettkampfid) {
+    public byte[] getPDFasByteArray(long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
+        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
         byte[] bResult;
         if (!setzlisteBEList.isEmpty()) {
-            try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
-                 final PdfWriter writer = new PdfWriter(result);
-                 final PdfDocument pdfDocument = new PdfDocument(writer);
-                 final Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
+            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 PdfWriter writer = new PdfWriter(result);
+                 PdfDocument pdfDocument = new PdfDocument(writer);
+                 Document doc = new Document(pdfDocument, PageSize.A4.rotate())) {
 
                 generateDoc(doc, setzlisteBEList);
 
                 bResult = result.toByteArray();
                 LOGGER.debug("Setzliste erstellt");
 
-            } catch (final IOException e) {
+            } catch (IOException e) {
                 LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF Setzliste konnte nicht erstellt werden: " + e);
@@ -118,19 +117,19 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
     @Override
-    public List<MatchDO> generateMatchesBySetzliste(final long wettkampfid) {
+    public List<MatchDO> generateMatchesBySetzliste(long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
-        final List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
+        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
         if (!setzlisteBEList.isEmpty()){
             if (matchDOList.isEmpty()){
                 //itarate thorugh matches
                 for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++){
                     //iterate through target boards
                     for (int j = 0; j < SETZLISTE_STRUCTURE[i].length; j++) {
-                        final long begegnung = Math.round((float) (j + 1) / 2);
-                        final long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
+                        long begegnung = Math.round((float) (j + 1) / 2);
+                        long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
                         MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null);
                         matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
                     }
@@ -156,16 +155,11 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
 
         //description
-        final DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
-        final DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
+        DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
         WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid());
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId());
-        String dateFormatted = null;
-        try {
-            dateFormatted = sdF2.format(sdF.parse(wettkampfDO.getDatum()));
-        } catch (final ParseException e) {
-            LOGGER.error("Error: ", e);
-        }
+        String dateFormatted = sdF2.format(wettkampfDO.getDatum());
         doc.add(new Paragraph("Setzliste " +
                 wettkampfDO.getWettkampfTag() + ". Wettkampf " + veranstaltungDO.getVeranstaltungName()));
         doc.add(new Paragraph("am " + dateFormatted + " in"));
@@ -175,7 +169,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         doc.add(new Paragraph(""));
 
         //Create table
-        final Table table = new Table(new float[]{40, 150, 40, 150, 40, 150, 40, 150, 40});
+        Table table = new Table(new float[]{40, 150, 40, 150, 40, 150, 40, 150, 40});
 
         //Table header
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
@@ -229,7 +223,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteBEList list with data
      * @return index if found, otherwise -1
      */
-    private long getTeamIDByTablePos(final int tablepos, final List<SetzlisteBE> setzlisteBEList) {
+    private long getTeamIDByTablePos(int tablepos, List<SetzlisteBE> setzlisteBEList) {
         for (SetzlisteBE setzlisteBE : setzlisteBEList) {
             if (setzlisteBE.getLigatabelleTabellenplatz() == tablepos) {
                 return setzlisteBE.getMannschaftid();
@@ -244,8 +238,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteBEList list with data
      * @return name of the team
      */
-    private String getTeamName(final int tablepos, final List<SetzlisteBE> setzlisteBEList) {
-        final long teamID = getTeamIDByTablePos(tablepos,setzlisteBEList);
+    private String getTeamName(int tablepos, List<SetzlisteBE> setzlisteBEList) {
+        long teamID = getTeamIDByTablePos(tablepos,setzlisteBEList);
         if (teamID == -1) {
             LOGGER.error("Cannot find team for tablepos");
             return "ERROR";
