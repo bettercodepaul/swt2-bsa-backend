@@ -1,9 +1,6 @@
 package de.bogenliga.application.business.Setzliste.impl.entity;
 
-import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
-
-import java.sql.Date;
 
 /**
  * I represent the setzliste business entity.
@@ -13,22 +10,16 @@ import java.sql.Date;
  *
  * @see CommonBusinessEntity
  */
-public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity {
+public class SetzlisteBE extends CommonBusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private Integer ligatabelleTabellenplatz;
-    private String vereinName;
-    private Integer mannschaftNummer;
-    private String veranstaltungName;
-    private Integer wettkampfTag;
-    private Date wettkampfDatum;
-    private String wettkampfBeginn;
-    private String wettkampfOrt;
 
+    private Integer ligatabelleTabellenplatz;
+    private Long wettkampfid;
+    private Long mannschaftid;
 
     public SetzlisteBE(){
         // empty constructor
     }
-
 
     public static Long getSerialVersionUID() {
         return serialVersionUID;
@@ -42,72 +33,23 @@ public class SetzlisteBE extends CommonBusinessEntity implements BusinessEntity 
         this.ligatabelleTabellenplatz = ligatabelleTabellenplatz;
     }
 
-    public String getVereinName() {
-        return vereinName;
+    public Long getWettkampfid() { return wettkampfid; }
+
+    public void setWettkampfid(Long wettkampfid) { this.wettkampfid = wettkampfid; }
+
+    public Long getMannschaftid() {
+        return mannschaftid;
     }
 
-    public void setVereinName(String vereinName) {
-        this.vereinName = vereinName;
-    }
-
-    public Integer getMannschaftNummer() {
-        return mannschaftNummer;
-    }
-
-    public void setMannschaftNummer(Integer mannschaftNummer) {
-        this.mannschaftNummer = mannschaftNummer;
-    }
-
-    public String getVeranstaltungName() {
-        return veranstaltungName;
-    }
-
-    public void setVeranstaltungName(String veranstaltungName) {
-        this.veranstaltungName = veranstaltungName;
-    }
-
-    public Integer getWettkampfTag() {
-        return wettkampfTag;
-    }
-
-    public void setWettkampfTag(Integer wettkampfTag) {
-        this.wettkampfTag = wettkampfTag;
-    }
-
-    public Date getWettkampfDatum() {
-        return wettkampfDatum;
-    }
-
-    public void setWettkampfDatum(Date wettkampfDatum) {
-        this.wettkampfDatum = wettkampfDatum;
-    }
-
-    public String getWettkampfBeginn() {
-        return wettkampfBeginn;
-    }
-
-    public void setWettkampfBeginn(String wettkampfBeginn) {
-        this.wettkampfBeginn = wettkampfBeginn;
-    }
-
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
-    }
-
-    public void setWettkampfOrt(String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
+    public void setMannschaftid(Long mannschaftid) {
+        this.mannschaftid = mannschaftid;
     }
 
     @Override
     public String toString() {
         return "setzliste{ligatabelleTabellenplatz='" + ligatabelleTabellenplatz +
-                "', vereinName='" + vereinName +
-                "', mannschaftNummer='" + mannschaftNummer +
-                "', veranstaltungName='" + veranstaltungName +
-                "', wettkampfTag='" + wettkampfTag +
-                "', wettkampfDatum='" + wettkampfDatum +
-                "', wettkampfBeginn='" + wettkampfBeginn +
-                "', wettkampfOrt='" + wettkampfOrt +
+                "', WettkampfID='" + wettkampfid +
+                "', MannschaftID='" + mannschaftid +
                 "'}";
     }
 }

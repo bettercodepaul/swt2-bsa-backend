@@ -6,10 +6,8 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 
 /**
@@ -53,22 +50,24 @@ public class DownloadService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final SetzlisteComponent setzlisteComponent;
+    private final SchusszettelComponent schusszettelComponent;
 
 
     /**
      * Constructor with dependency injection
      */
     @Autowired
-    public DownloadService(final SetzlisteComponent setzlisteComponent) {
+    public DownloadService(final SetzlisteComponent setzlisteComponent,
+                           SchusszettelComponent schusszettelComponent) {
         this.setzlisteComponent = setzlisteComponent;
+        this.schusszettelComponent = schusszettelComponent;
     }
-
     /**
      * returns the Setzliste as pdf file for client download
      * <p>
      * @param wettkampfid  from GET-Request: ID for the competition
      * Usage:
-     * <pre>{@code Request: GET /v1/download/pdf/setzliste?wettkampfid=x&?wettkampftag=y}</pre>
+     * <pre>{@code Request: GET /v1/download/pdf/setzliste?wettkampfid=x}</pre>
      *
      * @return PDF as InputStreamResource
      */
@@ -76,12 +75,45 @@ public class DownloadService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final int wettkampfid) {
+    ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
         LOG.debug("wettkampfid: " + wettkampfid);
 
         final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
+
+        return generateInputStream(fileBloB);
+    }
+
+    /**
+     * returns the Schusszettel as pdf file for client download
+     * <p>
+     * @param wettkampfid  from GET-Request: ID for the competition
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/schusszettel?wettkampfid=x}</pre>
+     *
+     * @return PDF as InputStreamResource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/schusszettel",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadSchusszettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
+        LOG.debug("wettkampfid: " + wettkampfid);
+
+        final byte[] fileBloB = schusszettelComponent.getAllSchusszettelPDFasByteArray(wettkampfid);
+
+        return generateInputStream(fileBloB);
+    }
+
+
+    /**
+     * generates a pdf file as InputStreamResource from fileBloB
+     * @param fileBloB bytearray from file that the pdf is based on
+     *
+     * @return PDF as InputStreamResource
+     */
+    private ResponseEntity<InputStreamResource> generateInputStream(byte[] fileBloB) {
         final Resource resource = new InputStreamResource(new ByteArrayInputStream(fileBloB));
         try {
             InputStream is = new ByteArrayInputStream(fileBloB);
