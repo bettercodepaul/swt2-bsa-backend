@@ -103,12 +103,13 @@ public class RegionenService implements ServiceFacade {
                 regionenDTO.getRegionTyp(),
                 regionenDTO.getRegionUebergeordnet());
 
-
+        List<RegionenDO> regionen =regionenComponent.findAll();
+        syncSingleWithDOs(regionenDTO,regionen);
         final RegionenDO newRegionenDo = RegionenDTOMapper.toDO.apply(regionenDTO);
         final long userID = UserProvider.getCurrentUserId(principal);
 
         final RegionenDO updateRegionenDO = regionenComponent.update(newRegionenDo,userID);
-        return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(updateRegionenDO), regionenComponent.findAll());
+        return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(updateRegionenDO), regionen);
     }
 
 
