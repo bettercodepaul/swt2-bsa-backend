@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
  * @Author Daniel Schott daniel.schott@student.reutlingen-university.de
  */
 
-public class WettkampftypServiceTest {
+public class WettkampfTypServiceTest {
     private static final long user_Id=13;
 
     private static final long wettkampftyp_Id = 1;
@@ -42,13 +42,13 @@ public class WettkampftypServiceTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private WettkampftypComponent wettkampftypComponent;
+    private WettkampfTypComponent wettkampftypComponent;
 
     @Mock
     private Principal principal;
 
     @InjectMocks
-    private WettkampftypService underTest;
+    private WettkampfTypService underTest;
 
     @Captor
     private ArgumentCaptor<WettkampfTypDO> wettkampftypDOArgumentCaptor;

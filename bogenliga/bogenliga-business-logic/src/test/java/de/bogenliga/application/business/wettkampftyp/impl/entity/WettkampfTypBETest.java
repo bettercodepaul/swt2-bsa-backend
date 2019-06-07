@@ -2,8 +2,7 @@ package de.bogenliga.application.business.wettkampftyp.impl.entity;
 
 import java.time.OffsetDateTime;
 import org.junit.Test;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
-import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImplTest.getWettkampfTypBE;
+import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampfTypComponentImplTest.getWettkampfTypBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

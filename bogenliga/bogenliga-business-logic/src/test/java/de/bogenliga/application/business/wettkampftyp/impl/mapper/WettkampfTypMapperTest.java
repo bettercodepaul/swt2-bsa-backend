@@ -4,15 +4,14 @@ import java.time.OffsetDateTime;
 import org.junit.Test;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
-import de.bogenliga.application.business.wettkampftyp.impl.mapper.WettkampftypMapper;
-import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImplTest.getWettkampfTypBE;
-import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImplTest.getWettkampfTypDO;
+import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampfTypComponentImplTest.getWettkampfTypBE;
+import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampfTypComponentImplTest.getWettkampfTypDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @Author Daniel Schott daniel.schott@student.reutlingen-university.de
  */
-public class WettkampftypMapperTest {
+public class WettkampfTypMapperTest {
 
 
     private static final long user_Id=13;
@@ -30,7 +29,7 @@ public class WettkampftypMapperTest {
 
         final WettkampfTypDO wettkampftypDO = getWettkampfTypDO();
 
-        final WettkampfTypBE actual = WettkampftypMapper.toWettkampfTypBE.apply(wettkampftypDO);
+        final WettkampfTypBE actual = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
 
         assertThat(actual.getwettkampftypID()).isEqualTo(wettkampftyp_Id);
         assertThat(actual.getwettkampftypname()).isEqualTo(wettkampftyp_Name);
@@ -40,7 +39,7 @@ public class WettkampftypMapperTest {
     public void toWettkampfTypDO(){
 
         final WettkampfTypBE wettkampftypBE = getWettkampfTypBE();
-        final WettkampfTypDO actual = WettkampftypMapper.toWettkampfTypDO.apply(wettkampftypBE);
+        final WettkampfTypDO actual = WettkampfTypMapper.toWettkampfTypDO.apply(wettkampftypBE);
 
         assertThat(actual.getId()).isEqualTo(wettkampftyp_Id);
         assertThat(actual.getName()).isEqualTo(wettkampftyp_Name);

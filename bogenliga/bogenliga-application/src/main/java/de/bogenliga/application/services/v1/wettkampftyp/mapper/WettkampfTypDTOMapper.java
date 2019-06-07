@@ -14,7 +14,7 @@ import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
  */
-public class WettkampftypDTOMapper implements DataTransferObjectMapper {
+public class WettkampfTypDTOMapper implements DataTransferObjectMapper {
 
     /**
      * I map the {@link WettkampfTypDO} to the {@link WettkampfTypDTO} object
@@ -52,7 +52,7 @@ public class WettkampftypDTOMapper implements DataTransferObjectMapper {
     /**
      * Constructor
      */
-    private WettkampftypDTOMapper(){
+    private WettkampfTypDTOMapper(){
         //empty
     }
 }

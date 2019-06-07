@@ -25,7 +25,7 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
-import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
@@ -55,7 +55,7 @@ public class MatchServiceTest {
     private WettkampfComponent wettkampfComponent;
 
     @Mock
-    private WettkampftypComponent wettkampfTypComponent;
+    private WettkampfTypComponent wettkampfTypComponent;
 
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
