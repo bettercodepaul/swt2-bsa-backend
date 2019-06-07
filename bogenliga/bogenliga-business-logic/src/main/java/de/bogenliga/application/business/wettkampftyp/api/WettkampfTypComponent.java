@@ -9,7 +9,7 @@ import de.bogenliga.application.common.component.ComponentFacade;
  * Responsible for the wettkampftyp database requests.
  * @Autor Marvin Holm, Daniel Schott
  */
-public interface WettkampftypComponent extends ComponentFacade {
+public interface WettkampfTypComponent extends ComponentFacade {
 
     /**
      * Return all wettkampftypentries.

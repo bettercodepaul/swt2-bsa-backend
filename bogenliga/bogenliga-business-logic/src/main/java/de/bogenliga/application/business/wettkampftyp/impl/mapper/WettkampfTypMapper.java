@@ -13,7 +13,7 @@ import de.bogenliga.application.common.time.DateProvider;
  * I convert the wettkampftyp DataObjects and BusinessEntities.
  *
  */
-public class WettkampftypMapper implements ValueObjectMapper {
+public class WettkampfTypMapper implements ValueObjectMapper {
 
     /**
      * Converts a {@link WettkampfTypBE} to a {@link WettkampfTypDO}
@@ -63,7 +63,7 @@ public class WettkampftypMapper implements ValueObjectMapper {
     /**
      * Private constructor
      */
-    private WettkampftypMapper() {
+    private WettkampfTypMapper() {
         // empty private constructor
     }
 }

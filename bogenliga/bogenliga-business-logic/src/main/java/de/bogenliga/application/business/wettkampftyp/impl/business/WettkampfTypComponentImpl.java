@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
-import de.bogenliga.application.business.wettkampftyp.impl.mapper.WettkampftypMapper;
+import de.bogenliga.application.business.wettkampftyp.impl.mapper.WettkampfTypMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
- * Implementation of {@link WettkampftypComponent}
+ * Implementation of {@link WettkampfTypComponent}
  * @Autor Marvin Holm, Daniel Schott
  */
 @Component
-public class WettkampftypComponentImpl implements WettkampftypComponent {
+public class WettkampfTypComponentImpl implements WettkampfTypComponent {
 
     private static final String PRECONDITION_MSG_WETTKAMPFTYP_ID = "wettkampftypID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPFTYP_NAME= "wettkampftypName must not be null";
@@ -35,13 +35,13 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
      * @param wettkampftypDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampftypComponentImpl(final WettkampfTypDAO wettkampftypDAO) { this.wettkampftypDAO = wettkampftypDAO;System.out.println("created DAO object"); }
+    public WettkampfTypComponentImpl(final WettkampfTypDAO wettkampftypDAO) { this.wettkampftypDAO = wettkampftypDAO;System.out.println("created DAO object"); }
 
 
     @Override
     public List<WettkampfTypDO> findAll() {
         final List<WettkampfTypBE> wettkampftypBEList = wettkampftypDAO.findAll();
-        return wettkampftypBEList.stream().map(WettkampftypMapper.toWettkampfTypDO).collect(Collectors.toList());
+        return wettkampftypBEList.stream().map(WettkampfTypMapper.toWettkampfTypDO).collect(Collectors.toList());
     }
 
 
@@ -56,7 +56,7 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
                     String.format("No result found for ID '%s'", id));
         }
 
-        return WettkampftypMapper.toWettkampfTypDO.apply(result);
+        return WettkampfTypMapper.toWettkampfTypDO.apply(result);
     }
 
 
@@ -64,10 +64,10 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
     public WettkampfTypDO create(final WettkampfTypDO wettkampftypDO, final long currentWettkampftypID) {
         checkDsbMitgliedDO(wettkampftypDO, currentWettkampftypID);
 
-        final WettkampfTypBE wettkampftypBE = WettkampftypMapper.toWettkampfTypBE.apply(wettkampftypDO);
+        final WettkampfTypBE wettkampftypBE = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
         final WettkampfTypBE persistedWettkampftypBe = wettkampftypDAO.create(wettkampftypBE, currentWettkampftypID);
 
-        return WettkampftypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
+        return WettkampfTypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
     }
 
 
@@ -76,10 +76,10 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
         checkDsbMitgliedDO(wettkampftypDO, currentWettkampftypID);
         Preconditions.checkArgument(wettkampftypDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
 
-        final WettkampfTypBE wettkampftypBE = WettkampftypMapper.toWettkampfTypBE.apply(wettkampftypDO);
+        final WettkampfTypBE wettkampftypBE = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
         final WettkampfTypBE persistedWettkampftypBe = wettkampftypDAO.update(wettkampftypBE, currentWettkampftypID);
 
-        return WettkampftypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
+        return WettkampfTypMapper.toWettkampfTypDO.apply(persistedWettkampftypBe);
     }
 
 
@@ -89,7 +89,7 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
         Preconditions.checkArgument(wettkampftypDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(currentWettkampftypID >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
 
-        final WettkampfTypBE wettkampftypBE = WettkampftypMapper.toWettkampfTypBE.apply(wettkampftypDO);
+        final WettkampfTypBE wettkampftypBE = WettkampfTypMapper.toWettkampfTypBE.apply(wettkampftypDO);
 
         wettkampftypDAO.delete(wettkampftypBE, currentWettkampftypID);
 
