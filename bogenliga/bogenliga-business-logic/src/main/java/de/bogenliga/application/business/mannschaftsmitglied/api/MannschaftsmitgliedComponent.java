@@ -52,6 +52,14 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
     MannschaftsmitgliedDO findByMemberAndTeamId(Long MannschaftsmitgliedMannschaftId, Long MannschaftsmitgliedMitgliedId);
 
 
+    /**
+     * return all mannschaftsmitglied entries from one dsbmitglied
+     *
+     * @param MannschaftsmitgliedMitgliedId of the mannschaftsmitglied
+     * @return lkist of mannschaftsmitglied entries with the given mitgliedsId
+     */
+    List<MannschaftsmitgliedDO> findByMemberId(Long MannschaftsmitgliedMitgliedId);
+
 
     /**
      * Create a new mannschaftsmitglied in the database.

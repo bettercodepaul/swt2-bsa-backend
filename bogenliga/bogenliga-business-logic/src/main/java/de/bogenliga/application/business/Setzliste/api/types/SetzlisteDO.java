@@ -1,12 +1,13 @@
 package de.bogenliga.application.business.Setzliste.api.types;
 
-import de.bogenliga.application.common.component.types.DataObject;
+import de.bogenliga.application.common.component.types.CommonDataObject;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class SetzlisteDO implements DataObject {
+public class SetzlisteDO extends CommonDataObject {
     private static final long serialVersionUID = 3872635461141356788L;
+
 }

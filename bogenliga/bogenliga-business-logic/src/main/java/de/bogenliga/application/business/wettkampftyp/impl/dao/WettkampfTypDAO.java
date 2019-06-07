@@ -1,21 +1,15 @@
 package de.bogenliga.application.business.wettkampftyp.impl.dao;
 
 
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.dbutils.BasicRowProcessor;
-import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
-import de.bogenliga.application.common.component.dao.BasicBeanListHandler;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -29,10 +23,10 @@ import de.bogenliga.application.common.database.tx.TransactionManager;
  * @author Marvin Holm, Daniel Schott
  */
 @Repository
-public class WettkampftypDAO implements DataAccessObject {
+public class WettkampfTypDAO implements DataAccessObject {
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(
-            WettkampftypDAO.class);
+            WettkampfTypDAO.class);
 
     // table name in the database
     private static final String TABLE = "wettkampftyp";
@@ -75,7 +69,7 @@ public class WettkampftypDAO implements DataAccessObject {
      * @param transactionManager to handle custom database transactions
      */
     @Autowired
-    public WettkampftypDAO(final BasicDAO basicDao, final TransactionManager transactionManager) {
+    public WettkampfTypDAO(final BasicDAO basicDao, final TransactionManager transactionManager) {
         this.basicDao = basicDao;
         this.transactionManager = transactionManager;
     }

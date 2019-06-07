@@ -13,7 +13,7 @@ import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
-import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampftypDAO;
+import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -40,7 +40,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_NAME = "veranstaltungliganame must be not null";
     private final VeranstaltungDAO veranstaltungDAO;
     private final LigaDAO ligaDAO;
-    private final WettkampftypDAO wettkampftypDAO;
+    private final WettkampfTypDAO wettkampftypDAO;
     private final UserDAO userDAO;
 
 
@@ -52,7 +52,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     @Autowired
     public VeranstaltungComponentImpl(final VeranstaltungDAO veranstaltungDAO, final LigaDAO ligaDAO,
-                                      final WettkampftypDAO wettkampftypDAO, final UserDAO userDAO) {
+                                      final WettkampfTypDAO wettkampftypDAO, final UserDAO userDAO) {
         this.veranstaltungDAO = veranstaltungDAO;
         this.ligaDAO = ligaDAO;
         this.wettkampftypDAO = wettkampftypDAO;

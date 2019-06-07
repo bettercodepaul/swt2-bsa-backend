@@ -132,12 +132,6 @@ public class RegionenDAO implements DataAccessObject {
     public RegionenBE create(final RegionenBE regionenBE, final long currentDsbMitgliedId) {
         basicDAO.setCreationAttributes(regionenBE, currentDsbMitgliedId);
 
-        System.out.println("______________");
-        System.out.println("Regionen ID: " + regionenBE.getRegionId());
-        System.out.println("Regionenname: "+ regionenBE.getRegionName());
-        System.out.println("Regionentyp: "+ regionenBE.getRegionTyp());
-        System.out.println("Regionenuebergeordnet: "+ regionenBE.getRegionUebergeordnet());
-        System.out.println("__________________________");
         return basicDAO.insertEntity(REGIONEN, regionenBE);
     }
 

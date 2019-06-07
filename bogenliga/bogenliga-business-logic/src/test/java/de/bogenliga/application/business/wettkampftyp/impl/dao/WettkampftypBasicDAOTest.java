@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampftypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImplTest.getWettkampftypBE;
@@ -33,7 +32,7 @@ public class WettkampftypBasicDAOTest {
     @Mock
     private BasicDAO basicDao;
     @InjectMocks
-    private WettkampftypDAO underTest;
+    private WettkampfTypDAO underTest;
 
     @Test
     public void findAll() {

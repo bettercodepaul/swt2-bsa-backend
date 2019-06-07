@@ -13,8 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImpl;
-import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampftypDAO;
+import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -36,7 +35,7 @@ public class WettkampftypComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private WettkampftypDAO wettkampftypDAO;
+    private WettkampfTypDAO wettkampftypDAO;
     @InjectMocks
     private WettkampftypComponentImpl underTest;
     @Captor

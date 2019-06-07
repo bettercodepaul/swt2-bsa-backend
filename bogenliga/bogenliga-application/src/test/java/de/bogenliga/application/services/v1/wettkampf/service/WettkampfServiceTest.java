@@ -40,7 +40,8 @@ public class WettkampfServiceTest {
 
     private static final long wettkampf_Id = 322;
     private static final long wettkampf_Veranstaltung_Id = 0;
-    private static final String wettkampf_Datum = "2019-05-21";
+    private static final Date wettkampf_Datum = new Date(20190521L);
+    private static final String wettkampf_Datum_S = "2019-05-21";
     private static final String wettkampf_Ort ="Sporthalle,72810 Gomaringen";
     private static final String wettkampf_Beginn ="8:00";
     private static final long wettkampf_Tag = 8;
@@ -106,7 +107,7 @@ public class WettkampfServiceTest {
        return new WettkampfDTO (
                 wettkampf_Id,
                 wettkampf_Veranstaltung_Id,
-                wettkampf_Datum,
+                wettkampf_Datum_S,
                 wettkampf_Ort,
                 wettkampf_Beginn,
                 wettkampf_Tag,
@@ -270,6 +271,6 @@ public class WettkampfServiceTest {
 
         assertThat(deletedWettkampf).isNotNull();
         assertThat(deletedWettkampf.getId()).isEqualTo(expected.getId());
-        assertThat(deletedWettkampf.getDatum()).isNullOrEmpty();
+
     }
 }

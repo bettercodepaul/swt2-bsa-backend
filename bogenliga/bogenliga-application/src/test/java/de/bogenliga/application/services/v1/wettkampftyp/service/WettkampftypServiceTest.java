@@ -16,8 +16,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
-import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
-import de.bogenliga.application.services.v1.wettkampftyp.service.WettkampftypService;
+import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -79,8 +78,8 @@ public class WettkampftypServiceTest {
                 );
     }
 
-    private static WettkampftypDTO getWettkampftypDTO() {
-       return new WettkampftypDTO (
+    private static WettkampfTypDTO getWettkampftypDTO() {
+       return new WettkampfTypDTO(
                 wettkampftyp_Id,
                wettkampftyp_Name,
 
@@ -109,14 +108,14 @@ public class WettkampftypServiceTest {
         when(wettkampftypComponent.findAll()).thenReturn(wettkampftypDOList);
 
         // call test method
-        final List<WettkampftypDTO> actual = underTest.findAll();
+        final List<WettkampfTypDTO> actual = underTest.findAll();
 
         // assert result
         assertThat(actual)
                 .isNotNull()
                 .hasSize(1);
 
-        final WettkampftypDTO actualDTO = actual.get(0);
+        final WettkampfTypDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(wettkampftypDO.getId());
@@ -135,7 +134,7 @@ public class WettkampftypServiceTest {
         when(wettkampftypComponent.findById(anyLong())).thenReturn(wettkampftypDO);
 
         // call test method
-        final WettkampftypDTO actual = underTest.findById(wettkampftyp_Id);
+        final WettkampfTypDTO actual = underTest.findById(wettkampftyp_Id);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -148,7 +147,7 @@ public class WettkampftypServiceTest {
     @Test
     public void create() {
         // prepare test data
-        final WettkampftypDTO input = getWettkampftypDTO();
+        final WettkampfTypDTO input = getWettkampftypDTO();
 
         final WettkampfTypDO expected = getWettkampfTypDO();
 
@@ -156,7 +155,7 @@ public class WettkampftypServiceTest {
         when(wettkampftypComponent.create(any(), anyLong())).thenReturn(expected);
 
         // call test method
-        final WettkampftypDTO actual = underTest.create(input, principal);
+        final WettkampfTypDTO actual = underTest.create(input, principal);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -174,7 +173,7 @@ public class WettkampftypServiceTest {
     @Test
     public void update() {
         // prepare test data
-        final WettkampftypDTO input = getWettkampftypDTO();
+        final WettkampfTypDTO input = getWettkampftypDTO();
 
         final WettkampfTypDO expected = getWettkampfTypDO();
 
@@ -182,7 +181,7 @@ public class WettkampftypServiceTest {
         when(wettkampftypComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
-        final WettkampftypDTO actual  = underTest.update(input, principal);
+        final WettkampfTypDTO actual  = underTest.update(input, principal);
 
         // assert result
         assertThat(actual).isNotNull();
