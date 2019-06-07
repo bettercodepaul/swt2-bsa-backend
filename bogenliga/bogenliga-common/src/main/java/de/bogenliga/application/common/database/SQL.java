@@ -108,7 +108,7 @@ public final class SQL {
     private static boolean isUpdatableField(String fName) {
         return !fName.equals("createdAtUtc")
                 && !fName.equals("createdByUserId")
-                && !fName.equals("version");
+                && !fName.equals(VERSION);
     }
 
 

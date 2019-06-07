@@ -107,7 +107,7 @@ public class VeranstaltungServiceTest {
         veranstaltungDTO.setSportjahr(SPORTJAHR);
         veranstaltungDTO.setMeldeDeadline(MELDEDEADLINE);
         veranstaltungDTO.setLigaleiterId(LIGALEITERID);
-        veranstaltungDTO.setLigaID(LIGAID);
+        veranstaltungDTO.setLigaId(LIGAID);
         veranstaltungDTO.setLigaleiterEmail(LIGALEITER_EMAIL);
         veranstaltungDTO.setWettkampftypName(WETTKAMPTYP_NAME);
         veranstaltungDTO.setLigaName(LIGANAME);
