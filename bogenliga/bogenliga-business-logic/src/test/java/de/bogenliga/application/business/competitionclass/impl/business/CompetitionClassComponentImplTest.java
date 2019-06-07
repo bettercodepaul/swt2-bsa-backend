@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.competitionClass.impl.business;
+package de.bogenliga.application.business.competitionclass.impl.business;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
-import de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImpl;
 import de.bogenliga.application.business.competitionclass.impl.dao.CompetitionClassDAO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;

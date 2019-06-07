@@ -1,13 +1,11 @@
-package de.bogenliga.application.business.competitionClass.impl.mapper;
+package de.bogenliga.application.business.competitionclass.impl.mapper;
 
 import org.junit.Test;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
-import de.bogenliga.application.business.competitionclass.impl.mapper.CompetitionClassMapper;
-import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
-import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassDO;
+import static de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
+import static de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassDO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 /**
  * @author Leila Taraman, Leila.Taraman@Student.Reutlingen-University.DE
