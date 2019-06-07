@@ -134,7 +134,7 @@ public final class SQL {
             if (obj.getClass().getSuperclass() == CommonBusinessEntity.class) {
                 getter = obj.getClass().getSuperclass().getDeclaredMethod(getterName);
             } else {
-                throw new NoSuchMethodException(e.getStackTrace().toString());
+                throw new NoSuchMethodException(Arrays.toString(e.getStackTrace()));
             }
 
         }

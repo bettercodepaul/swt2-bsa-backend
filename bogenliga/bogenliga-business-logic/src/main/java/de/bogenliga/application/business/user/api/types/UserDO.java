@@ -3,7 +3,10 @@ package de.bogenliga.application.business.user.api.types;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
@@ -14,6 +17,8 @@ import de.bogenliga.application.common.component.types.DataObject;
  */
 public class UserDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = 298357103627898987L;
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserDO.class);
 
     /**
      * business parameter
@@ -127,7 +132,7 @@ public class UserDO extends CommonDataObject implements DataObject {
                     appName, getEmail(), getSecret(), appName),
                     "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOG.error(Arrays.toString(e.getStackTrace()));
         }
         return "QR Code could not be loaded";
     }
