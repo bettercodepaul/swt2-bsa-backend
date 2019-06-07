@@ -21,8 +21,8 @@ public class WettkampfTypDTO implements DataTransferObject {
     private Long createdByUserId;
     private Long version;
 
-    public WettkampfTypDTO(Long wettkampftypId, String name, Long createdByUserId, OffsetDateTime createdAtUtc, Long version){
-        this.setId(wettkampftypId);
+    public WettkampfTypDTO(Long wettkampfTypId, String name, Long createdByUserId, OffsetDateTime createdAtUtc, Long version){
+        this.setId(wettkampfTypId);
         this.setName(name);
 
         this.setCreatedAtUtc(createdAtUtc);

@@ -14,7 +14,7 @@ import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -161,20 +161,20 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     private VeranstaltungDO notNull(VeranstaltungBE veranstaltungBE) {
         LigaBE tempLigaBE = new LigaBE();
-        WettkampftypBE tempWettkampftypBE = new WettkampftypBE();
+        WettkampfTypBE tempWettkampfTypBE = new WettkampfTypBE();
         UserBE tempUserBE = new UserBE();
 
         if (veranstaltungBE.getLigaId() != null) {
             tempLigaBE = ligaDAO.findById(veranstaltungBE.getLigaId());
         }
         if (veranstaltungBE.getVeranstaltungWettkampftypID() != null) {
-            tempWettkampftypBE = wettkampftypDAO.findById(veranstaltungBE.getVeranstaltungWettkampftypID());
+            tempWettkampfTypBE = wettkampftypDAO.findById(veranstaltungBE.getVeranstaltungWettkampftypID());
         }
         if (veranstaltungBE.getVeranstaltungLigaleiterID() != null) {
             tempUserBE = userDAO.findById(veranstaltungBE.getVeranstaltungLigaleiterID());
         }
 
-        return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserBE, tempWettkampftypBE, tempLigaBE);
+        return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserBE, tempWettkampfTypBE, tempLigaBE);
     }
 }
 

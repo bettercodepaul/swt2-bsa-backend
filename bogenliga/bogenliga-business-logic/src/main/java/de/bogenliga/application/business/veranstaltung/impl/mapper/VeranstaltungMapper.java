@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.veranstaltung.impl.mapper;
 
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -22,7 +22,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
      * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
      *
      */
-    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserBE userBE, WettkampftypBE wettkamptypBE, LigaBE ligaBE){
+    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserBE userBE, WettkampfTypBE wettkamptypBE, LigaBE ligaBE){
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getLastModifiedAtUtc());
