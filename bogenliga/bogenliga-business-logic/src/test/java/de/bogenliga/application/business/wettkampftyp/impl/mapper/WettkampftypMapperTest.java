@@ -3,9 +3,9 @@ package de.bogenliga.application.business.wettkampftyp.impl.mapper;
 import java.time.OffsetDateTime;
 import org.junit.Test;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.business.wettkampftyp.impl.mapper.WettkampftypMapper;
-import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImplTest.getWettkampftypBE;
+import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImplTest.getWettkampfTypBE;
 import static de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImplTest.getWettkampfTypDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,11 +26,11 @@ public class WettkampftypMapperTest {
 
 
     @Test
-    public void toWettkampftypBE (){
+    public void toWettkampfTypBE (){
 
         final WettkampfTypDO wettkampftypDO = getWettkampfTypDO();
 
-        final WettkampftypBE actual = WettkampftypMapper.toWettkampftypBE.apply(wettkampftypDO);
+        final WettkampfTypBE actual = WettkampftypMapper.toWettkampfTypBE.apply(wettkampftypDO);
 
         assertThat(actual.getwettkampftypID()).isEqualTo(wettkampftyp_Id);
         assertThat(actual.getwettkampftypname()).isEqualTo(wettkampftyp_Name);
@@ -39,7 +39,7 @@ public class WettkampftypMapperTest {
     @Test
     public void toWettkampfTypDO(){
 
-        final WettkampftypBE wettkampftypBE = getWettkampftypBE();
+        final WettkampfTypBE wettkampftypBE = getWettkampfTypBE();
         final WettkampfTypDO actual = WettkampftypMapper.toWettkampfTypDO.apply(wettkampftypBE);
 
         assertThat(actual.getId()).isEqualTo(wettkampftyp_Id);

@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,8 +59,8 @@ public class WettkampftypServiceTest {
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
      */
-    public static WettkampftypBE getWettkampftypBE() {
-        final WettkampftypBE expectedBE = new WettkampftypBE();
+    public static WettkampfTypBE getWettkampfTypBE() {
+        final WettkampfTypBE expectedBE = new WettkampfTypBE();
         expectedBE.setwettkampftypID(wettkampftyp_Id);
         expectedBE.setwettkampftypname(wettkampftyp_Name);
 

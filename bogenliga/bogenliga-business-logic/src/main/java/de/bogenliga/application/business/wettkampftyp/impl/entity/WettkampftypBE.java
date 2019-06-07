@@ -13,7 +13,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *
  * @see CommonBusinessEntity
  */
-public class WettkampftypBE extends CommonBusinessEntity implements BusinessEntity {
+public class WettkampfTypBE extends CommonBusinessEntity implements BusinessEntity {
 
     private static final long serialVersionUID = 7307883175430867611L;
     private Long wettkampftypID;
@@ -23,7 +23,7 @@ public class WettkampftypBE extends CommonBusinessEntity implements BusinessEnti
     /**
      * Constructor
      */
-    public WettkampftypBE() {
+    public WettkampfTypBE() {
         //empty constructor
     }
 

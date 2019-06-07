@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -41,8 +41,8 @@ public class WettkampfTypDAO implements DataAccessObject {
 
 
     // wrap all specific config parameters
-    private static final BusinessEntityConfiguration<WettkampftypBE> WETTKAMPFTYP = new BusinessEntityConfiguration<>(
-            WettkampftypBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+    private static final BusinessEntityConfiguration<WettkampfTypBE> WETTKAMPFTYP = new BusinessEntityConfiguration<>(
+            WettkampfTypBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
     /*
      * SQL queries
@@ -92,7 +92,7 @@ public class WettkampfTypDAO implements DataAccessObject {
     /**
      * Return all Wettkampftyp entries
      */
-    public List<WettkampftypBE> findAll() {
+    public List<WettkampfTypBE> findAll() {
         return basicDao.selectEntityList(WETTKAMPFTYP, FIND_ALL);
 
     }
@@ -102,7 +102,7 @@ public class WettkampfTypDAO implements DataAccessObject {
      *
      * @param id
      */
-    public WettkampftypBE findById(final long id) {
+    public WettkampfTypBE findById(final long id) {
         return basicDao.selectSingleEntity(WETTKAMPFTYP, FIND_BY_ID, id);
     }
 
@@ -114,7 +114,7 @@ public class WettkampfTypDAO implements DataAccessObject {
      * @param currentWettkampftypId
      * @return Business Entity corresponding to the created wettkampftyp entry
      */
-    public WettkampftypBE create(final WettkampftypBE wettkampftypBE, final long currentWettkampftypId) {
+    public WettkampfTypBE create(final WettkampfTypBE wettkampftypBE, final long currentWettkampftypId) {
         basicDao.setCreationAttributes(wettkampftypBE, currentWettkampftypId);
 
         return basicDao.insertEntity(WETTKAMPFTYP, wettkampftypBE);
@@ -128,7 +128,7 @@ public class WettkampfTypDAO implements DataAccessObject {
      * @param currentWettkampftypId
      * @return Business Entity corresponding to the updated wettkampftyp entry
      */
-    public WettkampftypBE update(final WettkampftypBE wettkampftypBE, final long currentWettkampftypId) {
+    public WettkampfTypBE update(final WettkampfTypBE wettkampftypBE, final long currentWettkampftypId) {
         basicDao.setModificationAttributes(wettkampftypBE, currentWettkampftypId);
 
         return basicDao.updateEntity(WETTKAMPFTYP, wettkampftypBE, WETTKAMPFTYP_BE_ID);
@@ -141,7 +141,7 @@ public class WettkampfTypDAO implements DataAccessObject {
      * @param wettkampftypBE
      * @param currentWettkampftypId
      */
-    public void delete(final WettkampftypBE wettkampftypBE, final long currentWettkampftypId) {
+    public void delete(final WettkampfTypBE wettkampftypBE, final long currentWettkampftypId) {
         basicDao.setModificationAttributes(wettkampftypBE, currentWettkampftypId);
 
         basicDao.deleteEntity(WETTKAMPFTYP, wettkampftypBE, WETTKAMPFTYP_BE_ID);
