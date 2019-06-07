@@ -16,7 +16,7 @@ import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -65,13 +65,13 @@ public class VeranstaltungComponentImplTest {
 
     private static VeranstaltungBE getVeranstaltungBE() {
         VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
-        expectedBE.setVeranstaltung_wettkampftyp_id(VERANSTALTUNG_WETTKAMPFTYP_ID);
-        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltung_sportjahr(VERANSTALTUNG_SPORTJAHR);
-        expectedBE.setVeranstaltung_meldeDeadline(VERANSTALTUNG_MELDEDEADLINE);
-        expectedBE.setVeranstaltung_ligaleiter_id(VERANSTALTUNG_LIGALEITER_ID);
-        expectedBE.setVeranstaltung_liga_id(VERANSTALTUNG_LIGA_ID);
+        expectedBE.setVeranstaltungID(VERANSTALTUNG_ID);
+        expectedBE.setVeranstaltungWettkampftypID(VERANSTALTUNG_WETTKAMPFTYP_ID);
+        expectedBE.setVeranstaltungName(VERANSTALTUNG_NAME);
+        expectedBE.setVeranstaltungSportJahr(VERANSTALTUNG_SPORTJAHR);
+        expectedBE.setVeranstaltungMeldeDeadline(VERANSTALTUNG_MELDEDEADLINE);
+        expectedBE.setVeranstaltungLigaleiterID(VERANSTALTUNG_LIGALEITER_ID);
+        expectedBE.setLigaId(VERANSTALTUNG_LIGA_ID);
 
         return expectedBE;
     }
@@ -109,8 +109,8 @@ public class VeranstaltungComponentImplTest {
         return UserBE;
     }
 
-    public static WettkampftypBE getWettkampftypBE() {
-        WettkampftypBE wettkampftypBE = new WettkampftypBE();
+    public static WettkampfTypBE getWettkampfTypBE() {
+        WettkampfTypBE wettkampftypBE = new WettkampfTypBE();
         wettkampftypBE.setwettkampftypID(VERANSTALTUNG_WETTKAMPFTYP_ID);
         wettkampftypBE.setwettkampftypname(VERANSTALTUNG_WETTKAMPFTYP_NAME);
 
@@ -134,7 +134,7 @@ public class VeranstaltungComponentImplTest {
         // prepare test data
         final VeranstaltungBE expectedBE = getVeranstaltungBE();
         final UserBE expectedUserBE = getUserBE();
-        final WettkampftypBE expectedWettkamofBE = getWettkampftypBE();
+        final WettkampfTypBE expectedWettkamofBE = getWettkampfTypBE();
         final LigaBE expectedligaBE = getLigaBE();
 
 
@@ -282,7 +282,7 @@ public class VeranstaltungComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltung_id())
+        assertThat(persistedBE.getVeranstaltungID())
                 .isEqualTo(input.getVeranstaltungID());
     }
 

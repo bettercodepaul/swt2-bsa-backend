@@ -59,7 +59,8 @@ public class UserWithPermissionsDO extends UserDO implements DataObject {
      */
     public UserWithPermissionsDO(final UserDO userDO,
                                  final List<String> permissions) {
-        super(userDO.getId(), userDO.getEmail(), userDO.getCreatedAtUtc(), userDO.getCreatedByUserId(),
+        super(userDO.getId(), userDO.getEmail(), userDO.isUsing2FA(), userDO.getSecret(), userDO.getCreatedAtUtc(),
+                userDO.getCreatedByUserId(),
                 userDO.getLastModifiedAtUtc(), userDO.getLastModifiedByUserId(), userDO.getVersion());
 
         this.permissions = permissions == null ? Collections.emptyList() : new ArrayList<>(permissions);

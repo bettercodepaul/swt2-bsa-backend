@@ -1,10 +1,8 @@
-package de.bogenliga.application.business.competitionClass.impl.entity;
+package de.bogenliga.application.business.competitionclass.impl.entity;
 
 import org.junit.Test;
-import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
-import static org.junit.Assert.*;
+import static de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
 
 /**
  * @author Leila Taraman, Leila.Taraman@Student.Reutlingen-University.DE

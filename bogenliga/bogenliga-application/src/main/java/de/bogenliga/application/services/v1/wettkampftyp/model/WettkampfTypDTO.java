@@ -10,7 +10,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  *
  * @author Marvin Holm, Daniel Schott
  */
-public class WettkampftypDTO implements DataTransferObject {
+public class WettkampfTypDTO implements DataTransferObject {
 
 
 
@@ -21,8 +21,8 @@ public class WettkampftypDTO implements DataTransferObject {
     private Long createdByUserId;
     private Long version;
 
-    public WettkampftypDTO(Long wettkampftypId, String name, Long createdByUserId, OffsetDateTime createdAtUtc, Long version){
-        this.setId(wettkampftypId);
+    public WettkampfTypDTO(Long wettkampfTypId, String name, Long createdByUserId, OffsetDateTime createdAtUtc, Long version){
+        this.setId(wettkampfTypId);
         this.setName(name);
 
         this.setCreatedAtUtc(createdAtUtc);

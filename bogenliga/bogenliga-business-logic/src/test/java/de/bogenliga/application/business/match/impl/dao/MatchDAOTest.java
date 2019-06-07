@@ -34,15 +34,10 @@ public class MatchDAOTest extends BaseMatchTest {
         expectedBE = getMatchBE();
         basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
         // configure mocks
-        // find by id
-        when(basicDao.selectSingleEntity(any(), any(), anyLong())).thenReturn(expectedBE);
-        // find by pk
-        when(basicDao.selectSingleEntity(any(), any(), anyLong(), anyLong(), anyLong(), anyLong(),
-                anyLong())).thenReturn(expectedBE);
-        // find by match/wettkampf id
-        when(basicDao.selectEntityList(any(), any(), anyLong())).thenReturn(Collections.singletonList(expectedBE));
-        // find all
-        when(basicDao.selectEntityList(any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(
+                Collections.singletonList(expectedBE));
     }
 
 /*
@@ -67,6 +62,18 @@ public class MatchDAOTest extends BaseMatchTest {
         assertThat(actual.getSatzpunkte()).isEqualTo(expectedMatchBE.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
         assertThat(actual.getNr()).isEqualTo(expectedMatchBE.getNr()).isEqualTo(MATCH_NR);
     }*/
+
+
+
+    /**
+     * Tests all find methods if the DAO implements all method
+     * inside the hashmap (getValuesToMethodMap())
+     * and returns the correct output
+     */
+    @Test
+    public void testAllFindMethods() throws InvocationTargetException, IllegalAccessException {
+        basicDAOTest.testAllFindMethods(underTest);
+    }
 
 
     @Test
@@ -122,15 +129,7 @@ public class MatchDAOTest extends BaseMatchTest {
 
 
     @Test
-    public void findByMannschaftId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public void findByMannschaftId() throws InvocationTargetException, IllegalAccessException {
+        basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
     }
-
-
 }

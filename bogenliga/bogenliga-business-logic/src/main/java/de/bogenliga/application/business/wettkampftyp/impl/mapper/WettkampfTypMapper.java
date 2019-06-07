@@ -4,8 +4,8 @@ package de.bogenliga.application.business.wettkampftyp.impl.mapper;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -13,13 +13,13 @@ import de.bogenliga.application.common.time.DateProvider;
  * I convert the wettkampftyp DataObjects and BusinessEntities.
  *
  */
-public class WettkampftypMapper implements ValueObjectMapper {
+public class WettkampfTypMapper implements ValueObjectMapper {
 
     /**
-     * Converts a {@link WettkampftypBE} to a {@link WettkampftypDO}
+     * Converts a {@link WettkampfTypBE} to a {@link WettkampfTypDO}
      *
      */
-    public static final Function<WettkampftypBE, WettkampftypDO> toWettkampftypDO = be -> {
+    public static final Function<WettkampfTypBE, WettkampfTypDO> toWettkampfTypDO = be -> {
 
         final Long id = be.getwettkampftypID();
         final String name = be.getwettkampftypname();
@@ -33,18 +33,18 @@ public class WettkampftypMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new WettkampftypDO(id, name, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new WettkampfTypDO(id, name, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
     /**
-     * Converts a {@link WettkampftypDO} to a {@link WettkampftypBE}
+     * Converts a {@link WettkampfTypDO} to a {@link WettkampfTypBE}
      */
-    public static final Function<WettkampftypDO, WettkampftypBE> toWettkampftypBE = wettkampftypDO -> {
+    public static final Function<WettkampfTypDO, WettkampfTypBE> toWettkampfTypBE = wettkampftypDO -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(wettkampftypDO.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(wettkampftypDO.getLastModifiedAtUtc());
 
-        WettkampftypBE wettkampftypBe = new WettkampftypBE();
+        WettkampfTypBE wettkampftypBe = new WettkampfTypBE();
         wettkampftypBe.setwettkampftypID(wettkampftypDO.getId());
         wettkampftypBe.setwettkampftypname(wettkampftypDO.getName());
 
@@ -63,7 +63,7 @@ public class WettkampftypMapper implements ValueObjectMapper {
     /**
      * Private constructor
      */
-    private WettkampftypMapper() {
+    private WettkampfTypMapper() {
         // empty private constructor
     }
 }

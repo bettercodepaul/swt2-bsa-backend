@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -60,6 +61,9 @@ public class UserAuthenticationProviderTest {
         final UserWithPermissionsDO userWithPermissionsDO = createUserWithPermissionsDO();
 
         // configure mocks
+        UserDO userDo = new UserDO();
+        userDo.setUsing2FA(false);
+        when(userComponent.findByEmail(any())).thenReturn(userDo);
         when(authentication.getName()).thenReturn(EMAIL);
         when(authentication.getCredentials()).thenReturn(PASSWORD);
         when(userComponent.signIn(any(), any())).thenReturn(userWithPermissionsDO);
@@ -91,6 +95,9 @@ public class UserAuthenticationProviderTest {
         final UserWithPermissionsDO userWithPermissionsDO = createUserWithPermissionsDO();
 
         // configure mocks
+        UserDO userDo = new UserDO();
+        userDo.setUsing2FA(false);
+        when(userComponent.findByEmail(any())).thenReturn(userDo);
         when(authentication.getName()).thenReturn(EMAIL);
         when(authentication.getCredentials()).thenReturn(PASSWORD);
         when(userComponent.signIn(any(), any()))
@@ -118,6 +125,9 @@ public class UserAuthenticationProviderTest {
         final UserWithPermissionsDO userWithPermissionsDO = createUserWithPermissionsDO();
 
         // configure mocks
+        UserDO userDo = new UserDO();
+        userDo.setUsing2FA(false);
+        when(userComponent.findByEmail(any())).thenReturn(userDo);
         when(authentication.getName()).thenReturn(EMAIL);
         when(authentication.getCredentials()).thenReturn(PASSWORD);
         when(userComponent.signIn(any(), any()))

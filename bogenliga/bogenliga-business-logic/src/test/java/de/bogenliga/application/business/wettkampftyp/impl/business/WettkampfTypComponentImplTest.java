@@ -12,17 +12,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
-import de.bogenliga.application.business.wettkampftyp.impl.business.WettkampftypComponentImpl;
-import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampftypDAO;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
+import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
  * @author Daniel Schott daniel.schott@student.reutlingen-university.de
  */
-public class WettkampftypComponentImplTest {
+public class WettkampfTypComponentImplTest {
 
     private static final long user_Id=13;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
@@ -36,19 +35,19 @@ public class WettkampftypComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private WettkampftypDAO wettkampftypDAO;
+    private WettkampfTypDAO wettkampftypDAO;
     @InjectMocks
-    private WettkampftypComponentImpl underTest;
+    private WettkampfTypComponentImpl underTest;
     @Captor
-    private ArgumentCaptor<WettkampftypBE> wettkampftypBEArgumentCaptor;
+    private ArgumentCaptor<WettkampfTypBE> wettkampftypBEArgumentCaptor;
 
 
     /***
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
      */
-    public static WettkampftypBE getWettkampftypBE() {
-        final WettkampftypBE expectedBE = new WettkampftypBE();
+    public static WettkampfTypBE getWettkampfTypBE() {
+        final WettkampfTypBE expectedBE = new WettkampfTypBE();
         expectedBE.setwettkampftypID(wettkampftyp_Id);
         expectedBE.setwettkampftypname(wettkampftyp_Name);
 
@@ -56,8 +55,8 @@ public class WettkampftypComponentImplTest {
     }
 
 
-    public static WettkampftypDO getWettkampftypDO() {
-        return new WettkampftypDO( wettkampftyp_Id,
+    public static WettkampfTypDO getWettkampfTypDO() {
+        return new WettkampfTypDO( wettkampftyp_Id,
                 wettkampftyp_Name,
 
                 created_At_Utc,
@@ -69,15 +68,15 @@ public class WettkampftypComponentImplTest {
     @Test
     public void findAll() {
         // prepare test data
-        final WettkampftypBE expectedBE = getWettkampftypBE();
-        final List<WettkampftypBE> expectedBEList = Collections.singletonList(expectedBE);
+        final WettkampfTypBE expectedBE = getWettkampfTypBE();
+        final List<WettkampfTypBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(wettkampftypDAO.findAll()).thenReturn(expectedBEList);
 
 
         // call test method
-        final List<WettkampftypDO> actual = underTest.findAll();
+        final List<WettkampfTypDO> actual = underTest.findAll();
 
 
         // assert result
@@ -100,13 +99,13 @@ public class WettkampftypComponentImplTest {
     @Test
     public void findById() {
         // prepare test data
-        final WettkampftypBE expectedBE = getWettkampftypBE();
+        final WettkampfTypBE expectedBE = getWettkampfTypBE();
 
         // configure mocks
         when(wettkampftypDAO.findById(wettkampftyp_Id)).thenReturn(expectedBE);
 
         // call test method
-        final WettkampftypDO actual = underTest.findById(wettkampftyp_Id);
+        final WettkampfTypDO actual = underTest.findById(wettkampftyp_Id);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -121,15 +120,15 @@ public class WettkampftypComponentImplTest {
     @Test
     public void create() {
         // prepare test data
-        final WettkampftypDO input = getWettkampftypDO();
+        final WettkampfTypDO input = getWettkampfTypDO();
 
-        final WettkampftypBE expectedBE = getWettkampftypBE();
+        final WettkampfTypBE expectedBE = getWettkampfTypBE();
 
         // configure mocks
-        when(wettkampftypDAO.create(any(WettkampftypBE.class), anyLong())).thenReturn(expectedBE);
+        when(wettkampftypDAO.create(any(WettkampfTypBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final WettkampftypDO actual = underTest.create(input, user_Id);
+        final WettkampfTypDO actual = underTest.create(input, user_Id);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -140,7 +139,7 @@ public class WettkampftypComponentImplTest {
         // verify invocations
         verify(wettkampftypDAO).create(wettkampftypBEArgumentCaptor.capture(), anyLong());
 
-        final WettkampftypBE persistedBE = wettkampftypBEArgumentCaptor.getValue();
+        final WettkampfTypBE persistedBE = wettkampftypBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
@@ -151,9 +150,9 @@ public class WettkampftypComponentImplTest {
     @Test
     public void delete() {
         // prepare test data
-        final WettkampftypDO input = getWettkampftypDO();
+        final WettkampfTypDO input = getWettkampfTypDO();
 
-        final WettkampftypBE expectedBE = getWettkampftypBE();
+        final WettkampfTypBE expectedBE = getWettkampfTypBE();
 
         // configure mocks
 
@@ -165,7 +164,7 @@ public class WettkampftypComponentImplTest {
         // verify invocations
         verify(wettkampftypDAO).delete(wettkampftypBEArgumentCaptor.capture(), anyLong());
 
-        final WettkampftypBE persistedBE = wettkampftypBEArgumentCaptor.getValue();
+        final WettkampfTypBE persistedBE = wettkampftypBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 

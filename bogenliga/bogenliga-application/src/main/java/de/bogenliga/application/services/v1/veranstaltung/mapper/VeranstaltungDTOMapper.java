@@ -40,19 +40,14 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
      * I map the {@link LigaDTO} object to the {@link LigaDO} object
      */
     public static final Function<VeranstaltungDTO, VeranstaltungDO> toDO = dto -> {
-
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
                 veranstaltungDO.setVeranstaltungID(dto.getId());
                 veranstaltungDO.setVeranstaltungWettkampftypID(dto.getWettkampfTypId());
                 veranstaltungDO.setVeranstaltungName(dto.getName());
                 veranstaltungDO.setVeranstaltungSportJahr(dto.getSportjahr());
                 veranstaltungDO.setVeranstaltungMeldeDeadline(dto.getMeldeDeadline());
-                veranstaltungDO.setVeranstaltungLigaleiterID(dto.getLigaleiterID());
-                veranstaltungDO.setVeranstaltungLigaID(dto.getLigaID());
-
-
-
-
+                veranstaltungDO.setVeranstaltungLigaleiterID(dto.getLigaleiterId());
+                veranstaltungDO.setVeranstaltungLigaID(dto.getLigaId());
 
         return veranstaltungDO;
     };

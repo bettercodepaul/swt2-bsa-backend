@@ -130,7 +130,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                     for (int j = 0; j < SETZLISTE_STRUCTURE[i].length; j++) {
                         long begegnung = Math.round((float) (j + 1) / 2);
                         long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
-                        MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null);
+                        MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
                         matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
                     }
                 }

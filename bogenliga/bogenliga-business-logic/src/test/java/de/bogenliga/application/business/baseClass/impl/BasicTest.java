@@ -43,13 +43,13 @@ public class BasicTest<T, B> {
      * Tests all methods of a class which contain "find" in their name invokes a method with just ones as parameters,
      * mock should always return the BE defined with mocks
      *
-     * @param component Takes a ComponentImplementation and checks all methods if the returing DO is equal to the
-     *                  expected BE that is returned by the BasicDAO
+     * @param component Takes a ComponentImplementation or DAO and checks all methods which contain "find" whether the
+     *                  returned DO is equal to the expected BE that is returned by the BasicDAO
      *
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    public void testAllFindMethodOfComponentImpl(
+    public void testAllFindMethods(
             Object component) throws InvocationTargetException, IllegalAccessException {
         for (Method m : component.getClass().getDeclaredMethods()) {
             if (m.getName().contains("find")) {
@@ -59,8 +59,11 @@ public class BasicTest<T, B> {
                 Object o = m.invoke(component, arr);
                 if (o instanceof List) {
                     testAllFieldsOnEqualToExpectedEntity((List<B>) o);
-                } else {
+                } else if (((B) o) != null) {
                     testAllFieldsOnEqualToExpectedEntity((B) o);
+                } else {
+                    LOG.debug("BasicDAO didn't return an Object of the second generic Type defined," +
+                            "check if you have the mock configured to return on singleEntity and selectEntityList");
                 }
             }
         }
@@ -98,24 +101,26 @@ public class BasicTest<T, B> {
     public void assertEntity(B entity) throws InvocationTargetException, IllegalAccessException {
         assertThat(expectedEntity).isNotNull();
         assertThat(entity).isNotNull();
-        LOG.debug("Testing class (actual entity given by method parameter): " + entity.getClass());
-        LOG.debug("Testing class (expected entity given by constructor): " + expectedEntity.getClass());
+        LOG.debug("Testing class (actual entity given by method parameter): " + entity.getClass().getSimpleName());
+        LOG.debug("Testing class (expected entity to be compared given by constructor): " + expectedEntity.getClass().getSimpleName());
         for (Method method : entity.getClass().getDeclaredMethods()) {
             ArrayList<Method> arr = new ArrayList<>(Arrays.asList(expectedEntity.getClass().getDeclaredMethods()));
-            if (method.getName().contains("get")) {
-                LOG.debug("Method being tested: " + method.getName());
+            String mName = method.getName();
+            if (mName.contains("get")) {
+                LOG.debug("Method being tested: " + mName);
                 Optional<Method> optionalM = arr.stream()
-                        .filter((x) -> x.getName().equals(method.getName()))
+                        .filter((x) -> x.getName().equals(mName))
                         .findFirst();
                 if (!optionalM.isPresent()) {
-                    LOG.debug("Expected entity doesn't implement the method: " + method.getName());
+                    LOG.debug("Expected entity doesn't implement the method: " + mName);
                 }
                 assertThat(optionalM.isPresent()).isTrue();
 
-                if (valuesToMethodNames.containsKey(method.getName())) {
+                if (!valuesToMethodNames.containsKey(mName)) {
                     LOG.debug(
                             "Method is not given in the Hashmap, please insert the name of the method: " + method.getName() + " in the Hashmap given to" +
                                     "BasicTest class constructor");
+                    assertThat(valuesToMethodNames.containsKey(mName)).isTrue();
                 }
                 Method m = optionalM.get();
 
@@ -126,32 +131,10 @@ public class BasicTest<T, B> {
                 Object actual = method.invoke(entity);
                 Object expected = m.invoke(expectedEntity);
                 assertThat(actual).isEqualTo(expected);
-                LOG.debug("actual == expected =");
-                if (actual == null && expected == null) {
-                    LOG.debug("null == null =true");
-                } else if (actual == null) {
-                    LOG.debug(
-                            "The parameter returned by getter : " + m.getName() + " for the actual returned object is null. ");
-                } else if (expected == null) {
-                    LOG.debug(
-                            "The parameter returned by getter : " + m.getName() + " for the expected entity returned is null. ");
-                }
-                Object setFirst = valuesToMethodNames.get(m.getName());
-                LOG.debug("actual == valuefromHashMap =");
-                if (actual == null && setFirst == null) {
-                    LOG.debug("null == null =true");
-                } else if (actual == null) {
-                    LOG.debug(
-                            "The parameter returned by getter : " + m.getName() + " for the actual returned object is null. ");
-                } else if (setFirst == null) {
-                    LOG.debug(
-                            "The parameter set inside the Hashmap, which determines the input, is null. " +
-                                    "Please check if the values in the Hashmap given to BasicTest are correct");
-                }
+                Object setFirst = valuesToMethodNames.get(mName);
+
                 assertThat(method.invoke(entity)).isEqualTo(setFirst);
-                if (actual != null) {
-                    LOG.debug(actual + " == " + setFirst + " =" + actual.equals(setFirst));
-                } else {
+                if (actual == null) {
                     LOG.debug("The parameter returned by getter : " + m.getName() + " is null. ");
                 }
             }

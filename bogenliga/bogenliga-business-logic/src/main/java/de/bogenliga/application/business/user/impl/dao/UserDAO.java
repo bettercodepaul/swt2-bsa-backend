@@ -14,7 +14,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the user entity in the database.
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -33,11 +33,15 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_BE_EMAIL = "userEmail";
     private static final String USER_BE_SALT = "userSalt";
     private static final String USER_BE_PASSWORD = "userPassword";
+    private static final String USER_BE_USING2FA = "using2FA";
+    private static final String USER_BE_SECRET = "secret";
 
     private static final String USER_TABLE_ID = "benutzer_id";
     private static final String USER_TABLE_EMAIL = "benutzer_email";
     private static final String USER_TABLE_SALT = "benutzer_salt";
     private static final String USER_TABLE_PASSWORD = "benutzer_password";
+    private static final String USER_TABLE_USING2FA = "benutzer_using_2fa";
+    private static final String USER_TABLE_SECRET = "benutzer_secret";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserBE> USER = new BusinessEntityConfiguration<>(
@@ -82,6 +86,8 @@ public class UserDAO implements DataAccessObject {
         columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
         columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
         columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
+        columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
+        columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -123,6 +129,7 @@ public class UserDAO implements DataAccessObject {
      *
      * @param userBE
      * @param currentUserId
+     *
      * @return Business Entity corresponding to the created user entry
      */
     public UserBE create(final UserBE userBE, final long currentUserId) {
@@ -137,6 +144,7 @@ public class UserDAO implements DataAccessObject {
      *
      * @param userBE
      * @param currentUserId
+     *
      * @return Business Entity corresponding to the updated user entry
      */
     public UserBE update(final UserBE userBE, final long currentUserId) {

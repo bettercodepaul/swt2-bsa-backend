@@ -6,10 +6,6 @@
  * für Liga wird als Schlüssel zusätzlich das Match definiert max. 7 Matches in einer Liga-Runde
  **/
 
--- auto increment sequence (sq)
--- primary key range for manually added data [0, 999]
-CREATE SEQUENCE sq_match_id START WITH 1000 INCREMENT BY 1;
-
 CREATE TABLE match (
   -- composite key aus mehreren Fremd- und fachlichen Schlüsseln
   match_wettkampf_id   DECIMAL(19, 0) NOT NULL, --Fremdschlüsselbezug zum Wettkampf
@@ -20,9 +16,11 @@ CREATE TABLE match (
   match_scheibennummer DECIMAL(2, 0)  NOT NULL,
   match_matchpunkte    DECIMAL(1, 0)  NULL,
   match_satzpunkte     DECIMAL(1, 0)  NULL,
-
-  -- an auto-incremented unique attribute, for easier internal access
-  match_id             DECIMAL(19,0)  NOT NULL    DEFAULT nextval('sq_match_id'),
+  match_strafpunkte_satz_1 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_2 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_3 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_4 DECIMAL(2, 0) NULL,
+  match_strafpunkte_satz_5 DECIMAL(2, 0) NULL,
 
   -- technical columns to track the lifecycle of each row
   -- the "_by" columns references a "benutzer_id" without foreign key constraint
@@ -34,13 +32,9 @@ CREATE TABLE match (
   last_modified_by     DECIMAL(19, 0) NULL        DEFAULT NULL,
   version              DECIMAL(19, 0) NOT NULL    DEFAULT 0,
 
-
   -- primary key (pk)
   -- scheme: pk_{column name}
   CONSTRAINT pk_match PRIMARY KEY (match_wettkampf_id, match_nr, match_begegnung, match_scheibennummer, match_mannschaft_id),
-
-  -- make match_id unique
-  CONSTRAINT pk_alias_match_id UNIQUE(match_id),
 
    -- foreign key (fk)
   -- schema: fk_{current table name}_{foreign key origin table name}

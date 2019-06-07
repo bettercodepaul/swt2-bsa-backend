@@ -2,7 +2,6 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,11 +15,8 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
-import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -69,7 +65,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     public void testAllMethodsOnCorrectness() throws InvocationTargetException, IllegalAccessException {
         when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
         when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
-        basicTest.testAllFindMethodOfComponentImpl(underTest);
+        basicTest.testAllFindMethods(underTest);
     }
 
 
