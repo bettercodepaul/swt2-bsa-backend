@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.competitionClass.impl.dao;
+package de.bogenliga.application.business.competitionclass.impl.dao;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -6,10 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.competitionclass.impl.dao.CompetitionClassDAO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static de.bogenliga.application.business.competitionClass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
+import static de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
 
 
 import static org.mockito.Mockito.when;

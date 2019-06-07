@@ -15,12 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.veranstaltung.mapper.VeranstaltungDTOMapper;
-import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.mapper.VeranstaltungDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -114,8 +111,8 @@ public class VeranstaltungService implements ServiceFacade {
                 veranstaltungDTO.getWettkampfTypId(),
                 veranstaltungDTO.getSportjahr(),
                 veranstaltungDTO.getMeldeDeadline(),
-                veranstaltungDTO.getLigaleiterID(),
-                veranstaltungDTO.getLigaID());
+                veranstaltungDTO.getLigaleiterId(),
+                veranstaltungDTO.getLigaId());
 
         checkPreconditions(veranstaltungDTO);
 
@@ -145,8 +142,8 @@ public class VeranstaltungService implements ServiceFacade {
                 veranstaltungDTO.getWettkampfTypId(),
                 veranstaltungDTO.getSportjahr(),
                 veranstaltungDTO.getMeldeDeadline(),
-                veranstaltungDTO.getLigaleiterID(),
-                veranstaltungDTO.getLigaID()
+                veranstaltungDTO.getLigaleiterId(),
+                veranstaltungDTO.getLigaId()
                 );
 
 
@@ -185,8 +182,8 @@ public class VeranstaltungService implements ServiceFacade {
         Preconditions.checkArgument(veranstaltungDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(veranstaltungDTO.getSportjahr() >= 0, PRECONDITION_MSG_VERANSTALTUNG_SPORTJARHR);
         Preconditions.checkNotNull(veranstaltungDTO.getMeldeDeadline(), PRECONDITION_MSG_VERANSTALTUNG_MELDEDEADLINE);
-        Preconditions.checkArgument(veranstaltungDTO.getLigaleiterID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID);
-        Preconditions.checkArgument(veranstaltungDTO.getLigaID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
+        Preconditions.checkArgument(veranstaltungDTO.getLigaleiterId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID);
+        Preconditions.checkArgument(veranstaltungDTO.getLigaId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
     }
     
 }

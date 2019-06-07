@@ -26,7 +26,9 @@ public class MatchDTOMapper implements DataTransferObjectMapper {
             matchDO.getId(), matchDO.getNr(), matchDO.getVersion(), matchDO.getWettkampfId(),
             matchDO.getMannschaftId(), matchDO.getBegegnung(), matchDO.getScheibenNummer(),
             matchDO.getMatchpunkte(), matchDO.getSatzpunkte(),
-            new ArrayList<PasseDTO>() // init empty, filled when required
+            new ArrayList<PasseDTO>(), // init empty, filled when required
+            matchDO.getStrafPunkteSatz1(), matchDO.getStrafPunkteSatz2(),
+            matchDO.getStrafPunkteSatz3(), matchDO.getStrafPunkteSatz4(), matchDO.getStrafPunkteSatz5()
     );
 
     /**
@@ -35,6 +37,8 @@ public class MatchDTOMapper implements DataTransferObjectMapper {
     public static final Function<MatchDTO, MatchDO> toDO = matchDTO -> new MatchDO(
             matchDTO.getId(), matchDTO.getNr(), matchDTO.getWettkampfId(), matchDTO.getMannschaftId(),
             matchDTO.getBegegnung(), matchDTO.getScheibenNummer(),
-            matchDTO.getMatchpunkte(), matchDTO.getSatzpunkte()
+            matchDTO.getMatchpunkte(), matchDTO.getSatzpunkte(), matchDTO.getStrafPunkteSatz1(),
+            matchDTO.getStrafPunkteSatz2(), matchDTO.getStrafPunkteSatz3(),
+            matchDTO.getStrafPunkteSatz4(), matchDTO.getStrafPunkteSatz5()
     );
 }

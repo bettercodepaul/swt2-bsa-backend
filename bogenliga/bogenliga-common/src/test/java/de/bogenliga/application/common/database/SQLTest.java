@@ -74,7 +74,7 @@ public class SQLTest {
         assertThat(actual.getSql())
                 .isNotNull()
                 .isNotEmpty()
-                .isEqualTo("SELECT pk, name, is_active, ready, quantity, entity_state, version FROM test_table WHERE pk = ?;");
+                .isEqualTo("SELECT * FROM test_table WHERE pk = ?;");
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()

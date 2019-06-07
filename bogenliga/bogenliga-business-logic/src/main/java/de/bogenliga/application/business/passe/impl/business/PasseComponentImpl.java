@@ -31,6 +31,7 @@ public class PasseComponentImpl implements PasseComponent {
             PRECONDITION_FIELD_MANNSCHAFT_ID);
     public static final String PRECONDITION_MSG_LFD_NR = String.format(PRECONDITION_MSG_TEMPLATE, PRECONDITION_FIELD_LFD_NR);
 
+
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
@@ -51,6 +52,11 @@ public class PasseComponentImpl implements PasseComponent {
 
 
 
+    /**
+     * Checks the precondition of an ID given
+     * @param id the ID to check
+     * @param iDIdentifier the variable name which should appear in the error message
+     */
     public void checkPreconditions(final Long id, String iDIdentifier) {
         Preconditions.checkNotNull(id, String.format(PRECONDITION_MSG_TEMPLATE_NULL, iDIdentifier));
         Preconditions.checkArgument(id >= 0, String.format(PRECONDITION_MSG_TEMPLATE_NEGATIVE, iDIdentifier));

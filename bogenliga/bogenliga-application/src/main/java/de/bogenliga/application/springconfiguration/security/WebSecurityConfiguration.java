@@ -8,8 +8,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import de.bogenliga.application.business.user.impl.business.CustomWebAuthenticationDetailsSource;
 import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenFilterConfigurer;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
@@ -21,11 +23,15 @@ import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTok
  */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserAuthenticationProvider authProvider;
 
+
+    @Autowired
+    private CustomWebAuthenticationDetailsSource authenticationDetailsSource;
 
     @Autowired
     public WebSecurityConfiguration(JwtTokenProvider jwtTokenProvider,
@@ -83,6 +89,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();
+
+        //http.formLogin().authenticationDetailsSource(authenticationDetailsSource);
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

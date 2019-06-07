@@ -70,13 +70,13 @@ public class VeranstaltungServiceTest {
      */
     public static VeranstaltungBE VeranstaltungBE() {
         final VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
-        expectedBE.setVeranstaltung_liga_id(LIGAID);
-        expectedBE.setVeranstaltung_ligaleiter_id(LIGALEITERID);
-        expectedBE.setVeranstaltung_meldeDeadline(MELDEDEADLINE);
-        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltung_sportjahr(SPORTJAHR);
-        expectedBE.setVeranstaltung_wettkampftyp_id(WETTKAMPFTYP_ID);
+        expectedBE.setVeranstaltungID(VERANSTALTUNG_ID);
+        expectedBE.setLigaId(LIGAID);
+        expectedBE.setVeranstaltungLigaleiterID(LIGALEITERID);
+        expectedBE.setVeranstaltungMeldeDeadline(MELDEDEADLINE);
+        expectedBE.setVeranstaltungName(VERANSTALTUNG_NAME);
+        expectedBE.setVeranstaltungSportJahr(SPORTJAHR);
+        expectedBE.setVeranstaltungWettkampftypID(WETTKAMPFTYP_ID);
 
         return expectedBE;
     }
@@ -106,8 +106,8 @@ public class VeranstaltungServiceTest {
         veranstaltungDTO.setName(VERANSTALTUNG_NAME);
         veranstaltungDTO.setSportjahr(SPORTJAHR);
         veranstaltungDTO.setMeldeDeadline(MELDEDEADLINE);
-        veranstaltungDTO.setLigaleiterID(LIGALEITERID);
-        veranstaltungDTO.setLigaID(LIGAID);
+        veranstaltungDTO.setLigaleiterId(LIGALEITERID);
+        veranstaltungDTO.setLigaId(LIGAID);
         veranstaltungDTO.setLigaleiterEmail(LIGALEITER_EMAIL);
         veranstaltungDTO.setWettkampftypName(WETTKAMPTYP_NAME);
         veranstaltungDTO.setLigaName(LIGANAME);

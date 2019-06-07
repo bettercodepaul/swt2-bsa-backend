@@ -52,6 +52,7 @@ public class UserServiceTest {
     private static final String USERNAME = "user";
     private static final String PASSWORD = "password";
     private static final String NEUESPASSWORD = "newpassword";
+    private static final Boolean USING2FA = false;
     private static final String JWT = "jwt";
     private static final String ERROR_MESSAGE = "error";
     private static final List<String> PERMISSIONS = Arrays.asList(
@@ -590,7 +591,7 @@ public class UserServiceTest {
         userCredentialsDTO.setPassword(PASSWORD);
 
         // configure mocks
-        when(userComponent.create(anyString(), anyString(), anyLong())).thenReturn(userCreatedDO);
+        when(userComponent.create(anyString(), anyString(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
         when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
 
         // call test method

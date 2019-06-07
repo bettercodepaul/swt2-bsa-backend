@@ -2,14 +2,14 @@ package de.bogenliga.application.business.wettkampftyp.api;
 
 
 import java.util.List;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampftypDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
 /**
  * Responsible for the wettkampftyp database requests.
  * @Autor Marvin Holm, Daniel Schott
  */
-public interface WettkampftypComponent extends ComponentFacade {
+public interface WettkampfTypComponent extends ComponentFacade {
 
     /**
      * Return all wettkampftypentries.
@@ -17,7 +17,7 @@ public interface WettkampftypComponent extends ComponentFacade {
      * @return list of all wettkampftyp in the database;
      * empty list, if no wettkampftyp is found
      */
-    List<WettkampftypDO> findAll();
+    List<WettkampfTypDO> findAll();
 
 
     /**
@@ -27,7 +27,7 @@ public interface WettkampftypComponent extends ComponentFacade {
      * @return single wettkampftyp entry with the given id;
      * null, if no wettkampftyp is found
      */
-    WettkampftypDO findById(long id);
+    WettkampfTypDO findById(long id);
 
     /**
      * Create a new wettkampftyp in the database.
@@ -35,7 +35,7 @@ public interface WettkampftypComponent extends ComponentFacade {
      * @param wettkampftypDO new wettkampftyp
      * @return persisted version of the dsbmitglied
      */
-    WettkampftypDO create(WettkampftypDO wettkampftypDO, long currentWettkampftypID);
+    WettkampfTypDO create(WettkampfTypDO wettkampftypDO, long currentWettkampftypID);
 
 
     /**
@@ -44,7 +44,7 @@ public interface WettkampftypComponent extends ComponentFacade {
      * @param wettkampftypDO existing wettkampftypDO to update
      * @return persisted version of the wettkampftypDO
      */
-    WettkampftypDO update(WettkampftypDO wettkampftypDO, long currentWettkampftypID);
+    WettkampfTypDO update(WettkampfTypDO wettkampftypDO, long currentWettkampftypID);
 
 
     /**
@@ -52,6 +52,6 @@ public interface WettkampftypComponent extends ComponentFacade {
      *
      * @param wettkampftypDO wettkampftyp to delete
      */
-    void delete(WettkampftypDO wettkampftypDO, long currentWettkampftypID);
+    void delete(WettkampfTypDO wettkampftypDO, long currentWettkampftypID);
 
 }

@@ -40,7 +40,7 @@ public class UserComponentImplTest {
     private static final String PWDHASH = "pwdhash";
     private static final String NEWPWDHASH = "newpwdhash";
     private static final Long USER = 1L;
-    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", null, 0L, null, 0L, 0L);
+    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", false, null, null, 0L, null, 0L, 0L);
 
 
     @Rule
@@ -68,6 +68,8 @@ public class UserComponentImplTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
+
         expectedBE.setVersion(VERSION);
 
         // configure mocks
@@ -105,6 +107,7 @@ public class UserComponentImplTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(VERSION);
 
 
@@ -173,6 +176,7 @@ public class UserComponentImplTest {
         final UserDO userDO = new UserDO();
         userDO.setEmail(EMAIL);
         userDO.setId(ID);
+        userDO.setUsing2FA(false);
 
         // configure mocks
         when(technicalUserBA.getSystemUser()).thenReturn(userDO);
@@ -210,12 +214,14 @@ public class UserComponentImplTest {
         verify(userDAO).findById(ID);
     }
 
+
     @Test
     public void findByEmail() {
         // prepare test data
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(VERSION);
 
 
@@ -238,7 +244,6 @@ public class UserComponentImplTest {
         // verify invocations
         verify(userDAO).findByEmail(EMAIL);
     }
-
 
 
     @Test
@@ -324,30 +329,10 @@ public class UserComponentImplTest {
 
 
     @Test
-    public void create_UserEmailnotNull(){
+    public void create_UserEmailnotNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create("", PASSWORD, ID))
-                .withMessageContaining("must not be null")
-                .withNoCause();
-
-    }
-
-    @Test
-    public void create_UserPasswordnotNull(){
-
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(EMAIL, "", ID))
-                .withMessageContaining("must not be null")
-                .withNoCause();
-
-    }
-
-    @Test
-    public void create_UserIDnotNull(){
-
-        assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, null))
+                .isThrownBy(() -> underTest.create("", PASSWORD, ID, false))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -355,13 +340,36 @@ public class UserComponentImplTest {
 
 
     @Test
-    public void create_sucessful(){
+    public void create_UserPasswordnotNull() {
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(EMAIL, "", ID, false))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+
+    @Test
+    public void create_UserIDnotNull() {
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, null, false))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+
+    @Test
+    public void create_sucessful() {
 
         final OffsetDateTime dateTime = OffsetDateTime.now();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(VERSION);
         expectedBE.setCreatedAtUtc(timestamp);
         expectedBE.setLastModifiedAtUtc(timestamp);
@@ -371,10 +379,10 @@ public class UserComponentImplTest {
         // configure mocks
         when(passwordHashingBA.generateSalt()).thenReturn(SALT);
         when(passwordHashingBA.calculateHash(anyString(), anyString())).thenReturn(PWDHASH);
-        when(userDAO.create(any(UserBE.class),anyLong())).thenReturn(expectedBE);
+        when(userDAO.create(any(UserBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final UserDO actual =  underTest.create(EMAIL, PASSWORD, USER);
+        final UserDO actual = underTest.create(EMAIL, PASSWORD, USER, false);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -392,10 +400,8 @@ public class UserComponentImplTest {
     }
 
 
-
-
     @Test
-    public void update_UserDO_notNull(){
+    public void update_UserDO_notNull() {
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.update(null, PASSWORD, NEWPASSWORD, ID))
@@ -404,9 +410,9 @@ public class UserComponentImplTest {
 
     }
 
-    @Test
-    public void update_UserDO_ID_notNull(){
 
+    @Test
+    public void update_UserDO_ID_notNull() {
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -418,7 +424,7 @@ public class UserComponentImplTest {
 
 
     @Test
-    public void update_Password_notNull(){
+    public void update_Password_notNull() {
 
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
@@ -432,8 +438,9 @@ public class UserComponentImplTest {
 
     }
 
+
     @Test
-    public void update_NewPassword_notNull(){
+    public void update_NewPassword_notNull() {
 
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
@@ -447,8 +454,9 @@ public class UserComponentImplTest {
 
     }
 
+
     @Test
-    public void update_CurrentUserId_notNull(){
+    public void update_CurrentUserId_notNull() {
 
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
@@ -462,8 +470,9 @@ public class UserComponentImplTest {
 
     }
 
+
     @Test
-    public void update_wrong_password(){
+    public void update_wrong_password() {
 
         final OffsetDateTime dateTime = OffsetDateTime.now();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -472,6 +481,7 @@ public class UserComponentImplTest {
         inputBE.setUserPassword(PWDHASH);
         inputBE.setUserSalt(SALT);
         inputBE.setUserEmail(EMAIL);
+        inputBE.setUsing2FA(false);
         inputBE.setVersion(VERSION);
         inputBE.setCreatedAtUtc(timestamp);
         inputBE.setLastModifiedAtUtc(timestamp);
@@ -482,6 +492,7 @@ public class UserComponentImplTest {
         expectedBE.setUserId(ID);
         expectedBE.setUserPassword(PWDHASH);
         expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUsing2FA(false);
         expectedBE.setVersion(NEWVERSION);
         expectedBE.setCreatedAtUtc(timestamp);
         expectedBE.setLastModifiedAtUtc(timestamp);
@@ -493,12 +504,11 @@ public class UserComponentImplTest {
         inUserDO.setEmail(EMAIL);
 
 
-
         // configure mocks
         when(passwordHashingBA.generateSalt()).thenReturn(SALT);
-        when(passwordHashingBA.calculateHash(anyString(),anyString())).thenReturn(NEWPWDHASH);
+        when(passwordHashingBA.calculateHash(anyString(), anyString())).thenReturn(NEWPWDHASH);
         when(userDAO.findById(anyLong())).thenReturn(inputBE);
-        when(userDAO.update(any(UserBE.class),anyLong())).thenReturn(expectedBE);
+        when(userDAO.update(any(UserBE.class), anyLong())).thenReturn(expectedBE);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -509,9 +519,8 @@ public class UserComponentImplTest {
     }
 
 
-
     @Test
-    public void update_sucessful(){
+    public void update_sucessful() {
 
         final OffsetDateTime dateTime = OffsetDateTime.now();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -541,15 +550,14 @@ public class UserComponentImplTest {
         inUserDO.setEmail(EMAIL);
 
 
-
         // configure mocks
         when(passwordHashingBA.generateSalt()).thenReturn(SALT);
-        when(passwordHashingBA.calculateHash(anyString(),anyString())).thenReturn(PWDHASH);
+        when(passwordHashingBA.calculateHash(anyString(), anyString())).thenReturn(PWDHASH);
         when(userDAO.findById(anyLong())).thenReturn(inputBE);
-        when(userDAO.update(any(UserBE.class),anyLong())).thenReturn(expectedBE);
+        when(userDAO.update(any(UserBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final UserDO actual =  underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER);
+        final UserDO actual = underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -562,8 +570,6 @@ public class UserComponentImplTest {
                 .isEqualTo(expectedBE.getVersion());
 
     }
-
-
 
 
     @Test

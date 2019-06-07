@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.user.impl.entity;
 
+import org.jboss.aerogear.security.otp.api.Base32;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
@@ -22,10 +23,14 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     private String userEmail;
     private String userSalt;
     private String userPassword;
+    private boolean using2FA = true;
 
 
-    public UserBE(){
-        // empty constructor
+    private String secret;
+
+
+    public UserBE() {
+        this.secret = Base32.random();
     }
 
 
@@ -77,5 +82,25 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
 
     public void setUserPassword(final String userPassword) {
         this.userPassword = userPassword;
+    }
+
+
+    public boolean isUsing2FA() {
+        return using2FA;
+    }
+
+
+    public void setUsing2FA(boolean using2FA) {
+        this.using2FA = using2FA;
+    }
+
+
+    public String getSecret() {
+        return secret;
+    }
+
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }

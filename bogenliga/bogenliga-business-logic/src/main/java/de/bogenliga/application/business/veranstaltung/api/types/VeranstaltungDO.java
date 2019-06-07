@@ -1,19 +1,17 @@
 package de.bogenliga.application.business.veranstaltung.api.types;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Daniel Schott, daniel.schott@student.reutlingen-university.de
  */
 
-import de.bogenliga.application.common.component.types.CommonDataObject;
-import de.bogenliga.application.common.component.types.DataObject;
-import java.util.Objects;
-
 import java.sql.Date;
 import java.time.OffsetDateTime;
+import java.util.Objects;
+import de.bogenliga.application.common.component.types.CommonDataObject;
+import de.bogenliga.application.common.component.types.DataObject;
 
 public class VeranstaltungDO extends CommonDataObject implements DataObject {
+    private static final long serialVersionUID = 803613643566646917L;
 
     private Long veranstaltungID;
     private Long veranstaltungWettkampftypID;
@@ -28,15 +26,12 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
 
 
     public VeranstaltungDO() {
-
         //empty
-
     }
 
+
     public VeranstaltungDO(final Long id) {
-
         this.veranstaltungID = id;
-
     }
 
 
@@ -94,8 +89,8 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param ligaleiterID
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
-                           final Date meldeDeadline, final Long ligaleiterID, final Long ligaID, final String ligaleiterEmail, final String wettkampftypName, final String ligaName) {
-
+                           final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,
+                           final String ligaleiterEmail, final String wettkampftypName, final String ligaName) {
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
         this.veranstaltungName = name;
@@ -109,6 +104,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
 
     }
 
+
     /**
      * Constructor without technical parameters
      *
@@ -120,7 +116,8 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param ligaleiterID
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
-                           final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version) {
+                           final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,
+                           final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version) {
 
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
@@ -132,8 +129,6 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
-
-
     }
 
 
@@ -141,7 +136,8 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     public int hashCode() {
         return Objects.hash(veranstaltungID, veranstaltungWettkampftypID, veranstaltungName, veranstaltungSportJahr,
                 veranstaltungMeldeDeadline,
-                veranstaltungLigaleiterID, veranstaltungLigaID, veranstaltungLigaleiterEmail, veranstaltungWettkampftypName, veranstaltungLigaName,
+                veranstaltungLigaleiterID, veranstaltungLigaID, veranstaltungLigaleiterEmail,
+                veranstaltungWettkampftypName, veranstaltungLigaName,
                 createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
@@ -151,21 +147,19 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     public boolean equals(final Object o) {
         if (o instanceof VeranstaltungDO) {
             final VeranstaltungDO that = (VeranstaltungDO) o;
-            return (this.getVeranstaltungID() == that.getVeranstaltungID() &&
-                    this.getVeranstaltungWettkampftypID() == that.getVeranstaltungWettkampftypID() &&
-                    this.getVeranstaltungName() == that.getVeranstaltungName() &&
+            return (this.getVeranstaltungID().equals(that.getVeranstaltungID()) &&
+                    this.getVeranstaltungWettkampftypID().equals(that.getVeranstaltungWettkampftypID()) &&
+                    this.getVeranstaltungName().equals(that.getVeranstaltungName()) &&
                     this.getVeranstaltungSportJahr().equals(that.getVeranstaltungSportJahr()) &&
                     this.getVeranstaltungMeldeDeadline() == that.getVeranstaltungMeldeDeadline() &&
-                    this.getVeranstaltungLigaleiterID() == that.getVeranstaltungLigaleiterID() &&
-                    this.getVeranstaltungLigaID() == that.getVeranstaltungLigaID() &&
-                    this.getVeranstaltungLigaleiterEmail() == that.getVeranstaltungLigaleiterEmail() &&
-                    this.getVeranstaltungWettkampftypName() == that.getVeranstaltungWettkampftypName() &&
-                    this.getVeranstaltungLigaName() == that.getVeranstaltungLigaName());
+                    this.getVeranstaltungLigaleiterID().equals(that.getVeranstaltungLigaleiterID()) &&
+                    this.getVeranstaltungLigaID().equals(that.getVeranstaltungLigaID()) &&
+                    this.getVeranstaltungLigaleiterEmail().equals(that.getVeranstaltungLigaleiterEmail()) &&
+                    this.getVeranstaltungWettkampftypName().equals(that.getVeranstaltungWettkampftypName()) &&
+                    this.getVeranstaltungLigaName().equals(that.getVeranstaltungLigaName()));
         }
         return false;
-
     }
-
 
     //autogenerated getter and setters for all attributes
     public Long getVeranstaltungID() {
