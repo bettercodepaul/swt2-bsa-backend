@@ -44,7 +44,7 @@ import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import de.bogenliga.application.services.v1.wettkampftyp.mapper.WettkampftypDTOMapper;
-import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
+import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -420,7 +420,7 @@ public class MatchService implements ServiceFacade {
         final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(wettkampfComponent.findById(matchDo.getWettkampfId()));
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
         WettkampfTypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
-        final WettkampftypDTO wettkampfTypDTO = WettkampftypDTOMapper.toDTO.apply(wettDO);
+        final WettkampfTypDTO wettkampfTypDTO = WettkampftypDTOMapper.toDTO.apply(wettDO);
         matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
 
         // the match is shown on the Schusszettel, add passen and mannschaft name

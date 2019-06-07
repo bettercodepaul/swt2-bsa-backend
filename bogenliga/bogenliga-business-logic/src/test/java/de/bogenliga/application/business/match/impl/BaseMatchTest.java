@@ -53,7 +53,7 @@ public abstract class BaseMatchTest {
     }
 
 
-    protected MatchDO getMatchDO() {
+    public static MatchDO getMatchDO() {
         return new MatchDO(MATCH_ID, MATCH_NR, MATCH_WETTKAMPF_ID, MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
                 MATCH_SCHEIBENNUMMER, MATCH_MATCHPUNKTE, MATCH_SATZPUNKTE, MATCH_STRAFPUNKT_SATZ_1,
                 MATCH_STRAFPUNKT_SATZ_2, MATCH_STRAFPUNKT_SATZ_3, MATCH_STRAFPUNKT_SATZ_4, MATCH_STRAFPUNKT_SATZ_5);

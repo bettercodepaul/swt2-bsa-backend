@@ -59,9 +59,8 @@ public class VeranstaltungDAO implements DataAccessObject{
 
     private static final String FIND_BY_ID =
             "SELECT * "
-                    + " FROM veranstaltung"
+                    + " FROM veranstaltung "
                     + " WHERE veranstaltung_id = ?";
-
 
     private final BasicDAO basicDao;
 

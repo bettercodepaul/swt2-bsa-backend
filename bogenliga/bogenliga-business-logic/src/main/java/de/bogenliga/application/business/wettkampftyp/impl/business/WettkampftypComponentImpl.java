@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampftypDAO;
+import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampftypBE;
 import de.bogenliga.application.business.wettkampftyp.impl.mapper.WettkampftypMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -25,7 +25,7 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
 
 
 
-    private final WettkampftypDAO wettkampftypDAO;
+    private final WettkampfTypDAO wettkampftypDAO;
 
 
     /**
@@ -35,7 +35,7 @@ public class WettkampftypComponentImpl implements WettkampftypComponent {
      * @param wettkampftypDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampftypComponentImpl(final WettkampftypDAO wettkampftypDAO) { this.wettkampftypDAO = wettkampftypDAO;System.out.println("created DAO object"); }
+    public WettkampftypComponentImpl(final WettkampfTypDAO wettkampftypDAO) { this.wettkampftypDAO = wettkampftypDAO;System.out.println("created DAO object"); }
 
 
     @Override

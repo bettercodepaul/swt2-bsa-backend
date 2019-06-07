@@ -1,9 +1,9 @@
 package de.bogenliga.application.services.v1.match.service;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
@@ -113,7 +113,7 @@ public class MatchServiceTest {
     private static final Long W_vid = 243L;
     private static final Long W_typId = 0L;
     private static final Long W_tag = 5L;
-    private static final String W_datum = "gestern";
+    private static final Date W_datum = new Date(20190521L);
     private static final String W_ort = "Hier";
     private static final String W_begin = "gestern";
     private static final Long W_disId = 12345L;

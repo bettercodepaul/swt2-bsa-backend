@@ -3,11 +3,11 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
-import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
+import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
 
 
 /**
- * I map the {@link WettkampfTypDO} and {@link WettkampftypDTO} objects
+ * I map the {@link WettkampfTypDO} and {@link WettkampfTypDTO} objects
  *
  * @author Marvin Holm, Daniel Schott
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
@@ -17,10 +17,10 @@ import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
 public class WettkampftypDTOMapper implements DataTransferObjectMapper {
 
     /**
-     * I map the {@link WettkampfTypDO} to the {@link WettkampftypDTO} object
+     * I map the {@link WettkampfTypDO} to the {@link WettkampfTypDTO} object
      */
 
-    public static final Function<WettkampfTypDO, WettkampftypDTO> toDTO = wettkampftypDO -> {
+    public static final Function<WettkampfTypDO, WettkampfTypDTO> toDTO = wettkampftypDO -> {
         final Long wettkampftypId = wettkampftypDO.getId();
         final String name = wettkampftypDO.getName();
 
@@ -29,14 +29,14 @@ public class WettkampftypDTOMapper implements DataTransferObjectMapper {
         final Long version = wettkampftypDO.getVersion();
 
 
-        return new WettkampftypDTO(wettkampftypId, name, createdByUserId, createdAtUtc, version);
+        return new WettkampfTypDTO(wettkampftypId, name, createdByUserId, createdAtUtc, version);
     };
 
 
     /**
-     * maps the {@link WettkampftypDTO} to the {@link WettkampfTypDO} object
+     * maps the {@link WettkampfTypDTO} to the {@link WettkampfTypDO} object
      */
-    public static final Function<WettkampftypDTO, WettkampfTypDO> toDO = wettkampftypDTO -> {
+    public static final Function<WettkampfTypDTO, WettkampfTypDO> toDO = wettkampftypDTO -> {
 
         final Long wettkampftypId = wettkampftypDTO.getId();
         final String name = wettkampftypDTO.getName();

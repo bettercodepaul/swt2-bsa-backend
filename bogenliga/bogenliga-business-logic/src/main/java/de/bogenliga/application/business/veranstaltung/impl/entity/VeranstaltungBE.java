@@ -128,12 +128,15 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     @Override
     public String toString() {
         return "VeranstaltungBE{" +
-                "veranstaltung_id='" + this.veranstaltungID + '\'' +
-                ", wettkampf_id='" + veranstaltungWettkampftypID + '\'' +
-                ", name='" + veranstaltungName + '\'' +
-                ", sportjahr='" + this.veranstaltungSportJahr + '\'' +
-                ", meldedeadline='" + this.veranstaltungMeldeDeadline + '\'' +
-                ", ligaleiter_id='" + this.veranstaltungLigaleiterID + '\'' +
-                "}";
+                "veranstaltungID=" + veranstaltungID +
+                ", veranstaltungWettkampftypID=" + veranstaltungWettkampftypID +
+                ", veranstaltungName='" + veranstaltungName + '\'' +
+                ", veranstaltungSportJahr=" + veranstaltungSportJahr +
+                ", ligaId=" + ligaId +
+                ", veranstaltungMeldeDeadline=" + veranstaltungMeldeDeadline +
+                ", veranstaltungKampfrichterAnzahl=" + veranstaltungKampfrichterAnzahl +
+                ", veranstaltungHoehere=" + veranstaltungHoehere +
+                ", veranstaltungLigaleiterID=" + veranstaltungLigaleiterID +
+                '}';
     }
 }

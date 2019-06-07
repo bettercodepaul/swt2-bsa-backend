@@ -99,6 +99,21 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(result);
     }
 
+    @Override
+    public List<MannschaftsmitgliedDO> findByMemberId(Long mitgliedId) {
+        checkPreconditions(mitgliedId, PRECONDITION_FIELD_MITGLIED_ID);
+        Preconditions.checkArgument(mitgliedId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
+
+        final List<MannschaftsmitgliedBE> result = mannschaftsmitgliedDAO.findByMemberId(mitgliedId);
+
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for mitgliedId '%s", mitgliedId));
+        }
+
+        return result.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
+                Collectors.toList());
+    }
 
     @Override
     public MannschaftsmitgliedDO create(MannschaftsmitgliedDO mannschaftsmitgliedDO,

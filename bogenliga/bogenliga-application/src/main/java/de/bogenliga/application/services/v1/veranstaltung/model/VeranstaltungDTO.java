@@ -104,6 +104,7 @@ public class VeranstaltungDTO implements DataTransferObject {
 
     public void setLigaleiterEmail(String ligaleiterEmail) {
         this.ligaleiterEmail = ligaleiterEmail;
+
     }
 
 
@@ -117,16 +118,6 @@ public class VeranstaltungDTO implements DataTransferObject {
     }
 
 
-    public String getLigaName() {
-        return ligaName;
-    }
-
-
-    public void setLigaName(String ligaName) {
-        this.ligaName = ligaName;
-    }
-
-
     public Long getLigaId() {
         return ligaId;
     }
@@ -134,6 +125,10 @@ public class VeranstaltungDTO implements DataTransferObject {
 
     public void setLigaId(Long ligaId) {
         this.ligaId = ligaId;
+    }
+
+
+    public VeranstaltungDTO() {
     }
 
 
@@ -160,12 +155,39 @@ public class VeranstaltungDTO implements DataTransferObject {
     @Override
     public String toString() {
         return "VeranstaltungDTO{" +
-                "veranstaltung_id='" + this.id + '\'' +
-                ", wettkampf_id='" + wettkampfTypId + '\'' +
+                "id=" + id +
+                ", wettkampfTypId=" + wettkampfTypId +
                 ", name='" + name + '\'' +
-                ", sportjahr='" + this.sportjahr + '\'' +
-                ", meldedeadline='" + this.meldeDeadline + '\'' +
-                ", ligaleiter_id='" + this.ligaleiterId + '\'' +
-                "}";
+                ", wettkampftypName='" + wettkampftypName + '\'' +
+                ", sportjahr=" + sportjahr +
+                ", meldeDeadline=" + meldeDeadline +
+                ", version=" + version +
+                ", ligaleiterId=" + ligaleiterId +
+                ", ligaleiterEmail='" + ligaleiterEmail + '\'' +
+                ", ligaName='" + ligaName + '\'' +
+                ", ligaId=" + ligaId +
+                '}';
     }
+
+
+    public Long getLigaID() {
+        return ligaId;
+    }
+
+
+    public void setLigaID(Long ligaID) {
+        this.ligaId = ligaID;
+    }
+
+
+    public String getLigaName() {
+        return ligaName;
+    }
+
+
+    public void setLigaName(String ligaName) {
+        this.ligaName = ligaName;
+    }
+
+
 }

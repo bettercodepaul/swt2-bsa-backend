@@ -18,7 +18,7 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.wettkampftyp.mapper.WettkampftypDTOMapper;
-import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampftypDTO;
+import de.bogenliga.application.services.v1.wettkampftyp.model.WettkampfTypDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -61,7 +61,7 @@ public class WettkampftypService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<WettkampftypDTO> findAll() {
+    public List<WettkampfTypDTO> findAll() {
         final List<WettkampfTypDO> wettkampftypDoList = wettkampftypComponent.findAll();
         return wettkampftypDoList.stream().map(WettkampftypDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -73,7 +73,7 @@ public class WettkampftypService implements ServiceFacade {
      * @return
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public WettkampftypDTO findById(@PathVariable("id") final long id) {
+    public WettkampfTypDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
@@ -92,7 +92,7 @@ public class WettkampftypService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public WettkampftypDTO create(@RequestBody final WettkampftypDTO wettkampftypDTO, final Principal principal) {
+    public WettkampfTypDTO create(@RequestBody final WettkampfTypDTO wettkampftypDTO, final Principal principal) {
 
         checkPreconditions(wettkampftypDTO);
 
@@ -117,7 +117,7 @@ public class WettkampftypService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public WettkampftypDTO update(@RequestBody final WettkampftypDTO wettkampftypDTO, final Principal principal) {
+    public WettkampfTypDTO update(@RequestBody final WettkampfTypDTO wettkampftypDTO, final Principal principal) {
         checkPreconditions(wettkampftypDTO);
         Preconditions.checkArgument(wettkampftypDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
 
@@ -156,7 +156,7 @@ public class WettkampftypService implements ServiceFacade {
      * checks the preconditions defined above in this class
      * @param wettkampftypDTO
      */
-    private void checkPreconditions(@RequestBody final WettkampftypDTO wettkampftypDTO) {
+    private void checkPreconditions(@RequestBody final WettkampfTypDTO wettkampftypDTO) {
         Preconditions.checkNotNull(wettkampftypDTO, PRECONDITION_MSG_WETTKAMPFTYP);
         Preconditions.checkNotNull(wettkampftypDTO.getName(), PRECONDITION_MSG_WETTKAMPFTYP_NAME);
         Preconditions.checkNotNull(wettkampftypDTO.getId() >=0,PRECONDITION_MSG_WETTKAMPFTYP_ID);

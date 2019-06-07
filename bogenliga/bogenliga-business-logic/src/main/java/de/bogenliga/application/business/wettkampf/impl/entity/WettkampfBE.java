@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.wettkampf.impl.entity;
 
+import java.sql.Date;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
@@ -18,7 +19,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private static final long serialVersionUID = 7307883175430867611L;
     private Long id;
     private Long veranstaltungsId;
-    private String datum;
+    private Date datum;
     private String wettkampfOrt;
     private String wettkampfBeginn;
     private Long wettkampfTag;
@@ -54,12 +55,12 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public String getDatum() {
+    public Date getDatum() {
         return datum;
     }
 
 
-    public void setDatum(final String datum) {
+    public void setDatum(final Date datum) {
         this.datum = datum;
     }
 
