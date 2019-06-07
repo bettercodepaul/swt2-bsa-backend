@@ -35,7 +35,7 @@ public class WettkampfTypComponentImpl implements WettkampfTypComponent {
      * @param wettkampftypDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfTypComponentImpl(final WettkampfTypDAO wettkampftypDAO) { this.wettkampftypDAO = wettkampftypDAO;System.out.println("created DAO object"); }
+    public WettkampfTypComponentImpl(final WettkampfTypDAO wettkampftypDAO) { this.wettkampftypDAO = wettkampftypDAO;}
 
 
     @Override

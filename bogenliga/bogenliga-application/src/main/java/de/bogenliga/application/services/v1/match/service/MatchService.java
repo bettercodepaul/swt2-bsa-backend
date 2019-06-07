@@ -85,7 +85,6 @@ public class MatchService implements ServiceFacade {
 
     private static final String SERVICE_FIND_BY_ID = "findById";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
-    private static final String SERVICE_FIND_Wettkampf_BY_ID = "findWettkampfById";
     private static final String SERVICE_FIND_BY_MANNSCHAFT_ID = "findByMannschaftId";
     private static final String SERVICE_SAVE_MATCHES = "saveMatches";
     private static final String SERVICE_CREATE = "create";

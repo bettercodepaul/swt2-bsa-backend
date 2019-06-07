@@ -170,16 +170,6 @@ public class VeranstaltungDTO implements DataTransferObject {
     }
 
 
-    public Long getLigaID() {
-        return ligaId;
-    }
-
-
-    public void setLigaID(Long ligaID) {
-        this.ligaId = ligaID;
-    }
-
-
     public String getLigaName() {
         return ligaName;
     }
@@ -188,6 +178,4 @@ public class VeranstaltungDTO implements DataTransferObject {
     public void setLigaName(String ligaName) {
         this.ligaName = ligaName;
     }
-
-
 }
