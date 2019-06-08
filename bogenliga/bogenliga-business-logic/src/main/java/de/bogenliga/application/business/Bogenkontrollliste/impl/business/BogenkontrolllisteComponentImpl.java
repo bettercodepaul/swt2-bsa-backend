@@ -58,10 +58,13 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         return new byte[0];
     }
 
+
     /**
-     * <p>writes a Schusszettel document for the Wettkamnpf
-     * </p>
-     * @param doc document to write
+     * Generates the Document
+     *
+     * @param doc Doc to write
+     * @param wettkampfDO WettkampfDO for competition info
+     * @param TeamMemberMapping Key: TeamName String, Value: List of DSBMitgliedDO (Contains shooters)
      */
     private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
