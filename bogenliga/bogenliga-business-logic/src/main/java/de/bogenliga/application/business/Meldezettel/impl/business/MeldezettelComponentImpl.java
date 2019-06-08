@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -25,6 +26,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class MeldezettelComponentImpl implements MeldezettelComponent {
 
     private final DsbMannschaftComponent dsbMannschaftComponent;
