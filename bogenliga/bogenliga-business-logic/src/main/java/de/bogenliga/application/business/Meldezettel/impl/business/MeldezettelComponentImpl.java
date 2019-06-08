@@ -11,12 +11,15 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.AreaBreak;
 import de.bogenliga.application.business.Meldezettel.api.MeldezettelComponent;
+import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
+import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -34,6 +37,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
+    private final DisziplinComponent disziplinComponent;
 
     @Autowired
     public MeldezettelComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
@@ -99,7 +103,8 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private void generateMeldezettelPage(Document doc, MatchDO[] matchDOs)
     {
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
-        long veranstaltungsId = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getVeranstaltungsId();
-        String veranstaltungsName = veranstaltungComponent.findById(veranstaltungsId).getVeranstaltungName();
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDOs[0].getWettkampfId());
+        String veranstaltungsName = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId()).getVeranstaltungName();
+        String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).get;
     }
 }
