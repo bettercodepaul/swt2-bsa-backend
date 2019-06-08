@@ -127,7 +127,7 @@ public class DownloadService implements ServiceFacade {
     ResponseEntity<InputStreamResource> downloadMeldezettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
         LOG.debug("wettkampfid: " + wettkampfid);
 
-        final byte[] fileBloB = meldezettelComponent.getPDFasByteArray(wettkampfid);
+        final byte[] fileBloB = meldezettelComponent.getMeldezettelPDFasByteArray(wettkampfid);
 
         return generateInputStream(fileBloB);
     }
