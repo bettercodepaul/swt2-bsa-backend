@@ -33,6 +33,16 @@ public interface MatchComponent {
 
     MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer);
 
+    /**
+     * Return a single match by combined attributes
+     * @param wettkampfId ID from Wettkampf
+     * @param MatchNr Number of the match
+     * @param scheibenNummer number of the target board
+     * @return singleMatchDO
+     */
+
+    MatchDO findByCombinedAttributes(Long wettkampfId, Long MatchNr, Long scheibenNummer);
+
 
     /**
      * Return all matches from one Wettkampf

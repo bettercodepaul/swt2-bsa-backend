@@ -137,6 +137,15 @@ public class MatchDAO implements DataAccessObject {
             .orderBy(MATCH_TABLE_NR)
             .compose().toString();
 
+    private static final String FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
+            .andEquals(MATCH_TABLE_NR)
+            .andEquals(MATCH_TABLE_SCHEIBENNUMMER)
+            .orderBy(MATCH_TABLE_SCHEIBENNUMMER)
+            .compose().toString();
+
 //    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
 //            .selectAll()
 //            .from(TABLE)
@@ -172,6 +181,15 @@ public class MatchDAO implements DataAccessObject {
                 nr, wettkampfId, mannschaftId,
                 begegnung, scheibenNummer
         );
+    }
+
+    /**
+     * Return a specific match.
+     *
+     * @return match with given combined attributes
+     */
+    public MatchBE findByCombinedAttributes(Long wettkampfId, Long MatchNr, Long scheibenNummer){
+        return basicDao.selectSingleEntity(MATCH, FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR);
     }
 
 
