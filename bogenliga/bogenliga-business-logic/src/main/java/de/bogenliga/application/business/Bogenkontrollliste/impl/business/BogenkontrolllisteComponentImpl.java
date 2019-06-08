@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
+import java.awt.Font;
 import java.util.Date;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,6 +15,13 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+import com.sun.javafx.font.FontFactory;
 import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -130,7 +138,74 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!TeamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
+        String[] teamNamen = new String[8];
 
+        for(String key : TeamMemberMapping.keySet())
+        {
+            int i = 0;
+            teamNamen[i] = key;
+            i++;
+        }
+
+        final Table PageTitle = new Table(UnitValue.createPercentArray(1), true);
+        PageTitle.addCell(addTitle(wettkampfDO, veranstaltungsName));
+
+        for (int manschaftCounter=0; manschaftCounter<8; manschaftCounter++){
+
+            final Table tableFirstRow = new Table(UnitValue.createPercentArray(3), true);
+            final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
+            final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
+            final Table tableFirstRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
+
+            tableFirstRowFirstPart
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("Anw.    "+teamNamen[manschaftCounter]).setBold().setFontSize(12.0F)));
+
+            tableFirstRowSecondPart
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M1").setFontSize(12.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M2").setFontSize(12.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M3").setFontSize(12.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M4").setFontSize(12.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M5").setFontSize(12.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M6").setFontSize(12.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M7").setFontSize(12.0F)));
+
+            tableFirstRowThirdPart
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(12.0F)));
+
+            tableFirstRow
+                    .addCell(tableFirstRowFirstPart)
+                    .addCell(tableFirstRowSecondPart)
+                    .addCell(tableFirstRowThirdPart);
+
+            for (int mitgliedCounter=0; mitgliedCounter<TeamMemberMapping.get(teamNamen[manschaftCounter]).size(); mitgliedCounter++){
+
+
+            }
+        }
+    }
+
+    /**
+     * funktion to add title and date at the top of each page
+     *
+     * @param wettkampfDO DO of current Wettkampf
+     *        veranstaltungsName name of the current Veranstaltung
+     * @return cell containing the title and the date
+     */
+    public static Cell addTitle(WettkampfDO wettkampfDO, String veranstaltungsName){
+        Cell cell = new Cell().add(new Paragraph("Bogenkontrolle/ "+wettkampfDO.getWettkampfTag()+". Bogenligawettkampf/ "+veranstaltungsName)
+                        .setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(14.0F))
+                .add(new Paragraph("am "+wettkampfDO.getDatum())
+                        .setTextAlignment(TextAlignment.RIGHT).setFontSize(8.0F));
+        return cell;
     }
 
 
