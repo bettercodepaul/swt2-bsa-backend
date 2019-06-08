@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private static final String PRECONDITION_DOCUMENT = "doc cannot be null";
     private static final String PRECONDITION_TEAM_MAPPING = "TeamMemberMapping cannot be empty";
     private static final String PRECONDITION_WETTKAMPFDO = "wettkampfDO cannot be null";
+    private static final String PRECONDITION_VERANSTALTUNGSNAME =  "veranstaltungsName cannot be null";
 
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
@@ -66,9 +68,11 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      * @param wettkampfDO WettkampfDO for competition info
      * @param TeamMemberMapping Key: TeamName String, Value: List of DSBMitgliedDO (Contains shooters)
      */
-    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping) {
+    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping, String veranstaltungsName) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!TeamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
+        Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
+
     }
 }
