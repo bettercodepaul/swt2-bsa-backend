@@ -61,8 +61,7 @@ public class SetzlisteService implements ServiceFacade {
             path = "/generate")
     public @ResponseBody
     List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
-
-        Preconditions.checkNotNull(wettkampfid, "wettkampfid must not be null");
+        Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");
 
         List<MatchDO>  matchDOList = this.setzlisteComponent.generateMatchesBySetzliste(wettkampfid);
         ArrayList<MatchDTO> matchDTOList = new ArrayList<>();
