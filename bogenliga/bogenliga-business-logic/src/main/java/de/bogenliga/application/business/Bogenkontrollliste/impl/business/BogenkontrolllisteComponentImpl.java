@@ -20,7 +20,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
 
-    private static final String PRECONDITION_WETTKAMPF = "wettkampfid cannot be negative";
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
