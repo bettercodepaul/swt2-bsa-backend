@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.Meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -51,6 +52,7 @@ public class DownloadService implements ServiceFacade {
      */
     private final SetzlisteComponent setzlisteComponent;
     private final SchusszettelComponent schusszettelComponent;
+    private final MeldezettelComponent meldezettelComponent;
 
 
     /**
@@ -58,9 +60,11 @@ public class DownloadService implements ServiceFacade {
      */
     @Autowired
     public DownloadService(final SetzlisteComponent setzlisteComponent,
-                           SchusszettelComponent schusszettelComponent) {
+                           SchusszettelComponent schusszettelComponent,
+                           MeldezettelComponent meldezettelComponent) {
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
+        this.meldezettelComponent = meldezettelComponent;
     }
     /**
      * returns the Setzliste as pdf file for client download
@@ -106,6 +110,27 @@ public class DownloadService implements ServiceFacade {
         return generateInputStream(fileBloB);
     }
 
+    /**
+     * returns the Meldezettel as pdf file for client download
+     * <p>
+     * @param wettkampfid  from GET-Request: ID for the competition
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/meldezettel?wettkampfid=x}</pre>
+     *
+     * @return PDF as InputStreamResource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/meldezettel",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadMeldezettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
+        LOG.debug("wettkampfid: " + wettkampfid);
+
+        final byte[] fileBloB = meldezettelComponent.getPDFasByteArray(wettkampfid);
+
+        return generateInputStream(fileBloB);
+    }
 
     /**
      * generates a pdf file as InputStreamResource from fileBloB
