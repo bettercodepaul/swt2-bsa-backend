@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.Meldezettel.impl.business;
+/*package de.bogenliga.application.business.Meldezettel.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +30,8 @@ import de.bogenliga.application.common.validation.Preconditions;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+
+/*
 @Component
 public class MeldezettelComponentImpl implements MeldezettelComponent {
 
@@ -64,11 +66,13 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         }
         return bResult;
     }
+*/
 
     /**
      * <p>writes a Meldezettel document for the Wettkampf
      * </p>
      */
+    /*
     private ByteArrayOutputStream generateDoc(List<MatchDO> matchDOList) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -108,3 +112,4 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).get;
     }
 }
+*/
