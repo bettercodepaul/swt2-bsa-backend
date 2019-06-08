@@ -1,6 +1,8 @@
 package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
+import com.itextpdf.layout.Document;
 import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 
 /**
  * TODO [AL] class documentation
@@ -12,4 +14,11 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     public byte[] getBogenkontrolllistePDFasByteArray(long wettkampfid) {
         return new byte[0];
     }
+
+    /**
+     * <p>writes a Schusszettel document for the Wettkamnpf
+     * </p>
+     * @param doc document to write
+     */
+    private void generateBogenkontrolllistePage(Document doc, MatchDO[] matchDOs) {}
 }
