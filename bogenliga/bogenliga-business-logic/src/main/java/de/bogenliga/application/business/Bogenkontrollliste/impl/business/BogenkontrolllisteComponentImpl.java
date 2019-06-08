@@ -1,13 +1,17 @@
 package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
+import java.util.Hashtable;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.itextpdf.layout.Document;
 import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import com.itextpdf.layout.Document;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 
 /**
  * TODO [AL] class documentation
@@ -24,6 +28,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
+
 
     @Autowired
     public BogenkontrolllisteComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
@@ -46,5 +51,5 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      * </p>
      * @param doc document to write
      */
-    private void generateBogenkontrolllistePage(Document doc) {}
+    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping) {}
 }
