@@ -12,6 +12,6 @@ public interface BogenkontrolllisteComponent extends ComponentFacade {
      * @param wettkampfid ID for the competition
      * @return document
      */
-    byte[] getAllSchusszettelPDFasByteArray(long wettkampfid);
+    byte[] getBogenkontrolllistePDFasByteArray(long wettkampfid);
 
 }
