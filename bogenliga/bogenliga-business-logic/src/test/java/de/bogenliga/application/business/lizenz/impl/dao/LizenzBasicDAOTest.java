@@ -9,12 +9,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
-import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
+import static de.bogenliga.application.business.lizenz.impl.business.LizenzComponentImplTest.getLizenzBE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import de.bogenliga.application.business.lizenz.dao.LizenzDAO;
 
 /**
  * @author Rahul Pöse
@@ -87,7 +87,7 @@ public class LizenzBasicDAOTest {
 
 
      @Test
-     public void findById() {
+     public void findKampfrichterLizenzByDsbMitgliedId() {
      // prepare test data
      final LizenzBE expectedBE = new LizenzBE();
      expectedBE.setLizenzId(LIZENZID);
@@ -97,7 +97,7 @@ public class LizenzBasicDAOTest {
      when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
      // call test method
-     final LizenzBE actual = underTest.findByDsbMitgliedId((long)LIZENZDSBMITGLIEDID);
+     final LizenzBE actual = underTest.findKampfrichterLizenzByDsbMitgliedId((long)LIZENZDSBMITGLIEDID);
 
      // assert result
      assertThat(actual).isNotNull();
@@ -110,6 +110,49 @@ public class LizenzBasicDAOTest {
      // verify invocations
      verify(basicDao).selectSingleEntity(any(), any(), any());
      }
+
+    @Test
+    public void findByDsbMitgliedId() {
+        // prepare test data
+        final LizenzBE expectedBE = getLizenzBE();
+        expectedBE.setLizenzId((long)0);
+        expectedBE.setLizenznummer("WT1234567");
+        expectedBE.setLizenzRegionId((long)1);
+        expectedBE.setLizenzDsbMitgliedId(LIZENZDSBMITGLIEDID);
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+
+        // call test method
+        final List<LizenzBE> actual = underTest.findByDsbMitgliedId((long)LIZENZDSBMITGLIEDID);
+
+
+        // assert result
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getLizenzDisziplinId())
+                .isEqualTo(expectedBE.getLizenzDisziplinId());
+        assertThat(actual.get(0).getLizenzDsbMitgliedId())
+                .isEqualTo(expectedBE.getLizenzDsbMitgliedId());
+        assertThat(actual.get(0).getLizenzId())
+                .isEqualTo(expectedBE.getLizenzId());
+        assertThat(actual.get(0).getLizenznummer())
+                .isEqualTo(expectedBE.getLizenznummer());
+        assertThat(actual.get(0).getLizenzRegionId())
+                .isEqualTo(expectedBE.getLizenzRegionId());
+        assertThat(actual.get(0).getLizenztyp())
+                .isEqualTo(expectedBE.getLizenztyp());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
 
 
     @Test
