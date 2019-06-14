@@ -1,6 +1,6 @@
-package de.bogenliga.application.business.lizenz.dao;
+package de.bogenliga.application.business.lizenz.impl.dao;
 
-import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * DataAccessObject for the dsbmitglied entity in the database.
+ * DataAccessObject for the Lizenz/Dsbmitglied entity in the database.
  *
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
@@ -57,10 +57,15 @@ public class LizenzDAO implements DataAccessObject {
                     + " FROM lizenz"
                     + " ORDER BY lizenz_id";
 
-    private static final String FIND_BY_DSB_MITGLIED_ID =
+    private static final String FIND_KAMPFRICHTER_BY_DSB_MITGLIED_ID =
             "SELECT * "
                     + " FROM lizenz"
                     + " WHERE lizenz_typ = 'Kampfrichter' AND lizenz_dsb_mitglied_id = ?";
+
+    private static final String FIND_BY_DSB_MITGLIED_ID =
+            "SELECT * "
+                    + " FROM lizenz"
+                    + " WHERE lizenz_dsb_mitglied_id = ?";
 
 
     private final BasicDAO basicDao;
@@ -97,7 +102,7 @@ public class LizenzDAO implements DataAccessObject {
 
 
     /**
-     * Return all Kampfrichterlizenz entries
+     * Return all Lizenz entries
      */
     public List<LizenzBE> findAll() {
         return basicDao.selectEntityList(LIZENZ, FIND_ALL);
@@ -105,24 +110,33 @@ public class LizenzDAO implements DataAccessObject {
 
 
     /**
-     * Return Kampfrichterlizenz entry with specific dsbmitglied_id
+     * Return Lizenz entry with specific dsbmitglied_id
      *
      * @param id
      */
-    public LizenzBE findByDsbMitgliedId(final long id) {
-        return basicDao.selectSingleEntity(LIZENZ, FIND_BY_DSB_MITGLIED_ID, id);
+    public List<LizenzBE> findByDsbMitgliedId(final long id) {
+        return basicDao.selectEntityList(LIZENZ, FIND_BY_DSB_MITGLIED_ID, id);
+    }
+
+    /**
+     * Return Wettkampflizenz entry with specific dsbmitglied_id
+     *
+     * @param id
+     */
+    public LizenzBE findKampfrichterLizenzByDsbMitgliedId(final long id) {
+        return basicDao.selectSingleEntity(LIZENZ, FIND_KAMPFRICHTER_BY_DSB_MITGLIED_ID, id);
     }
 
 
+
     /**
-     * Create a new kampfrichterlizenz entry
+     * Create a new Lizenz entry
      *
-     * @param lizenzBE
-     * @param currentLizenzId
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
-    public LizenzBE create(final LizenzBE lizenzBE, final long currentLizenzId) {
-        basicDao.setCreationAttributes(lizenzBE, currentLizenzId);
+    public LizenzBE create(final LizenzBE lizenzBE, final long currentUserId) {
+
+        basicDao.setCreationAttributes(lizenzBE, currentUserId);
 
         return basicDao.insertEntity(LIZENZ, lizenzBE);
     }
@@ -131,12 +145,10 @@ public class LizenzDAO implements DataAccessObject {
     /**
      * Update an existing kampfrichterlizenz entry
      *
-     * @param lizenzBE
-     * @param currentLizenzId
      * @return Business Entity corresponding to the updated dsbmitglied entry
      */
-    public LizenzBE update(final LizenzBE lizenzBE, final long currentLizenzId) {
-        basicDao.setModificationAttributes(lizenzBE, currentLizenzId);
+    public LizenzBE update(final LizenzBE lizenzBE, final long currentUserId) {
+        basicDao.setModificationAttributes(lizenzBE, currentUserId);
 
         return basicDao.updateEntity(LIZENZ, lizenzBE, LIZENZ_BE_ID);
     }
@@ -145,11 +157,9 @@ public class LizenzDAO implements DataAccessObject {
     /**
      * Delete existing kampfrichterlizenz entry
      *
-     * @param lizenzBE
-     * @param currentLizenzId
      */
-    public void delete(final LizenzBE lizenzBE, final long currentLizenzId) {
-        basicDao.setModificationAttributes(lizenzBE, currentLizenzId);
+    public void delete(final LizenzBE lizenzBE, final long currentUserId) {
+        basicDao.setModificationAttributes(lizenzBE, currentUserId);
 
         basicDao.deleteEntity(LIZENZ, lizenzBE, LIZENZ_BE_ID);
     }
