@@ -1,7 +1,7 @@
-package de.bogenliga.application.business.lizenz.mapper;
+package de.bogenliga.application.business.lizenz.impl.mapper;
 
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
