@@ -1,9 +1,7 @@
-package de.bogenliga.application.business.lizenz.entity;
+package de.bogenliga.application.business.lizenz.impl.entity;
 
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
-
-import java.sql.Date;
 
 /**
  * I represent the lizenz business entity.
@@ -16,6 +14,7 @@ import java.sql.Date;
  * @see CommonBusinessEntity
  */
 public class LizenzBE extends CommonBusinessEntity implements BusinessEntity {
+
     private static final long serialVersionUID = -76389969048178948L;
     private Long lizenzId;
     private String lizenznummer;
