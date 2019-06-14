@@ -3,9 +3,9 @@ package de.bogenliga.application.business.dsbmitglied.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.bogenliga.application.business.lizenz.dao.LizenzDAO;
-import de.bogenliga.application.business.lizenz.entity.LizenzBE;
-import de.bogenliga.application.business.lizenz.mapper.KampfrichterlizenzMapper;
+import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
+import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
+import de.bogenliga.application.business.lizenz.impl.mapper.KampfrichterlizenzMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
@@ -106,7 +106,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
             final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
             lizenzDAO.create(lizenzBE, currentDsbMitgliedId);
         }else if(!dsbMitgliedDO.isKampfrichter() && dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId())){
-            lizenzDAO.delete(lizenzDAO.findByDsbMitgliedId(dsbMitgliedDOResponse.getId()),currentDsbMitgliedId);
+            lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDOResponse.getId()),currentDsbMitgliedId);
         }
         return dsbMitgliedDOResponse;
     }
@@ -118,7 +118,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         Preconditions.checkArgument(dsbMitgliedDO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_DSBMITGLIED);
         if(dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId())){
-            lizenzDAO.delete(lizenzDAO.findByDsbMitgliedId(dsbMitgliedDO.getId()),currentDsbMitgliedId);
+            lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDO.getId()),currentDsbMitgliedId);
         }
         final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
         dsbMitgliedDAO.delete(dsbMitgliedBE, currentDsbMitgliedId);
