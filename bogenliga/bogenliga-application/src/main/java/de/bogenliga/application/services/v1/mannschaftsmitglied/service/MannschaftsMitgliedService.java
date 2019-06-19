@@ -175,7 +175,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
         Preconditions.checkArgument(mitgliedId >= 0, "mitgliedId must not be negativ");
 
-        LOG.debug("Receive 'delete' request with id '{}'", mannschaftsId);
+        LOG.debug("Receive 'delete' request with mannschaftsId '{}' and mitgliedsId '{}'", mannschaftsId, mitgliedId);
 
         // allow value == null, the value will be ignored
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
@@ -184,19 +184,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
     }
 
-
-
-// TODO: what's the purpose of this????
-    //@RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    //public boolean checkExistingSchuetze(@PathVariable("mannschaftsId") final long mannschaftsId,
-    //                                     @PathVariable("mitgliedId") final long mitgliedId, final Principal principal) {
-    //    Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
-    //    Preconditions.checkArgument(mitgliedId >= 0, "mitgliedId must not be negativ");
-//
-    //    final MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
-//
-    //    return mannschaftsmitgliedDO.getDsbMitgliedEingesetzt() > 0;
-    //}
 
 
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {

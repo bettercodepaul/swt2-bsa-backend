@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.lizenz.service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -89,7 +90,11 @@ public class LizenzService implements ServiceFacade {
 
         logger.debug("Receive 'findById' request with ID '{}'", id);
 
-        final List<LizenzDO> lizenzDOlist = lizenzComponent.findByDsbMitgliedId(id);
+        List<LizenzDO> lizenzDOlist = lizenzComponent.findByDsbMitgliedId(id);
+        if (lizenzDOlist == null) {
+            lizenzDOlist = new ArrayList<LizenzDO>();
+            logger.debug("Created Empty response");
+        }
 
         return lizenzDOlist.stream().map(LizenzDTOMapper.toDTO).collect(Collectors.toList());
     }
