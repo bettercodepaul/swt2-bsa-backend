@@ -71,8 +71,9 @@ public class RegionenService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<RegionenDTO> findAll() {
         final List<RegionenDO> regionDOList = regionenComponent.findAll();
-        return syncUebergeordnetWithUebergeordnetAsName(
-                regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList()));
+        /*return syncUebergeordnetWithUebergeordnetAsName(
+                regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList()));*/
+        return regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "ID/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,7 +85,8 @@ public class RegionenService implements ServiceFacade {
 
         final RegionenDO regionenDO = regionenComponent.findById(id);
 
-        return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(regionenDO),regionenComponent.findAll());
+        //return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(regionenDO),regionenComponent.findAll());
+        return RegionenDTOMapper.toDTO.apply(regionenDO);
     }
 
 
@@ -103,13 +105,14 @@ public class RegionenService implements ServiceFacade {
                 regionenDTO.getRegionTyp(),
                 regionenDTO.getRegionUebergeordnet());
 
-        List<RegionenDO> regionen =regionenComponent.findAll();
-        syncSingleWithDOs(regionenDTO,regionen);
+        /*List<RegionenDO> regionen =regionenComponent.findAll();
+        syncSingleWithDOs(regionenDTO,regionen);*/
         final RegionenDO newRegionenDo = RegionenDTOMapper.toDO.apply(regionenDTO);
         final long userID = UserProvider.getCurrentUserId(principal);
 
         final RegionenDO updateRegionenDO = regionenComponent.update(newRegionenDo,userID);
-        return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(updateRegionenDO), regionen);
+        //return syncSingleWithDOs(RegionenDTOMapper.toDTO.apply(updateRegionenDO), regionen);
+        return RegionenDTOMapper.toDTO.apply(updateRegionenDO);
     }
 
 
@@ -149,7 +152,7 @@ public class RegionenService implements ServiceFacade {
                 regionenDTO.getRegionUebergeordnet(),
                 userId);
 
-        syncSingleWithDOs(regionenDTO, regionenComponent.findAll());
+        //syncSingleWithDOs(regionenDTO, regionenComponent.findAll());
 
         final RegionenDO regionenDO = RegionenDTOMapper.toDO.apply(regionenDTO);
         final RegionenDO persistedRegionenDO = regionenComponent.create(regionenDO, userId);
@@ -175,8 +178,9 @@ public class RegionenService implements ServiceFacade {
         checkRegionType(upperCaseType);
 
         final List<RegionenDO> regionenDOList = regionenComponent.findAllByType(upperCaseType);
-        return syncUebergeordnetWithUebergeordnetAsName(regionenDOList.stream().map(RegionenDTOMapper.toDTO)
-                .collect(Collectors.toList()),regionenComponent.findAll());
+        /*return syncUebergeordnetWithUebergeordnetAsName(regionenDOList.stream().map(RegionenDTOMapper.toDTO)
+                .collect(Collectors.toList()),regionenComponent.findAll());*/
+        return regionenDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -200,33 +204,33 @@ public class RegionenService implements ServiceFacade {
         Preconditions.checkNotNull(regionenDTO.getRegionTyp(), PRECONDITION_MSG_REGION_TYPE);
     }
 
-
-    /**
+/*
+    *//**
      * I am synchronizing the ID with the uebergeordnetAsName of all given RegionenDTOs.
      * Therefore i am calling the syncSingleWithDTOs for each region.
      * @param regionenDTOs all Regions as DTOs.
      * @return the same list of RegionDTOs, but all IDs and uebergeordnetAsName are matching correctly.
-     */
+     *//*
     private List<RegionenDTO> syncUebergeordnetWithUebergeordnetAsName(List<RegionenDTO> regionenDTOs){
         regionenDTOs.stream().forEach(region -> syncSingleWithDTOs(region, regionenDTOs));
         return regionenDTOs;
     }
 
 
-    /**
+    *//**
      * I am synchronizing the ID with the uebergeordnetAsName of all given RegionenDTOs.
      * Therefore i am calling the syncSingleWithDTOs for each region.
      * @param regionenDTOsToSync a list of all Regions you want to sync.
      * @param allRegionenDos a list containing all Regions of the Database
      * @return the same list of RegionDTOs, but all IDs and uebergeordnetAsName are matching correctly.
-     */
+     *//*
     private List<RegionenDTO> syncUebergeordnetWithUebergeordnetAsName(List<RegionenDTO> regionenDTOsToSync, List<RegionenDO> allRegionenDos ){
         regionenDTOsToSync.stream().forEach(region -> syncSingleWithDOs(region, allRegionenDos));
         return regionenDTOsToSync;
     }
 
 
-    /**
+    *//**
      * I am mapping the regionUebergeordnet ID to the matching Name of the corresponding Region.
      * And the other way around:
      * regionUebergeordnet --> ID --> getRegionById--> regionName --> regionUebergeordentAsName
@@ -235,7 +239,7 @@ public class RegionenService implements ServiceFacade {
      * @param regions a list of RegionDTOs to find the matching regionName, therefore the list
      *                should contain all regions of the database.
      * @return the same currentRegion, but the ID is matching to the uebergeordnetAsName.
-     */
+     *//*
     private RegionenDTO syncSingleWithDTOs(RegionenDTO currentRegion, List<RegionenDTO> regions){
         List<RegionenDTO> possibleRegions = null;
         //Case: The region has a superordinate name but not yet the id
@@ -269,7 +273,7 @@ public class RegionenService implements ServiceFacade {
     }
 
 
-    /**
+    *//**
      * I am mapping the regionUebergeordnet ID to the matching Name of the corresponding Region.
      * And the other way around:
      * regionUebergeordnet --> ID --> getRegionById--> regionName --> regionUebergeordentAsName
@@ -278,7 +282,7 @@ public class RegionenService implements ServiceFacade {
      * @param regions a list of RegionDOs to find the matching regionName, therefore the list
      *                should contain all regions of the database.
      * @return the same currentRegion, but the ID is matching to the uebergeordnetAsName.
-     */
+     *//*
     private RegionenDTO syncSingleWithDOs(RegionenDTO currentRegion, List<RegionenDO> regions){
         List<RegionenDO> possibleRegions = null;
         //Case: The region has a superordinate name but not yet the id
@@ -309,7 +313,7 @@ public class RegionenService implements ServiceFacade {
             }
         }
         return currentRegion;
-    }
+    }*/
 
 
 }
