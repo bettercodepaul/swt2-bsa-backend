@@ -58,6 +58,7 @@ public class RegionenComponentImplTest {
                 REGION_KUERZEL,
                 REGION_TYP,
                 REGION_UEBERGEORDNET,
+                null,
                 offsetDateTime,
                 USER,
                 offsetDateTime,
