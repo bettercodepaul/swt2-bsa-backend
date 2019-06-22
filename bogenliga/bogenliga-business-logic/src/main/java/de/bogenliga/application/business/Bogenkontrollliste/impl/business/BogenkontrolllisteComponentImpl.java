@@ -45,7 +45,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  * Class to generate Bogenkontrollliste
  *
  * @author Michael Hesse, michael_maximilian.hesse@student.reutlingen-university.de
- * @autor Sebastian Eckl, sebastian_alois.eckl@student.reutlingen-university.de
+ * @author Sebastian Eckl, sebastian_alois.eckl@student.reutlingen-university.de
  */
 @Component
 public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteComponent {
@@ -98,7 +98,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         String eventName = veranstaltungDO.getVeranstaltungName();
 
         for(int i=1; i <= 8; i++){
-            MatchDO matchDO = matchComponent.findByCombinedAttributes(wettkampfid, 1L, (long) i);
+            MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String TeamName = getTeamName(matchDO.getMannschaftId());
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
@@ -137,20 +137,18 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!TeamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
-        String[] teamNamen = new String[8];
-
+        String[] teamNameList = new String[8];
+        int i = 0;
         for(String key : TeamMemberMapping.keySet())
         {
-            int i = 0;
-            teamNamen[i] = key;
+            teamNameList[i] = key;
             i++;
         }
 
         final Table PageTitle = new Table(UnitValue.createPercentArray(1), true);
         PageTitle.addCell(addTitle(wettkampfDO, veranstaltungsName));
 
-        doc
-                .add(PageTitle);
+        doc.add(PageTitle);
 
         for (int manschaftCounter=0; manschaftCounter<8; manschaftCounter++){
 
@@ -161,7 +159,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
             tableFirstRowFirstPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("Anw.    "+teamNamen[manschaftCounter]).setBold().setFontSize(12.0F)));
+                            .add(new Paragraph("Anw.    "+ teamNameList[manschaftCounter]).setBold().setFontSize(12.0F)));
 
             tableFirstRowSecondPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
@@ -188,7 +186,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     .addCell(tableFirstRowSecondPart)
                     .addCell(tableFirstRowThirdPart);
 
-            for (int mitgliedCounter=0; mitgliedCounter<TeamMemberMapping.get(teamNamen[manschaftCounter]).size(); mitgliedCounter++){
+            for (int mitgliedCounter = 0; mitgliedCounter<TeamMemberMapping.get(
+                    teamNameList[manschaftCounter]).size(); mitgliedCounter++){
 
 
             }
@@ -196,6 +195,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
                             .add(tableFirstRow));
         }
+
+        doc.close();
     }
 
     /**
@@ -205,12 +206,11 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      *        veranstaltungsName name of the current Veranstaltung
      * @return cell containing the title and the date
      */
-    public static Cell addTitle(WettkampfDO wettkampfDO, String veranstaltungsName){
-        Cell cell = new Cell().add(new Paragraph("Bogenkontrolle/ "+wettkampfDO.getWettkampfTag()+". Bogenligawettkampf/ "+veranstaltungsName)
+    private static Cell addTitle(WettkampfDO wettkampfDO, String veranstaltungsName){
+        return new Cell().add(new Paragraph("Bogenkontrolle/ "+wettkampfDO.getWettkampfTag()+". Bogenligawettkampf/ "+veranstaltungsName)
                         .setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(14.0F))
                 .add(new Paragraph("am "+wettkampfDO.getDatum())
                         .setTextAlignment(TextAlignment.RIGHT).setFontSize(8.0F));
-        return cell;
     }
 
 
