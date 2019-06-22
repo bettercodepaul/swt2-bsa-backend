@@ -113,12 +113,12 @@ public class MatchComponentImpl implements MatchComponent {
      * @return singleMatchDO
      */
     @Override
-    public MatchDO findByCombinedAttributes(Long wettkampfId, Long MatchNr, Long scheibenNummer) {
+    public MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer) {
         checkPreconditions(wettkampfId, "wettkampf_Id");
         checkPreconditions(MatchNr, "matchNr");
         checkPreconditions(scheibenNummer, "scheibenNummer");
 
-        final MatchBE matchBE = matchDAO.findByCombinedAttributes(wettkampfId,MatchNr,scheibenNummer);
+        final MatchBE matchBE = matchDAO.findByWettkampfIDMatchNrScheibenNr(wettkampfId,MatchNr,scheibenNummer);
 
         if (matchBE == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
