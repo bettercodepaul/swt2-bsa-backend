@@ -19,7 +19,7 @@ public class DisziplinMapper {
     public static final Function<DisziplinBE, DisziplinDO> toDisziplinDO = disziplinBE -> {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(disziplinBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(disziplinBE.getLastModifiedAtUtc());
-        return new DisziplinDO(disziplinBE.getDisziplinID(), disziplinBE.getDisziplinName(), createdAtUtc,
+        return new DisziplinDO(disziplinBE.getId(), disziplinBE.getName(), createdAtUtc,
                 disziplinBE.getCreatedByUserId(),
                 lastModifiedUtc,
                 disziplinBE.getLastModifiedByUserId(),
@@ -32,8 +32,8 @@ public class DisziplinMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(disziplinDO.getLastModifiedAtUtc());
 
         DisziplinBE disziplinBE = new DisziplinBE();
-        disziplinBE.setDisziplinID(disziplinDO.getDisziplinID());
-        disziplinBE.setDisziplinName(disziplinDO.getDisziplinName());
+        disziplinBE.setId(disziplinDO.getDisziplinID());
+        disziplinBE.setName(disziplinDO.getDisziplinName());
 
         disziplinBE.setCreatedAtUtc(createdAtUtcTimestamp);
         disziplinBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);

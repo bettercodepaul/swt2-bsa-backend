@@ -10,47 +10,47 @@ import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 public interface DisziplinComponent {
 
     /**
-     * Return all matches entries.
+     * Return all disziplin entries.
      *
-     * @return list of all match in the database; empty list, if no match is found
+     * @return list of all disziplins in the database; empty list, if no disziplin is found
      */
     List<DisziplinDO> findAll();
 
 
     /**
-     * Return a single match by unique id
+     * Return a single disziplin by unique id
      *
-     * @return single matchDO
+     * @return single disziplinDO
      */
 
     DisziplinDO findById(Long id);
 
     /**
-     * Create a new match in the database.
+     * Create a new disziplin in the database.
      *
-     * @param matchDO       the new matchDO
+     * @param disziplinDO       the new disziplinDO
      * @param currentUserId the id of the creating user
      *
-     * @return persisted version of the match
+     * @return persisted version of the disziplin
      */
-    public DisziplinDO create(DisziplinDO matchDO, final Long currentUserId);
+    public DisziplinDO create(DisziplinDO disziplinDO, final Long currentUserId);
 
     /**
-     * Update an existing match. The match is identified by the id's set in matchDO.
+     * Update an existing disziplin. The disziplin is identified by the id's set in disziplinDO.
      *
-     * @param matchDO         existing matchDO to update
-     * @param currentMemberId id of the member currently updating the match
+     * @param disziplinDO         existing disziplinDO to update
+     * @param currentMemberId id of the member currently updating the disziplin
      *
      * @return persisted version of the match
      */
-    DisziplinDO update(DisziplinDO matchDO, Long currentMemberId);
+    DisziplinDO update(DisziplinDO disziplinDO, Long currentMemberId);
 
 
     /**
-     * Delete an existing match. The match is identified by the id's set in matchDO.
+     * Delete an existing disziplin. The disziplin is identified by the id's set in disziplinDO.
      *
-     * @param matchDO         match to delete
-     * @param currentMemberId id of the member currently updating the match
+     * @param disziplinDO         disziplin to delete
+     * @param currentMemberId id of the member currently updating the disziplin
      */
-    void delete(DisziplinDO matchDO, Long currentMemberId);
+    void delete(DisziplinDO disziplinDO, Long currentMemberId);
 }
