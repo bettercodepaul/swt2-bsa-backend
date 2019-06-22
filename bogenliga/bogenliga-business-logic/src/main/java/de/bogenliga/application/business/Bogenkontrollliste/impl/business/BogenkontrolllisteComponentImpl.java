@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
@@ -159,41 +161,85 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
             tableFirstRowFirstPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("Anw.    "+ teamNameList[manschaftCounter]).setBold().setFontSize(12.0F)));
+                            .add(new Paragraph("Anw.    ").add(teamNameList[manschaftCounter]).setBold().setFontSize(10.0F)));
 
             tableFirstRowSecondPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M1").setFontSize(12.0F)))
+                            .add(new Paragraph("M1").setFontSize(10.0F)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M2").setFontSize(12.0F)))
+                            .add(new Paragraph("M2").setFontSize(10.0F)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M3").setFontSize(12.0F)))
+                            .add(new Paragraph("M3").setFontSize(10.0F)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M4").setFontSize(12.0F)))
+                            .add(new Paragraph("M4").setFontSize(10.0F)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M5").setFontSize(12.0F)))
+                            .add(new Paragraph("M5").setFontSize(10.0F)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M6").setFontSize(12.0F)))
+                            .add(new Paragraph("M6").setFontSize(10.0F)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M7").setFontSize(12.0F)));
+                            .add(new Paragraph("M7").setFontSize(10.0F)));
 
             tableFirstRowThirdPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(12.0F)));
+                            .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(10.0F)));
 
             tableFirstRow
-                    .addCell(tableFirstRowFirstPart)
-                    .addCell(tableFirstRowSecondPart)
-                    .addCell(tableFirstRowThirdPart);
+                    .addCell(tableFirstRowFirstPart).setBorder(Border.NO_BORDER)
+                    .addCell(tableFirstRowSecondPart).setBorder(Border.NO_BORDER)
+                    .addCell(tableFirstRowThirdPart).setBorder(Border.NO_BORDER);
 
-            for (int mitgliedCounter = 0; mitgliedCounter<TeamMemberMapping.get(
-                    teamNameList[manschaftCounter]).size(); mitgliedCounter++){
 
+            doc
+                    .add(new Div().setPaddings(10.0F, 10.0F, 1.0F, 10.0F).setMargins(2.5F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
+                            .add(tableFirstRow).setBorder(Border.NO_BORDER));
+
+
+            for (int mitgliedCounter = 1; mitgliedCounter<TeamMemberMapping.get(
+                    teamNameList[manschaftCounter]).size()+1; mitgliedCounter++){
+
+                final Table tableBody = new Table(UnitValue.createPercentArray(3), true);
+                final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(1), true);
+                final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
+                final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
+
+
+                tableBodyFirstPart
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("____   ").add(Integer.toString(mitgliedCounter)+ " " + TeamMemberMapping.get(
+                                        teamNameList[manschaftCounter]).get(mitgliedCounter-1).getNachname() + ", " + TeamMemberMapping.get(
+                                        teamNameList[manschaftCounter]).get(mitgliedCounter-1).getVorname()).setBold().setFontSize(10.0F)));
+
+                tableBodySecondPart
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("  ").setFontSize(10.0F)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("  ").setFontSize(10.0F)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("  ").setFontSize(10.0F)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("  ").setFontSize(10.0F)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("  ").setFontSize(10.0F)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("  ").setFontSize(10.0F)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph("  ").setFontSize(10.0F)));
+
+                tableBodyThirdPart
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph(" ").setFontSize(10.0F)));
+
+
+                tableBody
+                        .addCell(tableBodyFirstPart).setBorder(Border.NO_BORDER)
+                        .addCell(tableBodySecondPart).setBorder(Border.NO_BORDER)
+                        .addCell(tableBodyThirdPart).setBorder(Border.NO_BORDER);
+
+                doc
+                        .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
+                                .add(tableBody).setBorder(Border.NO_BORDER));
 
             }
-            doc
-                    .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
-                            .add(tableFirstRow));
         }
 
         doc.close();
@@ -207,10 +253,10 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      * @return cell containing the title and the date
      */
     private static Cell addTitle(WettkampfDO wettkampfDO, String veranstaltungsName){
-        return new Cell().add(new Paragraph("Bogenkontrolle/ "+wettkampfDO.getWettkampfTag()+". Bogenligawettkampf/ "+veranstaltungsName)
+        return new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Bogenkontrolle / "+wettkampfDO.getWettkampfTag()+". Bogenligawettkampf / "+veranstaltungsName)
                         .setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(14.0F))
                 .add(new Paragraph("am "+wettkampfDO.getDatum())
-                        .setTextAlignment(TextAlignment.RIGHT).setFontSize(8.0F));
+                        .setTextAlignment(TextAlignment.RIGHT).setFontSize(10.0F));
     }
 
 
