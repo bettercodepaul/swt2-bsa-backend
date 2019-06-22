@@ -12,7 +12,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.AreaBreak;
 import de.bogenliga.application.business.Meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
-import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
@@ -30,50 +29,52 @@ import de.bogenliga.application.common.validation.Preconditions;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-
-
 @Component
 public class MeldezettelComponentImpl implements MeldezettelComponent {
+    private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
 
+    private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
-    //private final DisziplinComponent disziplinComponent;
+    private final DisziplinComponent disziplinComponent;
 
     @Autowired
-    public MeldezettelComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
-                                     final VereinComponent vereinComponent,
-                                     final WettkampfComponent wettkampfComponent,
-                                    final VeranstaltungComponent veranstaltungComponent) {
+    public MeldezettelComponentImpl(final MatchComponent matchComponent,
+                                    final DsbMannschaftComponent dsbMannschaftComponent,
+                                    final VereinComponent vereinComponent,
+                                    final WettkampfComponent wettkampfComponent,
+                                    final VeranstaltungComponent veranstaltungComponent,
+                                    final DisziplinComponent disziplinComponent) {
+        this.matchComponent = matchComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
+        this.disziplinComponent = disziplinComponent;
     }
     @Override
     public byte[] getMeldezettelPDFasByteArray(long wettkampfid) {
-        /*Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-        List<MatchDO> wettkampfDOList =
-        List<MatchDO> vereinDOList =
+        List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
 
         byte[] bResult;
         if (matchDOList.size() != 0) {
             bResult = generateDoc(matchDOList).toByteArray();
-        }else{
+        } else {
             throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
         }
-        return bResult;*/
-        return null;
+
+        return bResult;
     }
-/*
+
 
     /**
      * <p>writes a Meldezettel document for the Wettkampf
      * </p>
      */
-    /*
     private ByteArrayOutputStream generateDoc(List<MatchDO> matchDOList) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -81,37 +82,51 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            //iterate through matches
-            for (long i = 1; i<=7; i++){
-                //iterate through begegnungen
-                for(long k = 1; k<=4; k++){
-                    MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList , i, k);
-                    if(matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
-                        generateSchusszettelPage(doc, matchesBegegnung);
-                        if(i != 7){
-                            doc.add(new AreaBreak());
-                        }
+            //iterate through begegnungen
+            for (long i = 1; i<=4; i++) {
+                MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList ,1 ,i);
+                if (matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
+                    generateMeldezettelPage(doc, matchesBegegnung);
+                    if (i != 4) {
+                        doc.add(new AreaBreak());
                     }
                 }
             }
+
             doc.close();
             ret = result;
-
         } catch (final IOException e) {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "PDF Dokument konnte nicht erstellt werden: " + e);
         }
         return ret;
-
     }
 
-    private void generateMeldezettelPage(Document doc, MatchDO[] matchDOs)
-    {
+    /**
+     * <p>internal function to return two matches for one Schusszettel page
+     * </p>
+     * @param matchDOList list of matches for competition
+     */
+    private MatchDO[] getMatchDOsForPage(List<MatchDO> matchDOList, long matchNr, long begegnung){
+        MatchDO[] ret = new MatchDO[1];
+        long startScheibenNrBegegnung = (begegnung * 2) - 1 ;
+        for(MatchDO match : matchDOList){
+            if(match.getNr() == matchNr && match.getBegegnung() == begegnung){
+                if(match.getScheibenNummer() == startScheibenNrBegegnung){
+                    ret[0] = match;
+                }
+                if(match.getScheibenNummer() == startScheibenNrBegegnung + 1){
+                    ret[1] = match;
+                }
+            }
+        }
+        return ret;
+    }
+
+    private void generateMeldezettelPage(Document doc, MatchDO[] matchDOs) {
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDOs[0].getWettkampfId());
         String veranstaltungsName = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId()).getVeranstaltungName();
-        String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).get;
+        String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).getDisziplinName();
     }
-
-     */
 }

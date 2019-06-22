@@ -40,4 +40,3 @@ public class DisziplinBE extends CommonBusinessEntity implements BusinessEntity 
         this.disziplinName = disziplinName;
     }
 }
-
