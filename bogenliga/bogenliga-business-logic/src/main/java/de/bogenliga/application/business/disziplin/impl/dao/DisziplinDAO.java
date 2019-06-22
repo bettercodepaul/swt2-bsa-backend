@@ -28,23 +28,19 @@ public class DisziplinDAO implements DataAccessObject {
     // table name in the DB
     private static final String TABLE = "disziplin";
 
-
     // business entity parameters
     private static final String DISZIPLIN_BE_ID = "id";
     private static final String DISZIPLIN_BE_NAME = "name";
 
-
     // table columns
     private static final String DISZIPLIN_TABLE_ID = "disziplin_id";
     private static final String DISZIPLIN_TABLE_NAME = "disziplin_name";
-
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<DisziplinBE> DISZIPLIN = new BusinessEntityConfiguration<>(
             DisziplinBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
     private final BasicDAO basicDao;
-
 
     /**
      * Initialize the transaction manager to provide a database connection
@@ -55,7 +51,6 @@ public class DisziplinDAO implements DataAccessObject {
     public DisziplinDAO(final BasicDAO basicDao) {
         this.basicDao = basicDao;
     }
-
 
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
@@ -70,13 +65,9 @@ public class DisziplinDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
-
     /**
      * SQL queries
-     *
-     *
      */
-
     private static final String FIND_ALL = new QueryBuilder()
             .selectAll()
             .from(TABLE)
@@ -97,8 +88,6 @@ public class DisziplinDAO implements DataAccessObject {
             .orderBy(DISZIPLIN_TABLE_ID)
             .compose().toString();
 
-
-
     /**
      * Return a specific disziplin.
      *
@@ -107,7 +96,6 @@ public class DisziplinDAO implements DataAccessObject {
     public DisziplinBE findById(final Long matchId) {
         return basicDao.selectSingleEntity(DISZIPLIN, FIND_BY_ID, matchId);
     }
-
 
     /**
      * Return a specific match.
@@ -122,7 +110,6 @@ public class DisziplinDAO implements DataAccessObject {
         );
     }
 
-
     /**
      * Return all match entries.
      *
@@ -132,20 +119,18 @@ public class DisziplinDAO implements DataAccessObject {
         return basicDao.selectEntityList(DISZIPLIN, FIND_ALL);
     }
 
-
     /**
-     * Create a new match entry
+     * Create a new disziplin entry
      *
      * @param disziplinBE
      * @param currentUserId
      *
-     * @return Business Entity corresponding to the created match entry
+     * @return Business Entity corresponding to the created disziplin entry
      */
     public DisziplinBE create(final DisziplinBE disziplinBE, final Long currentUserId) {
         basicDao.setCreationAttributes(disziplinBE, currentUserId);
         return basicDao.insertEntity(DISZIPLIN, disziplinBE);
     }
-
 
     /**
      * Update an existing match entry
@@ -159,7 +144,6 @@ public class DisziplinDAO implements DataAccessObject {
         basicDao.setModificationAttributes(disziplinBE, currentUserId);
         return basicDao.updateEntity(DISZIPLIN, disziplinBE, DISZIPLIN_BE_ID);
     }
-
 
     /**
      * Delete existing match

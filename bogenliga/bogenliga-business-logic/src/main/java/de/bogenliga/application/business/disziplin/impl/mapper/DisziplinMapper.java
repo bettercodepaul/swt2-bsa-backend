@@ -43,4 +43,4 @@ public class DisziplinMapper {
 
         return disziplinBE;
     };
-    }
+}
