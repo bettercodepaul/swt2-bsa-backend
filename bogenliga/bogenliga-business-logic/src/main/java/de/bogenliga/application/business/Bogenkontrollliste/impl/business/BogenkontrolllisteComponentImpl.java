@@ -141,8 +141,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
         String[] teamNameList = new String[8];
         int i = 0;
-        for(String key : TeamMemberMapping.keySet())
-        {
+
+        for (String key : TeamMemberMapping.keySet()) {
             teamNameList[i] = key;
             i++;
         }
@@ -152,93 +152,121 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
         doc.add(PageTitle);
 
-        for (int manschaftCounter=0; manschaftCounter<8; manschaftCounter++){
-
+        for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
             final Table tableFirstRow = new Table(UnitValue.createPercentArray(3), true);
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
             final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
             final Table tableFirstRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
             tableFirstRowFirstPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("Anw.    ").add(teamNameList[manschaftCounter]).setBold().setFontSize(10.0F)));
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("Anw.    ").add(teamNameList[manschaftCounter]).setBold().setFontSize(10.0F))
+                )
+            ;
 
             tableFirstRowSecondPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M1").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M2").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M3").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M4").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M5").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M6").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M7").setFontSize(10.0F)));
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("M1").setFontSize(10.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("M2").setFontSize(10.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("M3").setFontSize(10.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("M4").setFontSize(10.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("M5").setFontSize(10.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("M6").setFontSize(10.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("M7").setFontSize(10.0F))
+                )
+            ;
 
             tableFirstRowThirdPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(10.0F)));
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(10.0F))
+                )
+            ;
 
             tableFirstRow
-                    .addCell(tableFirstRowFirstPart).setBorder(Border.NO_BORDER)
-                    .addCell(tableFirstRowSecondPart).setBorder(Border.NO_BORDER)
-                    .addCell(tableFirstRowThirdPart).setBorder(Border.NO_BORDER);
-
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableFirstRowFirstPart)
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableFirstRowSecondPart)
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableFirstRowThirdPart)
+                )
+            ;
 
             doc
-                    .add(new Div().setPaddings(10.0F, 10.0F, 1.0F, 10.0F).setMargins(2.5F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
-                            .add(tableFirstRow).setBorder(Border.NO_BORDER));
+                .add(new Div().setPaddings(10.0F, 10.0F, 1.0F, 10.0F).setMargins(2.5F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
+                    .add(tableFirstRow).setBorder(Border.NO_BORDER)
+                )
+            ;
 
-
-            for (int mitgliedCounter = 1; mitgliedCounter<TeamMemberMapping.get(
-                    teamNameList[manschaftCounter]).size()+1; mitgliedCounter++){
-
+            for (int mitgliedCounter = 1; mitgliedCounter < TeamMemberMapping.get(teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
                 final Table tableBody = new Table(UnitValue.createPercentArray(3), true);
                 final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(1), true);
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
-
                 tableBodyFirstPart
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("____   ").add(Integer.toString(mitgliedCounter)+ " " + TeamMemberMapping.get(
-                                        teamNameList[manschaftCounter]).get(mitgliedCounter-1).getNachname() + ", " + TeamMemberMapping.get(
-                                        teamNameList[manschaftCounter]).get(mitgliedCounter-1).getVorname()).setBold().setFontSize(10.0F)));
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("____   ").add(mitgliedCounter + " " + TeamMemberMapping.get(
+                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + TeamMemberMapping.get(
+                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F))
+                    )
+                ;
 
                 tableBodySecondPart
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("  ").setFontSize(10.0F)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("  ").setFontSize(10.0F)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("  ").setFontSize(10.0F)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("  ").setFontSize(10.0F)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("  ").setFontSize(10.0F)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("  ").setFontSize(10.0F)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph("  ").setFontSize(10.0F)));
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("  ").setFontSize(10.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("  ").setFontSize(10.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("  ").setFontSize(10.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("  ").setFontSize(10.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("  ").setFontSize(10.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("  ").setFontSize(10.0F)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph("  ").setFontSize(10.0F))
+                    )
+                ;
 
                 tableBodyThirdPart
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph(" ").setFontSize(10.0F)));
-
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph(" ").setFontSize(10.0F))
+                    )
+                ;
 
                 tableBody
-                        .addCell(tableBodyFirstPart).setBorder(Border.NO_BORDER)
-                        .addCell(tableBodySecondPart).setBorder(Border.NO_BORDER)
-                        .addCell(tableBodyThirdPart).setBorder(Border.NO_BORDER);
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableBodyFirstPart)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableBodySecondPart)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableBodyThirdPart)
+                    )
+                ;
 
                 doc
-                        .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
-                                .add(tableBody).setBorder(Border.NO_BORDER));
-
+                    .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
+                        .add(tableBody).setBorder(Border.NO_BORDER)
+                    )
+                ;
             }
         }
 
