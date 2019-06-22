@@ -1,4 +1,4 @@
-/*package de.bogenliga.application.business.Meldezettel.impl.business;
+package de.bogenliga.application.business.Meldezettel.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 
-/*
+
 @Component
 public class MeldezettelComponentImpl implements MeldezettelComponent {
 
@@ -39,7 +39,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
-    private final DisziplinComponent disziplinComponent;
+    //private final DisziplinComponent disziplinComponent;
 
     @Autowired
     public MeldezettelComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
@@ -53,7 +53,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     }
     @Override
     public byte[] getMeldezettelPDFasByteArray(long wettkampfid) {
-        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+        /*Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         List<MatchDO> wettkampfDOList =
         List<MatchDO> vereinDOList =
@@ -64,9 +64,10 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         }else{
             throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
         }
-        return bResult;
+        return bResult;*/
+        return null;
     }
-*/
+/*
 
     /**
      * <p>writes a Meldezettel document for the Wettkampf
@@ -111,5 +112,6 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         String veranstaltungsName = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId()).getVeranstaltungName();
         String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).get;
     }
+
+     */
 }
-*/
