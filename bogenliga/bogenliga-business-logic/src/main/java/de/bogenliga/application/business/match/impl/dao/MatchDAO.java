@@ -188,8 +188,8 @@ public class MatchDAO implements DataAccessObject {
      *
      * @return match with given combined attributes
      */
-    public MatchBE findByCombinedAttributes(Long wettkampfId, Long MatchNr, Long scheibenNummer){
-        return basicDao.selectSingleEntity(MATCH, FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR);
+    public MatchBE findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer){
+        return basicDao.selectSingleEntity(MATCH, FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR, wettkampfId, MatchNr, scheibenNummer);
     }
 
 
