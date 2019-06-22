@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.css.Rect;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -19,6 +20,7 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -154,14 +156,16 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
         for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
             final Table tableFirstRow = new Table(UnitValue.createPercentArray(3), true);
-            final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
+            final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
             final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
             final Table tableFirstRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
             tableFirstRowFirstPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("Anw.    ").add(teamNameList[manschaftCounter]).setBold().setFontSize(10.0F))
+                    .add(new Paragraph("Anw.").setFontSize(10.0F))
                 )
+            .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph(teamNameList[manschaftCounter]).setBold()).setFontSize(10.0F))
             ;
 
             tableFirstRowSecondPart
@@ -214,16 +218,17 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
             for (int mitgliedCounter = 1; mitgliedCounter < TeamMemberMapping.get(teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
                 final Table tableBody = new Table(UnitValue.createPercentArray(3), true);
-                final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(1), true);
+                final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
                 tableBodyFirstPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("____   ").add(mitgliedCounter + " " + TeamMemberMapping.get(
+                        .add(new Paragraph("")))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph(mitgliedCounter + " " + TeamMemberMapping.get(
                                 teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + TeamMemberMapping.get(
-                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F))
-                    )
+                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
                 ;
 
                 tableBodySecondPart
@@ -262,11 +267,24 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     )
                 ;
 
-                doc
-                    .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
-                        .add(tableBody).setBorder(Border.NO_BORDER)
-                    )
-                ;
+                //If first player don't add top Border
+                if(mitgliedCounter == 1) {
+                    doc
+                            .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F,
+                                    0.0F).setBorder(Border.NO_BORDER)
+                                    .add(tableBody).setBorder(Border.NO_BORDER)
+                            )
+                    ;
+                }
+                //Add top Border in all other cases
+                else{
+                    doc
+                            .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F,
+                                    0.0F).setBorderTop(new SolidBorder(Border.SOLID))
+                                    .add(tableBody).setBorder(Border.NO_BORDER)
+                            )
+                    ;
+                }
             }
         }
 
