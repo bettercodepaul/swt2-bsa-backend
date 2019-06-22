@@ -14,7 +14,9 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -147,6 +149,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         final Table PageTitle = new Table(UnitValue.createPercentArray(1), true);
         PageTitle.addCell(addTitle(wettkampfDO, veranstaltungsName));
 
+        doc
+                .add(PageTitle);
+
         for (int manschaftCounter=0; manschaftCounter<8; manschaftCounter++){
 
             final Table tableFirstRow = new Table(UnitValue.createPercentArray(3), true);
@@ -187,6 +192,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
 
             }
+            doc
+                    .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
+                            .add(tableFirstRow));
         }
     }
 
