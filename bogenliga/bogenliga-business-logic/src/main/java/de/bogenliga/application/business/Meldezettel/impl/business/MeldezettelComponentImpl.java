@@ -126,8 +126,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             return result.toByteArray();
         } catch (IOException e) {
-            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                    "Meldezettel PDF konnte nicht erstellt werden: " + e);
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "Meldezettel PDF konnte nicht erstellt werden: " + e);
         }
     }
 
@@ -143,18 +142,18 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         Preconditions.checkNotNull(wettkampfDatum, PRECONDITION_WETTKAMPFDATUM);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
 
-        String[] teamNamen = new String[8];
+        String[] teamNameList = new String[8];
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
         int i = 0;
 
         for (String key : teamMemberMapping.keySet()) {
-            teamNamen[i] = key;
+            teamNameList[i] = key;
             i++;
         }
 
         for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
             String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(wettkampfDatum);
-            String verein = "Verein: " + teamNamen[manschaftCounter];
+            String verein = "Verein: " + teamNameList[manschaftCounter];
 
             final Table mainTable = new Table(UnitValue.createPercentArray(2), true);
             final Table mainTableFirstRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
@@ -312,9 +311,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
                 // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -355,9 +354,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                         .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
                 // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -398,9 +397,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
                 // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -441,9 +440,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
                 // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -484,9 +483,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
                 // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -527,9 +526,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
                 // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -553,6 +552,19 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             ;
 
             // Fill first table in fifth row
+            mainTableFifthRowFirstPart
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Paragraph("RNr.: " + teamNameList[manschaftCounter]).setBold().setFontSize(10.0F))
+                )
+            ;
+
+            for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
+                mainTableFifthRowFirstPart
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(new Paragraph(mitgliedCounter + ". " + teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setFontSize(8.0F))
+                    )
+                ;
+            }
 
             // Fill second table in fifth row
             mainTableFifthRowSecondPartFirstRow
@@ -572,9 +584,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
-                .addCell(new Cell().setHeight(30.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
+                .addCell(new Cell().setHeight(45.0F))
                 // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
