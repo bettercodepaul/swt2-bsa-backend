@@ -41,7 +41,7 @@ public interface MatchComponent {
      * @return singleMatchDO
      */
 
-    MatchDO findByCombinedAttributes(Long wettkampfId, Long MatchNr, Long scheibenNummer);
+    MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer);
 
 
     /**
