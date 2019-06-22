@@ -10,33 +10,35 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * @author Robin Mueller
  */
 public class DisziplinBE extends CommonBusinessEntity implements BusinessEntity {
-    private Long disziplinID;
-    private String disziplinName;
+    private static final long serialVersionUID = 1896226667926009349L;
+
+    private Long id;
+    private String name;
 
     @Override
     public String toString() {
         return "MatchBE{" +
-                "disziplinID=" + disziplinID +
-                "disziplinName=" + disziplinName +
+                "id=" + id +
+                "name=" + name +
                 '}';
     }
 
-    public Long getDisziplinID() {
-        return disziplinID;
+    public Long getId() {
+        return id;
     }
 
 
-    public void setDisziplinID(Long disziplinID) {
-        this.disziplinID = disziplinID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
 
-    public String getDisziplinName() {
-        return disziplinName;
+    public String getName() {
+        return name;
     }
 
 
-    public void setDisziplinName(String disziplinName) {
-        this.disziplinName = disziplinName;
+    public void setName(String name) {
+        this.name = name;
     }
 }
