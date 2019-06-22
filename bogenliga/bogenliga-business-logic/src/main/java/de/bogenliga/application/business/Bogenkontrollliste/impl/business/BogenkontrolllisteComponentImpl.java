@@ -1,7 +1,5 @@
 package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
-import java.awt.Font;
-import java.util.Date;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
-import com.sun.javafx.font.FontFactory;
 import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -39,14 +36,14 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
- * TODO [AL] class documentation
+ * Class to generate Bogenkontrollliste
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Michael Hesse, michael_maximilian.hesse@student.reutlingen-university.de
+ * @autor Sebastian Eckl, sebastian_alois.eckl@student.reutlingen-university.de
  */
 @Component
 public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteComponent {
@@ -194,7 +191,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     }
 
     /**
-     * funktion to add title and date at the top of each page
+     * function to add title and date at the top of each page
      *
      * @param wettkampfDO DO of current Wettkampf
      *        veranstaltungsName name of the current Veranstaltung
@@ -210,7 +207,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
 
     /**
-     * help funktion to get team name
+     * help function to get team name
      *
      * @param teamID ID of the team
      * @return name of the team
