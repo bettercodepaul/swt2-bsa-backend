@@ -14,10 +14,18 @@ public interface DsbMitgliedComponent extends ComponentFacade {
     /**
      * Return all dsbmitglied entries.
      *
-     * @return list of all dsbmitglied dsbmitglied in the database;
+     * @return list of all dsbmitglied in the database;
      * empty list, if no dsbmitglied is found
      */
     List<DsbMitgliedDO> findAll();
+
+
+    /**
+     * Retrun all dsbmitglied entries with the given teamId.
+     *
+     * @return list of all dsbmitlgied entries with the given id.
+     */
+    List<DsbMitgliedDO> findAllByTeamId(long id);
 
 
     /**

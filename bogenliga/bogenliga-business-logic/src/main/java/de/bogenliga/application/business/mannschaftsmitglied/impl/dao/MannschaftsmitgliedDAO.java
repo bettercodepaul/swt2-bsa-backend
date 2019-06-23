@@ -189,7 +189,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     public void delete(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-        basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
+        basicDao.deleteEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_ID);
     }
 
 
