@@ -107,6 +107,15 @@ public class DsbMitgliedService implements ServiceFacade {
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+    @RequestMapping(value = "/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
+        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        LOG.debug("Receive 'findAllByTeamid' request with ID '{}'", id );
+        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAllByTeamId(id);
+        return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     /**
      * I return the dsbMitglied entry of the database with a specific id.
