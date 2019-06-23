@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
