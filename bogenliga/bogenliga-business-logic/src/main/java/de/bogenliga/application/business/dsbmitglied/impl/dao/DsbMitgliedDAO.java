@@ -85,6 +85,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     " AND lizenz_typ = 'Kampfrichter'" +
                     " )";
 
+    private static final String FIND_ALL_BY_TEAM_ID =
+            "SELECT * FROM dsb_mitglied";
+
     private final BasicDAO basicDao;
 
 
@@ -136,6 +139,10 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL);
     }
 
+
+    public List<DsbMitgliedBE> findAllByTeamId(final long id) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_BY_TEAM_ID, id);
+    }
 
     /**
      * Return dsbmitglied entry with specific id
