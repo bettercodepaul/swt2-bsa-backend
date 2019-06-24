@@ -23,6 +23,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV = "MannschaftsmitgliedDO_Mannschaft_ID must not be negativ";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV = "MannschaftsmitgliedDO_Mitglied_ID must not be negativ";
+    private static final String PRECONDITION_MANNSCHAFTSMITGLIED_ID = "Mannschaftsmitglied Id must not be negative";
 
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
 
@@ -155,7 +156,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
 
     @Override
-    public void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, final Long currentUserId) {
+    public void deleteByTeamIdAndMemberId(MannschaftsmitgliedDO mannschaftsmitgliedDO, final Long currentUserId) {
         checkPreconditions(currentUserId, PRECONDITION_FIELD_USER_ID);
 
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
@@ -164,10 +165,23 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         Preconditions.checkArgument(mannschaftsmitgliedDO.getDsbMitgliedId() >= 0,
                 PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID);
 
+        MannschaftsmitgliedDO tmp = this.findByMemberAndTeamId(mannschaftsmitgliedDO.getMannschaftId(), mannschaftsmitgliedDO.getDsbMitgliedId());
+
         final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(
-                mannschaftsmitgliedDO);
+                tmp);
 
         mannschaftsmitgliedDAO.delete(mannschaftsmitgliedBE, currentUserId);
+    }
+
+    @Override
+    public void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, final Long currentUserId) {
+        checkPreconditions(currentUserId, PRECONDITION_FIELD_USER_ID);
+        Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
+        Preconditions.checkArgument(mannschaftsmitgliedDO.getId() >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_ID);
+
+        final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(mannschaftsmitgliedDO);
+
+        mannschaftsmitgliedDAO.delete(mannschaftsmitgliedBE,currentUserId);
     }
 
 

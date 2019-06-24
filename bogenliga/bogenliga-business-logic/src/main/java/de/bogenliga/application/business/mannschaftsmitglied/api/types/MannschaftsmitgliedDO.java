@@ -110,6 +110,10 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.dsbMitgliedId = dsbMitgliedId;
     }
 
+    public MannschaftsmitgliedDO(final Long id) {
+        this.setId(id);
+    }
+
 
     public Long getMannschaftId() {
         return mannschaftId;
