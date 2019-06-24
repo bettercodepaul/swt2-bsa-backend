@@ -85,7 +85,11 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     " )";
 
     private static final String FIND_ALL_BY_TEAM_ID =
-            "SELECT * FROM dsb_mitglied";
+            "SELECT * FROM dsb_mitglied" +
+                    " WHERE dsb_mitglied_id IN (" +
+                    " SELECT mannschaftsmitglied_dsb_mitglied_id" +
+                    " FROM mannschaftsmitglied" +
+                    " WHERE mannschaftsmitglied_mannschaft_id = ?)";
 
     private final BasicDAO basicDao;
 
@@ -139,6 +143,11 @@ public class DsbMitgliedDAO implements DataAccessObject {
     }
 
 
+    /**
+     *
+     * @param id id of the team, in which the dsmitglied entries are used
+     * @return list of all dsbmitglied entries with the given id
+     */
     public List<DsbMitgliedBE> findAllByTeamId(final long id) {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_BY_TEAM_ID, id);
     }
