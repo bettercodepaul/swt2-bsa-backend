@@ -90,6 +90,14 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      */
     void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, Long currentMemberId);
 
+
+    /**
+     * Deletes an existing mannschaftsmitlgied, identified by the teamId and the dsbMitlgiedId
+     * @param mannschaftsmitgliedDO mannschaftsmitglied to delete
+     * @param currentUserId
+     */
+    void deleteByTeamIdAndMemberId(MannschaftsmitgliedDO mannschaftsmitgliedDO, Long currentUserId);
+
     boolean checkExistingSchuetze(Long teamId, Long memberId);
 
 }
