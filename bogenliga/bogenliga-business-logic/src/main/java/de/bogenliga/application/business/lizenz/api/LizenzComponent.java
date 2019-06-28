@@ -21,6 +21,7 @@ public interface LizenzComponent extends ComponentFacade {
 
 
 
+
     /**
      * Return a Lizenz by DSB-Mitglieds-Id.
      *
@@ -57,4 +58,6 @@ public interface LizenzComponent extends ComponentFacade {
      */
     void delete(final LizenzDO lizenzDO,final long currentUserId);
 
+    byte[] getLizenzPDFasByteArray(long DsbMitgliedID);
 }
+

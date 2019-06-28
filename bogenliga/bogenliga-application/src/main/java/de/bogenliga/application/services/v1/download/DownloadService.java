@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
+import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -51,6 +52,7 @@ public class DownloadService implements ServiceFacade {
      */
     private final SetzlisteComponent setzlisteComponent;
     private final SchusszettelComponent schusszettelComponent;
+    private final LizenzComponent lizenzComponent;
 
 
     /**
@@ -58,9 +60,10 @@ public class DownloadService implements ServiceFacade {
      */
     @Autowired
     public DownloadService(final SetzlisteComponent setzlisteComponent,
-                           SchusszettelComponent schusszettelComponent) {
+                           SchusszettelComponent schusszettelComponent, final LizenzComponent lizenzComponent) {
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
+        this.lizenzComponent = lizenzComponent;
     }
     /**
      * returns the Setzliste as pdf file for client download
@@ -125,5 +128,17 @@ public class DownloadService implements ServiceFacade {
             LOG.error("Error: ", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF download failed", e);
         }
+    }
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/schuetzenlizenz",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadLizenz(@RequestParam("dsbMitgliedID") final long dsbMitgliedID) {
+        LOG.debug("dsbMitgliedID: " + dsbMitgliedID);
+        // LOG.debug("LizenzID: " + LizenzID);
+        final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID);
+
+        return generateInputStream(fileBloB);
     }
 }
