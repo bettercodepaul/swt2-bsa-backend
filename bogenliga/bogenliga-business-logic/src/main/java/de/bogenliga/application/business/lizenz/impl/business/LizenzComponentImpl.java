@@ -40,7 +40,6 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 import de.bogenliga.application.common.validation.Preconditions;
 
 
-
 @Component
 public class LizenzComponentImpl implements LizenzComponent {
 
