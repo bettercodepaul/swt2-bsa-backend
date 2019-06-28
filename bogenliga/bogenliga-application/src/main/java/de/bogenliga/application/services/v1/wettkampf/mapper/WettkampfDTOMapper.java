@@ -37,6 +37,7 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final OffsetDateTime createdAtUtc = wettkampfDO.getCreatedAtUtc();
         final Long version = wettkampfDO.getVersion();
 
+        System.out.println(datumDate + " to " + datum);
 
         return new WettkampfDTO(wettkampfId, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, createdByUserId, createdAtUtc, version);
@@ -52,6 +53,7 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long veranstaltungsId = wettkampfDTO.getVeranstaltungsId();
 
         final String datum = wettkampfDTO.getDatum();
+        //  System.out.println(datum);
         Date datumDate = Date.valueOf(datum);
 
         final String wettkampfOrt = wettkampfDTO.getWettkampfOrt();
