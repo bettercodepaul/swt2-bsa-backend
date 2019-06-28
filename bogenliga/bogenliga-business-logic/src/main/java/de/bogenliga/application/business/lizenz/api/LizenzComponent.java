@@ -60,4 +60,3 @@ public interface LizenzComponent extends ComponentFacade {
 
     byte[] getLizenzPDFasByteArray(long DsbMitgliedID, long teamID);
 }
-
