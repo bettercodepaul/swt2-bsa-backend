@@ -44,6 +44,8 @@ public class WettkampfDTO implements DataTransferObject {
         this.setCreatedByUserId(createdByUserId);
         this.setVersion(version);
 
+        System.out.println("A WettkampfDTO was created with the date " + datum + ".");
+
     }
 
 
