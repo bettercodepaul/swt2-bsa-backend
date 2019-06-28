@@ -164,7 +164,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Anw.").setFontSize(10.0F))
                 )
-            .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph(teamNameList[manschaftCounter]).setBold()).setFontSize(10.0F))
             ;
 
@@ -222,9 +222,24 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
+                final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(1), false);
+                final Table tableCheckbox2 = new Table(UnitValue.createPercentArray(new float[] {75.0F, 25.0F}), true);
+
+                tableCheckbox1
+                        .addCell(new Cell().setHeight(10.0F).setWidth(10.0F))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(10.0F))
+                ;
+
+                tableCheckbox2
+                        .addCell(new Cell().setHeight(10.0F).setWidth(0.7F))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(0.7F))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                ;
+
                 tableBodyFirstPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("")))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                         .add(new Paragraph(mitgliedCounter + " " + TeamMemberMapping.get(
                                 teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + TeamMemberMapping.get(
@@ -232,20 +247,20 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 ;
 
                 tableBodySecondPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("  ").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("  ").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("  ").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("  ").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("  ").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("  ").setFontSize(10.0F)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph("  ").setFontSize(10.0F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                        .add(tableCheckbox2.setBorder(Border.NO_BORDER))
                     )
                 ;
 
@@ -255,36 +270,51 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     )
                 ;
 
-                tableBody
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableBodyFirstPart)
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableBodySecondPart)
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableBodyThirdPart)
+                if (mitgliedCounter == 1) {
+                    tableBody
+                            .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                    .add(tableBodyFirstPart)
+                            )
+                            .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                    .add(tableBodySecondPart)
+                            )
+                            .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                    .add(tableBodyThirdPart)
+                            )
+                    ;
+                }
+
+                else {
+                    tableBody
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
+                                    .add(tableBodyFirstPart)
+                            )
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
+                                    .add(tableBodySecondPart)
+                            )
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
+                                    .add(tableBodyThirdPart)
+                            )
+                    ;
+                }
+
+
+                if (mitgliedCounter == TeamMemberMapping.get(teamNameList[manschaftCounter]).size()){
+                    tableBody
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
+                            )
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
+                            )
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
+                            )
+                    ;
+                }
+
+                doc
+                    .add(new Div().setPaddings(0.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
+                            .add(tableBody).setBorder(Border.NO_BORDER)
                     )
                 ;
-
-                //If first player don't add top Border
-                if(mitgliedCounter == 1) {
-                    doc
-                            .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F,
-                                    0.0F).setBorder(Border.NO_BORDER)
-                                    .add(tableBody).setBorder(Border.NO_BORDER)
-                            )
-                    ;
-                }
-                //Add top Border in all other cases
-                else{
-                    doc
-                            .add(new Div().setPaddings(1.0F, 10.0F, 1.0F, 10.0F).setMargins(1.0F, 0.0F, 1.0F,
-                                    0.0F).setBorderTop(new SolidBorder(Border.SOLID))
-                                    .add(tableBody).setBorder(Border.NO_BORDER)
-                            )
-                    ;
-                }
             }
         }
 
