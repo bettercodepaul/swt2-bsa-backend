@@ -79,6 +79,9 @@ public class RegionenComponentImpl implements RegionenComponent {
         checkRegionenDO(regionenDO, currentDsbMitglied);
         Preconditions.checkArgument(regionenDO.getId() >= 0, PRECONDITION_MSG_REGION_ID);
 
+        //need to be done, because the frontend just changes the uebergeordnetAsName --> The
+        regionenDO.setRegionUebergeordnet(null);
+
         List<RegionenBE> allRegions = regionenDAO.findAll();
         syncSingle(regionenDO, allRegions);
 
@@ -139,21 +142,23 @@ public class RegionenComponentImpl implements RegionenComponent {
             if (possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getRegionId());
             } else {
-                LOGGER.debug("Mapping of the regionUebergeordnetAsName to the regionUebergeordnet Id failed.");
+                LOGGER.debug("Mapping of the regionUebergeordnetAsName ("+ currentRegion.getRegionUebergeordnetAsName()
+                        + ") to the regionUebergeordnet Id ("+ currentRegion.getRegionUebergeordnet() +") failed.");
             }
 
             //Case: The region has a superordinate id but not its corresponding name
         } else if (currentRegion.getRegionUebergeordnet() != null
                 && currentRegion.getRegionUebergeordnetAsName() == null) {
 
-            possibleRegions = regions.stream().filter(region -> region.getRegionId() ==
-                    currentRegion.getRegionUebergeordnet()).collect(
+            possibleRegions = regions.stream().filter(region -> (region.getRegionId().equals(
+                    currentRegion.getRegionUebergeordnet()))).collect(
                     Collectors.toList());
 
             if (possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
             } else {
-                LOGGER.debug("Mapping of the regionUebergeordnet Id to the regionUebergeordnetAsName failed.");
+                LOGGER.debug("Mapping of the regionUebergeordnet Id (" + currentRegion.getRegionUebergeordnet()
+                        + ") to the regionUebergeordnetAsName (" + currentRegion.getRegionUebergeordnetAsName() + ") failed.");
             }
         }
         return currentRegion;
