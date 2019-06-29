@@ -24,6 +24,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.setzliste.service.SetzlisteService;
 
 
 /**
@@ -89,6 +90,9 @@ public class DownloadService implements ServiceFacade {
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+
+        SetzlisteService setzlisteService = new SetzlisteService(setzlisteComponent);
+        setzlisteService.generateSetzliste(wettkampfid);
 
         final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
 

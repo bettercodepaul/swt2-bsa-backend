@@ -9,18 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.css.Rect;
 import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
-import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -149,16 +145,29 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             i++;
         }
 
+        //Table for the entire document
+        final Table DocTable = new Table(UnitValue.createPercentArray(1), true);
+
+        //Table for the page title
         final Table PageTitle = new Table(UnitValue.createPercentArray(1), true);
         PageTitle.addCell(addTitle(wettkampfDO, veranstaltungsName));
 
-        doc.add(PageTitle);
+        //Add page title on every page
+        DocTable.addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
+                .add(PageTitle));
 
+        //Iterate through all the teams
         for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
-            final Table tableBody = new Table(UnitValue.createPercentArray(3), true);
+
+            //Create table for each team
+            final Table tableBody = new Table(UnitValue.createPercentArray(3), true).setKeepTogether(true);
+            //Create column headers
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
             final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
             final Table tableFirstRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
+
+            //Add content to column headers
+
             tableFirstRowFirstPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Anw.").setFontSize(10.0F))
@@ -196,6 +205,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
+            //Add column headers to team table
             tableBody
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
                     .add(tableFirstRowFirstPart)
@@ -208,26 +218,33 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
+            //Iterate through playerlist of each team
             for (int mitgliedCounter = 1; mitgliedCounter < TeamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
+
+                //Create columns for player content
                 final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
-                final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(1), false);
+                //Create tables for checkboxes
+                final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(new float[] {40.0F, 60.0F}), true);
                 final Table tableCheckbox2 = new Table(UnitValue.createPercentArray(new float[] {75.0F, 25.0F}), true);
 
                 tableCheckbox1
-                        .addCell(new Cell().setHeight(10.0F).setWidth(10.0F))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(10.0F))
+                        .addCell(new Cell().setHeight(10.0F))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
                 ;
 
                 tableCheckbox2
-                        .addCell(new Cell().setHeight(10.0F).setWidth(0.7F))
+                        .addCell(new Cell().setHeight(10.0F))
                         .addCell(new Cell().setBorder(Border.NO_BORDER))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(0.7F))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                         .addCell(new Cell().setBorder(Border.NO_BORDER))
                 ;
 
+                //Add content to player columns
                 tableBodyFirstPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                         .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
@@ -261,6 +278,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     )
                 ;
 
+                //Add player columns to team tables
+
+                //No border top in ferst line
                 if (mitgliedCounter == 1) {
                     tableBody
                             .addCell(new Cell().setBorder(Border.NO_BORDER)
@@ -275,6 +295,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     ;
                 }
 
+                //Add border top to other lines
                 else {
                     tableBody
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
@@ -289,7 +310,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     ;
                 }
 
-
+                //Add a Border to the last line with an empty cell
                 if (mitgliedCounter == TeamMemberMapping.get(teamNameList[manschaftCounter]).size()){
                     tableBody
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
@@ -301,12 +322,20 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     ;
                 }
             }
-            doc
-                    .add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
-                            .add(tableBody).setBorder(Border.NO_BORDER)
-                    )
-            ;
+
+            //Add team table to the document table
+            DocTable
+                    .setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableBody));
         }
+
+        //Add document table to document
+        doc
+                .add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
+                        .add(DocTable).setBorder(Border.NO_BORDER)
+                )
+        ;
 
         doc.close();
     }
