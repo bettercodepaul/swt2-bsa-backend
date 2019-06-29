@@ -3,6 +3,7 @@ package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -18,6 +19,7 @@ import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTestAll;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
@@ -43,7 +45,6 @@ import static org.mockito.Mockito.*;
  */
 public class BogenkontrolllisteComponentImplTest {
 
-    private static final long VERANSTALTUNGSID = 1;
     private static final long WETTKAMPFID = 30;
 
     @Rule
@@ -76,8 +77,13 @@ public class BogenkontrolllisteComponentImplTest {
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
         List<MatchDO> matchDOList = new ArrayList<>();
-        matchComponent.findAll();
-        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(dsbMannschaftDO.getId());
+        for (int i = 0; i < 56; i ++){
+            matchDOList.add(MatchComponentImplTest.getMatchDO());
+        }
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        for (int i = 0; i < 3; i++){
+            mannschaftsmitgliedDOList.add(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
+        }
         DsbMitgliedDO dsbMitgliedDO = DsbMitgliedComponentImplTest.getDsbMitgliedDO();
 
         //configure Mocks
@@ -88,6 +94,11 @@ public class BogenkontrolllisteComponentImplTest {
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO);
+
+        final byte[] actual = underTest.getBogenkontrolllistePDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
     }
 
     private static Hashtable<String, List<DsbMitgliedDO>> getTeamMemberMapping(){
