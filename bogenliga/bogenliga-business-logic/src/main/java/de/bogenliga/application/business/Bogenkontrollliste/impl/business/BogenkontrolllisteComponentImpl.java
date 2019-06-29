@@ -155,11 +155,10 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         doc.add(PageTitle);
 
         for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
-            final Table tableFirstRow = new Table(UnitValue.createPercentArray(3), true);
+            final Table tableBody = new Table(UnitValue.createPercentArray(3), true);
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
             final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
             final Table tableFirstRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
-
             tableFirstRowFirstPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Anw.").setFontSize(10.0F))
@@ -192,13 +191,12 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
-            tableFirstRowThirdPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+            tableFirstRowThirdPart                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(10.0F))
                 )
             ;
 
-            tableFirstRow
+            tableBody
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
                     .add(tableFirstRowFirstPart)
                 )
@@ -210,14 +208,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
-            doc
-                .add(new Div().setPaddings(10.0F, 10.0F, 1.0F, 10.0F).setMargins(2.5F, 0.0F, 1.0F, 0.0F).setBorder(Border.NO_BORDER)
-                    .add(tableFirstRow).setBorder(Border.NO_BORDER)
-                )
-            ;
-
-            for (int mitgliedCounter = 1; mitgliedCounter < TeamMemberMapping.get(teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
-                final Table tableBody = new Table(UnitValue.createPercentArray(3), true);
+            for (int mitgliedCounter = 1; mitgliedCounter < TeamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
                 final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
@@ -309,13 +300,12 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                             )
                     ;
                 }
-
-                doc
-                    .add(new Div().setPaddings(0.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
+            }
+            doc
+                    .add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
                             .add(tableBody).setBorder(Border.NO_BORDER)
                     )
-                ;
-            }
+            ;
         }
 
         doc.close();
