@@ -33,7 +33,7 @@ public interface DisziplinComponent {
      *
      * @return persisted version of the disziplin
      */
-    public DisziplinDO create(DisziplinDO disziplinDO, final Long currentUserId);
+    DisziplinDO create(DisziplinDO disziplinDO, final Long currentUserId);
 
     /**
      * Update an existing disziplin. The disziplin is identified by the id's set in disziplinDO.
