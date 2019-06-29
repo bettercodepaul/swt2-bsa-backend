@@ -14,10 +14,9 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
- * TODO [AL] class documentation
- *
  * @author Marcel Neumann
  * @author Robin Mueller
+ * @author Nick Kerschagel
  */
 @Repository
 public class DisziplinDAO implements DataAccessObject {
@@ -97,23 +96,11 @@ public class DisziplinDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(DISZIPLIN, FIND_BY_ID, matchId);
     }
 
-    /**
-     * Return a specific match.
-     *
-     * @return match with given combined primary key attributes
-     */
-    public DisziplinBE findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer) {
-        return basicDao.selectSingleEntity(
-                DISZIPLIN, FIND_BY_PK,
-                nr, wettkampfId, mannschaftId,
-                begegnung, scheibenNummer
-        );
-    }
 
     /**
-     * Return all match entries.
+     * Return all entries.
      *
-     * @return list of all match in the database; empty list, if no match is found
+     * @return list of all disciplins in the database; empty list, if no match is found
      */
     public List<DisziplinBE> findAll() {
         return basicDao.selectEntityList(DISZIPLIN, FIND_ALL);
@@ -122,8 +109,8 @@ public class DisziplinDAO implements DataAccessObject {
     /**
      * Create a new disziplin entry
      *
-     * @param disziplinBE
-     * @param currentUserId
+     * @param disziplinBE Business Entity representation to persist
+     * @param currentUserId ID of the current user
      *
      * @return Business Entity corresponding to the created disziplin entry
      */
@@ -135,8 +122,8 @@ public class DisziplinDAO implements DataAccessObject {
     /**
      * Update an existing match entry
      *
-     * @param disziplinBE
-     * @param currentUserId
+     * @param disziplinBE Business Entity representation to update
+     * @param currentUserId ID of current user
      *
      * @return Business Entity corresponding to the updated match entry
      */
@@ -148,8 +135,8 @@ public class DisziplinDAO implements DataAccessObject {
     /**
      * Delete existing match
      *
-     * @param disziplinBE
-     * @param currentUserId
+     * @param disziplinBE Business Entity representation to delete
+     * @param currentUserId ID of current user
      */
     public void delete(final DisziplinBE disziplinBE, final Long currentUserId) {
         basicDao.setModificationAttributes(disziplinBE, currentUserId);
