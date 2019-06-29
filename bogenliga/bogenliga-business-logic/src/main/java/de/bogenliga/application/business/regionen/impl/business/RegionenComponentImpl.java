@@ -5,11 +5,14 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.lizenz.dao.LizenzDAO;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.regionen.impl.mapper.RegionenMapper;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -24,12 +27,18 @@ public class RegionenComponentImpl implements RegionenComponent {
     private static final String PRECONDITION_MSG_REGION_ID = "RegionDO ID must not be negative";
     private static final String PRECONDITION_MSG_REGION_NAME = "RegionDO name must not be null";
     private static final String PRECONDITION_MSG_REGION_DSB_MITGLIED_NOT_NEG = "DsbMitglied id must not be negative";
+    private static final String PRECONDITION_MSG_VEREIN_EXISTS = "You cant delete this Region! There is a least one Verein, which is linked to it.";
+    private static final String PRECONDITION_MSG_LIGA_EXISTS = "You cant delete this Region! There is a least one Liga, which is linked to it.";
+    private static final String PRECONDITION_MSG_LIZENZ_EXISTS = "You cant delete this Region! There is a least one Kampfrichterlizenz, which is linked to it.";
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegionenComponentImpl.class);
 
-    //no need for preconditions since we only need to implement FindAll()
-
     public final RegionenDAO regionenDAO;
+
+    private final LigaComponent ligaComponent;
+    private final VereinComponent vereinComponent;
+    private final LizenzDAO lizenzDAO;
 
 
     /**
@@ -37,8 +46,12 @@ public class RegionenComponentImpl implements RegionenComponent {
      *
      * @param regionenDAO
      */
-    public RegionenComponentImpl(RegionenDAO regionenDAO) {
+    public RegionenComponentImpl(RegionenDAO regionenDAO, LigaComponent ligaComponent, VereinComponent vereinComponent,
+                                 LizenzDAO lizenzDAO) {
         this.regionenDAO = regionenDAO;
+        this.ligaComponent = ligaComponent;
+        this.vereinComponent = vereinComponent;
+        this.lizenzDAO = lizenzDAO;
     }
 
 
@@ -93,13 +106,25 @@ public class RegionenComponentImpl implements RegionenComponent {
 
     @Override
     public void delete(RegionenDO regionenDO, long currentDsbMitglied) {
-        Preconditions.checkNotNull(regionenDO, PRECONDITION_MSG_REGION);
-        Preconditions.checkArgument(regionenDO.getId() >= 0, PRECONDITION_MSG_REGION_ID);
-        Preconditions.checkArgument(currentDsbMitglied >= 0, PRECONDITION_MSG_REGION_DSB_MITGLIED_NOT_NEG);
+        checkDeletePreconditions(regionenDO, currentDsbMitglied);
 
         final RegionenBE regionenBE = RegionenMapper.toRegionBE.apply(regionenDO);
 
         regionenDAO.delete(regionenBE, currentDsbMitglied);
+    }
+
+    private void checkDeletePreconditions(RegionenDO regionenDO, long currentDsbMitglied){
+        Preconditions.checkNotNull(regionenDO, PRECONDITION_MSG_REGION);
+        Preconditions.checkArgument(regionenDO.getId() >= 0, PRECONDITION_MSG_REGION_ID);
+        Preconditions.checkArgument(currentDsbMitglied >= 0, PRECONDITION_MSG_REGION_DSB_MITGLIED_NOT_NEG);
+
+        boolean vereinExists = this.vereinComponent.findAll().stream().anyMatch(verein->regionenDO.getId().equals(verein.getRegionId()));
+        Preconditions.checkArgument(!vereinExists, PRECONDITION_MSG_VEREIN_EXISTS);
+        boolean ligaExists = this.ligaComponent.findAll().stream().anyMatch(liga->regionenDO.getId().equals(liga.getRegionId()));
+        Preconditions.checkArgument(!ligaExists, PRECONDITION_MSG_LIGA_EXISTS);
+        boolean lizenzExists = this.lizenzDAO.findAll().stream().anyMatch(lizenz->regionenDO.getId().equals(lizenz.getLizenzRegionId()));
+        Preconditions.checkArgument(!lizenzExists, PRECONDITION_MSG_LIZENZ_EXISTS);
+
     }
 
     private void checkRegionenDO(final RegionenDO regionenDO, final long currentDsbMitgliedId) {
@@ -163,6 +188,8 @@ public class RegionenComponentImpl implements RegionenComponent {
         }
         return currentRegion;
     }
+
+
 
 
 }
