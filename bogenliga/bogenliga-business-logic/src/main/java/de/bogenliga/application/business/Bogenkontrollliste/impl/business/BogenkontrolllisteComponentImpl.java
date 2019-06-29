@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.css.Rect;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -25,6 +26,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
 import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -149,16 +151,20 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             i++;
         }
 
+        final Table DocTable = new Table(UnitValue.createPercentArray(1), true);
+
         final Table PageTitle = new Table(UnitValue.createPercentArray(1), true);
         PageTitle.addCell(addTitle(wettkampfDO, veranstaltungsName));
 
-        doc.add(PageTitle);
+        DocTable.addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
+                .add(PageTitle));
 
         for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
-            final Table tableBody = new Table(UnitValue.createPercentArray(3), true);
+            final Table tableBody = new Table(UnitValue.createPercentArray(3), true).setKeepTogether(true);
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
             final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
             final Table tableFirstRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
+
             tableFirstRowFirstPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Anw.").setFontSize(10.0F))
@@ -213,18 +219,20 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
-                final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(1), false);
+                final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(new float[] {40.0F, 60.0F}), true);
                 final Table tableCheckbox2 = new Table(UnitValue.createPercentArray(new float[] {75.0F, 25.0F}), true);
 
                 tableCheckbox1
-                        .addCell(new Cell().setHeight(10.0F).setWidth(10.0F))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(10.0F))
+                        .addCell(new Cell().setHeight(10.0F))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
                 ;
 
                 tableCheckbox2
-                        .addCell(new Cell().setHeight(10.0F).setWidth(0.7F))
+                        .addCell(new Cell().setHeight(10.0F))
                         .addCell(new Cell().setBorder(Border.NO_BORDER))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(0.7F))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                         .addCell(new Cell().setBorder(Border.NO_BORDER))
                 ;
 
@@ -301,12 +309,21 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     ;
                 }
             }
-            doc
+            DocTable
+                    .setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableBody));
+            /*doc
                     .add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
                             .add(tableBody).setBorder(Border.NO_BORDER)
                     )
-            ;
+            ;*/
         }
+        doc
+                .add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
+                        .add(DocTable).setBorder(Border.NO_BORDER)
+                )
+        ;
 
         doc.close();
     }
