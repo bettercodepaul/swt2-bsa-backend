@@ -30,6 +30,7 @@ import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO
 import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.vereine.impl.business.VereinComponentImpl;
 import de.bogenliga.application.business.vereine.impl.business.VereinComponentImplTest;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
@@ -90,7 +91,7 @@ public class MeldezettelComponentImplTest {
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         when(disziplinComponent.findById(any())).thenReturn(disziplinDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
-        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(getVereinWithRandomName());
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO);
 
@@ -103,6 +104,12 @@ public class MeldezettelComponentImplTest {
 
         //verify invocations
         verify(matchComponent).findByWettkampfId(anyLong());
+    }
+
+    private VereinDO getVereinWithRandomName(){
+        VereinDO ret = VereinComponentImplTest.getVereinDO();
+        ret.setName("Verein " + (int)(Math.random() * 100 + 1));
+        return ret;
     }
 
     private static List<MatchDO> getMatchesForWettkampf(){
