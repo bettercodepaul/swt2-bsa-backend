@@ -292,13 +292,17 @@ public class UserService implements ServiceFacade {
             value = "/userrole/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public UserRoleDTO getUserRoleById(@PathVariable("id") final long id) {
+    public List<UserRoleDTO> getUserRoleById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
         LOG.debug("Receive 'getUserRoleById' request with ID '{}'", id);
 
-        final UserRoleDO userRoleDO = userRoleComponent.findById(id);
-        return UserRoleDTOMapper.toDTO.apply(userRoleDO);
+        final List<UserRoleDO> userRoleDOlist = userRoleComponent.findById(id);
+        List<UserRoleDTO> userRoleDTOS = new ArrayList<>();
+        for(UserRoleDO userRoleDO : userRoleDOlist){
+            userRoleDTOS.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
+        }
+        return userRoleDTOS;
     }
 
 

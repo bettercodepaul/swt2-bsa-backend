@@ -26,7 +26,7 @@ public interface UserRoleComponent extends ComponentFacade {
      * @return single user entry with the given id;
      * null, if no user is found
      */
-    UserRoleDO findById(Long id);
+    List<UserRoleDO> findById(Long id);
 
     /**
      * Return a user entry with the given id.

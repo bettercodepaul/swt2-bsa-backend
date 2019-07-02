@@ -57,18 +57,22 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
     @Override
-    public UserRoleDO findById(final Long id) {
+    public List<UserRoleDO> findById(final Long id) {
         Preconditions.checkNotNull(id, PRECONDITION_MSG_USERROLE);
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_USER_ID);
 
-        final UserRoleExtBE result = userRoleExtDAO.findById(id);
+        final List<UserRoleExtBE> result = userRoleExtDAO.findById(id);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
+        List<UserRoleDO> userRoleDOList = new ArrayList<>();
+        for(UserRoleExtBE userRoleExtBE : result){
+            userRoleDOList.add(UserRoleMapper.extToUserRoleDO.apply(userRoleExtBE));
+        }
 
-        return UserRoleMapper.extToUserRoleDO.apply(result);
+        return userRoleDOList;
     }
 
 

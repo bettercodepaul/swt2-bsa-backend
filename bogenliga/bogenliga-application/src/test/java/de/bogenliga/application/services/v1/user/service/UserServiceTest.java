@@ -7,6 +7,7 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.common.service.UserProvider;
@@ -529,30 +530,33 @@ public class UserServiceTest {
     @Test
     public void findById() {
         // prepare test data
+
+        List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO expectedDO = new UserRoleDO();
         expectedDO.setId(ID);
         expectedDO.setRoleId(ROLE_ID);
         expectedDO.setEmail(USERNAME);
         expectedDO.setRoleName(ROLE_NAME);
+        userRoleDOList.add(expectedDO);
 
         // configure mocks
-        when(userRoleComponent.findById(anyLong())).thenReturn(expectedDO);
+        when(userRoleComponent.findById(anyLong())).thenReturn(userRoleDOList);
 
         // call test method
-        final UserRoleDTO actual = underTest.getUserRoleById(ID);
+        final List<UserRoleDTO> actual = underTest.getUserRoleById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
+        assertThat(actual.get(0).getId())
                 .isEqualTo(expectedDO.getId());
-        assertThat(actual.getEmail())
+        assertThat(actual.get(0).getEmail())
                 .isEqualTo(expectedDO.getEmail());
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedDO.getRoleId());
-        assertThat(actual.getRoleName())
+        assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedDO.getRoleName());
-        assertThat(actual.getVersion())
+        assertThat(actual.get(0).getVersion())
                 .isEqualTo(expectedDO.getVersion());
 
         // verify invocations

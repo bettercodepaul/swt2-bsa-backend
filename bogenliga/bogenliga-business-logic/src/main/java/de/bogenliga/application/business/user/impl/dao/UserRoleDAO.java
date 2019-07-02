@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.user.impl.dao;
 
+import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -106,30 +107,21 @@ public class UserRoleDAO implements DataAccessObject {
     }
 
     public List<UserRoleBE> createOrUpdate(final List<UserRoleBE> userRoleBES, final long currentUserId){
-       /* List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBES.get(0).getUserId());
+        List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBES.get(0).getUserId());
         List<UserRoleBE> userRoleBEUpdatedList = new ArrayList<>();
-        LOGGER.debug("Info Rollen: " + userRoleBEList.size());
+        for(UserRoleBE userRoleBE: userRoleBEList){
+            if(!userRoleBES.contains(userRoleBE)){
+                basicDao.setModificationAttributes(userRoleBE, currentUserId);
+                basicDao.deleteEntity(USERROLE, userRoleBE, new String[]{ROLE_BE_ID, USER_BE_ID});
+            }
+        }
         for(UserRoleBE userRoleBE : userRoleBES){
             if(!userRoleBEList.contains(userRoleBE)){
                 basicDao.setModificationAttributes(userRoleBE, currentUserId);
                 userRoleBEUpdatedList.add(basicDao.insertEntity(USERROLE, userRoleBE));
             }
         }
-        for(UserRoleBE userRoleBE: userRoleBEList){
-            if(!userRoleBES.contains(userRoleBE)){
-                basicDao.setModificationAttributes(userRoleBE, currentUserId);
-                basicDao.deleteEntity(USERROLE, userRoleBE, USER_BE_ID);
-            }
-        }
 
-*/
-        basicDao.setModificationAttributes(userRoleBES.get(0), currentUserId);
-        basicDao.deleteEntity(USERROLE, userRoleBES.get(0), USER_BE_ID);
-        List<UserRoleBE> userRoleBEUpdatedList = new ArrayList<>();
-        for(UserRoleBE userRoleBE : userRoleBES){
-                basicDao.setModificationAttributes(userRoleBE, currentUserId);
-                userRoleBEUpdatedList.add(basicDao.insertEntity(USERROLE, userRoleBE));
-        }
         return userRoleBEUpdatedList;
     }
 
@@ -140,9 +132,11 @@ public class UserRoleDAO implements DataAccessObject {
      * @param currentUserId
      */
     public void delete(final UserRoleBE userRoleBE, final long currentUserId) {
-        basicDao.setModificationAttributes(userRoleBE, currentUserId);
-
-        basicDao.deleteEntity(USERROLE, userRoleBE, USER_BE_ID);
+        List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBE.getUserId());
+        for(UserRoleBE userRoleBEDelete : userRoleBEList){
+                basicDao.setModificationAttributes(userRoleBEDelete, currentUserId);
+                basicDao.deleteEntity(USERROLE, userRoleBE, new String[]{ROLE_BE_ID, USER_BE_ID});
+        }
     }
 
     /**

@@ -99,19 +99,19 @@ public class UserRoleExtBasicDAOTest {
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
         // call test method
-        final UserRoleExtBE actual = underTest.findById(ID);
+        final List<UserRoleExtBE> actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getUserId())
+        assertThat(actual.get(0).getUserId())
                 .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getUserEmail())
+        assertThat(actual.get(0).getUserEmail())
                 .isEqualTo(expectedBE.getUserEmail());
 
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getRoleName())
+        assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
         // verify invocations

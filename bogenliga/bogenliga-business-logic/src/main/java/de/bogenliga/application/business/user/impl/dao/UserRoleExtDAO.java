@@ -121,9 +121,9 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
      *
      * @param id - User Id the Role is to be searched for
      */
-    public UserRoleExtBE findById(final long id) {
+    public List<UserRoleExtBE> findById(final long id) {
 
-        return basicDao.selectSingleEntity(USERROLE, FIND_BY_ID, id);
+        return basicDao.selectEntityList(USERROLE, FIND_BY_ID, id);
     }
 
 

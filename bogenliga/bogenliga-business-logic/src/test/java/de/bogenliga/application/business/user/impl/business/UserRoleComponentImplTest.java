@@ -110,30 +110,32 @@ public class UserRoleComponentImplTest {
     @Test
     public void findById() {
         // prepare test data
+        List<UserRoleExtBE> userRoleExtBEList = new ArrayList<>();
         final UserRoleExtBE expectedBE = new UserRoleExtBE();
         expectedBE.setUserId(ID);
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        userRoleExtBEList.add(expectedBE);
 
         // configure mocks
-        when(userRoleExtDAO.findById(anyLong())).thenReturn(expectedBE);
+        when(userRoleExtDAO.findById(anyLong())).thenReturn(userRoleExtBEList);
 
         // call test method
-        final UserRoleDO actual = underTest.findById(ID);
+        final List<UserRoleDO> actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
+        assertThat(actual.get(0).getId())
                 .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getEmail())
+        assertThat(actual.get(0).getEmail())
                 .isEqualTo(expectedBE.getUserEmail());
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getRoleName())
+        assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
-        assertThat(actual.getVersion())
+        assertThat(actual.get(0).getVersion())
                 .isEqualTo(expectedBE.getVersion());
 
         // verify invocations
