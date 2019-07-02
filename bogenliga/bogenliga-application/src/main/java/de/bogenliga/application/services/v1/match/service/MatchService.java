@@ -421,6 +421,7 @@ public class MatchService implements ServiceFacade {
         WettkampfTypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
         final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
         matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
+        matchDTO.setWettkampfTag(wettkampfDTO.getWettkampfTag());
 
         // the match is shown on the Schusszettel, add passen and mannschaft name
         if (addPassen) {
