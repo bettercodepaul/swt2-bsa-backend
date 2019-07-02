@@ -67,6 +67,12 @@ public class LizenzDAO implements DataAccessObject {
                     + " FROM lizenz"
                     + " WHERE lizenz_dsb_mitglied_id = ?";
 
+    private static final String FIND_BY_DSB_MITGLIED_ID_AND_DISZIPLIN_ID =
+            "SELECT * " +
+                    " FROM lizenz" +
+                    " WHERE (lizenz_dsb_mitglied_id = ?" +
+                    " AND lizenz_disziplin_id = ?)";
+
 
     private final BasicDAO basicDao;
 
@@ -125,6 +131,10 @@ public class LizenzDAO implements DataAccessObject {
      */
     public LizenzBE findKampfrichterLizenzByDsbMitgliedId(final long id) {
         return basicDao.selectSingleEntity(LIZENZ, FIND_KAMPFRICHTER_BY_DSB_MITGLIED_ID, id);
+    }
+
+    public LizenzBE findByDsbMitgliedIdAndDisziplinId(final long dsbMitgliedId, final long disziplinId) {
+        return basicDao.selectSingleEntity(LIZENZ, FIND_BY_DSB_MITGLIED_ID_AND_DISZIPLIN_ID, dsbMitgliedId, disziplinId);
     }
 
 

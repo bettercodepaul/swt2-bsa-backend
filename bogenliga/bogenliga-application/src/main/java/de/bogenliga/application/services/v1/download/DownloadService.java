@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -131,13 +132,13 @@ public class DownloadService implements ServiceFacade {
     }
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
-            path = "pdf/schuetzenlizenz",
+            path = "pdf/schuetzenlizenz/{dsbMitgliedId}/{teamId}",
             produces = MediaType.APPLICATION_PDF_VALUE)
-    public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadLizenz(@RequestParam("dsbMitgliedID") final long dsbMitgliedID) {
+    public ResponseEntity<InputStreamResource> downloadLizenz(@PathVariable("dsbMitgliedId") final long dsbMitgliedID,
+    @PathVariable("teamId") final long teamID) {
         LOG.debug("dsbMitgliedID: " + dsbMitgliedID);
-        // LOG.debug("LizenzID: " + LizenzID);
-        final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID);
+        LOG.debug("teamID: " + teamID);
+        final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID, teamID);
 
         return generateInputStream(fileBloB);
     }
