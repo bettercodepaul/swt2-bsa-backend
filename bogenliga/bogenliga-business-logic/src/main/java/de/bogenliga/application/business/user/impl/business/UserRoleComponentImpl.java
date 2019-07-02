@@ -15,6 +15,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,22 +121,31 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
 
-    public UserRoleDO update(final UserRoleDO userRoleDO, final Long currentUserId) {
-        Preconditions.checkNotNull(userRoleDO, PRECONDITION_MSG_USERROLE);
-        Preconditions.checkNotNull(userRoleDO.getId(), PRECONDITION_MSG_USER_ID);
-        Preconditions.checkNotNull(userRoleDO.getRoleId(), PRECONDITION_MSG_ROLE_ID);
-        Preconditions.checkArgument(userRoleDO.getId() >= 0, PRECONDITION_MSG_USER_ID);
-        Preconditions.checkArgument(userRoleDO.getRoleId() >= 0, PRECONDITION_MSG_ROLE_ID);
+    public List<UserRoleDO> update(final List<UserRoleDO> userRoleDOS, final Long currentUserId) {
+        Preconditions.checkNotNull(userRoleDOS, PRECONDITION_MSG_USERROLE);
+        Preconditions.checkNotNull(userRoleDOS.get(0).getId(), PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(userRoleDOS.get(0).getRoleId(), PRECONDITION_MSG_ROLE_ID);
+        Preconditions.checkArgument(userRoleDOS.get(0).getId() >= 0, PRECONDITION_MSG_USER_ID);
+        Preconditions.checkArgument(userRoleDOS.get(0).getRoleId() >= 0, PRECONDITION_MSG_ROLE_ID);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
 
-        UserRoleBE result = new UserRoleBE();
-        result.setUserId(userRoleDO.getId());
-        result.setRoleId(userRoleDO.getRoleId());
+        List<UserRoleBE> userRoleBES = new ArrayList<>();
+        for(UserRoleDO userRoleDO : userRoleDOS) {
+            UserRoleBE result = new UserRoleBE();
+            result.setUserId(userRoleDO.getId());
+            result.setRoleId(userRoleDO.getRoleId());
+            userRoleBES.add(result);
+        }
+
+        final List<UserRoleBE> persistedUserRoleBE = userRoleExtDAO.createOrUpdate(userRoleBES, currentUserId);
 
 
-        final UserRoleBE persistedUserRoleBE = userRoleExtDAO.update(result, currentUserId);
+        List<UserRoleDO> persistedUserRoleDO = new ArrayList<>();
+        for(UserRoleBE userRoleBE: persistedUserRoleBE){
+            persistedUserRoleDO.add(UserRoleMapper.toUserRoleDO.apply(userRoleBE));
+        }
 
-        return UserRoleMapper.toUserRoleDO.apply(persistedUserRoleBE);
+        return persistedUserRoleDO;
     }
 
 

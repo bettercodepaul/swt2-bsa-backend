@@ -22,6 +22,7 @@ import org.mockito.junit.MockitoRule;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -433,16 +434,17 @@ public class UserRoleComponentImplTest {
     @Test
     public void update_UserDO_ID_notneagtive(){
 
+        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO inputDO = new UserRoleDO();
         inputDO.setId(null);
         inputDO.setRoleId(ROLE_ID);
         inputDO.setEmail(EMAIL);
         inputDO.setRoleName(ROLE_NAME);
         inputDO.setVersion(VERSION);
-
+        userRoleDOList.add(inputDO);
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inputDO, USER))
+                .isThrownBy(() -> underTest.update(userRoleDOList, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -451,16 +453,17 @@ public class UserRoleComponentImplTest {
     @Test
     public void update_UserDO_RoleID_notneagtive(){
 
+        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO inputDO = new UserRoleDO();
         inputDO.setId(ID);
         inputDO.setRoleId(null);
         inputDO.setEmail(EMAIL);
         inputDO.setRoleName(ROLE_NAME);
         inputDO.setVersion(VERSION);
-
+        userRoleDOList.add(inputDO);
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inputDO, USER))
+                .isThrownBy(() -> underTest.update(userRoleDOList, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -471,12 +474,14 @@ public class UserRoleComponentImplTest {
     @Test
     public void update_sucessful(){
 
+        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO inputDO = new UserRoleDO();
         inputDO.setId(ID);
         inputDO.setRoleId(ROLE_ID);
         inputDO.setEmail(EMAIL);
         inputDO.setRoleName(ROLE_NAME);
         inputDO.setVersion(VERSION);
+        userRoleDOList.add(inputDO);
 
         final OffsetDateTime dateTime = OffsetDateTime.now();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -494,16 +499,16 @@ public class UserRoleComponentImplTest {
         when(userRoleExtDAO.update(any(UserRoleBE.class),anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final UserRoleDO actual =  underTest.update(inputDO, USER);
+        final List<UserRoleDO> actual =  underTest.update(userRoleDOList, USER);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
+        assertThat(actual.get(0).getId())
                 .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getVersion())
+        assertThat(actual.get(0).getVersion())
                 .isEqualTo(expectedBE.getVersion());
 
     }
