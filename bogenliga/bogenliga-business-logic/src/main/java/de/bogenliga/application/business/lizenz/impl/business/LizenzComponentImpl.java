@@ -6,18 +6,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.itextpdf.kernel.geom.Line;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImpl;
@@ -28,11 +34,16 @@ import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.business.lizenz.impl.mapper.LizenzMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImpl;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.MannschaftsmitgliedMapper;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.impl.business.VereinComponentImpl;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -59,6 +70,10 @@ public class LizenzComponentImpl implements LizenzComponent {
     private final LizenzDAO lizenzDAO;
     private final VereinComponentImpl vereinComponent;
     private final DsbMitgliedComponentImpl dsbMitgliedComponent;
+    private final DsbMannschaftComponent mannschaftComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
+    private final WettkampfComponent wettkampfComponent;
+
 
     public void checkCurrentUserPreconditions(final Long id) {
         Preconditions.checkNotNull(id, PRECONDITION_CURRENT_USER_ID);
@@ -75,10 +90,14 @@ public class LizenzComponentImpl implements LizenzComponent {
      */
     @Autowired
     public LizenzComponentImpl(final LizenzDAO lizenzDAO, final VereinComponentImpl vereinComponent,
-                               final DsbMitgliedComponentImpl dsbMitglied) {
+                               final DsbMitgliedComponentImpl dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
+                               final VeranstaltungComponent veranstaltungComponent, final WettkampfComponent wettkampfComponent) {
         this.lizenzDAO = lizenzDAO;
         this.vereinComponent = vereinComponent;
         this.dsbMitgliedComponent = dsbMitglied;
+        this.mannschaftComponent = mannschaftComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
+        this.wettkampfComponent = wettkampfComponent;
     }
 
 
@@ -145,21 +164,25 @@ public class LizenzComponentImpl implements LizenzComponent {
 
 
     @Override
-    public byte[] getLizenzPDFasByteArray(long dsbMitgliedID) {
+    public byte[] getLizenzPDFasByteArray(long dsbMitgliedID, long teamID) {
         byte[] result;
         DsbMitgliedDO mitgliedDO= dsbMitgliedComponent.findById(dsbMitgliedID);
-        LizenzDO lizenzDO = new LizenzDO();
-        result = generateDoc(mitgliedDO, lizenzDO).toByteArray();
+        DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(mannschaftDO.getVeranstaltungId());
+        List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllWettkaempfeByMannschaftsId(mannschaftDO.getId());
+        LizenzBE lizenz = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(mitgliedDO.getId(), wettkampfDOList.get(0).getWettkampfDisziplinId());
+        System.out.println(lizenz);
+        result = generateDoc(mitgliedDO, lizenz, veranstaltungDO).toByteArray();
         return result;
     }
 
-    private ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzDO lizenzDO) {
+    private ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, VeranstaltungDO veranstaltung) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
-            generateLizenzPage(doc, lizenzDO, mitglied);
+            generateLizenzPage(doc, lizenz, mitglied, veranstaltung);
             doc.close();
             ret = result;
         } catch (final IOException e) {
@@ -169,65 +192,131 @@ public class LizenzComponentImpl implements LizenzComponent {
     }
 
 
-        private void generateLizenzPage(Document doc, LizenzDO lizenzDO, DsbMitgliedDO mitgliedDO){
+        private void generateLizenzPage(Document doc, LizenzBE lizenz, DsbMitgliedDO mitgliedDO, VeranstaltungDO veranstaltung){
 
 
-        final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
+        final Table tableHead = new Table(UnitValue.createPercentArray(1), true);
         final Table secondTable = new Table(UnitValue.createPercentArray(1), true);
         final Table thirdTable = new Table(UnitValue.createPercentArray(1), true);
-        final Table fourthTable = new Table(UnitValue.createPercentArray(1), true);
+        final Table fourthTable = new Table(UnitValue.createPercentArray(6), true);
         final Table fifthTable = new Table(UnitValue.createPercentArray(1), true);
+
+        DottedLine line = new DottedLine(1.5F);
 
 
         tableHead
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Lizenz").setBold().setFontSize(15.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Lizenz").setBold().setFontSize(25.0F))
                 );
 
 
         secondTable
-               // .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Lizenznummer: " + lizenzDO.getLizenznummer()).setBold().setFontSize(12.0F))
-                //)
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Lizenznummer: " + lizenz.getLizenznummer()).setBold().setFontSize(15.0F))
+                )
                 .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Name: " + mitgliedDO.getNachname()).setBold().setFontSize(12.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Vorname: " + mitgliedDO.getVorname()).setBold().setFontSize(12.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Verein: " + vereinComponent.findById(mitgliedDO.getVereinsId()).getName()).setBold().setFontSize(12.0F))
                 )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Liga: " + vereinComponent).setBold().setFontSize(12.0F))
-                );
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Liga: " + veranstaltung.getVeranstaltungName()).setBold().setFontSize(12.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Sportjahr: " + veranstaltung.getVeranstaltungSportJahr()).setBold().setFontSize(12.0F))
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER));
 
         thirdTable
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Wettkampftage teilgenommen:").setBold().setFontSize(13.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Wettkampftage teilgenommen:").setBold().setFontSize(15.0F))
                 );
 
         fourthTable
-                .addCell(new Cell().setHeight(25.0F))
+                //1. Zeile
+                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("1").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+
+                //2. Zeile
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+
+                //3.Zeile
+                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("2").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+
+                //4.Zeile
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+
+                //5.Zeile
+                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("3").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+
+                //6.Zeile
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+
+                //7.Zeile
+                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("4").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
-                );
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+
+                //8.Zeile
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER));
 
         fifthTable
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift Schütze:").setBold().setFontSize(13.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Unterschrift Schütze:").setBold().setFontSize(15.0F))
                 );
-        doc.add(tableHead);
-            doc.add(secondTable);
-            doc.add(thirdTable);
-            doc.add(fourthTable);
-            doc.add(fifthTable);
+        doc
+            .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(10.5F, 0.0F, 2.5F, 0.0F)
+                    .add(tableHead)
+                    .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(10.5F, 0.0F, 10.5F, 0.0F)
+                            .add(secondTable))
+                    .add(thirdTable)
+                    .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(2.5F, 0.0F, 15.5F, 0.0F)
+                        .add(fourthTable)
+                    )
+                    .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(2.5F, 0.0F, 15.5F, 0.0F)
+                    .add(fifthTable)))
+                    .add(new LineSeparator(line));
+
     }
 }
