@@ -227,8 +227,8 @@ public class UserService implements ServiceFacade {
     public List<UserRoleDTO> updateRoles(final HttpServletRequest requestWithHeader,
                                   @RequestBody final List<UserRoleDTO> updatedUserRoles) {
         Preconditions.checkNotNull(updatedUserRoles, "UserRole-Definition must not be null");
-        Preconditions.checkNotNull(updatedUserRoles.get(1).getId(), PRECONDITION_MSG_USER_ID);
-        Preconditions.checkNotNull(updatedUserRoles.get(1).getRoleId(), PRECONDITION_MSG_ROLE_ID);
+        Preconditions.checkNotNull(updatedUserRoles.get(0).getId(), PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(updatedUserRoles.get(0).getRoleId(), PRECONDITION_MSG_ROLE_ID);
 
         ErrorDTO errorDetails = null;
 
