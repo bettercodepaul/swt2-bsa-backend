@@ -67,14 +67,14 @@ public class SQLTest {
         // prepare test data
         // configure mocks
         // call test method
-        final SQL.SQLWithParameter actual = SQL.selectSQL(INPUT, TABLE_NAME, "id", FIELD_MAPPING);
+        final SQL.SQLWithParameter actual = SQL.selectSQL(INPUT, TABLE_NAME, new String[]{"id"}, FIELD_MAPPING);
 
         // assert result
         assertThat(actual).isNotNull();
         assertThat(actual.getSql())
                 .isNotNull()
                 .isNotEmpty()
-                .isEqualTo("SELECT * FROM test_table WHERE pk = ?;");
+                .isEqualTo("SELECT * FROM test_table WHERE pk = ? ;");
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()
@@ -133,28 +133,7 @@ public class SQLTest {
         // verify invocations
     }
 
-
-    @Test
-    public void updateSQL() {
-        // prepare test data
-        // configure mocks
-        // call test method
-        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT);
-
-        // assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.getSql())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo("UPDATE TestBE SET name=?, active=?, ready=?, number=?, state=? WHERE id = ?;");
-        assertThat(actual.getParameter())
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(6)
-                .contains(NAME, ACTIVE, READY, NUMBER, STATE.name(), ID);
-
-        // verify invocations
-    }
+    //Those test just test for the case that you didn't specify a real fieldSelector, which should throw an exception. Because it doesn't exist.
 
 
     @Test
@@ -163,7 +142,8 @@ public class SQLTest {
         // configure mocks
         // call test method
         // define custom WHERE selector TABLE_FIELD_STATE
-        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, TABLE_FIELD_STATE, FIELD_MAPPING);
+        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, new String[]{TABLE_FIELD_STATE},
+                FIELD_MAPPING);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -171,7 +151,7 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
+                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s = ? ;",
                                 TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
                                 TABLE_FIELD_STATE, TABLE_FIELD_STATE));
         assertThat(actual.getParameter())
@@ -190,7 +170,7 @@ public class SQLTest {
         // configure mocks
         // call test method
         // define custom WHERE selector TABLE_FIELD_STATE
-        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, "id", FIELD_MAPPING);
+        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, new String[]{"id"}, FIELD_MAPPING);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -198,7 +178,7 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
+                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=?, %s=? WHERE %s = ? ;",
                                 TABLE_NAME, TABLE_FIELD_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
                                 TABLE_FIELD_STATE, TABLE_FIELD_ID));
         assertThat(actual.getParameter())
@@ -217,7 +197,7 @@ public class SQLTest {
         // configure mocks
         // call test method
         // define custom WHERE selector TABLE_FIELD_STATE
-        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, "name", FIELD_MAPPING);
+        final SQL.SQLWithParameter actual = SQL.updateSQL(INPUT, TABLE_NAME, new String[]{"name"}, FIELD_MAPPING);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -225,37 +205,14 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=? WHERE %s = ?;",
-                                TABLE_NAME, TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
+                        String.format("UPDATE %s SET %s=?, %s=?, %s=?, %s=? WHERE %s = ? ;",
+                                TABLE_NAME,  TABLE_FIELD_ACTIVE, TABLE_FIELD_READY, TABLE_FIELD_NUMBER,
                                 TABLE_FIELD_STATE, TABLE_FIELD_NAME));
         assertThat(actual.getParameter())
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(5)
+                .hasSize(6)
                 .contains(ACTIVE, READY, NUMBER, STATE.name(), NAME);
-
-        // verify invocations
-    }
-
-
-    @Test
-    public void deleteSQL() {
-        // prepare test data
-        // configure mocks
-        // call test method
-        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT);
-
-        // assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.getSql())
-                .isNotNull()
-                .isNotEmpty()
-                .isEqualTo("DELETE FROM TestBE WHERE id = ?;");
-        assertThat(actual.getParameter())
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1)
-                .contains(ID);
 
         // verify invocations
     }
@@ -267,7 +224,7 @@ public class SQLTest {
         // configure mocks
         // call test method
         // define custom WHERE selector TABLE_FIELD_STATE
-        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT, TABLE_NAME, "state", FIELD_MAPPING);
+        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT, TABLE_NAME, new String[]{"state"}, FIELD_MAPPING);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -275,7 +232,7 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("DELETE FROM %s WHERE %s = ?;",
+                        String.format("DELETE FROM %s WHERE %s = ? ;",
                                 TABLE_NAME, TABLE_FIELD_STATE));
         assertThat(actual.getParameter())
                 .isNotNull()
@@ -293,7 +250,7 @@ public class SQLTest {
         // configure mocks
         // call test method
         // define custom WHERE selector TABLE_FIELD_STATE
-        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT, TABLE_NAME, "number", FIELD_MAPPING);
+        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT, TABLE_NAME, new String[]{"number"}, FIELD_MAPPING);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -301,7 +258,7 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("DELETE FROM %s WHERE %s = ?;",
+                        String.format("DELETE FROM %s WHERE %s = ? ;",
                                 TABLE_NAME, TABLE_FIELD_NUMBER));
         assertThat(actual.getParameter())
                 .isNotNull()
@@ -319,7 +276,7 @@ public class SQLTest {
         // configure mocks
         // call test method
         // define custom WHERE selector "id"
-        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT, TABLE_NAME, "id", FIELD_MAPPING);
+        final SQL.SQLWithParameter actual = SQL.deleteSQL(INPUT, TABLE_NAME, new String[]{"id"}, FIELD_MAPPING);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -327,7 +284,7 @@ public class SQLTest {
                 .isNotNull()
                 .isNotEmpty()
                 .isEqualTo(
-                        String.format("DELETE FROM %s WHERE %s = ?;",
+                        String.format("DELETE FROM %s WHERE %s = ? ;",
                                 TABLE_NAME, TABLE_FIELD_ID));
         assertThat(actual.getParameter())
                 .isNotNull()

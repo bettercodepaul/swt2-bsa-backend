@@ -1,5 +1,6 @@
 package de.bogenliga.application.common.database;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,7 +39,7 @@ public final class SQL {
      * @return SELECT SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter selectSQL(final Object selectObj, final String tableName,
-                                             final String fieldSelector,
+                                             final String[] fieldSelector,
                                              final Map<String, String> columnToFieldMapping) {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
@@ -48,7 +49,10 @@ public final class SQL {
 
         try {
             final Field[] fields = getAllFields(selectObj);
-            final Object idValue = findFieldSelectorValue(selectObj, fieldSelector, fields);
+            for (String selector : fieldSelector) {
+                para.add(findFieldSelectorValue(selectObj, selector, fields));
+            }
+
             //final Object idValue = appendFieldsToSelectStatement(selectObj, fieldSelector, columnToFieldMapping, sql,
             //        fields);
 
@@ -62,25 +66,12 @@ public final class SQL {
                 sql.append(tName);
             }
 
-            sql.append(" WHERE ");
-
-            if (fieldSelector != null) {
-                sql.append(resolveColumName(fieldSelector, columnToFieldMapping));
-            } else {
-                sql.append("id");
-            }
-            sql.append(" = ?;");
-            para.add(idValue);
-
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
 
-        sqlWithParameter.setSql(sql.toString());
-        sqlWithParameter.setParameter(para.toArray());
-
-        return sqlWithParameter;
+        return appendWhereStatements(sql, fieldSelector, columnToFieldMapping, sqlWithParameter, para);
     }
 
 
@@ -292,12 +283,11 @@ public final class SQL {
      * @return UPDATE SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter updateSQL(final Object updateObj, final String tableName,
-                                             final String fieldSelector,
+                                             final String fieldSelector[],
                                              final Map<String, String> columnToFieldMapping) {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
         final List<Object> para = new ArrayList<>();
-        final Object idValue;
         sql.append("UPDATE ");
 
         try {
@@ -312,20 +302,34 @@ public final class SQL {
             sql.append(" SET ");
             final Field[] fields = getAllFields(updateObj);
 
-            idValue = appendFieldsToUpdateStatement(updateObj, fieldSelector, columnToFieldMapping, sql, para, fields);
+            return appendFieldsToUpdateStatement(updateObj, fieldSelector, columnToFieldMapping, sql, para, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
+    }
 
+
+    private static SQLWithParameter appendWhereStatements(StringBuilder sql, String[] fieldSelector,
+                                                          Map<String, String> columnToFieldMapping,
+                                                          SQLWithParameter sqlWithParameter, List<Object> para) {
         sql.append(" WHERE ");
-        if (fieldSelector != null) {
-            sql.append(resolveColumName(fieldSelector, columnToFieldMapping));
-        } else {
-            sql.append("id");
+        int i = 0;
+        for (String selector : fieldSelector) {
+            if (i > 0) {
+                sql.append(" AND ");
+            }
+
+            if (selector != null) {
+                sql.append(resolveColumName(selector, columnToFieldMapping));
+            } else {
+                throw new TechnicalException(ErrorCode.DATABASE_ERROR, "Field selector specified not found");
+            }
+            sql.append(" = ? ");
+            i++;
         }
-        sql.append(" = ?;");
-        para.add(idValue);
+
+        sql.append(";");
 
         sqlWithParameter.setSql(sql.toString());
         sqlWithParameter.setParameter(para.toArray());
@@ -366,12 +370,11 @@ public final class SQL {
      * @return DELETE SQL und zugehoerige Parameterliste
      */
     public static SQLWithParameter deleteSQL(final Object updateObj, final String tableName,
-                                             final String fieldSelector,
+                                             final String[] fieldSelector,
                                              final Map<String, String> columnToFieldMapping) {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
-        final List<Object> para = new ArrayList<>();
-        final Object idValue;
+        final List<Object> para;
 
         sql.append("DELETE FROM ");
 
@@ -386,25 +389,13 @@ public final class SQL {
 
             final Field[] fields = updateObj.getClass().getDeclaredFields();
 
-            idValue = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
+            para = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
         } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
                 | InvocationTargetException e) {
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
 
-        sql.append(" WHERE ");
-        if (fieldSelector != null) {
-            sql.append(resolveColumName(fieldSelector, columnToFieldMapping));
-        } else {
-            sql.append("id");
-        }
-        sql.append(" = ?;");
-        para.add(idValue);
-
-        sqlWithParameter.setSql(sql.toString());
-        sqlWithParameter.setParameter(para.toArray());
-
-        return sqlWithParameter;
+        return appendWhereStatements(sql, fieldSelector, columnToFieldMapping, sqlWithParameter, para);
     }
 
 
@@ -484,14 +475,16 @@ public final class SQL {
     }
 
 
-    private static Object appendFieldsToUpdateStatement(final Object updateObj, final String fieldSelector,
-                                                        final Map<String, String> columnToFieldMapping,
-                                                        final StringBuilder sql,
-                                                        final List<Object> para,
-                                                        final Field[] fields)
+    private static SQLWithParameter appendFieldsToUpdateStatement(final Object updateObj, final String[] fieldSelector,
+                                                      final Map<String, String> columnToFieldMapping,
+                                                      final StringBuilder sql,
+                                                      final List<Object> para,
+                                                      final Field[] fields)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        ArrayList<String> fieldselector = new ArrayList<>(Arrays.asList(fieldSelector));
+        ArrayList<String> fieldS = new ArrayList<>();
+        ArrayList<Object> params = new ArrayList<>();
         boolean first = true;
-        Object idValue = null;
         for (final Field field : fields) {
             if (isMappableField(field)) {
                 final String fName = field.getName();
@@ -501,8 +494,9 @@ public final class SQL {
                     final Method getter = getGetterMethod(updateObj, field, fName);
                     Object value = getter.invoke(updateObj);
 
-                    if (fName.equals("id") || fName.equals(fieldSelector)) {
-                        idValue = value;
+                    if (fName.equals("id") || fieldselector.contains(fName)) {
+                        fieldS.add(fName);
+                        params.add(value);
                         continue;
                     } else if (value != null && value.getClass().isEnum()) {
                         value = ((Enum) value).name();
@@ -521,37 +515,42 @@ public final class SQL {
                 }
             }
         }
-        return idValue;
+        para.addAll(params);
+
+        final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
+        sqlWithParameter.setSql(sql.toString());
+        sqlWithParameter.setParameter(para.toArray());
+        return appendWhereStatements(sql,fieldSelector,columnToFieldMapping,sqlWithParameter,para);
     }
 
 
-    private static Object appendFieldsToDeleteStatement(final Object updateObj, final String fieldSelector,
-                                                        final Field[] fields)
+    private static List<Object> appendFieldsToDeleteStatement(final Object updateObj, final String[] selectors,
+                                                              final Field[] fields)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Object idValue = null;
+        List<Object> idValue = new ArrayList<>();
+        for (String fieldSelector : selectors) {
+            String identifier = "id";
+            if (fieldSelector != null && !fieldSelector.equals(identifier)) {
+                identifier = fieldSelector;
+            }
 
-        String identifier = "id";
-        if (fieldSelector != null && !fieldSelector.equals(identifier)) {
-            identifier = fieldSelector;
-        }
+            for (final Field field : fields) {
+                if (isMappableField(field)) {
+                    final String fName = field.getName();
 
-        for (final Field field : fields) {
-            if (isMappableField(field)) {
-                final String fName = field.getName();
+                    if (!VERSION.equals(fName) && fName.equals(identifier)) {
 
-                if (!VERSION.equals(fName) && fName.equals(identifier)) {
+                        final String getterName = retrieveGetterName(field, fName);
+                        final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
 
-                    final String getterName = retrieveGetterName(field, fName);
-                    final Method getter = updateObj.getClass().getDeclaredMethod(getterName);
+                        Object value = getter.invoke(updateObj);
 
-                    Object value = getter.invoke(updateObj);
+                        if (value != null && value.getClass().isEnum()) {
+                            value = ((Enum) value).name();
+                        }
 
-                    if (value != null && value.getClass().isEnum()) {
-                        value = ((Enum) value).name();
+                        idValue.add(value);
                     }
-
-                    idValue = value;
-
                 }
             }
         }
