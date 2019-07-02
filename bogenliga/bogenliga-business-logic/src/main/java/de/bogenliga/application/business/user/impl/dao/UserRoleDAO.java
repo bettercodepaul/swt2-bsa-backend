@@ -46,13 +46,10 @@ public class UserRoleDAO implements DataAccessObject {
     private UserRoleExtDAO userRoleExtDAO;
 
     private static final String FIND_BY_ID =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
-                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
-                    + " FROM benutzer_rolle, benutzer, rolle "
-                    + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = ? "
-                    + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id";
-
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id,"
+                    + " benutzer_rolle.benutzer_rolle_rolle_id"
+                    + " FROM benutzer_rolle"
+                    + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = ? ";
 
 
     /**
@@ -109,8 +106,9 @@ public class UserRoleDAO implements DataAccessObject {
     }
 
     public List<UserRoleBE> createOrUpdate(final List<UserRoleBE> userRoleBES, final long currentUserId){
-        List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, currentUserId);
+       /* List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBES.get(0).getUserId());
         List<UserRoleBE> userRoleBEUpdatedList = new ArrayList<>();
+        LOGGER.debug("Info Rollen: " + userRoleBEList.size());
         for(UserRoleBE userRoleBE : userRoleBES){
             if(!userRoleBEList.contains(userRoleBE)){
                 basicDao.setModificationAttributes(userRoleBE, currentUserId);
@@ -118,12 +116,20 @@ public class UserRoleDAO implements DataAccessObject {
             }
         }
         for(UserRoleBE userRoleBE: userRoleBEList){
-            if(!userRoleBES.contains(userRoleBEList)){
+            if(!userRoleBES.contains(userRoleBE)){
                 basicDao.setModificationAttributes(userRoleBE, currentUserId);
                 basicDao.deleteEntity(USERROLE, userRoleBE, USER_BE_ID);
             }
         }
 
+*/
+        basicDao.setModificationAttributes(userRoleBES.get(0), currentUserId);
+        basicDao.deleteEntity(USERROLE, userRoleBES.get(0), USER_BE_ID);
+        List<UserRoleBE> userRoleBEUpdatedList = new ArrayList<>();
+        for(UserRoleBE userRoleBE : userRoleBES){
+                basicDao.setModificationAttributes(userRoleBE, currentUserId);
+                userRoleBEUpdatedList.add(basicDao.insertEntity(USERROLE, userRoleBE));
+        }
         return userRoleBEUpdatedList;
     }
 
