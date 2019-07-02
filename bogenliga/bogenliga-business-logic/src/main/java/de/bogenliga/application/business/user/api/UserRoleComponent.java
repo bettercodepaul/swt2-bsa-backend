@@ -70,11 +70,11 @@ public interface UserRoleComponent extends ComponentFacade {
      * password requirements prdefined.
      *
      *
-     * @param userRoleDO users current ID and new Role ID
+     * @param userRolesDO users current ID and new Role ID
      * @param currentUserId current user
      *
      * @return the user, if the user exists and the password is sufficient
      */
-    UserRoleDO update(final UserRoleDO userRoleDO, final Long currentUserId);
+    List<UserRoleDO> update(final List<UserRoleDO> userRolesDO, final Long currentUserId);
 
 }

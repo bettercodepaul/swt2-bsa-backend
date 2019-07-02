@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +43,16 @@ public class UserRoleDAO implements DataAccessObject {
 
 
     private final BasicDAO basicDao;
+    private UserRoleExtDAO userRoleExtDAO;
+
+    private static final String FIND_BY_ID =
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
+                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
+                    + " FROM benutzer_rolle, benutzer, rolle "
+                    + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = ? "
+                    + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
+                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id";
+
 
 
     /**
@@ -96,6 +108,24 @@ public class UserRoleDAO implements DataAccessObject {
         return basicDao.updateEntity(USERROLE, userRoleBE, USER_BE_ID);
     }
 
+    public List<UserRoleBE> createOrUpdate(final List<UserRoleBE> userRoleBES, final long currentUserId){
+        List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, currentUserId);
+        List<UserRoleBE> userRoleBEUpdatedList = new ArrayList<>();
+        for(UserRoleBE userRoleBE : userRoleBES){
+            if(!userRoleBEList.contains(userRoleBE)){
+                basicDao.setModificationAttributes(userRoleBE, currentUserId);
+                userRoleBEUpdatedList.add(basicDao.insertEntity(USERROLE, userRoleBE));
+            }
+        }
+        for(UserRoleBE userRoleBE: userRoleBEList){
+            if(!userRoleBES.contains(userRoleBEList)){
+                basicDao.setModificationAttributes(userRoleBE, currentUserId);
+                basicDao.deleteEntity(USERROLE, userRoleBE, USER_BE_ID);
+            }
+        }
+
+        return userRoleBEUpdatedList;
+    }
 
     /**
      * Delete existing user entry

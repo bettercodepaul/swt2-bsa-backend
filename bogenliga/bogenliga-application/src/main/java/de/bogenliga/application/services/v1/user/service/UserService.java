@@ -32,6 +32,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -219,30 +220,36 @@ public class UserService implements ServiceFacade {
 
     @RequestMapping(
             method = RequestMethod.PUT,
-            value = "/uptRole",
+            value = "/uptRoles",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserRoleDTO updateRole(final HttpServletRequest requestWithHeader,
-                                  @RequestBody final UserRoleDTO updatedUserRole) {
-        Preconditions.checkNotNull(updatedUserRole, "UserRole-Definition must not be null");
-        Preconditions.checkNotNull(updatedUserRole.getId(), PRECONDITION_MSG_USER_ID);
-        Preconditions.checkNotNull(updatedUserRole.getRoleId(), PRECONDITION_MSG_ROLE_ID);
+    public List<UserRoleDTO> updateRoles(final HttpServletRequest requestWithHeader,
+                                  @RequestBody final List<UserRoleDTO> updatedUserRoles) {
+        Preconditions.checkNotNull(updatedUserRoles, "UserRole-Definition must not be null");
+        Preconditions.checkNotNull(updatedUserRoles.get(1).getId(), PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(updatedUserRoles.get(1).getRoleId(), PRECONDITION_MSG_ROLE_ID);
 
         ErrorDTO errorDetails = null;
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
-        final UserRoleDO userRoleDO = new UserRoleDO();
-        userRoleDO.setId(updatedUserRole.getId());
-        userRoleDO.setRoleId(updatedUserRole.getRoleId());
+        List<UserRoleDO> updatedUserRolesDo = new ArrayList<>();
+        for(UserRoleDTO userRoleDTO : updatedUserRoles) {
+            final UserRoleDO userRoleDO = new UserRoleDO();
+            userRoleDO.setId(userRoleDTO.getId());
+            userRoleDO.setRoleId(userRoleDTO.getRoleId());
+            updatedUserRolesDo.add(userRoleDO);
+        }
+        final List<UserRoleDO> userRoleUpdatedDO = userRoleComponent.update(updatedUserRolesDo, userId);
 
-        final UserRoleDO userRoleUpdatedDO = userRoleComponent.update(userRoleDO, userId);
-        final UserRoleDTO userUpdatedDTO = UserRoleDTOMapper.toDTO.apply(userRoleUpdatedDO);
+        List<UserRoleDTO> userRoleUpdatedDTO = new ArrayList<>();
+        for(UserRoleDO userRoleDO : userRoleUpdatedDO){
+            userRoleUpdatedDTO.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
+        }
 
-
-        return userUpdatedDTO;
+        return userRoleUpdatedDTO;
     }
 
 
