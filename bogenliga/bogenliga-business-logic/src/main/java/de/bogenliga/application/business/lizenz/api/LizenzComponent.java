@@ -58,6 +58,6 @@ public interface LizenzComponent extends ComponentFacade {
      */
     void delete(final LizenzDO lizenzDO,final long currentUserId);
 
-    byte[] getLizenzPDFasByteArray(long DsbMitgliedID);
+    byte[] getLizenzPDFasByteArray(long DsbMitgliedID, long teamID);
 }
 
