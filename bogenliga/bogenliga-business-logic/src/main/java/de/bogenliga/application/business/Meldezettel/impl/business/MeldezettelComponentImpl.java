@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
@@ -19,7 +17,6 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -46,9 +43,10 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Robin Müller, HSRT
+ * @author Marcel Neumann, HSRT
+ * @author Michael Hesse, HSRT
  */
 @Component
 public class MeldezettelComponentImpl implements MeldezettelComponent {
@@ -121,7 +119,6 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
             generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping);
-
             doc.close();
 
             return result.toByteArray();
