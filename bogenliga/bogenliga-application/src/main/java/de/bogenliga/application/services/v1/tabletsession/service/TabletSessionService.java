@@ -55,12 +55,12 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{wettkampf_id}/{scheiben_nr}/",
+    @RequestMapping(value = "{wettkampfId}/{scheibenNr}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public TabletSessionDTO findById(@PathVariable("wettkampf_id") Long wettkampfId,
-                                     @PathVariable("scheiben_nr") Long scheibennummer) {
+    public TabletSessionDTO findById(@PathVariable("wettkampfId") Long wettkampfId,
+                                     @PathVariable("scheibenNr") Long scheibennummer) {
         TabletSessionDO tabDO = tabletSessionComponent.findByIdScheibennummer(wettkampfId, scheibennummer);
         TabletSessionDTO tabDTO = TabletSessionDTOMapper.toDTO.apply(tabDO);
         this.log(tabDTO, "findById");
@@ -68,11 +68,11 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{wettkampf_id}/",
+    @RequestMapping(value = "{wettkampfId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public List<TabletSessionDTO> findById(@PathVariable("wettkampf_id") Long wettkampfId, final Principal principal) {
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    public List<TabletSessionDTO> findById(@PathVariable("wettkampfId") Long wettkampfId, final Principal principal) {
         final long userId = UserProvider.getCurrentUserId(principal);
         List<TabletSessionDO> tabDOs = tabletSessionComponent.findById(wettkampfId);
         TabletSessionDO[] tabArr = new TabletSessionDO[8];
@@ -123,7 +123,7 @@ public class TabletSessionService implements ServiceFacade {
 
 
     /**
-     * @RequestMapping(value = "{wettkampf_id}/{scheiben_nr}/", method = RequestMethod.POST, produces =
+     * @RequestMapping(value = "{wettkampfId}/{scheibenNr}/", method = RequestMethod.POST, produces =
      * MediaType.APPLICATION_JSON_VALUE)
      * @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
      * @OnError() public TabletSessionDTO create(@RequestBody final TabletSessionDTO tabletSessionDTO, final Principal
@@ -163,7 +163,7 @@ public class TabletSessionService implements ServiceFacade {
 
 /**
  * not needed anymore
- @RequestMapping(value = "{wettkampf_id}/{scheiben_nr}/", method = RequestMethod.DELETE,
+ @RequestMapping(value = "{wettkampfId}/{scheibenNr}/", method = RequestMethod.DELETE,
  consumes = MediaType.APPLICATION_JSON_VALUE)
  @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF) public void delete(TabletSessionDTO tabletSessionDTO, final Principal principal) {
 
