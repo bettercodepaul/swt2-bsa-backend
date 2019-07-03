@@ -312,6 +312,10 @@ public class MatchService implements ServiceFacade {
      * @return
      */
     private Long getMemberIdFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
+        Preconditions.checkNotNull(mannschaftsmitgliedDOS,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS"));
+        Preconditions.checkNotNull(passeDTO,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "passeDTO"));
         Preconditions.checkNotNull(passeDTO.getSchuetzeNr(),
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "schuetzeNr"));
         // -1 as this is an index, not the human readable number
