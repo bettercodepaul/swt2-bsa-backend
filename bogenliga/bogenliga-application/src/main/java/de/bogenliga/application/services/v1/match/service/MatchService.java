@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +21,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.passe.api.PasseComponent;
-import de.bogenliga.application.business.passe.api.types.PasseDO;
-import de.bogenliga.application.business.passe.impl.business.PasseComponentImpl;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.passe.impl.business.PasseComponentImpl;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -88,6 +89,7 @@ public class MatchService implements ServiceFacade {
     private static final String SERVICE_FIND_BY_MANNSCHAFT_ID = "findByMannschaftId";
     private static final String SERVICE_SAVE_MATCHES = "saveMatches";
     private static final String SERVICE_CREATE = "create";
+    private static final String SERVICE_NEXT = "next";
     private static final String SERVICE_UPDATE = "update";
 
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
@@ -176,7 +178,7 @@ public class MatchService implements ServiceFacade {
 
     /**
      * I return the match entries of the database with the given mannschaftId.
-     *
+     * <p>
      * Usage:
      * <pre>{@Code Request: GET /v1/match/byMannschaftsId/{id}}</pre>
      * <pre>{@Code Response:
@@ -191,7 +193,9 @@ public class MatchService implements ServiceFacade {
      *  }
      * ]
      * }</pre>
+     *
      * @param id the given mannschaftId
+     *
      * @return list of {@link MatchDTO} as JSON
      */
 
@@ -200,12 +204,14 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<MatchDTO> findAllByMannschaftId(@PathVariable("id") final Long id) {
-        Preconditions.checkArgument(id >= 0, String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
-        Preconditions.checkNotNull(id, String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkArgument(id >= 0,
+                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkNotNull(id,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
 
         LOG.debug("Receive 'findAllByMannschaftId' request with ID '{}'", id);
 
-        List <MatchDO> matchDOList = matchComponent.findByMannschaftId(id);
+        List<MatchDO> matchDOList = matchComponent.findByMannschaftId(id);
         return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -270,7 +276,7 @@ public class MatchService implements ServiceFacade {
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
 
         LOG.debug("Anzahl Schützen: {}", mannschaftsmitgliedDOS.size());
-        for (MannschaftsmitgliedDO mmdo: mannschaftsmitgliedDOS) {
+        for (MannschaftsmitgliedDO mmdo : mannschaftsmitgliedDOS) {
             LOG.debug("Schütze: {} mit dsbMitgliedId {}", mmdo.getId(), mmdo.getDsbMitgliedId());
         }
 
@@ -301,10 +307,8 @@ public class MatchService implements ServiceFacade {
 
 
     /**
-     * There's a mapping from nr->id like:
-     * schuetzeNr. 1 -> mmgId: 125152,
-     * schuetzeNr. 2 -> mmgId: 125153,
-     * schuetzeNr. 3 -> mmgId: 125154 etc..
+     * There's a mapping from nr->id like: schuetzeNr. 1 -> mmgId: 125152, schuetzeNr. 2 -> mmgId: 125153, schuetzeNr. 3
+     * -> mmgId: 125154 etc..
      *
      * @param passeDTO
      * @param mannschaftsmitgliedDOS
@@ -322,16 +326,54 @@ public class MatchService implements ServiceFacade {
         return mannschaftsmitgliedDOS.get(passeDTO.getSchuetzeNr() - 1).getDsbMitgliedId();
     }
 
-    private Integer getSchuetzeNrFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
+
+    public static Integer getSchuetzeNrFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
         int idx = 0;
         Integer schuetzeNr = 0;
-        for (MannschaftsmitgliedDO mmdo: mannschaftsmitgliedDOS) {
+        for (MannschaftsmitgliedDO mmdo : mannschaftsmitgliedDOS) {
             if (mmdo.getDsbMitgliedId().equals(passeDTO.getDsbMitgliedId())) {
                 schuetzeNr = idx + 1;
             }
             idx++;
         }
         return schuetzeNr;
+    }
+
+
+    /**
+     * Return the ids of the next two matches happening after the given match on a single Wettkampftag.
+     *
+     * @param matchId
+     *
+     * @return
+     */
+    @RequestMapping(value = "{matchId}/next",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    public List<Long> next(@PathVariable final Long matchId) {
+        Preconditions.checkNotNull(matchId,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
+        MatchDO matchDO = matchComponent.findById(matchId);
+
+        this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
+        Long scheibeNr = matchDO.getScheibenNummer();
+        // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
+        // Die Gruppierten nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
+        Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
+        return wettkampfMatches
+                .stream()
+                .filter(mDO -> mDO.getNr() == matchDO.getNr() + 1)
+                .filter(mDO -> (
+                        scheibeNr.equals(mDO.getScheibenNummer())
+                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                ))
+                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .map(MatchDO::getId)
+                .collect(Collectors.toList());
     }
 
 
@@ -420,9 +462,10 @@ public class MatchService implements ServiceFacade {
 
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
         final MatchDO matchDo = matchComponent.findById(matchId);
-        final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(wettkampfComponent.findById(matchDo.getWettkampfId()));
+        final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
+                wettkampfComponent.findById(matchDo.getWettkampfId()));
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-        WettkampfTypDO wettDO =   wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
+        WettkampfTypDO wettDO = wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
         final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
         matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
         matchDTO.setWettkampfTag(wettkampfDTO.getWettkampfTag());
@@ -439,7 +482,7 @@ public class MatchService implements ServiceFacade {
             // reverse map the schuetzeNr to the passeDTO
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
                     mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
-            for (PasseDTO passeDTO: passeDTOs) {
+            for (PasseDTO passeDTO : passeDTOs) {
                 passeDTO.setSchuetzeNr(getSchuetzeNrFor(passeDTO, mannschaftsmitgliedDOS));
                 Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
