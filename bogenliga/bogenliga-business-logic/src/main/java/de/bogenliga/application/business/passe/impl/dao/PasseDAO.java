@@ -327,6 +327,4 @@ public class PasseDAO implements DataAccessObject {
         basicDao.setModificationAttributes(passeBE, currentMemberId);
         basicDao.deleteEntity(PASSE, passeBE, PASSE_TABLE_ID);
     }
-
-
 }
