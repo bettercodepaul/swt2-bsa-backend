@@ -5,9 +5,8 @@ import de.bogenliga.application.business.tabletsession.api.types.TabletSessionDO
 import javafx.scene.control.Tab;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
 public interface TabletSessionComponent {
     List<TabletSessionDO> findAll();

@@ -5,11 +5,14 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
 public class TabletSessionBE extends CommonBusinessEntity implements BusinessEntity {
     private Long wettkampfId;
     private Long scheibennummer;
+    private Long matchID;
+    private Long satznummer;
+
 
 
     public Long getWettkampfId() {
@@ -31,4 +34,23 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
         this.scheibennummer = scheibennummer;
     }
 
+
+    public Long getSatznummer() {
+        return satznummer;
+    }
+
+
+    public void setSatznummer(Long satznummer) {
+        this.satznummer = satznummer;
+    }
+
+
+    public Long getMatchID() {
+        return matchID;
+    }
+
+
+    public void setMatchID(Long matchID) {
+        this.matchID = matchID;
+    }
 }
