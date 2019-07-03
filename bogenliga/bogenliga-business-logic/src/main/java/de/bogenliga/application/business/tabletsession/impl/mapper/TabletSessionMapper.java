@@ -22,6 +22,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         final Long scheibennr = be.getScheibennummer();
         final Long satzNr = be.getSatznummer();
         final Long matchId = be.getMatchId();
+        final Boolean isActive = be.getActive();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -31,7 +32,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new TabletSessionDO(id, scheibennr, satzNr, matchId, createdAtUtc, createdByUserId, lastModifiedAtUtc,
+        return new TabletSessionDO(id, scheibennr, satzNr, matchId, isActive, createdAtUtc, createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     };
 
@@ -47,6 +48,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         tabBE.setWettkampfId(vo.getWettkampfId());
         tabBE.setScheibennummer(vo.getScheibennummer());
         tabBE.setMatchId(vo.getMatchId());
+        tabBE.setActive(vo.getActive());
 
         tabBE.setCreatedAtUtc(createdAtUtcTimestamp);
         tabBE.setCreatedByUserId(vo.getCreatedByUserId());
