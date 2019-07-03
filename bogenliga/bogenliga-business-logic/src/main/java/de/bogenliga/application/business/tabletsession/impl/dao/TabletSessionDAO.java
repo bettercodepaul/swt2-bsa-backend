@@ -29,7 +29,7 @@ public class TabletSessionDAO {
     private static final String TABLET_SESSION_BE_SCHEIBENNUMMER = "scheibennummer";
     private static final String TABLET_SESSION_BE_MATCH_ID = "matchId";
     private static final String TABLET_SESSION_BE_SATZNUMMER = "satznummer";
-    private static final String TABLET_SESSION_BE_IS_ACTIVE = "isActive";
+    private static final String TABLET_SESSION_BE_IS_ACTIVE = "active";
 
 
     private static final String TABLET_SESSION_TABLE_WETTKAMPF_ID = "tablet_session_wettkampf_id";

@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.tabletsession.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,18 +95,18 @@ public class TabletSessionService implements ServiceFacade {
 
 
     private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) {
-        final int scheibe = scheibennummer+1;
+        final long scheibe = (long)scheibennummer + 1;
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfId);
         TabletSessionDTO tab = new TabletSessionDTO();
-        Optional<MatchDO> matchDO = matches.stream().filter(x -> x.getScheibenNummer().equals(scheibe)).filter(
-                x -> x.getNr().equals(1L)).findFirst();
-        if (matchDO.isPresent()) {
-            tab.setMatchId(matchDO.get().getId());
-            tab.setSatznummer(1L);
-            tab.setWettkampfId(wettkampfId);
-            tab.setScheibennummer((long) scheibennummer);
-            tab.setActive(false);
-        }
+        List<MatchDO> matchDOs = matches.stream().filter(x -> x.getScheibenNummer() ==scheibe).collect(
+                Collectors.toList());
+        matchDOs = matchDOs.stream().filter(
+                x -> x.getNr().equals(1L)).collect(Collectors.toList());
+        tab.setMatchId(matchDOs.get(0).getId());
+        tab.setSatznummer(1L);
+        tab.setWettkampfId(wettkampfId);
+        tab.setScheibennummer((long) scheibennummer);
+        tab.setActive(false);
         return tab;
     }
 
