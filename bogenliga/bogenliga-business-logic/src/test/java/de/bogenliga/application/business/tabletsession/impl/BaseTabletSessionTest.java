@@ -18,6 +18,9 @@ public abstract class BaseTabletSessionTest {
 
     protected static final Long SCHEIBENNUMMER = 5L;
     protected static final Long WETTKAMPF_ID = 1234L;
+    protected static final Long SATZNUMMER = 4L;
+    protected static final Long MATCH_ID = 150L;
+
 
     protected static final Long CURRENT_USER_ID = 12L;
     private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
@@ -27,18 +30,22 @@ public abstract class BaseTabletSessionTest {
         TabletSessionBE tabBE = new TabletSessionBE();
         tabBE.setScheibennummer(SCHEIBENNUMMER);
         tabBE.setWettkampfId(WETTKAMPF_ID);
+        tabBE.setMatchId(MATCH_ID);
+        tabBE.setSatznummer(SATZNUMMER);
         return tabBE;
     }
 
 
     public static TabletSessionDO getTabletSessionDO() {
-        return new TabletSessionDO(WETTKAMPF_ID, SCHEIBENNUMMER);
+        return new TabletSessionDO(WETTKAMPF_ID, SCHEIBENNUMMER, SATZNUMMER, MATCH_ID);
     }
 
 
     public BaseTabletSessionTest() {
         valuesToMethodMap.put("getWettkampfId", WETTKAMPF_ID);
         valuesToMethodMap.put("getScheibennummer", SCHEIBENNUMMER);
+        valuesToMethodMap.put("getSatznummer", SATZNUMMER);
+        valuesToMethodMap.put("getMatchId", MATCH_ID);
     }
 
 

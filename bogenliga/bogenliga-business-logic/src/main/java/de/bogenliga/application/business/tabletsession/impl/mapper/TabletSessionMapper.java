@@ -21,7 +21,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         final Long id = be.getWettkampfId();
         final Long scheibennr = be.getScheibennummer();
         final Long satzNr = be.getSatznummer();
-        final Long matchId = be.getMatchID();
+        final Long matchId = be.getMatchId();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -45,7 +45,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         TabletSessionBE tabBE = new TabletSessionBE();
         tabBE.setWettkampfId(vo.getWettkampfId());
         tabBE.setScheibennummer(vo.getScheibennummer());
-        tabBE.setMatchID(vo.getMatchId());
+        tabBE.setMatchId(vo.getMatchId());
 
         tabBE.setCreatedAtUtc(createdAtUtcTimestamp);
         tabBE.setCreatedByUserId(vo.getCreatedByUserId());
