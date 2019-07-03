@@ -35,7 +35,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 
 @RestController
 @CrossOrigin
-@RequestMapping("v1/tabletsessions/")
+@RequestMapping("v1/tabletsessions")
 public class TabletSessionService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(TabletSessionService.class);
 
@@ -57,7 +57,7 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{wettkampfId}/{scheibenNr}",
+    @RequestMapping(value = "/{wettkampfId}/{scheibenNr}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
@@ -70,7 +70,7 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{wettkampfId}",
+    @RequestMapping(value = "/{wettkampfId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
