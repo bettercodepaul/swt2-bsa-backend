@@ -218,6 +218,12 @@ public class UserService implements ServiceFacade {
     }
 
 
+    /**
+     * Service to update multiple user roles. It will remove all roles that are not send in this request
+     * @param requestWithHeader
+     * @param updatedUserRoles there is a single UserRoleDTO for every role that is send to this service
+     * @return
+     */
     @RequestMapping(
             method = RequestMethod.PUT,
             value = "/uptRoles",

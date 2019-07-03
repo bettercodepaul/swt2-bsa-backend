@@ -125,6 +125,13 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
 
+    /**
+     * Implementation for userRole update method
+     * @param userRoleDOS list of userroles
+     * @param currentUserId current user
+     *
+     * @return
+     */
     public List<UserRoleDO> update(final List<UserRoleDO> userRoleDOS, final Long currentUserId) {
         Preconditions.checkNotNull(userRoleDOS, PRECONDITION_MSG_USERROLE);
         Preconditions.checkNotNull(userRoleDOS.get(0).getId(), PRECONDITION_MSG_USER_ID);
