@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.match.impl.dao;
+package de.bogenliga.application.business.tabletsession.impl.dao;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -7,31 +7,31 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
-import de.bogenliga.application.business.match.impl.BaseMatchTest;
-import de.bogenliga.application.business.match.impl.entity.MatchBE;
+import de.bogenliga.application.business.tabletsession.impl.BaseTabletSessionTest;
+import de.bogenliga.application.business.tabletsession.impl.entity.TabletSessionBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.mockito.Mockito.*;
 
 /**
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
-public class MatchDAOTest extends BaseMatchTest {
+public class TabletSessionDAOTest extends BaseTabletSessionTest {
 
     @Mock
     private BasicDAO basicDao;
 
     @InjectMocks
-    private MatchDAO underTest;
+    private TabletSessionDAO underTest;
 
-    private MatchBE expectedBE;
+    private TabletSessionBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicTest<MatchBE, MatchBE> basicDAOTest;
+    private BasicTest<TabletSessionBE, TabletSessionBE> basicDAOTest;
 
 
     @Before
     public void testSetup() {
-        expectedBE = getMatchBE();
+        expectedBE = getTabletSessionBE();
         basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
@@ -42,9 +42,8 @@ public class MatchDAOTest extends BaseMatchTest {
 
 
     /**
-     * Tests all find methods if the DAO implements all method
-     * inside the hashmap (getValuesToMethodMap())
-     * and returns the correct output
+     * Tests all find methods if the DAO implements all method inside the hashmap (getValuesToMethodMap()) and returns
+     * the correct output
      */
     @Test
     public void testAllFindMethods() throws InvocationTargetException, IllegalAccessException {
@@ -55,7 +54,8 @@ public class MatchDAOTest extends BaseMatchTest {
     @Test
     public void findById() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findById(MATCH_ID));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findById(WETTKAMPF_ID));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -67,11 +67,8 @@ public class MatchDAOTest extends BaseMatchTest {
     @Test
     public void findByPk() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByPk(
-                    MATCH_NR, MATCH_WETTKAMPF_ID,
-                    MATCH_MANNSCHAFT_ID, MATCH_BEGEGNUNG,
-                    MATCH_SCHEIBENNUMMER
-            ));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
+                    underTest.findByIdScheinebnummer(WETTKAMPF_ID, SCHEIBENNUMMER));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -89,23 +86,5 @@ public class MatchDAOTest extends BaseMatchTest {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
-
-
-    @Test
-    public void findByWettkampfId() {
-        try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByWettkampfId(MATCH_WETTKAMPF_ID));
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Test
-    public void findByMannschaftId() throws InvocationTargetException, IllegalAccessException {
-        basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findByMannschaftId(MATCH_MANNSCHAFT_ID));
     }
 }
