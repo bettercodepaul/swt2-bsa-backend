@@ -104,6 +104,7 @@ public class TabletSessionService implements ServiceFacade {
             tab.setSatznummer(1L);
             tab.setWettkampfId(wettkampfId);
             tab.setScheibennummer((long) scheibennummer);
+            tab.setActive(false);
         }
         return tab;
     }
