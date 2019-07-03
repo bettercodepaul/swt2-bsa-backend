@@ -5,11 +5,12 @@ package de.bogenliga.application.services.v1.tabletsession.model;
  */
 public class TabletSessionDTO {
 
-    public TabletSessionDTO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId) {
+    public TabletSessionDTO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean isActive) {
         this.wettkampfId = wettkampfId;
         this.scheibennummer = scheibennummer;
         this.satznummer = satznummer;
         this.matchId = matchId;
+        this.isActive = isActive;
     }
 
     public TabletSessionDTO(){
@@ -60,4 +61,15 @@ public class TabletSessionDTO {
     private Long scheibennummer;
     private Long satznummer;
     private Long matchId;
+    private boolean isActive;
+
+
+    public boolean getActive() {
+        return isActive;
+    }
+
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
