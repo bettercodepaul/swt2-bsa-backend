@@ -10,7 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.mockito.stubbing.Answer;
 import de.bogenliga.application.business.Schusszettel.impl.business.SchusszettelComponentImpl;
+import de.bogenliga.application.business.disziplin.impl.business.DisziplinComponentImplTest;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
@@ -41,7 +43,9 @@ import static org.mockito.Mockito.*;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Nick Kerschagel
+ * @author Michael Hesse
+ * @author Sebastian Eckl
  */
 public class BogenkontrolllisteComponentImplTest {
 
@@ -70,47 +74,37 @@ public class BogenkontrolllisteComponentImplTest {
 
     @Test
     public void getBogenkontrolllistePDFasByteArray() {
-        Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping = getTeamMemberMapping();
-
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
-        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
-        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
-        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
-        List<MatchDO> matchDOList = new ArrayList<>();
-        for (int i = 0; i < 56; i ++){
-            matchDOList.add(MatchComponentImplTest.getMatchDO());
-        }
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
-        for (int i = 0; i < 3; i++){
+        for(int i = 0; i < 3; i++) {
             mannschaftsmitgliedDOList.add(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
         }
-        DsbMitgliedDO dsbMitgliedDO = DsbMitgliedComponentImplTest.getDsbMitgliedDO();
 
         //configure Mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
-        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
-        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
-        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO);
+        when(vereinComponent.findById(anyLong())).thenAnswer((Answer<VereinDO>) invocation -> {
+            VereinDO ret = VereinComponentImplTest.getVereinDO();
+            ret.setName("Verein " + (int)(Math.random() * 100 + 1));
+            return ret;
+        });
+        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(MatchComponentImplTest.getMatchDO());
+        when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(VeranstaltungComponentImplTest.getVeranstaltungDO());
+        when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
+            DsbMannschaftDO ret = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+            ret.setNummer((long)(Math.random() * 2 + 1));
+            return ret;
+        });
 
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
+
+
+        //call test method
         final byte[] actual = underTest.getBogenkontrolllistePDFasByteArray(WETTKAMPFID);
 
         //assert
         Assertions.assertThat(actual).isNotEmpty();
-    }
 
-    private static Hashtable<String, List<DsbMitgliedDO>> getTeamMemberMapping(){
-        Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping = new Hashtable<>();
-        for(int i=1; i <= 8; i++){
-            String TeamName = "Mannschaft" + i;
-            List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
-            for(int j = 0; j < 3; j++){
-                dsbMitgliedDOList.add(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
-            }
-            TeamMemberMapping.put(TeamName,dsbMitgliedDOList);
-        }
-        return TeamMemberMapping;
+        //verify invocations
+        verify(matchComponent, atLeastOnce()).findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong());
     }
 }
