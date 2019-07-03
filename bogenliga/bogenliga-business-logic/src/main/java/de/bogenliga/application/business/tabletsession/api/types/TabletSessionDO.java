@@ -14,19 +14,19 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
     private Long scheibennummer;
     private Long satznummer;
     private Long matchId;
-    private Boolean isActive;
+    private Boolean active;
 
 
-    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean isActive) {
+    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active) {
         this.wettkampfId = wettkampfId;
         this.scheibennummer = scheibennummer;
         this.satznummer = satznummer;
         this.matchId = matchId;
-        this.isActive = isActive;
+        this.active = active;
     }
 
 
-    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean isActive,
+    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active,
                            final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                            final Long lastModifiedByUserId, final Long version) {
@@ -34,7 +34,7 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
         this.scheibennummer = scheibennummer;
         this.satznummer = satznummer;
         this.matchId = matchId;
-        this.isActive = isActive;
+        this.active = active;
 
         // set parameter from CommonDataObject
         this.createdAtUtc = createdAtUtc;
@@ -85,12 +85,12 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Boolean getActive() {
-        return isActive;
+    public Boolean isActive() {
+        return active;
     }
 
 
     public void setActive(Boolean active) {
-        isActive = active;
+        this.active = active;
     }
 }
