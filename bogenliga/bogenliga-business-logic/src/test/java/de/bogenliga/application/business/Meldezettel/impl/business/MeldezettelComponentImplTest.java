@@ -68,8 +68,6 @@ public class MeldezettelComponentImplTest {
         for(int i = 0; i < 3; i++) {
             mannschaftsmitgliedDOList.add(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
         }
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
-        dsbMannschaftDO.setNummer(1);
 
         //configure Mocks
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
