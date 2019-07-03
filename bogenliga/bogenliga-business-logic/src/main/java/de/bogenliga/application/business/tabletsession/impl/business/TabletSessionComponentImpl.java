@@ -3,6 +3,7 @@ package de.bogenliga.application.business.tabletsession.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.tabletsession.api.TabletSessionComponent;
 import de.bogenliga.application.business.tabletsession.api.types.TabletSessionDO;
 import de.bogenliga.application.business.tabletsession.impl.dao.TabletSessionDAO;
@@ -13,6 +14,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 /**
  * @author Kay Scheerer
  */
+@Component
 public class TabletSessionComponentImpl implements TabletSessionComponent {
 
     public static final String PRECONDITION_FIELD_SCHEIBENNUMMER = "scheibennummer";
