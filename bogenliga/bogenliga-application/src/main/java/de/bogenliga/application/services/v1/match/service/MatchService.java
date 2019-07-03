@@ -311,7 +311,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    private Long getMemberIdFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
+    public static Long getMemberIdFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
         Preconditions.checkNotNull(mannschaftsmitgliedDOS,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS"));
         Preconditions.checkNotNull(passeDTO,

@@ -1,15 +1,19 @@
 package de.bogenliga.application.services.v1.passe.service;
 
 import java.security.Principal;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -25,7 +29,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/passen/")
+@RequestMapping("v1/passen")
 public class PasseService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(PasseService.class);
 
@@ -34,6 +38,7 @@ public class PasseService implements ServiceFacade {
     private static final String SERVICE_UPDATE = "update";
 
     private final PasseComponent passeComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
 
     /**
@@ -42,12 +47,14 @@ public class PasseService implements ServiceFacade {
      * @param passeComponent to handle the database CRUD requests
      */
     @Autowired
-    public PasseService(final PasseComponent passeComponent) {
+    public PasseService(final PasseComponent passeComponent,
+                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
         this.passeComponent = passeComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
 
-    @RequestMapping(value = "{id}",
+    @RequestMapping(value = "/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
@@ -62,9 +69,13 @@ public class PasseService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public PasseDTO create(PasseDTO passeDTO, final Principal principal) {
+    public PasseDTO create(@RequestBody final PasseDTO passeDTO, final Principal principal) {
         MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
+                mannschaftsmitgliedComponent.findAllSchuetzeInTeam(passeDTO.getMannschaftId());
+
+        passeDTO.setDsbMitgliedId(MatchService.getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
         final long userId = UserProvider.getCurrentUserId(principal);
         PasseDO passeDO = passeComponent.create(PasseDTOMapper.toDO.apply(passeDTO), userId);
         this.log(passeDTO, SERVICE_CREATE);
@@ -76,7 +87,7 @@ public class PasseService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public PasseDTO update(PasseDTO passeDTO, final Principal principal) {
+    public PasseDTO update(@RequestBody final PasseDTO passeDTO, final Principal principal) {
         MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
         final long userId = UserProvider.getCurrentUserId(principal);
