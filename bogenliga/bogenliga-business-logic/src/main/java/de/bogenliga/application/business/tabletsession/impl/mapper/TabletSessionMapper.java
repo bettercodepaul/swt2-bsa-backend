@@ -34,6 +34,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         return new TabletSessionDO(id, scheibennr, satzNr, matchId, createdAtUtc, createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     };
+
     /**
      * Converts a {@link TabletSessionDO} to a {@link TabletSessionBE}
      */
