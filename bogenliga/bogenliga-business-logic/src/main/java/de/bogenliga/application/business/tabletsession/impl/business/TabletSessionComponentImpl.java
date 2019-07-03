@@ -55,12 +55,12 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
 
     @Override
-    public TabletSessionDO findByIdScheibennummer(Long wettkampfid, Long scheibenNr){
+    public TabletSessionDO findByIdScheibennummer(Long wettkampfid, Long scheibenNr) {
         checkPreconditions(scheibenNr, PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(wettkampfid, PRECONDITION_FIELD_WETTKAMPF_ID);
 
         final TabletSessionBE tabBE = tabletDAO.findByIdScheinebnummer(wettkampfid, scheibenNr);
-        return  TabletSessionMapper.toTabletSessionDO.apply(tabBE);
+        return TabletSessionMapper.toTabletSessionDO.apply(tabBE);
     }
 
 
@@ -72,7 +72,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
 
         final TabletSessionBE passeBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
-        TabletSessionBE tabBE =  tabletDAO.create(passeBE, currentUserId);
+        TabletSessionBE tabBE = tabletDAO.create(passeBE, currentUserId);
         return TabletSessionMapper.toTabletSessionDO.apply(tabBE);
     }
 
@@ -84,7 +84,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
 
         final TabletSessionBE passeBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
-        TabletSessionBE tabBE =  tabletDAO.update(passeBE, currentUserId);
+        TabletSessionBE tabBE = tabletDAO.update(passeBE, currentUserId);
         return TabletSessionMapper.toTabletSessionDO.apply(tabBE);
     }
 
@@ -103,7 +103,8 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
     /**
      * Checks the precondition of an ID given
-     * @param id the ID to check
+     *
+     * @param id           the ID to check
      * @param iDIdentifier the variable name which should appear in the error message
      */
     public void checkPreconditions(final Long id, String iDIdentifier) {

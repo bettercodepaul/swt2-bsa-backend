@@ -4,7 +4,6 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- *
  * @author Kay Scheerer
  */
 public class TabletSessionBE extends CommonBusinessEntity implements BusinessEntity {
@@ -12,7 +11,6 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     private Long scheibennummer;
     private Long matchId;
     private Long satznummer;
-
 
 
     public Long getWettkampfId() {
@@ -43,7 +41,6 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     public void setSatznummer(Long satznummer) {
         this.satznummer = satznummer;
     }
-
 
 
     public Long getMatchId() {
