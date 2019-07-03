@@ -94,10 +94,10 @@ public class TabletSessionService implements ServiceFacade {
 
 
     private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) {
-        scheibennummer++;
+        final int scheibe = scheibennummer+1;
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfId);
         TabletSessionDTO tab = new TabletSessionDTO();
-        Optional<MatchDO> matchDO = matches.stream().filter(x -> x.getScheibenNummer().equals(scheibennummer)).filter(
+        Optional<MatchDO> matchDO = matches.stream().filter(x -> x.getScheibenNummer().equals(scheibe)).filter(
                 x -> x.getNr().equals(1L)).findFirst();
         if (matchDO.isPresent()) {
             tab.setMatchId(matchDO.get().getId());
