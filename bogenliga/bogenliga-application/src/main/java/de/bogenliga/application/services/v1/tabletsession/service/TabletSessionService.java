@@ -111,14 +111,9 @@ public class TabletSessionService implements ServiceFacade {
 
 
     private TabletSessionDO create(final TabletSessionDTO tabletSessionDTO, final Long userId) {
-        if (tabletSessionComponent.findByIdScheibennummer(tabletSessionDTO.getWettkampfId(),
-                tabletSessionDTO.getScheibennummer()) == null) {
 
-            return tabletSessionComponent.create(TabletSessionDTOMapper.toDO.apply(tabletSessionDTO),
-                    userId);
-        }
-
-        return null;
+        return tabletSessionComponent.create(TabletSessionDTOMapper.toDO.apply(tabletSessionDTO),
+                userId);
     }
 
 

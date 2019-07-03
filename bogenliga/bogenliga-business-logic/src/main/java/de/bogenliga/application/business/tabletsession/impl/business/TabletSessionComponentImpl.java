@@ -20,8 +20,8 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     public static final String PRECONDITION_FIELD_SCHEIBENNUMMER = "scheibennummer";
     public static final String PRECONDITION_FIELD_WETTKAMPF_ID = "wettkampfId";
     public static final String PRECONDITION_FIELD_CURRENT_USER = "currentMemberId";
-    private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
-    private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
+    private static final String PRECONDITION_MSG_TEMPLATE_NULL = "TabletSession: %s must not be null";
+    private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "TabletSession: %s must not be negative";
 
     private final TabletSessionDAO tabletDAO;
 
