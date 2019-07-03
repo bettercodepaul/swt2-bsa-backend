@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
+import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -28,6 +30,8 @@ public class PasseService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(PasseService.class);
 
     private static final String SERVICE_FIND_BY_ID = "findById";
+    private static final String SERVICE_CREATE = "create";
+    private static final String SERVICE_UPDATE = "update";
 
     private final PasseComponent passeComponent;
 
@@ -54,13 +58,17 @@ public class PasseService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "",
-            method = RequestMethod.POST,
+    @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public PasseDTO create(PasseDTO passeDTO) {
-        return passeDTO;
+    public PasseDTO create(PasseDTO passeDTO, final Principal principal) {
+        MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+        PasseDO passeDO = passeComponent.create(PasseDTOMapper.toDO.apply(passeDTO), userId);
+        this.log(passeDTO, SERVICE_CREATE);
+        return PasseDTOMapper.toDTO.apply(passeDO);
     }
 
 
@@ -69,10 +77,12 @@ public class PasseService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public PasseDTO update(PasseDTO passeDTO, final Principal principal) {
+        MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
+
         final long userId = UserProvider.getCurrentUserId(principal);
-        passeComponent.update(PasseDTOMapper.toDO.apply(passeDTO), userId);
-        this.log(passeDTO, SERVICE_FIND_BY_ID);
-        return passeDTO;
+        PasseDO passeDO = passeComponent.update(PasseDTOMapper.toDO.apply(passeDTO), userId);
+        this.log(passeDTO, SERVICE_UPDATE);
+        return PasseDTOMapper.toDTO.apply(passeDO);
     }
 
 
@@ -84,8 +94,8 @@ public class PasseService implements ServiceFacade {
      */
     private void log(PasseDTO passeDTO, String fromService) {
         LOG.debug(
-                "Received '{}' request for passe with id: '{}', WettkampfID: '{}', LfdNr: '{}', DsbMitgliedId: '{}'," +
-                        " SchuetzeNr: '{}', MannschaftId: '{}', MatchId: '{}', MatchNr: '{}'",
+                "Received '{}' request for passe with ID: '{}', WettkampfID: '{}', LfdNr: '{}', DsbMitgliedID: '{}'," +
+                        " SchuetzeNr: '{}', MannschaftId: '{}', MatchID: '{}', MatchNr: '{}'",
                 fromService,
                 passeDTO.getId(),
                 passeDTO.getWettkampfId(),

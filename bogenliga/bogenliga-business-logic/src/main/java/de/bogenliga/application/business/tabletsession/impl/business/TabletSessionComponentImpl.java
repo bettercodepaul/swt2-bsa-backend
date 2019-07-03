@@ -17,17 +17,9 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
     public static final String PRECONDITION_FIELD_SCHEIBENNUMMER = "scheibennummer";
     public static final String PRECONDITION_FIELD_WETTKAMPF_ID = "wettkampfId";
+    public static final String PRECONDITION_FIELD_CURRENT_USER = "currentMemberId";
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
-    /**
-     * Checks the precondition of an ID given
-     * @param id the ID to check
-     * @param iDIdentifier the variable name which should appear in the error message
-     */
-    public void checkPreconditions(final Long id, String iDIdentifier) {
-        Preconditions.checkNotNull(id, String.format(PRECONDITION_MSG_TEMPLATE_NULL, iDIdentifier));
-        Preconditions.checkArgument(id >= 0, String.format(PRECONDITION_MSG_TEMPLATE_NEGATIVE, iDIdentifier));
-    }
 
     private final TabletSessionDAO tabletDAO;
 
@@ -43,6 +35,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     public TabletSessionComponentImpl(final TabletSessionDAO tabletDAO) {
         this.tabletDAO = tabletDAO;
     }
+
 
     @Override
     public List<TabletSessionDO> findAll() {
@@ -60,6 +53,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).collect(Collectors.toList());
     }
 
+
     @Override
     public TabletSessionDO findByIdScheibennummer(Long wettkampfid, Long scheibenNr){
         checkPreconditions(scheibenNr, PRECONDITION_FIELD_SCHEIBENNUMMER);
@@ -70,11 +64,9 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     }
 
 
-
-
     @Override
     public TabletSessionDO create(TabletSessionDO sessionDO, Long currentUserId) {
-        checkPreconditions(currentUserId, "currentMemberId");
+        checkPreconditions(currentUserId, PRECONDITION_FIELD_CURRENT_USER);
 
         checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
@@ -87,7 +79,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
     @Override
     public TabletSessionDO update(TabletSessionDO sessionDO, Long currentUserId) {
-        checkPreconditions(currentUserId, "currentMemberId");
+        checkPreconditions(currentUserId, PRECONDITION_FIELD_CURRENT_USER);
         checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
 
@@ -99,12 +91,23 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
     @Override
     public void delete(TabletSessionDO sessionDO, Long currentUserId) {
-        checkPreconditions(currentUserId, "currentMemberId");
+        checkPreconditions(currentUserId, PRECONDITION_FIELD_CURRENT_USER);
         checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
 
         final TabletSessionBE tabBe = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
         tabletDAO.delete(tabBe, currentUserId);
 
+    }
+
+
+    /**
+     * Checks the precondition of an ID given
+     * @param id the ID to check
+     * @param iDIdentifier the variable name which should appear in the error message
+     */
+    public void checkPreconditions(final Long id, String iDIdentifier) {
+        Preconditions.checkNotNull(id, String.format(PRECONDITION_MSG_TEMPLATE_NULL, iDIdentifier));
+        Preconditions.checkArgument(id >= 0, String.format(PRECONDITION_MSG_TEMPLATE_NEGATIVE, iDIdentifier));
     }
 }
