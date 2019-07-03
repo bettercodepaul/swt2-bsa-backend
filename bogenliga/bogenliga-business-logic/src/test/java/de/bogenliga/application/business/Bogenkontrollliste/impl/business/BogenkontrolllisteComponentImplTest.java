@@ -41,7 +41,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
- * TODO [AL] class documentation
  *
  * @author Nick Kerschagel
  * @author Michael Hesse
