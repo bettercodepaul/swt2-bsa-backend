@@ -12,9 +12,7 @@ import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
 public class TabletSessionDAO {
 
@@ -27,9 +25,14 @@ public class TabletSessionDAO {
 
     private static final String TABLET_SESSION_BE_WETTKAMPF_ID = "wettkampfId";
     private static final String TABLET_SESSION_BE_SCHEIBENNUMMER= "scheibennummer";
+    private static final String TABLET_SESSION_BE_MATCH_ID= "matchId";
+    private static final String TABLET_SESSION_BE_SATZNUMMER= "satznummer";
+
 
     private static final String TABLET_SESSION_TABLE_WETTKAMPF_ID = "tablet_session_wettkampf_id";
+    private static final String TABLET_SESSION_TABLE_MATCH_ID = "tablet_session_match_id";
     private static final String TABLET_SESSION_TABLE_SCHEIBENNUMMER = "tablet_session_scheibennummer";
+    private static final String TABLET_SESSION_TABLE_SATZNUMMER = "tablet_session_satznummer";
 
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
@@ -37,6 +40,8 @@ public class TabletSessionDAO {
 
         columnsToFieldsMap.put(TABLET_SESSION_TABLE_WETTKAMPF_ID, TABLET_SESSION_BE_WETTKAMPF_ID);
         columnsToFieldsMap.put(TABLET_SESSION_TABLE_SCHEIBENNUMMER, TABLET_SESSION_BE_SCHEIBENNUMMER);
+        columnsToFieldsMap.put(TABLET_SESSION_TABLE_MATCH_ID, TABLET_SESSION_BE_MATCH_ID);
+        columnsToFieldsMap.put(TABLET_SESSION_TABLE_SATZNUMMER, TABLET_SESSION_BE_SATZNUMMER);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());

@@ -9,8 +9,7 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
 public class TabletSessionMapper implements ValueObjectMapper {
 
@@ -21,6 +20,8 @@ public class TabletSessionMapper implements ValueObjectMapper {
 
         final Long id = be.getWettkampfId();
         final Long scheibennr = be.getScheibennummer();
+        final Long satzNr = be.getSatznummer();
+        final Long matchId = be.getMatchID();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -30,7 +31,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new TabletSessionDO(id, scheibennr, createdAtUtc, createdByUserId, lastModifiedAtUtc,
+        return new TabletSessionDO(id, scheibennr, satzNr, matchId, createdAtUtc, createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     };
     /**
@@ -44,6 +45,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         TabletSessionBE tabBE = new TabletSessionBE();
         tabBE.setWettkampfId(vo.getWettkampfId());
         tabBE.setScheibennummer(vo.getScheibennummer());
+        tabBE.setMatchID(vo.getMatchId());
 
         tabBE.setCreatedAtUtc(createdAtUtcTimestamp);
         tabBE.setCreatedByUserId(vo.getCreatedByUserId());
@@ -54,6 +56,8 @@ public class TabletSessionMapper implements ValueObjectMapper {
         return tabBE;
     };
 
+
     // private so it can not be instanciated
-    private TabletSessionMapper(){}
+    private TabletSessionMapper() {
+    }
 }

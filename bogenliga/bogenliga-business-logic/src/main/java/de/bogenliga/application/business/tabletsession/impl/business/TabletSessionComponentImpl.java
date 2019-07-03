@@ -11,9 +11,7 @@ import de.bogenliga.application.business.tabletsession.impl.mapper.TabletSession
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
 public class TabletSessionComponentImpl implements TabletSessionComponent {
 
