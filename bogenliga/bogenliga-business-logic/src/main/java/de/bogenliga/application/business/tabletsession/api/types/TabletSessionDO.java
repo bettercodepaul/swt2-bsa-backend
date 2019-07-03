@@ -5,7 +5,6 @@ import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
 /**
- *
  * @author Kay Scheerer
  */
 public class TabletSessionDO extends CommonDataObject implements DataObject {
