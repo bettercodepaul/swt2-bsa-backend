@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.tabletsession.impl.entity.TabletSessionBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -14,6 +15,7 @@ import de.bogenliga.application.common.database.queries.QueryBuilder;
 /**
  * @author Kay Scheerer
  */
+@Repository
 public class TabletSessionDAO {
 
     //define logger context
