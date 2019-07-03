@@ -8,6 +8,8 @@ import de.bogenliga.application.common.component.types.DataObject;
  * @author Kay Scheerer
  */
 public class TabletSessionDO extends CommonDataObject implements DataObject {
+    private static final long serialVersionUID = 108484078463895720L;
+
     private Long wettkampfId;
     private Long scheibennummer;
     private Long satznummer;

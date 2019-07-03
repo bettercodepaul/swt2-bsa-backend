@@ -39,7 +39,6 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
     @Override
     public List<TabletSessionDO> findAll() {
-
         final List<TabletSessionBE> tabBEList = tabletDAO.findAll();
         return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).collect(Collectors.toList());
     }

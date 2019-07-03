@@ -7,6 +7,8 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * @author Kay Scheerer
  */
 public class TabletSessionBE extends CommonBusinessEntity implements BusinessEntity {
+    private static final long serialVersionUID = 5856944226092695392L;
+
     private Long wettkampfId;
     private Long scheibennummer;
     private Long matchId;
