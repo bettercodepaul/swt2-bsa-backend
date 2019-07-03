@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -151,7 +152,7 @@ public class TabletSessionService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
-    public TabletSessionDTO update(TabletSessionDTO tabletSessionDTO, final Principal principal) {
+    public TabletSessionDTO update(@RequestBody final TabletSessionDTO tabletSessionDTO, final Principal principal) {
 
         final long userId = UserProvider.getCurrentUserId(principal);
         TabletSessionDO tabletSessionDO = tabletSessionComponent.update(
