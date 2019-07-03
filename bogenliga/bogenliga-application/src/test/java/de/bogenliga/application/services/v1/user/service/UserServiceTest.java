@@ -7,6 +7,7 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.common.service.UserProvider;
@@ -30,6 +31,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -368,6 +370,7 @@ public class UserServiceTest {
         when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
 
         //prepare test data
+        final List<UserRoleDO> expectedUserRoleDoList = new ArrayList<>();
         final UserRoleDO expectedUserRoleDO = new UserRoleDO();
         expectedUserRoleDO.setEmail(USERNAME);
         expectedUserRoleDO.setId(ID);
@@ -375,21 +378,23 @@ public class UserServiceTest {
         expectedUserRoleDO.setRoleId(ROLE_ID);
         expectedUserRoleDO.setVersion(VERSION);
         //prepare test data input
+        final List<UserRoleDTO> inUserRoleDTOList = new ArrayList<>();
         final UserRoleDTO inUserRoleDTO = new UserRoleDTO();
         inUserRoleDTO.setId(ID);
         inUserRoleDTO.setRoleId(ROLE_ID);
         inUserRoleDTO.setVersion(VERSION);
+        inUserRoleDTOList.add(inUserRoleDTO);
 
         // configure mocks
-        when(userRoleComponent.update(any(UserRoleDO.class), anyLong())).thenReturn(expectedUserRoleDO);
+        when(userRoleComponent.update(any(List.class), anyLong())).thenReturn(expectedUserRoleDoList);
 
         // call test method
-        final UserRoleDTO actual = underTest.updateRole(requestWithHeader, inUserRoleDTO);
+        final List<UserRoleDTO> actual = underTest.updateRoles(requestWithHeader, inUserRoleDTOList);
 
         // assert result
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(expectedUserRoleDO.getId());
-        assertThat(actual.getRoleId()).isEqualTo(expectedUserRoleDO.getRoleId());
+        assertThat(actual.get(0).getId()).isEqualTo(expectedUserRoleDO.getId());
+        assertThat(actual.get(0).getRoleId()).isEqualTo(expectedUserRoleDO.getRoleId());
 
     }
     @Test
@@ -406,7 +411,7 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.updateRole(requestWithHeader, null))
+                .isThrownBy(() -> underTest.updateRoles(requestWithHeader, null))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -433,18 +438,18 @@ public class UserServiceTest {
 
 
         //prepare test data input
+        final List<UserRoleDTO> inUserRoleDTOList = new ArrayList<>();
         final UserRoleDTO inUserRoleDTO = new UserRoleDTO();
         inUserRoleDTO.setId(null);
         inUserRoleDTO.setRoleId(ROLE_ID);
         inUserRoleDTO.setVersion(VERSION);
-
+        inUserRoleDTOList.add(inUserRoleDTO);
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.updateRole(requestWithHeader, inUserRoleDTO))
+                .isThrownBy(() -> underTest.updateRoles(requestWithHeader, inUserRoleDTOList))
                 .withMessageContaining("must not be null")
                 .withNoCause();
-
 
     }
 
@@ -459,10 +464,12 @@ public class UserServiceTest {
 
 
         //prepare test data input
+        final List<UserRoleDTO> inUserRoleDTOList = new ArrayList<>();
         final UserRoleDTO inUserRoleDTO = new UserRoleDTO();
         inUserRoleDTO.setId(ID);
         inUserRoleDTO.setRoleId(null);
         inUserRoleDTO.setVersion(VERSION);
+        inUserRoleDTOList.add(inUserRoleDTO);
 
 
 
@@ -472,7 +479,7 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.updateRole(requestWithHeader, inUserRoleDTO))
+                .isThrownBy(() -> underTest.updateRoles(requestWithHeader, inUserRoleDTOList))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -523,30 +530,33 @@ public class UserServiceTest {
     @Test
     public void findById() {
         // prepare test data
+
+        List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO expectedDO = new UserRoleDO();
         expectedDO.setId(ID);
         expectedDO.setRoleId(ROLE_ID);
         expectedDO.setEmail(USERNAME);
         expectedDO.setRoleName(ROLE_NAME);
+        userRoleDOList.add(expectedDO);
 
         // configure mocks
-        when(userRoleComponent.findById(anyLong())).thenReturn(expectedDO);
+        when(userRoleComponent.findById(anyLong())).thenReturn(userRoleDOList);
 
         // call test method
-        final UserRoleDTO actual = underTest.getUserRoleById(ID);
+        final List<UserRoleDTO> actual = underTest.getUserRoleById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
+        assertThat(actual.get(0).getId())
                 .isEqualTo(expectedDO.getId());
-        assertThat(actual.getEmail())
+        assertThat(actual.get(0).getEmail())
                 .isEqualTo(expectedDO.getEmail());
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedDO.getRoleId());
-        assertThat(actual.getRoleName())
+        assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedDO.getRoleName());
-        assertThat(actual.getVersion())
+        assertThat(actual.get(0).getVersion())
                 .isEqualTo(expectedDO.getVersion());
 
         // verify invocations
