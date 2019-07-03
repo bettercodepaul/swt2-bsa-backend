@@ -61,7 +61,7 @@ public class TabletSessionDTO {
     private Long scheibennummer;
     private Long satznummer;
     private Long matchId;
-    private boolean active;
+    private boolean active = false;
 
 
     public boolean isActive() {

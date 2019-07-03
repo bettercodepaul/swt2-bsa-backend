@@ -14,7 +14,7 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
     private Long scheibennummer;
     private Long satznummer;
     private Long matchId;
-    private Boolean active;
+    private boolean active;
 
 
     public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active) {
@@ -85,12 +85,12 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 }
