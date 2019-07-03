@@ -74,7 +74,7 @@ public class MatchService implements ServiceFacade {
         matchConditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
 
-    private static final Map<String, String> passeConditionErrors = new HashMap<>();
+    public static final Map<String, String> passeConditionErrors = new HashMap<>();
 
     static {
         passeConditionErrors.put("getLfdNr", PasseComponentImpl.PRECONDITION_MSG_LFD_NR);
