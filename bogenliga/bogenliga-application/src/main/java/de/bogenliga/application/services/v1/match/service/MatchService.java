@@ -217,8 +217,8 @@ public class MatchService implements ServiceFacade {
 
 
     /**
-     * Save the two edited matches from the findMatchesByIds service. Also save the passe objects in case there are
-     * some.
+     * Save the two edited matches from the findMatchesByIds service.
+     * Also save the passe objects in case there are some.
      *
      * @param matchDTOs
      *
@@ -258,17 +258,18 @@ public class MatchService implements ServiceFacade {
 
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        List<MatchDTO> matches = new ArrayList<>();
-        matches.add(matchDTO1);
-        matches.add(matchDTO2);
-
         saveMatch(matchDTO1, userId);
         saveMatch(matchDTO2, userId);
 
-        return matches;
+        return matchDTOs;
     }
 
 
+    /**
+     * Save a single match, also creates/updates related passe objects.
+     * @param matchDTO
+     * @param userId
+     */
     private void saveMatch(MatchDTO matchDTO, Long userId) {
         MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
         matchComponent.update(matchDO, userId);
@@ -289,6 +290,13 @@ public class MatchService implements ServiceFacade {
     }
 
 
+    /**
+     * Checks whether the given passe object already exists.
+     * If so, just update it, if not, create it.
+     * @param passeDTO
+     * @param userId
+     * @param mannschaftsmitgliedDOS
+     */
     private void createOrUpdatePasse(PasseDTO passeDTO, Long userId,
                                      List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
         checkPreconditions(passeDTO, passeConditionErrors);
@@ -307,8 +315,11 @@ public class MatchService implements ServiceFacade {
 
 
     /**
-     * There's a mapping from nr->id like: schuetzeNr. 1 -> mmgId: 125152, schuetzeNr. 2 -> mmgId: 125153, schuetzeNr. 3
-     * -> mmgId: 125154 etc..
+     * There's a mapping from nr->id like:
+     * schuetzeNr. 1 -> mmgId: 125152,
+     * schuetzeNr. 2 -> mmgId: 125153,
+     * schuetzeNr. 3 -> mmgId: 125154
+     * etc..
      *
      * @param passeDTO
      * @param mannschaftsmitgliedDOS
@@ -327,6 +338,12 @@ public class MatchService implements ServiceFacade {
     }
 
 
+    /**
+     * Derives the schuetzeNr from the position in the member list
+     * @param passeDTO
+     * @param mannschaftsmitgliedDOS
+     * @return
+     */
     public static Integer getSchuetzeNrFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
         int idx = 0;
         Integer schuetzeNr = 0;
@@ -460,6 +477,14 @@ public class MatchService implements ServiceFacade {
     }
 
 
+    /**
+     * Gets and enriches a match from the DB.
+     * Control the presence of related passe objects with the addPassen parameter.
+     * Each passe object then gets its schuetzeNr (see getSchuetzeNrFor).
+     * @param matchId
+     * @param addPassen
+     * @return
+     */
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
         final MatchDO matchDo = matchComponent.findById(matchId);
         final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
