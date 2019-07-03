@@ -79,12 +79,19 @@ public class TabletSessionService implements ServiceFacade {
         List<TabletSessionDO> tabDOs = tabletSessionComponent.findById(wettkampfId);
         TabletSessionDO[] tabArr = new TabletSessionDO[8];
         for (TabletSessionDO tabDO : tabDOs) {
-            tabArr[tabDO.getScheibennummer().intValue()] = tabDO;
+            tabArr[tabDO.getScheibennummer().intValue() - 1] = tabDO;
         }
 
         for (int i = 0; i < 8; i++) {
             if (tabArr[i] == null) {
-                tabArr[i] = create(fillMatchIdSatzNr(wettkampfId, i), userId);
+                TabletSessionDTO tabletSessionDTO = fillMatchIdSatzNr(wettkampfId, i);
+                if (tabletSessionDTO == null) {
+                    throw new IllegalArgumentException("Keine matches in diesem Wettkampf");
+                }
+                TabletSessionDO taDO = tabletSessionComponent.create(
+                        TabletSessionDTOMapper.toDO.apply(tabletSessionDTO),
+                        userId);
+                tabArr[i] = taDO;
             }
         }
 
@@ -93,27 +100,24 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) {
+    private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) throws IllegalArgumentException {
         final long scheibe = (long) scheibennummer + 1;
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfId);
+        if (matches.size() == 0) {
+            return null;
+        }
         TabletSessionDTO tab = new TabletSessionDTO();
         List<MatchDO> matchDOs = matches.stream().filter(x -> x.getScheibenNummer() == scheibe).collect(
                 Collectors.toList());
         matchDOs = matchDOs.stream().filter(
                 x -> x.getNr().equals(1L)).collect(Collectors.toList());
+
         tab.setMatchId(matchDOs.get(0).getId());
         tab.setSatznummer(1L);
         tab.setWettkampfId(wettkampfId);
         tab.setScheibennummer(scheibe);
         tab.setActive(false);
         return tab;
-    }
-
-
-    private TabletSessionDO create(final TabletSessionDTO tabletSessionDTO, final Long userId) {
-
-        return tabletSessionComponent.create(TabletSessionDTOMapper.toDO.apply(tabletSessionDTO),
-                userId);
     }
 
 
