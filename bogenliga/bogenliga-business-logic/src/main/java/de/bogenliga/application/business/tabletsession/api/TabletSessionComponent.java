@@ -6,6 +6,7 @@ import de.bogenliga.application.business.tabletsession.api.types.TabletSessionDO
 /**
  * @author Kay Scheerer
  */
+
 public interface TabletSessionComponent {
     List<TabletSessionDO> findAll();
 
