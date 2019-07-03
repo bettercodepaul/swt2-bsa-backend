@@ -10,7 +10,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 public class TabletSessionBE extends CommonBusinessEntity implements BusinessEntity {
     private Long wettkampfId;
     private Long scheibennummer;
-    private Long matchID;
+    private Long matchId;
     private Long satznummer;
 
 
@@ -45,12 +45,13 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
-    public Long getMatchID() {
-        return matchID;
+
+    public Long getMatchId() {
+        return matchId;
     }
 
 
-    public void setMatchID(Long matchID) {
-        this.matchID = matchID;
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
     }
 }
