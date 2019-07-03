@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.tabletsession.service;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -87,25 +88,23 @@ public class TabletSessionService implements ServiceFacade {
             }
         }
 
-        List<TabletSessionDTO> tabDTOs = tabDOs.stream().map(TabletSessionDTOMapper.toDTO).collect(
-                Collectors.toList());
         LOG.debug("Receive 'findById' request with ID '{}'", wettkampfId);
-        return tabDTOs;
+        return Arrays.asList(tabArr).stream().map(TabletSessionDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
     private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) {
-        final long scheibe = (long)scheibennummer + 1;
+        final long scheibe = (long) scheibennummer + 1;
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfId);
         TabletSessionDTO tab = new TabletSessionDTO();
-        List<MatchDO> matchDOs = matches.stream().filter(x -> x.getScheibenNummer() ==scheibe).collect(
+        List<MatchDO> matchDOs = matches.stream().filter(x -> x.getScheibenNummer() == scheibe).collect(
                 Collectors.toList());
         matchDOs = matchDOs.stream().filter(
                 x -> x.getNr().equals(1L)).collect(Collectors.toList());
         tab.setMatchId(matchDOs.get(0).getId());
         tab.setSatznummer(1L);
         tab.setWettkampfId(wettkampfId);
-        tab.setScheibennummer((long) scheibennummer);
+        tab.setScheibennummer(scheibe);
         tab.setActive(false);
         return tab;
     }
@@ -147,7 +146,7 @@ public class TabletSessionService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public TabletSessionDTO update(TabletSessionDTO tabletSessionDTO, final Principal principal) {
 
         final long userId = UserProvider.getCurrentUserId(principal);

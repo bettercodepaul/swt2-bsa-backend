@@ -71,10 +71,12 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
         checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
+        checkPreconditions(sessionDO.getSatznummer(), "satznummer");
+        checkPreconditions(sessionDO.getMatchId(), "matchId");
 
-        final TabletSessionBE passeBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
-        TabletSessionBE tabBE = tabletDAO.create(passeBE, currentUserId);
-        return TabletSessionMapper.toTabletSessionDO.apply(tabBE);
+        final TabletSessionBE tabBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
+        TabletSessionBE tab2BE = tabletDAO.create(tabBE, currentUserId);
+        return TabletSessionMapper.toTabletSessionDO.apply(tab2BE);
     }
 
 

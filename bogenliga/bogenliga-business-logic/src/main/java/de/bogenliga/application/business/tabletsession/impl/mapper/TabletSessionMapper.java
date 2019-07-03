@@ -47,6 +47,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
         TabletSessionBE tabBE = new TabletSessionBE();
         tabBE.setWettkampfId(vo.getWettkampfId());
         tabBE.setScheibennummer(vo.getScheibennummer());
+        tabBE.setSatznummer(vo.getSatznummer());
         tabBE.setMatchId(vo.getMatchId());
         tabBE.setActive(vo.isActive());
 
