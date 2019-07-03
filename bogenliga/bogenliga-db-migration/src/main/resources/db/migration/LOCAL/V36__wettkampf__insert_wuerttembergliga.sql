@@ -11,7 +11,7 @@ VALUES
 (30, 0, '2017-11-19', 'Sporthalle, 88454 Hochdorf/Riss', '13:30', 1, 0, 0),
 (31, 0, '2017-12-09', 'Franz-Baum Bogenhalle, 73642 Welzheim', '13:30', 2, 0, 0),
 (32, 0, '2018-01-14', 'Bogenhalle am Schützenhaus, Gurgelbergweg, 88499 Altheim-Waldhausen', '13:30', 3, 0, 1),
-(33, 0, '2018-02-03', 'Franz-Baum Bogenhalle, 73642 Welzheim', '9:30', 4, 0, 1)
+(33, 0, '2018-02-03', 'Franz-Baum Bogenhalle, 73642 Welzheim', '09:30', 4, 0, 1)
 ;
 
 
