@@ -191,7 +191,7 @@ public class WettkampfService implements ServiceFacade {
     private void checkPreconditions(@RequestBody final WettkampfDTO wettkampfDTO) {
         Preconditions.checkNotNull(wettkampfDTO, PRECONDITION_MSG_WETTKAMPF);
         Preconditions.checkNotNull(wettkampfDTO.getDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);
-        Preconditions.checkNotNull(wettkampfDTO.getId() >=0,PRECONDITION_MSG_WETTKAMPF_ID);
+
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfBeginn(),PRECONDITION_MSG_WETTKAMPF_BEGINN);
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrt(),PRECONDITION_MSG_WETTKAMPF_ORT);
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfDisziplinId()>=0, PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);

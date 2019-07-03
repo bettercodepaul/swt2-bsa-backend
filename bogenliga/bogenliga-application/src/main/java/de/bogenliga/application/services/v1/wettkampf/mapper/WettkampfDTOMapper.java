@@ -25,8 +25,8 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfId = wettkampfDO.getId();
         final Long veranstaltungsId = wettkampfDO.getVeranstaltungsId();
 
-        final Date datumDate = wettkampfDO.getDatum();
-        final String datum = datumDate.toString();
+        final Date datum = wettkampfDO.getDatum();
+
 
         final String wettkampfOrt = wettkampfDO.getWettkampfOrt();
         final String wettkampfBeginn = wettkampfDO.getWettkampfBeginn();
@@ -37,7 +37,7 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final OffsetDateTime createdAtUtc = wettkampfDO.getCreatedAtUtc();
         final Long version = wettkampfDO.getVersion();
 
-        System.out.println(datumDate + " to " + datum);
+        System.out.println(datum + " to " + datum);
 
         return new WettkampfDTO(wettkampfId, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, createdByUserId, createdAtUtc, version);
@@ -52,9 +52,8 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfId = wettkampfDTO.getId();
         final Long veranstaltungsId = wettkampfDTO.getVeranstaltungsId();
 
-        final String datum = wettkampfDTO.getDatum();
-        //  System.out.println(datum);
-        Date datumDate = Date.valueOf(datum);
+        final Date datum = wettkampfDTO.getDatum();
+
 
         final String wettkampfOrt = wettkampfDTO.getWettkampfOrt();
         final String wettkampfBeginn = wettkampfDTO.getWettkampfBeginn();
@@ -65,7 +64,7 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final OffsetDateTime createdAtUtc = wettkampfDTO.getCreatedAtUtc();
         final Long version = wettkampfDTO.getVersion();
 
-        return new WettkampfDO(wettkampfId, veranstaltungsId, datumDate, wettkampfOrt, wettkampfBeginn, wettkampfTag,
+        return new WettkampfDO(wettkampfId, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, createdAtUtc,createdByUserId, version);
     };
 
