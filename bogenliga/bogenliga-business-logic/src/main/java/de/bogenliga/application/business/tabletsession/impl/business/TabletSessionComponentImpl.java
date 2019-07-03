@@ -103,8 +103,8 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
 
-        final TabletSessionBE passeBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
-        tabletDAO.delete(passeBE, currentUserId);
+        final TabletSessionBE tabBe = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
+        tabletDAO.delete(tabBe, currentUserId);
 
     }
 }
