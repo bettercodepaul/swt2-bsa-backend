@@ -35,7 +35,7 @@ public class TabletSessionDAO {
     private static final String TABLET_SESSION_TABLE_WETTKAMPF_ID = "tablet_session_wettkampf_id";
     private static final String TABLET_SESSION_TABLE_MATCH_ID = "tablet_session_match_id";
     private static final String TABLET_SESSION_TABLE_SCHEIBENNUMMER = "tablet_session_scheibennummer";
-    private static final String TABLET_SESSION_TABLE_SATZNUMMER = "tablet_session_satznummer";
+    private static final String TABLET_SESSION_TABLE_SATZNUMMER = "tablet_session_satznr";
     private static final String TABLET_SESSION_TABLE_IS_ACTIVE = "is_Active";
 
     private static final BusinessEntityConfiguration<TabletSessionBE> TABLET_SESSION = new BusinessEntityConfiguration<>(
