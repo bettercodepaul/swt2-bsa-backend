@@ -1,20 +1,21 @@
-package de.bogenliga.application.business.tabletsession.impl.entity;
-
-import de.bogenliga.application.common.component.entity.BusinessEntity;
-import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
+package de.bogenliga.application.services.v1.tabletsession.model;
 
 /**
  * @author Kay Scheerer
  */
-public class TabletSessionBE extends CommonBusinessEntity implements BusinessEntity {
-    private static final long serialVersionUID = 5856944226092695392L;
+public class TabletSessionDTO {
 
-    private Long wettkampfId;
-    private Long scheibennummer;
-    private Long matchId;
-    private Long satznummer;
-    private Boolean active = false;
+    public TabletSessionDTO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active) {
+        this.wettkampfId = wettkampfId;
+        this.scheibennummer = scheibennummer;
+        this.satznummer = satznummer;
+        this.matchId = matchId;
+        this.active = active;
+    }
 
+    public TabletSessionDTO(){
+
+    }
 
     public Long getWettkampfId() {
         return wettkampfId;
@@ -56,12 +57,19 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
-    public Boolean isActive() {
+    private Long wettkampfId;
+    private Long scheibennummer;
+    private Long satznummer;
+    private Long matchId;
+    private boolean active = false;
+
+
+    public boolean isActive() {
         return active;
     }
 
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 }
