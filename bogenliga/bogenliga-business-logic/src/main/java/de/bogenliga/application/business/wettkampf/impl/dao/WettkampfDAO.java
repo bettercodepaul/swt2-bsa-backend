@@ -72,6 +72,11 @@ public class WettkampfDAO implements DataAccessObject {
                         + " FROM match"
                         + " WHERE match_mannschaft_id = ?)";
 
+    private static final String FIND_ALL_BY_VERANSTALTUNG_ID =
+            "SELECT *" +
+                    " FROM wettkampf" +
+                    " WHERE wettkampf_veranstaltung_id = ?";
+
 
     private final BasicDAO basicDao;
 
@@ -131,10 +136,14 @@ public class WettkampfDAO implements DataAccessObject {
         return basicDao.selectEntityList(WETTKAMPF, FIND_ALL_BY_MANNSCHAFTS_ID, id);
     }
 
+    public List<WettkampfBE> findAllByVeranstaltungId(final long id) {
+        return basicDao.selectEntityList(WETTKAMPF, FIND_ALL_BY_VERANSTALTUNG_ID, id);
+    }
+
     /**
      * Create a new Wettkampf entry
      *
-     * @param WettkampfBE
+     * @param wettkampfBE
      * @param currentWettkampfId
      * @return Business Entity corresponding to the created wettkampf entry
      */
@@ -148,7 +157,7 @@ public class WettkampfDAO implements DataAccessObject {
     /**
      * Update an existing Wettkampf entry
      *
-     * @param WettkampfBE
+     * @param wettkampfBE
      * @param currentWettkampfId
      * @return Business Entity corresponding to the updated wettkampf entry
      */
@@ -162,7 +171,7 @@ public class WettkampfDAO implements DataAccessObject {
     /**
      * Delete existing wettkampf entrycreated_at_utc
      *
-     * @param WettkampfBE
+     * @param wettkampfBE
      * @param currentWettkampfId
      */
     public void delete(final WettkampfBE wettkampfBE, final long currentWettkampfId) {
