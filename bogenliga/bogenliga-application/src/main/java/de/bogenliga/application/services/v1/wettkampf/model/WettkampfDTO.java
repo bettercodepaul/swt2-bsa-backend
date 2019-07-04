@@ -15,7 +15,7 @@ public class WettkampfDTO implements DataTransferObject {
 
     private Long id;
     private Long veranstaltungsId;
-    private String datum;
+    private Date datum;
     private String wettkampfOrt;
     private String wettkampfBeginn;
     private Long wettkampfTag;
@@ -28,7 +28,7 @@ public class WettkampfDTO implements DataTransferObject {
 
 
 
-    public WettkampfDTO(Long wettkampfId, Long veranstaltungsId, String datum, String wettkampfOrt,
+    public WettkampfDTO(Long wettkampfId, Long veranstaltungsId, Date datum, String wettkampfOrt,
                         String wettkampfBeginn, Long wettkampfTag,
                         Long wettkampfDisziplinId, Long wettkampfTypId,
                         Long createdByUserId, OffsetDateTime createdAtUtc, Long version){
@@ -43,6 +43,7 @@ public class WettkampfDTO implements DataTransferObject {
         this.setCreatedAtUtc(createdAtUtc);
         this.setCreatedByUserId(createdByUserId);
         this.setVersion(version);
+
 
     }
 
@@ -67,12 +68,12 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
-    public String getDatum() {
+    public Date getDatum() {
         return datum;
     }
 
 
-    public void setDatum(String datum) {
+    public void setDatum(Date datum) {
         this.datum = datum;
     }
 
