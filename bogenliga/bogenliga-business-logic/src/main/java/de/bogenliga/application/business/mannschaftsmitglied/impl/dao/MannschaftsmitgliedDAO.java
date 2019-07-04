@@ -92,6 +92,12 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .whereEquals(MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID)
             .compose().toString();
 
+    private static final String FIND_BY_DSBMITGLIED_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID)
+            .compose().toString();
+
     private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
@@ -168,7 +174,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     }
 
     public List<MannschaftsmitgliedBE> findByMemberId(final long memberId) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_ID, memberId);
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_BY_DSBMITGLIED_ID, memberId);
     }
 
 
