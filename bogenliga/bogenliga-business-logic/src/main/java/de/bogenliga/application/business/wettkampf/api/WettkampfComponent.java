@@ -38,6 +38,15 @@ public interface WettkampfComponent extends ComponentFacade {
     List<WettkampfDO> findAllWettkaempfeByMannschaftsId(long id);
 
     /**
+     * retruns all wettkämpfe with the given veranstaltungId
+     *
+     * @param id id of the veranstaltung
+     * @return a list with wettkampf entries
+     */
+    List<WettkampfDO> findAllByVeranstaltungId(long id);
+
+
+    /**
      * Create a new wettkampf in the database.
      *
      * @param wettkampfDO new wettkampf
