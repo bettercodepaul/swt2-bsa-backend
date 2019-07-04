@@ -145,7 +145,6 @@ public class WettkampfService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public WettkampfDTO update(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
         checkPreconditions(wettkampfDTO);
-        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
                 LOG.debug("Received 'update' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
                                 " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
