@@ -32,8 +32,7 @@ public class MatchComponentImpl implements MatchComponent {
             "scheibennummer");
 
     /**
-     * (Kay Scheerer)
-     * this method would make the preconditions way easier to check before each SQL
+     * (Kay Scheerer) this method would make the preconditions way easier to check before each SQL
      */
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
@@ -69,7 +68,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     @Override
     public MatchDO findById(Long id) {
-        checkPreconditions(id,PRECONDITION_MSG_MATCH_NR);
+        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
 
         final MatchBE matchBE = matchDAO.findById(id);
 
@@ -105,7 +104,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     @Override
     public List<MatchDO> findByWettkampfId(Long wettkampfId) {
-        checkPreconditions(wettkampfId,PRECONDITION_MSG_WETTKAMPF_ID);
+        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
 
         final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
         return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
@@ -114,7 +113,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     @Override
     public List<MatchDO> findByMannschaftId(Long mannschaftId) {
-        checkPreconditions(mannschaftId,PRECONDITION_MSG_MANNSCHAFT_ID);
+        checkPreconditions(mannschaftId, PRECONDITION_MSG_MANNSCHAFT_ID);
 
         final List<MatchBE> matchBEList = matchDAO.findByMannschaftId(mannschaftId);
         return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
@@ -123,7 +122,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     @Override
     public MatchDO create(MatchDO matchDO, Long currentUserId) {
-        checkPreconditions(currentUserId,PRECONDITION_MSG_CURRENT_USER_ID);
+        checkPreconditions(currentUserId, PRECONDITION_MSG_CURRENT_USER_ID);
 
         this.checkMatch(matchDO);
 
@@ -134,7 +133,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     @Override
     public MatchDO update(MatchDO matchDO, Long currentUserId) {
-        checkPreconditions(currentUserId,PRECONDITION_MSG_CURRENT_USER_ID);
+        checkPreconditions(currentUserId, PRECONDITION_MSG_CURRENT_USER_ID);
 
         this.checkMatch(matchDO);
 
@@ -159,7 +158,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     @Override
     public void delete(MatchDO matchDO, Long currentUserId) {
-        checkPreconditions(currentUserId,PRECONDITION_MSG_CURRENT_USER_ID);
+        checkPreconditions(currentUserId, PRECONDITION_MSG_CURRENT_USER_ID);
 
         MatchBE matchBE = MatchMapper.toMatchBE.apply(matchDO);
         matchDAO.delete(matchBE, currentUserId);

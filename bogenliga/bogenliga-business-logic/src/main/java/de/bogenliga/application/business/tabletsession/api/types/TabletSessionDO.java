@@ -5,24 +5,36 @@ import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Kay Scheerer
  */
 public class TabletSessionDO extends CommonDataObject implements DataObject {
+    private static final long serialVersionUID = 108484078463895720L;
+
     private Long wettkampfId;
     private Long scheibennummer;
+    private Long satznummer;
+    private Long matchId;
+    private boolean active;
 
-    public TabletSessionDO(Long wettkampfId, Long scheibennummer) {
+
+    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active) {
         this.wettkampfId = wettkampfId;
         this.scheibennummer = scheibennummer;
+        this.satznummer = satznummer;
+        this.matchId = matchId;
+        this.active = active;
     }
 
-    public TabletSessionDO(Long wettkampfId, Long scheibennummer, final OffsetDateTime createdAtUtc,
+
+    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active,
+                           final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                            final Long lastModifiedByUserId, final Long version) {
         this.wettkampfId = wettkampfId;
         this.scheibennummer = scheibennummer;
+        this.satznummer = satznummer;
+        this.matchId = matchId;
+        this.active = active;
 
         // set parameter from CommonDataObject
         this.createdAtUtc = createdAtUtc;
@@ -50,5 +62,35 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
 
     public void setScheibennummer(Long scheibennummer) {
         this.scheibennummer = scheibennummer;
+    }
+
+
+    public Long getSatznummer() {
+        return satznummer;
+    }
+
+
+    public void setSatznummer(Long satznummer) {
+        this.satznummer = satznummer;
+    }
+
+
+    public Long getMatchId() {
+        return matchId;
+    }
+
+
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
+    }
+
+
+    public boolean isActive() {
+        return active;
+    }
+
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
