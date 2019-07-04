@@ -472,48 +472,4 @@ public class UserRoleComponentImplTest {
     }
 
 
-
-    @Test
-    public void update_sucessful(){
-
-        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
-        final UserRoleDO inputDO = new UserRoleDO();
-        inputDO.setId(ID);
-        inputDO.setRoleId(ROLE_ID);
-        inputDO.setEmail(EMAIL);
-        inputDO.setRoleName(ROLE_NAME);
-        inputDO.setVersion(VERSION);
-        userRoleDOList.add(inputDO);
-
-        final OffsetDateTime dateTime = OffsetDateTime.now();
-        final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        final UserRoleBE expectedBE = new UserRoleBE();
-        expectedBE.setUserId(ID);
-        expectedBE.setRoleId(ROLE_ID);
-        expectedBE.setVersion(VERSION);
-        expectedBE.setCreatedAtUtc(timestamp);
-        expectedBE.setLastModifiedAtUtc(timestamp);
-        expectedBE.setCreatedByUserId(USER);
-        expectedBE.setLastModifiedByUserId(USER);
-
-
-        // configure mocks
-        when(userRoleExtDAO.update(any(UserRoleBE.class),anyLong())).thenReturn(expectedBE);
-
-        // call test method
-        final List<UserRoleDO> actual =  underTest.update(userRoleDOList, USER);
-
-        // assert result
-        assertThat(actual).isNotNull();
-
-        assertThat(actual.get(0).getId())
-                .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.get(0).getRoleId())
-                .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.get(0).getVersion())
-                .isEqualTo(expectedBE.getVersion());
-
-    }
-
-
 }

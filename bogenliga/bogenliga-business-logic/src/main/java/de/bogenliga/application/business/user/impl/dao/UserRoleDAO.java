@@ -99,20 +99,6 @@ public class UserRoleDAO implements DataAccessObject {
 
 
     /**
-     * Update an existing user entry
-     *
-     * @param userRoleBE
-     * @param currentUserId
-     * @return Business Entity corresponding to the updated user entry
-     */
-    public UserRoleBE update(final UserRoleBE userRoleBE, final long currentUserId) {
-        basicDao.setModificationAttributes(userRoleBE, currentUserId);
-
-        return basicDao.updateEntity(USERROLE, userRoleBE, USER_BE_ID);
-    }
-
-
-    /**
      * Looks for exsiting roles for a user and creates new roles for user if needed. Although removes roles if they are
      * not in the new list
      * @param userRoleBES list of new user roles
