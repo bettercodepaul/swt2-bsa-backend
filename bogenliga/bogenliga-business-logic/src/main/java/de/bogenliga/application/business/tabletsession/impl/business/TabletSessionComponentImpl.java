@@ -83,7 +83,6 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         checkBE(sessionDO);
 
         final TabletSessionBE passeBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
-        TabletSessionBE tabos = tabletDAO.findByIdScheinebnummer(passeBE.getWettkampfId(), passeBE.getScheibennummer());
         TabletSessionBE tabBE = tabletDAO.update(passeBE, currentUserId);
         return TabletSessionMapper.toTabletSessionDO.apply(tabBE);
     }
