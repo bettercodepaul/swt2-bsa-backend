@@ -186,6 +186,14 @@ public class PasseComponentImpl implements PasseComponent {
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<PasseDO> findByWettkampfIdAndMitgliedId(Long wettkampfId, Long mitgliedId) {
+        checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
+        checkPreconditions(mitgliedId, PRECONDITION_FIELD_MITGLIED_ID);
+        final List<PasseBE> passeBEList = passeDAO.findByWettkampfIdAndMitgliedId(wettkampfId, mitgliedId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+    }
+
 
     /**
      *  Finds a passe by its ID

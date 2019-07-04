@@ -100,6 +100,15 @@ public class WettkampfService implements ServiceFacade {
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+    @RequestMapping(value = "byVeranstaltungId/{veranstaltungId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<WettkampfDTO> findAllByVeranstaltungId(@PathVariable("veranstaltungId") final long veranstaltungId) {
+        Preconditions.checkArgument(veranstaltungId >= 0, "Veranstaltung ID must not be negative.");
+
+        LOG.debug("GET request for findALlByVernstaltungId with ID '{}'", veranstaltungId);
+        final List<WettkampfDO> wettkampfDOList = this.wettkampfComponent.findAllByVeranstaltungId(veranstaltungId);
+        return wettkampfDOList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     /**
      * create-Method() writes a new entry of Wettkampf into the database
