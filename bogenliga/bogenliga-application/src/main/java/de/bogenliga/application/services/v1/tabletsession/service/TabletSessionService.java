@@ -3,8 +3,6 @@ package de.bogenliga.application.services.v1.tabletsession.service;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +37,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RequestMapping("v1/tabletsessions")
 public class TabletSessionService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(TabletSessionService.class);
+    private static final Integer MAX_NUM_SCHEIBEN = 8;
 
     private final TabletSessionComponent tabletSessionComponent;
 
@@ -75,17 +74,19 @@ public class TabletSessionService implements ServiceFacade {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
-    public List<TabletSessionDTO> findById(@PathVariable("wettkampfId") Long wettkampfId, final Principal principal) {
+    public List<TabletSessionDTO> findByWettkampfId(@PathVariable("wettkampfId") Long wettkampfId,
+                                                    final Principal principal) {
         final long userId = UserProvider.getCurrentUserId(principal);
         List<TabletSessionDO> tabDOs = tabletSessionComponent.findById(wettkampfId);
-        TabletSessionDO[] tabArr = new TabletSessionDO[8];
+        TabletSessionDO[] tabArr = new TabletSessionDO[MAX_NUM_SCHEIBEN];
         for (TabletSessionDO tabDO : tabDOs) {
             tabArr[tabDO.getScheibennummer().intValue() - 1] = tabDO;
         }
 
-        for (int i = 0; i < 8; i++) {
-            if (tabArr[i] == null) {
-                TabletSessionDTO tabletSessionDTO = fillMatchIdSatzNr(wettkampfId, i);
+        // in case the tabletsessions weren't created yet, create them once on request
+        if (tabArr[0] == null) {
+            for (int i = 0; i < MAX_NUM_SCHEIBEN; i++) {
+                TabletSessionDTO tabletSessionDTO = fillMatchIdSatzNr(wettkampfId, i + 1);
                 if (tabletSessionDTO == null) {
                     throw new IllegalArgumentException("Keine matches in diesem Wettkampf");
                 }
@@ -96,22 +97,36 @@ public class TabletSessionService implements ServiceFacade {
             }
         }
 
-        LOG.debug("Receive 'findById' request with ID '{}'", wettkampfId);
-        return Arrays.asList(tabArr).stream().map(TabletSessionDTOMapper.toDTO).collect(Collectors.toList());
+        List<TabletSessionDTO> tsDTOs = Arrays.asList(tabArr).stream()
+                .map(TabletSessionDTOMapper.toDTO)
+                .collect(Collectors.toList());
+
+        for (TabletSessionDTO tsDTO : tsDTOs) {
+            addOtherMatchId(tsDTO);
+        }
+
+
+        LOG.debug("Receive 'findByWettkampfId' request with ID '{}'", wettkampfId);
+        return tsDTOs;
+    }
+
+
+    private void addOtherMatchId(TabletSessionDTO tsDTO) {
+
     }
 
 
     private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) throws IllegalArgumentException {
-        final long scheibe = (long) scheibennummer + 1;
+        Long scheibe = (long) scheibennummer;
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfId);
         if (matches.size() == 0) {
             return null;
         }
         TabletSessionDTO tab = new TabletSessionDTO();
-        List<MatchDO> matchDOs = matches.stream().filter(x -> x.getScheibenNummer() == scheibe).collect(
-                Collectors.toList());
-        matchDOs = matchDOs.stream().filter(
-                x -> x.getNr().equals(1L)).collect(Collectors.toList());
+        List<MatchDO> matchDOs = matches.stream()
+                .filter(x -> x.getScheibenNummer().equals(scheibe))
+                .filter(x -> x.getNr().equals(1L))
+                .collect(Collectors.toList());
 
         tab.setMatchId(matchDOs.get(0).getId());
         tab.setSatznummer(1L);
