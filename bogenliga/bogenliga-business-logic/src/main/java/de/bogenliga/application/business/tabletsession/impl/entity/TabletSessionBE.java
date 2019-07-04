@@ -13,7 +13,7 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     private Long scheibennummer;
     private Long matchId;
     private Long satznummer;
-    private boolean active = false;
+    private Boolean active = false;
 
 
     public Long getWettkampfId() {
@@ -56,12 +56,12 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 }
