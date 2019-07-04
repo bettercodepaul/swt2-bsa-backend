@@ -157,7 +157,7 @@ public class LizenzComponentImpl implements LizenzComponent {
         DsbMitgliedDO mitgliedDO= dsbMitgliedComponent.findById(dsbMitgliedID);
         DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(mannschaftDO.getVeranstaltungId());
-        List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllWettkaempfeByMannschaftsId(mannschaftDO.getId());
+        List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllByVeranstaltungId(veranstaltungDO.getVeranstaltungID());
         LizenzBE lizenz = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(mitgliedDO.getId(), wettkampfDOList.get(0).getWettkampfDisziplinId());
         System.out.println(lizenz);
         result = generateDoc(mitgliedDO, lizenz, veranstaltungDO).toByteArray();
