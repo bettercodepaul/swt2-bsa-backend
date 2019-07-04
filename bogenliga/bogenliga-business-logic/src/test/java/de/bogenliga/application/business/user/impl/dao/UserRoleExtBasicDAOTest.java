@@ -117,7 +117,7 @@ public class UserRoleExtBasicDAOTest {
                 .isEqualTo(expectedBE.getRoleName());
 
         // verify invocations
-        verify(basicDao).selectSingleEntity(any(), any(), any());
+        verify(basicDao).selectEntityList(any(), any(), any());
     }
 
 
