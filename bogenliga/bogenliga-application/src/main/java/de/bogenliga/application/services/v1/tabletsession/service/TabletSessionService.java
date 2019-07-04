@@ -65,6 +65,7 @@ public class TabletSessionService implements ServiceFacade {
                                      @PathVariable("scheibenNr") Long scheibennummer) {
         TabletSessionDO tabDO = tabletSessionComponent.findByIdScheibennummer(wettkampfId, scheibennummer);
         TabletSessionDTO tabDTO = TabletSessionDTOMapper.toDTO.apply(tabDO);
+        this.addMatchIds(tabDTO);
         this.log(tabDTO, "findById");
         return tabDTO;
     }
@@ -102,17 +103,45 @@ public class TabletSessionService implements ServiceFacade {
                 .collect(Collectors.toList());
 
         for (TabletSessionDTO tsDTO : tsDTOs) {
-            addOtherMatchId(tsDTO);
+            addMatchIds(tsDTO);
         }
-
 
         LOG.debug("Receive 'findByWettkampfId' request with ID '{}'", wettkampfId);
         return tsDTOs;
     }
 
 
-    private void addOtherMatchId(TabletSessionDTO tsDTO) {
-
+    private void addMatchIds(TabletSessionDTO tsDTO) {
+        MatchDO matchDO = null;
+        if (tsDTO.getMatchId() != null) {
+            matchDO = matchComponent.findById(tsDTO.getMatchId());
+        }
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(tsDTO.getWettkampfId());
+        Long scheibeNr = tsDTO.getScheibennummer();
+        // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
+        // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // ist das gegebene Match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
+        Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
+        Long matchNr = (matchDO != null ? matchDO.getNr() : 1L);
+        List<MatchDO> relatierteMatches = wettkampfMatches.stream()
+                .filter(mDO -> mDO.getNr().equals(matchNr))
+                .filter(mDO -> (
+                        scheibeNr.equals(mDO.getScheibenNummer())
+                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                ))
+                .collect(Collectors.toList());
+        if (relatierteMatches.size() == 2) {
+            MatchDO first, second;
+            first = relatierteMatches.get(0);
+            second = relatierteMatches.get(1);
+            if (first.getScheibenNummer().equals(tsDTO.getScheibennummer())) {
+                tsDTO.setMatchId(first.getId());
+                tsDTO.setOtherMatchId(second.getId());
+            } else {
+                tsDTO.setMatchId(second.getId());
+                tsDTO.setOtherMatchId(first.getId());
+            }
+        }
     }
 
 
@@ -157,7 +186,9 @@ public class TabletSessionService implements ServiceFacade {
         TabletSessionDO tabletSessionDO = tabletSessionComponent.update(
                 TabletSessionDTOMapper.toDO.apply(tabletSessionDTO), userId);
         this.log(tabletSessionDTO, "update");
-        return TabletSessionDTOMapper.toDTO.apply(tabletSessionDO);
+        TabletSessionDTO tabDTO = TabletSessionDTOMapper.toDTO.apply(tabletSessionDO);
+        this.addMatchIds(tabDTO);
+        return tabDTO;
     }
 
 
