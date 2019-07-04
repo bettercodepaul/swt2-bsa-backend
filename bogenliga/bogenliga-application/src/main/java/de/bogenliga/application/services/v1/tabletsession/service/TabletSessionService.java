@@ -23,6 +23,7 @@ import de.bogenliga.application.business.tabletsession.api.TabletSessionComponen
 import de.bogenliga.application.business.tabletsession.api.types.TabletSessionDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
+import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.tabletsession.mapper.TabletSessionDTOMapper;
 import de.bogenliga.application.services.v1.tabletsession.model.TabletSessionDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -131,7 +132,8 @@ public class TabletSessionService implements ServiceFacade {
                 ))
                 .collect(Collectors.toList());
         if (relatierteMatches.size() == 2) {
-            MatchDO first, second;
+            MatchDO first;
+            MatchDO second;
             first = relatierteMatches.get(0);
             second = relatierteMatches.get(1);
             if (first.getScheibenNummer().equals(tsDTO.getScheibennummer())) {
@@ -145,10 +147,10 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) throws IllegalArgumentException {
+    private TabletSessionDTO fillMatchIdSatzNr(Long wettkampfId, int scheibennummer) {
         Long scheibe = (long) scheibennummer;
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfId);
-        if (matches.size() == 0) {
+        if (matches.isEmpty()) {
             return null;
         }
         TabletSessionDTO tab = new TabletSessionDTO();

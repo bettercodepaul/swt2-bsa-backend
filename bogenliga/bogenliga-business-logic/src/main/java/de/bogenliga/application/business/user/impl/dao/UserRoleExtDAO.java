@@ -1,24 +1,20 @@
 package de.bogenliga.application.business.user.impl.dao;
 
-import de.bogenliga.application.business.user.impl.entity.UserBE;
-import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
-import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
-import de.bogenliga.application.common.component.dao.DataAccessObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the user entity in the database.
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -136,8 +132,6 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
 
         return basicDao.selectSingleEntity(USERROLE, FIND_BY_EMAIL, email);
     }
-
-
 
 
 }

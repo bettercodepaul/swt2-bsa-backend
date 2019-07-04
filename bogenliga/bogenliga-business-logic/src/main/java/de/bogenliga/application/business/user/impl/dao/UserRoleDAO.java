@@ -1,25 +1,22 @@
 package de.bogenliga.application.business.user.impl.dao;
 
-import de.bogenliga.application.business.user.api.types.UserRoleDO;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.management.Query;
 
 /**
  * DataAccessObject for the user entity in the database.
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -53,8 +50,8 @@ public class UserRoleDAO implements DataAccessObject {
      */
     private static final String FIND_BY_ID = new QueryBuilder()
             .selectAll()
-            .from("benutzer_rolle")
-            .whereEquals("benutzer_rolle_benutzer_id")
+            .from(TABLE)
+            .whereEquals(USER_TABLE_ID)
             .compose().toString();
 
 
@@ -67,7 +64,6 @@ public class UserRoleDAO implements DataAccessObject {
     public UserRoleDAO(final BasicDAO basicDao) {
         this.basicDao = basicDao;
     }
-
 
 
     // table column label mapping to the business entity parameter names
@@ -89,10 +85,11 @@ public class UserRoleDAO implements DataAccessObject {
      *
      * @param userRoleBE
      * @param currentUserId
+     *
      * @return Business Entity corresponding to the created user entry
      */
     public UserRoleBE create(final UserRoleBE userRoleBE, final long currentUserId) {
-        basicDao.setCreationAttributes(userRoleBE, currentUserId );
+        basicDao.setCreationAttributes(userRoleBE, currentUserId);
 
         return basicDao.insertEntity(USERROLE, userRoleBE);
     }
@@ -101,22 +98,25 @@ public class UserRoleDAO implements DataAccessObject {
     /**
      * Looks for exsiting roles for a user and creates new roles for user if needed. Although removes roles if they are
      * not in the new list
-     * @param userRoleBES list of new user roles
+     *
+     * @param userRoleBES   list of new user roles
      * @param currentUserId
+     *
      * @return
      */
-    public List<UserRoleBE> createOrUpdate(final List<UserRoleBE> userRoleBES, final long currentUserId){
-        List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBES.get(0).getUserId());
+    public List<UserRoleBE> createOrUpdate(final List<UserRoleBE> userRoleBES, final long currentUserId) {
+        List<UserRoleBE> userRoleBEList = basicDao.selectEntityList(USERROLE, FIND_BY_ID,
+                userRoleBES.get(0).getUserId());
         List<UserRoleBE> userRoleBEUpdatedList = new ArrayList<>();
 
-        for(UserRoleBE userRoleBE: userRoleBEList){
-            if(!userRoleBES.contains(userRoleBE)){
+        for (UserRoleBE userRoleBE : userRoleBEList) {
+            if (!userRoleBES.contains(userRoleBE)) {
                 basicDao.setModificationAttributes(userRoleBE, currentUserId);
                 basicDao.deleteEntity(USERROLE, userRoleBE, new String[]{ROLE_BE_ID, USER_BE_ID});
             }
         }
-        for(UserRoleBE userRoleBE : userRoleBES){
-            if(!userRoleBEList.contains(userRoleBE)){
+        for (UserRoleBE userRoleBE : userRoleBES) {
+            if (!userRoleBEList.contains(userRoleBE)) {
                 basicDao.setModificationAttributes(userRoleBE, currentUserId);
                 userRoleBEUpdatedList.add(basicDao.insertEntity(USERROLE, userRoleBE));
             }
@@ -125,6 +125,7 @@ public class UserRoleDAO implements DataAccessObject {
         return userRoleBEUpdatedList;
     }
 
+
     /**
      * Delete all existing user entry
      *
@@ -132,12 +133,13 @@ public class UserRoleDAO implements DataAccessObject {
      * @param currentUserId
      */
     public void delete(final UserRoleBE userRoleBE, final long currentUserId) {
-        List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBE.getUserId());
-        for(UserRoleBE userRoleBEDelete : userRoleBEList){
-                basicDao.setModificationAttributes(userRoleBEDelete, currentUserId);
-                basicDao.deleteEntity(USERROLE, userRoleBE, ROLE_BE_ID, USER_BE_ID);
+        List<UserRoleBE> userRoleBEList = basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBE.getUserId());
+        for (UserRoleBE userRoleBEDelete : userRoleBEList) {
+            basicDao.setModificationAttributes(userRoleBEDelete, currentUserId);
+            basicDao.deleteEntity(USERROLE, userRoleBE, ROLE_BE_ID, USER_BE_ID);
         }
     }
+
 
     /**
      * Private constructor
@@ -145,6 +147,6 @@ public class UserRoleDAO implements DataAccessObject {
     private UserRoleDAO() {
         this.basicDao = null;
     }
-        // empty private constructor
+    // empty private constructor
 
 }
