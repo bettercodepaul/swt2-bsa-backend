@@ -65,6 +65,7 @@ public class TabletSessionService implements ServiceFacade {
                                      @PathVariable("scheibenNr") Long scheibennummer) {
         TabletSessionDO tabDO = tabletSessionComponent.findByIdScheibennummer(wettkampfId, scheibennummer);
         TabletSessionDTO tabDTO = TabletSessionDTOMapper.toDTO.apply(tabDO);
+        this.addMatchIds(tabDTO);
         this.log(tabDTO, "findById");
         return tabDTO;
     }
@@ -132,7 +133,7 @@ public class TabletSessionService implements ServiceFacade {
         if (relatierteMatches.size() == 2) {
             MatchDO first, second;
             first = relatierteMatches.get(0);
-            second = relatierteMatches.get(0);
+            second = relatierteMatches.get(1);
             if (first.getScheibenNummer().equals(tsDTO.getScheibennummer())) {
                 tsDTO.setMatchId(first.getId());
                 tsDTO.setOtherMatchId(second.getId());
@@ -201,7 +202,9 @@ public class TabletSessionService implements ServiceFacade {
         TabletSessionDO tabletSessionDO = tabletSessionComponent.update(
                 TabletSessionDTOMapper.toDO.apply(tabletSessionDTO), userId);
         this.log(tabletSessionDTO, "update");
-        return TabletSessionDTOMapper.toDTO.apply(tabletSessionDO);
+        TabletSessionDTO tabDTO = TabletSessionDTOMapper.toDTO.apply(tabletSessionDO);
+        this.addMatchIds(tabDTO);
+        return tabDTO;
     }
 
 /**
