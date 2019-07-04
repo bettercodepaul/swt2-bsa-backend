@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.itextpdf.kernel.geom.Line;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -14,7 +13,6 @@ import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
-import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.LineSeparator;
@@ -26,26 +24,17 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImpl;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.business.lizenz.impl.mapper.LizenzMapper;
-import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImpl;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.MannschaftsmitgliedMapper;
-import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.vereine.impl.business.VereinComponentImpl;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 
@@ -67,8 +56,8 @@ public class LizenzComponentImpl implements LizenzComponent {
 
 
     private final LizenzDAO lizenzDAO;
-    private final VereinComponentImpl vereinComponent;
-    private final DsbMitgliedComponentImpl dsbMitgliedComponent;
+    private final VereinComponent vereinComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent mannschaftComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final WettkampfComponent wettkampfComponent;
@@ -88,8 +77,8 @@ public class LizenzComponentImpl implements LizenzComponent {
      * @param lizenzDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public LizenzComponentImpl(final LizenzDAO lizenzDAO, final VereinComponentImpl vereinComponent,
-                               final DsbMitgliedComponentImpl dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
+    public LizenzComponentImpl(final LizenzDAO lizenzDAO, final VereinComponent vereinComponent,
+                               final DsbMitgliedComponent dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
                                final VeranstaltungComponent veranstaltungComponent, final WettkampfComponent wettkampfComponent) {
         this.lizenzDAO = lizenzDAO;
         this.vereinComponent = vereinComponent;
