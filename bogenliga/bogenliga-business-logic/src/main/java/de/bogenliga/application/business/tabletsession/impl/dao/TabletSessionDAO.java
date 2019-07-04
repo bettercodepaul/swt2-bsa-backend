@@ -36,7 +36,7 @@ public class TabletSessionDAO {
     private static final String TABLET_SESSION_TABLE_MATCH_ID = "tablet_session_match_id";
     private static final String TABLET_SESSION_TABLE_SCHEIBENNUMMER = "tablet_session_scheibennummer";
     private static final String TABLET_SESSION_TABLE_SATZNUMMER = "tablet_session_satznr";
-    private static final String TABLET_SESSION_TABLE_IS_ACTIVE = "is_Active";
+    private static final String TABLET_SESSION_TABLE_IS_ACTIVE = "is_active";
 
     private static final BusinessEntityConfiguration<TabletSessionBE> TABLET_SESSION = new BusinessEntityConfiguration<>(
             TabletSessionBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
@@ -56,11 +56,12 @@ public class TabletSessionDAO {
     private static final String FIND_BY_PK = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .whereEquals(TABLET_SESSION_TABLE_SCHEIBENNUMMER)
-            .andEquals(TABLET_SESSION_TABLE_WETTKAMPF_ID)
+            .whereEquals(TABLET_SESSION_TABLE_WETTKAMPF_ID)
+            .andEquals(TABLET_SESSION_TABLE_SCHEIBENNUMMER)
             .compose().toString();
 
     private final BasicDAO basicDao;
+
 
     /**
      * Initialize the transaction manager to provide a database connection
@@ -113,15 +114,16 @@ public class TabletSessionDAO {
 
 
     public TabletSessionBE update(TabletSessionBE tabletSessionBE, Long currentUserId) {
-        basicDao.setCreationAttributes(tabletSessionBE, currentUserId);
+        basicDao.setModificationAttributes(tabletSessionBE, currentUserId);
 
-        return basicDao.updateEntity(TABLET_SESSION, tabletSessionBE, TABLET_SESSION_BE_SCHEIBENNUMMER,
-                TABLET_SESSION_BE_WETTKAMPF_ID);
+        return basicDao.updateEntity(TABLET_SESSION, tabletSessionBE, TABLET_SESSION_BE_WETTKAMPF_ID,
+                TABLET_SESSION_BE_SCHEIBENNUMMER
+        );
     }
 
 
     public void delete(TabletSessionBE tabletSessionBE, Long currentUserId) {
-        basicDao.setCreationAttributes(tabletSessionBE, currentUserId);
+        basicDao.setModificationAttributes(tabletSessionBE, currentUserId);
 
         basicDao.deleteEntity(TABLET_SESSION, tabletSessionBE, TABLET_SESSION_BE_SCHEIBENNUMMER,
                 TABLET_SESSION_BE_WETTKAMPF_ID);

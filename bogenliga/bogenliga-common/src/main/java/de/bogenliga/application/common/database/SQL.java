@@ -285,7 +285,6 @@ public final class SQL {
     public static SQLWithParameter updateSQL(final Object updateObj, final String tableName,
                                              final String fieldSelector[],
                                              final Map<String, String> columnToFieldMapping) {
-        final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         final StringBuilder sql = new StringBuilder();
         final List<Object> para = new ArrayList<>();
         sql.append("UPDATE ");
@@ -476,13 +475,12 @@ public final class SQL {
 
 
     private static SQLWithParameter appendFieldsToUpdateStatement(final Object updateObj, final String[] fieldSelector,
-                                                      final Map<String, String> columnToFieldMapping,
-                                                      final StringBuilder sql,
-                                                      final List<Object> para,
-                                                      final Field[] fields)
+                                                                  final Map<String, String> columnToFieldMapping,
+                                                                  final StringBuilder sql,
+                                                                  final List<Object> para,
+                                                                  final Field[] fields)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         ArrayList<String> fieldselector = new ArrayList<>(Arrays.asList(fieldSelector));
-        ArrayList<String> fieldS = new ArrayList<>();
         ArrayList<Object> params = new ArrayList<>();
         boolean first = true;
         for (final Field field : fields) {
@@ -495,7 +493,6 @@ public final class SQL {
                     Object value = getter.invoke(updateObj);
 
                     if (fName.equals("id") || fieldselector.contains(fName)) {
-                        fieldS.add(fName);
                         params.add(value);
                         continue;
                     } else if (value != null && value.getClass().isEnum()) {
@@ -520,7 +517,7 @@ public final class SQL {
         final SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
         sqlWithParameter.setSql(sql.toString());
         sqlWithParameter.setParameter(para.toArray());
-        return appendWhereStatements(sql,fieldSelector,columnToFieldMapping,sqlWithParameter,para);
+        return appendWhereStatements(sql, fieldSelector, columnToFieldMapping, sqlWithParameter, para);
     }
 
 

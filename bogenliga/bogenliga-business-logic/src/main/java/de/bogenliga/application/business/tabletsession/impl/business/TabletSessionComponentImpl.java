@@ -68,11 +68,8 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     @Override
     public TabletSessionDO create(TabletSessionDO sessionDO, Long currentUserId) {
         checkPreconditions(currentUserId, PRECONDITION_FIELD_CURRENT_USER);
+        checkBE(sessionDO);
 
-        checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
-        checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
-        checkPreconditions(sessionDO.getSatznummer(), "satznummer");
-        checkPreconditions(sessionDO.getMatchId(), "matchId");
 
         final TabletSessionBE tabBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
         TabletSessionBE tab2BE = tabletDAO.create(tabBE, currentUserId);
@@ -83,10 +80,10 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     @Override
     public TabletSessionDO update(TabletSessionDO sessionDO, Long currentUserId) {
         checkPreconditions(currentUserId, PRECONDITION_FIELD_CURRENT_USER);
-        checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
-        checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
+        checkBE(sessionDO);
 
         final TabletSessionBE passeBE = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
+        TabletSessionBE tabos = tabletDAO.findByIdScheinebnummer(passeBE.getWettkampfId(), passeBE.getScheibennummer());
         TabletSessionBE tabBE = tabletDAO.update(passeBE, currentUserId);
         return TabletSessionMapper.toTabletSessionDO.apply(tabBE);
     }
@@ -95,12 +92,20 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     @Override
     public void delete(TabletSessionDO sessionDO, Long currentUserId) {
         checkPreconditions(currentUserId, PRECONDITION_FIELD_CURRENT_USER);
-        checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
-        checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
+        checkBE(sessionDO);
 
         final TabletSessionBE tabBe = TabletSessionMapper.toTabletSessionBE.apply(sessionDO);
         tabletDAO.delete(tabBe, currentUserId);
 
+    }
+
+
+    private void checkBE(final TabletSessionDO sessionDO) {
+        checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
+        checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
+        checkPreconditions(sessionDO.getSatznummer(), "satznummer");
+        checkPreconditions(sessionDO.getMatchId(), "matchId");
+        Preconditions.checkNotNull(sessionDO.isActive(), String.format(PRECONDITION_MSG_TEMPLATE_NULL, "is active"));
     }
 
 
