@@ -137,22 +137,6 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    /**
-     * @RequestMapping(value = "{wettkampfId}/{scheibenNr}/", method = RequestMethod.POST, produces =
-     * MediaType.APPLICATION_JSON_VALUE)
-     * @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-     * @OnError() public TabletSessionDTO create(@RequestBody final TabletSessionDTO tabletSessionDTO, final Principal
-     * principal) {
-     * <p>
-     * final long userId = UserProvider.getCurrentUserId(principal); if (tabletSessionComponent.findByIdScheibennummer(tabletSessionDTO.getWettkampfId(),
-     * tabletSessionDTO.getScheibennummer()) == null) {
-     * <p>
-     * TabletSessionDO tabDO = tabletSessionComponent.create(TabletSessionDTOMapper.toDO.apply(tabletSessionDTO),
-     * userId); TabletSessionDTO tabDTO = TabletSessionDTOMapper.toDTO.apply(tabDO);
-     * <p>
-     * this.log(tabDTO, "create"); return tabDTO; } else { throw } }
-     */
-
     @ResponseStatus(
             value = HttpStatus.BAD_REQUEST,
             reason = "Illegal arguments")
@@ -176,16 +160,6 @@ public class TabletSessionService implements ServiceFacade {
         return TabletSessionDTOMapper.toDTO.apply(tabletSessionDO);
     }
 
-/**
- * not needed anymore
- @RequestMapping(value = "{wettkampfId}/{scheibenNr}/", method = RequestMethod.DELETE,
- consumes = MediaType.APPLICATION_JSON_VALUE)
- @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF) public void delete(TabletSessionDTO tabletSessionDTO, final Principal principal) {
-
- final long userId = UserProvider.getCurrentUserId(principal);
- tabletSessionComponent.delete(TabletSessionDTOMapper.toDO.apply(tabletSessionDTO), userId);
- }
- */
 
     /**
      * Logs received data when request arrives
