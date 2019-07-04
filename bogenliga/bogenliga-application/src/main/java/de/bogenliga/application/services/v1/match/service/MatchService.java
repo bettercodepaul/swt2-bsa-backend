@@ -378,7 +378,7 @@ public class MatchService implements ServiceFacade {
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
         Long scheibeNr = matchDO.getScheibenNummer();
         // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
-        // Die Gruppierten nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
         // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
         Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
         return wettkampfMatches
