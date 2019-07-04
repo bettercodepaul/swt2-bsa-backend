@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,14 +90,16 @@ public class UserRoleExtBasicDAOTest {
     @Test
     public void findById() {
         // prepare test data
+        List<UserRoleExtBE> userRoleExtBEList = new ArrayList<>();
         final UserRoleExtBE expectedBE = new UserRoleExtBE();
         expectedBE.setUserId(ID);
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        userRoleExtBEList.add(expectedBE);
 
         // configure mocks
-        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(userRoleExtBEList);
 
         // call test method
         final List<UserRoleExtBE> actual = underTest.findById(ID);

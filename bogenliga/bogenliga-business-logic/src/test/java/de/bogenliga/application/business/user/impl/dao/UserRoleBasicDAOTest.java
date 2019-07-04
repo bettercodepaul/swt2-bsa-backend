@@ -70,32 +70,6 @@ public class UserRoleBasicDAOTest {
 
 
     @Test
-    public void update() {
-        // prepare test data
-        final UserRoleBE input = new UserRoleBE();
-        input.setUserId(ID);
-        input.setRoleId(ROLE_ID2);
-
-        // configure mocks
-        when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
-
-        // call test method
-        final UserRoleBE actual = underTest.update(input, USER);
-
-        // assert result
-        assertThat(actual).isNotNull();
-
-        assertThat(actual.getUserId())
-                .isEqualTo(input.getUserId());
-        assertThat(actual.getRoleId())
-                .isEqualTo(input.getRoleId());
-
-        // verify invocations
-        verify(basicDao).updateEntity(any(), eq(input), any());
-    }
-
-
-    @Test
     public void delete() {
         // prepare test data
         final UserRoleBE input = new UserRoleBE();
