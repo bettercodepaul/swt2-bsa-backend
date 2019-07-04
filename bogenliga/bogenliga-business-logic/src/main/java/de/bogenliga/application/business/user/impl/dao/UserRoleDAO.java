@@ -135,7 +135,7 @@ public class UserRoleDAO implements DataAccessObject {
         List<UserRoleBE> userRoleBEList =  basicDao.selectEntityList(USERROLE, FIND_BY_ID, userRoleBE.getUserId());
         for(UserRoleBE userRoleBEDelete : userRoleBEList){
                 basicDao.setModificationAttributes(userRoleBEDelete, currentUserId);
-                basicDao.deleteEntity(USERROLE, userRoleBE, new String[]{ROLE_BE_ID, USER_BE_ID});
+                basicDao.deleteEntity(USERROLE, userRoleBE, ROLE_BE_ID, USER_BE_ID);
         }
     }
 

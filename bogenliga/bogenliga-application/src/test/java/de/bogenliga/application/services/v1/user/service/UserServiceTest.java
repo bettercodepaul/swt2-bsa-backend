@@ -370,15 +370,17 @@ public class UserServiceTest {
         when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
 
         //prepare test data
-        final List<UserRoleDO> expectedUserRoleDoList = new ArrayList<>();
+        List<UserRoleDO> expectedUserRoleDoList = new ArrayList<>();
         final UserRoleDO expectedUserRoleDO = new UserRoleDO();
         expectedUserRoleDO.setEmail(USERNAME);
         expectedUserRoleDO.setId(ID);
         expectedUserRoleDO.setRoleName(ROLE_NAME);
         expectedUserRoleDO.setRoleId(ROLE_ID);
         expectedUserRoleDO.setVersion(VERSION);
+        expectedUserRoleDoList.add(expectedUserRoleDO);
+
         //prepare test data input
-        final List<UserRoleDTO> inUserRoleDTOList = new ArrayList<>();
+        List<UserRoleDTO> inUserRoleDTOList = new ArrayList<>();
         final UserRoleDTO inUserRoleDTO = new UserRoleDTO();
         inUserRoleDTO.setId(ID);
         inUserRoleDTO.setRoleId(ROLE_ID);

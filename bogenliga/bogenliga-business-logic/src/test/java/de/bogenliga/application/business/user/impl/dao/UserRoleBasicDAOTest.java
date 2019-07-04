@@ -77,13 +77,13 @@ public class UserRoleBasicDAOTest {
         input.setRoleId(ROLE_ID2);
 
         // configure mocks
-
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(input));
         // call test method
         underTest.delete(input, USER);
 
         // assert result
 
         // verify invocations
-        verify(basicDao).deleteEntity(any(), eq(input), any());
+        verify(basicDao).deleteEntity(any(), eq(input), any(), any());
     }
 }
