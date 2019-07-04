@@ -143,9 +143,6 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         Preconditions.checkArgument(mannschaftsmitgliedDO.getDsbMitgliedId() >= 0,
                 PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
 
-        MannschaftsmitgliedDO tmp = this.findByMemberAndTeamId(mannschaftsmitgliedDO.getMannschaftId(), mannschaftsmitgliedDO.getDsbMitgliedId());
-
-        mannschaftsmitgliedDO.setId(tmp.getId());
         final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(
                 mannschaftsmitgliedDO);
         final MannschaftsmitgliedBE persistedMannschaftsmitgliederBE = mannschaftsmitgliedDAO.update(
