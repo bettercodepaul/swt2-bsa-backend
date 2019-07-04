@@ -91,15 +91,14 @@ public class UserRoleExtBasicDAOTest {
     public void findById() {
         // prepare test data
         List<UserRoleExtBE> userRoleExtBEList = new ArrayList<>();
-        final UserRoleExtBE expectedBE = new UserRoleExtBE();
+        UserRoleExtBE expectedBE = new UserRoleExtBE();
         expectedBE.setUserId(ID);
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
-        userRoleExtBEList.add(expectedBE);
 
         // configure mocks
-        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(userRoleExtBEList);
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
         final List<UserRoleExtBE> actual = underTest.findById(ID);
