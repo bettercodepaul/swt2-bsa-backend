@@ -44,6 +44,7 @@ public enum UserPermission implements GrantedAuthority {
 
     /**
      * Permissions to work with: Benutzer Rolle Recht Configuration
+     * Lizenz
      */
     CAN_READ_SYSTEMDATEN,
     CAN_MODIFY_SYSTEMDATEN,

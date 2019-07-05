@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import de.bogenliga.application.business.Bogenkontrollliste.api.Bogenkontrolllis
 import de.bogenliga.application.business.Meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
+import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -57,6 +59,7 @@ public class DownloadService implements ServiceFacade {
      */
     private final SetzlisteComponent setzlisteComponent;
     private final SchusszettelComponent schusszettelComponent;
+    private final LizenzComponent lizenzComponent;
     private final MeldezettelComponent meldezettelComponent;
     private final BogenkontrolllisteComponent bogenkontrolllisteComponent;
 
@@ -65,15 +68,17 @@ public class DownloadService implements ServiceFacade {
      * Constructor with dependency injection
      */
     @Autowired
-    public DownloadService(final SetzlisteComponent setzlisteComponent,
+    public DownloadService(final SetzlisteComponent setzlisteComponent, final LizenzComponent lizenzComponent,
                            final SchusszettelComponent schusszettelComponent,
                            final MeldezettelComponent meldezettelComponent,
                            final BogenkontrolllisteComponent bogenkontrolllisteComponent) {
+        this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
         this.meldezettelComponent = meldezettelComponent;
         this.bogenkontrolllisteComponent = bogenkontrolllisteComponent;
     }
+  
     /**
      * returns the Setzliste as pdf file for client download
      * <p>
@@ -183,5 +188,17 @@ public class DownloadService implements ServiceFacade {
             LOG.error("Error: ", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF download failed", e);
         }
+    }
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/schuetzenlizenz/{dsbMitgliedId}/{teamId}",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> downloadLizenz(@PathVariable("dsbMitgliedId") final long dsbMitgliedID,
+    @PathVariable("teamId") final long teamID) {
+        LOG.debug("dsbMitgliedID: " + dsbMitgliedID);
+        LOG.debug("teamID: " + teamID);
+        final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID, teamID);
+
+        return generateInputStream(fileBloB);
     }
 }

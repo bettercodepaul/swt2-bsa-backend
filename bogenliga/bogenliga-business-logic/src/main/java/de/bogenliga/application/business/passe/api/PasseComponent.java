@@ -86,6 +86,16 @@ public interface PasseComponent {
     List<PasseDO> findByMatchId(Long matchId);
 
     /**
+     * Return passe entries with the given wettkmapfId and dsbMitgliedId
+     *
+     * @param wettkampfId id of the wettkampf
+     * @param mitgliedId  id of the dsbmitglied
+     *
+     * @return list of passe from a dsbmitglied in the given wettkampf, empty list if no passe are found
+     */
+    List<PasseDO> findByWettkampfIdAndMitgliedId(Long wettkampfId, Long mitgliedId);
+
+    /**
      * Return a passe entry by the combined pk attributes.
      *
      * @return list of passe from one mannschaft in a match; empty list, if no passe are found

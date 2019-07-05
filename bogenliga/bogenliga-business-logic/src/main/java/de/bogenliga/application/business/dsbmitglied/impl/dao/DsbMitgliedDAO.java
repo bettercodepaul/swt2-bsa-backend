@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -85,6 +84,13 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     " AND lizenz_typ = 'Kampfrichter'" +
                     " )";
 
+    private static final String FIND_ALL_BY_TEAM_ID =
+            "SELECT * FROM dsb_mitglied" +
+                    " WHERE dsb_mitglied_id IN (" +
+                    " SELECT mannschaftsmitglied_dsb_mitglied_id" +
+                    " FROM mannschaftsmitglied" +
+                    " WHERE mannschaftsmitglied_mannschaft_id = ?)";
+
     private final BasicDAO basicDao;
 
 
@@ -136,6 +142,15 @@ public class DsbMitgliedDAO implements DataAccessObject {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL);
     }
 
+
+    /**
+     *
+     * @param id id of the team, in which the dsmitglied entries are used
+     * @return list of all dsbmitglied entries with the given id
+     */
+    public List<DsbMitgliedBE> findAllByTeamId(final long id) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_BY_TEAM_ID, id);
+    }
 
     /**
      * Return dsbmitglied entry with specific id
