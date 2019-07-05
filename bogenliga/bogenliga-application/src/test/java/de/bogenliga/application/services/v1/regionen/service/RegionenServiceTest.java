@@ -71,7 +71,8 @@ public class RegionenServiceTest {
                 regionName,
                 regionKuerzel,
                 regionTyp,
-                regionUebergeordnet);
+                regionUebergeordnet,
+                null);
 
     }
 
