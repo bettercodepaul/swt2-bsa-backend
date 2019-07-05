@@ -2,6 +2,7 @@ package de.bogenliga.application.business.Meldezettel.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class MeldezettelComponentImplTest {
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(vereinComponent.findById(anyLong())).thenAnswer((Answer<VereinDO>) invocation -> {
             VereinDO ret = VereinComponentImplTest.getVereinDO();
-            ret.setName("Verein " + (int)(Math.random() * 100 + 1));
+            ret.setName("Verein " + UUID.randomUUID());
             return ret;
         });
         when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(MatchComponentImplTest.getMatchDO());
