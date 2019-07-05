@@ -102,6 +102,33 @@ public class MatchComponentImpl implements MatchComponent {
     }
 
 
+    /**
+     * Return a single match by combined attributes
+     *
+     * @param wettkampfId ID from Wettkampf
+     * @param MatchNr Number of the match
+     * @param scheibenNummer number of the target board
+     *
+     * @return singleMatchDO
+     */
+    @Override
+    public MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer) {
+        checkPreconditions(wettkampfId, "wettkampf_Id");
+        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(scheibenNummer, "scheibenNummer");
+
+        final MatchBE matchBE = matchDAO.findByWettkampfIDMatchNrScheibenNr(wettkampfId,MatchNr,scheibenNummer);
+
+        if (matchBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No match found with attributes wettkampfId: '%d', MatchNr: %d, scheibenNummer: %d",
+                             wettkampfId, MatchNr, scheibenNummer)
+            );
+        }
+        return MatchMapper.toMatchDO.apply(matchBE);
+    }
+
+
     @Override
     public List<MatchDO> findByWettkampfId(Long wettkampfId) {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);

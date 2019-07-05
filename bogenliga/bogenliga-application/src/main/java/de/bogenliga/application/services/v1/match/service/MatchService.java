@@ -129,6 +129,15 @@ public class MatchService implements ServiceFacade {
     }
 
 
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MatchDTO> findAll(){
+        final List<MatchDO> matchDOList = matchComponent.findAll();
+
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
     @RequestMapping(value = "{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
