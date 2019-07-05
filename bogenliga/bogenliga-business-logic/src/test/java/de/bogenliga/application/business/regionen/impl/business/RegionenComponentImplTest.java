@@ -2,6 +2,7 @@ package de.bogenliga.application.business.regionen.impl.business;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,9 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.lizenz.dao.LizenzDAO;
+import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -23,17 +30,29 @@ public class RegionenComponentImplTest {
 
     private static final long REGION_ID = 10;
     private static final long REGION_UEBERGEORDNET = 3;
+    private static final String REGION_UEBERGEORDNETASNAME = "Region3";
     private static final String REGION_NAME = "Test";
     private static final String REGION_KUERZEL = "T";
     private static final String REGION_TYP = "TEST";
     private static final OffsetDateTime offsetDateTime = null;
     private static final long USER = 1;
     private static final long VERSION = 2;
+    private static final List<VereinDO> EMPTYVEREINLIST = new LinkedList<>();
+    private static final List<LigaDO> EMPTYLIGALIST = new LinkedList<>();
+    private static final List<LizenzBE> EMPTYLIZENZLIST = new LinkedList<>();
+
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private RegionenDAO regionenDAO;
+    @Mock
+    private VereinComponent vereinComponent;
+    @Mock
+    private LigaComponent ligaComponent;
+    @Mock
+    private LizenzDAO lizenzDAO;
     @InjectMocks
     private RegionenComponentImpl underTest;
     @Captor
@@ -58,6 +77,7 @@ public class RegionenComponentImplTest {
                 REGION_KUERZEL,
                 REGION_TYP,
                 REGION_UEBERGEORDNET,
+                REGION_UEBERGEORDNETASNAME,
                 offsetDateTime,
                 USER,
                 offsetDateTime,
@@ -98,7 +118,7 @@ public class RegionenComponentImplTest {
                 .isEqualTo(expectedBE.getRegionUebergeordnet());
 
         // verify invocations
-        verify(regionenDAO).findAll();
+        verify(regionenDAO, times(2)).findAll();
     }
 
 
@@ -339,6 +359,9 @@ public class RegionenComponentImplTest {
         final RegionenDO input = getRegionenDO();
 
         // configure mocks
+        when(vereinComponent.findAll()).thenReturn(EMPTYVEREINLIST);
+        when(ligaComponent.findAll()).thenReturn(EMPTYLIGALIST);
+        when(lizenzDAO.findAll()).thenReturn(EMPTYLIZENZLIST);
 
         // call test method
         underTest.delete(input, USER);

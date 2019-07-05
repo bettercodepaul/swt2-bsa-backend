@@ -32,6 +32,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -217,32 +218,44 @@ public class UserService implements ServiceFacade {
     }
 
 
+    /**
+     * Service to update multiple user roles. It will remove all roles that are not send in this request
+     * @param requestWithHeader
+     * @param updatedUserRoles there is a single UserRoleDTO for every role that is send to this service
+     * @return
+     */
     @RequestMapping(
             method = RequestMethod.PUT,
-            value = "/uptRole",
+            value = "/uptRoles",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserRoleDTO updateRole(final HttpServletRequest requestWithHeader,
-                                  @RequestBody final UserRoleDTO updatedUserRole) {
-        Preconditions.checkNotNull(updatedUserRole, "UserRole-Definition must not be null");
-        Preconditions.checkNotNull(updatedUserRole.getId(), PRECONDITION_MSG_USER_ID);
-        Preconditions.checkNotNull(updatedUserRole.getRoleId(), PRECONDITION_MSG_ROLE_ID);
+    public List<UserRoleDTO> updateRoles(final HttpServletRequest requestWithHeader,
+                                  @RequestBody final List<UserRoleDTO> updatedUserRoles) {
+        Preconditions.checkNotNull(updatedUserRoles, "UserRole-Definition must not be null");
+        Preconditions.checkNotNull(updatedUserRoles.get(0).getId(), PRECONDITION_MSG_USER_ID);
+        Preconditions.checkNotNull(updatedUserRoles.get(0).getRoleId(), PRECONDITION_MSG_ROLE_ID);
 
         ErrorDTO errorDetails = null;
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
-        final UserRoleDO userRoleDO = new UserRoleDO();
-        userRoleDO.setId(updatedUserRole.getId());
-        userRoleDO.setRoleId(updatedUserRole.getRoleId());
+        List<UserRoleDO> updatedUserRolesDo = new ArrayList<>();
+        for(UserRoleDTO userRoleDTO : updatedUserRoles) {
+            final UserRoleDO userRoleDO = new UserRoleDO();
+            userRoleDO.setId(userRoleDTO.getId());
+            userRoleDO.setRoleId(userRoleDTO.getRoleId());
+            updatedUserRolesDo.add(userRoleDO);
+        }
+        final List<UserRoleDO> userRoleUpdatedDO = userRoleComponent.update(updatedUserRolesDo, userId);
 
-        final UserRoleDO userRoleUpdatedDO = userRoleComponent.update(userRoleDO, userId);
-        final UserRoleDTO userUpdatedDTO = UserRoleDTOMapper.toDTO.apply(userRoleUpdatedDO);
+        List<UserRoleDTO> userRoleUpdatedDTO = new ArrayList<>();
+        for(UserRoleDO userRoleDO : userRoleUpdatedDO){
+            userRoleUpdatedDTO.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
+        }
 
-
-        return userUpdatedDTO;
+        return userRoleUpdatedDTO;
     }
 
 
@@ -285,13 +298,17 @@ public class UserService implements ServiceFacade {
             value = "/userrole/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public UserRoleDTO getUserRoleById(@PathVariable("id") final long id) {
+    public List<UserRoleDTO> getUserRoleById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
         LOG.debug("Receive 'getUserRoleById' request with ID '{}'", id);
 
-        final UserRoleDO userRoleDO = userRoleComponent.findById(id);
-        return UserRoleDTOMapper.toDTO.apply(userRoleDO);
+        final List<UserRoleDO> userRoleDOlist = userRoleComponent.findById(id);
+        List<UserRoleDTO> userRoleDTOS = new ArrayList<>();
+        for(UserRoleDO userRoleDO : userRoleDOlist){
+            userRoleDTOS.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
+        }
+        return userRoleDTOS;
     }
 
 

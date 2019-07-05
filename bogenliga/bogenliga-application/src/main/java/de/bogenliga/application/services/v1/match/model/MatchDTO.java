@@ -20,6 +20,7 @@ public class MatchDTO implements DataTransferObject {
     private String mannschaftName;
     private Long begegnung;
     private String wettkampfTyp;
+    private Long wettkampfTag;
     private Long scheibenNummer;
     private Long matchpunkte;
     private Long satzpunkte;
@@ -224,5 +225,15 @@ public class MatchDTO implements DataTransferObject {
 
     public void setStrafPunkteSatz5(Long strafPunkteSatz5) {
         this.strafPunkteSatz5 = strafPunkteSatz5;
+    }
+
+
+    public Long getWettkampfTag() {
+        return wettkampfTag;
+    }
+
+
+    public void setWettkampfTag(Long wettkampfTag) {
+        this.wettkampfTag = wettkampfTag;
     }
 }

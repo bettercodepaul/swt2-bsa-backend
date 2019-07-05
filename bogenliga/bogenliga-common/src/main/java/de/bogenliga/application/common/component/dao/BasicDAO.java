@@ -216,7 +216,7 @@ public class BasicDAO implements DataAccessObject {
      * @return number of modified table rows
      */
     <T> int updateEntities(BusinessEntityConfiguration<T> businessEntityConfiguration,
-                           T updateBusinessEntity, String fieldSelector) {
+                           T updateBusinessEntity, String... fieldSelector) {
         SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
@@ -256,7 +256,7 @@ public class BasicDAO implements DataAccessObject {
     <T extends CommonBusinessEntity> T updateVersionedEntity(BusinessEntityConfiguration<T>
                                                                      businessEntityConfiguration,
                                                              T updateBusinessEntity,
-                                                             String fieldSelector) {
+                                                             String... fieldSelector) {
         // check concurrent modification
         SQL.SQLWithParameter selectSql = SQL.selectSQL(updateBusinessEntity,
                 businessEntityConfiguration.getTable(), fieldSelector,
@@ -288,7 +288,7 @@ public class BasicDAO implements DataAccessObject {
      * @throws BusinessException if no or more than 1 row is affected by the update
      */
     public <T> T updateEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
-                              T updateBusinessEntity, String fieldSelector) {
+                              T updateBusinessEntity, String... fieldSelector) {
         SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
@@ -351,7 +351,7 @@ public class BasicDAO implements DataAccessObject {
      * @throws BusinessException if no or more than 1 row is affected by the delete.
      */
     public <T> void deleteEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
-                                 T deleteBusinessEntity, String fieldSelector) {
+    T deleteBusinessEntity, String... fieldSelector) {
         SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
