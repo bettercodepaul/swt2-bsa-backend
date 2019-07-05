@@ -17,6 +17,7 @@ public interface PasseComponent {
      */
     List<PasseDO> findAll();
 
+    PasseDO findById(Long id);
 
     /**
      * Return all passe from one Wettkampf
