@@ -21,6 +21,7 @@ public interface LizenzComponent extends ComponentFacade {
 
 
 
+
     /**
      * Return a Lizenz by DSB-Mitglieds-Id.
      *
