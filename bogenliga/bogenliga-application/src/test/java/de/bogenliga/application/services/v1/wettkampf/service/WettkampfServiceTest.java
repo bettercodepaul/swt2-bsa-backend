@@ -107,7 +107,7 @@ public class WettkampfServiceTest {
        return new WettkampfDTO (
                 wettkampf_Id,
                 wettkampf_Veranstaltung_Id,
-                wettkampf_Datum_S,
+                wettkampf_Datum,
                 wettkampf_Ort,
                 wettkampf_Beginn,
                 wettkampf_Tag,
