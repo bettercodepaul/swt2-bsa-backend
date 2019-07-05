@@ -213,10 +213,10 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<MatchDTO> findAllByMannschaftId(@PathVariable("id") final Long id) {
-        Preconditions.checkArgument(id >= 0,
-                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
         Preconditions.checkNotNull(id,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkArgument(id >= 0,
+                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));
 
         LOG.debug("Receive 'findAllByMannschaftId' request with ID '{}'", id);
 

@@ -1,9 +1,12 @@
 package de.bogenliga.application.business.tabletsession.impl.business;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.tabletsession.api.TabletSessionComponent;
 import de.bogenliga.application.business.tabletsession.api.types.TabletSessionDO;
 import de.bogenliga.application.business.tabletsession.impl.dao.TabletSessionDAO;
@@ -22,6 +25,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     public static final String PRECONDITION_FIELD_CURRENT_USER = "currentMemberId";
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "TabletSession: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "TabletSession: %s must not be negative";
+    private static final Integer MAX_NUM_SCHEIBEN = 8;
 
     private final TabletSessionDAO tabletDAO;
 
@@ -47,11 +51,72 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
 
     @Override
-    public List<TabletSessionDO> findById(Long wettkampfid) {
+    public List<TabletSessionDO> findByWettkampfId(Long wettkampfid) {
         checkPreconditions(wettkampfid, PRECONDITION_FIELD_WETTKAMPF_ID);
 
         final List<TabletSessionBE> tabBEList = tabletDAO.findById(wettkampfid);
         return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<MatchDO> getRelatedMatches(TabletSessionDO tabletSessionDO, MatchComponent matchComponent) {
+        checkPreconditions(tabletSessionDO.getScheibennummer(), "scheibenNr");
+        MatchDO matchDO = null;
+        if (tabletSessionDO.getMatchId() != null) {
+            matchDO = matchComponent.findById(tabletSessionDO.getMatchId());
+        }
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(tabletSessionDO.getWettkampfId());
+        Long scheibenNr = tabletSessionDO.getScheibennummer();
+        // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
+        // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // ist das gegebene Match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
+        Long otherScheibeNr = scheibenNr % 2 == 0 ? scheibenNr - 1 : scheibenNr + 1;
+        Long matchNr = (matchDO != null ? matchDO.getNr() : 1L);
+        return wettkampfMatches.stream()
+                .filter(mDO -> mDO.getNr().equals(matchNr))
+                .filter(mDO -> (
+                        scheibenNr.equals(mDO.getScheibenNummer())
+                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<TabletSessionDO> createInitialForWettkampf(Long wettkampfId, final MatchComponent matchComponent, Long currentUserId) {
+        List<TabletSessionDO> tabletSessionDOS = new ArrayList<>();
+        for (int i = 0; i < MAX_NUM_SCHEIBEN; i++) {
+            TabletSessionDO tabDO = this.addInitialData(wettkampfId, i + 1, matchComponent);
+            if (tabDO == null) {
+                throw new IllegalArgumentException("Keine matches in diesem Wettkampf");
+            }
+            tabDO = this.create(tabDO, currentUserId);
+            tabletSessionDOS.add(tabDO);
+        }
+        return tabletSessionDOS;
+    }
+
+
+    @Override
+    public TabletSessionDO addInitialData(Long wettkampfId, int scheibennummer, final MatchComponent matchComponent) {
+        Long scheibe = (long) scheibennummer;
+        List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfId);
+        if (matches.isEmpty()) {
+            return null;
+        }
+        TabletSessionDO tab = new TabletSessionDO();
+        List<MatchDO> matchDOs = matches.stream()
+                .filter(mDO -> mDO.getScheibenNummer().equals(scheibe))
+                .filter(mDO -> mDO.getNr().equals(1L))
+                .collect(Collectors.toList());
+
+        tab.setMatchId(matchDOs.get(0).getId());
+        tab.setSatznummer(1L);
+        tab.setWettkampfId(wettkampfId);
+        tab.setScheibennummer(scheibe);
+        tab.setActive(false);
+        return tab;
     }
 
 
