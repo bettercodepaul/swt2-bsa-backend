@@ -16,6 +16,7 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
     private Long matchId;
     private boolean active;
 
+    public TabletSessionDO () {}
 
     public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active) {
         this.wettkampfId = wettkampfId;

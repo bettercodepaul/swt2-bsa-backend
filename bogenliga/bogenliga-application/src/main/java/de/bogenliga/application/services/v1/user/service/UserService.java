@@ -153,8 +153,9 @@ public class UserService implements ServiceFacade {
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOwnIdentity
-    public UserProfileDTO getUserProfileById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+    public UserProfileDTO getUserProfileById(@PathVariable("id") final Long id) {
+        Preconditions.checkNotNull(id, "UserID must not be null.");
+        Preconditions.checkArgument(id >= 0, "UserID must not be negative.");
 
         LOG.debug("Receive 'getUserProfileById' request with ID '{}'", id);
 
