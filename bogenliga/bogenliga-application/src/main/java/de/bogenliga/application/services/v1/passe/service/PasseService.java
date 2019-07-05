@@ -13,78 +13,89 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService;
+import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
- *
- * @author Dominik Schneider, SWT-2 SS19 HSRT MKI
+ * @author Dominik Halle, HSRT MKI SS19 - SWT2
  */
-
-
 @RestController
 @CrossOrigin
-@RequestMapping("v1/passe")
+@RequestMapping("v1/passen")
 public class PasseService implements ServiceFacade {
+    private static final Logger LOG = LoggerFactory.getLogger(PasseService.class);
 
-    private static final String PRECONDITION_MSG_PASSE = "Passe must not be null";
-    private static final String PRECONDITION_MSG_PASSE_ID = "Passe ID must not be null";
-    private static final String PRECONDITION_MSG_PASSE_MANNSCHAFT_ID = "Passe Mannschaft ID must not be null";
-    private static final String PRECONDITION_MSG_PASSE_MATCH_NUMMER = "Passe Nummer must not be null";
-    private static final String PRECONDITION_MSG_PASSE_WETTKAMPF_ID = "Passe Wettkampf Id must not be null";
-    private static final String PRECONDITION_MSG_PASSE_DSBMITGLIED_ID = "Passe DsbMitglied ID must not be null";
-
-
-    private static final String PRECONDITION_MSG_PASSE_ID_NEGATIVE = "Passe Id must not be negative";
-    private static final String PRECONDITION_MSG_PASSE_MANNSCHAFT_ID_NEGATIVE = "Passe Mannschaft Id must not be negative";
-    private static final String PRECONDITION_MSG_PASSE_MATCH_NUMMER_NEGATIVE = "Passe Match Nummer must not be negative";
-    private static final String PRECONDITION_MSG_PASSE_WETTKAMPF_ID_NEGATIVE = "Passe Wettkampf Id must not be negative";
-    private static final String PRECONDITION_MSG_PASSE_DSBMITGLIED_ID_NEGATIVE = "Passe DsbMitglied Id must not be negative";
-
-    private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
+    private static final String SERVICE_FIND_BY_ID = "findById";
+    private static final String SERVICE_CREATE = "create";
+    private static final String SERVICE_UPDATE = "update";
 
     private final PasseComponent passeComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
-
-    /**
-     * Constructor with dependency injection
-     *
-     * @param passeComponent to handle database CRUD requests
+     * @param passeComponent to handle the database CRUD requests
      */
     @Autowired
-    public PasseService(PasseComponent passeComponent) {
+    public PasseService(final PasseComponent passeComponent,
+                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
         this.passeComponent = passeComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @RequestMapping(value = "/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public PasseDTO findById(@PathVariable("id") Long passeId) {
+        PasseDTO passeDTO = PasseDTOMapper.toDTO.apply(passeComponent.findById(passeId));
+        this.log(passeDTO, SERVICE_FIND_BY_ID);
+        return passeDTO;
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public PasseDTO create(@RequestBody final PasseDTO passeDTO, final Principal principal) {
-        this.checkPreconditions(passeDTO);
-        final Long userId = UserProvider.getCurrentUserId(principal);
-        Preconditions.checkArgument(userId >= 0 , "User ID must not be negative nor null");
+        MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
-        final PasseDO newPasse = PasseDTOMapper.toDO.apply(passeDTO);
-        final PasseDO savedPasse = passeComponent.create(newPasse, userId);
-        return PasseDTOMapper.toDTO.apply(savedPasse);
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
+                mannschaftsmitgliedComponent.findAllSchuetzeInTeam(passeDTO.getMannschaftId());
+
+        passeDTO.setDsbMitgliedId(MatchService.getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
+        final long userId = UserProvider.getCurrentUserId(principal);
+        PasseDO passeDO = passeComponent.create(PasseDTOMapper.toDO.apply(passeDTO), userId);
+        this.log(passeDTO, SERVICE_CREATE);
+        return PasseDTOMapper.toDTO.apply(passeDO);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @RequestMapping(method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public PasseDTO update(@RequestBody final PasseDTO passeDTO, final Principal principal) {
-        this.checkPreconditions(passeDTO);
-        final Long userId = UserProvider.getCurrentUserId(principal);
-        Preconditions.checkArgument(userId >= 0 , "User ID must not be negative nor null");
+        MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
-        final PasseDO newPasse = PasseDTOMapper.toDO.apply(passeDTO);
-        final PasseDO updatedPasse = passeComponent.update(newPasse, userId);
-        return PasseDTOMapper.toDTO.apply(updatedPasse);
+        final long userId = UserProvider.getCurrentUserId(principal);
+        PasseDO passeDO = passeComponent.update(PasseDTOMapper.toDO.apply(passeDTO), userId);
+        this.log(passeDTO, SERVICE_UPDATE);
+        return PasseDTOMapper.toDTO.apply(passeDO);
     }
-
-    @RequestMapping(path = "byWettkampfIdAndDsbMitgliedId/{wettkampfId}/{dsbMitgliedId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  
+  @RequestMapping(path = "byWettkampfIdAndDsbMitgliedId/{wettkampfId}/{dsbMitgliedId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PasseDTO> findAllByWettkampfIdAndDsbMitgliedId(@PathVariable("wettkampfId") final long wettkampfId,
                                                             @PathVariable("dsbMitgliedId") final long dsbMitgliedId) {
         Preconditions.checkArgument(wettkampfId >= 0, "wettkampfId must not be negative");
@@ -97,22 +108,26 @@ public class PasseService implements ServiceFacade {
 
     }
 
-    private void checkPreconditions(PasseDTO passeDTO) {
-        Preconditions.checkNotNull(passeDTO, PRECONDITION_MSG_PASSE);
-        Preconditions.checkNotNull(passeDTO.getId(), PRECONDITION_MSG_PASSE_ID);
-        Preconditions.checkNotNull(passeDTO.getMannschaftId(), PRECONDITION_MSG_PASSE_MANNSCHAFT_ID);
-        Preconditions.checkNotNull(passeDTO.getMatchNr(), PRECONDITION_MSG_PASSE_MATCH_NUMMER);
-        Preconditions.checkNotNull(passeDTO.getDsbMitgliedId(), PRECONDITION_MSG_PASSE_DSBMITGLIED_ID);
-        Preconditions.checkNotNull(passeDTO.getWettkampfId(), PRECONDITION_MSG_PASSE_WETTKAMPF_ID);
 
-        Preconditions.checkArgument(passeDTO.getId() >= 0, PRECONDITION_MSG_PASSE_ID_NEGATIVE);
-        Preconditions.checkArgument(passeDTO.getMannschaftId() >= 0, PRECONDITION_MSG_PASSE_MANNSCHAFT_ID_NEGATIVE);
-        Preconditions.checkArgument(passeDTO.getMatchNr() >= 0, PRECONDITION_MSG_PASSE_MATCH_NUMMER_NEGATIVE);
-        Preconditions.checkArgument(passeDTO.getWettkampfId() >= 0, PRECONDITION_MSG_PASSE_WETTKAMPF_ID_NEGATIVE);
-        Preconditions.checkArgument(passeDTO.getDsbMitgliedId() >= 0, PRECONDITION_MSG_PASSE_DSBMITGLIED_ID_NEGATIVE);
+    /**
+     * Logs received data when request arrives
+     *
+     * @param passeDTO
+     * @param fromService: name of the service the log came from
+     */
+    private void log(PasseDTO passeDTO, String fromService) {
+        LOG.debug(
+                "Received '{}' request for passe with ID: '{}', WettkampfID: '{}', LfdNr: '{}', DsbMitgliedID: '{}'," +
+                        " SchuetzeNr: '{}', MannschaftId: '{}', MatchID: '{}', MatchNr: '{}'",
+                fromService,
+                passeDTO.getId(),
+                passeDTO.getWettkampfId(),
+                passeDTO.getLfdNr(),
+                passeDTO.getDsbMitgliedId(),
+                passeDTO.getSchuetzeNr(),
+                passeDTO.getMatchId(),
+                passeDTO.getMatchNr(),
+                passeDTO.getMannschaftId()
+        );
     }
-
-
-
-
 }

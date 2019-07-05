@@ -21,6 +21,7 @@ public class PasseComponentImpl implements PasseComponent {
     public static final String PRECONDITION_FIELD_WETTKAMPF_ID = "wettkampfId";
     public static final String PRECONDITION_FIELD_MANNSCHAFT_ID = "mannschaftId";
     public static final String PRECONDITION_FIELD_MATCH_ID = "matchId";
+    public static final String PRECONDITION_FIELD_ID = "id";
     public static final String PRECONDITION_FIELD_MATCH_NR = "matchNr";
     public static final String PRECONDITION_FIELD_LFD_NR = "lfdNr";
 
@@ -73,6 +74,21 @@ public class PasseComponentImpl implements PasseComponent {
         final List<PasseBE> passeBEList = passeDAO.findAll();
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
 
+    }
+
+
+    /**
+     * Return passe by its id
+     *
+     * @param id: Passe ID
+     *
+     * @return Passe
+     */
+    @Override
+    public PasseDO findById(Long id) {
+        checkPreconditions(id, PRECONDITION_FIELD_ID);
+        final PasseBE passeBE = passeDAO.findByPasseId(id);
+        return PasseMapper.toPasseDO.apply(passeBE);
     }
 
 

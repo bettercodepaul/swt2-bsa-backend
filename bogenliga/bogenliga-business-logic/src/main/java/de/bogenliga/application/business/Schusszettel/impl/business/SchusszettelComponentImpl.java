@@ -145,8 +145,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         specialBorder.setWidth(1.5F);
 
         DottedLine cutterDottedLine = new DottedLine(0.5F);
-        //Color specialGrey = new DeviceGray(0.75F);
-        //cutterDottedLine.setColor(specialGrey);
 
         for (int i = 1; i <= 2; i++) {
             //Blank lines before second half
@@ -165,9 +163,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(2), true);
             final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
-            final Table tableSecondRow = new Table(UnitValue.createPercentArray(new float[] { 10.0F, 90.0F }), true);
+            final Table tableSecondRow = new Table(UnitValue.createPercentArray(new float[] { 10.0F, 80.0F, 10.0F }), true);
             final Table tableSecondRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
             final Table tableSecondRowSecondPart = new Table(UnitValue.createPercentArray(10), true);
+            final Table tableSecondRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
             final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
 
             // Table head
@@ -226,20 +225,20 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .add(new Paragraph("Match").setFontSize(7.5F))
                 )
                 // Add fourteen cells for text input
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
-                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
-                .addCell(new Cell().setHeight(25.0F).setBorder(specialBorder))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
                 // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
@@ -257,9 +256,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
                     .add(new Paragraph("Schütze").setFontSize(8.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
                 // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
@@ -312,56 +311,56 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
                 )
                 // Add thirty cells for text input
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
                     .add(new Paragraph("Summe").setFontSize(10.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
                     .add(new Paragraph("Summe").setFontSize(10.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
                     .add(new Paragraph("Summe").setFontSize(10.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
                     .add(new Paragraph("Summe").setFontSize(10.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(25.0F)
+                .addCell(new Cell().setHeight(20.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
                     .add(new Paragraph("Summe").setFontSize(10.0F))
                 )
-                .addCell(new Cell().setHeight(25.0F))
+                .addCell(new Cell().setHeight(20.0F))
                 // Add ten cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
@@ -372,6 +371,31 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+            ;
+
+            // Third part
+            tableSecondRowThirdPart
+                .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
+                    .add(new Paragraph("Fehler-punkte").setFontSize(8.0F))
+                    .add(new Paragraph("punkte").setFontSize(8.0F))
+                )
+                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                    .add(new Paragraph("1. Satz").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                    .add(new Paragraph("2. Satz").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                    .add(new Paragraph("3. Satz").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                    .add(new Paragraph("4. Satz").setFontSize(5.0F))
+                )
+                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                    .add(new Paragraph("5. Satz").setFontSize(5.0F))
+                )
+                // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
@@ -391,10 +415,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .add(new Paragraph("\n"))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift").setFontSize(10.0F))
+                    .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift").setFontSize(10.0F))
+                    .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
                 )
             ;
 
@@ -414,6 +438,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
                     .add(tableSecondRowSecondPart)
+                )
+                .addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(tableSecondRowThirdPart)
                 )
             ;
 

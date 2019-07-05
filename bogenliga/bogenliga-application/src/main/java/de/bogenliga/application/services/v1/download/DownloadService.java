@@ -17,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
+import de.bogenliga.application.business.Meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.setzliste.service.SetzlisteService;
 
 
 /**
@@ -46,6 +50,8 @@ public class DownloadService implements ServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(DownloadService.class);
 
+    private final String PRECONDITION_WETTKAMPFID = "WettkampfID cannot be negative";
+
     /*
      * Business components
      *
@@ -54,18 +60,25 @@ public class DownloadService implements ServiceFacade {
     private final SetzlisteComponent setzlisteComponent;
     private final SchusszettelComponent schusszettelComponent;
     private final LizenzComponent lizenzComponent;
+    private final MeldezettelComponent meldezettelComponent;
+    private final BogenkontrolllisteComponent bogenkontrolllisteComponent;
 
 
     /**
      * Constructor with dependency injection
      */
     @Autowired
-    public DownloadService(final SetzlisteComponent setzlisteComponent,
-                           SchusszettelComponent schusszettelComponent, final LizenzComponent lizenzComponent) {
+    public DownloadService(final SetzlisteComponent setzlisteComponentfinal LizenzComponent lizenzComponent, 
+                           final SchusszettelComponent schusszettelComponent,
+                           final MeldezettelComponent meldezettelComponent,
+                           final BogenkontrolllisteComponent bogenkontrolllisteComponent) {
+        this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
-        this.lizenzComponent = lizenzComponent;
+        this.meldezettelComponent = meldezettelComponent;
+        this.bogenkontrolllisteComponent = bogenkontrolllisteComponent;
     }
+  
     /**
      * returns the Setzliste as pdf file for client download
      * <p>
@@ -81,7 +94,10 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
-        LOG.debug("wettkampfid: " + wettkampfid);
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+
+        SetzlisteService setzlisteService = new SetzlisteService(setzlisteComponent);
+        setzlisteService.generateSetzliste(wettkampfid);
 
         final byte[] fileBloB = setzlisteComponent.getPDFasByteArray(wettkampfid);
 
@@ -103,13 +119,56 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadSchusszettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
-        LOG.debug("wettkampfid: " + wettkampfid);
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         final byte[] fileBloB = schusszettelComponent.getAllSchusszettelPDFasByteArray(wettkampfid);
 
         return generateInputStream(fileBloB);
     }
 
+    /**
+     * returns the Meldezettel as pdf file for client download
+     * <p>
+     * @param wettkampfid  from GET-Request: ID for the competition
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/meldezettel?wettkampfid=x}</pre>
+     *
+     * @return PDF as InputStreamResource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/meldezettel",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadMeldezettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+
+        final byte[] fileBloB = meldezettelComponent.getMeldezettelPDFasByteArray(wettkampfid);
+
+        return generateInputStream(fileBloB);
+    }
+
+    /**
+     * returns the bogenkontrollliste as pdf file for client download
+     * <p>
+     * @param wettkampfid  from GET-Request: ID for the competition
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/bogenkontrollliste?wettkampfid=x}</pre>
+     *
+     * @return PDF as InputStreamResource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/bogenkontrollliste",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadbogenkontrolllistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+
+        final byte[] fileBloB = bogenkontrolllisteComponent.getBogenkontrolllistePDFasByteArray(wettkampfid);
+
+        return generateInputStream(fileBloB);
+    }
 
     /**
      * generates a pdf file as InputStreamResource from fileBloB

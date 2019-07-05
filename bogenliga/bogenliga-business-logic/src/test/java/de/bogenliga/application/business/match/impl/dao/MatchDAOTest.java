@@ -40,30 +40,6 @@ public class MatchDAOTest extends BaseMatchTest {
                 Collections.singletonList(expectedBE));
     }
 
-/*
-    private void validateObjectList(List<MatchBE> actual) {
-        assertThat(actual)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
-
-        assertThat(actual.get(0)).isNotNull();
-    }
-
-
-    private void assertValid(MatchBE expectedMatchBE, MatchBE actual) {
-        assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(expectedMatchBE.getId()).isEqualTo(MATCH_ID);
-        assertThat(actual.getBegegnung()).isEqualTo(expectedMatchBE.getBegegnung()).isEqualTo(MATCH_BEGEGNUNG);
-        assertThat(actual.getMannschaftId()).isEqualTo(expectedMatchBE.getMannschaftId()).isEqualTo(
-                MATCH_MANNSCHAFT_ID);
-        assertThat(actual.getWettkampfId()).isEqualTo(expectedMatchBE.getWettkampfId()).isEqualTo(MATCH_WETTKAMPF_ID);
-        assertThat(actual.getMatchpunkte()).isEqualTo(expectedMatchBE.getMatchpunkte()).isEqualTo(MATCH_MATCHPUNKTE);
-        assertThat(actual.getSatzpunkte()).isEqualTo(expectedMatchBE.getSatzpunkte()).isEqualTo(MATCH_SATZPUNKTE);
-        assertThat(actual.getNr()).isEqualTo(expectedMatchBE.getNr()).isEqualTo(MATCH_NR);
-    }*/
-
-
 
     /**
      * Tests all find methods if the DAO implements all method
