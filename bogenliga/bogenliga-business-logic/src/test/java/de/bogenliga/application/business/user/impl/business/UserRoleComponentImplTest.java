@@ -22,6 +22,7 @@ import org.mockito.junit.MockitoRule;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,30 +110,32 @@ public class UserRoleComponentImplTest {
     @Test
     public void findById() {
         // prepare test data
+        List<UserRoleExtBE> userRoleExtBEList = new ArrayList<>();
         final UserRoleExtBE expectedBE = new UserRoleExtBE();
         expectedBE.setUserId(ID);
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        userRoleExtBEList.add(expectedBE);
 
         // configure mocks
-        when(userRoleExtDAO.findById(anyLong())).thenReturn(expectedBE);
+        when(userRoleExtDAO.findById(anyLong())).thenReturn(userRoleExtBEList);
 
         // call test method
-        final UserRoleDO actual = underTest.findById(ID);
+        final List<UserRoleDO> actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
+        assertThat(actual.get(0).getId())
                 .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getEmail())
+        assertThat(actual.get(0).getEmail())
                 .isEqualTo(expectedBE.getUserEmail());
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getRoleName())
+        assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
-        assertThat(actual.getVersion())
+        assertThat(actual.get(0).getVersion())
                 .isEqualTo(expectedBE.getVersion());
 
         // verify invocations
@@ -433,16 +436,17 @@ public class UserRoleComponentImplTest {
     @Test
     public void update_UserDO_ID_notneagtive(){
 
+        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO inputDO = new UserRoleDO();
         inputDO.setId(null);
         inputDO.setRoleId(ROLE_ID);
         inputDO.setEmail(EMAIL);
         inputDO.setRoleName(ROLE_NAME);
         inputDO.setVersion(VERSION);
-
+        userRoleDOList.add(inputDO);
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inputDO, USER))
+                .isThrownBy(() -> underTest.update(userRoleDOList, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -451,60 +455,19 @@ public class UserRoleComponentImplTest {
     @Test
     public void update_UserDO_RoleID_notneagtive(){
 
+        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO inputDO = new UserRoleDO();
         inputDO.setId(ID);
         inputDO.setRoleId(null);
         inputDO.setEmail(EMAIL);
         inputDO.setRoleName(ROLE_NAME);
         inputDO.setVersion(VERSION);
-
+        userRoleDOList.add(inputDO);
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inputDO, USER))
+                .isThrownBy(() -> underTest.update(userRoleDOList, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
-
-    }
-
-
-
-    @Test
-    public void update_sucessful(){
-
-        final UserRoleDO inputDO = new UserRoleDO();
-        inputDO.setId(ID);
-        inputDO.setRoleId(ROLE_ID);
-        inputDO.setEmail(EMAIL);
-        inputDO.setRoleName(ROLE_NAME);
-        inputDO.setVersion(VERSION);
-
-        final OffsetDateTime dateTime = OffsetDateTime.now();
-        final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        final UserRoleBE expectedBE = new UserRoleBE();
-        expectedBE.setUserId(ID);
-        expectedBE.setRoleId(ROLE_ID);
-        expectedBE.setVersion(VERSION);
-        expectedBE.setCreatedAtUtc(timestamp);
-        expectedBE.setLastModifiedAtUtc(timestamp);
-        expectedBE.setCreatedByUserId(USER);
-        expectedBE.setLastModifiedByUserId(USER);
-
-
-        // configure mocks
-        when(userRoleExtDAO.update(any(UserRoleBE.class),anyLong())).thenReturn(expectedBE);
-
-        // call test method
-        final UserRoleDO actual =  underTest.update(inputDO, USER);
-
-        // assert result
-        assertThat(actual).isNotNull();
-
-        assertThat(actual.getId())
-                .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getRoleId())
-                .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getVersion())
-                .isEqualTo(expectedBE.getVersion());
 
     }
 

@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,33 +90,34 @@ public class UserRoleExtBasicDAOTest {
     @Test
     public void findById() {
         // prepare test data
-        final UserRoleExtBE expectedBE = new UserRoleExtBE();
+        List<UserRoleExtBE> userRoleExtBEList = new ArrayList<>();
+        UserRoleExtBE expectedBE = new UserRoleExtBE();
         expectedBE.setUserId(ID);
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
 
         // configure mocks
-        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final UserRoleExtBE actual = underTest.findById(ID);
+        final List<UserRoleExtBE> actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getUserId())
+        assertThat(actual.get(0).getUserId())
                 .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getUserEmail())
+        assertThat(actual.get(0).getUserEmail())
                 .isEqualTo(expectedBE.getUserEmail());
 
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getRoleName())
+        assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
         // verify invocations
-        verify(basicDao).selectSingleEntity(any(), any(), any());
+        verify(basicDao).selectEntityList(any(), any(), any());
     }
 
 
