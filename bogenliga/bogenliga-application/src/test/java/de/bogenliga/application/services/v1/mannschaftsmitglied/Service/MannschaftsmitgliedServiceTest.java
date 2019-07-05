@@ -248,10 +248,10 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
 
         // call test method
-        underTest.delete(mannschaftsId, dsbMitgliedId, principal);
+        underTest.deleteByTeamIdAndMemberId(mannschaftsId, dsbMitgliedId, principal);
 
         // verify invocations
-        verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+        verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
         final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
 

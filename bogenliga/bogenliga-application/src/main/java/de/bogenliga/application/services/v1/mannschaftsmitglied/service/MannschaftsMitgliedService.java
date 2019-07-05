@@ -167,37 +167,35 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftsMitgliedDTOMapper.toDTO.apply(updatedMannschaftsmitgliedDO);
     }
 
-
-    @RequestMapping(value = "{mannschaftsId}/{mitgliedId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public void delete(@PathVariable("mannschaftsId") final long mannschaftsId,
-                       @PathVariable("mitgliedId") final long mitgliedId, final Principal principal) {
-        Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
-        Preconditions.checkArgument(mitgliedId >= 0, "mitgliedId must not be negativ");
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
+        Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
-        LOG.debug("Receive 'delete' request with id '{}'", mannschaftsId);
+        LOG.debug("Receive 'delete' request with Id '{}'", id);
 
         // allow value == null, the value will be ignored
-        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
+        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(id);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
 
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
     }
 
+    @RequestMapping(value = "{mannschaftsId}/{mitgliedId}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public void deleteByTeamIdAndMemberId(@PathVariable("mannschaftsId") final long mannschaftsId,
+                       @PathVariable("mitgliedId") final long mitgliedId, final Principal principal) {
+        Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
+        Preconditions.checkArgument(mitgliedId >= 0, "mitgliedId must not be negativ");
 
+        LOG.debug("Receive 'delete' request with mannschaftsId '{}' and mitgliedsId '{}'", mannschaftsId, mitgliedId);
 
-// TODO: what's the purpose of this????
-    //@RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    //public boolean checkExistingSchuetze(@PathVariable("mannschaftsId") final long mannschaftsId,
-    //                                     @PathVariable("mitgliedId") final long mitgliedId, final Principal principal) {
-    //    Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");
-    //    Preconditions.checkArgument(mitgliedId >= 0, "mitgliedId must not be negativ");
-//
-    //    final MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
-//
-    //    return mannschaftsmitgliedDO.getDsbMitgliedEingesetzt() > 0;
-    //}
+        // allow value == null, the value will be ignored
+        final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
+        final long currentUserId = UserProvider.getCurrentUserId(principal);
 
+        mannschaftsMitgliedComponent.deleteByTeamIdAndMemberId(mannschaftsMitgliedDO, currentUserId);
+    }
 
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {
         Preconditions.checkNotNull(mannschaftsMitgliedDTO, PRECONDITION_MSG_MANNSCHAFTSMITGLIED);

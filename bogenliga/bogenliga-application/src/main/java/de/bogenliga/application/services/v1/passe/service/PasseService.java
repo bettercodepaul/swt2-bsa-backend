@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.passe.service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
+import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
@@ -96,6 +99,19 @@ public class PasseService implements ServiceFacade {
         return PasseDTOMapper.toDTO.apply(passeDO);
     }
 
+  @RequestMapping(path = "byWettkampfIdAndDsbMitgliedId/{wettkampfId}/{dsbMitgliedId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PasseDTO> findAllByWettkampfIdAndDsbMitgliedId(@PathVariable("wettkampfId") final long wettkampfId,
+                                                            @PathVariable("dsbMitgliedId") final long dsbMitgliedId) {
+        Preconditions.checkArgument(wettkampfId >= 0, "wettkampfId must not be negative");
+        Preconditions.checkArgument(dsbMitgliedId >= 0, "dsbMitgliedId must not be negative");
+
+        LOG.debug("Received 'findAllByWettkampfIdAndDsbMitgliedId' request with WettkampfId: '{}' and DsbMitgliedId: '{}'", wettkampfId, dsbMitgliedId);
+
+        final List<PasseDO> passeDOList = this.passeComponent.findByWettkampfIdAndMitgliedId(wettkampfId, dsbMitgliedId);
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+
+    }
+
 
     /**
      * Logs received data when request arrives
@@ -118,5 +134,4 @@ public class PasseService implements ServiceFacade {
                 passeDTO.getMannschaftId()
         );
     }
-
 }
