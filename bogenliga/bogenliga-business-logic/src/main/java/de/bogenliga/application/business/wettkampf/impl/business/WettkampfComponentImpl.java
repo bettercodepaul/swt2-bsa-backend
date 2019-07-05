@@ -111,7 +111,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     private void checkDsbMitgliedDO(final WettkampfDO wettkampfDO, final long currentWettkampfID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
-        Preconditions.checkArgument(currentWettkampfID >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        
         Preconditions.checkNotNull(wettkampfDO.getVeranstaltungsId(), PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkArgument(wettkampfDO.getVeranstaltungsId() >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkNotNull(wettkampfDO.getDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);

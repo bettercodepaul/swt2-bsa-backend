@@ -7,7 +7,11 @@ VALUES (1, 1), -- admin
        (3, 3), -- user
        (4, 2), -- moderator and user
        (4, 3),
-       (5, 3)
+       (5, 3),
+       (1, 5), -- Kampfrichter
+       (2, 5),
+       (3, 5),
+       (5, 5)
 ;
 
 -- user

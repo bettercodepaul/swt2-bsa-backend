@@ -42,7 +42,9 @@ public final class KampfrichterDTOMapper implements DataTransferObjectMapper {
         final Long kampfrichterUserId = dto.getUserId();
 
         return new KampfrichterDO(
-                kampfrichterUserId);
+                kampfrichterUserId,
+                kampfrichterWetterkampfId,
+                kampfrichterLeitend);
     };
 
 
