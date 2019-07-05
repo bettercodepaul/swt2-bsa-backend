@@ -12,8 +12,8 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class KampfrichterDTO implements DataTransferObject {
     private static final long serialVersionUID = 8559563978424033907L;
-    private Long wettkampfId;
-    private Long userId;
+    private Long id;
+    private Long userid;
     private boolean leitend;
 
 
@@ -27,32 +27,32 @@ public class KampfrichterDTO implements DataTransferObject {
 
     public KampfrichterDTO(final long wettkampfId,
                            final Long userId, final boolean leitend) {
-        this.wettkampfId = wettkampfId;
+        this.id = wettkampfId;
 
 
-        this.userId = userId;
+        this.userid = userId;
         this.leitend = leitend;
     }
 
 
     public Long getWettkampfId() {
-        return wettkampfId;
+        return id;
     }
 
 
     public void setWettkampfId(final Long wettkampfId) {
-        this.wettkampfId = wettkampfId;
+        this.id = wettkampfId;
     }
 
 
 
     public Long getUserId() {
-        return userId;
+        return userid;
     }
 
 
     public void setUserId(final Long userId) {
-        this.userId = userId;
+        this.userid = userId;
     }
 
     public boolean getLeitend(){return leitend;}
