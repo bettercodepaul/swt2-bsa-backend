@@ -68,7 +68,7 @@ public class DownloadService implements ServiceFacade {
      * Constructor with dependency injection
      */
     @Autowired
-    public DownloadService(final SetzlisteComponent setzlisteComponentfinal LizenzComponent lizenzComponent, 
+    public DownloadService(final SetzlisteComponent setzlisteComponent, final LizenzComponent lizenzComponent,
                            final SchusszettelComponent schusszettelComponent,
                            final MeldezettelComponent meldezettelComponent,
                            final BogenkontrolllisteComponent bogenkontrolllisteComponent) {
