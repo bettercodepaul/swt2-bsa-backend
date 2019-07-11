@@ -55,7 +55,7 @@ public class TabletSessionDAOTest extends BaseTabletSessionTest {
     public void findById() {
         try {
             basicDAOTest.testAllFieldsOnEqualToExpectedEntity(
-                    underTest.findById(WETTKAMPF_ID));
+                    underTest.findByWettkampfId(WETTKAMPF_ID));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

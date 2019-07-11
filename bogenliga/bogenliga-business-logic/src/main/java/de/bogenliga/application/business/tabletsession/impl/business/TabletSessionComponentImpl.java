@@ -54,7 +54,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
     public List<TabletSessionDO> findByWettkampfId(Long wettkampfid) {
         checkPreconditions(wettkampfid, PRECONDITION_FIELD_WETTKAMPF_ID);
 
-        final List<TabletSessionBE> tabBEList = tabletDAO.findById(wettkampfid);
+        final List<TabletSessionBE> tabBEList = tabletDAO.findByWettkampfId(wettkampfid);
         return tabBEList.stream().map(TabletSessionMapper.toTabletSessionDO).collect(Collectors.toList());
     }
 
