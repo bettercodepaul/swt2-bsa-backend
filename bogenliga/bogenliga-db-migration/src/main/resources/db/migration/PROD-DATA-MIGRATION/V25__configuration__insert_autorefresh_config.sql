@@ -1,3 +1,7 @@
+SET search_path = 'prod'
+;
+
+
 INSERT INTO configuration (configuration_key, configuration_value)
 VALUES
   -- Comment

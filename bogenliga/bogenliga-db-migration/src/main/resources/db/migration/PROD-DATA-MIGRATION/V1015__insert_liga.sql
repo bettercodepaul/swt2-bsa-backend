@@ -9,8 +9,10 @@
 
 -- Bezug zur Region fest auf Württemberg
 -- Hierarchie der Ligen muss später manuell gepflegt werden
+SET search_path = 'prod'
+;
 
-insert INTO public.liga
+insert INTO liga
  ( liga_region_id,
     liga_name
    )

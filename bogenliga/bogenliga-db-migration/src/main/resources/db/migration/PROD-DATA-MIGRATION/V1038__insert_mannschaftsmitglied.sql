@@ -13,10 +13,16 @@
 -- und je Disziplin in einem anderen Verein in einer Mannschaft sein...
 
 
+SET search_path = 'prod_data_migration'
+;
+
+
+SET search_path = 'prod'
+;
 
 
 
-insert INTO public.mannschaftsmitglied
+insert INTO mannschaftsmitglied
     (mannschaftsmitglied_mannschaft_id,
     mannschaftsmitglied_dsb_mitglied_id,
     mannschaftsmitglied_dsb_mitglied_eingesetzt
@@ -50,10 +56,10 @@ from
   prod_data_migration."Ligen",
   prod_data_migration."vereine",
   prod_data_migration."vereinsanschriften",
-  public.verein,
-  public.veranstaltung,
-  public.mannschaft,
-  public.dsb_mitglied
+  verein,
+  veranstaltung,
+  mannschaft,
+  dsb_mitglied
 where "Schützentabelle"."SchVNR" = "vereine"."VNR"
 and "vereine"."VNR" = "vereinsanschriften"."Vnr"
 and   "vereine"."Verein" = verein.verein_name
