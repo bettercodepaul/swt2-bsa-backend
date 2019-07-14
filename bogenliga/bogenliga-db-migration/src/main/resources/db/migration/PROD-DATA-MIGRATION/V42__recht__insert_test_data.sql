@@ -1,3 +1,6 @@
+SET search_path = 'prod'
+;
+
 INSERT INTO recht(recht_id,
                   recht_name)
 VALUES (1, 'CAN_READ_STAMMDATEN'),

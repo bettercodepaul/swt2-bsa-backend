@@ -4,7 +4,10 @@
 
 --ggf. müssen wir hier salt und passwort nochmal korrigieren..
 
-INSERT INTO public.benutzer(
+SET search_path = 'prod'
+;
+
+INSERT INTO benutzer(
 benutzer_id,
 benutzer_email,
 benutzer_salt,

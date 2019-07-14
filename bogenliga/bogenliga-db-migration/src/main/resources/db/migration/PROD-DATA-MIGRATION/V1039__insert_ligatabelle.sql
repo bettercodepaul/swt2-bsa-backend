@@ -7,8 +7,12 @@
 
 -- alle mal lachen: die Zuordnung zwischen Liga und Mannschaft ist in der Tabelle vereinsanschriften
 -- übringens stehen da keine Adressen drin ;-))
+SET search_path = 'prod'
+;
 
-insert INTO public.ligatabelle
+
+
+insert INTO ligatabelle
     (ligatabelle_veranstaltung_id,
     ligatabelle_wettkampf_tag,
     ligatabelle_mannschaft_id,
@@ -32,9 +36,9 @@ from
   prod_data_migration."Ligen",
   prod_data_migration."vereine",
   prod_data_migration."Tabelle",
-  public.verein,
-  public.veranstaltung,
-  public.mannschaft
+  verein,
+  veranstaltung,
+  mannschaft
 where "Bogenvorbereitung"."Vereinsnummer" = "vereine"."VNR"
 and "vereine"."VNR" = "Tabelle"."VNR"
 and   "vereine"."Verein" = verein.verein_name

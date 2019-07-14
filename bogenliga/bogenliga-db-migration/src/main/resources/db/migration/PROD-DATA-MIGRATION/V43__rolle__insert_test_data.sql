@@ -1,3 +1,5 @@
+SET search_path = 'prod'
+;
 INSERT INTO rolle(rolle_id,
                   rolle_name)
 VALUES (1, 'ADMIN'),

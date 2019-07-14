@@ -3,7 +3,8 @@
 --dazu fügen wir eine Spalte Mannschaft hinzu und füllen für alle den Default 0
 --danach schneiden wir aus dem Vereinsnamen evtl. vorhandenen Nummern aus
 --und über schreiben die 0
-
+SET search_path = 'prod'
+;
 -- spalte hinzufügen
 ALTER TABLE prod_data_migration."vereine"
   ADD COLUMN "Mannschaft" text DEFAULT '1'
@@ -31,7 +32,7 @@ where "VNR" in ('36WT919999', '36WT929999', '36WT939999', '36WT949999')
 -- weil wir die Mannschaftsnummer entfernt haben, sind ide Namen der Vereine
 -- jetzt nicht mehr eindeutig...
 -- daher select distinct - hier reicht uns ein Eintrag
-INSERT INTO public.verein (verein_name, verein_dsb_identifier, verein_region_id)
+INSERT INTO verein (verein_name, verein_dsb_identifier, verein_region_id)
 SELECT DISTINCT ON
        ("Verein") "Verein",
        "VNR",
