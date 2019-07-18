@@ -34,6 +34,7 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
 
         return new VeranstaltungDTO(veranstaltungId, veranstaltungWettkampfTypId, veranstaltungName, veranstaltungSportjahr,
                 veranstaltungMeldeDeadline, veranstaltungLigaleiterId, veranstaltungLigaId, veranstaltungLigaleiterEmail, veranstaltungWettkampftypName, veranstaltungLigaName);
+
     };
 
     /**
@@ -41,13 +42,13 @@ public class VeranstaltungDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<VeranstaltungDTO, VeranstaltungDO> toDO = dto -> {
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
-                veranstaltungDO.setVeranstaltungID(dto.getId());
-                veranstaltungDO.setVeranstaltungWettkampftypID(dto.getWettkampfTypId());
-                veranstaltungDO.setVeranstaltungName(dto.getName());
-                veranstaltungDO.setVeranstaltungSportJahr(dto.getSportjahr());
-                veranstaltungDO.setVeranstaltungMeldeDeadline(dto.getMeldeDeadline());
-                veranstaltungDO.setVeranstaltungLigaleiterID(dto.getLigaleiterId());
-                veranstaltungDO.setVeranstaltungLigaID(dto.getLigaId());
+        veranstaltungDO.setVeranstaltungID(dto.getId());
+        veranstaltungDO.setVeranstaltungWettkampftypID(dto.getWettkampfTypId());
+        veranstaltungDO.setVeranstaltungName(dto.getName());
+        veranstaltungDO.setVeranstaltungSportJahr(dto.getSportjahr());
+        veranstaltungDO.setVeranstaltungMeldeDeadline(dto.getMeldeDeadline());
+        veranstaltungDO.setVeranstaltungLigaleiterID(dto.getLigaleiterId());
+        veranstaltungDO.setVeranstaltungLigaID(dto.getLigaId());
 
         return veranstaltungDO;
     };

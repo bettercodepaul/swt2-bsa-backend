@@ -24,7 +24,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltungSportJahr";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltungMeldeDeadline";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterID";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltung_liga_id";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "ligaId";
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
