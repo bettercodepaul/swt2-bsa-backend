@@ -47,24 +47,10 @@ public class SetzlisteDAO implements DataAccessObject {
     /*
      * SQL queries
      */
-    private static final String GET_TABLE =
-            "SELECT lt.ligatabelle_tabellenplatz, v.verein_name, ms.mannschaft_nummer, vs.veranstaltung_name, wk.wettkampf_tag, wk.wettkampf_datum, wk.wettkampf_beginn, wk.wettkampf_ort"
-                    + " FROM veranstaltung as vs"
-                    + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
-                    + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
-                    + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
-                    + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
-                    + " WHERE wk.wettkampf_id = ?"
-                    + " AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1"
-                    + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
-                    + " ORDER BY lt.ligatabelle_tabellenplatz";
 
-    private static final String GET_TABLE_BY_WETTKAMPF_ID = "SELECT lt.ligatabelle_tabellenplatz, ms.mannschaft_id, wk.wettkampf_id"
-            + " FROM veranstaltung as vs"
-            + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
-            + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
-            + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
-            + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
+    private static final String GET_TABLE_BY_WETTKAMPF_ID = "SELECT lt.ligatabelle_tabellenplatz, lt.ligatabelle_mannschaft_id, wk.wettkampf_id"
+            + " FROM ligatabelle as lt"
+            + " INNER JOIN wettkampf AS wk ON lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
             + " WHERE wk.wettkampf_id = ?"
             + " AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1"
             + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"

@@ -1,14 +1,13 @@
 package de.bogenliga.application.business.ligatabelle.impl.mapper;
 
-import de.bogenliga.application.business.role.api.types.RoleDO;
-import de.bogenliga.application.business.role.impl.entity.RoleBE;
+import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
+import de.bogenliga.application.business.ligatabelle.impl.entity.LigatabelleBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-
 
 /**
  * I convert the user DataObjects and BusinessEntities.
@@ -21,12 +20,25 @@ import java.util.function.Function;
 public class LigatabelleMapper implements ValueObjectMapper {
 
     /**
-     * Converts a {@link RoleBE} to a {@link RoleDO}
+     * Converts a {@link LigatabelleBE} to a {@link LigatabelleDO}
      */
-    public static final Function<RoleBE, RoleDO> toRoleDO = be -> {
+    public static final Function<LigatabelleBE, LigatabelleDO> toLigatabelleDO = be -> {
 
-        final Long id = be.getRoleId();
-        final String roleName = be.getRoleName();
+        final Long veranstaltungId= be.getVeranstaltungId();
+        final String veranstaltungName= be.getVeranstaltungName();
+        final Long wettkampfId= be.getWettkampfId();
+        final int wettkampfTag= be.getWettkampfTag();
+        final Long mannschaftId= be.getMannschaftId();
+        final int mannschaftNummer=be.getMannschaftNummer();
+        final Long vereinId=be.getVereinId();
+        final String vereinName=be.getVereinName();
+        final int matchpkt=be.getMatchpkt();
+        final int matchpkt_gegen=be.getMatchpkt_gegen();
+        final int satzpkt=be.getSatzpkt();
+        final int satzpkt_gegen=be.getSatzpkt_gegen();
+        final int satzpkt_differenz=be.getSatzpkt_differenz();
+        final int sortierung=be.getSortierung();
+        final int tabellenplatz=be.getTabellenplatz();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -36,28 +48,40 @@ public class LigatabelleMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new RoleDO(id, roleName, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new LigatabelleDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
+                mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt, satzpkt_gegen,
+                satzpkt_differenz, sortierung,tabellenplatz);
+
     };
 
-    /**
-     * Converts a {@link RoleDO} to a {@link RoleBE}
+     /**
+     * Converts a {@link LigatabelleDO} to a {@link LigatabelleBE}
      */
-    public static final Function<RoleDO, RoleBE> toUserBE = vo -> {
+    public static final Function<LigatabelleDO, LigatabelleBE> toLigatabelleBE = vo -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getLastModifiedAtUtc());
 
-        RoleBE roleBE = new RoleBE();
-        roleBE.setRoleId(vo.getId());
-        roleBE.setRoleName(vo.getRoleName());
+        LigatabelleBE ligatabelleBE = new LigatabelleBE();
 
-        roleBE.setCreatedAtUtc(createdAtUtcTimestamp);
-        roleBE.setCreatedByUserId(vo.getCreatedByUserId());
-        roleBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
-        roleBE.setLastModifiedByUserId(vo.getLastModifiedByUserId());
-        roleBE.setVersion(vo.getVersion());
+        ligatabelleBE.setVeranstaltungId(vo.getveranstaltungId());
+        ligatabelleBE.setVeranstaltungName(vo.getveranstaltungName());
+        ligatabelleBE.setWettkampfId(vo.getwettkampfId());
+        ligatabelleBE.setWettkampfTag(vo.getwettkampfTag());
+        ligatabelleBE.setMannschaftId(vo.getmannschaftId());
+        ligatabelleBE.setMannschaftNummer(vo.getmannschaftNummer());
+        ligatabelleBE.setVereinId(vo.getvereinId());
+        ligatabelleBE.setVereinName(vo.getvereinName());
+        ligatabelleBE.setMatchpkt(vo.getmatchpkt());
+        ligatabelleBE.setMatchpkt_gegen(vo.getmatchpkt_gegen());
+        ligatabelleBE.setSatzpkt(vo.getsatzpkt());
+        ligatabelleBE.setSatzpkt_gegen(vo.getsatzpkt_gegen());
+        ligatabelleBE.setSatzpkt_differenz(vo.getsatzpkt_differenz());
+        ligatabelleBE.setSortierung(vo.getsortierung());
+        ligatabelleBE.setTabellenplatz(vo.gettabellenplatz());
 
-        return roleBE;
+
+        return ligatabelleBE;
     };
 
 
