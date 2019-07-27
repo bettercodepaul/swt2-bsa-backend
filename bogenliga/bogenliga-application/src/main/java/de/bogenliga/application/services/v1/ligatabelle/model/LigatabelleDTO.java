@@ -17,6 +17,8 @@ public class LigatabelleDTO implements DataTransferObject {
      * business parameter
      */
 
+    private Long id;
+    private Long version;
     private Long veranstaltungId;
     private String veranstaltungName;
     private Long wettkampfId;
@@ -54,21 +56,21 @@ public class LigatabelleDTO implements DataTransferObject {
 
      */
     public LigatabelleDTO(
-            final Long veranstaltungId,
-            final String veranstaltungName,
-            final Long wettkampfId,
-            final int wettkampfTag,
-            final Long mannschaftId,
-            final int mannschaftNummer,
-            final Long vereinId,
-            final String vereinName,
-            final int matchpkt,
-            final int matchpkt_gegen,
-            final int satzpkt,
-            final int satzpkt_gegen,
-            final int satzpkt_differenz,
-            final int sortierung,
-            final int tabellenplatz
+            Long veranstaltungId,
+            String veranstaltungName,
+            Long wettkampfId,
+            int wettkampfTag,
+            Long mannschaftId,
+            int mannschaftNummer,
+            Long vereinId,
+            String vereinName,
+            int matchpkt,
+            int matchpkt_gegen,
+            int satzpkt,
+            int satzpkt_gegen,
+            int satzpkt_differenz,
+            int sortierung,
+            int tabellenplatz
     ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
@@ -85,6 +87,8 @@ public class LigatabelleDTO implements DataTransferObject {
         this.satzpkt_differenz = satzpkt_differenz;
         this.sortierung = sortierung;
         this.tabellenplatz = tabellenplatz;
+        this.id= null;
+        this.version = 1L;
     }
 
 

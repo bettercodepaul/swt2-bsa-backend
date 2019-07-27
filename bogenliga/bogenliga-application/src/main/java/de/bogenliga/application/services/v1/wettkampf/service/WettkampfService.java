@@ -104,7 +104,7 @@ public class WettkampfService implements ServiceFacade {
     public List<WettkampfDTO> findAllByVeranstaltungId(@PathVariable("veranstaltungId") final long veranstaltungId) {
         Preconditions.checkArgument(veranstaltungId >= 0, "Veranstaltung ID must not be negative.");
 
-        LOG.debug("GET request for findALlByVernstaltungId with ID '{}'", veranstaltungId);
+        LOG.debug("GET request for findAllByVeranstaltungId with ID '{}'", veranstaltungId);
         final List<WettkampfDO> wettkampfDOList = this.wettkampfComponent.findAllByVeranstaltungId(veranstaltungId);
         return wettkampfDOList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
     }

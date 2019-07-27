@@ -51,7 +51,7 @@ public class LigatabelleDAO implements DataAccessObject {
     private static final String WETTKAMPFID_TABLE = "ligatabelle_wettkampf_id";
     private static final String WETTKAMPFTAG_TABLE = "ligatabelle_wettkampf_tag";
     private static final String MANNSCHAFTID_TABLE = "ligatabelle_mannschaft_id";
-    private static final String MANNSCHAFTNUMMER_TABLE = "mannschaft_Nummer";
+    private static final String MANNSCHAFTNUMMER_TABLE = "ligatabelle_mannschaft_nummer";
     private static final String VEREINID_TABLE = "ligatabelle_verein_id";
     private static final String VEREINNAME_TABLE = "ligatabelle_verein_name";
     private static final String MATCHPKT_TABLE = "ligatabelle_matchpkt";
@@ -74,41 +74,25 @@ public class LigatabelleDAO implements DataAccessObject {
     * sollte für Liga-Satzsystem passen
      */
     private static final String GET_LIGATABELLE =
-        "SELECT ligatabelle_veranstaltung_id, "+
-           "ligatabelle_veranstaltung_name," +
-           "ligatabelle_wettkampf_id," +
-           "ligatabelle_wettkampf_tag," +
-           "ligatabelle_mannschaft_id," +
-           "ligatabelle_mannschaft_nummer," +
-           "ligatabelle_verein_id," +
-           "ligatabelle_verein_name," +
-           "ligatabelle_matchpkt," +
-           "ligatabelle_matchpkt_gegen," +
-           "ligatabelle_satzpkt," +
-           "ligatabelle_satzpkt_gegen," +
-           "ligatabelle_satzpkt_differenz," +
-           "ligatabelle_sortierung," +
+        "SELECT lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
+           "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag," +
+           "lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
+           "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name," +
+           "lt.ligatabelle_matchpkt, lt.ligatabelle_matchpkt_gegen," +
+           "lt.ligatabelle_satzpkt, lt.ligatabelle_satzpkt_gegen," +
+           "lt.ligatabelle_satzpkt_differenz, lt.ligatabelle_sortierung," +
            "row_number()  over (" +
-             "order by ligatabelle_matchpkt desc ," +
-               "ligatabelle_matchpkt_gegen," +
-               "ligatabelle_satzpkt_differenz desc," +
-               "ligatabelle_satzpkt desc," +
-               "ligatabelle_satzpkt_gegen," +
-               "ligatabelle_sortierung," +
-               "ligatabelle_veranstaltung_id," +
-               "ligatabelle_veranstaltung_name," +
-               "ligatabelle_wettkampf_id," +
-               "ligatabelle_wettkampf_tag," +
-               "ligatabelle_mannschaft_id," +
-               "ligatabelle_mannschaft_nummer," +
-               "ligatabelle_verein_id," +
-               "ligatabelle_verein_name" +
-             ")as tabellenplatz" +
-        "from ligatabelle" +
-        "where ligatabelle_veranstaltung_id = ?" +
-        "and ligatabelle_wettkampf_tag = (" +
-            "select max(ligatabelle_wettkampf_tag) " +
-            "from ligatabelle where ligatabelle_veranstaltung_id = ?)";
+             "order by lt.ligatabelle_matchpkt desc, lt.ligatabelle_matchpkt_gegen," +
+               "lt.ligatabelle_satzpkt_differenz desc, lt.ligatabelle_satzpkt desc," +
+               "lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_sortierung," +
+               "lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
+               "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag," +
+               "lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
+               "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name" +
+             ")as tabellenplatz from ligatabelle as lt where lt.ligatabelle_veranstaltung_id = ?" +
+        "and lt.ligatabelle_wettkampf_tag = (" +
+            "select max(ligat.ligatabelle_wettkampf_tag) " +
+            "from ligatabelle as ligat where ligat.ligatabelle_veranstaltung_id = lt.ligatabelle_veranstaltung_id)";
 
     /* der Select liefert die aktuelle Ligatabelle zur Wettkampf-ID
      * ggf. mpüssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
@@ -198,14 +182,14 @@ public class LigatabelleDAO implements DataAccessObject {
      * Lesen der aktuellen Liga-Tabelle zur Veranstaltung
      */
     public List<LigatabelleBE> getLigatabelleVeranstaltung(final long id) {
-        return basicDao.selectEntityList(LIGATABELLE, GET_LIGATABELLE);
+        return basicDao.selectEntityList(LIGATABELLE, GET_LIGATABELLE, id);
     }
 
     /**
      * Lesen der aktuellen Liga-Tabelle zum Wettkampf (ID)
      */
     public List<LigatabelleBE> getLigatabelleWettkampf(final long id) {
-        return basicDao.selectEntityList(LIGATABELLE, GET_LIGATABELLE_WETTKAMPF);
+        return basicDao.selectEntityList(LIGATABELLE, GET_LIGATABELLE_WETTKAMPF, id);
     }
 
 

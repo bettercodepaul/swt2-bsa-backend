@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/liga")
+@RequestMapping("v1/mannschaft")
 public class LigatabelleService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
@@ -54,7 +54,7 @@ public class LigatabelleService implements ServiceFacade {
      * @return lost of {@link LigatabelleDTO} as JSON
      */
     @RequestMapping(
-            value = "{id}",
+            value = "veranstaltung={id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
@@ -74,13 +74,13 @@ public class LigatabelleService implements ServiceFacade {
      * @return lost of {@link LigatabelleDTO} as JSON
      */
     @RequestMapping(
-            value = "{id}",
+            value = "wettkampf={id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<LigatabelleDTO> getLigatabelleWettkampf(@PathVariable("id") final long id) {
 
-        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("Receive 'Ligatabelle für Wettkampf' request with ID '{}'", id);
 
         final List<LigatabelleDO> ligatabelleDOList = ligatabelleComponent.getLigatabelleWettkampf(id);

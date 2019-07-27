@@ -83,7 +83,7 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
     }
 
 
-    public Long getVeranstaltungId() {
+    public long getVeranstaltungId() {
         return veranstaltungId;
     }
     public void setVeranstaltungId(final long veranstaltungId) {
@@ -97,7 +97,7 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
         this.veranstaltungName = veranstaltungName;
     }
 
-    public Long getWettkampfId() {
+    public long getWettkampfId() {
         return wettkampfId;
     }
     public void setWettkampfId(final long wettkampfId) {
