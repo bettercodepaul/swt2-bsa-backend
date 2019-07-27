@@ -43,6 +43,7 @@ public interface WettkampfComponent extends ComponentFacade {
      * @param id id of the veranstaltung
      * @return a list with wettkampf entries
      */
+
     List<WettkampfDO> findAllByVeranstaltungId(long id);
 
 
