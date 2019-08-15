@@ -75,12 +75,9 @@ public class LigatabelleDAO implements DataAccessObject {
      */
     private static final String GET_LIGATABELLE =
         "SELECT lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
-           "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag," +
-           "lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
-           "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name," +
-           "lt.ligatabelle_matchpkt, lt.ligatabelle_matchpkt_gegen," +
-           "lt.ligatabelle_satzpkt, lt.ligatabelle_satzpkt_gegen," +
-           "lt.ligatabelle_satzpkt_differenz, lt.ligatabelle_sortierung," +
+           "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag, lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
+                "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name, lt.ligatabelle_matchpkt, lt.ligatabelle_matchpkt_gegen," +
+           "lt.ligatabelle_satzpkt, lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_satzpkt_differenz, lt.ligatabelle_sortierung," +
            "row_number()  over (" +
              "order by lt.ligatabelle_matchpkt desc, lt.ligatabelle_matchpkt_gegen," +
                "lt.ligatabelle_satzpkt_differenz desc, lt.ligatabelle_satzpkt desc," +
