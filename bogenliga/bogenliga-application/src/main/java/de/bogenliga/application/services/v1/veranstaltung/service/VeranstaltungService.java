@@ -105,19 +105,20 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
         LOG.debug(
-                "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypid '{}', sportjahr '{}', meldedeadline '{}', lialeiterid '{}', ligaid '{}' ",
+                "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypid '{}', sportjahr '{}', meldedeadline '{}', ligaleiteremail '{}', ligaid '{}' ",
                 veranstaltungDTO.getId(),
                 veranstaltungDTO.getName(),
                 veranstaltungDTO.getWettkampfTypId(),
                 veranstaltungDTO.getSportjahr(),
                 veranstaltungDTO.getMeldeDeadline(),
-                veranstaltungDTO.getLigaleiterId(),
+                veranstaltungDTO.getLigaleiterEmail(),
                 veranstaltungDTO.getLigaId());
 
         checkPreconditions(veranstaltungDTO);
 
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
+
 
         final VeranstaltungDO savedVeranstaltungDO = veranstaltungComponent.create(newVeranstaltungDO,
                 currentDsbMitglied);
@@ -182,7 +183,7 @@ public class VeranstaltungService implements ServiceFacade {
         Preconditions.checkArgument(veranstaltungDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(veranstaltungDTO.getSportjahr() >= 0, PRECONDITION_MSG_VERANSTALTUNG_SPORTJARHR);
         Preconditions.checkNotNull(veranstaltungDTO.getMeldeDeadline(), PRECONDITION_MSG_VERANSTALTUNG_MELDEDEADLINE);
-        Preconditions.checkArgument(veranstaltungDTO.getLigaleiterId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID);
+        Preconditions.checkNotNull(veranstaltungDTO.getLigaleiterEmail(), PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID);
         Preconditions.checkArgument(veranstaltungDTO.getLigaId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
     }
     

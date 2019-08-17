@@ -74,13 +74,13 @@ public class VeranstaltungComponentImplTest {
 
     private static VeranstaltungBE getVeranstaltungBE() {
         VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltungID(VERANSTALTUNG_ID);
-        expectedBE.setVeranstaltungWettkampftypID(VERANSTALTUNG_WETTKAMPFTYP_ID);
-        expectedBE.setVeranstaltungName(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltungSportJahr(VERANSTALTUNG_SPORTJAHR);
-        expectedBE.setVeranstaltungMeldeDeadline(VERANSTALTUNG_MELDEDEADLINE);
-        expectedBE.setVeranstaltungLigaleiterID(VERANSTALTUNG_LIGALEITER_ID);
-        expectedBE.setLigaId(VERANSTALTUNG_LIGA_ID);
+        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
+        expectedBE.setVeranstaltung_wettkampftyp_id(VERANSTALTUNG_WETTKAMPFTYP_ID);
+        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
+        expectedBE.setVeranstaltung_sportjahr(VERANSTALTUNG_SPORTJAHR);
+        expectedBE.setVeranstaltung_meldedeadline(VERANSTALTUNG_MELDEDEADLINE);
+        expectedBE.setVeranstaltung_ligaleiter_id(VERANSTALTUNG_LIGALEITER_ID);
+        expectedBE.setVeranstaltung_liga_id(VERANSTALTUNG_LIGA_ID);
 
         return expectedBE;
     }
@@ -302,7 +302,7 @@ public class VeranstaltungComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltungID())
+        assertThat(persistedBE.getVeranstaltung_id())
                 .isEqualTo(input.getVeranstaltungID());
     }
 

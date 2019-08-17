@@ -70,12 +70,14 @@ public class WettkampfDAO implements DataAccessObject {
                     + " WHERE wettkampf_id IN ("
                     + " SELECT match_wettkampf_id"
                         + " FROM match"
-                        + " WHERE match_mannschaft_id = ?)";
+                        + " WHERE match_mannschaft_id = ?)" +
+                    "ORDER BY wettkampf_datum";
 
     private static final String FIND_ALL_BY_VERANSTALTUNG_ID =
             "SELECT *" +
                     " FROM wettkampf" +
-                    " WHERE wettkampf_veranstaltung_id = ?";
+                    " WHERE wettkampf_veranstaltung_id = ?" +
+                    " order by wettkampf_datum";
 
 
     private final BasicDAO basicDao;
