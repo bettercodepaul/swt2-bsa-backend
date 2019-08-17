@@ -17,8 +17,6 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     private Long veranstaltung_liga_id;
     private Date veranstaltung_meldedeadline;
     private Long veranstaltung_ligaleiter_id;
-    private Long veranstaltungKampfrichterAnzahl;
-    private Long veranstaltungHoehere;
 
 
     /**
@@ -39,8 +37,6 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
                 ", veranstaltungSportJahr=" + veranstaltung_sportjahr +
                 ", veranstaltungLigaId=" + veranstaltung_liga_id +
                 ", veranstaltungMeldeDeadline=" + veranstaltung_meldedeadline +
-                ", veranstaltungKampfrichterAnzahl=" + veranstaltungKampfrichterAnzahl +
-                ", veranstaltungHoehere=" + veranstaltungHoehere +
                 ", veranstaltungLigaleiterID=" + veranstaltung_ligaleiter_id +
                 '}';
     }
@@ -101,19 +97,4 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
         this.veranstaltung_ligaleiter_id = veranstaltung_ligaleiter_id;
     }
 
-    public Long getVeranstaltungKampfrichterAnzahl() {
-        return veranstaltungKampfrichterAnzahl;
-    }
-
-    public void setVeranstaltungKampfrichterAnzahl(Long veranstaltungKampfrichterAnzahl) {
-        this.veranstaltungKampfrichterAnzahl = veranstaltungKampfrichterAnzahl;
-    }
-
-    public Long getVeranstaltungHoehere() {
-        return veranstaltungHoehere;
-    }
-
-    public void setVeranstaltungHoehere(Long veranstaltungHoehere) {
-        this.veranstaltungHoehere = veranstaltungHoehere;
-    }
 }
