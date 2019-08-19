@@ -128,17 +128,17 @@ public class WettkampfService implements ServiceFacade {
                         " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
                 wettkampfDTO.getId(),
                 wettkampfDTO.getDatum(),
-                wettkampfDTO.getVeranstaltungsId(),
+                wettkampfDTO.getwettkampfVeranstaltungsId(),
                 wettkampfDTO.getWettkampfDisziplinId(),
                 wettkampfDTO.getWettkampfOrt(),
                 wettkampfDTO.getWettkampfTag(),
                 wettkampfDTO.getWettkampfBeginn(),
                 wettkampfDTO.getWettkampfTypId());
 
-        final WettkampfDO newDsbMitgliedDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final WettkampfDO savedWettkampfDO= wettkampfComponent.create(newDsbMitgliedDO, userId);
+        final WettkampfDO savedWettkampfDO= wettkampfComponent.create(newWettkampfDO, userId);
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
 
@@ -159,7 +159,7 @@ public class WettkampfService implements ServiceFacade {
                                 " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
                         wettkampfDTO.getId(),
                         wettkampfDTO.getDatum(),
-                        wettkampfDTO.getVeranstaltungsId(),
+                        wettkampfDTO.getwettkampfVeranstaltungsId(),
                         wettkampfDTO.getWettkampfDisziplinId(),
                         wettkampfDTO.getWettkampfOrt(),
                         wettkampfDTO.getWettkampfTag(),
@@ -203,7 +203,7 @@ public class WettkampfService implements ServiceFacade {
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfBeginn(),PRECONDITION_MSG_WETTKAMPF_BEGINN);
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrt(),PRECONDITION_MSG_WETTKAMPF_ORT);
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfDisziplinId()>=0, PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
-        Preconditions.checkNotNull(wettkampfDTO.getVeranstaltungsId()>=0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkNotNull(wettkampfDTO.getwettkampfVeranstaltungsId()>=0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_TYP_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTag() >= 0, PRECONDITION_MSG_WETTKAMPF_TAG);
     }

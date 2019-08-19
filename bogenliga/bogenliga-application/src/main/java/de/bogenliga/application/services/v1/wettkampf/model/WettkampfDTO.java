@@ -14,34 +14,30 @@ public class WettkampfDTO implements DataTransferObject {
 
 
     private Long id;
-    private Long veranstaltungsId;
-    private Date datum;
+    private Long wettkampfVeranstaltungsId;
+    private String wettkampfDatum;
     private String wettkampfOrt;
     private String wettkampfBeginn;
     private Long wettkampfTag;
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
-    private OffsetDateTime createdAtUtc;
-    private Long createdByUserId;
     private Long version;
 
 
 
 
-    public WettkampfDTO(Long wettkampfId, Long veranstaltungsId, Date datum, String wettkampfOrt,
+    public WettkampfDTO(Long wettkampfId, Long wettkampfVeranstaltungsId, Date wettkampfDatum, String wettkampfOrt,
                         String wettkampfBeginn, Long wettkampfTag,
                         Long wettkampfDisziplinId, Long wettkampfTypId,
-                        Long createdByUserId, OffsetDateTime createdAtUtc, Long version){
+                        Long version){
         this.setId(wettkampfId);
-        this.setVeranstaltungsId(veranstaltungsId);
-        this.setDatum(datum);
+        this.setwettkampfVeranstaltungsId(wettkampfVeranstaltungsId);
+        this.setDatum(wettkampfDatum);
         this.setWettkampfOrt(wettkampfOrt);
         this.setWettkampfBeginn(wettkampfBeginn);
         this.setWettkampfTag(wettkampfTag);
         this.setWettkampfDisziplinId(wettkampfDisziplinId);
         this.setWettkampfTypId(wettkampfTypId);
-        this.setCreatedAtUtc(createdAtUtc);
-        this.setCreatedByUserId(createdByUserId);
         this.setVersion(version);
 
 
@@ -58,23 +54,23 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
-    public Long getVeranstaltungsId() {
-        return veranstaltungsId;
+    public Long getwettkampfVeranstaltungsId() {
+        return wettkampfVeranstaltungsId;
     }
 
 
-    public void setVeranstaltungsId(Long veranstaltungsId) {
-        this.veranstaltungsId = veranstaltungsId;
+    public void setwettkampfVeranstaltungsId(Long wettkampfVeranstaltungsId) {
+        this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
     }
 
 
     public Date getDatum() {
-        return datum;
+        return Date.valueOf(wettkampfDatum);
     }
 
 
     public void setDatum(Date datum) {
-        this.datum = datum;
+        this.wettkampfDatum = datum.toString();
     }
 
 
@@ -128,26 +124,6 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
-    public OffsetDateTime getCreatedAtUtc() {
-        return createdAtUtc;
-    }
-
-
-    public void setCreatedAtUtc(OffsetDateTime createdAtUtc) {
-        this.createdAtUtc = createdAtUtc;
-    }
-
-
-    public Long getCreatedByUserId() {
-        return createdByUserId;
-    }
-
-
-    public void setCreatedByUserId(Long createdByUserId) {
-        this.createdByUserId = createdByUserId;
-    }
-
-
     public Long getVersion() {
         return version;
     }
@@ -162,15 +138,13 @@ public class WettkampfDTO implements DataTransferObject {
     public String toString() {
         return "WettkampfDTO{" +
                 "id='" + this.id + '\'' +
-                ", veranstaltungId='" + this.veranstaltungsId + '\'' +
-                ", datum='" + this.datum + '\'' +
+                ", wettkampfVeranstaltungsId='" + this.wettkampfVeranstaltungsId + '\'' +
+                ", wettkampfDatum='" + this.wettkampfDatum + '\'' +
                 ", wettkampfOrt='" + this.wettkampfOrt + '\'' +
                 ", wettkampfBeginn='" + this.wettkampfBeginn + '\'' +
                 ", wettkampfTag='" + this.wettkampfTag + '\'' +
                 ", wettkampfDisziplinId='" + this.wettkampfDisziplinId + '\'' +
                 ", wettkampfTypId='" + this.wettkampfTypId + '\'' +
-                ", createdAtUtc='" + this.createdAtUtc + '\'' +
-                ", createdByUserId='" + this.createdByUserId + '\'' +
                 ", version='" + this.version + '\'' +
                 "}";
     }

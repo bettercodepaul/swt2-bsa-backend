@@ -93,7 +93,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
         // Collect Information
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
-        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId());
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
 
         String eventName = veranstaltungDO.getVeranstaltungName();
 
@@ -350,7 +350,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private static Cell addTitle(WettkampfDO wettkampfDO, String veranstaltungsName){
         return new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Bogenkontrolle / "+wettkampfDO.getWettkampfTag()+". Bogenligawettkampf / "+veranstaltungsName)
                         .setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(14.0F))
-                .add(new Paragraph("am "+wettkampfDO.getDatum())
+                .add(new Paragraph("am "+wettkampfDO.getWettkampfDatum())
                         .setTextAlignment(TextAlignment.RIGHT).setFontSize(10.0F));
     }
 
