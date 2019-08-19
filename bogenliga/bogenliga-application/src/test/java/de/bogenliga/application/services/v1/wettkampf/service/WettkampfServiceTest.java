@@ -113,8 +113,6 @@ public class WettkampfServiceTest {
                 wettkampf_Tag,
                 wettkampf_Disziplin_Id,
                 wettkampf_Wettkampftyp_Id,
-                user_Id,
-                created_At_Utc,
                 version
 
         );

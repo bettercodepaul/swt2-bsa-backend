@@ -117,13 +117,13 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
 
     @Override
     public String toString() {
-        return "Wettkampf ID = " + getId() + "\n" +
-                "Veranstaltungs ID =  " + getVeranstaltungsId() + "\n" +
+        return "WettkampfId = " + getId() + "\n" +
+                "VeranstaltungsId =  " + getVeranstaltungsId() + "\n" +
                 "Datum = " + getDatum() + "\n" +
                 "Wettkampf Ort = " + getWettkampfOrt() + "\n" +
                 "Wettkampfbeginn = " + getWettkampfBeginn() + "\n" +
                 "Wettkampftag = " + getWettkampfTag() + "\n" +
-                "Wettkampfdiziplin ID = " + getWettkampfDisziplinId() + "\n" +
-                "Wettkampftyp ID = " + getWettkampfTypId();
+                "WettkampfdiziplinId = " + getWettkampfDisziplinId() + "\n" +
+                "WettkampftypId = " + getWettkampfTypId();
     }
 }

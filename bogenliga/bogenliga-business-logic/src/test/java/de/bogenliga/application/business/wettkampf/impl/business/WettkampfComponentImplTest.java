@@ -107,9 +107,9 @@ public class WettkampfComponentImplTest {
 
         assertThat(actual.get(0).getId())
                 .isEqualTo(expectedBE.getId());
-        assertThat(actual.get(0).getVeranstaltungsId())
+        assertThat(actual.get(0).getWettkampfVeranstaltungsId())
                 .isEqualTo(expectedBE.getVeranstaltungsId());
-        assertThat(actual.get(0).getDatum())
+        assertThat(actual.get(0).getWettkampfDatum())
                 .isEqualTo(expectedBE.getDatum());
         assertThat(actual.get(0).getWettkampfOrt())
                 .isEqualTo(expectedBE.getWettkampfOrt());
