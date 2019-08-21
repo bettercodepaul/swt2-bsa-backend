@@ -16,8 +16,10 @@ OR "SchGebDat"=' '
 -- wir nehmen jeweils den ersten Eintrag
 -- weiter ist die Nationalität nicht nachzuvollziehen
 -- default auf DE gesetzt
+SET search_path = 'prod'
+;
 
-insert INTO public.dsb_mitglied
+insert INTO dsb_mitglied
  ( dsb_mitglied_mitgliedsnummer,
    dsb_mitglied_vorname,
    dsb_mitglied_nachname,

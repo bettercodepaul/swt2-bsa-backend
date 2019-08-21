@@ -225,6 +225,21 @@ public class MatchService implements ServiceFacade {
     }
 
 
+
+    @RequestMapping(value = "findAllWettkampfMatches/wettkampfid={id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<MatchDTO> findby(@PathVariable("id") Long wettkampfid) {
+        this.checkMatchId(wettkampfid);
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+
+        return wettkampfMatches.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+
     /**
      * Save the two edited matches from the findMatchesByIds service.
      * Also save the passe objects in case there are some.

@@ -2,6 +2,11 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -38,6 +43,8 @@ public class MatchComponentImpl implements MatchComponent {
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
     private final MatchDAO matchDAO;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final VereinComponent vereinComponent;
 
 
     /**
@@ -48,8 +55,14 @@ public class MatchComponentImpl implements MatchComponent {
      * @param matchDAO to access the database and return match representations
      */
     @Autowired
-    public MatchComponentImpl(final MatchDAO matchDAO) {
+    public MatchComponentImpl(final MatchDAO matchDAO,
+                              final DsbMannschaftComponent dsbMannschaftComponent,
+                              final VereinComponent vereinComponent
+                              ) {
+
         this.matchDAO = matchDAO;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.vereinComponent = vereinComponent;
     }
 
 
@@ -138,6 +151,18 @@ public class MatchComponentImpl implements MatchComponent {
     }
 
 
+
+    /*    @Override
+    public List<MatchBegegnungDO> findBegegnungByWettkampfId (Long wettkampfId) {
+        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
+
+        final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
+
+
+        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+    }
+*/
+
     @Override
     public List<MatchDO> findByMannschaftId(Long mannschaftId) {
         checkPreconditions(mannschaftId, PRECONDITION_MSG_MANNSCHAFT_ID);
@@ -190,4 +215,19 @@ public class MatchComponentImpl implements MatchComponent {
         MatchBE matchBE = MatchMapper.toMatchBE.apply(matchDO);
         matchDAO.delete(matchBE, currentUserId);
     }
+
+
+    public String getMannschaftsNameByID(long mannschaftID){
+        String mannschaftName;
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftID);
+        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
+
+        if (dsbMannschaftDO.getNummer() > 1) {
+            mannschaftName = vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        } else {
+            mannschaftName = vereinDO.getName();
+        }
+        return mannschaftName;
+    }
+
 }

@@ -1,3 +1,6 @@
+SET search_path = 'prod'
+;
+
 INSERT INTO benutzer(benutzer_id,
                      benutzer_email,
                      benutzer_salt,

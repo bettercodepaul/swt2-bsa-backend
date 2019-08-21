@@ -1,6 +1,8 @@
 package de.bogenliga.application.business.match.api;
 
 import java.util.List;
+
+import de.bogenliga.application.business.match.api.types.MatchBegegnungDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 
 /**
@@ -24,8 +26,7 @@ public interface MatchComponent {
 
     MatchDO findById(Long id);
 
-
-    /**
+      /**
      * Return a single match by combined primary key attributes
      *
      * @return single matchDO
@@ -51,6 +52,15 @@ public interface MatchComponent {
      */
 
     List<MatchDO> findByWettkampfId(Long wettkampfId);
+
+
+    /**
+     * Return all matches entries from one mannschaft.
+     *
+     * @return list of all match from one mannschaft in the database; empty list, if no match are found
+     */
+
+//    List<MatchBegegnungDO> findBegegnungByWettkampfId(Long wettkampfId);
 
 
     /**
@@ -89,4 +99,12 @@ public interface MatchComponent {
      * @param currentMemberId id of the member currently updating the match
      */
     void delete(MatchDO matchDO, Long currentMemberId);
+
+    /**
+     * Erzeuge den Namen einer Mannschaft aus der ID
+     *
+     * @param mannschaftID         Mannschaft_ID
+     *
+     */
+    String getMannschaftsNameByID(long mannschaftID);
 }
