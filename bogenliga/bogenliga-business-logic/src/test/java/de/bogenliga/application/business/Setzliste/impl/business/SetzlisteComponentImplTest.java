@@ -85,7 +85,7 @@ public class SetzlisteComponentImplTest {
         //configure Mocks
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
         when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid())).thenReturn(wettkampfDO);
-        when(veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId())).thenReturn(veranstaltungDO);
+        when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
 
