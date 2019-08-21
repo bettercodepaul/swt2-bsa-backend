@@ -93,12 +93,12 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
         // Collect Information
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
-        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId());
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
 
         Long wettkampfTag = wettkampfDO.getWettkampfTag();
         String veranstaltungsName = veranstaltungDO.getVeranstaltungName();
         String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).getDisziplinName();
-        Date wettkampfDatum = wettkampfDO.getDatum();
+        Date wettkampfDatum = wettkampfDO.getWettkampfDatum();
 
         for (int i = 1; i <= 8; i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);

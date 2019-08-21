@@ -158,8 +158,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
         WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid());
-        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getVeranstaltungsId());
-        String dateFormatted = sdF2.format(wettkampfDO.getDatum());
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
+        String dateFormatted = sdF2.format(wettkampfDO.getWettkampfDatum());
         doc.add(new Paragraph("Setzliste " +
                 wettkampfDO.getWettkampfTag() + ". Wettkampf " + veranstaltungDO.getVeranstaltungName()));
         doc.add(new Paragraph("am " + dateFormatted + " in"));

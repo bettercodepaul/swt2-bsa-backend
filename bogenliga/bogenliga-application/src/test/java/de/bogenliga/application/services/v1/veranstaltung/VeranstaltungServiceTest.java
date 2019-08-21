@@ -70,13 +70,13 @@ public class VeranstaltungServiceTest {
      */
     public static VeranstaltungBE VeranstaltungBE() {
         final VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltungID(VERANSTALTUNG_ID);
-        expectedBE.setLigaId(LIGAID);
-        expectedBE.setVeranstaltungLigaleiterID(LIGALEITERID);
-        expectedBE.setVeranstaltungMeldeDeadline(MELDEDEADLINE);
-        expectedBE.setVeranstaltungName(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltungSportJahr(SPORTJAHR);
-        expectedBE.setVeranstaltungWettkampftypID(WETTKAMPFTYP_ID);
+        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
+        expectedBE.setVeranstaltung_liga_id(LIGAID);
+        expectedBE.setVeranstaltung_ligaleiter_id(LIGALEITERID);
+        expectedBE.setVeranstaltung_meldedeadline(MELDEDEADLINE);
+        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
+        expectedBE.setVeranstaltung_sportjahr(SPORTJAHR);
+        expectedBE.setVeranstaltung_wettkampftyp_id(WETTKAMPFTYP_ID);
 
         return expectedBE;
     }
