@@ -47,10 +47,11 @@ public class TabletSessionDAO {
             .orderBy(TABLET_SESSION_TABLE_WETTKAMPF_ID)
             .compose().toString();
 
-    private static final String FIND_BY_ID = new QueryBuilder()
+    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
             .selectAll()
             .from(TABLE)
             .whereEquals(TABLET_SESSION_TABLE_WETTKAMPF_ID)
+            .orderBy(TABLET_SESSION_TABLE_SCHEIBENNUMMER)
             .compose().toString();
 
     private static final String FIND_BY_PK = new QueryBuilder()
@@ -96,8 +97,8 @@ public class TabletSessionDAO {
     }
 
 
-    public List<TabletSessionBE> findById(Long wettkampfid) {
-        return basicDao.selectEntityList(TABLET_SESSION, FIND_BY_ID, wettkampfid);
+    public List<TabletSessionBE> findByWettkampfId(Long wettkampfid) {
+        return basicDao.selectEntityList(TABLET_SESSION, FIND_BY_WETTKAMPF_ID, wettkampfid);
     }
 
 
