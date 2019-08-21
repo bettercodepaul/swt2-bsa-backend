@@ -38,7 +38,7 @@ public class SetzlisteDAO implements DataAccessObject {
     // table columns
     private static final String LIGATABELLE_TABLE_TABELLENPLATZ = "ligatabelle_tabellenplatz";
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
-    private static final String MANNSCHAFT_TABLE_ID = "mannschaft_id";
+    private static final String MANNSCHAFT_TABLE_ID = "ligatabelle_mannschaft_id";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<SetzlisteBE> SETZLISTE = new BusinessEntityConfiguration<>(
@@ -47,28 +47,22 @@ public class SetzlisteDAO implements DataAccessObject {
     /*
      * SQL queries
      */
-    private static final String GET_TABLE =
-            "SELECT lt.ligatabelle_tabellenplatz, v.verein_name, ms.mannschaft_nummer, vs.veranstaltung_name, wk.wettkampf_tag, wk.wettkampf_datum, wk.wettkampf_beginn, wk.wettkampf_ort"
-                    + " FROM veranstaltung as vs"
-                    + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
-                    + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
-                    + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
-                    + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
-                    + " WHERE wk.wettkampf_id = ?"
-                    + " AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1"
-                    + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
-                    + " ORDER BY lt.ligatabelle_tabellenplatz";
 
-    private static final String GET_TABLE_BY_WETTKAMPF_ID = "SELECT lt.ligatabelle_tabellenplatz, ms.mannschaft_id, wk.wettkampf_id"
-            + " FROM veranstaltung as vs"
-            + " INNER JOIN mannschaft AS ms ON vs.veranstaltung_id = ms.mannschaft_veranstaltung_id"
-            + " INNER JOIN verein AS v ON v.verein_id = ms.mannschaft_verein_id"
-            + " INNER JOIN ligatabelle lt ON ms.mannschaft_id = lt.ligatabelle_mannschaft_id"
-            + " INNER JOIN wettkampf AS wk ON vs.veranstaltung_id = wk.wettkampf_veranstaltung_id"
-            + " WHERE wk.wettkampf_id = ?"
-            + " AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1"
-            + " AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id"
-            + " ORDER BY lt.ligatabelle_tabellenplatz";
+    private static final String GET_TABLE_BY_WETTKAMPF_ID = "SELECT " +
+            "            row_number()  over (" +
+            "                    order by lt.ligatabelle_matchpkt desc, lt.ligatabelle_matchpkt_gegen," +
+            "                    lt.ligatabelle_satzpkt_differenz desc, lt.ligatabelle_satzpkt desc," +
+            "                    lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_sortierung,\n" +
+            "                    lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
+            "                    lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag," +
+            "                    lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
+            "                    lt.ligatabelle_verein_id, lt.ligatabelle_verein_name\n" +
+            "                    )as ligatabelle_tabellenplatz, lt.ligatabelle_mannschaft_id, wk.wettkampf_id" +
+            "              FROM ligatabelle as lt, wettkampf AS wk" +
+            "             WHERE lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id" +
+            "             and wk.wettkampf_id = ?" +
+            "             AND lt.ligatabelle_wettkampf_tag = wk.wettkampf_tag - 1" +
+            "             AND lt.ligatabelle_veranstaltung_id = wk.wettkampf_veranstaltung_id";
 
     private final BasicDAO basicDao;
 

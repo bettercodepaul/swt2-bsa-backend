@@ -1,3 +1,6 @@
+SET search_path = 'prod'
+;
+
 INSERT INTO disziplin (disziplin_id, disziplin_name)
 VALUES (0, 'Recurve'),
        (1, 'Compound'),
