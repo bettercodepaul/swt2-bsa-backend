@@ -104,6 +104,8 @@ public class VeranstaltungService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
+
+        checkPreconditions(veranstaltungDTO);
         LOG.debug(
                 "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypid '{}', sportjahr '{}', meldedeadline '{}', ligaleiteremail '{}', ligaid '{}' ",
                 veranstaltungDTO.getId(),
@@ -113,8 +115,6 @@ public class VeranstaltungService implements ServiceFacade {
                 veranstaltungDTO.getMeldeDeadline(),
                 veranstaltungDTO.getLigaleiterEmail(),
                 veranstaltungDTO.getLigaId());
-
-        checkPreconditions(veranstaltungDTO);
 
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
