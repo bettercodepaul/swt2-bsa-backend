@@ -283,8 +283,10 @@ public class PasseComponentImpl implements PasseComponent {
         checkPreconditions(passeDO.getPasseMatchId(), "MatchId");
         checkPreconditions(passeDO.getPasseLfdnr(), "Lfdnr");
         checkPreconditions(passeDO.getPasseDsbMitgliedId(), "DsbMitgliedId");
-        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil1");
-        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil2");
+        // Prüfung der Pfeilwerte auskommentiert - sie sind für das Speichern keine kritischen parameter
+        // ggf. könnte man prüfen ob die Werte sinnvoll d.h. <=10 sind - aber besser direkt am Client
+        //        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil1");
+        //        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil2");
     }
 
 
