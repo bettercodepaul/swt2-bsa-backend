@@ -240,6 +240,31 @@ public class MatchService implements ServiceFacade {
 
 
 
+    // lesen aller Matches eines Wettkampfs und bestimmen der Namen der Mannschaften
+    @RequestMapping(value = "findAllWettkampfMatchesAndName/wettkampfid={id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<MatchDTO> findInklNameby(@PathVariable("id") Long wettkampfid) {
+
+        this.checkMatchId(wettkampfid);
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+
+        final List<MatchDTO> matchDTOs = new ArrayList<>();
+
+        for( MatchDO einmatch: wettkampfMatches) {
+            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
+            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
+            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
+            matchDTOs.add(matchDTO);
+        }
+
+        return matchDTOs;
+    }
+
+
     /**
      * Save the two edited matches from the findMatchesByIds service.
      * Also save the passe objects in case there are some.
@@ -333,7 +358,14 @@ public class MatchService implements ServiceFacade {
         if (passeExists(passeDO)) {
             passeComponent.update(passeDO, userId);
         } else {
-            passeComponent.create(passeDO, userId);
+            // erst prüfen ob alle relevanten Parameter befüllt sind pk-passe!!
+            if(passeDO.getPasseDsbMitgliedId()!=null &&
+            passeDO.getPasseMannschaftId()!= null &&
+            passeDO.getPasseWettkampfId()!= null&&
+            passeDO.getPasseMatchNr() !=null &&
+            passeDO.getPasseLfdnr() !=null) {
+                passeComponent.create(passeDO, userId);
+            }
         }
     }
 
@@ -379,6 +411,94 @@ public class MatchService implements ServiceFacade {
         }
         return schuetzeNr;
     }
+
+
+    /**
+     * Sucht nach dem zweiten Match einer Begegnung - das erste wird als Parameter mitgegeben
+     * in der Liste aller Matches des Wettkampftages, der zugehörigen andren Scheibe und identischer Begegnungs-nr.
+     * @param matchId
+     *
+     * @return
+     */
+    @RequestMapping(value = "{matchId}/pair",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    public List<Long> pair(@PathVariable final Long matchId) {
+        Preconditions.checkNotNull(matchId,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
+        MatchDO matchDO = matchComponent.findById(matchId);
+
+        this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
+        Long scheibeNr = matchDO.getScheibenNummer();
+        // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
+        // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
+        Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
+        return wettkampfMatches
+                .stream()
+                .filter(mDO -> mDO.getNr() == matchDO.getNr())
+                .filter(mDO -> (
+                        scheibeNr.equals(mDO.getScheibenNummer())
+                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                ))
+                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .map(MatchDO::getId)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Sucht nach dem zweiten Match einer Begegnung - das erste wird als Parameter mitgegeben
+     * in der Liste aller Matches des Wettkampftages, der zugehörigen andren Scheibe und identischer Begegnungs-nr.
+     * @param matchId
+     *
+     * @return
+     * List (MatchDO) oder null wenn es im gleichen Wettkampf das letzte Match ist.
+     */
+    @RequestMapping(value = "{matchId}/pairToFollow",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    public List<Long> pairToFollow(@PathVariable final Long matchId) {
+        Preconditions.checkNotNull(matchId,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
+        MatchDO matchDO = matchComponent.findById(matchId);
+        this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
+        Long scheibeNr = 0L;
+        if(matchDO.getScheibenNummer() <7 ){
+            //wir suchen im gleichen Match die nächste Scheiben-Paarung (+2)
+            scheibeNr = matchDO.getScheibenNummer() +2;
+        }
+        else if(matchDO.getScheibenNummer() >=7 && matchDO.getNr() <7){
+            //wir sind noch nicht am Ende des Wettkampfs angekommen
+            scheibeNr = 1L;
+            matchDO.setNr(matchDO.getNr()+1);
+        }
+        else {
+            //Ende - wir geben null zurück
+            return null;
+        }
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
+        // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
+        // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
+        final Long ersteScheibe = scheibeNr;
+        final Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
+        return wettkampfMatches
+                .stream()
+                .filter(mDO -> mDO.getNr() == matchDO.getNr())
+                .filter(mDO -> (
+                        ersteScheibe.equals(mDO.getScheibenNummer())
+                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                ))
+                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .map(MatchDO::getId)
+                .collect(Collectors.toList());
+    }
+
 
 
     /**
@@ -523,7 +643,7 @@ public class MatchService implements ServiceFacade {
         if (addPassen) {
             DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
             VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
-            matchDTO.setMannschaftName(vereinDO.getName());
+            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
 
             List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
