@@ -63,6 +63,7 @@ public class VeranstaltungService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAll(){
 
         LOG.debug("Received 'findAll' request for Veranstaltung");
@@ -102,7 +103,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
 
         checkPreconditions(veranstaltungDTO);
@@ -132,7 +133,11 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_OWN_EVENT,
+            UserPermission.CAN_MODIFY_OWN_LOCATION
+    })
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) {
 
@@ -163,7 +168,7 @@ public class VeranstaltungService implements ServiceFacade {
      * I delete an existing Veranstaltung entry from the DB.
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 

@@ -68,7 +68,7 @@ public class RegionenService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RegionenDTO> findAll() {
         final List<RegionenDO> regionDOList = regionenComponent.findAll();
 
@@ -112,7 +112,7 @@ public class RegionenService implements ServiceFacade {
 
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 

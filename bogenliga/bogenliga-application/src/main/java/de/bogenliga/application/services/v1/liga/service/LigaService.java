@@ -103,7 +103,7 @@ public class LigaService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public LigaDTO create(@RequestBody final LigaDTO ligaDTO, final Principal principal) {
         logger.debug(
                 "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
@@ -130,7 +130,9 @@ public class LigaService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN
+    })
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
 
@@ -156,7 +158,7 @@ public class LigaService implements ServiceFacade {
      * I delete an existing Liga entry from the DB.
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 

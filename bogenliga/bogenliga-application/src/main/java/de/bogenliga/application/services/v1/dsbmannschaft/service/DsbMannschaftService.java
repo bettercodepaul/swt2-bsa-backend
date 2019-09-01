@@ -100,7 +100,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAll() {
         final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAll();
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
@@ -128,7 +128,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
     @RequestMapping(value = "byVereinsID/{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
@@ -155,7 +155,9 @@ public class DsbMannschaftService implements ServiceFacade {
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_READ_DEFAULT
+    })
     public DsbMannschaftDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
@@ -190,7 +192,12 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB,
+            UserPermission.CAN_MODIFY_OWN_EVENT,
+            UserPermission.CAN_MODIFY_OWN_LOCATION
+    })
     public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
         final Long userId = UserProvider.getCurrentUserId(principal);
@@ -225,7 +232,12 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB,
+            UserPermission.CAN_MODIFY_OWN_EVENT,
+            UserPermission.CAN_MODIFY_OWN_LOCATION
+    })
     public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
@@ -252,7 +264,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 

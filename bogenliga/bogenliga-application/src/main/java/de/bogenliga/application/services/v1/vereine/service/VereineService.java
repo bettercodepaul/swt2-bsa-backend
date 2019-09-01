@@ -63,6 +63,7 @@ public class VereineService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VereineDTO> findAll(){
         final List<VereinDO> vereinDOList = vereinComponent.findAll();
         return vereinDOList.stream().map(VereineDTOMapper.toDTO).collect(Collectors.toList());
@@ -74,7 +75,7 @@ public class VereineService implements ServiceFacade {
      * @return list of {@link VereineDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public VereineDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
@@ -116,7 +117,7 @@ public class VereineService implements ServiceFacade {
      * I delete an existing Verein entry from the DB.
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 

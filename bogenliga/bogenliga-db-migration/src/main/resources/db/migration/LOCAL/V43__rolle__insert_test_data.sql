@@ -2,10 +2,10 @@ INSERT INTO rolle(
 rolle_id,
 rolle_name
 )
-VALUES (1, 'ADMIN'),
-       (2, 'MODERATOR'),
-       (3, 'USER'),
-       (4, 'SPORTLEITER'),
-       (5, 'KAMPFRICHTER'),
-       (6, 'LIGALEITER')
+VALUES (101, 'Test-ADMIN'),
+       (102, 'Test-MODERATOR'),
+       (103, 'Test-USER'),
+       (104, 'Test-SPORTLEITER'),
+       (105, 'Test-KAMPFRICHTER'),
+       (106, 'Test-LIGALEITER')
 ;

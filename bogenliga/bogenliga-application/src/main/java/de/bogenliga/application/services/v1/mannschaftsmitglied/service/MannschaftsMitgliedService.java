@@ -56,7 +56,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAll() {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAll();
         return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(value = "{teamId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findByTeamId(@PathVariable("teamId") final long mannschaftsId) {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findByTeamId(
                 mannschaftsId);
@@ -77,7 +77,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId) {
         final List<MannschaftsmitgliedDO> MannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeam(
                 mannschaftsId);
@@ -88,7 +88,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(value = "{memberId}/{teamId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("teamId") final long mannschaftsId,
                                                         @PathVariable("memberId") final long mitgliedId) {
         Preconditions.checkArgument(mannschaftsId > 0, "ID must not be negative.");
@@ -106,7 +106,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(value = "/byMemberId/{memberId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findByMemberId(@PathVariable("memberId") final long memberId) {
         Preconditions.checkArgument(memberId > 0, "ID must not be negative.");
 
@@ -120,7 +120,12 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
+            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
+            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
+    })
     public MannschaftsMitgliedDTO create(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) {
 
@@ -146,7 +151,12 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
+            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
+            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
+    })
     public MannschaftsMitgliedDTO update(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) {
         checkPreconditions(mannschaftsMitgliedDTO);
@@ -168,7 +178,12 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
+            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
+            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
+    })
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
@@ -182,7 +197,12 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
     @RequestMapping(value = "{mannschaftsId}/{mitgliedId}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
+            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
+            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
+    })
     public void deleteByTeamIdAndMemberId(@PathVariable("mannschaftsId") final long mannschaftsId,
                        @PathVariable("mitgliedId") final long mitgliedId, final Principal principal) {
         Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");

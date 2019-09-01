@@ -77,6 +77,7 @@ public class WettkampfService implements ServiceFacade {
      * @return
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public WettkampfDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
@@ -95,12 +96,14 @@ public class WettkampfService implements ServiceFacade {
      */
     @RequestMapping(value = "byMannschaftsId/{id}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfDTO> findAllWettkaempfeByMannschaftsId(@PathVariable("id") final long id) {
         final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findAllWettkaempfeByMannschaftsId(id);
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "byVeranstaltungId/{veranstaltungId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfDTO> findAllByVeranstaltungId(@PathVariable("veranstaltungId") final long veranstaltungId) {
         Preconditions.checkArgument(veranstaltungId >= 0, "Veranstaltung ID must not be negative.");
 
@@ -119,7 +122,10 @@ public class WettkampfService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_OWN_EVENT
+    })
     public WettkampfDTO create(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
 
         checkPreconditions(wettkampfDTO);
@@ -151,7 +157,11 @@ public class WettkampfService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_OWN_EVENT,
+            UserPermission.CAN_MODIFY_OWN_LOCATION
+    })
     public WettkampfDTO update(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
         checkPreconditions(wettkampfDTO);
 
@@ -179,7 +189,7 @@ public class WettkampfService implements ServiceFacade {
      * @param principal
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 

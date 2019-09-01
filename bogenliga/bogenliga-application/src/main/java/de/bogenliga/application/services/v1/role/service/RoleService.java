@@ -80,7 +80,7 @@ public class RoleService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RoleDTO> findAll() {
         final List<RoleDO> roleDOList = roleComponent.findAll();
         return roleDOList.stream().map(RoleDTOMapper.toDTO).collect(Collectors.toList());

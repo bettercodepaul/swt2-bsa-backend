@@ -101,7 +101,7 @@ public class DsbMitgliedService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public List<DsbMitgliedDTO> findAll() {
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAll();
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
@@ -133,7 +133,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
@@ -168,7 +168,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);
@@ -207,7 +207,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);
@@ -239,7 +239,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
