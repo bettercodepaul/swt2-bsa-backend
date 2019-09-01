@@ -66,7 +66,7 @@ public class LizenzService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LizenzDTO> findAll() {
         final List<LizenzDO> lizenzDOList = lizenzComponent.findAll();
         return lizenzDOList.stream().map(LizenzDTOMapper.toDTO).collect(Collectors.toList());
@@ -84,7 +84,7 @@ public class LizenzService implements ServiceFacade {
             value = "{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LizenzDTO> findByDsbMitgliedId(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 
@@ -111,7 +111,12 @@ public class LizenzService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB,
+            UserPermission.CAN_MODIFY_OWN_EVENT,
+            UserPermission.CAN_MODIFY_OWN_LOCATION
+    })
     public LizenzDTO create(@RequestBody final LizenzDTO lizenzDTO, final Principal principal) {
 
         checkPreconditions(lizenzDTO);
@@ -131,7 +136,12 @@ public class LizenzService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission({
+            UserPermission.CAN_MODIFY_STAMMDATEN,
+            UserPermission.CAN_MODIFY_ONW_CLUB,
+            UserPermission.CAN_MODIFY_OWN_EVENT,
+            UserPermission.CAN_MODIFY_OWN_LOCATION
+    })
     public LizenzDTO update(@RequestBody final LizenzDTO lizenzDTO,
                             final Principal principal) {
 
@@ -148,7 +158,7 @@ public class LizenzService implements ServiceFacade {
      * I delete an existing Lizenz entry from the DB by its ID.
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
