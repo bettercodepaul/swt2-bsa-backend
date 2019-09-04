@@ -11,9 +11,9 @@ VALUES
    'admin@bogenliga.de',
    'a9a2ef3c5a023acd2fc79ebd9c638e0ebb62db9c65fa42a6ca43d5d957a4bdf5413c8fc08ed8faf7204ba0fd5805ca638220b84d07c0690aed16ab3a2413142d',
    '0d31dec64a1029ea473fb10628bfa327be135d34f8013e7238f32c019bd0663a7feca101fd86ccee1339e79db86c5494b6e635bb5e21456f40a6722952c53079'),
-  -- password = moderator
+  -- password = user
   (3,
-   'moderator@bogenliga.de',
+   'ligadefault',
    'dbed56d612f8fc8397a79a9e63cc67236ac63027e092adda7b02cbe7c65a4916683a572d71d3cefbcdcf86ee42136b1882ce75b189b1fe3a1457cc72ced3c6ea',
    '3afca75fad3ea4e11e3e1f4274221acb4f0a833e765b21c87098c18c9ebea67eec16f849cffc4f0010ea0f6879d0a8b88c4cfd64abfcd4762cf5c123e87f0a45'),
   -- password = user
