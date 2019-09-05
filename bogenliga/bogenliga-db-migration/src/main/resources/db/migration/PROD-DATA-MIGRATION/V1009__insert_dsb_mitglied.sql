@@ -19,6 +19,8 @@ OR "SchGebDat"=' '
 SET search_path = 'prod'
 ;
 
+DELETE from dsb_mitglied;
+
 insert INTO dsb_mitglied
  ( dsb_mitglied_mitgliedsnummer,
    dsb_mitglied_vorname,

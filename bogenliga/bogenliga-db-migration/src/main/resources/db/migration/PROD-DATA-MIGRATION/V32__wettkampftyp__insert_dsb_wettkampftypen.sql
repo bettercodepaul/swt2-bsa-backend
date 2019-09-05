@@ -1,6 +1,8 @@
 SET search_path = 'prod'
 ;
 
+DELETE from wettkampftyp;
+
 INSERT INTO wettkampftyp (wettkampftyp_id, wettkampftyp_name)
 VALUES (0, 'Liga kummutativ'),
        (1, 'Liga Satzsystem'),

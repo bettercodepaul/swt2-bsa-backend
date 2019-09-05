@@ -10,6 +10,7 @@
 SET search_path = 'prod'
 ;
 
+DELETE from mannschaft;
 
 insert INTO mannschaft
   (mannschaft_nummer,
