@@ -1,6 +1,8 @@
 SET search_path = 'prod'
 ;
 
+DELETE from klasse;
+
 INSERT INTO klasse (klasse_id, klasse_name, klasse_alter_min, klasse_alter_max, klasse_nr)
 VALUES
 

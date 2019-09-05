@@ -10,6 +10,8 @@
 SET search_path = 'prod'
 ;
 
+DELETE from veranstaltung;
+
 insert INTO veranstaltung(
   veranstaltung_wettkampftyp_id,
   veranstaltung_name,

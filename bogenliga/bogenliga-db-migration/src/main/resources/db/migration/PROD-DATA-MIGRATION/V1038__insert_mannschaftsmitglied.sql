@@ -20,7 +20,7 @@ SET search_path = 'prod_data_migration'
 SET search_path = 'prod'
 ;
 
-
+DELETE from mannschaftsmitglied;
 
 insert INTO mannschaftsmitglied
     (mannschaftsmitglied_mannschaft_id,

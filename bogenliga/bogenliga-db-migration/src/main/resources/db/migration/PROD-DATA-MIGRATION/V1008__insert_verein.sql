@@ -6,6 +6,9 @@
 SET search_path = 'prod'
 ;
 -- spalte hinzufügen
+
+
+
 ALTER TABLE prod_data_migration."vereine"
   ADD COLUMN "Mannschaft" text DEFAULT '1'
 ;
@@ -28,6 +31,7 @@ Delete from prod_data_migration."vereine"
 where "VNR" in ('36WT919999', '36WT929999', '36WT939999', '36WT949999')
 ;
 
+DELETE from  verein;
 
 -- weil wir die Mannschaftsnummer entfernt haben, sind ide Namen der Vereine
 -- jetzt nicht mehr eindeutig...

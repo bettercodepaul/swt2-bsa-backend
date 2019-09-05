@@ -7,6 +7,7 @@
 SET search_path = 'prod'
 ;
 
+DELETE from lizenz;
 
 insert INTO lizenz
     (lizenz_nummer,

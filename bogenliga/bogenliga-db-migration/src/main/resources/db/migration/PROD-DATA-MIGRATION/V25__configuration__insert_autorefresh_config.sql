@@ -2,6 +2,8 @@ SET search_path = 'prod'
 ;
 
 
+DELETE from configuration;
+
 INSERT INTO configuration (configuration_key, configuration_value)
 VALUES
   -- Comment

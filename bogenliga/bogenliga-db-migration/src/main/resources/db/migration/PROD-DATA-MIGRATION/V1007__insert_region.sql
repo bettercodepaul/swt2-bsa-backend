@@ -1,6 +1,9 @@
 SET search_path = 'prod'
 ;
 
+DELETE from verein;
+DELETE from region;
+
 INSERT INTO region (region_id, region_name, region_kuerzel, region_typ, region_uebergeordnet)
 VALUES
   (0, 'Deutscher Schützenbund',             'DSB',      'BUNDESVERBAND', NULL),

@@ -12,6 +12,8 @@
 SET search_path = 'prod'
 ;
 
+DELETE from liga;
+
 insert INTO liga
  ( liga_region_id,
     liga_name
