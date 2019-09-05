@@ -9,5 +9,6 @@ VALUES (1, 'ADMIN'),
        (5, 'SPORTLEITER'),
        (6, 'USER'),
        (7, 'TECHNICAL-ACCOUNT'),
-       (8, 'DEFAULT')
+       (8, 'DEFAULT'),
+       (9, 'MODERATOR')
 ;

@@ -41,5 +41,6 @@ VALUES (1, 0), -- admin = all permissions (technical and business)
        (6, 0), -- USER
        (7, 0), -- TECHNISCHER-USER
        (7, 17),
-       (8, 0) -- DEFAULT
+       (8, 0), -- DEFAULT
+       (9, 0) --MODERATOR
  ;
