@@ -230,7 +230,7 @@ public class UserService implements ServiceFacade {
             value = "/uptRoles",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public List<UserRoleDTO> updateRoles(final HttpServletRequest requestWithHeader,
                                   @RequestBody final List<UserRoleDTO> updatedUserRoles) {
         Preconditions.checkNotNull(updatedUserRoles, "UserRole-Definition must not be null");
@@ -275,7 +275,7 @@ public class UserService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<UserRoleDTO> findAll() {
         final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
         return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
@@ -298,7 +298,7 @@ public class UserService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             value = "/userrole/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<UserRoleDTO> getUserRoleById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
@@ -341,7 +341,7 @@ public class UserService implements ServiceFacade {
             value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public UserDTO create(final HttpServletRequest requestWithHeader,
                           @RequestBody final UserCredentialsDTO userCredentialsDTO) {
 
