@@ -86,7 +86,7 @@ public class ConfigurationService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<ConfigurationDTO> findAll() {
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
         return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).collect(Collectors.toList());
@@ -109,7 +109,7 @@ public class ConfigurationService implements ServiceFacade {
      * @return list of {@link ConfigurationDTO} as JSON
      */
     @RequestMapping(value = "{key}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ConfigurationDTO findByKey(@PathVariable("key") final String key) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 
@@ -144,7 +144,7 @@ public class ConfigurationService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public ConfigurationDTO create(@RequestBody final ConfigurationDTO configurationDTO, final Principal principal) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
@@ -175,7 +175,7 @@ public class ConfigurationService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public ConfigurationDTO update(@RequestBody final ConfigurationDTO configurationDTO, final Principal principal) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
@@ -199,7 +199,7 @@ public class ConfigurationService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/configuration/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @RequestMapping(value = "{key}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_DELETE_CONFIGURATION)
+    @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
     public void delete(@PathVariable("key") final String key, final Principal principal) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 

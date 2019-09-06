@@ -90,9 +90,9 @@ public enum UserPermission implements GrantedAuthority {
      * RECHT
     *
     */
-    CAN_READ_CONFIGURATION,
-    CAN_MODIFY_CONFIGURATION,
-    CAN_DELETE_CONFIGURATION,
+    CAN_READ_SYSTEMDATEN,
+    CAN_MODIFY_SYSTEMDATEN,
+    CAN_DELETE_SYSTEMDATEN,
 
 
     /*
