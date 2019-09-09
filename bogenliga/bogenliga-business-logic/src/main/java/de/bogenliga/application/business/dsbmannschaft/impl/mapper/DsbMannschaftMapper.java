@@ -29,6 +29,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         final Long nummer = be.getNummer();
         final Long benutzerId = be.getBenutzerId();
         final Long veranstaltungId = be.getVeranstaltungId();
+        final Long sortierung = be.getSortierung();
 
 
         // technical parameter
@@ -39,7 +40,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new DsbMannschaftDO(id, vereinId, nummer, benutzerId, veranstaltungId,
+        return new DsbMannschaftDO(id, vereinId, nummer, benutzerId, veranstaltungId, sortierung,
                 createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
@@ -60,6 +61,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
         dsbMannschaftBE.setNummer(dsbMannschaftDO.getNummer());
         dsbMannschaftBE.setBenutzerId(dsbMannschaftDO.getBenutzerId());
         dsbMannschaftBE.setVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
+        dsbMannschaftBE.setSortierung(dsbMannschaftDO.getSortierung());
 
 
         dsbMannschaftBE.setCreatedAtUtc(createdAtUtcTimestamp);

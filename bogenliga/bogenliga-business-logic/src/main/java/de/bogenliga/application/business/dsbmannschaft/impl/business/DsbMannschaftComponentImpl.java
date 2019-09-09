@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
+public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMannschaftSortierungComponent {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT= "DsbMannschaftDO must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be negative";
@@ -31,7 +32,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID = "DsbMannschaftDO Benutzer Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaftDO Veranstaltung ID must not be negative";
     private static final String PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT = "Current dsbmannschaft id must not be negative";
-
+    private static final String PRECONDITION_MSG_SORTIERUNG = "The Sortierung must not be null or negative";
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
     private final VeranstaltungDAO veranstaltungDAO;
@@ -108,6 +109,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
     public DsbMannschaftDO update(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
         checkDsbMannschaftDO(dsbMannschaftDO, currentDsbMannschaftId);
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+        checkSortierung(dsbMannschaftDO); //To avoid corruption of the Sortierung
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
         final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentDsbMannschaftId);
@@ -137,5 +139,51 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent {
         Preconditions.checkArgument(dsbMannschaftDO.getBenutzerId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
         Preconditions.checkArgument(dsbMannschaftDO.getVeranstaltungId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
 
+    }
+
+    //for sorting:
+    @Override
+    public DsbMannschaftDO updateSortierung(DsbMannschaftDO mannschaftDO, long currentDsbMitgliedID){
+        Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
+        Preconditions.checkArgument(mannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+        Preconditions.checkArgument(mannschaftDO.getSortierung() >= 0, PRECONDITION_MSG_SORTIERUNG );
+
+        checkSortierung(mannschaftDO);
+
+        final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftDO);
+        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentDsbMitgliedID);
+
+        return DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE);
+    }
+
+    private void fillDO(DsbMannschaftDO mannschaftDO){
+        Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
+
+        DsbMannschaftDO DoFromDatabase = this.findById(mannschaftDO.getId());
+        if(DoFromDatabase != null) {
+            checkSortierung(mannschaftDO, DoFromDatabase);
+            mannschaftDO.setVereinId(DoFromDatabase.getVereinId());
+            mannschaftDO.setNummer(DoFromDatabase.getNummer());
+            mannschaftDO.setVeranstaltungId(DoFromDatabase.getVeranstaltungId());
+            mannschaftDO.setBenutzerId(DoFromDatabase.getBenutzerId());
+        }
+    }
+
+    private DsbMannschaftDO checkSortierung(DsbMannschaftDO mannschaftDO){
+        return this.checkSortierung(mannschaftDO, null);
+    }
+
+    private DsbMannschaftDO checkSortierung(DsbMannschaftDO mannschaftDO, DsbMannschaftDO DoFromDatabase){
+        Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
+
+        if(DoFromDatabase == null) {
+            DoFromDatabase = this.findById(mannschaftDO.getId());
+        }
+        if(mannschaftDO.getSortierung() == null && DoFromDatabase != null){
+            mannschaftDO.setSortierung(DoFromDatabase.getSortierung());
+        }else if(mannschaftDO.getSortierung().equals(0L) && DoFromDatabase != null && DoFromDatabase.getSortierung() > 0){
+            mannschaftDO.setSortierung(DoFromDatabase.getSortierung());
+        }
+        return mannschaftDO;
     }
 }
