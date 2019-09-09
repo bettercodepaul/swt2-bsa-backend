@@ -35,6 +35,7 @@ public class DsbMannschaftServiceTest {
     private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
     private static final long VERANSTALTUNG_ID = 44444;
+    private static final long SORTIERUNG = 1;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -64,6 +65,7 @@ public class DsbMannschaftServiceTest {
         expectedBE.setNummer(NUMMER);
         expectedBE.setBenutzerId(BENUTZER_ID);
         expectedBE.setVeranstaltungId(VERANSTALTUNG_ID);
+        expectedBE.setSortierung(SORTIERUNG);
 
 
         return expectedBE;
@@ -72,7 +74,7 @@ public class DsbMannschaftServiceTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID
+                ID, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
         );
     }
 
@@ -84,6 +86,7 @@ public class DsbMannschaftServiceTest {
         dsbMannschaftDTO.setNummer(NUMMER);
         dsbMannschaftDTO.setBenutzerId(BENUTZER_ID);
         dsbMannschaftDTO.setVeranstaltungId(VERANSTALTUNG_ID);
+        dsbMannschaftDTO.setSortierung(SORTIERUNG);
 
         return dsbMannschaftDTO;
 
@@ -119,6 +122,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
+        assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
 
         // verify invocations
         verify(dsbMannschaftComponent).findAll();
@@ -145,6 +149,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
+        assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
 
         //verify invocations
         verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
@@ -166,6 +171,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(dsbMannschaftDO.getId());
         assertThat(actual.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
+        assertThat(actual.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
 
         // verify invocations
         verify(dsbMannschaftComponent).findById(ID);
@@ -189,6 +195,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
+        assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
 
         // verify invocations
         verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
@@ -198,6 +205,7 @@ public class DsbMannschaftServiceTest {
         assertThat(createdDsbMannschaft).isNotNull();
         assertThat(createdDsbMannschaft.getId()).isEqualTo(input.getId());
         assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
+        assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
     }
 
 
@@ -218,6 +226,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
+        assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
 
         // verify invocations
         verify(dsbMannschaftComponent).update(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
@@ -227,6 +236,7 @@ public class DsbMannschaftServiceTest {
         assertThat(updatedDsbMannschaft).isNotNull();
         assertThat(updatedDsbMannschaft.getId()).isEqualTo(input.getId());
         assertThat(updatedDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
+        assertThat(updatedDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
     }
 
 

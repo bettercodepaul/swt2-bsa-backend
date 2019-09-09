@@ -7,10 +7,7 @@ import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -37,6 +34,7 @@ public class DsbMannschaftComponentImplTest {
     private static final long nummer=111L;
     private static final long benutzerId=12L;
     private static final long veranstaltungId=1L;
+    private static final long sortierung=1;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -61,6 +59,7 @@ public class DsbMannschaftComponentImplTest {
         expectedBE.setNummer(nummer);
         expectedBE.setBenutzerId(benutzerId);
         expectedBE.setVeranstaltungId(veranstaltungId);
+        expectedBE.setSortierung(sortierung);
 
 
 
@@ -73,7 +72,8 @@ public class DsbMannschaftComponentImplTest {
                 vereinId,
                 nummer,
                 benutzerId,
-                veranstaltungId);
+                veranstaltungId,
+                sortierung);
     }
 
     @Test
@@ -106,6 +106,8 @@ public class DsbMannschaftComponentImplTest {
                 .isEqualTo(expectedBE.getVeranstaltungId());
         assertThat(actual.get(0).getVereinId())
                 .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getSortierung())
+                .isEqualTo(expectedBE.getSortierung());
 
 
         // verify invocations
@@ -142,6 +144,8 @@ public class DsbMannschaftComponentImplTest {
                 .isEqualTo(expectedBE.getVeranstaltungId());
         assertThat(actual.get(0).getVereinId())
                 .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getSortierung())
+                .isEqualTo(expectedBE.getSortierung());
 
 
         // verify invocations
@@ -210,6 +214,7 @@ public class DsbMannschaftComponentImplTest {
                 vereinId,
                 nummer,
                 veranstaltungId,
+                sortierung,
                 dateTime,
                 USER,
                 VERSION);
@@ -220,8 +225,10 @@ public class DsbMannschaftComponentImplTest {
         expectedBE.setNummer(nummer);
         expectedBE.setVereinId(vereinId);
         expectedBE.setVeranstaltungId(veranstaltungId);
+        expectedBE.setSortierung(sortierung);
         expectedBE.setCreatedAtUtc(timestamp);
         expectedBE.setVersion(VERSION);
+
 
 
         // configure mocks
@@ -296,6 +303,8 @@ public class DsbMannschaftComponentImplTest {
 
         // configure mocks
         when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
+        Mockito.doReturn(input).when(underTest).findById(anyLong());
+        //when(underTest.findById(anyLong())).thenReturn(input);
 
         // call test method
         final DsbMannschaftDO actual = underTest.update(input, USER);
@@ -319,6 +328,8 @@ public class DsbMannschaftComponentImplTest {
                 .isEqualTo(input.getId());
         assertThat(persistedBE.getVeranstaltungId())
                 .isEqualTo(input.getVeranstaltungId());
+        assertThat(persistedBE.getSortierung())
+                .isEqualTo(input.getSortierung());
     }
 
     @Test
