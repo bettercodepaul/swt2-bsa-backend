@@ -18,6 +18,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     private Long nummer;
     private Long benutzerId;
     private Long veranstaltungId;
+    private Long sortierung;
 
 
     /**
@@ -27,6 +28,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param nummer
      * @param benutzerId
      * @param veranstaltungId
+     * @param sortierung
      * @param createdAtUtc
      * @param createdByUserId
      * @param lastModifiedAtUtc
@@ -35,13 +37,14 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      */
 
     public DsbMannschaftDO(final Long id, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId,
-                           final OffsetDateTime createdAtUtc, final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                         final Long lastModifiedByUserId, final Long version) {
+                           final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId,
+                           final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.vereinId=vereinId;
         this.nummer=nummer;
         this.benutzerId=benutzerId;
         this.veranstaltungId=veranstaltungId;
+        this.sortierung = sortierung;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
@@ -59,12 +62,13 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param nummer
      * @param benutzerId
      * @param veranstaltungId
+     * @param sortierung
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
-    public DsbMannschaftDO(final Long id, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId, final OffsetDateTime createdAtUtc,
-                           final Long createdByUserId,final Long version) {
+    public DsbMannschaftDO(final Long id, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId,
+                           final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId,final Long version) {
         this.id = id;
         this.vereinId=vereinId;
         this.nummer=nummer;
@@ -86,12 +90,13 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
 
      */
     public DsbMannschaftDO(final Long id, final long vereinId, final long nummer,
-                           final long benutzerId,final long veranstaltungId) {
+                           final long benutzerId,final long veranstaltungId, final Long sortierung) {
         this.id = id;
         this.vereinId=vereinId;
         this.nummer=nummer;
         this.benutzerId=benutzerId;
         this.veranstaltungId=veranstaltungId;
+        this.sortierung = sortierung;
 
     }
 
@@ -139,9 +144,14 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     public void setVeranstaltungId(final long veranstaltungId){this.veranstaltungId=veranstaltungId;}
 
 
+    public Long getSortierung(){return sortierung;}
+
+    public void setSortierung(final long sortierung){this.sortierung=sortierung;}
+
+
     @Override
     public int hashCode() {
-        return Objects.hash(id, vereinId,nummer,benutzerId,veranstaltungId,
+        return Objects.hash(id, vereinId,nummer,benutzerId,veranstaltungId,sortierung,
                 createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
@@ -159,6 +169,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
         return id == that.id &&
                 vereinId == that.vereinId &&
                 benutzerId == that.benutzerId &&
+                sortierung == that.sortierung &&
                 createdByUserId == that.createdByUserId &&
                 lastModifiedByUserId == that.lastModifiedByUserId &&
                 version == that.version &&

@@ -234,9 +234,9 @@ public class DsbMannschaftService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission({
             UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_ONW_CLUB,
-            UserPermission.CAN_MODIFY_OWN_EVENT,
-            UserPermission.CAN_MODIFY_OWN_LOCATION
+            //UserPermission.CAN_MODIFY_ONW_CLUB,
+            //UserPermission.CAN_MODIFY_OWN_EVENT,
+            //UserPermission.CAN_MODIFY_OWN_LOCATION
     })
     public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
