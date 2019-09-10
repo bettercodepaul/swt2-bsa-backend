@@ -148,7 +148,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkArgument(mannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         Preconditions.checkArgument(mannschaftDO.getSortierung() >= 0, PRECONDITION_MSG_SORTIERUNG );
 
-        checkSortierung(mannschaftDO);
+        fillDO(mannschaftDO);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftDO);
         final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentDsbMitgliedID);
@@ -158,8 +158,11 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     private void fillDO(DsbMannschaftDO mannschaftDO){
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
-
+        System.out.print("mannschaftDO: ");
+        System.out.println(mannschaftDO);
         DsbMannschaftDO DoFromDatabase = this.findById(mannschaftDO.getId());
+        System.out.print("mannschaftDO Database: ");
+        System.out.println(DoFromDatabase);
         if(DoFromDatabase != null) {
             checkSortierung(mannschaftDO, DoFromDatabase);
             mannschaftDO.setVereinId(DoFromDatabase.getVereinId());
