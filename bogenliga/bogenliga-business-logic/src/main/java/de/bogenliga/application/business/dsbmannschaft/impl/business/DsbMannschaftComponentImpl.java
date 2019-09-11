@@ -160,7 +160,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
         System.out.print("mannschaftDO: ");
         System.out.println(mannschaftDO);
-        DsbMannschaftDO DoFromDatabase = this.findById(mannschaftDO.getId());
+        DsbMannschaftDO DoFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
         System.out.print("mannschaftDO Database: ");
         System.out.println(DoFromDatabase);
         if(DoFromDatabase != null) {
@@ -180,7 +180,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
 
         if(DoFromDatabase == null) {
-            DoFromDatabase = this.findById(mannschaftDO.getId());
+            DoFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
         }
         if(mannschaftDO.getSortierung() == null && DoFromDatabase != null){
             mannschaftDO.setSortierung(DoFromDatabase.getSortierung());

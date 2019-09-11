@@ -303,8 +303,7 @@ public class DsbMannschaftComponentImplTest {
 
         // configure mocks
         when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
-        Mockito.doReturn(input).when(underTest).findById(anyLong());
-        //when(underTest.findById(anyLong())).thenReturn(input);
+        when(dsbMannschaftDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
         final DsbMannschaftDO actual = underTest.update(input, USER);
