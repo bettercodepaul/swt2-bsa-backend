@@ -124,7 +124,7 @@ public class WettkampfService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission({
             UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_OWN_EVENT
+            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG
     })
     public WettkampfDTO create(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
 
@@ -159,8 +159,8 @@ public class WettkampfService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission({
             UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_OWN_EVENT,
-            UserPermission.CAN_MODIFY_OWN_LOCATION
+            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
+            UserPermission.CAN_MODIFY_MY_ORT
     })
     public WettkampfDTO update(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
         checkPreconditions(wettkampfDTO);
