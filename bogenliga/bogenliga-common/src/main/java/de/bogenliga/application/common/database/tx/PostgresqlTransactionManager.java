@@ -148,7 +148,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
     }
 
 
-    private DataSource getDataSource() {
+    public DataSource getDataSource() {
         if (ds == null) {
             try {
                 LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
