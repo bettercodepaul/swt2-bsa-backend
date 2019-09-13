@@ -42,4 +42,9 @@
         <appender-ref ref="Console"/>
     </logger>
 
+    <!--Logger for the DB-Migration !!! But Logger-Output will be overwritten in DBMigrationLogger !!! -->
+    <!--<logger name="org.flywaydb.core" level="DEBUG">
+        <appender-ref ref="Console"/>
+    </logger>-->
+
 </configuration>
