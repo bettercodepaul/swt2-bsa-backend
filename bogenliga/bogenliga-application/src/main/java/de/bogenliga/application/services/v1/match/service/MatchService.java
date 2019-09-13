@@ -131,6 +131,7 @@ public class MatchService implements ServiceFacade {
 
     @RequestMapping(value = "", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MatchDTO> findAll(){
         final List<MatchDO> matchDOList = matchComponent.findAll();
 
@@ -211,7 +212,7 @@ public class MatchService implements ServiceFacade {
     @RequestMapping(value = "byMannschaftsId/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<MatchDTO> findAllByMannschaftId(@PathVariable("id") final Long id) {
         Preconditions.checkNotNull(id,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_BY_MANNSCHAFT_ID, CHECKED_PARAM_MATCH_ID));

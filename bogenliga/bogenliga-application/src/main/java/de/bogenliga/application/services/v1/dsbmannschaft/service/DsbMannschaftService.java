@@ -152,9 +152,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_READ_DEFAULT
-    })
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public DsbMannschaftDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 

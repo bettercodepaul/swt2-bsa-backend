@@ -76,7 +76,7 @@ public class RegionenService implements ServiceFacade {
     }
 
     @RequestMapping(value = "ID/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public RegionenDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
