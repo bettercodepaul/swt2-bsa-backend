@@ -142,6 +142,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     }
 
     //for sorting:
+
     @Override
     public DsbMannschaftDO updateSortierung(DsbMannschaftDO mannschaftDO, long currentDsbMitgliedID){
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
@@ -156,13 +157,15 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         return DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE);
     }
 
+    /**
+     * Fills the VerinsID, Nummer, VeranstaltungsID, BenutzerID with the values from the Database.
+     * Used to update the Sorting of the mannschaft, because with that method the existing update method can be used.
+     * @param mannschaftDO
+     */
     private void fillDO(DsbMannschaftDO mannschaftDO){
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
-        System.out.print("mannschaftDO: ");
-        System.out.println(mannschaftDO);
         DsbMannschaftDO DoFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
-        System.out.print("mannschaftDO Database: ");
-        System.out.println(DoFromDatabase);
+
         if(DoFromDatabase != null) {
             checkSortierung(mannschaftDO, DoFromDatabase);
             mannschaftDO.setVereinId(DoFromDatabase.getVereinId());
@@ -172,10 +175,25 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
     }
 
+    /**
+     * Wrapper method for the other checkSortierung method.
+     * @param mannschaftDO
+     * @return
+     */
     private DsbMannschaftDO checkSortierung(DsbMannschaftDO mannschaftDO){
         return this.checkSortierung(mannschaftDO, null);
     }
 
+    /**
+     * Checks the given MannschaftDO to evade a wrong update of the Soriterung.
+     * Example: The sortierung was set to 5. Then the name changes and the update method will be called.
+     * In this call the sortierung will be 0.
+     * To avoid this the method compares the given value of sortierung with the one from the database.
+     * @param mannschaftDO
+     * @param DoFromDatabase A optional parameter to increase performance in the updateSorteirung mehtod.
+     *                       null allowed!
+     * @return
+     */
     private DsbMannschaftDO checkSortierung(DsbMannschaftDO mannschaftDO, DsbMannschaftDO DoFromDatabase){
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
 
@@ -184,7 +202,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
         if(mannschaftDO.getSortierung() == null && DoFromDatabase != null){
             mannschaftDO.setSortierung(DoFromDatabase.getSortierung());
-        }else if(mannschaftDO.getSortierung().equals(0L) && DoFromDatabase != null && DoFromDatabase.getSortierung() > 0){
+        }else if(mannschaftDO.getSortierung() != null && mannschaftDO.getSortierung().equals(0L)
+                && DoFromDatabase != null && DoFromDatabase.getSortierung() > 0){
             mannschaftDO.setSortierung(DoFromDatabase.getSortierung());
         }
         return mannschaftDO;
