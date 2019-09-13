@@ -62,7 +62,7 @@ public class LigaService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<LigaDTO> findAll() {
         final List<LigaDO> ligaDOList = ligaComponent.findAll();
         return ligaDOList.stream().map(LigaDTOMapper.toDTO).collect(Collectors.toList());
@@ -80,7 +80,7 @@ public class LigaService implements ServiceFacade {
             value = "{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public LigaDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 

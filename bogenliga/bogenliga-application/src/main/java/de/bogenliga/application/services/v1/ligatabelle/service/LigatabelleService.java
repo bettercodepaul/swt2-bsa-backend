@@ -57,7 +57,7 @@ public class LigatabelleService implements ServiceFacade {
             value = "veranstaltung={id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigatabelleDTO> getLigatabelleVeranstaltung(@PathVariable("id") final long id) {
 
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
@@ -77,7 +77,7 @@ public class LigatabelleService implements ServiceFacade {
             value = "wettkampf={id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigatabelleDTO> getLigatabelleWettkampf(@PathVariable("id") final long id) {
 
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPF_ID);

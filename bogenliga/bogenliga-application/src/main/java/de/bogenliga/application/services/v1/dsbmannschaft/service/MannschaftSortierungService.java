@@ -50,7 +50,7 @@ public class MannschaftSortierungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
     public MannschaftSortierungDTO update(@RequestBody final MannschaftSortierungDTO maSortierungDTO, final Principal principal) {
         Preconditions.checkNotNull(maSortierungDTO,PRECONDITION_MSG_DSBMANNSCHAFT_DO);
         Preconditions.checkNotNull(maSortierungDTO.getId(), PRECONDITION_MSG_DSBMANNSCHAFT_ID);
