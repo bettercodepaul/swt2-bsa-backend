@@ -135,8 +135,8 @@ public class VeranstaltungService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission({
             UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_OWN_EVENT,
-            UserPermission.CAN_MODIFY_OWN_LOCATION
+            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
+            UserPermission.CAN_MODIFY_MY_ORT
     })
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) {

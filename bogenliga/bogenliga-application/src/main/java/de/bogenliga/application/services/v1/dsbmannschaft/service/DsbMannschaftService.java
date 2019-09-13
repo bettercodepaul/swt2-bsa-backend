@@ -1,11 +1,9 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.validation.constraints.Null;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -194,9 +191,9 @@ public class DsbMannschaftService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission({
             UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_ONW_CLUB,
-            UserPermission.CAN_MODIFY_OWN_EVENT,
-            UserPermission.CAN_MODIFY_OWN_LOCATION
+            UserPermission.CAN_MODIFY_MY_VEREIN,
+            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
+            UserPermission.CAN_MODIFY_MY_ORT
     })
     public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
@@ -234,9 +231,9 @@ public class DsbMannschaftService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission({
             UserPermission.CAN_MODIFY_STAMMDATEN,
-            //UserPermission.CAN_MODIFY_ONW_CLUB,
-            //UserPermission.CAN_MODIFY_OWN_EVENT,
-            //UserPermission.CAN_MODIFY_OWN_LOCATION
+            //UserPermission.CAN_MODIFY_MY_VEREIN,
+            //UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
+            //UserPermission.CAN_MODIFY_MY_ORT
     })
     public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
