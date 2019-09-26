@@ -29,6 +29,7 @@ public class DsbMannschaftComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final long ID = 2222L;
+    private static final String NAME = null; //Empty
     private static final long VEREIN_ID =101010L;
     private static final long NUMMER =111L;
     private static final long BENUTZER_ID =12L;
@@ -70,6 +71,7 @@ public class DsbMannschaftComponentImplTest {
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
                 ID,
+                NAME,
                 VEREIN_ID,
                 NUMMER,
                 BENUTZER_ID,
@@ -80,6 +82,7 @@ public class DsbMannschaftComponentImplTest {
     public static DsbMannschaftDO getSortierungsDO(){
         return new DsbMannschaftDO(
                 ID,
+                null,
                 0L,
                 0L,
                 0L,
@@ -222,6 +225,7 @@ public class DsbMannschaftComponentImplTest {
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         final DsbMannschaftDO input = new DsbMannschaftDO(
                 ID,
+                NAME,
                 BENUTZER_ID,
                 VEREIN_ID,
                 NUMMER,
