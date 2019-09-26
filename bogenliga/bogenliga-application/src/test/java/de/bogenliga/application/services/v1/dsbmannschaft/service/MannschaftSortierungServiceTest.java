@@ -36,6 +36,7 @@ public class MannschaftSortierungServiceTest {
     private static final long SORTIERUNG = 1;
 
     private static final long DB_VEREIN_ID = 111111;
+    private static final String DB_NAME = null; //empty
     private static final long DB_NUMMER = 22222;
     private static final long DB_BENUTZER_ID = 33333;
     private static final long DB_VERANSTALTUNG_ID = 44444;
@@ -60,7 +61,7 @@ public class MannschaftSortierungServiceTest {
 
     private static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, DB_VEREIN_ID, DB_NUMMER, DB_BENUTZER_ID, DB_VERANSTALTUNG_ID, SORTIERUNG
+                ID, DB_NAME, DB_VEREIN_ID, DB_NUMMER, DB_BENUTZER_ID, DB_VERANSTALTUNG_ID, SORTIERUNG
         );
     }
 

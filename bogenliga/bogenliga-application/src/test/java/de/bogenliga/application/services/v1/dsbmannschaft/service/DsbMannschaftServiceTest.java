@@ -32,6 +32,7 @@ public class DsbMannschaftServiceTest {
     private static final long ID = 1893;
 
     private static final long VEREIN_ID = 111111;
+    private static final String NAME = null; //empty
     private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
     private static final long VERANSTALTUNG_ID = 44444;
@@ -74,7 +75,7 @@ public class DsbMannschaftServiceTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
-                ID, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
+                ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
         );
     }
 

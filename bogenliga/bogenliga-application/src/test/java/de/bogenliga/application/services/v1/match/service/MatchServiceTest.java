@@ -119,6 +119,7 @@ public class MatchServiceTest {
     private static final Long W_disId = 12345L;
 
     private static final Long M_id = 2222L;
+    private static final String M_name = null; //empty
     private static final Long M_vereinId = 101010L;
     private static final Long M_nummer = 111L;
     private static final Long M_benutzerId = 12L;
@@ -201,6 +202,7 @@ public class MatchServiceTest {
     protected DsbMannschaftDO getMannschaftDO(Long id) {
         return new DsbMannschaftDO(
                 id,
+                M_name,
                 M_vereinId,
                 M_nummer,
                 M_benutzerId,
