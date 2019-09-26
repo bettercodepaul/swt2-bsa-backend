@@ -16,16 +16,18 @@ public class MannschaftSortierungDTOMapper implements DataTransferObjectMapper {
 
         final Long dsbMannschaftId = dto.getId();
         final Long dsbMannschaftSoriterung = dto.getSortierung();
-        /**
+        /*
          * empty attributes! They will be filled with the values from the Database in the
          * DsbMannschaftComponentImpl.updateSortierung().
          */
+        final String dsbMannschaftsName = null;
         final Long dsbMannschaftVereinId = 0L;
         final Long dsbMannschaftNummer = 0L;
         final Long dsbMannschaftBenutzerId = 0L;
         final Long dsbMannschaftVeranstalungId = 0L;
 
         return new DsbMannschaftDO(dsbMannschaftId,
+                dsbMannschaftsName,
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
