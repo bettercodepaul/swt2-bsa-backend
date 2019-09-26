@@ -137,6 +137,24 @@ public class DsbMannschaftService implements ServiceFacade {
 
 
     /**
+     * I return the dsbMannschaft entries of the database with the given Veranstaltungs-Id.
+     *
+     * @param id the given Veranstaltungs-Id
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+    @RequestMapping(value = "byVeranstaltungsID/{veranstaltungsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<DsbMannschaftDTO> findAllByVeranstaltungsId(@PathVariable("veranstaltungsId") final long id) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID '{}'", id);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVeranstaltungsId(id);
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+    /**
      * I return the dsbMannschaft entry of the database with a specific id.
      *
      * Usage:
