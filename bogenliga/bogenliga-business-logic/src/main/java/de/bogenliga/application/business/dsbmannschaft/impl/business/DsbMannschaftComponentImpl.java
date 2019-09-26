@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
+import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import org.springframework.beans.factory.annotation.Autowired;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
@@ -37,7 +41,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
-    private final VeranstaltungDAO veranstaltungDAO;
+    private final VereinDAO vereinDAO;
 
 
     /**
@@ -48,10 +52,11 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      */
 
     @Autowired
-    public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO, final VeranstaltungDAO veranstaltungDAO) {
+    public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
+                                      final VereinDAO vereinDAO) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
-        this.veranstaltungDAO = veranstaltungDAO;
+        this.vereinDAO = vereinDAO;
     }
 
     public DsbMannschaftDAO getDAO(){
@@ -59,12 +64,11 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     }
 
 
-
-
     @Override
-    public List<DsbMannschaftDO> findAll(){
-        final List<DsbMannschaftBE> dsbMannschaftBeList =dsbMannschaftDAO.findAll();
-        return dsbMannschaftBeList.stream().map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList());
+    public List<DsbMannschaftDO> findAll() {
+        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAll();
+        return this.fillAllNames(dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
     }
 
     @Override
@@ -76,7 +80,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                     String.format("No result for ID '%s", id));
         }
 
-        return dsbMannschaftBeList.stream().map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList());
+        return fillAllNames(dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
     }
 
     @Override
@@ -88,7 +93,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                     String.format("No result for ID '%s", id));
         }
 
-        return dsbMannschaftBeList.stream().map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList());
+        return fillAllNames(dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
     }
 
 
@@ -102,7 +108,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result for ID '%s", id));
         }
-        return DsbMannschaftMapper.toDsbMannschaftDO.apply(result);
+        return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(result));
     }
 
 
@@ -114,7 +120,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
         final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentDsbMannschaftId);
 
-        return DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE);
+        return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
 
 
@@ -128,7 +134,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
         final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentDsbMannschaftId);
 
-        return DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE);
+        return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
 
 
@@ -142,6 +148,35 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
         dsbMannschaftDAO.delete(dsbMannschaftBE, currentDsbMannschaftId);
 
+    }
+
+    /**
+     * I set the attribute 'name' of all given Mannschaften by loading the corresponding Verein.
+     * Name = Verein_Name +" "+ Mannschaft_Nummer
+     *
+     * @param mannschaften Several MannschaftDOs with missing name.
+     * @return the same Mannschaften as given but with their names filled.
+     */
+    private List<DsbMannschaftDO> fillAllNames(List<DsbMannschaftDO> mannschaften){
+        return mannschaften.stream().map(mannschaft -> this.fillName(mannschaft)).collect(Collectors.toList());
+    }
+
+    /**
+     * I set the attribute 'name' of the given Mannschaft by loading the corresponding Verein.
+     * Name = Verein_Name +" "+ Mannschaft_Nummer
+     *
+     * @param mannschaft A MannschaftDO with missing name.
+     * @return the same MannschaftDO but with it's name filled.
+     */
+    private DsbMannschaftDO fillName(DsbMannschaftDO mannschaft) {
+        Preconditions.checkNotNull(mannschaft, PRECONDITION_MSG_DSBMANNSCHAFT);
+        Preconditions.checkArgument(mannschaft.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
+
+        VereinBE vereinBE = this.vereinDAO.findById(mannschaft.getVereinId());
+        if (vereinBE != null && vereinBE.getVereinName() != null) {
+            mannschaft.setName(vereinBE.getVereinName() + " " + mannschaft.getNummer());
+        }
+        return mannschaft;
     }
 
 
