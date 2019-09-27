@@ -3,6 +3,8 @@ package de.bogenliga.application.business.dsbmannschaft.impl.business;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
+import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +31,6 @@ public class DsbMannschaftComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final long ID = 2222L;
-    private static final String NAME = null; //Empty
     private static final long VEREIN_ID =101010L;
     private static final long NUMMER =111L;
     private static final long BENUTZER_ID =12L;
@@ -37,11 +38,16 @@ public class DsbMannschaftComponentImplTest {
     private static final long SORTIERUNG =1L;
 
     private static final long DB_SORTIERUNG =0L;
+    
+    private static final String VEREIN_NAME = "Testverein";
+    private static final String MA_NAME = VEREIN_NAME+" "+ NUMMER;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private DsbMannschaftDAO dsbMannschaftDAO ;
+    @Mock
+    private VereinDAO vereinDAO;
     @InjectMocks
     private DsbMannschaftComponentImpl underTest;
     @Captor
@@ -71,7 +77,7 @@ public class DsbMannschaftComponentImplTest {
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
                 ID,
-                NAME,
+                MA_NAME,
                 VEREIN_ID,
                 NUMMER,
                 BENUTZER_ID,
@@ -89,6 +95,13 @@ public class DsbMannschaftComponentImplTest {
                 0L,
                 SORTIERUNG
         );
+    }
+
+    public static VereinBE getVereinBE(){
+        VereinBE vereinBE = new VereinBE();
+        vereinBE.setVereinId(VEREIN_ID);
+        vereinBE.setVereinName(VEREIN_NAME);
+        return vereinBE;
     }
 
     @Test
@@ -127,6 +140,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).findAll();
+        verify(vereinDAO).findById(anyLong());
     }
 
     @Test
@@ -165,6 +179,46 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).findAllByVereinsId(VEREIN_ID);
+        verify(vereinDAO).findById(anyLong());
+    }
+
+    @Test
+    public void findAllByVeranstaltungsId() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(expectedBEList);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getBenutzerId())
+                .isEqualTo(expectedBE.getBenutzerId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getSortierung())
+                .isEqualTo(expectedBE.getSortierung());
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+        verify(vereinDAO).findById(anyLong());
     }
 
     @Test
@@ -186,6 +240,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).findById(ID);
+        verify(vereinDAO).findById(anyLong());
     }
 
     @Test
@@ -209,6 +264,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -225,7 +281,7 @@ public class DsbMannschaftComponentImplTest {
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         final DsbMannschaftDO input = new DsbMannschaftDO(
                 ID,
-                NAME,
+                MA_NAME,
                 BENUTZER_ID,
                 VEREIN_ID,
                 NUMMER,
@@ -261,6 +317,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -286,6 +343,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(dsbMannschaftDAO);
+        verifyZeroInteractions(vereinDAO);
     }
 
    /* @Test
@@ -334,6 +392,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).update(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -363,6 +422,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(dsbMannschaftDAO);
+        verifyZeroInteractions(vereinDAO);
     }
 
     @Test
@@ -397,6 +457,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).update(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).findById(anyLong());
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -426,6 +487,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).delete(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verifyZeroInteractions(vereinDAO);
 
         final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
@@ -452,6 +514,7 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(dsbMannschaftDAO);
+        verifyZeroInteractions(vereinDAO);
     }
 
     @Test
@@ -529,6 +592,74 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(dsbMannschaftDAO);
+    }
+
+    @Test
+    public void fillAllNames(){
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final VereinBE expectedVerein = getVereinBE();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAll()).thenReturn(expectedBEList);
+        when(vereinDAO.findById(VEREIN_ID)).thenReturn(expectedVerein);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findAll();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getBenutzerId())
+                .isEqualTo(expectedBE.getBenutzerId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getSortierung())
+                .isEqualTo(expectedBE.getSortierung());
+        assertThat(actual.get(0).getName())
+                .isEqualTo(MA_NAME);
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAll();
+        verify(vereinDAO).findById(VEREIN_ID);
+    }
+
+    @Test
+    public void fillName_VereinNull(){
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+
+        // configure mocks
+        when(dsbMannschaftDAO.findById(ID)).thenReturn(expectedBE);
+        when(vereinDAO.findById(anyLong())).thenReturn(null);
+
+        // call test method
+        final DsbMannschaftDO actual = underTest.findById(ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.getName())
+                .isEqualTo(null);
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findById(ID);
+        verify(vereinDAO).findById(anyLong());
     }
 }
 
