@@ -120,12 +120,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_MY_VEREIN, //Sportleiter im Verein
-            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, //Ligaleiter
-            UserPermission.CAN_MODIFY_MY_ORT //Ausrichter
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
     public MannschaftsMitgliedDTO create(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) {
 
@@ -151,12 +146,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_MY_VEREIN, //Sportleiter im Verein
-            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, //Ligaleiter
-            UserPermission.CAN_MODIFY_MY_ORT //Ausrichter
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
     public MannschaftsMitgliedDTO update(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) {
         checkPreconditions(mannschaftsMitgliedDTO);

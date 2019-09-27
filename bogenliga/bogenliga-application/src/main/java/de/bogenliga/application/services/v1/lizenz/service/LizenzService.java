@@ -108,12 +108,7 @@ public class LizenzService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_MY_VEREIN,
-            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
-            UserPermission.CAN_MODIFY_MY_ORT
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
     public LizenzDTO create(@RequestBody final LizenzDTO lizenzDTO, final Principal principal) {
 
         checkPreconditions(lizenzDTO);
@@ -133,12 +128,7 @@ public class LizenzService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_MY_VEREIN,
-            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
-            UserPermission.CAN_MODIFY_MY_ORT
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
     public LizenzDTO update(@RequestBody final LizenzDTO lizenzDTO,
                             final Principal principal) {
 
