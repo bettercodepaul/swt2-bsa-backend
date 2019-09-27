@@ -205,12 +205,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_MY_VEREIN,
-            UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
-            UserPermission.CAN_MODIFY_MY_ORT
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
     public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
         final Long userId = UserProvider.getCurrentUserId(principal);
@@ -245,12 +240,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            //UserPermission.CAN_MODIFY_MY_VEREIN,
-            //UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,
-            //UserPermission.CAN_MODIFY_MY_ORT
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
     public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
