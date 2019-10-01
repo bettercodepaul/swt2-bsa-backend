@@ -7,8 +7,6 @@
 -- alle mal lachen: die Zuordnung zwischen Liga und Mannschaft ist in der Tabelle vereinsanschriften
 -- übringens stehen da keine Addressen drin ;-))
 
-SET search_path = 'prod'
-;
 
 DELETE from mannschaft;
 
