@@ -17,8 +17,6 @@ SET search_path = 'prod_data_migration'
 ;
 
 
-SET search_path = 'prod'
-;
 
 DELETE from mannschaftsmitglied;
 

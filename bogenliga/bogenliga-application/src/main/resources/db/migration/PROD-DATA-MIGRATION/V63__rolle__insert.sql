@@ -1,5 +1,3 @@
-SET search_path = 'prod'
-;
 
 DELETE from benutzer_rolle;
 DELETE from rolle;

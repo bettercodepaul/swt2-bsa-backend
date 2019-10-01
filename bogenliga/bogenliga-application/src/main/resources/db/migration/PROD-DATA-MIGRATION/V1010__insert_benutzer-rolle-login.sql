@@ -4,8 +4,6 @@
 
 --ggf. müssen wir hier salt und passwort nochmal korrigieren..
 
-SET search_path = 'prod'
-;
 
 DELETE from benutzer_rolle;
 DELETE from benutzer_login_verlauf;
