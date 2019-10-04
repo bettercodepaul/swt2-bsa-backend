@@ -110,21 +110,24 @@ public enum UserPermission implements GrantedAuthority {
      * aber nur für den eigenen Verein. D.h. beim Init vom Dialog prüfen!!
      */
 
-    CAN_MODIFY_ONW_CLUB,
+    CAN_READ_MY_VEREIN,
+    CAN_MODIFY_MY_VEREIN,
 
     /* spezielle Rechte, die eine zusätzliche Datenprüfung im Code voraussetzen
      * Ligaleiter dürfen ihre Ligadaten, zugeordnete Mannschaften und Wettkampfdaten pflegen -
      * aber nur für den eigenen Event. D.h. beim Init vom Dialog prüfen!!
      */
 
-    CAN_MODIFY_OWN_EVENT,
+    CAN_READ_MY_VERANSTALTUNG,
+    CAN_MODIFY_MY_VERANSTALTUNG,
 
     /* spezielle Rechte, die eine zusätzliche Datenprüfung im Code voraussetzen
      * Ausrichter dürfen ihre Ligadaten, zugeordnete Mannschaften und Wettkampfdaten pflegen -
      * aber nur für den Event in ihrer Location. D.h. beim Init vom Dialog prüfen!!
      */
 
-    CAN_MODIFY_OWN_LOCATION,
+    CAN_READ_MY_ORT,
+    CAN_MODIFY_MY_ORT,
 
     /*
      * Permissions to work with:
