@@ -120,12 +120,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
-            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
-            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
     public MannschaftsMitgliedDTO create(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) {
 
@@ -151,12 +146,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
-            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
-            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
     public MannschaftsMitgliedDTO update(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) {
         checkPreconditions(mannschaftsMitgliedDTO);
@@ -178,12 +168,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
-            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
-            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
-    })
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
@@ -197,12 +182,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
     @RequestMapping(value = "{mannschaftsId}/{mitgliedId}", method = RequestMethod.DELETE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_ONW_CLUB, //Sportleiter im Verein
-            UserPermission.CAN_MODIFY_OWN_EVENT, //Ligaleiter
-            UserPermission.CAN_MODIFY_OWN_LOCATION //Ausrichter
-    })
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void deleteByTeamIdAndMemberId(@PathVariable("mannschaftsId") final long mannschaftsId,
                        @PathVariable("mitgliedId") final long mitgliedId, final Principal principal) {
         Preconditions.checkArgument(mannschaftsId >= 0, "mannschaftsId must not be negative.");

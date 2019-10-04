@@ -69,7 +69,7 @@ public class TabletSessionService implements ServiceFacade {
     @RequestMapping(value = "/{wettkampfId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<TabletSessionDTO> findByWettkampfId(@PathVariable("wettkampfId") Long wettkampfId,
                                                     final Principal principal) {
         final long userId = UserProvider.getCurrentUserId(principal);

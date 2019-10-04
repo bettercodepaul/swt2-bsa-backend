@@ -77,7 +77,7 @@ public class VeranstaltungService implements ServiceFacade {
      * @return list of {@link VeranstaltungDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public VeranstaltungDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
@@ -133,11 +133,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_OWN_EVENT,
-            UserPermission.CAN_MODIFY_OWN_LOCATION
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) {
 

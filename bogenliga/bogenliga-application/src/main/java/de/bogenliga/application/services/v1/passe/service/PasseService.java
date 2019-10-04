@@ -71,7 +71,7 @@ public class PasseService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public PasseDTO create(@RequestBody final PasseDTO passeDTO, final Principal principal) {
         MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
@@ -89,7 +89,7 @@ public class PasseService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public PasseDTO update(@RequestBody final PasseDTO passeDTO, final Principal principal) {
         MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
@@ -99,7 +99,8 @@ public class PasseService implements ServiceFacade {
         return PasseDTOMapper.toDTO.apply(passeDO);
     }
 
-  @RequestMapping(path = "byWettkampfIdAndDsbMitgliedId/{wettkampfId}/{dsbMitgliedId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "byWettkampfIdAndDsbMitgliedId/{wettkampfId}/{dsbMitgliedId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<PasseDTO> findAllByWettkampfIdAndDsbMitgliedId(@PathVariable("wettkampfId") final long wettkampfId,
                                                             @PathVariable("dsbMitgliedId") final long dsbMitgliedId) {
         Preconditions.checkArgument(wettkampfId >= 0, "wettkampfId must not be negative");

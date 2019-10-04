@@ -3,6 +3,9 @@ package de.bogenliga.application.services.v1.download;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +95,7 @@ public class DownloadService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadSetzlistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
@@ -117,6 +121,7 @@ public class DownloadService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/schusszettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadSchusszettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
@@ -139,6 +144,7 @@ public class DownloadService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/meldezettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadMeldezettelPdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
@@ -161,6 +167,7 @@ public class DownloadService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/bogenkontrollliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
     ResponseEntity<InputStreamResource> downloadbogenkontrolllistePdf(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
@@ -193,6 +200,7 @@ public class DownloadService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.GET,
             path = "pdf/schuetzenlizenz/{dsbMitgliedId}/{teamId}",
             produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public ResponseEntity<InputStreamResource> downloadLizenz(@PathVariable("dsbMitgliedId") final long dsbMitgliedID,
     @PathVariable("teamId") final long teamID) {
         LOG.debug("dsbMitgliedID: " + dsbMitgliedID);
