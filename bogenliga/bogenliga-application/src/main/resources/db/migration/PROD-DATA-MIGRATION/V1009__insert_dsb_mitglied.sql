@@ -16,8 +16,6 @@ OR "SchGebDat"=' '
 -- wir nehmen jeweils den ersten Eintrag
 -- weiter ist die Nationalität nicht nachzuvollziehen
 -- default auf DE gesetzt
-SET search_path = 'prod'
-;
 
 DELETE from dsb_mitglied;
 

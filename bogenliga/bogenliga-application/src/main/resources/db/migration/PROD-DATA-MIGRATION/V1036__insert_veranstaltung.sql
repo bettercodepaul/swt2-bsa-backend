@@ -7,8 +7,6 @@
 -- Insert der Ligen manuell, keinen Migration wg. schlechter Datenqualität
 -- Namen der Ligen kopiert --> Matching über Identität "Name" möglich.
 
-SET search_path = 'prod'
-;
 
 DELETE from veranstaltung;
 
