@@ -276,7 +276,7 @@ public class UserService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<UserRoleDTO> findAll() {
         final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
         return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
