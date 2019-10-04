@@ -11,6 +11,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
     private Long nummer;
     private Long veranstaltungId;
     private Long benutzerId;
+    private Long sortierung;
 
 
     public DsbMannschaftBE() {/*empty constructor*/}
@@ -66,6 +67,16 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
+    public Long getSortierung() {
+        return sortierung;
+    }
+
+
+    public void setSortierung(final Long sortierung) {
+        this.sortierung = sortierung;
+    }
+
+
     @Override
     public String toString() {
         return "DsbMannschaftBE{" +
@@ -74,7 +85,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
                 ", mannschaftNummer='" + nummer + '\'' +
                 ", mannschaftVeranstaltungId='" + veranstaltungId + '\'' +
                 ", mannschaftBenutzerId='" + benutzerId + '\'' +
-
+                ", mannschaftSortierung='" + sortierung + '\'' +
                 '}';
     }
 }

@@ -61,6 +61,7 @@ public class WettkampfTypService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfTypDTO> findAll() {
         final List<WettkampfTypDO> wettkampftypDoList = wettkampftypComponent.findAll();
         return wettkampftypDoList.stream().map(WettkampfTypDTOMapper.toDTO).collect(Collectors.toList());
@@ -73,6 +74,7 @@ public class WettkampfTypService implements ServiceFacade {
      * @return
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public WettkampfTypDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 

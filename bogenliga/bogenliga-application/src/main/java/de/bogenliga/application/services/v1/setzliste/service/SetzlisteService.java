@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +62,7 @@ public class SetzlisteService implements ServiceFacade {
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
             path = "/generate")
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public @ResponseBody
     List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");

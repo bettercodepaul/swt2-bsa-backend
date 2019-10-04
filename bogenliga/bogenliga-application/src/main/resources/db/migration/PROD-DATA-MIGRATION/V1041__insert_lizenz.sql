@@ -4,8 +4,6 @@
 -- Migration Tabelle "lizenzneutabelle" -- macht keinen Sinn, da steht nichts drin
 -- wir gegenerieren hier eine Lizenz für alle Mannschaftsmitglieder
 
-SET search_path = 'prod'
-;
 
 DELETE from lizenz;
 

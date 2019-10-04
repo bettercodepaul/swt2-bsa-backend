@@ -64,7 +64,7 @@ public class CompetitionClassService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<CompetitionClassDTO> findAll() {
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findAll();
         return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).collect(Collectors.toList());
@@ -81,7 +81,7 @@ public class CompetitionClassService implements ServiceFacade {
             value = "{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public CompetitionClassDTO findById(@PathVariable("id") final long id){
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
 
