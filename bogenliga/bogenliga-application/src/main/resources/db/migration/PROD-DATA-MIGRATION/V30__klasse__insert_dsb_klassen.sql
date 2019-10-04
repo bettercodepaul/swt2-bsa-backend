@@ -1,5 +1,4 @@
-SET search_path = 'prod'
-;
+
 
 DELETE from klasse;
 

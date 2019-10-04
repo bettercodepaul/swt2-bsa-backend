@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.ligatabelle.impl.business;
 
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.ligatabelle.impl.dao.LigatabelleDAO;
@@ -26,6 +27,7 @@ public class LigatabelleComponentImpl implements LigatabelleComponent {
     private static final String PRECONDITION_MSG_ROLE_NAME = "RoleDO name must not be null or empty";
     private static final String USER_ROLE_DEFAULT = "USER";
     private final LigatabelleDAO ligatabelleDAO;
+    private final DsbMannschaftSortierungComponent mannschaftSortierungComp;
 
     private static final String PRECONDITION_VERANSTALTUNGID = "veranstaltungID cannot be null or negative";
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfID cannot be null or negative";
@@ -38,8 +40,9 @@ public class LigatabelleComponentImpl implements LigatabelleComponent {
      * @param ligatabelleDAO to access the database and return user representations
      */
     @Autowired
-    public LigatabelleComponentImpl(final LigatabelleDAO ligatabelleDAO) {
+    public LigatabelleComponentImpl(final LigatabelleDAO ligatabelleDAO, final DsbMannschaftSortierungComponent maSortierungComp) {
         this.ligatabelleDAO = ligatabelleDAO;
+        this.mannschaftSortierungComp = maSortierungComp;
     }
 
 

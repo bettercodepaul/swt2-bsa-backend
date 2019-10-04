@@ -1,5 +1,3 @@
-SET search_path = 'prod'
-;
 
 DELETE from verein;
 DELETE from region;
@@ -69,4 +67,3 @@ SELECT
 from prod_data_migration."landesverbände"
 where "lv"<>'WT';
 
-    

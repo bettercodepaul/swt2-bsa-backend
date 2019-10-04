@@ -3,8 +3,7 @@
 --dazu fügen wir eine Spalte Mannschaft hinzu und füllen für alle den Default 0
 --danach schneiden wir aus dem Vereinsnamen evtl. vorhandenen Nummern aus
 --und über schreiben die 0
-SET search_path = 'prod'
-;
+
 -- spalte hinzufügen
 
 

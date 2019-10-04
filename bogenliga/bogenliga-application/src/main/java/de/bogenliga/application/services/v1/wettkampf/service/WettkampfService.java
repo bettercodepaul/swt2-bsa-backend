@@ -65,6 +65,7 @@ public class WettkampfService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfDTO> findAll() {
         final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findAll();
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
@@ -122,10 +123,7 @@ public class WettkampfService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_OWN_EVENT
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
     public WettkampfDTO create(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
 
         checkPreconditions(wettkampfDTO);
@@ -157,11 +155,7 @@ public class WettkampfService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission({
-            UserPermission.CAN_MODIFY_STAMMDATEN,
-            UserPermission.CAN_MODIFY_OWN_EVENT,
-            UserPermission.CAN_MODIFY_OWN_LOCATION
-    })
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
     public WettkampfDTO update(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
         checkPreconditions(wettkampfDTO);
 

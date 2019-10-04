@@ -21,12 +21,16 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftNummer = dsbMannschaftDO.getNummer();
         final Long dsbMannschaftBenutzerId = dsbMannschaftDO.getBenutzerId();
         final Long dsbMannschaftVeranstalungId = dsbMannschaftDO.getVeranstaltungId();
+        final Long dsbMannschaftSortierung = dsbMannschaftDO.getSortierung();
+        final String dsbMannschaftName = dsbMannschaftDO.getName();
 
         return new DsbMannschaftDTO(dsbMannschaftId,
+                dsbMannschaftName,
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
-                dsbMannschaftVeranstalungId);
+                dsbMannschaftVeranstalungId,
+                dsbMannschaftSortierung);
 
 
 
@@ -45,12 +49,16 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftNummer = dto.getNummer();
         final Long dsbMannschaftBenutzerId = dto.getBenutzerId();
         final Long dsbMannschaftVeranstalungId = dto.getVeranstaltungId();
+        final Long dsbMannschaftSoriterung = dto.getSortierung();
+        final String dsbMannschaftName = dto.getName();
 
         return new DsbMannschaftDO(dsbMannschaftId,
+                dsbMannschaftName,
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
                 dsbMannschaftBenutzerId,
-                dsbMannschaftVeranstalungId);
+                dsbMannschaftVeranstalungId,
+                dsbMannschaftSoriterung);
 
     };
 

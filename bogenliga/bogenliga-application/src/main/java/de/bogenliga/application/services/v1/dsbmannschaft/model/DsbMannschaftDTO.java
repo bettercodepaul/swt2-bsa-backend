@@ -14,10 +14,12 @@ public class DsbMannschaftDTO implements DataTransferObject {
     private static final long serialVersionUID = 8559563978424033907L;
 
     private Long id;
+    private String name;
     private Long vereinId;
     private Long nummer;
     private Long benutzerId;
     private Long veranstaltungId;
+    private Long sortierung;
 
 
     /**
@@ -28,18 +30,25 @@ public class DsbMannschaftDTO implements DataTransferObject {
     }
 
 
-    public DsbMannschaftDTO(Long id, Long vereinId, Long nummer,
-                            Long benutzerId, Long veranstaltungId) {
+    public DsbMannschaftDTO(Long id, String name, Long vereinId, Long nummer,
+                            Long benutzerId, Long veranstaltungId, Long sortierung) {
         this.id = id;
+        this.name = name;
         this.vereinId = vereinId;
         this.nummer = nummer;
         this.benutzerId=benutzerId;
         this.veranstaltungId=veranstaltungId;
+        this.sortierung = sortierung;
 
     }
     public Long getId(){ return id; }
 
     public void setId(Long id){this.id=id;}
+
+
+    public String getName(){ return name; }
+
+    public void setName(final String name){this.name=name;}
 
 
     public Long getVereinId(){return vereinId;}
@@ -60,5 +69,10 @@ public class DsbMannschaftDTO implements DataTransferObject {
     public Long getVeranstaltungId(){return veranstaltungId;}
 
     public void setVeranstaltungId(Long veranstaltungId){this.veranstaltungId=veranstaltungId;}
+
+
+    public Long getSortierung(){return sortierung;}
+
+    public void setSortierung(Long sortierung){this.sortierung=sortierung;}
 
 }
