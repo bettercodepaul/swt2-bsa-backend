@@ -8,6 +8,7 @@ INSERT INTO wettkampf ( -- Recurve Ligen
   wettkampf_disziplin_id,
   wettkampf_wettkampftyp_id)
 VALUES
+(38, 0, '1900-01-01', ' - ', ' - ', 0, 0, 0),
 (30, 0, '2017-11-19', 'Sporthalle, 88454 Hochdorf/Riss', '13:30', 1, 0, 0),
 (31, 0, '2017-12-09', 'Franz-Baum Bogenhalle, 73642 Welzheim', '13:30', 2, 0, 0),
 (32, 0, '2018-01-14', 'Bogenhalle am Schützenhaus, Gurgelbergweg, 88499 Altheim-Waldhausen', '13:30', 3, 0, 1),
@@ -15,7 +16,8 @@ VALUES
 (34, 1, '2019-11-19', 'Sporthalle, 88454 Hochdorf/Riss', '13:30', 1, 0, 0),
 (35, 1, '2019-12-09', 'Franz-Baum Bogenhalle, 73642 Welzheim', '13:30', 2, 0, 0),
 (36, 1, '2020-01-14', 'Bogenhalle am Schützenhaus, Gurgelbergweg, 88499 Altheim-Waldhausen', '13:30', 3, 0, 1),
-(37, 1, '2020-02-03', 'Franz-Baum Bogenhalle, 73642 Welzheim', '09:30', 4, 0, 1)
+(37, 1, '2020-02-03', 'Franz-Baum Bogenhalle, 73642 Welzheim', '09:30', 4, 0, 1),
+(39, 1, '1900-01-01', ' - ', ' - ', 0, 0, 0)
 ;
 
 
