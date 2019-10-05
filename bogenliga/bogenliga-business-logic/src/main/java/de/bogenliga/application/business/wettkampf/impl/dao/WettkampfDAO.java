@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,13 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampf_wettkampftyp_id";
 
+    //default Values for Wettkampftag 0
+    private static final Date DEFAULT_DATUM = Date.valueOf("1900-01-01");
+    private static final String DEFAULT_ORT = " - ";
+    private static final String DEFAULT_BEGINN = " - ";
+    private static final Long DEFAULT_DIZIPLIN_ID = 0L;
+    private static final Long DEFAULT_TYP_ID = 0L;
+
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<WettkampfBE> WETTKAMPF = new BusinessEntityConfiguration<>(
             WettkampfBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
@@ -57,6 +65,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM wettkampf"
+                    + " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0"
                     + " ORDER BY wettkampf_id";
 
     private static final String FIND_BY_ID =
@@ -67,16 +76,16 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String FIND_ALL_BY_MANNSCHAFTS_ID =
             "SELECT * "
                     + " FROM wettkampf "
-                    + " WHERE wettkampf_id IN ("
+                    + " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_id IN ("
                     + " SELECT match_wettkampf_id"
-                        + " FROM match"
-                        + " WHERE match_mannschaft_id = ?)" +
+                    + " FROM match"
+                    + " WHERE match_mannschaft_id = ?)" +
                     "ORDER BY wettkampf_datum";
 
     private static final String FIND_ALL_BY_VERANSTALTUNG_ID =
             "SELECT *" +
                     " FROM wettkampf" +
-                    " WHERE wettkampf_veranstaltung_id = ?" +
+                    " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_veranstaltung_id = ?" +
                     " order by wettkampf_datum";
 
 
@@ -180,6 +189,27 @@ public class WettkampfDAO implements DataAccessObject {
         basicDao.setModificationAttributes(wettkampfBE, currentWettkampfId);
 
         basicDao.deleteEntity(WETTKAMPF, wettkampfBE, WETTKAMPF_BE_ID);
+    }
+
+
+    /**
+     * Creates a new Wettkampf entry with default values. The entry represents the Wettkampftag 0 for a given Veranstaltung.
+     * This entry is needed to initialise the Ligatabelle.
+     *
+     * @param veranstaltungsId
+     * @param currentUserId
+     */
+    public void createWettkamptag0 (final long veranstaltungsId, final long currentUserId){
+        WettkampfBE defaultWettkampfBE = new WettkampfBE();
+        defaultWettkampfBE.setVeranstaltungsId(veranstaltungsId);
+        defaultWettkampfBE.setWettkampfTag(0L);
+        defaultWettkampfBE.setDatum(DEFAULT_DATUM);
+        defaultWettkampfBE.setWettkampfBeginn(DEFAULT_BEGINN);
+        defaultWettkampfBE.setWettkampfOrt(DEFAULT_ORT);
+        defaultWettkampfBE.setWettkampfDisziplinId(DEFAULT_DIZIPLIN_ID);
+        defaultWettkampfBE.setWettkampfTypId(DEFAULT_TYP_ID);
+
+        this.create(defaultWettkampfBE, currentUserId);
     }
 
 }

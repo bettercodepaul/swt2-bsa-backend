@@ -2,6 +2,8 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
@@ -42,6 +44,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private final LigaDAO ligaDAO;
     private final WettkampfTypDAO wettkampftypDAO;
     private final UserDAO userDAO;
+    private final WettkampfDAO wettkampfDAO;
 
 
     /**
@@ -52,12 +55,13 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     @Autowired
     public VeranstaltungComponentImpl(final VeranstaltungDAO veranstaltungDAO, final LigaDAO ligaDAO,
-                                      final WettkampfTypDAO wettkampftypDAO, final UserDAO userDAO) {
+                                      final WettkampfTypDAO wettkampftypDAO, final UserDAO userDAO,
+                                      final WettkampfDAO wettkampfDAO) {
         this.veranstaltungDAO = veranstaltungDAO;
         this.ligaDAO = ligaDAO;
         this.wettkampftypDAO = wettkampftypDAO;
         this.userDAO = userDAO;
-        System.out.println("created DAO object");
+        this.wettkampfDAO = wettkampfDAO;
     }
 
 
@@ -122,6 +126,9 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE presistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
+
+        //create Wettkampftag 0
+        this.wettkampfDAO.createWettkamptag0(presistedVeranstaltungBE.getVeranstaltung_id(), currentDsbMitgliedId);
 
         return notNull(presistedVeranstaltungBE);
     }
