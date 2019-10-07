@@ -88,6 +88,11 @@ public class WettkampfDAO implements DataAccessObject {
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_veranstaltung_id = ?" +
                     " order by wettkampf_datum";
 
+    private static final String FIND_WT0_BY_VERANSTALTUNG_ID =
+            "SELECT *" +
+                    " FROM wettkampf" +
+                    " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " = 0 AND wettkampf_veranstaltung_id = ?";
+
 
     private final BasicDAO basicDao;
 
@@ -211,5 +216,15 @@ public class WettkampfDAO implements DataAccessObject {
 
         this.create(defaultWettkampfBE, currentUserId);
     }
+
+    /**
+     * Return Wettkampf entry (Wettkampftag 0) with specific veranstaltungs_id
+     *
+     * @param veranstaltungsId
+     */
+    public WettkampfBE findWT0byVeranstaltungsId(final long veranstaltungsId) {
+        return basicDao.selectSingleEntity(WETTKAMPF, FIND_WT0_BY_VERANSTALTUNG_ID, veranstaltungsId);
+    }
+
 
 }

@@ -9,16 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
@@ -96,6 +93,7 @@ public class MatchService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_DTO_LIST = "matchDTOs";
     private static final String CHECKED_PARAM_PRINCIPAL = "principal";
 
+    private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs-ID must not be null or negative";
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -562,6 +560,33 @@ public class MatchService implements ServiceFacade {
 
         final MatchDO savedNewMatch = matchComponent.create(newMatch, userId);
         return MatchDTOMapper.toDTO.apply(savedNewMatch);
+    }
+
+    /**
+     *
+     *
+     * @param veranstaltungDTO
+     *
+     * @return
+     */
+    @RequestMapping(value = "WT0",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    public VeranstaltungDTO createInitialMatchesWT0(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
+        Preconditions.checkNotNull(principal,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, CHECKED_PARAM_PRINCIPAL));
+        Preconditions.checkNotNull(veranstaltungDTO,PRECONDITION_MSG_VERANSTALTUNGS_ID);
+        Preconditions.checkNotNull(veranstaltungDTO.getId(),PRECONDITION_MSG_VERANSTALTUNGS_ID);
+        Preconditions.checkArgument(veranstaltungDTO.getId() >= 0,PRECONDITION_MSG_VERANSTALTUNGS_ID);
+
+        LOG.debug("Receive Post createInitialMatchesWT0 with Veranstaltungs id: "+veranstaltungDTO.getId());
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        matchComponent.createInitialMatchesWT0(veranstaltungDTO.getId(), userId);
+        return veranstaltungDTO;
     }
 
 

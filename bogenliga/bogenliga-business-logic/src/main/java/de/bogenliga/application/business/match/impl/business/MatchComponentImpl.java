@@ -7,6 +7,9 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
+import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -36,6 +39,11 @@ public class MatchComponentImpl implements MatchComponent {
     public static final String PRECONDITION_MSG_SCHEIBENNUMMER = String.format(PRECONDITION_MSG_TEMPLATE,
             "scheibennummer");
 
+    private static final String PRECONDITION_MSG_WT0_VERANSTALTUNG = "Veranstaltungs-ID must not be Null or negative";
+    private static final String PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT = "The number of assigned Mannschaften to the Veranstaltung must be exactly 8";
+    private static final String PRECONDITION_MSG_WT0_MANNSCHAFT = "The Mannschaft-ID must not be null or negative";
+
+
     /**
      * (Kay Scheerer) this method would make the preconditions way easier to check before each SQL
      */
@@ -45,6 +53,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final MatchDAO matchDAO;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
+    private final WettkampfDAO wettkampfDAO;
 
 
     /**
@@ -57,12 +66,14 @@ public class MatchComponentImpl implements MatchComponent {
     @Autowired
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
-                              final VereinComponent vereinComponent
+                              final VereinComponent vereinComponent,
+                              final WettkampfDAO wettkampfDAO
                               ) {
 
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
+        this.wettkampfDAO = wettkampfDAO;
     }
 
 
@@ -182,6 +193,49 @@ public class MatchComponentImpl implements MatchComponent {
         return MatchMapper.toMatchDO.apply(matchBE);
     }
 
+    @Override
+    public void createInitialMatchesWT0(final Long veranstaltungsId, final Long currentUserId){
+        Preconditions.checkNotNull(veranstaltungsId, PRECONDITION_MSG_WT0_VERANSTALTUNG);
+        Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_WT0_VERANSTALTUNG);
+
+        List<DsbMannschaftDO> mannschaften = this.dsbMannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
+
+        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
+
+        if(mannschaften == null || mannschaften.size() != 8 || wettkampfBE == null
+                || wettkampfBE.getId() == null || wettkampfBE.getId() < 0){
+            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT);
+        }else{
+            Long wettkampfId = wettkampfBE.getId();
+            Long begegnung = 0L;
+            for(int i = 0; i< 8; i++){
+                if(i%2 == 0){
+                    begegnung++;
+                }
+                this.createWT0Match(wettkampfId, begegnung, mannschaften.get(i).getId(), new Long(i) ,currentUserId);
+            }
+        }
+    }
+
+    private void createWT0Match(final Long wettkampfId, final Long begegnung, final Long mannschaftId, final Long scheibennummer, final Long currentUserId){
+        Preconditions.checkNotNull(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkNotNull(begegnung, PRECONDITION_MSG_BEGEGNUNG);
+        Preconditions.checkArgument(begegnung >= 0, PRECONDITION_MSG_BEGEGNUNG);
+        Preconditions.checkNotNull(mannschaftId, PRECONDITION_MSG_WT0_MANNSCHAFT);
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_WT0_MANNSCHAFT);
+        Preconditions.checkNotNull(scheibennummer, PRECONDITION_MSG_SCHEIBENNUMMER);
+        Preconditions.checkArgument(scheibennummer >= 0, PRECONDITION_MSG_SCHEIBENNUMMER);
+
+        MatchBE matchBe = new MatchBE();
+        matchBe.setWettkampfId(wettkampfId);
+        matchBe.setNr(1L);
+        matchBe.setBegegnung(begegnung);
+        matchBe.setMannschaftId(mannschaftId);
+        matchBe.setScheibenNummer(scheibennummer);
+
+        this.matchDAO.create(matchBe,currentUserId);
+    }
 
     @Override
     public MatchDO update(MatchDO matchDO, Long currentUserId) {

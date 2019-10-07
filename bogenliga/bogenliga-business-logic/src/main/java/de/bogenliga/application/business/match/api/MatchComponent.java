@@ -82,6 +82,16 @@ public interface MatchComponent {
     public MatchDO create(MatchDO matchDO, final Long currentUserId);
 
     /**
+     * Create the initial Matches for the Wettkampftag 0 of the Veranstaltung.
+     * It's used to show the Ligatabelle.
+     *
+     * @param veranstaltungsId       the Id of the corresponding Veranstaltung
+     * @param currentUserId the id of the creating user
+     *
+     */
+    public void createInitialMatchesWT0(final Long veranstaltungsId, final Long currentUserId);
+
+    /**
      * Update an existing match. The match is identified by the id's set in matchDO.
      *
      * @param matchDO         existing matchDO to update
