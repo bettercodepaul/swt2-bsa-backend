@@ -22,5 +22,5 @@ VALUES (1, 0), -- admin = all permissions (technical and business)
        (1, 14),
        (1, 15),
        (1, 16),
-       (2, 0) -- DEFAULT
+       (8, 0) -- DEFAULT
  ;
