@@ -13,10 +13,6 @@
 -- und je Disziplin in einem anderen Verein in einer Mannschaft sein...
 
 
-SET search_path = 'prod_data_migration'
-;
-
-
 
 DELETE from mannschaftsmitglied;
 
