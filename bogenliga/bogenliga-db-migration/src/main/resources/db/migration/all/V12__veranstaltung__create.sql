@@ -16,7 +16,7 @@ CREATE SEQUENCE sq_veranstaltung_id START WITH 1000 INCREMENT BY 1;
 /**
  * Eine Klasse dient der defintion von Veranstaltungen im Sportjahr
  * für die Ligen könnte auf dieser Ebenbe bereits die Diaziplin festgelegt werden
- * allgemein geht dies aber erst auf der Ebene Wettkampf.
+ * allgemein geht dies aber erst auf der Ebene Ligatabelle.
  **/
 CREATE TABLE veranstaltung (
   veranstaltung_id                  DECIMAL(19, 0) NOT NULL    DEFAULT nextval('sq_veranstaltung_id'),
@@ -24,7 +24,7 @@ CREATE TABLE veranstaltung (
   veranstaltung_name                VARCHAR(200)   NOT NULL,
   veranstaltung_sportjahr           DECIMAL(4, 0)  NOT NULL, --Okt 2018 bis Okt 2019 wird als 2019 erfasst
   veranstaltung_meldedeadline       DATE           NOT NULL, --Termin zu dem die Anmeldungen abgeschlossen wird
-  /** veranstaltung_kampfrichter_anzahl DECIMAL(2, 0), -- benötigte Kampfrichter im Wettkampf **/
+  /** veranstaltung_kampfrichter_anzahl DECIMAL(2, 0), -- benötigte Kampfrichter im Ligatabelle **/
   /** veranstaltung_hoehere             DECIMAL(19, 0), -- Aufstiegsliga oder Weitermeldung in Folgeveranstaltung **/
   veranstaltung_ligaleiter_id       DECIMAL(19, 0) NOT NULL, -- Benutzer-id des Koordinators aller Wettkämpfe des Sportjahres
 

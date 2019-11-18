@@ -1,7 +1,7 @@
 /**
  * Tabelle zum Abbilden einer n:m-Beziehung
  *
- * Nur ein Kampfrichter kann eine leitende Rolle bei einem Wettkampf einnehmen.
+ * Nur ein Kampfrichter kann eine leitende Rolle bei einem Ligatabelle einnehmen.
  */
 CREATE TABLE kampfrichter (
   kampfrichter_benutzer_id  DECIMAL(19, 0) NOT NULL,

@@ -17,7 +17,7 @@ CREATE TABLE ligatabelle (
   ligatabelle_veranstaltung_id   DECIMAL(19,0) NOT NULL, --bezug zum Sportjahr
   ligatabelle_wettkampf_tag      DECIMAL(1,0) NOT NULL, -- Liga hat 4 Wettkampftage, initiale Ligatabelle für Tag 0
   ligatabelle_mannschaft_id      DECIMAL(19,0) NOT NULL, --bezug zur Mannschaft
-  ligatabelle_tabellenplatz          DECIMAL(1,0) NOT NULL, -- resultierender Tabellenplatz nach dem Wettkampf
+  ligatabelle_tabellenplatz          DECIMAL(1,0) NOT NULL, -- resultierender Tabellenplatz nach dem Ligatabelle
   ligatabelle_matchpkt               DECIMAL(4,0) NOT NULL, -- Summe aller eigene Matchpunkte
   ligatabelle_matchpkt_gegen         DECIMAL(4,0) NOT NULL, -- Summe aller gegnerischen Matchpunkte
   ligatabelle_satzpkt                DECIMAL(4,0) NOT NULL, -- Summe aller eigenen Satzpunkte

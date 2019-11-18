@@ -118,7 +118,7 @@ VALUES (1, 30, 1, 101, 28, 9, 9, NULL, NULL, NULL, NULL),
 *Begegnungen am 1. Wettkampftag - Saison 2017 - 2018
 *11	(30, 32, 40,) 71, 80, 103, 122
 *
-*Wettkampf 30
+*Ligatabelle 30
 *
 *
 *0 28, 31, 47, 70

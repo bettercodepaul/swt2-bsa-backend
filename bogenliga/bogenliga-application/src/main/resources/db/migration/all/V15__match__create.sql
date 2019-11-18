@@ -1,6 +1,6 @@
 /**
- * Eine Klasse dient der Defintion von Runden im Wettkampf - sie hat nur eine laufende Nummer als ID
- * wir erwarten entweder 2 (WA-Wettkampf) oder 7 Runden (Liga),
+ * Eine Klasse dient der Defintion von Runden im Ligatabelle - sie hat nur eine laufende Nummer als ID
+ * wir erwarten entweder 2 (WA-Ligatabelle) oder 7 Runden (Liga),
  *
  * Der Aspekt Finalrunden ist hier noch nicht abgebildet
  * für Liga wird als Schlüssel zusätzlich das Match definiert max. 7 Matches in einer Liga-Runde
@@ -8,7 +8,7 @@
 
 CREATE TABLE match (
   -- composite key aus mehreren Fremd- und fachlichen Schlüsseln
-  match_wettkampf_id   DECIMAL(19, 0) NOT NULL, --Fremdschlüsselbezug zum Wettkampf
+  match_wettkampf_id   DECIMAL(19, 0) NOT NULL, --Fremdschlüsselbezug zum Ligatabelle
   match_nr             DECIMAL(1, 0)  NOT NULL,
   match_begegnung      DECIMAL(1, 0)  NOT NULL,
   match_mannschaft_id  DECIMAL(19, 0) NULL, --Fremdschlüsselbezug zum Mannschaft

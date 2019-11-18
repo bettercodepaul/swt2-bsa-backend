@@ -1,9 +1,9 @@
 /**
- * Eine Passe dient der Erfassung der Ergebnisse im Wettkampf
+ * Eine Passe dient der Erfassung der Ergebnisse im Ligatabelle
  * wir erwarten entweder 2, 3 oder 6 Pfeilwerte für ein dsb_mitglied
  * Die Tabelle ist daher dünn besetzt.
  *
- * Die Passe ist eine schwache Entität und basiert auf dem Wettkampf, dem Match und dem Mannschaftsmitglied.
+ * Die Passe ist eine schwache Entität und basiert auf dem Ligatabelle, dem Match und dem Mannschaftsmitglied.
  * Die Spalten sind denormalisiert, um den Zugriff zu beschleunigen (weniger Joins)
  **/
 
