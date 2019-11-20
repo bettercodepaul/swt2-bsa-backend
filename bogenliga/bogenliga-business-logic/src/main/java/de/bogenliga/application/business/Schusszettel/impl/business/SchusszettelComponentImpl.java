@@ -470,6 +470,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     }
 
     // returns a dynamic font size, dependant on the length of the given text and the intended font size
+    // the font size is only changed if the length of the text is greater then 15
+    // the new fontsize is computed with the help of the hyperbolic function "f(x) = 175f / x" and x = length of text
     private float getDynamicFontSize(String text, Float fontSize){
         if(text.length() < 15){
             return  fontSize;
