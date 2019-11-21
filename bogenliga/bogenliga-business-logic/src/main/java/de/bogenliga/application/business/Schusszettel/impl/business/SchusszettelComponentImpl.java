@@ -172,7 +172,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             // Table head
             tableHead
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                   .add(new Paragraph(mannschaftName[i - 1]).setBold().setFontSize(12.0F))
+                   .add(new Paragraph(mannschaftName[i - 1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[i - 1], 12.0F)))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                     .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
@@ -187,17 +187,17 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             tableFirstRowFirstPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                   .add(new Paragraph(mannschaftName[0]).setBold())
+                   .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 15.0F)))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(16.0F)
                     .add(new Paragraph(matchDOs[0].getNr() + ". Match"))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("gegen").setBold())
+                    .add(new Paragraph("gegen").setBold().setFontSize(14.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(mannschaftName[1]).setBold())
+                    .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 15.0F)))
                 )
             ;
 
@@ -402,10 +402,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             // Third row
             tableThirdRow
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(mannschaftName[0]).setBold())
+                    .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(mannschaftName[1]).setBold())
+                    .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
                 )
                 // Two empty cells for text input
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
@@ -467,5 +467,18 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             mannschaftName = vereinDO.getName();
         }
         return mannschaftName;
+    }
+
+    // This method returns a dynamic font size, dependant on the length of the given text and the intended font size.
+    // The font size will only be changed if the length of the given text is greater then 15.
+    // If the text length is greater then 15 the given text wont fit in his dedicated field and we have to alter the
+    // given font size. This is achieved with the help of the hyperbolic function "f(x) = 175f / x" with
+    // "x = length of text". This function alters the font size to fit nicely in his dedicated field
+    // if the text length increases.
+    private float getDynamicFontSize(String text, Float fontSize){
+        if(text.length() < 15){
+            return  fontSize;
+        }
+        return 175f  / text.length();
     }
 }
