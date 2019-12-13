@@ -52,8 +52,8 @@ public class UserServiceTest {
 
     private static final Long ID = 123L;
     private static final String USERNAME = "user";
-    private static final String PASSWORD = "password";
-    private static final String NEUESPASSWORD = "newpassword";
+    private static final String PASSWORD = "CorrectPasswordV1";
+    private static final String NEUESPASSWORD = "CorrectPasswordV2";
     private static final Boolean USING2FA = false;
     private static final String JWT = "jwt";
     private static final String ERROR_MESSAGE = "error";
