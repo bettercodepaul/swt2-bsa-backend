@@ -32,7 +32,7 @@ public class CompetitionClassServiceTest {
 
     private static final long ID = 42;
     private static final String KLASSENAME = "Herren";
-    private static final long KLASSEALTERMIN = 1998;
+    private static final long KLASSEALTERMIN = 1994;
     private static final long KLASSEALTERMAX = 1996;
     private static final long KLASSENR = 1337;
 
@@ -96,7 +96,6 @@ public class CompetitionClassServiceTest {
         assertNotNull(result);
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getKlasseName(), result.getKlasseName());
-        assertEquals(input.getKlasseJahrgangMin(), result.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), result.getKlasseNr());
 
         // verify invocations
@@ -109,6 +108,8 @@ public class CompetitionClassServiceTest {
         assertEquals(input.getKlasseName(), createdCompetitionClass.getKlasseName());
         assertEquals(input.getKlasseJahrgangMin(), createdCompetitionClass.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), createdCompetitionClass.getKlasseNr());
+
+        assertTrue(createdCompetitionClass.getKlasseJahrgangMin() >= createdCompetitionClass.getKlasseJahrgangMax());
     }
 
 
@@ -150,7 +151,6 @@ public class CompetitionClassServiceTest {
         assertNotNull(result);
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getKlasseName(), result.getKlasseName());
-        assertEquals(input.getKlasseJahrgangMin(), result.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), result.getKlasseNr());
 
         verify(competitionClassComponent).update(competitionClassDOArgumentCaptor.capture(), anyLong());
@@ -162,6 +162,8 @@ public class CompetitionClassServiceTest {
         assertEquals(input.getKlasseName(), createdCompetitionClassDO.getKlasseName());
         assertEquals(input.getKlasseJahrgangMin(), createdCompetitionClassDO.getKlasseJahrgangMin());
         assertEquals(input.getKlasseNr(), createdCompetitionClassDO.getKlasseNr());
+
+        assertTrue(createdCompetitionClassDO.getKlasseJahrgangMin() >= createdCompetitionClassDO.getKlasseJahrgangMax());
     }
 
     @Test

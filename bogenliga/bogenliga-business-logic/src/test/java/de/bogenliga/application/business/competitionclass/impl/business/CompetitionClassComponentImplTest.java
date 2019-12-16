@@ -99,10 +99,6 @@ public class CompetitionClassComponentImplTest {
                 .isEqualTo(expectedBE.getKlasseId());
         assertThat(actual.get(0).getKlasseName())
                 .isEqualTo(expectedBE.getKlasseName());
-        assertThat(actual.get(0).getKlasseJahrgangMax())
-                .isEqualTo(expectedBE.getKlasseAlterMax());
-        assertThat(actual.get(0).getKlasseJahrgangMin())
-                .isEqualTo(expectedBE.getKlasseAlterMin());
         assertThat(actual.get(0).getKlasseNr())
                 .isEqualTo(expectedBE.getKlasseNr());
 
