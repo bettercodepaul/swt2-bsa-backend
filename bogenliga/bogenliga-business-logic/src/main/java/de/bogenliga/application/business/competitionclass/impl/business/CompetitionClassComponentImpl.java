@@ -68,7 +68,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
         checkCompetitionClassDO(competitionClassDO, currentDsbMitglied);
 
-        final CompetitionClassBE competitionClassBE = convertDOToBE(competitionClassDO);
+        final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
 
         final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.create(competitionClassBE, currentDsbMitglied);
 
@@ -82,7 +82,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         checkCompetitionClassDO(competitionClassDO, currentDsbMitglied);
         Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
 
-        final CompetitionClassBE competitionClassBE = convertDOToBE(competitionClassDO);
+        final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
 
         final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.update(competitionClassBE,currentDsbMitglied);
 
