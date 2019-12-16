@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.competitionclass.impl.business;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     public List<CompetitionClassDO> findAll() {
         final List<CompetitionClassBE> competitionClassBEList = competitionClassDAO.findAll();
 
-        return competitionClassBEList.stream().map(this::convertBEToDO).collect(
+        return competitionClassBEList.stream().map(CompetitionClassMapper.toCompetitionClassDO).collect(
                 Collectors.toList());
     }
 
@@ -61,7 +60,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
         final CompetitionClassBE competitionClassBE = competitionClassDAO.findById(id);
 
-        return convertBEToDO(competitionClassBE);
+        return CompetitionClassMapper.toCompetitionClassDO.apply(competitionClassBE);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
 
         checkCompetitionClassDO(competitionClassDO, currentDsbMitglied);
 
-        final CompetitionClassBE competitionClassBE = convertDOToBE(competitionClassDO);
+        final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
 
         final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.create(competitionClassBE, currentDsbMitglied);
 
@@ -83,30 +82,11 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         checkCompetitionClassDO(competitionClassDO, currentDsbMitglied);
         Preconditions.checkArgument(competitionClassDO.getId() >= 0, PRECONDITION_MSG_KLASSE_ID);
 
-        final CompetitionClassBE competitionClassBE = convertDOToBE(competitionClassDO);
+        final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
 
         final CompetitionClassBE persistedCompetitionClassBE = competitionClassDAO.update(competitionClassBE,currentDsbMitglied);
 
         return CompetitionClassMapper.toCompetitionClassDO.apply(persistedCompetitionClassBE);
-    }
-
-    // Creates a new CompetitionClassDO Object from a CompetitionClassBE Object
-    private CompetitionClassDO convertBEToDO (CompetitionClassBE competitionClassBE) {
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        competitionClassBE.setKlasseAlterMin(year - competitionClassBE.getKlasseAlterMin());
-        competitionClassBE.setKlasseAlterMax(year - competitionClassBE.getKlasseAlterMax());
-        return CompetitionClassMapper.toCompetitionClassDO.apply(competitionClassBE);
-    }
-
-    // Creates a new CompetitionClassBE Object from a CompetitionClassDO Object
-    // and sets the minimum and maximum age corresponding to the current year
-    // and the minYear and maxYear provided by the CompetitionClassDO
-    private CompetitionClassBE convertDOToBE (CompetitionClassDO competitionClassDO) {
-        final CompetitionClassBE competitionClassBE = CompetitionClassMapper.toCompetitionClassBE.apply(competitionClassDO);
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        competitionClassBE.setKlasseAlterMin(year - competitionClassDO.getKlasseJahrgangMin());
-        competitionClassBE.setKlasseAlterMax(year - competitionClassDO.getKlasseJahrgangMax());
-        return competitionClassBE;
     }
 
     private void checkCompetitionClassDO(final CompetitionClassDO competitionClassDO, final long currentDsbMitglied){
