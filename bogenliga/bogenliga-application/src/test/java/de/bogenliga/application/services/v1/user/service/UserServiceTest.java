@@ -52,8 +52,8 @@ public class UserServiceTest {
 
     private static final Long ID = 123L;
     private static final String USERNAME = "user";
-    private static final String PASSWORD = "password";
-    private static final String NEUESPASSWORD = "newpassword";
+    private static final String PASSWORD = "CorrectPasswordV1";
+    private static final String NEUESPASSWORD = "CorrectPasswordV2";
     private static final Boolean USING2FA = false;
     private static final String JWT = "jwt";
     private static final String ERROR_MESSAGE = "error";
@@ -702,6 +702,46 @@ public class UserServiceTest {
                 .withNoCause();
 
 
+    }
+
+    @Test
+    public void create_withInvalidPassword_shouldThrowException() {
+
+        // prepare test data identity user
+        final UserSignInDTO userSignInDTO = new UserSignInDTO();
+        userSignInDTO.setJwt(JWT);
+        userSignInDTO.setEmail(USERNAME);
+        userSignInDTO.setId(ID);
+
+        // configure mocks
+        when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
+        when(jwtTokenProvider.resolveUserSignInDTO(anyString())).thenReturn(userSignInDTO);
+        when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
+
+        //prepare test data newUser
+
+        final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+        userCredentialsDTO.setUsername(USERNAME);
+
+        String[] invalidPasswords = new String[]{
+                "ABCabc0",
+                "ABCABC00",
+                "abcabc00",
+                "ABCabcABC",
+                "ABCABCABC",
+                "abcabcabc",
+                "        ",
+                "0123456789",
+        };
+
+        // Check different passwords for their validity
+        for (String invalidPassword : invalidPasswords) {
+            userCredentialsDTO.setPassword(invalidPassword);
+            assertThatExceptionOfType(BusinessException.class)
+                    .isThrownBy(() -> underTest.create(requestWithHeader, userCredentialsDTO))
+                    .withMessageContaining("This is not a valid Password")
+                    .withNoCause();
+        }
     }
 
 }

@@ -58,6 +58,9 @@ public class UserService implements ServiceFacade {
     private static final String PRECONDITION_MSG_USER_ID = "User ID must not be null or negative";
     private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
+    private static final String PRECONDITION_MSG_USER_PW = "This is not a valid Password";
+
+    private static final String PW_VALIDATION_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d#$^+=!*()@%&?]{8,}$";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
@@ -349,6 +352,8 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(userCredentialsDTO, "User Credentials must not be null");
         Preconditions.checkNotNull(userCredentialsDTO.getUsername(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userCredentialsDTO.getPassword(), PRECONDITION_MSG_USER_EMAIL);
+        // Check if password is valid by running it against the regular expression for the password
+        Preconditions.checkArgument(userCredentialsDTO.getPassword().matches(PW_VALIDATION_REGEX), PRECONDITION_MSG_USER_PW);
 
         LOG.debug("Receive 'create' request with username '{}', password '{}', using2FA {}",
                 userCredentialsDTO.getUsername(),
