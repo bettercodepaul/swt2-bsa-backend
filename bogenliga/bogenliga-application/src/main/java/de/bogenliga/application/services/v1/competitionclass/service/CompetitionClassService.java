@@ -36,7 +36,7 @@ public class CompetitionClassService implements ServiceFacade {
     private static final String PRECONDITION_MSG_KLASSE = "CompetitionClass must not be null";
     private static final String PRECONDITION_MSG_KLASSE_ID = "CompetitionClass ID must not be negative";
     private static final String PRECONDITION_MSG_KLASSE_JAHRGANG_MIN = "Minimum Age must not be negative";
-    private static final String PRECONDITION_MSG_KLASSE_JAHRGANG_MAX = "Max Age must be higher than Min Age and must not be negative";
+    private static final String PRECONDITION_MSG_KLASSE_JAHRGANG_MAX = "Max Age must not be negative";
     private static final String PRECONDITION_MSG_KLASSE_NR = "Something is wrong with the CompetitionClass Number";
     private static final String PRECONDITION_MSG_NAME = "The CompetitionClass must be given a name";
 
@@ -116,7 +116,7 @@ public class CompetitionClassService implements ServiceFacade {
 
         checkPreconditions(competitionClassDTO);
 
-        final CompetitionClassDO newCompetitionClassDo = CompetitionClassDTOMapper.toDO.apply(competitionClassDTO);
+        final CompetitionClassDO newCompetitionClassDo = CompetitionClassDTOMapper.toDO.apply(sortClassYears(competitionClassDTO));
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
         final CompetitionClassDO savedCompetitionClassDo = competitionClassComponent.create(newCompetitionClassDo,
@@ -134,7 +134,6 @@ public class CompetitionClassService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public CompetitionClassDTO update(@RequestBody final CompetitionClassDTO competitionClassDTO,
                                       final Principal principal) {
-        checkPreconditions(competitionClassDTO);
 
         LOGGER.debug("Receive 'update' request with  id '{}', name '{}', jahrgang_Min '{}', jahrgang_Max '{}', klasseNr '{}'",
 
@@ -144,8 +143,10 @@ public class CompetitionClassService implements ServiceFacade {
                 competitionClassDTO.getKlasseJahrgangMax(),
                 competitionClassDTO.getKlasseNr());
 
+        checkPreconditions(competitionClassDTO);
 
-        final CompetitionClassDO newCompetitionClassDO = CompetitionClassDTOMapper.toDO.apply(competitionClassDTO);
+        // Method sortClassYears will change the year min and max values accordingly
+        final CompetitionClassDO newCompetitionClassDO = CompetitionClassDTOMapper.toDO.apply(sortClassYears(competitionClassDTO));
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
         final CompetitionClassDO updatedCompetitionClassDO = competitionClassComponent.update(newCompetitionClassDO,
@@ -154,6 +155,15 @@ public class CompetitionClassService implements ServiceFacade {
 
     }
 
+    // Swaps the value JahrgangMin and JahrgangMax if they are in the wrong order
+    // The JahrgangMax will always be the lower (or equal) number compared to JahrgangMin
+    private CompetitionClassDTO sortClassYears (CompetitionClassDTO competitionClassDTO) {
+        Long classMinYear = competitionClassDTO.getKlasseJahrgangMin();
+        Long classMaxYear = competitionClassDTO.getKlasseJahrgangMax();
+        competitionClassDTO.setKlasseJahrgangMax(Math.min(classMinYear, classMaxYear));
+        competitionClassDTO.setKlasseJahrgangMin(Math.max(classMinYear, classMaxYear));
+        return competitionClassDTO;
+    }
 
     private void checkPreconditions(@RequestBody final CompetitionClassDTO competitionClassDTO) {
         Preconditions.checkNotNull(competitionClassDTO, PRECONDITION_MSG_KLASSE);
@@ -164,8 +174,8 @@ public class CompetitionClassService implements ServiceFacade {
 
         Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMin() >= 0,
                 PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
-        Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMin() > competitionClassDTO.getKlasseJahrgangMax(),
-                PRECONDITION_MSG_KLASSE_JAHRGANG_MIN);
+        Preconditions.checkArgument(competitionClassDTO.getKlasseJahrgangMax() >= 0,
+                PRECONDITION_MSG_KLASSE_JAHRGANG_MAX);
 
     }
 }
