@@ -53,7 +53,7 @@ VALUES
 
 -- password = moderator
         (10,
-        'Spotter1@bogenliga.de',
+        'spotter1@bogenliga.de',
         'dbed56d612f8fc8397a79a9e63cc67236ac63027e092adda7b02cbe7c65a4916683a572d71d3cefbcdcf86ee42136b1882ce75b189b1fe3a1457cc72ced3c6ea',
         '3afca75fad3ea4e11e3e1f4274221acb4f0a833e765b21c87098c18c9ebea67eec16f849cffc4f0010ea0f6879d0a8b88c4cfd64abfcd4762cf5c123e87f0a45')
 ;
