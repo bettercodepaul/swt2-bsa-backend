@@ -34,7 +34,7 @@ public class RegionenDTO implements DataTransferObject {
      *
      * @param id
      * @param regionName
-     * @param regionKuerzel
+     * @param regionKuerzels
      * @param regionTyp
      * @param regionUebergeordnet
      * @param regionUebergeordnetAsName
