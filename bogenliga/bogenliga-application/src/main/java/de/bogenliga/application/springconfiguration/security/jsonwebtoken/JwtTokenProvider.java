@@ -180,12 +180,21 @@ public class JwtTokenProvider {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
+        // if username is ligadefault, remove validity from jwts builder
+        if(username.equals("ligadefault")) {
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(now)
+                    .signWith(SignatureAlgorithm.HS256, secretKey)
+                    .compact();
+        } else {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
     }
 
 
