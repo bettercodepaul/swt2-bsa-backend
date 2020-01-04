@@ -180,7 +180,7 @@ public class JwtTokenProvider {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        // if username is ligadefault, remove validity from jwts builder
+        // if user is default user (not logged in user) expiration time is not set --> infinity
         if(username.equals("ligadefault")) {
             return Jwts.builder()
                     .setClaims(claims)
