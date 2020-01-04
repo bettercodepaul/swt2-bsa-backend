@@ -4,6 +4,9 @@ rolle_name
 )
 VALUES (101, 'Test-ADMIN'),
        (102, 'Test-MODERATOR'),
+
+       (102, 'Test-SPOTTER'),
+
        (103, 'Test-USER'),
        (104, 'Test-SPORTLEITER'),
        (105, 'Test-KAMPFRICHTER'),

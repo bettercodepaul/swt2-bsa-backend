@@ -27,7 +27,15 @@ VALUES (1, 1), -- admin
        (7, 2), -- ligaleiter (Team)
        (8, 5), -- sportleiter (Team)
        (9, 9), -- moderator (Team)
-       (10, 9) -- Spotter1
+       (10, 10), -- Spotter1
+       (11, 10), -- Spotter2
+       (12, 10), -- Spotter3
+       (13, 10), -- Spotter4
+       (14, 10), -- Spotter5
+       (15, 10), -- Spotter6
+       (16, 10), -- Spotter7
+       (17, 10) -- Spotter8
+
 ;
 
 -- user
