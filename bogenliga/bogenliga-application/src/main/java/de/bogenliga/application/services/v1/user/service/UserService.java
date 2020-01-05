@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.user.service;
 
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
@@ -9,6 +10,7 @@ import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.services.v1.user.mapper.UserDTOMapper;
@@ -32,6 +34,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,13 +116,19 @@ public class UserService implements ServiceFacade {
             if (authentication.isAuthenticated()) {
                 // create payload
                 final UserWithPermissionsDO userWithPermissionsDO = (UserWithPermissionsDO) authentication.getPrincipal();
-                final UserSignInDTO userSignInDTO = UserDTOMapper.toUserSignInDTO.apply(userWithPermissionsDO);
-                userSignInDTO.setJwt(jwtTokenProvider.createToken(authentication));
 
-                final HttpHeaders headers = new HttpHeaders();
-                headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
+                if(userWithPermissionsDO.isActive()) {
+                    final UserSignInDTO userSignInDTO = UserDTOMapper.toUserSignInDTO.apply(userWithPermissionsDO);
+                    userSignInDTO.setJwt(jwtTokenProvider.createToken(authentication));
 
-                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
+                    final HttpHeaders headers = new HttpHeaders();
+                    headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
+
+                    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
+                } else {
+                    errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
+                    return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
+                }
             } else {
                 if (authentication.getDetails() != null) {
                     errorDetails = (ErrorDTO) authentication.getDetails();
@@ -373,5 +382,21 @@ public class UserService implements ServiceFacade {
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
 
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
+    public UserDTO deactivate(@PathVariable("id") final long id, final Principal principal) {
+        Preconditions.checkArgument(id >= 0, "Id must not be negative.");
+
+        LOG.debug("Receive 'delete' request with Id '{}'", id);
+
+        // allow value == null, the value will be ignored
+        final UserDO userDO = new UserDO();
+        userDO.setId(id);
+
+        final UserDO userUpdatedDO = userComponent.update(userDO, false);
+        final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
+        return userUpdatedDTO;
+    }
 
 }

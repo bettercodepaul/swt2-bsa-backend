@@ -24,6 +24,7 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     private String userSalt;
     private String userPassword;
     private boolean using2FA = true;
+    private boolean active = true;
 
 
     private String secret;
@@ -103,4 +104,8 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     public void setSecret(String secret) {
         this.secret = secret;
     }
+
+    public boolean isActive() {return active;}
+
+    public void setActive(boolean isActive) {this.active = isActive;}
 }
