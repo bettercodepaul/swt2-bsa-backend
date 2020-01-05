@@ -22,6 +22,7 @@ CREATE TABLE benutzer (
   benutzer_password            VARCHAR(200)    NOT NULL,
   benutzer_using_2fa        BOOLEAN   NOT NULL DEFAULT FALSE,
   benutzer_secret       VARCHAR(200) NULL,
+  benutzer_active       BOOLEAN          NOT NULL    DEFAULT TRUE,
   -- technical columns to track the lifecycle of each row
   -- the "_by" columns references a "benutzer_id" without foreign key constraint
   -- the "_at_utc" columns using the timestamp with the UTC timezone
