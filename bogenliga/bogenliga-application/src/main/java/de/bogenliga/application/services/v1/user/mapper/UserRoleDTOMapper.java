@@ -29,7 +29,7 @@ public final class UserRoleDTOMapper implements DataTransferObjectMapper {
         userRoleDO.setRoleId(dto.getRoleId());
         userRoleDO.setRoleName(dto.getRoleName());
         userRoleDO.setVersion(dto.getVersion());
-
+        userRoleDO.setActive(dto.isActive());
         return userRoleDO;
     };
 
@@ -44,7 +44,7 @@ public final class UserRoleDTOMapper implements DataTransferObjectMapper {
         userRoleDTO.setRoleId(dob.getRoleId());
         userRoleDTO.setRoleName(dob.getRoleName());
         userRoleDTO.setVersion(dob.getVersion());
-
+        userRoleDTO.setActive(dob.isActive());
         return userRoleDTO;
     };
 

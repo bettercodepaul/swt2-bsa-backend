@@ -19,6 +19,7 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
     private String userEmail;
     private Long roleId;
     private String roleName;
+    private boolean active;
 
 
     /**
@@ -36,6 +37,7 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
                 ", userEmail='" + userEmail + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", roleName='" + roleName + '\'' +
+                ", active='" + active + '\'' +
                 '}';
     }
 
@@ -67,5 +69,8 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
     public void setRoleName(final String roleName) {
         this.roleName = roleName;
     }
+
+    public boolean isActive () {return this.active;}
+    public void setActive (boolean active) {this.active = active;}
 
 }
