@@ -204,6 +204,17 @@ public class UserComponentImpl implements UserComponent {
     }
 
 
+    public UserDO update (final UserDO userDO, boolean active) {
+        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
+        Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
+
+        final UserBE currentUser = userDAO.findById(userDO.getId());
+        currentUser.setActive(active);
+        final UserBE persistedUserBE = userDAO.update(currentUser, userDO.getId());
+        return UserMapper.toUserDO.apply(persistedUserBE);
+    }
+
+
     @Override
     public boolean isTechnicalUser(final UserDO userDO) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);

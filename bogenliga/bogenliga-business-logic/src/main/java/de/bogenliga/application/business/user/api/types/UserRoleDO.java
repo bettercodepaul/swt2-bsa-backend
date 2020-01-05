@@ -21,6 +21,7 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
     private String email;
     private Long roleId;
     private String roleName;
+    private boolean active;
 
 
     /**
@@ -41,6 +42,7 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
         this.email = null;
         this.roleId = roleId;
         this.roleName = null;
+        this.active = true;
 
         // set parameter from CommonDataObject
         this.createdAtUtc = createdAtUtc;
@@ -53,17 +55,18 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with business  parameters
      */
-    public UserRoleDO(final Long id, final String email, final Long roleId, final String roleName){
+    public UserRoleDO(final Long id, final String email, final boolean active, final Long roleId, final String roleName){
         this.id = id;
         this.email = email;
         this.roleId = roleId;
         this.roleName = roleName;
+        this.active = active;
     }
 
     /**
      * Constructor with mandatory parameters
      */
-    public UserRoleDO(final Long id, final String email, final Long roleId, final String roleName,
+    public UserRoleDO(final Long id, final String email, final boolean active, final Long roleId, final String roleName,
                       final OffsetDateTime createdAtUtc,
                       final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                       final Long lastModifiedByUserId, final Long version) {
@@ -71,6 +74,7 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
         this.email = email;
         this.roleId = roleId;
         this.roleName = roleName;
+        this.active = active;
 
         // set parameter from CommonDataObject
         this.createdAtUtc = createdAtUtc;
@@ -109,11 +113,14 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
         this.roleName = roleName;
     }
 
+    public boolean isActive () {return this.active;}
+    public void setActive (boolean active) {this.active = active;}
+
 
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getEmail(), getRoleId(), getRoleName(), getCreatedAtUtc(),
-                getCreatedByUserId(), getLastModifiedAtUtc(), getLastModifiedByUserId(), getVersion());
+                getCreatedByUserId(), getLastModifiedAtUtc(), getLastModifiedByUserId(), getVersion(), isActive());
     }
 
 
@@ -134,6 +141,7 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
                 Objects.equals(getCreatedAtUtc(), userRoleDO.getCreatedAtUtc()) &&
                 Objects.equals(getCreatedByUserId(), userRoleDO.getCreatedByUserId()) &&
                 Objects.equals(getLastModifiedAtUtc(), userRoleDO.getLastModifiedAtUtc()) &&
-                Objects.equals(getLastModifiedByUserId(), userRoleDO.getLastModifiedByUserId());
+                Objects.equals(getLastModifiedByUserId(), userRoleDO.getLastModifiedByUserId()) &&
+                Objects.equals(isActive(), userRoleDO.isActive());
     }
 }
