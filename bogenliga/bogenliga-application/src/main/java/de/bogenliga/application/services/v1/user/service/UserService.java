@@ -394,7 +394,9 @@ public class UserService implements ServiceFacade {
         final UserDO userDO = new UserDO();
         userDO.setId(id);
 
-        final UserDO userUpdatedDO = userComponent.update(userDO, false);
+        final UserDO existingDO = userComponent.findById(id);
+
+        final UserDO userUpdatedDO = userComponent.update(userDO, !existingDO.isActive());
         final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
         return userUpdatedDTO;
     }
