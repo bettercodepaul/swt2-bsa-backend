@@ -36,12 +36,16 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_BE_USING2FA = "using2FA";
     private static final String USER_BE_SECRET = "secret";
 
+    private static final String USER_BE_ACTIVE = "active";
+
     private static final String USER_TABLE_ID = "benutzer_id";
     private static final String USER_TABLE_EMAIL = "benutzer_email";
     private static final String USER_TABLE_SALT = "benutzer_salt";
     private static final String USER_TABLE_PASSWORD = "benutzer_password";
     private static final String USER_TABLE_USING2FA = "benutzer_using_2fa";
     private static final String USER_TABLE_SECRET = "benutzer_secret";
+
+    private static final String USER_TABLE_ACTIVE = "benutzer_active";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserBE> USER = new BusinessEntityConfiguration<>(
@@ -88,6 +92,7 @@ public class UserDAO implements DataAccessObject {
         columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
         columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
         columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
+        columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());

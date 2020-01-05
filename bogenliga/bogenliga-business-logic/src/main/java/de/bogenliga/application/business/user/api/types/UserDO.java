@@ -26,6 +26,7 @@ public class UserDO extends CommonDataObject implements DataObject {
     private Long id;
     private String email;
     private boolean using2FA;
+    private boolean active;
     private String secret;
     private String qrCode;
 
@@ -40,12 +41,13 @@ public class UserDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with mandatory parameters
      */
-    public UserDO(final Long id, final String email, boolean using2FA, String secret, final OffsetDateTime createdAtUtc,
+    public UserDO(final Long id, final String email, boolean using2FA, boolean active, String secret, final OffsetDateTime createdAtUtc,
                   final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                   final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.email = email;
         this.using2FA = using2FA;
+        this.active = active;
         this.secret = secret;
 
         // set parameter from CommonDataObject
@@ -110,6 +112,10 @@ public class UserDO extends CommonDataObject implements DataObject {
     public void setUsing2FA(boolean using2FA) {
         this.using2FA = using2FA;
     }
+
+    public boolean isActive() {return active;}
+
+    public void setActive(boolean active) {this.active = active;}
 
 
     public String getSecret() {
