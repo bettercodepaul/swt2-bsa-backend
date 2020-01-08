@@ -180,7 +180,8 @@ public class JwtTokenProvider {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        // if user is default user (not logged in user) expiration time is not set --> infinity
+        // if user is default user (not logged in user) expiration time is not set
+        // since the default should be logged in "forever"
         if(username.equals("ligadefault")) {
             return Jwts.builder()
                     .setClaims(claims)
