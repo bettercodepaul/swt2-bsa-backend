@@ -40,6 +40,7 @@ public class JwtTokenProvider {
     private static final String USER_INFO_ID = "id";
     private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
     private static final String AUTH = "auth";
+    private static final String DEFAULT_USER_NAME = "ligadefault";
     private final SecurityJsonWebTokenConfiguration securityJsonWebTokenConfiguration;
     private final UserAuthenticationProvider userAuthenticationProvider;
 
@@ -180,12 +181,16 @@ public class JwtTokenProvider {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+        final JwtBuilder jwtBuilder = Jwts.builder().setClaims(claims).setIssuedAt(now).signWith(
+                SignatureAlgorithm.HS256, secretKey);
+
+        // if user is default user (not logged in user) expiration time is not set
+        // since the default should be logged in "forever"
+        if (!username.equals(DEFAULT_USER_NAME)) {
+            jwtBuilder.setExpiration(validity);
+        }
+
+        return jwtBuilder.compact();
     }
 
 
