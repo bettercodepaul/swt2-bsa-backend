@@ -62,7 +62,6 @@ public class DateProviderTest {
         assertThat(actual.getHours()).isEqualTo(expected.getHours());
         assertThat(actual.getMinutes()).isEqualTo(expected.getMinutes());
         assertThat(actual.getTimezoneOffset()).isEqualTo(expected.getTimezoneOffset());
-
         // verify invocations
     }
 

@@ -2,6 +2,7 @@ package de.bogenliga.application.business.competitionclass.impl.mapper;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.Calendar;
 import java.util.function.Function;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
@@ -20,10 +21,12 @@ public class CompetitionClassMapper implements ValueObjectMapper {
     }
 
     public static final Function<CompetitionClassBE, CompetitionClassDO> toCompetitionClassDO = competitionClassBE -> {
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
         final Long klasseId = competitionClassBE.getKlasseId();
         final String klasseName = competitionClassBE.getKlasseName();
-        final Long klasseJahrgangMin = competitionClassBE.getKlasseAlterMin();
-        final Long klasseJahrgangMax = competitionClassBE.getKlasseAlterMax();
+        final Long klasseJahrgangMin = year - competitionClassBE.getKlasseAlterMin();
+        final Long klasseJahrgangMax = year - competitionClassBE.getKlasseAlterMax();
         final Long klasseNr = competitionClassBE.getKlasseNr();
 
         // Technical Parameter
@@ -54,6 +57,11 @@ public class CompetitionClassMapper implements ValueObjectMapper {
         competitionClassBE.setLastModifiedByUserId(competitionClassBE.getLastModifiedByUserId());
         competitionClassBE.setCreatedByUserId(competitionClassBE.getCreatedByUserId());
         competitionClassBE.setVersion(competitionClassBE.getVersion());
+
+        // Sets the Age based on the Year
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        competitionClassBE.setKlasseAlterMin(year - competitionClassDO.getKlasseJahrgangMin());
+        competitionClassBE.setKlasseAlterMax(year - competitionClassDO.getKlasseJahrgangMax());
 
         return competitionClassBE;
     };

@@ -3,6 +3,9 @@ package de.bogenliga.application.business.competitionclass.impl.mapper;
 import org.junit.Test;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.business.competitionclass.impl.entity.CompetitionClassBE;
+
+import java.util.Calendar;
+
 import static de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassBE;
 import static de.bogenliga.application.business.competitionclass.impl.business.CompetitionClassComponentImplTest.getCompetitionClassDO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,9 +19,13 @@ public class CompetitionClassMapperTest {
 
     private static final long ID = 1337L;
     private static final String KLASSENAME = "Herren";
-    private static final long KLASSEJAHRGANGMIN = 10L;
-    private static final long KLASSEJAHRGANGMAX = 50L;
-    private static final long KLASSENR = 42L;
+    private static final long KLASSEALTERMIN = 44L;
+    private static final long KLASSEALTERMAX = 66L;
+    private static final long KLASSEJAHRGANGMIN = 1998L;
+    private static final long KLASSEJAHRGANGMAX = 1996L;
+    private static final long KLASSENR = 2L;
+
+    int year = Calendar.getInstance().get(Calendar.YEAR);
 
     @Test
     public void toVO() throws Exception{
@@ -29,6 +36,9 @@ public class CompetitionClassMapperTest {
 
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getKlasseName()).isEqualTo(KLASSENAME);
+        assertThat(actual.getKlasseJahrgangMax()).isEqualTo(year - KLASSEALTERMAX);
+        assertThat(actual.getKlasseJahrgangMin()).isEqualTo(year - KLASSEALTERMIN);
+        assertThat(actual.getKlasseNr()).isEqualTo(KLASSENR);
 
     }
 
@@ -41,6 +51,9 @@ public class CompetitionClassMapperTest {
 
         assertThat(actual.getKlasseId()).isEqualTo(ID);
         assertThat(actual.getKlasseName()).isEqualTo(KLASSENAME);
+        assertThat(actual.getKlasseAlterMax()).isEqualTo(year - KLASSEJAHRGANGMAX);
+        assertThat(actual.getKlasseAlterMin()).isEqualTo(year - KLASSEJAHRGANGMIN);
+        assertThat(actual.getKlasseNr()).isEqualTo(KLASSENR);
 
     }
 
