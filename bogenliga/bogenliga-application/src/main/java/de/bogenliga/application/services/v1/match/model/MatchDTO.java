@@ -36,6 +36,12 @@ public class MatchDTO implements DataTransferObject {
     private List<PasseDTO> passen;
 
 
+    //empty constructor for json objekt form frontend to backend
+    public MatchDTO(){
+
+
+    }
+
     public MatchDTO(Long id, Long nr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
                     Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen,
                     Long strafPunkteSatz1,
