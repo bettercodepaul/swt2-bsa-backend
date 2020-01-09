@@ -209,7 +209,6 @@ public class UserComponentImpl implements UserComponent {
         Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
 
         final UserBE currentUser = userDAO.findById(userDO.getId());
-        currentUser.setActive(active);
         final UserBE persistedUserBE = userDAO.update(currentUser, userDO.getId());
         return UserMapper.toUserDO.apply(persistedUserBE);
     }
@@ -222,6 +221,14 @@ public class UserComponentImpl implements UserComponent {
         Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
 
         return technicalUserBA.isTechnicalUser(userDO);
+    }
+
+    @Override
+    public boolean deactivate(long id) {
+        final UserBE user = userDAO.findById(id);
+        user.setActive(false);
+        final UserBE updatedUser = userDAO.update(user, id);
+        return !UserMapper.toUserDO.apply(updatedUser).isActive();
     }
 
 }

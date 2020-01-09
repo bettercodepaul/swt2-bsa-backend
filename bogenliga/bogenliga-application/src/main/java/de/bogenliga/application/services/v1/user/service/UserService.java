@@ -370,6 +370,7 @@ public class UserService implements ServiceFacade {
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
         // user anlegen
+
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(),
                 userCredentialsDTO.getPassword(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
@@ -378,22 +379,22 @@ public class UserService implements ServiceFacade {
     }
 
 
+    /**
+     * Deactivates a user
+     * @param id of the user, to be deactivated
+     * @param requestWithHeader JwtToken used to prevent deleting your own user
+     * @return true, if the deactivation was successful or the user is already disabled
+     */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
-    public UserDTO deactivate(@PathVariable("id") final long id, final Principal principal) {
+    public boolean deactivate(@PathVariable("id") final long id, final HttpServletRequest requestWithHeader) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
-        LOG.debug("Receive 'delete' request with Id '{}'", id);
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
+        Preconditions.checkArgument(jwtTokenProvider.resolveUserSignInDTO(jwt).getId() != id, "You cannot delete yourself!");
 
-        // allow value == null, the value will be ignored
-        final UserDO userDO = new UserDO();
-        userDO.setId(id);
-
-        final UserDO existingDO = userComponent.findById(id);
-
-        final UserDO userUpdatedDO = userComponent.update(userDO, !existingDO.isActive());
-        final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
-        return userUpdatedDTO;
+        LOG.debug("Receive 'deactivate' request with Id '{}'", id);
+        return userComponent.deactivate(id);
     }
 
 }
