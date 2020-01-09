@@ -56,7 +56,8 @@ public class UserDAO implements DataAccessObject {
      */
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM benutzer";
+                    + " FROM benutzer"
+                    + " WHERE benutzer_active = TRUE";
 
     private static final String FIND_BY_ID =
             "SELECT * "
@@ -66,7 +67,8 @@ public class UserDAO implements DataAccessObject {
     private static final String FIND_BY_EMAIL =
             "SELECT * "
                     + " FROM benutzer "
-                    + " WHERE upper(benutzer_email) = upper(?)";
+                    + " WHERE upper(benutzer_email) = upper(?)"
+                    + " AND benutzer_active = TRUE";
 
     private final BasicDAO basicDao;
 

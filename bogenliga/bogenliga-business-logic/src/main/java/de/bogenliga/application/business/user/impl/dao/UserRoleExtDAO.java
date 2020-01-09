@@ -53,7 +53,8 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
                     + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id ";
+                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id "
+                    + " AND benutzer.benutzer_active = TRUE";
 
     private static final String FIND_BY_ID =
             "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
@@ -70,7 +71,8 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE upper(benutzer.benutzer_email) = upper(?) "
                     + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id";
+                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id"
+                    + " AND benutzer.benutzer_active = TRUE";
 
 
     private final BasicDAO basicDao;

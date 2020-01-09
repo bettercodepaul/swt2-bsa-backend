@@ -108,4 +108,11 @@ public interface UserComponent extends ComponentFacade {
      * @return true, if the user is a technical user
      */
     boolean isTechnicalUser(UserDO userDO);
+
+    /**
+     * Changes the active parameter to false to deactivate the user
+     * @param id of the user to be deactivated
+     * @return true, if the deactivation was successful
+     */
+    boolean deactivate(final long id);
 }
