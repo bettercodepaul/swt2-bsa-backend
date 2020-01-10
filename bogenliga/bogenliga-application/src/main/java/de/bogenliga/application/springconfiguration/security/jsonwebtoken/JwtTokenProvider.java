@@ -217,23 +217,30 @@ public class JwtTokenProvider {
 
     String refreshToken(final String token) {
 
-        final long remainingTimeInMilliSeconds = getRemainingValidityTime(token);
-        int refreshCounter = getRefreshCounter(token);
+        final String userName = getUsername(token);
+        // refresh token only if user is not default user as token for default user has no expiration date.
+        if(!userName.equals(DEFAULT_USER_NAME)) {
 
-        LOG.trace("Refresh token ? refreshCounter = {} and remainingTime = {} s", refreshCounter,
-                (remainingTimeInMilliSeconds / 1000));
+            final long remainingTimeInMilliSeconds = getRemainingValidityTime(token);
+            int refreshCounter = getRefreshCounter(token);
 
-        // check, if refresh necessary and possible
-        // expiration reached (last 90 %) and refresh allowed -> refresh
-        if (refreshCounter < maxTokenRefresh && remainingTimeInMilliSeconds < (validityInMilliseconds * 0.9)) {
+            LOG.trace("Refresh token ? refreshCounter = {} and remainingTime = {} s", refreshCounter,
+                      (remainingTimeInMilliSeconds / 1000));
 
-            final UserSignInDTO userSignInDTO = resolveUserSignInDTO(token);
-            refreshCounter++;
+            // check, if refresh necessary and possible
+            // expiration reached (last 90 %) and refresh allowed -> refresh
+            if (refreshCounter < maxTokenRefresh && remainingTimeInMilliSeconds < (validityInMilliseconds * 0.9)) {
 
-            LOG.trace("Token refreshed. Please use the new token");
+                final UserSignInDTO userSignInDTO = resolveUserSignInDTO(token);
+                refreshCounter++;
 
-            return createToken(userSignInDTO.getEmail(), userSignInDTO.getId(), userSignInDTO.getVersion(),
-                    userSignInDTO.getPermissions(), refreshCounter);
+                LOG.trace("Token refreshed. Please use the new token");
+
+                return createToken(userSignInDTO.getEmail(), userSignInDTO.getId(), userSignInDTO.getVersion(),
+                                   userSignInDTO.getPermissions(), refreshCounter);
+            } else {
+                return token;
+            }
         } else {
             return token;
         }
