@@ -40,7 +40,7 @@ public class UserMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new UserDO(id, email, be.isUsing2FA(), be.getSecret(), createdAtUtc, createdByUserId, lastModifiedAtUtc,
+        return new UserDO(id, email, be.isUsing2FA(), be.isActive(), be.getSecret(), createdAtUtc, createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     };
 
