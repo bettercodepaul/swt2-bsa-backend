@@ -59,7 +59,8 @@ public class UserServiceTest {
     private static final String ERROR_MESSAGE = "error";
     private static final List<String> PERMISSIONS = Arrays.asList(
             UserPermission.CAN_READ_SPORTJAHR.name(),
-            UserPermission.CAN_READ_STAMMDATEN.name());
+            UserPermission.CAN_READ_STAMMDATEN.name(),
+            UserPermission.CAN_DELETE_SYSTEMDATEN.name());
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Long VERSION = 7L;
 
@@ -105,6 +106,7 @@ public class UserServiceTest {
         userWithPermissionsDO.setId(ID);
         userWithPermissionsDO.setEmail(USERNAME);
         userWithPermissionsDO.setPermissions(PERMISSIONS);
+        userWithPermissionsDO.setActive(true);
 
         // configure mocks
         when(webSecurityConfiguration.authenticationManagerBean()).thenReturn(authenticationManager);

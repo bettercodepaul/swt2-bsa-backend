@@ -32,6 +32,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,13 +114,19 @@ public class UserService implements ServiceFacade {
             if (authentication.isAuthenticated()) {
                 // create payload
                 final UserWithPermissionsDO userWithPermissionsDO = (UserWithPermissionsDO) authentication.getPrincipal();
-                final UserSignInDTO userSignInDTO = UserDTOMapper.toUserSignInDTO.apply(userWithPermissionsDO);
-                userSignInDTO.setJwt(jwtTokenProvider.createToken(authentication));
 
-                final HttpHeaders headers = new HttpHeaders();
-                headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
+                if(userWithPermissionsDO.isActive()) {
+                    final UserSignInDTO userSignInDTO = UserDTOMapper.toUserSignInDTO.apply(userWithPermissionsDO);
+                    userSignInDTO.setJwt(jwtTokenProvider.createToken(authentication));
 
-                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
+                    final HttpHeaders headers = new HttpHeaders();
+                    headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
+
+                    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
+                } else {
+                    errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
+                    return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
+                }
             } else {
                 if (authentication.getDetails() != null) {
                     errorDetails = (ErrorDTO) authentication.getDetails();
@@ -366,6 +373,7 @@ public class UserService implements ServiceFacade {
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
         // user anlegen
+
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(),
                 userCredentialsDTO.getPassword(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
@@ -373,5 +381,23 @@ public class UserService implements ServiceFacade {
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
 
+
+    /**
+     * Deactivates a user
+     * @param id of the user, to be deactivated
+     * @param requestWithHeader JwtToken used to prevent deleting your own user
+     * @return true, if the deactivation was successful or the user is already disabled
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
+    public boolean deactivate(@PathVariable("id") final long id, final HttpServletRequest requestWithHeader) {
+        Preconditions.checkArgument(id >= 0, "Id must not be negative.");
+
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
+        Preconditions.checkArgument(jwtTokenProvider.resolveUserSignInDTO(jwt).getId() != id, "You cannot delete yourself!");
+
+        LOG.debug("Receive 'deactivate' request with Id '{}'", id);
+        return userComponent.deactivate(id);
+    }
 
 }

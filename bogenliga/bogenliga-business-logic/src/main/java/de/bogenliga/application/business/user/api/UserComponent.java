@@ -84,6 +84,23 @@ public interface UserComponent extends ComponentFacade {
     UserDO update(final UserDO userDO, final String password, final String newPassword, final Long currentUserId);
 
     /**
+     * Udpate password of user
+     *
+     * <p>
+     * A new salt will be created and the password will be hashed and checked with
+     * password requirements prdefined.
+     *
+     *
+     * @param userDO ID of the user account the pwd is to be changed
+     * @param password of the user
+     * @param newPassword of the user
+     * @param currentUserId current user
+     *
+     * @return the user, if the user exists and the password is sufficient
+     */
+    UserDO update(final UserDO userDO, boolean active);
+
+    /**
      * Identifies technical user, e.g. the SYSTEM user
      *
      * @param userDO to be checked
@@ -91,4 +108,11 @@ public interface UserComponent extends ComponentFacade {
      * @return true, if the user is a technical user
      */
     boolean isTechnicalUser(UserDO userDO);
+
+    /**
+     * Changes the active parameter to false to deactivate the user
+     * @param id of the user to be deactivated
+     * @return true, if the deactivation was successful
+     */
+    boolean deactivate(final long id);
 }

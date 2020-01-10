@@ -1,8 +1,5 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import de.bogenliga.application.business.user.impl.dao.UserPermissionDAO;
-import de.bogenliga.application.business.user.impl.entity.UserPermissionBE;
-import de.bogenliga.application.business.user.impl.types.SignInResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -204,6 +201,16 @@ public class UserComponentImpl implements UserComponent {
     }
 
 
+    public UserDO update (final UserDO userDO, boolean active) {
+        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
+        Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
+
+        final UserBE currentUser = userDAO.findById(userDO.getId());
+        final UserBE persistedUserBE = userDAO.update(currentUser, userDO.getId());
+        return UserMapper.toUserDO.apply(persistedUserBE);
+    }
+
+
     @Override
     public boolean isTechnicalUser(final UserDO userDO) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
@@ -211,6 +218,14 @@ public class UserComponentImpl implements UserComponent {
         Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
 
         return technicalUserBA.isTechnicalUser(userDO);
+    }
+
+    @Override
+    public boolean deactivate(long id) {
+        final UserBE user = userDAO.findById(id);
+        user.setActive(false);
+        final UserBE updatedUser = userDAO.update(user, id);
+        return !UserMapper.toUserDO.apply(updatedUser).isActive();
     }
 
 }
