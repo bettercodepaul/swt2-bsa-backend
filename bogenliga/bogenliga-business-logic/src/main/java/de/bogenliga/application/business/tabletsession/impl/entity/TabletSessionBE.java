@@ -14,6 +14,7 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     private Long matchId;
     private Long satznummer;
     private Boolean active = false;
+    private Long accessToken;
 
 
     public Long getWettkampfId() {
@@ -64,4 +65,11 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    // new CM
+
+
+    public Long getAccessToken() {return accessToken;}
+
+    public void setAccessToken(Long accessToken) {this.accessToken = accessToken;}
 }

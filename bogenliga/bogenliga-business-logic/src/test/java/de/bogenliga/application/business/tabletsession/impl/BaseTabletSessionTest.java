@@ -21,6 +21,7 @@ public abstract class BaseTabletSessionTest {
     protected static final Long SATZNUMMER = 4L;
     protected static final Long MATCH_ID = 150L;
     protected static final Boolean IS_ACTIVE = Boolean.TRUE;
+    protected static final Long ACCEES_TOKEN = 6L;
 
 
     protected static final Long CURRENT_USER_ID = 12L;
@@ -34,12 +35,13 @@ public abstract class BaseTabletSessionTest {
         tabBE.setMatchId(MATCH_ID);
         tabBE.setSatznummer(SATZNUMMER);
         tabBE.setActive(IS_ACTIVE);
+        tabBE.setAccessToken(ACCEES_TOKEN);
         return tabBE;
     }
 
 
     public static TabletSessionDO getTabletSessionDO() {
-        return new TabletSessionDO(WETTKAMPF_ID, SCHEIBENNUMMER, SATZNUMMER, MATCH_ID, IS_ACTIVE);
+        return new TabletSessionDO(WETTKAMPF_ID, SCHEIBENNUMMER, SATZNUMMER, MATCH_ID, IS_ACTIVE, ACCEES_TOKEN);
     }
 
 
@@ -49,6 +51,7 @@ public abstract class BaseTabletSessionTest {
         valuesToMethodMap.put("getSatznummer", SATZNUMMER);
         valuesToMethodMap.put("getMatchId", MATCH_ID);
         valuesToMethodMap.put("getIsActive", IS_ACTIVE);
+        valuesToMethodMap.put("getAccessToken", ACCEES_TOKEN);
     }
 
 
