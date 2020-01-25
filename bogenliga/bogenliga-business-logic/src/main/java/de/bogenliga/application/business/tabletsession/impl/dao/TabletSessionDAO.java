@@ -30,6 +30,8 @@ public class TabletSessionDAO {
     private static final String TABLET_SESSION_BE_MATCH_ID = "matchId";
     private static final String TABLET_SESSION_BE_SATZNUMMER = "satznummer";
     private static final String TABLET_SESSION_BE_IS_ACTIVE = "active";
+    //new CM
+    private static final String TABLET_SESSION_BE_ACCESS_TOKEN = "accessToken";
 
 
     private static final String TABLET_SESSION_TABLE_WETTKAMPF_ID = "tablet_session_wettkampf_id";
@@ -37,6 +39,7 @@ public class TabletSessionDAO {
     private static final String TABLET_SESSION_TABLE_SCHEIBENNUMMER = "tablet_session_scheibennummer";
     private static final String TABLET_SESSION_TABLE_SATZNUMMER = "tablet_session_satznr";
     private static final String TABLET_SESSION_TABLE_IS_ACTIVE = "is_active";
+    private static final String TABLET_SESSION_TABLE_ACCESS_TOKEN = "access_token";
 
     private static final BusinessEntityConfiguration<TabletSessionBE> TABLET_SESSION = new BusinessEntityConfiguration<>(
             TabletSessionBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
@@ -84,6 +87,7 @@ public class TabletSessionDAO {
         columnsToFieldsMap.put(TABLET_SESSION_TABLE_MATCH_ID, TABLET_SESSION_BE_MATCH_ID);
         columnsToFieldsMap.put(TABLET_SESSION_TABLE_SATZNUMMER, TABLET_SESSION_BE_SATZNUMMER);
         columnsToFieldsMap.put(TABLET_SESSION_TABLE_IS_ACTIVE, TABLET_SESSION_BE_IS_ACTIVE);
+        columnsToFieldsMap.put(TABLET_SESSION_TABLE_ACCESS_TOKEN, TABLET_SESSION_BE_ACCESS_TOKEN);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
