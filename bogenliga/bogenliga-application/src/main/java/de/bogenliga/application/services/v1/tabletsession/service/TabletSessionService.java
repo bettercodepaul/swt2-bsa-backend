@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.tabletsession.service;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.security.Principal;
 import java.util.List;
@@ -24,7 +25,6 @@ import de.bogenliga.application.services.v1.tabletsession.mapper.TabletSessionDT
 import de.bogenliga.application.services.v1.tabletsession.model.TabletSessionDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import sun.lwawt.macosx.CSystemTray;
 
 /**
  * @author Kay Scheerer
@@ -51,6 +51,20 @@ public class TabletSessionService implements ServiceFacade {
                                 final MatchComponent matchComponent) {
         this.tabletSessionComponent = tabletSessionComponent;
         this.matchComponent = matchComponent;
+    }
+    @RequestMapping(method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<TabletSessionDTO> findAll() {
+    List<TabletSessionDO> SessionsDO = tabletSessionComponent.findAll();
+    List<TabletSessionDTO> SessionsDTO = new ArrayList<>();
+    TabletSessionDTO tempDTO;
+
+    for(TabletSessionDO DO: SessionsDO){
+        tempDTO = TabletSessionDTOMapper.toDTO.apply(DO);
+        SessionsDTO.add(tempDTO);
+    }
+    return SessionsDTO;
     }
 
 
