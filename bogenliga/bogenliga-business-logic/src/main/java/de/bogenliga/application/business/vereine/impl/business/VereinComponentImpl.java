@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,7 +64,11 @@ public class VereinComponentImpl implements VereinComponent {
     @Override
     public VereinDO findById(long vereinId) {
         final VereinBE vereinBE = vereinDAO.findById(vereinId);
-        return VereinMapper.toVereinDO.apply(vereinBE);
+
+        final VereinDO vereinDO = VereinMapper.toVereinDO.apply(vereinBE);
+       vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
+        return vereinDO;
+
     }
 
 
