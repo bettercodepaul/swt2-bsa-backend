@@ -116,7 +116,7 @@ public class VereinComponentImpl implements VereinComponent {
             VereinDO tmpVerein = vereinDOList.get(i);
 
             Optional<RegionenBE> regionenBEOptional = regionenBEList.stream()
-                    .filter(region -> region.getRegionId() == tmpVerein.getRegionId()).findFirst();
+                    .filter(region -> region.getRegionId().equals(tmpVerein.getRegionId())).findFirst();
 
             if(regionenBEOptional.isPresent()) {
                 tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
