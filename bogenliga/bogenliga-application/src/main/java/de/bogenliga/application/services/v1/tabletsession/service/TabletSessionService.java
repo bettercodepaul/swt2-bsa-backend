@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.tabletsession.service;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,16 +55,17 @@ public class TabletSessionService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<TabletSessionDTO> findAll() {
-    List<TabletSessionDO> SessionsDO = tabletSessionComponent.findAll();
-    List<TabletSessionDTO> SessionsDTO = new ArrayList<>();
+    List<TabletSessionDO> sessionsDO = tabletSessionComponent.findAll();
+    List<TabletSessionDTO> sessionsDTO = new ArrayList<>();
     TabletSessionDTO tempDTO;
 
-    for(TabletSessionDO DO: SessionsDO){
+    for(TabletSessionDO DO: sessionsDO){
         tempDTO = TabletSessionDTOMapper.toDTO.apply(DO);
-        SessionsDTO.add(tempDTO);
+        sessionsDTO.add(tempDTO);
     }
-    return SessionsDTO;
+    return sessionsDTO;
     }
+
 
 
     @RequestMapping(value = "/{wettkampfId}/{scheibenNr}",

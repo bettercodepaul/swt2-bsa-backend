@@ -9,7 +9,6 @@ CREATE TABLE tablet_session (
     tablet_session_match_id       DECIMAL(19, 0),
     tablet_session_satznr         DECIMAL(1, 0) DEFAULT 1,
     is_active                     BOOLEAN NOT NULL DEFAULT TRUE,
-    access_token                  DECIMAL(19,0) DEFAULT 0,
 
     created_at_utc                TIMESTAMP      NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
     created_by                    DECIMAL(19, 0) NOT NULL DEFAULT 0,

@@ -84,11 +84,8 @@ public class TabletSessionDTO {
         return this.otherMatchId;
     }
 
-    // new CM
-
-
     public Long getAccessToken() {
-        return accessToken;
+        return this.accessToken;
     }
 
     public void setAccessToken(Long accessToken) {
