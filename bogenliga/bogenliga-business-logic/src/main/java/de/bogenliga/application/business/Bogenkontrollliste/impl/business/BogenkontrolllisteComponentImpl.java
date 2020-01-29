@@ -100,13 +100,13 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         for(int i=1; i <= 8; i++){
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
-            LOGGER.info("Eintrag " + i + " " + teamName + " wurde gefunden(Teamname)");
+            LOGGER.debug("Teamname {} wurde gefunden ", teamName);
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
             int count = 0;
             for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
                 dsbMitgliedDOList.add(dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
-                LOGGER.info(dsbMitgliedDOList.get(count).getNachname()+ " " +dsbMitgliedDOList.get(count).getVorname() + " wurde dem Team " + teamName + " hinzugefügt");
+                LOGGER.debug("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
                 count++;
             }
             teamMemberMapping.put(teamName,dsbMitgliedDOList);
@@ -144,7 +144,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         String[] teamNameList = new String[8];
         int i = 0;
 
-        LOGGER.info("Es wurden " + teamMemberMapping.size() + " Teams gefunden");
+        LOGGER.debug("Es wurden {} Teams gefunden", teamMemberMapping.size());
         for (String key : teamMemberMapping.keySet()) {
             teamNameList[i] = key;
             i++;
@@ -223,7 +223,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
-            LOGGER.info("Für Team " + manschaftCounter + " wurden " + teamMemberMapping.get(teamNameList[manschaftCounter]).size() + " Mitglieder gefunden");
+            LOGGER.debug("Für Team {} wurden {} Mitglieder gefunden", manschaftCounter, teamMemberMapping.get(teamNameList[manschaftCounter]).size());
             //Iterate through playerlist of each team
             for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
                 //Create columns for player content
