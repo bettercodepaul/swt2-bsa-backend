@@ -69,7 +69,6 @@ public class VereinComponentImpl implements VereinComponent {
         return vereinDO;
     }
 
-
     @Override
     public VereinDO update(VereinDO vereinDO, long currentDsbMitglied) {
         checkVereinDO(vereinDO, currentDsbMitglied);
