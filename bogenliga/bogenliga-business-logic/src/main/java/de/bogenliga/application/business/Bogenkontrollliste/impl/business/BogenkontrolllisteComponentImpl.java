@@ -3,7 +3,7 @@ package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
 
-        Hashtable<String, List<DsbMitgliedDO>> teamMemberMapping = new Hashtable<>();
+        HashMap<String, List<DsbMitgliedDO>> teamMemberMapping = new HashMap<>();
 
         // Collect Information
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
@@ -136,7 +136,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      * @param wettkampfDO WettkampfDO for competition info
      * @param teamMemberMapping Key: TeamName String, Value: List of DSBMitgliedDO (Contains shooters)
      */
-    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, Hashtable<String, List<DsbMitgliedDO>> teamMemberMapping, String veranstaltungsName) {
+    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, String veranstaltungsName) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
