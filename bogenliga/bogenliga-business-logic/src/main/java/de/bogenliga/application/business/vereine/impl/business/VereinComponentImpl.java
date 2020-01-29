@@ -64,11 +64,9 @@ public class VereinComponentImpl implements VereinComponent {
     @Override
     public VereinDO findById(long vereinId) {
         final VereinBE vereinBE = vereinDAO.findById(vereinId);
-
         final VereinDO vereinDO = VereinMapper.toVereinDO.apply(vereinBE);
-       vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
+        vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
         return vereinDO;
-
     }
 
 
@@ -79,7 +77,6 @@ public class VereinComponentImpl implements VereinComponent {
 
         final VereinBE vereinBE = VereinMapper.toVereinBE.apply(vereinDO);
         final VereinBE persistedVereinBE = vereinDAO.update(vereinBE, currentDsbMitglied);
-
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
 
