@@ -50,7 +50,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteComponent {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BogenkontrolllisteComponentImpl.class);
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
     private static final String PRECONDITION_DOCUMENT = "doc cannot be null";
@@ -100,13 +100,13 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         for(int i=1; i <= 8; i++){
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
-            LOGGER.debug("Teamname {} wurde gefunden ", teamName);
+            LOGGER.info("Teamname {} wurde gefunden ", teamName);
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
             int count = 0;
             for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
                 dsbMitgliedDOList.add(dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
-                LOGGER.debug("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
+                LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
                 count++;
             }
             teamMemberMapping.put(teamName,dsbMitgliedDOList);
@@ -144,7 +144,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         String[] teamNameList = new String[8];
         int i = 0;
 
-        LOGGER.debug("Es wurden {} Teams gefunden", teamMemberMapping.size());
+        LOGGER.info("Es wurden {} Teams gefunden", teamMemberMapping.size());
         for (String key : teamMemberMapping.keySet()) {
             teamNameList[i] = key;
             i++;
@@ -223,7 +223,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
-            LOGGER.debug("Für Team {} wurden {} Mitglieder gefunden", manschaftCounter, teamMemberMapping.get(teamNameList[manschaftCounter]).size());
+            LOGGER.info("Für Team {} wurden {} Mitglieder gefunden", manschaftCounter, teamMemberMapping.get(teamNameList[manschaftCounter]).size());
             //Iterate through playerlist of each team
             for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
                 //Create columns for player content
