@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.bogenkontrollliste.impl.business;
+package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
-import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
+import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
