@@ -66,10 +66,7 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
         this.active = active;
     }
 
-    // new CM
-
-
-    public Long getAccessToken() {return accessToken;}
+    public Long getAccessToken() {return this.accessToken;}
 
     public void setAccessToken(Long accessToken) {this.accessToken = accessToken;}
 }
