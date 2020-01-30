@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
+import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
 import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -160,11 +161,19 @@ public class VereinComponentImplTest {
         // prepare test data
         final VereinBE expectedBE = getVereinBE();
 
+        final RegionenBE regionbe =getRegionenBE();
+
+
         // configure mocks
         when(vereinDAO.findById(VEREIN_ID)).thenReturn(expectedBE);
 
+        when(regionenDAO.findById(expectedBE.getVereinRegionId())).thenReturn(regionbe);
+
         // call test method
+
+
         final VereinDO actual = underTest.findById(VEREIN_ID);
+
 
         // assert result
         assertThat(actual).isNotNull();
@@ -172,8 +181,12 @@ public class VereinComponentImplTest {
         assertThat(actual.getId())
                 .isEqualTo(expectedBE.getVereinId());
 
+        assertThat(actual.getRegionId().equals(expectedBE.getVereinRegionId()));
+        assertThat(actual.getRegionName().equals(regionbe.getRegionName()));
+
         // verify invocations
         verify(vereinDAO).findById(VEREIN_ID);
+        verify(regionenDAO).findById(expectedBE.getVereinRegionId());
     }
 
     @Test

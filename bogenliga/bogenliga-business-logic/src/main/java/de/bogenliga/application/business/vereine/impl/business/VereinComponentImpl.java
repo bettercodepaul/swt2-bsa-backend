@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,9 +64,11 @@ public class VereinComponentImpl implements VereinComponent {
     @Override
     public VereinDO findById(long vereinId) {
         final VereinBE vereinBE = vereinDAO.findById(vereinId);
-        return VereinMapper.toVereinDO.apply(vereinBE);
-    }
+        final VereinDO vereinDO = VereinMapper.toVereinDO.apply(vereinBE);
+        vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
 
+        return vereinDO;
+    }
 
     @Override
     public VereinDO update(VereinDO vereinDO, long currentDsbMitglied) {
@@ -74,7 +77,6 @@ public class VereinComponentImpl implements VereinComponent {
 
         final VereinBE vereinBE = VereinMapper.toVereinBE.apply(vereinDO);
         final VereinBE persistedVereinBE = vereinDAO.update(vereinBE, currentDsbMitglied);
-
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
 
@@ -115,7 +117,7 @@ public class VereinComponentImpl implements VereinComponent {
             VereinDO tmpVerein = vereinDOList.get(i);
 
             Optional<RegionenBE> regionenBEOptional = regionenBEList.stream()
-                    .filter(region -> region.getRegionId() == tmpVerein.getRegionId()).findFirst();
+                    .filter(region -> region.getRegionId().equals(tmpVerein.getRegionId())).findFirst();
 
             if(regionenBEOptional.isPresent()) {
                 tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
