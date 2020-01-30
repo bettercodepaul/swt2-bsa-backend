@@ -66,6 +66,7 @@ public class VereinComponentImpl implements VereinComponent {
         final VereinBE vereinBE = vereinDAO.findById(vereinId);
         final VereinDO vereinDO = VereinMapper.toVereinDO.apply(vereinBE);
         vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
+
         return vereinDO;
     }
 
