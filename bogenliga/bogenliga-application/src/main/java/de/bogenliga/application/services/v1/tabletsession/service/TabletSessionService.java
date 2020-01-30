@@ -55,15 +55,8 @@ public class TabletSessionService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<TabletSessionDTO> findAll() {
-    List<TabletSessionDO> sessionsDO = tabletSessionComponent.findAll();
-    List<TabletSessionDTO> sessionsDTO = new ArrayList<>();
-    TabletSessionDTO tempDTO;
-
-    for(TabletSessionDO DO: sessionsDO){
-        tempDTO = TabletSessionDTOMapper.toDTO.apply(DO);
-        sessionsDTO.add(tempDTO);
-    }
-    return sessionsDTO;
+        List<TabletSessionDO> sessionDOs = tabletSessionComponent.findAll();
+        return sessionDOs.stream().map(TabletSessionDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
