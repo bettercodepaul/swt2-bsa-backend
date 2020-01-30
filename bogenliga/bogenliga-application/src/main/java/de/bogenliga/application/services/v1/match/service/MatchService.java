@@ -244,6 +244,7 @@ public class MatchService implements ServiceFacade {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+
     public List<MatchDTO> findInklNameby(@PathVariable("id") Long wettkampfid) {
 
         this.checkMatchId(wettkampfid);
