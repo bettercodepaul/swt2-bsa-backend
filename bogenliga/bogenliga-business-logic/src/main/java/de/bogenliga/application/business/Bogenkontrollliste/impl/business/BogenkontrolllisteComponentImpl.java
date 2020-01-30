@@ -3,7 +3,7 @@ package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,6 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
-import de.bogenliga.application.business.Setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
@@ -50,7 +49,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteComponent {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BogenkontrolllisteComponentImpl.class);
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
     private static final String PRECONDITION_DOCUMENT = "doc cannot be null";
@@ -89,7 +88,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
 
-        Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping = new Hashtable<>();
+        HashMap<String, List<DsbMitgliedDO>> teamMemberMapping = new HashMap<>();
 
         // Collect Information
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
@@ -99,13 +98,17 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
         for(int i=1; i <= 8; i++){
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
-            String TeamName = getTeamName(matchDO.getMannschaftId());
+            String teamName = getTeamName(matchDO.getMannschaftId());
+            LOGGER.info("Teamname {} wurde gefunden ", teamName);
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+            int count = 0;
             for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
                 dsbMitgliedDOList.add(dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
+                LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
+                count++;
             }
-            TeamMemberMapping.put(TeamName,dsbMitgliedDOList);
+            teamMemberMapping.put(teamName,dsbMitgliedDOList);
 
 
         }
@@ -114,7 +117,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateBogenkontrolllisteDoc(doc, wettkampfDO, TeamMemberMapping, eventName);
+            generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName);
 
             return result.toByteArray();
 
@@ -130,31 +133,32 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      *
      * @param doc Doc to write
      * @param wettkampfDO WettkampfDO for competition info
-     * @param TeamMemberMapping Key: TeamName String, Value: List of DSBMitgliedDO (Contains shooters)
+     * @param teamMemberMapping Key: TeamName String, Value: List of DSBMitgliedDO (Contains shooters)
      */
-    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, Hashtable<String, List<DsbMitgliedDO>> TeamMemberMapping, String veranstaltungsName) {
+    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, String veranstaltungsName) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
-        Preconditions.checkArgument(!TeamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
+        Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
         String[] teamNameList = new String[8];
         int i = 0;
 
-        for (String key : TeamMemberMapping.keySet()) {
+        LOGGER.info("Es wurden {} Teams gefunden", teamMemberMapping.size());
+        for (String key : teamMemberMapping.keySet()) {
             teamNameList[i] = key;
             i++;
         }
 
         //Table for the entire document
-        final Table DocTable = new Table(UnitValue.createPercentArray(1), true);
+        final Table docTable = new Table(UnitValue.createPercentArray(1), true);
 
         //Table for the page title
-        final Table PageTitle = new Table(UnitValue.createPercentArray(1), true);
-        PageTitle.addCell(addTitle(wettkampfDO, veranstaltungsName));
+        final Table pageTitle = new Table(UnitValue.createPercentArray(1), true);
+        pageTitle.addCell(addTitle(wettkampfDO, veranstaltungsName));
 
         //Add page title on every page
-        DocTable.addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
-                .add(PageTitle));
+        docTable.addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
+                .add(pageTitle));
 
         //Iterate through all the teams
         for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
@@ -200,7 +204,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
-            tableFirstRowThirdPart                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+            tableFirstRowThirdPart.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(10.0F))
                 )
             ;
@@ -218,9 +222,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 )
             ;
 
+            LOGGER.info("Für Team {} wurden {} Mitglieder gefunden", manschaftCounter, teamMemberMapping.get(teamNameList[manschaftCounter]).size());
             //Iterate through playerlist of each team
-            for (int mitgliedCounter = 1; mitgliedCounter < TeamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
-
+            for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
                 //Create columns for player content
                 final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
@@ -249,8 +253,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                         .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph(mitgliedCounter + " " + TeamMemberMapping.get(
-                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + TeamMemberMapping.get(
+                        .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
+                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
                                 teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
                 ;
 
@@ -311,7 +315,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 }
 
                 //Add a Border to the last line with an empty cell
-                if (mitgliedCounter == TeamMemberMapping.get(teamNameList[manschaftCounter]).size()){
+                if (mitgliedCounter == teamMemberMapping.get(teamNameList[manschaftCounter]).size()){
                     tableBody
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
                             )
@@ -324,7 +328,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             }
 
             //Add team table to the document table
-            DocTable
+            docTable
                     .setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                     .add(tableBody));
@@ -333,7 +337,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         //Add document table to document
         doc
                 .add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
-                        .add(DocTable).setBorder(Border.NO_BORDER)
+                        .add(docTable).setBorder(Border.NO_BORDER)
                 )
         ;
 
