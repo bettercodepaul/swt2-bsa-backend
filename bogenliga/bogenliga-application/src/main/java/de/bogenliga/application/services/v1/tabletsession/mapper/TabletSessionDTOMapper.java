@@ -19,12 +19,12 @@ public class TabletSessionDTOMapper {
      */
     public static final Function<TabletSessionDO, TabletSessionDTO> toDTO = tabDO -> new TabletSessionDTO(
             tabDO.getWettkampfId(), tabDO.getScheibennummer(), tabDO.getSatznummer(),
-            tabDO.getMatchId(), tabDO.isActive());
+            tabDO.getMatchId(), tabDO.isActive(), tabDO.getAccessToken());
 
     /**
      * Map {@Link TabletSessionDTO} to {@Link TabletSessionDO}
      */
     public static final Function<TabletSessionDTO, TabletSessionDO> toDO = tabDTO -> new TabletSessionDO(
             tabDTO.getWettkampfId(), tabDTO.getScheibennummer(), tabDTO.getSatznummer(),
-            tabDTO.getMatchId(), tabDTO.isActive());
+            tabDTO.getMatchId(), tabDTO.isActive(), tabDTO.getAccessToken());
 }
