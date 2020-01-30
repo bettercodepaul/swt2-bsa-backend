@@ -11,14 +11,16 @@ public class TabletSessionDTO {
     private Long matchId;
     private Long otherMatchId;
     private boolean active = false;
+    private Long accessToken;
 
 
-    public TabletSessionDTO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active) {
+    public TabletSessionDTO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken) {
         this.wettkampfId = wettkampfId;
         this.scheibennummer = scheibennummer;
         this.satznummer = satznummer;
         this.matchId = matchId;
         this.active = active;
+        this.accessToken = accessToken;
     }
 
     public TabletSessionDTO(){
@@ -80,5 +82,13 @@ public class TabletSessionDTO {
 
     public Long getOtherMatchId() {
         return this.otherMatchId;
+    }
+
+    public Long getAccessToken() {
+        return this.accessToken;
+    }
+
+    public void setAccessToken(Long accessToken) {
+        this.accessToken = accessToken;
     }
 }
