@@ -23,10 +23,22 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
 
     /**
      *
-     * todo
+     * Die Funktion liefert alle einer Mannschaft zugeordneten Schützen,
+     * für die in mindestens einem Wettkampf Pfeilwerte erfasst wurden,
+     * d.h. sie haben aktiv geschossen
      */
 
     List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long MannschaftsmitgliederMannschaftsId);
+
+
+    /**
+     *
+     * Die Funktion liefert alle einer Mannschaft zugeordneten Schützen,
+     * unabhängig ob sie schon aktiv geschossen haben. Z.B. für die Bogenkontrollliste.
+     */
+
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeamGemeldet(Long MannschaftsmitgliederMannschaftsId);
+
 
 
 
