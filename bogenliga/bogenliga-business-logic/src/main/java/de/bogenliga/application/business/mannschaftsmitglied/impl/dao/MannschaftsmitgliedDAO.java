@@ -98,6 +98,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .whereEquals(MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID)
             .compose().toString();
 
+    //hier suchen wir  alle Teammtiglieder, die eingesetzt wurden
+    // d.h. nicht nur gemeldet, sondern sie haben auch Pfeilwerte erfasst
     private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
@@ -106,6 +108,18 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
                     DSB_MITGLIED_TABLE_MITGLIED_ID)
             .whereGteRaw(MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, "1")
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
+            .compose().toString();
+
+    //hier suchen wir  alle Teammtiglieder, die potentiell eingesetzt werden könnten
+    // d.h. sie wurden für die Mannschaft gemeldet.
+    private static final String FIND_ALL_SCHUETZE_TEAM_GEMELDET = new QueryBuilder()
+            .selectFields(selectedFields)
+            .from(TABLE, TABLE_ALIAS)
+            .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
+            .on(TABLE_ALIAS, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, DSB_MITGLIED_TABLE_ALIAS,
+                    DSB_MITGLIED_TABLE_MITGLIED_ID)
+            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .orderBy(MANNSCHAFTSMITGLIED_TABLE_ID)
             .compose().toString();
 
@@ -164,6 +178,10 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     public List<MannschaftsmitgliedBE> findAllSchuetzeInTeam(final long id) {
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM, id);
+    }
+
+    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeamGemeldet(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM_GEMELDET, id);
     }
 
 

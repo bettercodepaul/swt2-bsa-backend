@@ -245,7 +245,7 @@ public class DsbMannschaftService implements ServiceFacade {
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
 
-        LOG.debug("Receive 'create' request with verein nummer '{}', benutzer id '{}', veranstaltung id '{}',",
+        LOG.debug("Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
 
                // dsbMannschaftDTO.getId(),
                 dsbMannschaftDTO.getVereinId(),
@@ -256,7 +256,7 @@ public class DsbMannschaftService implements ServiceFacade {
         final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final DsbMannschaftDO updatedDsbMannschaftDO = dsbMannschaftComponent.update(newDsbMannschaftDO, userId);
+        final DsbMannschaftDO updatedDsbMannschaftDO = dsbMannschaftComponent.update(newDsbMannschaftDO, dsbMannschaftDTO.getId());
         return DsbMannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
     }
 
