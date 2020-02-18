@@ -103,7 +103,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         for (int i = 1; i <= 8; i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
-            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
+            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeamGemeldet(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
 
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
