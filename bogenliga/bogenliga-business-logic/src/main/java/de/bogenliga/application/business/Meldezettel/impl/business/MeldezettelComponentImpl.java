@@ -555,13 +555,22 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 )
             ;
 
+            // Create table for Mitglieder with 2 fixed width columns
+            final Table mitgliederTable = new Table(new float[]{150F, 150F});
             for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
-                mainTableFifthRowFirstPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(new Paragraph(mitgliedCounter + ". " + teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setFontSize(8.0F))
-                    )
+                DsbMitgliedDO mitgliedDO = teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1);
+                mitgliederTable
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mitgliedCounter + ". " + mitgliedDO.getNachname() + ", " + mitgliedDO.getVorname()).setFontSize(8.0F))
+                        )
                 ;
             }
+            // Add mitgliederTable to mainTable
+            mainTableFifthRowFirstPart
+                    .addCell(
+                            new Cell().setBorder(Border.NO_BORDER)
+                                    .add(mitgliederTable)
+                    );
 
             // Fill second table in fifth row
             mainTableFifthRowSecondPartFirstRow
