@@ -9,6 +9,6 @@ import de.bogenliga.application.common.service.ServiceFacade;
  * Benötigt Erweiterung für die Kommunikation der Spotter-Daten in die Datenbank
  */
 public class SpotterService implements ServiceFacade {
-
-
+//need to be implemented
+    int test = 0;
 }
