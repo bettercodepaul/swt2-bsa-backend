@@ -57,6 +57,17 @@ public class PasseService implements ServiceFacade {
     }
 
 
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<PasseDTO> findAll(){
+        final List<PasseDO> passeDOList = passeComponent.findAll();
+
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+
     @RequestMapping(value = "/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
