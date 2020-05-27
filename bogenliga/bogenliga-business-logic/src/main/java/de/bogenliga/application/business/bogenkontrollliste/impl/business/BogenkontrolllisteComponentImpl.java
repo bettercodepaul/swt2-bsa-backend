@@ -30,6 +30,8 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.Mannschaftsmitg
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -62,6 +64,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final MatchComponent matchComponent;
+    private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final DsbMitgliedComponent dsbMitgliedComponent;
 
@@ -72,6 +75,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                            final WettkampfComponent wettkampfComponent,
                                            final VeranstaltungComponent veranstaltungComponent,
                                            final MatchComponent matchComponent,
+                                           final PasseComponent passeComponent,
                                            final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                            final DsbMitgliedComponent dsbMitgliedComponent) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
@@ -79,6 +83,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.matchComponent = matchComponent;
+        this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
@@ -104,9 +109,39 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
             int count = 0;
             for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
-                dsbMitgliedDOList.add(dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
-                LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
-                count++;
+                DsbMitgliedDO dsbMitglied=dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
+                long thisLiga=this.veranstaltungComponent.findById(this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+                long thisWettkamptag=this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfTag();
+                long thisSportjahr=this.veranstaltungComponent.findById(this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                boolean darfSchiessen=true;
+                //find highest Liga and check if mitglied has already shot on this Wettkampftag
+                List<MannschaftsmitgliedDO> mitgliedIn=this.mannschaftsmitgliedComponent.findByMemberId(mannschaftsmitglied.getDsbMitgliedId());
+                long highestLiga=7;
+                for(MannschaftsmitgliedDO mitglied: mitgliedIn){
+                    long liga=7;
+                    List<WettkampfDO> wettkaempfe=this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
+                    for(WettkampfDO wettkampf: wettkaempfe){
+                        //check Sportjahr of Veranstaltung
+                        long wettkampfSportjahr=this.veranstaltungComponent.findById(wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                        if(thisSportjahr == wettkampfSportjahr) {
+                            List<PasseDO> passen = this.passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(), dsbMitglied.getId());
+                            if (!passen.isEmpty()) {
+                                liga = this.veranstaltungComponent.findById( wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+                                if (liga < highestLiga) {
+                                    highestLiga = liga;
+                                }
+                                darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag()) && darfSchiessen;
+                            }
+                        }
+                    }
+                }
+                if(thisLiga <= highestLiga && darfSchiessen){
+                    dsbMitgliedDOList.add(dsbMitglied);
+                    LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
+                    count++;
+                }else{
+                    LOGGER.info("Teammitglied {} {} konnte nicht hinzugefügt werden, da es schon in einer höheren Liga oder am selben Wettkampftag geschossen hat.", dsbMitglied.getNachname(), dsbMitglied.getVorname());
+                }
             }
             teamMemberMapping.put(teamName,dsbMitgliedDOList);
 
@@ -173,57 +208,70 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             //Add content to column headers
 
             tableFirstRowFirstPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("Anw.").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph(teamNameList[manschaftCounter]).setBold()).setFontSize(10.0F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("Anw.").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph(teamNameList[manschaftCounter]).setBold()).setFontSize(10.0F))
             ;
 
             tableFirstRowSecondPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("M1").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("M2").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("M3").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("M4").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("M5").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("M6").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                    .add(new Paragraph("M7").setFontSize(10.0F))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M1").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M2").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M3").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M4").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M5").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M6").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph("M7").setFontSize(10.0F))
+                    )
             ;
 
             tableFirstRowThirdPart.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(10.0F))
-                )
+            )
             ;
 
             //Add column headers to team table
             tableBody
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableFirstRowFirstPart)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableFirstRowSecondPart)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableFirstRowThirdPart)
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableFirstRowFirstPart)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableFirstRowSecondPart)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableFirstRowThirdPart)
+                    )
             ;
 
             LOGGER.info("Für Team {} wurden {} Mitglieder gefunden", manschaftCounter, teamMemberMapping.get(teamNameList[manschaftCounter]).size());
-            //Iterate through playerlist of each team
+            //Iterate through playerlist of each team, if no player was found, add additional information
+            System.out.println(teamMemberMapping.get(teamNameList[manschaftCounter]).size());
+            if(teamMemberMapping.get(teamNameList[manschaftCounter]).size()==0){
+                System.out.println("test");
+                final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
+                tableBodyFirstPart.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
+                        .add(new Paragraph( "Keines der Teammitglieder darf an diesem Wettkampftag oder in dieser Liga schiessen.").setBold().setFontSize(10.0F)));
+
+                tableBody
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableBodyFirstPart)
+                        );
+
+            }
             for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
                 //Create columns for player content
                 final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
@@ -250,36 +298,36 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
                 //Add content to player columns
                 tableBodyFirstPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
-                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
-                                teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
+                                        teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
+                                        teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
                 ;
 
                 tableBodySecondPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(tableCheckbox2.setBorder(Border.NO_BORDER))
-                    )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(tableCheckbox2.setBorder(Border.NO_BORDER))
+                        )
                 ;
 
                 tableBodyThirdPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                        .add(new Paragraph(" ").setFontSize(10.0F))
-                    )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph(" ").setFontSize(10.0F))
+                        )
                 ;
 
                 //Add player columns to team tables
@@ -331,7 +379,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             docTable
                     .setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableBody));
+                            .add(tableBody));
         }
 
         //Add document table to document
@@ -353,7 +401,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      */
     private static Cell addTitle(WettkampfDO wettkampfDO, String veranstaltungsName){
         return new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Bogenkontrolle / "+wettkampfDO.getWettkampfTag()+". Bogenligawettkampf / "+veranstaltungsName)
-                        .setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(14.0F))
+                .setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(14.0F))
                 .add(new Paragraph("am "+wettkampfDO.getWettkampfDatum())
                         .setTextAlignment(TextAlignment.RIGHT).setFontSize(10.0F));
     }
