@@ -154,6 +154,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      */
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
 
+        doc.setFontSize(10);
+
         //description
         DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
@@ -166,10 +168,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         doc.add(new Paragraph(wettkampfDO.getWettkampfOrt() + ", " + wettkampfDO.getWettkampfBeginn() + " Uhr"));
 
         doc.add(new Paragraph(""));
-        doc.add(new Paragraph(""));
 
         //Create table
         Table table = new Table(new float[]{40, 150, 40, 150, 40, 150, 40, 150, 40});
+
+        //adjust table height to fit on a single A4 page (129 is fixed value for height of the first 4 doc Paragraphs)
+        table.setHeight(PageSize.A4.getWidth() - 129 - doc.getBottomMargin());
 
         //Table header
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
@@ -185,32 +189,32 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
         for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++) {
-            table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))));
+            table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / 8));
             table.addCell(new Cell(2, 1).add(new Paragraph(
                     SETZLISTE_STRUCTURE[i][0] + " " + getTeamName(SETZLISTE_STRUCTURE[i][0], setzlisteBEList)
                             + "\n " + SETZLISTE_STRUCTURE[i][1] + " " + getTeamName(SETZLISTE_STRUCTURE[i][1],
-                            setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
+                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(20));
             table.addCell(new Cell(2, 1).add(new Paragraph(
                     SETZLISTE_STRUCTURE[i][2] + " " + getTeamName(SETZLISTE_STRUCTURE[i][2], setzlisteBEList)
                             + "\n " + SETZLISTE_STRUCTURE[i][3] + " " + getTeamName(SETZLISTE_STRUCTURE[i][3],
-                            setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
+                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(20));
             table.addCell(new Cell(2, 1).add(new Paragraph(
                     SETZLISTE_STRUCTURE[i][4] + " " + getTeamName(SETZLISTE_STRUCTURE[i][4], setzlisteBEList)
                             + "\n " + SETZLISTE_STRUCTURE[i][5] + " " + getTeamName(SETZLISTE_STRUCTURE[i][5],
-                            setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
+                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(20));
             table.addCell(new Cell(2, 1).add(new Paragraph(
                     SETZLISTE_STRUCTURE[i][6] + " " + getTeamName(SETZLISTE_STRUCTURE[i][6], setzlisteBEList)
                             + "\n " + SETZLISTE_STRUCTURE[i][7] + " " + getTeamName(SETZLISTE_STRUCTURE[i][7],
-                            setzlisteBEList))));
-            table.addCell(new Cell().setHeight(15));
+                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(20));
 
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
-            table.addCell(new Cell().setHeight(15));
+            table.addCell(new Cell().setHeight(20));
+            table.addCell(new Cell().setHeight(20));
+            table.addCell(new Cell().setHeight(20));
+            table.addCell(new Cell().setHeight(20));
         }
 
         doc.add(table);
