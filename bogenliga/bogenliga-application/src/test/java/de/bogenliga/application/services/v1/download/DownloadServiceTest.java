@@ -10,7 +10,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
+import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import static org.mockito.Mockito.*;
 
 /**
