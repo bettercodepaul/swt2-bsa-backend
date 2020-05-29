@@ -228,9 +228,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         if (firstTwoLines.length() <= 26) {
             firstTwoLines += "\n";
         }
-        String teamsCell = firstTwoLines + "\n" +
+        return firstTwoLines + "\n" +
                 SETZLISTE_STRUCTURE[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE[index][pos2], setzlisteBEList);
-        return teamsCell;
     }
 
     /**
