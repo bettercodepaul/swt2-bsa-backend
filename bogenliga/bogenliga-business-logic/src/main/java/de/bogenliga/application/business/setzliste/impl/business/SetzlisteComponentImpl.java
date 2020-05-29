@@ -154,7 +154,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      */
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
 
-        doc.setFontSize(10);
+        doc.setFontSize(9.2f);
 
         //description
         DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
@@ -186,39 +186,51 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 7 + 8")));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("M.Pkte")));
 
+        int mpkteSpacing = 25;
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
         for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++) {
             table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    SETZLISTE_STRUCTURE[i][0] + " " + getTeamName(SETZLISTE_STRUCTURE[i][0], setzlisteBEList)
-                            + "\n " + SETZLISTE_STRUCTURE[i][1] + " " + getTeamName(SETZLISTE_STRUCTURE[i][1],
-                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(20));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    SETZLISTE_STRUCTURE[i][2] + " " + getTeamName(SETZLISTE_STRUCTURE[i][2], setzlisteBEList)
-                            + "\n " + SETZLISTE_STRUCTURE[i][3] + " " + getTeamName(SETZLISTE_STRUCTURE[i][3],
-                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(20));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    SETZLISTE_STRUCTURE[i][4] + " " + getTeamName(SETZLISTE_STRUCTURE[i][4], setzlisteBEList)
-                            + "\n " + SETZLISTE_STRUCTURE[i][5] + " " + getTeamName(SETZLISTE_STRUCTURE[i][5],
-                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(20));
-            table.addCell(new Cell(2, 1).add(new Paragraph(
-                    SETZLISTE_STRUCTURE[i][6] + " " + getTeamName(SETZLISTE_STRUCTURE[i][6], setzlisteBEList)
-                            + "\n " + SETZLISTE_STRUCTURE[i][7] + " " + getTeamName(SETZLISTE_STRUCTURE[i][7],
-                            setzlisteBEList))).setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(20));
 
-            table.addCell(new Cell().setHeight(20));
-            table.addCell(new Cell().setHeight(20));
-            table.addCell(new Cell().setHeight(20));
-            table.addCell(new Cell().setHeight(20));
+            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 0, 1, setzlisteBEList)))
+                    .setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(mpkteSpacing));
+            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 2, 3, setzlisteBEList)))
+                    .setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(mpkteSpacing));
+            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 4, 5, setzlisteBEList)))
+                    .setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(mpkteSpacing));
+            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 6, 7, setzlisteBEList)))
+                    .setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell().setHeight(mpkteSpacing));
+
+            table.addCell(new Cell().setHeight(mpkteSpacing));
+            table.addCell(new Cell().setHeight(mpkteSpacing));
+            table.addCell(new Cell().setHeight(mpkteSpacing));
+            table.addCell(new Cell().setHeight(mpkteSpacing));
         }
 
         doc.add(table);
         doc.close();
+    }
+
+    /**
+     * Helper function for generateDoc(), that gets two Teams that compete in a Match on the Setzliste
+     * @param index Match no.
+     * @param pos1 Position of first Team in SETZTLISTE_STRUCTURE
+     * @param pos2 Position of second Team in SETZTLISTE_STRUCTURE
+     * @param setzlisteBEList the List with data for generateDoc
+     * @return String with 2 Teams where each team has two lines of space with a line width of X chars
+     * */
+    private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList) {
+        String firstTwoLines = SETZLISTE_STRUCTURE[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE[index][pos1], setzlisteBEList);
+        if (firstTwoLines.length() <= 26) {
+            firstTwoLines += "\n";
+        }
+        String teamsCell = firstTwoLines + "\n" +
+                SETZLISTE_STRUCTURE[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE[index][pos2], setzlisteBEList);
+        return teamsCell;
     }
 
     /**
