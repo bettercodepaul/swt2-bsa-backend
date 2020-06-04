@@ -36,6 +36,7 @@ public class WettkampfComponentImplTest {
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
     private static final long wettkampf_Wettkampftyp_Id = 1;
+    private static final long wettkampf_kampfrichter_Id = 8;
 
 
     @Rule
@@ -62,7 +63,7 @@ public class WettkampfComponentImplTest {
       expectedBE.setWettkampfTag(wettkampf_Tag);
       expectedBE.setWettkampfDisziplinId(wettkampf_Disziplin_Id);
       expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
-
+      expectedBE.setKampfrichterId(wettkampf_kampfrichter_Id);
 
         return expectedBE;
     }
@@ -79,7 +80,8 @@ public class WettkampfComponentImplTest {
                 wettkampf_Wettkampftyp_Id,
                 created_At_Utc,
                 user_Id,
-                version
+                version,
+                wettkampf_kampfrichter_Id
                 );
     }
 
@@ -119,6 +121,8 @@ public class WettkampfComponentImplTest {
                 .isEqualTo(expectedBE.getWettkampfDisziplinId());
         assertThat(actual.get(0).getWettkampfTypId())
                 .isEqualTo(expectedBE.getWettkampfTypId());
+        assertThat(actual.get(0).getKampfrichterID())
+                .isEqualTo(expectedBE.getKampfrichterId());
 
         // verify invocations
         verify(wettkampfDAO).findAll();

@@ -23,7 +23,7 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
  * I handle all application exceptions globally and generate an error response with a suitable http status code and an
  * error message
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh 
  */
 @ControllerAdvice
 @RestController
