@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.passe.impl.dao.PasseDAO;
 import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.business.passe.impl.mapper.PasseMapper;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -37,6 +40,7 @@ public class PasseComponentImpl implements PasseComponent {
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
     private final PasseDAO passeDAO;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
 
     /**
@@ -47,8 +51,10 @@ public class PasseComponentImpl implements PasseComponent {
      * @param passeDAO to access the database and return passe representations
      */
     @Autowired
-    public PasseComponentImpl(final PasseDAO passeDAO) {
+    public PasseComponentImpl(final PasseDAO passeDAO,
+                              final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
         this.passeDAO = passeDAO;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
 
@@ -246,6 +252,16 @@ public class PasseComponentImpl implements PasseComponent {
     public PasseDO create(PasseDO passeDO, final Long currentUserId) {
         checkPasseDO(passeDO);
         checkPreconditions(currentUserId, "currentUserId");
+
+
+        List<PasseDO> passen=this.findByWettkampfIdAndMitgliedId(passeDO.getPasseWettkampfId(),passeDO.getPasseDsbMitgliedId());
+        if(passen.isEmpty()){
+            //update dsbMitgliedEingesetzt
+            MannschaftsmitgliedDO mitglied=this.mannschaftsmitgliedComponent.findByMemberAndTeamId(passeDO.getPasseMannschaftId(),passeDO.getPasseDsbMitgliedId());
+            mitglied.setDsbMitgliedEingesetzt(mitglied.getDsbMitgliedEingesetzt()+1);
+            this.mannschaftsmitgliedComponent.update(mitglied,mitglied.getDsbMitgliedId());
+        }
+
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
 
         final PasseBE persistedPasseBE = passeDAO.create(passeBE, currentUserId);
