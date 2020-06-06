@@ -2,7 +2,11 @@ package de.bogenliga.application.business.schusszettel.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
@@ -89,7 +93,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
 
         List<PasseDO> passen1 = passeComponent.findByMatchId(match1.getId());
-        passen1.sort((p1, p2) -> p2.getPasseLfdnr().compareTo(p1.getPasseLfdnr()));
         List<PasseDO> passen2 = passeComponent.findByMatchId(match2.getId());
 
         return generateFilledDoc(match1, match2, passen1, passen2).toByteArray();
@@ -128,6 +131,25 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
+        // TODO: Für beide matches
+        Map<Long, List<PasseDO>> schuetzenPasseMap = new HashMap<>();
+        for (PasseDO passeDO : passenDOs[0]) {
+            // schuetzenPasseMap.computeIfAbsent(passeDO.getPasseDsbMitgliedId(), k -> new ArrayList<>());
+            // schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
+
+            // Temp fix to only pick 3 schuetzen
+            if (!schuetzenPasseMap.containsKey(passeDO.getPasseDsbMitgliedId())) {
+                if (schuetzenPasseMap.size() < 3) {
+                    schuetzenPasseMap.put(passeDO.getPasseDsbMitgliedId(), new ArrayList<>());
+                    schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
+                }
+            } else {
+                // Temp fix to only add 5 passen
+                if (schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).size() < 5) {
+                    schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
+                }
+            }
+        }
 
         // Generate special settings for some parts
         Border specialBorder = new SolidBorder(Border.SOLID);
@@ -136,6 +158,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         DottedLine cutterDottedLine = new DottedLine(0.5F);
 
         for (int i = 1; i <= 2; i++) {
+            MatchDO currentMatch = matchDOs[i-1];
             if (passenDOs[i-1].size() == 0) {
                 continue;
             }
@@ -170,7 +193,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-                            .add(new Paragraph("Scheibe " + matchDOs[i - 1].getScheibenNummer()).setBold().setFontSize(12.0F))
+                            .add(new Paragraph("Scheibe " + currentMatch.getScheibenNummer()).setBold().setFontSize(12.0F))
                     )
             ;
 
@@ -248,12 +271,17 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
                             .add(new Paragraph("Schütze").setFontSize(8.0F))
                     )
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
+            for (Map.Entry<Long, List<PasseDO>> entry : schuetzenPasseMap.entrySet()) {
+                // Add schutzen Rueckennummern
+                tableSecondRowFirstPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(entry.getKey().toString()).setFontSize(8.0F)));
+                // Sort each Schuetzen's passen by lfdnr
+                entry.getValue().sort((p1, p2) -> p2.getPasseLfdnr().compareTo(p1.getPasseLfdnr()));
+            }
+
+            // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+            tableSecondRowFirstPart.addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)));
+
             // Second part
             tableSecondRowSecondPart
                     .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
@@ -300,58 +328,46 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
                             .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
-                    )
-                    // Add thirty cells for text input
-                    .addCell(new Cell().setHeight(20.0F).add(new Paragraph(passenDOs[i-1].get(1).getPfeil1().toString()).setFontSize(10.0F)))
-                    .addCell(new Cell().setHeight(20.0F).add(new Paragraph(passenDOs[i-1].get(1).getPfeil2().toString()).setFontSize(10.0F)))
-                    .addCell(new Cell().setHeight(20.0F).add(new Paragraph(passenDOs[i-1].get(2).getPfeil1().toString()).setFontSize(10.0F)))
-                    .addCell(new Cell().setHeight(20.0F).add(new Paragraph(passenDOs[i-1].get(2).getPfeil2().toString()).setFontSize(10.0F)))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setHeight(20.0F))
+                    );
+
+            // Add sum array and initialize with 0
+            Integer[] sums = new Integer[5];
+            Arrays.fill(sums, 0);
+
+            // Fill in passen for each schuetze
+            for (Map.Entry<Long, List<PasseDO>> entry : schuetzenPasseMap.entrySet()) {
+                // Iterate over all 5 passen
+                for (int j = 0; j < 5; j++) {
+                    // Add passe data to table, if there's no more data available, fill in zeroes
+                    if (entry.getValue().size() > j)  {
+                        Integer pfeil1 = entry.getValue().get(j).getPfeil1();
+                        Integer pfeil2 = entry.getValue().get(j).getPfeil2();
+                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(pfeil1.toString()).setFontSize(8.0F)));
+                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(pfeil2.toString()).setFontSize(8.0F)));
+                        // Add score to sum for this passe
+                        sums[j] += pfeil1 + pfeil2;
+                    } else {
+                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph("0").setFontSize(8.0F)));
+                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph("0").setFontSize(8.0F)));
+                    }
+
+                }
+            }
+
+            // Add sums
+            for (Integer sum : sums) {
+                tableSecondRowSecondPart
+                        .addCell(
+                                new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
+                                        .setHeight(20.0F)
+                                        .add(new Paragraph("Summe").setFontSize(10.0F))
+                        )
+                        .addCell(
+                                new Cell().setHeight(20.0F).add(new Paragraph(sum.toString()).setFontSize(10.0F))
+                        );
+            }
+
+            tableSecondRowSecondPart
                     // Add ten cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                     .addCell(new Cell().setBorder(Border.NO_BORDER))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
@@ -365,6 +381,16 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
+            // Temp fix. turn all Strafpunkte into "0" if null
+            String[] strafpunkte = new String[] {
+                    currentMatch.getStrafPunkteSatz1() == null ? "0" : currentMatch.getStrafPunkteSatz1().toString(),
+                    currentMatch.getStrafPunkteSatz2() == null ? "0" : currentMatch.getStrafPunkteSatz2().toString(),
+                    currentMatch.getStrafPunkteSatz3() == null ? "0" : currentMatch.getStrafPunkteSatz3().toString(),
+                    currentMatch.getStrafPunkteSatz4() == null ? "0" : currentMatch.getStrafPunkteSatz4().toString(),
+                    currentMatch.getStrafPunkteSatz5() == null ? "0" : currentMatch.getStrafPunkteSatz5().toString()
+            };
+
+            // Add Fehlerpunkte
             // Third part
             tableSecondRowThirdPart
                     .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
@@ -372,19 +398,19 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph("punkte").setFontSize(8.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("1. Satz").setFontSize(5.0F))
+                            .add(new Paragraph("1. Satz\n" + strafpunkte[0]).setFontSize(6.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("2. Satz").setFontSize(5.0F))
+                            .add(new Paragraph("2. Satz\n" + strafpunkte[1]).setFontSize(6.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("3. Satz").setFontSize(5.0F))
+                            .add(new Paragraph("3. Satz\n" + strafpunkte[2]).setFontSize(6.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("4. Satz").setFontSize(5.0F))
+                            .add(new Paragraph("4. Satz\n" + strafpunkte[3]).setFontSize(6.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("5. Satz").setFontSize(5.0F))
+                            .add(new Paragraph("5. Satz\n" + strafpunkte[4]).setFontSize(6.0F))
                     )
                     // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
@@ -544,287 +570,287 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
             // Table head
             tableHead
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                   .add(new Paragraph(mannschaftName[i - 1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[i - 1], 12.0F)))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                    .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-                    .add(new Paragraph("Scheibe " + matchDOs[i - 1].getScheibenNummer()).setBold().setFontSize(12.0F))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph(mannschaftName[i - 1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[i - 1], 12.0F)))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
+                            .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
+                            .add(new Paragraph("Scheibe " + matchDOs[i - 1].getScheibenNummer()).setBold().setFontSize(12.0F))
+                    )
             ;
 
             // First row
             // First part
             tableFirstRowFirstPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                   .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 15.0F)))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(16.0F)
-                    .add(new Paragraph(matchDOs[0].getNr() + ". Match"))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("gegen").setBold().setFontSize(14.0F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 15.0F)))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 15.0F)))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setBold().setFontSize(16.0F)
+                            .add(new Paragraph(matchDOs[0].getNr() + ". Match"))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("gegen").setBold().setFontSize(14.0F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 15.0F)))
+                    )
             ;
 
             // Second part
             tableFirstRowSecondPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("1. Satz").setFontSize(7.5F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("2. Satz").setFontSize(7.5F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("3. Satz").setFontSize(7.5F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("4. Satz").setFontSize(7.5F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("5. Satz").setFontSize(7.5F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Summe").setFontSize(7.5F))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setFontSize(7.5F))
-                )
-                // Add fourteen cells for text input
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
-                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
-                .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
-                // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("1. Satz").setFontSize(7.5F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("2. Satz").setFontSize(7.5F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("3. Satz").setFontSize(7.5F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("4. Satz").setFontSize(7.5F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("5. Satz").setFontSize(7.5F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("Summe").setFontSize(7.5F))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("Match").setFontSize(7.5F))
+                    )
+                    // Add fourteen cells for text input
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                    // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
 
             ;
 
             // Second row
             // First part
             tableSecondRowFirstPart
-                .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
-                    .add(new Paragraph("Schütze").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
+                            .add(new Paragraph("Schütze").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
             // Second part
             tableSecondRowSecondPart
-                .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("1. Satz/ Pfeile").setFontSize(8.0F))
-                )
-                .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("2. Satz/ Pfeile").setFontSize(8.0F))
-                )
-                .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("3. Satz/ Pfeile").setFontSize(8.0F))
-                )
-                .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("4. Satz/ Pfeile").setFontSize(8.0F))
-                )
-                .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("5. Satz/ Pfeile").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                    .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
-                )
-                // Add thirty cells for text input
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("Summe").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("Summe").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("Summe").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("Summe").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(20.0F))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("Summe").setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(20.0F))
-                // Add ten cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("1. Satz/ Pfeile").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("2. Satz/ Pfeile").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("3. Satz/ Pfeile").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("4. Satz/ Pfeile").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell(1,2).setBorderBottom(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("5. Satz/ Pfeile").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
+                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                    )
+                    // Add thirty cells for text input
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setHeight(20.0F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                    )
+                    .addCell(new Cell().setHeight(20.0F))
+                    // Add ten cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+                    .addCell(new Cell().setBorder(Border.NO_BORDER))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
             // Third part
             tableSecondRowThirdPart
-                .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
-                    .add(new Paragraph("Fehler-punkte").setFontSize(8.0F))
-                    .add(new Paragraph("punkte").setFontSize(8.0F))
-                )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("1. Satz").setFontSize(5.0F))
-                )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("2. Satz").setFontSize(5.0F))
-                )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("3. Satz").setFontSize(5.0F))
-                )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("4. Satz").setFontSize(5.0F))
-                )
-                .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                    .add(new Paragraph("5. Satz").setFontSize(5.0F))
-                )
-                // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
+                    .addCell(new Cell(2,1).setTextAlignment(TextAlignment.CENTER).setHeight(29.0F)
+                            .add(new Paragraph("Fehler-punkte").setFontSize(8.0F))
+                            .add(new Paragraph("punkte").setFontSize(8.0F))
+                    )
+                    .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("1. Satz").setFontSize(5.0F))
+                    )
+                    .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("2. Satz").setFontSize(5.0F))
+                    )
+                    .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("3. Satz").setFontSize(5.0F))
+                    )
+                    .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("4. Satz").setFontSize(5.0F))
+                    )
+                    .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
+                            .add(new Paragraph("5. Satz").setFontSize(5.0F))
+                    )
+                    // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
             // Third row
             tableThirdRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
-                )
-                // Two empty cells for text input
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("\n"))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("\n"))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
+                    )
+                    // Two empty cells for text input
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("\n"))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("\n"))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                    )
             ;
 
             // Add subtables to main tables
             tableFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableFirstRowFirstPart)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableFirstRowSecondPart)
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableFirstRowFirstPart)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableFirstRowSecondPart)
+                    )
             ;
 
             tableSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableSecondRowFirstPart)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableSecondRowSecondPart)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(tableSecondRowThirdPart)
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableSecondRowFirstPart)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableSecondRowSecondPart)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(tableSecondRowThirdPart)
+                    )
             ;
 
             // Add all to document
             doc
-                .add(tableHead)
-                .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
-                    .add(tableFirstRow)
-                    .add(tableSecondRow)
-                    .add(tableThirdRow)
-                )
+                    .add(tableHead)
+                    .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
+                            .add(tableFirstRow)
+                            .add(tableSecondRow)
+                            .add(tableThirdRow)
+                    )
             ;
         }
     }
