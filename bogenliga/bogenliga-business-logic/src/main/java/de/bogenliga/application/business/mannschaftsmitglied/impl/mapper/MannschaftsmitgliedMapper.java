@@ -21,6 +21,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         final Integer mitgliedEingesetzt = be.getDsbMitgliedEingesetzt();
         final String mitgliedVorname = be.getDsbMitgliedVorname();
         final String mitgliedNachname = be.getDsbMitgliedNachname();
+        final Long rueckennummer = be.getRueckennummer();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -31,7 +32,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new MannschaftsmitgliedDO(id, mannschaftId, mitgliedId, mitgliedEingesetzt, mitgliedVorname,
-                mitgliedNachname,  createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+                mitgliedNachname,  createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, rueckennummer);
     };
 
 
@@ -55,6 +56,7 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         mannschaftsmitgliedBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
         mannschaftsmitgliedBE.setLastModifiedByUserId(mannschaftsmitgliedDO.getLastModifiedByUserId());
         mannschaftsmitgliedBE.setVersion(mannschaftsmitgliedDO.getVersion());
+        mannschaftsmitgliedBE.setRueckennummer(mannschaftsmitgliedDO.getRueckennummer());
 
         return mannschaftsmitgliedBE;
     };

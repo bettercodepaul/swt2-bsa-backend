@@ -37,6 +37,7 @@ public class MannschaftsmitgliedComponentImplTest {
     private static final Integer DSB_MITGLIED_EINGESETZT = 1;
     private static final String DSB_MITGLIED_VORNSME = "Mario";
     private static final String DSB_MItglied_Nachname = "Gomez";
+    private static final Long RUECKENNUMMER = 5L;
 
 
     @Rule
@@ -71,7 +72,8 @@ public class MannschaftsmitgliedComponentImplTest {
                 DSB_MITGLIED_ID,
                 DSB_MITGLIED_EINGESETZT,
                 DSB_MITGLIED_VORNSME,
-                DSB_MItglied_Nachname);
+                DSB_MItglied_Nachname,
+                RUECKENNUMMER);
     }
 
 
