@@ -143,6 +143,14 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         DottedLine cutterDottedLine = new DottedLine(0.5F);
 
+        Integer[][] matchSatzSums = new Integer[2][5];
+        Cell[][] matchSatzpunktCells = new Cell[2][10];
+
+        Table[] matchHeaders = new Table[2];
+        Table[] matchFirstRows = new Table[2];
+        Table[] matchSecondRows = new Table[2];
+        Table[] matchThirdRows = new Table[2];
+
         for (int i = 1; i <= 2; i++) {
             Map<Long, List<PasseDO>> schuetzenPasseMap = new HashMap<>();
             for (PasseDO passeDO : passenDOs[i-1]) {
@@ -167,30 +175,20 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             if (passenDOs[i-1].size() == 0) {
                 continue;
             }
-            //Blank lines before second half
-            if (i == 2) {
-                for(int j = 0; j <= 2; j++) {
-                    if (j == 1) {
-                        doc.add(new LineSeparator(cutterDottedLine));
-                    } else {
-                        doc.add(new Paragraph("\n"));
-                    }
-                }
-            }
 
             // Generate tables
-            final Table tableHead = new Table(UnitValue.createPercentArray(3), true);
-            final Table tableFirstRow = new Table(UnitValue.createPercentArray(2), true);
+            matchHeaders[i-1] = new Table(UnitValue.createPercentArray(3), true);
+            matchFirstRows[i-1]  = new Table(UnitValue.createPercentArray(2), true);
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(2), true);
             final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
-            final Table tableSecondRow = new Table(UnitValue.createPercentArray(new float[] { 10.0F, 80.0F, 10.0F }), true);
+            matchSecondRows[i-1] = new Table(UnitValue.createPercentArray(new float[] { 10.0F, 80.0F, 10.0F }), true);
             final Table tableSecondRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
             final Table tableSecondRowSecondPart = new Table(UnitValue.createPercentArray(10), true);
             final Table tableSecondRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table tableThirdRow = new Table(UnitValue.createPercentArray(2), true);
+            matchThirdRows[i-1]  = new Table(UnitValue.createPercentArray(2), true);
 
             // Table head
-            tableHead
+            matchHeaders[i-1]
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                             .add(new Paragraph(mannschaftName[i - 1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[i - 1], 12.0F)))
                     )
@@ -243,13 +241,18 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(new Paragraph("Match").setFontSize(7.5F))
-                    )
-                    // Add fourteen cells for text input
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
+                    );
+
+            // Save references for Satzpunkte for team1
+            for (int j = 0; j < 5; j++) {
+                Cell cell = new Cell().setHeight(20.0F);
+                tableFirstRowSecondPart
+                        .addCell(cell);
+                matchSatzpunktCells[i-1][j] = cell;
+            }
+
+            // Add summed Satzpunkte and Matchpunkte for team1
+            tableFirstRowSecondPart
                     .addCell(
                             new Cell().setHeight(20.0F).setBorder(specialBorder)
                                     .add(new Paragraph(currentMatch.getSatzpunkte().toString()))
@@ -257,13 +260,18 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(
                             new Cell().setHeight(20.0F).setBorder(specialBorder)
                                     .add(new Paragraph(currentMatch.getMatchpunkte().toString()))
-                    )
+                    );
 
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F))
+            // Save references for Satzpunkte for team2
+            for (int j = 5; j < 10; j++) {
+                Cell cell = new Cell().setHeight(20.0F);
+                tableFirstRowSecondPart
+                        .addCell(cell);
+                matchSatzpunktCells[i-1][j] = cell;
+            }
+
+            tableFirstRowSecondPart
+                    // Add summed Satzpunkte and Matchpunkte for team2
                     .addCell(
                             new Cell().setHeight(20.0F).setBorder(specialBorder)
                                     .add(new Paragraph(otherMatch.getSatzpunkte().toString()))
@@ -378,6 +386,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
                 }
             }
+            matchSatzSums[i-1] = sums;
 
             // Add sums
             for (Integer sum : sums) {
@@ -442,7 +451,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             ;
 
             // Third row
-            tableThirdRow
+            matchThirdRows[i-1]
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
                     )
@@ -465,7 +474,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             ;
 
             // Add subtables to main tables
-            tableFirstRow
+            matchFirstRows[i-1]
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(tableFirstRowFirstPart)
                     )
@@ -474,7 +483,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     )
             ;
 
-            tableSecondRow
+            matchSecondRows[i-1]
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(tableSecondRowFirstPart)
                     )
@@ -485,14 +494,56 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(tableSecondRowThirdPart)
                     )
             ;
+        }
 
+        if (matchSatzSums[1][0] != null) {
+            // Compare Pfeile from Saetze and assign Satzpunkte
+            Integer[][] satzpunkte = new Integer[2][5];
+            Integer[] match1Sums = matchSatzSums[0];
+            Integer[] match2Sums = matchSatzSums[1];
+            for (int i = 0; i < 5; i++) {
+                if (match1Sums[i] > match2Sums[i]) {
+                    satzpunkte[0][i] = 2;
+                    satzpunkte[1][i] = 0;
+                } else if (match1Sums[i].equals(match2Sums[i])) {
+                    if (match1Sums[i] == 0) {
+                        satzpunkte[0][i] = 0;
+                        satzpunkte[1][i] = 0;
+                    } else {
+                        satzpunkte[0][i] = 1;
+                        satzpunkte[1][i] = 1;
+                    }
+                } else {
+                    satzpunkte[0][i] = 0;
+                    satzpunkte[1][i] = 2;
+                }
+            }
+
+            for (int i = 0; i < 2; i++) {
+                Cell[] satzpunkteCells = matchSatzpunktCells[i];
+                for (int j = 0; j < 2; j++) {
+                    for (int k = 0; k < 5; k++) {
+                        Cell satzpunktCell = satzpunkteCells[k + 5 * j];
+                        satzpunktCell.add(new Paragraph(satzpunkte[(i + j) % 2][k].toString()));
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < 2; i++) {
+            if (matchHeaders[i] == null) {
+                break;
+            }
+            if (i == 1) {
+                doc.add(new LineSeparator(cutterDottedLine).setMargins(35.0F, 1.0F, 25.0F, 1.0F));
+            }
             // Add all to document
             doc
-                    .add(tableHead)
+                    .add(matchHeaders[i])
                     .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
-                            .add(tableFirstRow)
-                            .add(tableSecondRow)
-                            .add(tableThirdRow)
+                            .add(matchFirstRows[i])
+                            .add(matchSecondRows[i])
+                            .add(matchThirdRows[i])
                     )
             ;
         }
