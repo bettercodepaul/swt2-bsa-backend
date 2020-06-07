@@ -38,6 +38,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_WETTKAMPF_TAG = "wettkampfTag";
     private static final String WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinId";
     private static final String WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampfTypId";
+    private static final String WETTKAMPF_BE_WETTKAMPF_KAMPFRICHTER_ID= "kampfrichterId";
 
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
     private static final String WETTKAMPF_TABLE_VERANSTALTUNGS_ID= "wettkampf_veranstaltung_id";
@@ -47,6 +48,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_WETTKAMPF_TAG = "wettkampf_tag";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampf_wettkampftyp_id";
+    private static final String WETTKAMPF_TABLE_WETTKAMPF_KAMPFRICHTER_ID= "kampfrichter_id";
 
     //default Values for Wettkampftag 0
     private static final Date DEFAULT_DATUM = Date.valueOf("1900-01-01");
@@ -54,6 +56,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String DEFAULT_BEGINN = " - ";
     private static final Long DEFAULT_DIZIPLIN_ID = 0L;
     private static final Long DEFAULT_TYP_ID = 0L;
+    private static final Long DEFAULT_KAMPFRICHTER_ID = 0L;
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<WettkampfBE> WETTKAMPF = new BusinessEntityConfiguration<>(
@@ -121,7 +124,7 @@ public class WettkampfDAO implements DataAccessObject {
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_ORT, WETTKAMPF_BE_WETTKAMPF_ORT);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_TAG, WETTKAMPF_BE_WETTKAMPF_TAG);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID, WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID);
-
+        columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_KAMPFRICHTER_ID, WETTKAMPF_BE_WETTKAMPF_KAMPFRICHTER_ID);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
@@ -213,7 +216,7 @@ public class WettkampfDAO implements DataAccessObject {
         defaultWettkampfBE.setWettkampfOrt(DEFAULT_ORT);
         defaultWettkampfBE.setWettkampfDisziplinId(DEFAULT_DIZIPLIN_ID);
         defaultWettkampfBE.setWettkampfTypId(DEFAULT_TYP_ID);
-
+        defaultWettkampfBE.setKampfrichterId(DEFAULT_KAMPFRICHTER_ID);
         this.create(defaultWettkampfBE, currentUserId);
     }
 
