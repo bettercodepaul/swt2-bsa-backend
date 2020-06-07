@@ -40,7 +40,6 @@ public class PasseComponentImpl implements PasseComponent {
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
     private final PasseDAO passeDAO;
-    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
 
     /**
@@ -51,10 +50,8 @@ public class PasseComponentImpl implements PasseComponent {
      * @param passeDAO to access the database and return passe representations
      */
     @Autowired
-    public PasseComponentImpl(final PasseDAO passeDAO,
-                              final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
+    public PasseComponentImpl(final PasseDAO passeDAO) {
         this.passeDAO = passeDAO;
-        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
 
@@ -252,15 +249,6 @@ public class PasseComponentImpl implements PasseComponent {
     public PasseDO create(PasseDO passeDO, final Long currentUserId) {
         checkPasseDO(passeDO);
         checkPreconditions(currentUserId, "currentUserId");
-
-
-        List<PasseDO> passen=this.findByWettkampfIdAndMitgliedId(passeDO.getPasseWettkampfId(),passeDO.getPasseDsbMitgliedId());
-        if(passen.isEmpty()){
-            //update dsbMitgliedEingesetzt
-            MannschaftsmitgliedDO mitglied=this.mannschaftsmitgliedComponent.findByMemberAndTeamId(passeDO.getPasseMannschaftId(),passeDO.getPasseDsbMitgliedId());
-            mitglied.setDsbMitgliedEingesetzt(mitglied.getDsbMitgliedEingesetzt()+1);
-            this.mannschaftsmitgliedComponent.update(mitglied,mitglied.getDsbMitgliedId());
-        }
 
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
 
