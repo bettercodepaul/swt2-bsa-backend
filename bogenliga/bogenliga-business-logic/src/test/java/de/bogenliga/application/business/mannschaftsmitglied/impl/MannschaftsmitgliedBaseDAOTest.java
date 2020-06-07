@@ -19,6 +19,7 @@ public class MannschaftsmitgliedBaseDAOTest {
     protected static Integer dsbMitgliedEingesetzt = 1;
     protected static String dsbMitgliedVorname = "Max";
     protected static String dsbMitgliedNachname = "Mustermann";
+    protected static Long rueckennummer = 0L;
 
     private static final OffsetDateTime offsetDateTime = null;
     private static final Long USER = 4L;
@@ -59,7 +60,7 @@ public class MannschaftsmitgliedBaseDAOTest {
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         final MannschaftsmitgliedDO expectedMannschaftsmitgliedDO = new MannschaftsmitgliedDO(id, mannschaftId,
                 dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, offsetDateTime,
-                USER, offsetDateTime, USER, VERSION);
+                USER, offsetDateTime, USER, VERSION, rueckennummer);
 
         return expectedMannschaftsmitgliedDO;
     }
