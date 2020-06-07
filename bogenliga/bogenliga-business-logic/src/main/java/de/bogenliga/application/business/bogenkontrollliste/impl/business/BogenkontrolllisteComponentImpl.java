@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.bogenkontrollliste.impl.business;
+package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
