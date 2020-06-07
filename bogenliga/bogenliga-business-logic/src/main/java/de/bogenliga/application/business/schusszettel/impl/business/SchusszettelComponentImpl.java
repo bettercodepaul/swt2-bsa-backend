@@ -24,6 +24,8 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
@@ -53,6 +55,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
 
@@ -60,11 +63,13 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
                                      final PasseComponent passeComponent,
                                      final DsbMannschaftComponent dsbMannschaftComponent,
+                                     final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                      final VereinComponent vereinComponent,
                                      final WettkampfComponent wettkampfComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
     }
@@ -131,25 +136,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         Long wettkampfTag = wettkampfComponent.findById(matchDOs[0].getWettkampfId()).getWettkampfTag();
         String[] mannschaftName = { getMannschaftsNameByID(matchDOs[0].getMannschaftId()), getMannschaftsNameByID(matchDOs[1].getMannschaftId())};
-        // TODO: Für beide matches
-        Map<Long, List<PasseDO>> schuetzenPasseMap = new HashMap<>();
-        for (PasseDO passeDO : passenDOs[0]) {
-            // schuetzenPasseMap.computeIfAbsent(passeDO.getPasseDsbMitgliedId(), k -> new ArrayList<>());
-            // schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
-
-            // Temp fix to only pick 3 schuetzen
-            if (!schuetzenPasseMap.containsKey(passeDO.getPasseDsbMitgliedId())) {
-                if (schuetzenPasseMap.size() < 3) {
-                    schuetzenPasseMap.put(passeDO.getPasseDsbMitgliedId(), new ArrayList<>());
-                    schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
-                }
-            } else {
-                // Temp fix to only add 5 passen
-                if (schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).size() < 5) {
-                    schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
-                }
-            }
-        }
 
         // Generate special settings for some parts
         Border specialBorder = new SolidBorder(Border.SOLID);
@@ -158,7 +144,26 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         DottedLine cutterDottedLine = new DottedLine(0.5F);
 
         for (int i = 1; i <= 2; i++) {
+            Map<Long, List<PasseDO>> schuetzenPasseMap = new HashMap<>();
+            for (PasseDO passeDO : passenDOs[i-1]) {
+                // schuetzenPasseMap.computeIfAbsent(passeDO.getPasseDsbMitgliedId(), k -> new ArrayList<>());
+                // schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
+
+                // Temp fix to only pick 3 schuetzen
+                if (!schuetzenPasseMap.containsKey(passeDO.getPasseDsbMitgliedId())) {
+                    if (schuetzenPasseMap.size() < 3) {
+                        schuetzenPasseMap.put(passeDO.getPasseDsbMitgliedId(), new ArrayList<>());
+                        schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
+                    }
+                } else {
+                    // Temp fix to only add 5 passen
+                    if (schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).size() < 5) {
+                        schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
+                    }
+                }
+            }
             MatchDO currentMatch = matchDOs[i-1];
+            MatchDO otherMatch = matchDOs[(i == 1 ? 2 : 1) - 1];
             if (passenDOs[i-1].size() == 0) {
                 continue;
             }
@@ -245,15 +250,28 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
-                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                    .addCell(
+                            new Cell().setHeight(20.0F).setBorder(specialBorder)
+                                    .add(new Paragraph(currentMatch.getSatzpunkte().toString()))
+                    )
+                    .addCell(
+                            new Cell().setHeight(20.0F).setBorder(specialBorder)
+                                    .add(new Paragraph(currentMatch.getMatchpunkte().toString()))
+                    )
+
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
-                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
-                    .addCell(new Cell().setHeight(20.0F).setBorder(specialBorder))
+                    .addCell(
+                            new Cell().setHeight(20.0F).setBorder(specialBorder)
+                                    .add(new Paragraph(otherMatch.getSatzpunkte().toString()))
+                    )
+                    .addCell(
+                            new Cell().setHeight(20.0F).setBorder(specialBorder)
+                                    .add(new Paragraph(otherMatch.getMatchpunkte().toString()))
+                    )
                     // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
@@ -273,8 +291,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     )
             ;
             for (Map.Entry<Long, List<PasseDO>> entry : schuetzenPasseMap.entrySet()) {
+                // Get matching mannschaftsMitgliedDO to dsb_mitglied_id for this match to get Rueckennummer
+                MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsmitgliedComponent
+                        .findByMemberAndTeamId(currentMatch.getMannschaftId(), entry.getKey());
                 // Add schutzen Rueckennummern
-                tableSecondRowFirstPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(entry.getKey().toString()).setFontSize(8.0F)));
+                String rueckennummer = mannschaftsmitgliedDO.getRueckennummer() == null
+                        ? "NaN"
+                        : mannschaftsmitgliedDO.getRueckennummer().toString();
+                tableSecondRowFirstPart.addCell(new Cell().setHeight(20.0F)
+                        .add(new Paragraph(rueckennummer).setFontSize(8.0F)));
                 // Sort each Schuetzen's passen by lfdnr
                 entry.getValue().sort((p1, p2) -> p2.getPasseLfdnr().compareTo(p1.getPasseLfdnr()));
             }
