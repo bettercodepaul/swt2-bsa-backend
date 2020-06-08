@@ -364,6 +364,12 @@ public class MatchService implements ServiceFacade {
             passeDO.getPasseWettkampfId()!= null&&
             passeDO.getPasseMatchNr() !=null &&
             passeDO.getPasseLfdnr() !=null) {
+                List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(passeDO.getPasseWettkampfId(),passeDO.getPasseDsbMitgliedId());
+                if(passen.isEmpty()){
+                    MannschaftsmitgliedDO mitlgied=mannschaftsmitgliedComponent.findByMemberAndTeamId(passeDO.getPasseMannschaftId(),passeDO.getPasseDsbMitgliedId());
+                    mitlgied.setDsbMitgliedEingesetzt(mitlgied.getDsbMitgliedEingesetzt()+1);
+                    mannschaftsmitgliedComponent.update(mitlgied,userId);
+                }
                 passeComponent.create(passeDO, userId);
             }
         }
