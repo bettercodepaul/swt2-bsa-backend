@@ -46,6 +46,8 @@ import de.bogenliga.application.common.validation.Preconditions;
  *
  * @author Michael Hesse, michael_maximilian.hesse@student.reutlingen-university.de
  * @author Robin Müller, robin.mueller@student.reutlingen-university.de
+ * @author Jonas Müller, jonas_dominik.mueller@student.reutlingen-university.de
+ * @author Maximilian Gysau, maximilian_alexander.gysau@reutlingen-university.de
  */
 @Component
 public class SchusszettelComponentImpl implements SchusszettelComponent {
