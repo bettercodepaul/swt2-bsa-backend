@@ -132,9 +132,9 @@ public class DownloadService implements ServiceFacade {
     }
 
     /**
-     * returns the filled in Schusszettel for two matfches as pdf file for client download
+     * returns the filled in Schusszettel for two matches as pdf file for client download
      * Usage:
-     * <pre>{@code Request: GET /v1/download/pdf/schusszettel?wettkampfid=x}</pre>
+     * <pre>{@code Request: GET pdf/schusszettel_matches/{matchId1}/{matchId2}}</pre>
      *
      * @return PDF as InputStreamResource
      */
