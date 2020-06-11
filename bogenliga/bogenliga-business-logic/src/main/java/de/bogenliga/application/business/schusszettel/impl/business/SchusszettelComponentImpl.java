@@ -105,7 +105,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
 
     /**
-     * <p>writes a Schusszettel document for the Wettkamnpf
+     * <p>Creates a Schusszettel with the values from the database filled in
      * </p>
      */
     private ByteArrayOutputStream generateFilledDoc(MatchDO match1, MatchDO match2, List<PasseDO> passen1, List<PasseDO> passen2) {
@@ -128,7 +128,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     }
 
     /**
-     * <p>writes a filled Schusszettel document for the Wettkamnpf
+     * <p>Creates the pdf document for Schusszettel with the values from the database filled in
      * </p>
      * @param doc document to write
      */
@@ -143,14 +143,19 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         DottedLine cutterDottedLine = new DottedLine(0.5F);
 
+        // Keep track of Satz-sums of both matches to calculate Satzpunkte later
         Integer[][] matchSatzSums = new Integer[2][5];
+        // Keep track of Satzpunkt-Cells to fill in Satzpunkte later
         Cell[][] matchSatzpunktCells = new Cell[2][10];
 
+        // Keep track of all table components to build doc when Satzpunkte are figured out
+        // (itext makes document unwritable after components have been added to it, so everything needs to be ready beforehand)
         Table[] matchHeaders = new Table[2];
         Table[] matchFirstRows = new Table[2];
         Table[] matchSecondRows = new Table[2];
         Table[] matchThirdRows = new Table[2];
 
+        // Create a map with all Passen of a Schuetze from unorganized list of all passen of match
         for (int i = 1; i <= 2; i++) {
             Map<Long, List<PasseDO>> schuetzenPasseMap = new HashMap<>();
             for (PasseDO passeDO : passenDOs[i-1]) {
@@ -170,13 +175,16 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     }
                 }
             }
+
+            // Helper variables
             MatchDO currentMatch = matchDOs[i-1];
             MatchDO otherMatch = matchDOs[(i == 1 ? 2 : 1) - 1];
+            // Skip matches with no passen
             if (passenDOs[i-1].size() == 0) {
                 continue;
             }
 
-            // Generate tables
+            // Generate tables and store references in array in outer scope
             matchHeaders[i-1] = new Table(UnitValue.createPercentArray(3), true);
             matchFirstRows[i-1]  = new Table(UnitValue.createPercentArray(2), true);
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(2), true);
@@ -298,6 +306,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph("Schütze").setFontSize(8.0F))
                     )
             ;
+
+            // Fill in Schuetzennummer column
             for (Map.Entry<Long, List<PasseDO>> entry : schuetzenPasseMap.entrySet()) {
                 // Get matching mannschaftsMitgliedDO to dsb_mitglied_id for this match to get Rueckennummer
                 MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsmitgliedComponent
@@ -367,9 +377,9 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             Integer[] sums = new Integer[5];
             Arrays.fill(sums, 0);
 
-            // Fill in passen for each schuetze
+            // Fill in Passen for each Schuetze
             for (Map.Entry<Long, List<PasseDO>> entry : schuetzenPasseMap.entrySet()) {
-                // Iterate over all 5 passen
+                // Iterate over all 5 Passen
                 for (int j = 0; j < 5; j++) {
                     // Add passe data to table, if there's no more data available, fill in zeroes
                     if (entry.getValue().size() > j)  {
@@ -386,9 +396,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
                 }
             }
+            // Save sums to array in outside scope
             matchSatzSums[i-1] = sums;
 
-            // Add sums
+            // Add sum cells
             for (Integer sum : sums) {
                 tableSecondRowSecondPart
                         .addCell(
@@ -501,6 +512,12 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             Integer[][] satzpunkte = new Integer[2][5];
             Integer[] match1Sums = matchSatzSums[0];
             Integer[] match2Sums = matchSatzSums[1];
+
+            // Point distribution logic of 2 teams:
+            // A > B => A gets 2, B gets 0
+            // A = B, A & B have scored in Satz => A gets 1, B gets 1
+            // A = B, A & B have not scored in Satz (aka Satz was not played) => A gets 0, B gets 0
+            // A < B => A gets 0, B gets 2
             for (int i = 0; i < 5; i++) {
                 if (match1Sums[i] > match2Sums[i]) {
                     satzpunkte[0][i] = 2;
@@ -519,6 +536,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                 }
             }
 
+            // Fill Satzpunkte cells with data
             for (int i = 0; i < 2; i++) {
                 Cell[] satzpunkteCells = matchSatzpunktCells[i];
                 for (int j = 0; j < 2; j++) {
@@ -530,10 +548,13 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             }
         }
 
+        // Build page with both matches and separator
         for (int i = 0; i < 2; i++) {
+            // If there's no 2nd match data, break
             if (matchHeaders[i] == null) {
                 break;
             }
+            // Add separator
             if (i == 1) {
                 doc.add(new LineSeparator(cutterDottedLine).setMargins(35.0F, 1.0F, 25.0F, 1.0F));
             }
