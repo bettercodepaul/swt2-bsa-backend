@@ -2,6 +2,9 @@ package de.bogenliga.application.business.rueckennummern.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,17 +73,25 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(dsbMitgliedId);
         VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
+        HashMap<String, List<String>> RueckennummerMapping = new HashMap<>();
+
         String Liganame = veranstaltungDO.getVeranstaltungName();
         String Verein = vereinDO.getName();
         String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
         String Schuetzennummer = "-1"; //später: mannschaftsmitgliedDO.getSchuetzennummer();
+
+        List<String> Schuetzendaten = new ArrayList();
+        Schuetzendaten.add(Liganame);
+        Schuetzendaten.add(Verein);
+        Schuetzendaten.add(Schuetzenname);
+        RueckennummerMapping.put(Schuetzennummer,Schuetzendaten);
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
              PdfWriter writer = new PdfWriter(result);
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateRueckennummernDoc(doc, Liganame, Verein, Schuetzenname, Schuetzennummer);
+            generateRueckennummernDoc(doc, RueckennummerMapping);
 
             return result.toByteArray();
 
@@ -91,13 +102,51 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
     }
 
+    public byte[] getMannschaftsRueckennummernPDFasByteArray(long dsbMannschaftsId) {
+
+        //Collect information
+        DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftsId);
+        VeranstaltungDO veranstaltungDO = this.veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
 
 
-    private void generateRueckennummernDoc(Document doc,
-                                           String Liganame,
-                                           String Verein,
-                                           String Schuetzenname,
-                                           String Schuetzennummer) {
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOs = this.mannschaftsmitgliedComponent.findByTeamId(dsbMannschaftsId);
+
+        HashMap<String, List<String>> RueckennummerMapping = new HashMap<>();
+
+        String Liganame = veranstaltungDO.getVeranstaltungName();
+
+        for(MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
+            DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
+            VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
+
+            String Verein = vereinDO.getName();
+            String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
+            String Schuetzennummer = "-1"; //später: mannschaftsmitgliedDO.getSchuetzennummer();
+
+            List<String> Schuetzendaten = new ArrayList();
+            Schuetzendaten.add(Liganame);
+            Schuetzendaten.add(Verein);
+            Schuetzendaten.add(Schuetzenname);
+            RueckennummerMapping.put(Schuetzennummer,Schuetzendaten);
+            LOGGER.info("Teammitglied {} mit Rückennummer {} gefunden",Schuetzenname,Schuetzennummer);
+        }
+
+        try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+             PdfWriter writer = new PdfWriter(result);
+             PdfDocument pdfDocument = new PdfDocument(writer);
+             Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+            generateRueckennummernDoc(doc, RueckennummerMapping);
+
+            return result.toByteArray();
+
+        } catch (IOException e) {
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                    "Rueckennummern PDF konnte nicht erstellt werden: " + e);
+        }
+    }
+
+    private void generateRueckennummernDoc(Document doc, HashMap<String, List<String>> RueckennummerMapping) {
 
     }
 }
