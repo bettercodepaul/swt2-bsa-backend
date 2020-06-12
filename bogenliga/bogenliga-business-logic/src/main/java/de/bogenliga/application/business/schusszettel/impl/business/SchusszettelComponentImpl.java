@@ -385,10 +385,12 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     if (entry.getValue().size() > j)  {
                         Integer pfeil1 = entry.getValue().get(j).getPfeil1();
                         Integer pfeil2 = entry.getValue().get(j).getPfeil2();
-                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(pfeil1.toString()).setFontSize(8.0F)));
-                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(pfeil2.toString()).setFontSize(8.0F)));
+                        String pfeil1String = pfeil1 == null ? "" : pfeil1.toString();
+                        String pfeil2String = pfeil2 == null ? "" : pfeil2.toString();
+                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(pfeil1String).setFontSize(8.0F)));
+                        tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph(pfeil2String).setFontSize(8.0F)));
                         // Add score to sum for this passe
-                        sums[j] += pfeil1 + pfeil2;
+                        sums[j] += (pfeil1 == null ? 0 : pfeil1) + (pfeil2 == null ? 0 : pfeil2);
                     } else {
                         tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph("0").setFontSize(8.0F)));
                         tableSecondRowSecondPart.addCell(new Cell().setHeight(20.0F).add(new Paragraph("0").setFontSize(8.0F)));
