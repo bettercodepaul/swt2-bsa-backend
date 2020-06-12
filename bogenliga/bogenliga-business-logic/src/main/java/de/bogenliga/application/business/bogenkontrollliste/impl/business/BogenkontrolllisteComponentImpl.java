@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.bogenkontrollliste.impl.business;
+package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,6 +26,8 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -61,6 +63,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
+    private final LigaComponent ligaComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final MatchComponent matchComponent;
@@ -72,6 +75,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     @Autowired
     public BogenkontrolllisteComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
                                            final VereinComponent vereinComponent,
+                                           final LigaComponent ligaComponent,
                                            final WettkampfComponent wettkampfComponent,
                                            final VeranstaltungComponent veranstaltungComponent,
                                            final MatchComponent matchComponent,
@@ -80,6 +84,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                            final DsbMitgliedComponent dsbMitgliedComponent) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
+        this.ligaComponent = ligaComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.matchComponent = matchComponent;
@@ -94,6 +99,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
 
         HashMap<String, List<DsbMitgliedDO>> teamMemberMapping = new HashMap<>();
+        HashMap<DsbMitgliedDO,Boolean> allowedMapping = new HashMap<>();
 
         // Collect Information
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
@@ -101,47 +107,70 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
         String eventName = veranstaltungDO.getVeranstaltungName();
 
+        List<Boolean> allowedList=new ArrayList<>();
+
         for(int i=1; i <= 8; i++){
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
             LOGGER.info("Teamname {} wurde gefunden ", teamName);
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeamGemeldet(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+            List<LigaDO> ligen=this.ligaComponent.findAll();
             int count = 0;
             for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
                 DsbMitgliedDO dsbMitglied=dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
                 long thisLiga=this.veranstaltungComponent.findById(this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+
+                //finde Stufe der aktuellen Liga
+                int thisLigaStufe = 0;
+                int currentLiga=(int)thisLiga;
+                while(currentLiga != 0){
+                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
+                        thisLigaStufe++;
+                    }else{currentLiga=0;}
+                }
                 long thisWettkamptag=this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfTag();
                 long thisSportjahr=this.veranstaltungComponent.findById(this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
                 boolean darfSchiessen=true;
+
                 //find highest Liga and check if mitglied has already shot on this Wettkampftag
-                List<MannschaftsmitgliedDO> mitgliedIn=this.mannschaftsmitgliedComponent.findByMemberId(mannschaftsmitglied.getDsbMitgliedId());
-                long highestLiga=7;
+                List<MannschaftsmitgliedDO> mitgliedIn=this.mannschaftsmitgliedComponent.findByMemberId(dsbMitglied.getId());
                 for(MannschaftsmitgliedDO mitglied: mitgliedIn){
-                    long liga=7;
-                    List<WettkampfDO> wettkaempfe=this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
-                    for(WettkampfDO wettkampf: wettkaempfe){
-                        //check Sportjahr of Veranstaltung
-                        long wettkampfSportjahr=this.veranstaltungComponent.findById(wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
-                        if(thisSportjahr == wettkampfSportjahr) {
-                            List<PasseDO> passen = this.passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(), dsbMitglied.getId());
-                            if (!passen.isEmpty()) {
-                                liga = this.veranstaltungComponent.findById( wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
-                                if (liga < highestLiga) {
-                                    highestLiga = liga;
+                    if(mitglied.getDsbMitgliedEingesetzt()>=2) {
+                        List<WettkampfDO> wettkaempfe = this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
+                        for (WettkampfDO wettkampf : wettkaempfe) {
+
+                            //check Sportjahr of Veranstaltung
+                            long wettkampfSportjahr = this.veranstaltungComponent.findById(
+                                    wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                            if (thisSportjahr == wettkampfSportjahr) {
+                                long liga=this.veranstaltungComponent.findById(
+                                        wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+
+                                //finde Stufe der Liga dieses Wettkampfes
+                                currentLiga=(int)liga;
+                                int ligaStufe=0;
+                                while(currentLiga != 0){
+                                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
+                                        ligaStufe++;
+                                    }else{currentLiga=0;}
                                 }
-                                darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag()) && darfSchiessen;
+                                List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
+                                darfSchiessen = (thisLigaStufe <= ligaStufe) && !(thisWettkamptag == wettkampf.getWettkampfTag()) && passen.isEmpty() && darfSchiessen;
                             }
                         }
                     }
                 }
-                if(thisLiga <= highestLiga && darfSchiessen){
-                    dsbMitgliedDOList.add(dsbMitglied);
+                dsbMitgliedDOList.add(dsbMitglied);
+                allowedMapping.put(dsbMitglied,darfSchiessen);
+                if(darfSchiessen){
                     LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
-                    count++;
                 }else{
                     LOGGER.info("Teammitglied {} {} konnte nicht hinzugefügt werden, da es schon in einer höheren Liga oder am selben Wettkampftag geschossen hat.", dsbMitglied.getNachname(), dsbMitglied.getVorname());
                 }
+                count++;
             }
             teamMemberMapping.put(teamName,dsbMitgliedDOList);
 
@@ -152,7 +181,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName);
+            generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName, allowedMapping);
 
             return result.toByteArray();
 
@@ -165,12 +194,13 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
     /**
      * Generates the Document
-     *
-     * @param doc Doc to write
+     *  @param doc Doc to write
      * @param wettkampfDO WettkampfDO for competition info
      * @param teamMemberMapping Key: TeamName String, Value: List of DSBMitgliedDO (Contains shooters)
      */
-    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, String veranstaltungsName) {
+    private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO,
+                                               HashMap<String, List<DsbMitgliedDO>> teamMemberMapping,
+                                               String veranstaltungsName, HashMap<DsbMitgliedDO,Boolean> allowedMapping) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
@@ -194,7 +224,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         //Add page title on every page
         docTable.addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
                 .add(pageTitle));
-
         //Iterate through all the teams
         for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
 
@@ -259,19 +288,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
             LOGGER.info("Für Team {} wurden {} Mitglieder gefunden", manschaftCounter, teamMemberMapping.get(teamNameList[manschaftCounter]).size());
             //Iterate through playerlist of each team, if no player was found, add additional information
-            System.out.println(teamMemberMapping.get(teamNameList[manschaftCounter]).size());
-            if(teamMemberMapping.get(teamNameList[manschaftCounter]).size()==0){
-                System.out.println("test");
-                final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
-                tableBodyFirstPart.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph( "Keines der Teammitglieder darf an diesem Wettkampftag oder in dieser Liga schiessen.").setBold().setFontSize(10.0F)));
 
-                tableBody
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableBodyFirstPart)
-                        );
-
-            }
             for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size()+1; mitgliedCounter++) {
                 //Create columns for player content
                 final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[] { 25.0F, 75.0F}), true);
@@ -297,14 +314,31 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 ;
 
                 //Add content to player columns
-                tableBodyFirstPart
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                                .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
-                                        teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
-                                        teamNameList[manschaftCounter]).get(mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
-                ;
+                if(allowedMapping.get(teamMemberMapping.get(
+                        teamNameList[manschaftCounter]).get(
+                        mitgliedCounter - 1))) {
+                    tableBodyFirstPart
+                            .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                    .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                    .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
+                                            teamNameList[manschaftCounter]).get(
+                                            mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
+                                            teamNameList[manschaftCounter]).get(
+                                            mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
+                    ;
+                }else{
+                    tableBodyFirstPart
+                            .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                    .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
+                            .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                    .add(new Paragraph(mitgliedCounter + " " + teamMemberMapping.get(
+                                            teamNameList[manschaftCounter]).get(
+                                            mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
+                                            teamNameList[manschaftCounter]).get(
+                                            mitgliedCounter - 1).getVorname()).setBold().setLineThrough().setFontSize(10.0F)))
+                    ;
+                }
 
                 tableBodySecondPart
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
