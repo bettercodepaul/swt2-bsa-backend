@@ -78,13 +78,13 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         String Liganame = veranstaltungDO.getVeranstaltungName();
         String Verein = vereinDO.getName();
         String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
-        String Schuetzennummer = "-1"; //später: mannschaftsmitgliedDO.getSchuetzennummer();
+        String Rueckennummer = "-1"; //später: mannschaftsmitgliedDO.getRueckennummer();
 
         List<String> Schuetzendaten = new ArrayList();
         Schuetzendaten.add(Liganame);
         Schuetzendaten.add(Verein);
         Schuetzendaten.add(Schuetzenname);
-        RueckennummerMapping.put(Schuetzennummer,Schuetzendaten);
+        RueckennummerMapping.put(Rueckennummer,Schuetzendaten);
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
              PdfWriter writer = new PdfWriter(result);
@@ -121,14 +121,14 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
             String Verein = vereinDO.getName();
             String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
-            String Schuetzennummer = "-1"; //später: mannschaftsmitgliedDO.getSchuetzennummer();
+            String Rueckennummer = "-1"; //später: mannschaftsmitgliedDO.getRueckennummer();
 
             List<String> Schuetzendaten = new ArrayList();
             Schuetzendaten.add(Liganame);
             Schuetzendaten.add(Verein);
             Schuetzendaten.add(Schuetzenname);
-            RueckennummerMapping.put(Schuetzennummer,Schuetzendaten);
-            LOGGER.info("Teammitglied {} mit Rückennummer {} gefunden",Schuetzenname,Schuetzennummer);
+            RueckennummerMapping.put(Rueckennummer,Schuetzendaten);
+            LOGGER.info("Teammitglied {} mit Rückennummer {} gefunden",Schuetzenname,Rueckennummer);
         }
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
