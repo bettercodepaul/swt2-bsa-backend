@@ -25,6 +25,7 @@ import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
+import de.bogenliga.application.business.rueckennummern.api.RueckennummernComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -65,6 +66,7 @@ public class DownloadService implements ServiceFacade {
     private final LizenzComponent lizenzComponent;
     private final MeldezettelComponent meldezettelComponent;
     private final BogenkontrolllisteComponent bogenkontrolllisteComponent;
+    private final RueckennummernComponent rueckennummernComponent;
 
 
     /**
@@ -74,12 +76,14 @@ public class DownloadService implements ServiceFacade {
     public DownloadService(final SetzlisteComponent setzlisteComponent, final LizenzComponent lizenzComponent,
                            final SchusszettelComponent schusszettelComponent,
                            final MeldezettelComponent meldezettelComponent,
-                           final BogenkontrolllisteComponent bogenkontrolllisteComponent) {
+                           final BogenkontrolllisteComponent bogenkontrolllisteComponent,
+                           final RueckennummernComponent rueckennummernComponent) {
         this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
         this.meldezettelComponent = meldezettelComponent;
         this.bogenkontrolllisteComponent = bogenkontrolllisteComponent;
+        this.rueckennummernComponent = rueckennummernComponent;
     }
   
     /**
@@ -173,6 +177,27 @@ public class DownloadService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         final byte[] fileBloB = bogenkontrolllisteComponent.getBogenkontrolllistePDFasByteArray(wettkampfid);
+
+        return generateInputStream(fileBloB);
+    }
+
+
+    /**
+     * return the Rueckennummern as pdf file for client download
+     *
+     * @param mannschaftid from GET-request: ID of the mannschaft
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+                    path = "pdf/rueckennummern",
+                    produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadRueckennummernPdf(@RequestParam("mannschaftid") final long mannschaftid) {
+
+
+        final byte[] fileBloB = rueckennummernComponent.getMannschaftsRueckennummernPDFasByteArray(mannschaftid);
 
         return generateInputStream(fileBloB);
     }

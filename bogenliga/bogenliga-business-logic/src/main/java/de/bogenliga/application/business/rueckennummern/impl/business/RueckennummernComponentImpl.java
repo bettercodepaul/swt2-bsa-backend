@@ -62,7 +62,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
 
     @Override
-    public byte[] getRueckennummernPDFasByteArray(long dsbMannschaftsId, long dsbMitgliedId) {
+    public byte[] getRueckennummerPDFasByteArray(long dsbMannschaftsId, long dsbMitgliedId) {
 
         //Collect information
         MannschaftsmitgliedDO mannschaftsmitgliedDO = this.mannschaftsmitgliedComponent.findByMemberAndTeamId(dsbMannschaftsId, dsbMitgliedId);
