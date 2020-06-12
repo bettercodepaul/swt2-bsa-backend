@@ -556,7 +556,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             }
             // Add separator
             if (i == 1) {
-                doc.add(new LineSeparator(cutterDottedLine).setMargins(35.0F, 1.0F, 25.0F, 1.0F));
+                doc.add(new LineSeparator(cutterDottedLine).setMargins(25.0F, 1.0F, 25.0F, 1.0F));
             }
             // Add all to document
             doc
