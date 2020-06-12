@@ -97,8 +97,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         MatchDO match1 = matchComponent.findById(matchId1);
         MatchDO match2 = matchComponent.findById(matchId2);
 
-        DsbMannschaftDO mannschaftDO = dsbMannschaftComponent.findById(match1.getMannschaftId());
-
         List<PasseDO> passen1 = passeComponent.findByMatchId(match1.getId());
         List<PasseDO> passen2 = passeComponent.findByMatchId(match2.getId());
 
