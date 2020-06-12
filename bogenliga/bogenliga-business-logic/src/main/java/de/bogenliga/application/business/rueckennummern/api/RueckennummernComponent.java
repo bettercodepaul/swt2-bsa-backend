@@ -15,7 +15,7 @@ public interface RueckennummernComponent extends ComponentFacade {
      * @param dsbMitgliedId ID of the dsbMitglied
      * @return pdf as binary document
      */
-    byte[] getRueckennummernPDFasByteArray(long dsbMannschaftsId, long dsbMitgliedId);
+    byte[] getRueckennummerPDFasByteArray(long dsbMannschaftsId, long dsbMitgliedId);
 
     /**
      * Generates a pdf as binary document for a whole mannschaft
