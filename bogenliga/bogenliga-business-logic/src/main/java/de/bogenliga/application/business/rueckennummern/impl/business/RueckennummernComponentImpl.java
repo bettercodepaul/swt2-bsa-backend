@@ -13,6 +13,15 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.DashedBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
@@ -147,6 +156,52 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
     }
 
     private void generateRueckennummernDoc(Document doc, HashMap<String, List<String>> RueckennummerMapping) {
+        LOGGER.info("Es wurden {} Teams gefunden", RueckennummerMapping.size());
 
+        //Table for the entire document
+        final Table docTable = new Table(UnitValue.createPercentArray(1), true);
+        int counter=1;
+        //iterate over all Mannschaftsmitglieder
+        for(String rNummer : RueckennummerMapping.keySet()){
+            String liga = RueckennummerMapping.get(rNummer).get(0);
+            String verein = RueckennummerMapping.get(rNummer).get(1);
+            String schuetze = RueckennummerMapping.get(rNummer).get(2);
+
+            //create single RueckennummerDoc
+            final Table singleDoc = new Table(UnitValue.createPercentArray(1), true)
+                    .setBorder(Border.NO_BORDER).setVerticalAlignment(VerticalAlignment.MIDDLE);
+
+            singleDoc.setHeight(UnitValue.createPercentValue(50.0F));
+
+            if(counter % 2 == 1) {
+                singleDoc.setBorderBottom(new DashedBorder(Border.DASHED));
+            }
+
+            //fill with content of Mannschaftsmitglied
+            final Cell ligaFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph(liga).setFontSize(10.0F));
+            final Cell vereinFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                    .add(new Paragraph(verein).setFontSize(10.0F));
+            final Cell schuetzeFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
+                    .add(new Paragraph(schuetze).setBold().setFontSize(25.0F));
+            final Cell rueckenNrFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
+                    .add(new Paragraph(rNummer).setBold().setFontSize(50.0F));
+
+            singleDoc
+                    .addCell(ligaFeld)
+                    .addCell(vereinFeld)
+                    .addCell(schuetzeFeld)
+                    .addCell(rueckenNrFeld);
+
+            docTable.addCell(singleDoc);
+
+            counter++;
+        }
+
+        //Add document table to document
+        doc.add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
+                        .add(docTable).setBorder(Border.NO_BORDER));
+
+        doc.close();
     }
 }
