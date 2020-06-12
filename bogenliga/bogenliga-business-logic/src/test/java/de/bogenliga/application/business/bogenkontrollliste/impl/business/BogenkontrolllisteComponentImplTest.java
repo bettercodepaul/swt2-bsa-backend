@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.bogenkontrollliste.impl.business;
+package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,9 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.liga.impl.business.LigaComponentImplTest;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest;
@@ -58,6 +61,8 @@ public class BogenkontrolllisteComponentImplTest {
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
     private DsbMitgliedComponent dsbMitgliedComponent;
+    @Mock
+    private LigaComponent ligaComponent;
 
     @InjectMocks
     private BogenkontrolllisteComponentImpl underTest;
@@ -84,6 +89,9 @@ public class BogenkontrolllisteComponentImplTest {
             ret.setNummer((long)(Math.random() * 2 + 1));
             return ret;
         });
+        List<LigaDO> ligen=new ArrayList<LigaDO>();
+        ligen.add(LigaComponentImplTest.getLigaDO());
+        when(ligaComponent.findAll()).thenReturn(ligen);
 
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
 
