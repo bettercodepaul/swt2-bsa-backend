@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.passe.impl.dao.PasseDAO;
 import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.business.passe.impl.mapper.PasseMapper;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -246,6 +249,7 @@ public class PasseComponentImpl implements PasseComponent {
     public PasseDO create(PasseDO passeDO, final Long currentUserId) {
         checkPasseDO(passeDO);
         checkPreconditions(currentUserId, "currentUserId");
+
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
 
         final PasseBE persistedPasseBE = passeDAO.create(passeBE, currentUserId);
