@@ -186,6 +186,9 @@ public class DownloadService implements ServiceFacade {
      * return the Rueckennummern as pdf file for client download
      *
      * @param mannschaftid from GET-request: ID of the mannschaft
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/rueckennummern?mannschaftid=x}</pre>
+     *
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
