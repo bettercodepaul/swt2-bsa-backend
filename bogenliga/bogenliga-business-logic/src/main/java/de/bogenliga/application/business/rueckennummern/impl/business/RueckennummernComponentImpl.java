@@ -174,9 +174,9 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             final Table singleDoc = new Table(UnitValue.createPercentArray(1), true)
                     .setBorder(Border.NO_BORDER)
                     .setMargins(50F,50F,50F,50F);
-            final Table test=new Table(UnitValue.createPercentArray(1),true)
+            final Table veranstaltung=new Table(UnitValue.createPercentArray(1),true)
                     .setBorder(Border.NO_BORDER);
-            final Table test2=new Table(UnitValue.createPercentArray(1),true)
+            final Table schuetzenInfo=new Table(UnitValue.createPercentArray(1),true)
                     .setBorder(Border.NO_BORDER).setVerticalAlignment(VerticalAlignment.MIDDLE);
 
             float totalMargin=singleDoc.getMarginTop().getValue()+singleDoc.getMarginBottom().getValue();
@@ -193,16 +193,16 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             final Cell rueckenNrFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                     .add(new Paragraph(rNummer).setBold().setFontSize(100.0F));
 
-            test
+            veranstaltung
                     .addCell(ligaFeld)
                     .addCell(vereinFeld);
-            test2
+            schuetzenInfo
                     .addCell(schuetzeFeld)
                     .addCell(rueckenNrFeld);
             singleDoc.addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(test).setPaddingBottom(-50F))
+                            .add(veranstaltung).setPaddingBottom(-50F))
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(test2));
+                            .add(schuetzenInfo));
 
             docTable.addCell(new Cell().setBorder(Border.NO_BORDER).setBorderBottom(new DashedBorder(Border.DASHED))
                     .add(singleDoc));
