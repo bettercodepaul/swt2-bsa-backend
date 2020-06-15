@@ -212,13 +212,13 @@ public class DownloadService implements ServiceFacade {
      * @param mannschaftid from GET-request: ID of the mannschaft
      * @param dsbmitgliedid from GET-request: ID of the dsbmitglied
      * Usage:
-     * <pre>{@code Request: GET /v1/download/pdf/rueckennummern?mannschaftid=x?dsbmitgliedid=y}</pre>
+     * <pre>{@code Request: GET /v1/download/pdf/rueckennummer?mannschaftid=x?dsbmitgliedid=y}</pre>
      *
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
-            path = "pdf/rueckennummern",
+            path = "pdf/rueckennummer",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
