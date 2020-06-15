@@ -212,7 +212,7 @@ public class DownloadService implements ServiceFacade {
      * @param mannschaftid from GET-request: ID of the mannschaft
      * @param dsbmitgliedid from GET-request: ID of the dsbmitglied
      * Usage:
-     * <pre>{@code Request: GET /v1/download/pdf/rueckennummer?mannschaftid=x?dsbmitgliedid=y}</pre>
+     * <pre>{@code Request: GET /v1/download/pdf/rueckennummer/?mannschaftid=x&dsbmitgliedid=y}</pre>
      *
      * @return pdf as InputStreamRessource
      */
