@@ -159,11 +159,11 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
     }
 
     private void generateRueckennummernDoc(Document doc, HashMap<String, List<String>> RueckennummerMapping) {
-        LOGGER.info("Es wurden {} Teams gefunden", RueckennummerMapping.size());
+        LOGGER.info("Es wurden {} Mannschaftsmitglieder gefunden", RueckennummerMapping.size());
+        doc.setMargins(0,0,0,0);
 
         //Table for the entire document
-        final Table docTable = new Table(UnitValue.createPercentArray(1), true);
-        int counter=1;
+        final Table docTable = new Table(UnitValue.createPercentArray(1), true).setBorder(Border.NO_BORDER);
         //iterate over all Mannschaftsmitglieder
         for(String rNummer : RueckennummerMapping.keySet()){
             String liga = RueckennummerMapping.get(rNummer).get(0);
@@ -172,13 +172,16 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
             //create single RueckennummerDoc
             final Table singleDoc = new Table(UnitValue.createPercentArray(1), true)
+                    .setBorder(Border.NO_BORDER)
+                    .setMargins(50F,50F,50F,50F);
+            final Table test=new Table(UnitValue.createPercentArray(1),true)
+                    .setBorder(Border.NO_BORDER);
+            final Table test2=new Table(UnitValue.createPercentArray(1),true)
                     .setBorder(Border.NO_BORDER).setVerticalAlignment(VerticalAlignment.MIDDLE);
 
-            singleDoc.setHeight(UnitValue.createPercentValue(50.0F));
+            float totalMargin=singleDoc.getMarginTop().getValue()+singleDoc.getMarginBottom().getValue();
+            singleDoc.setHeight((PageSize.A4.getHeight()-totalMargin)/2);
 
-            if(counter % 2 == 1) {
-                singleDoc.setBorderBottom(new DashedBorder(Border.DASHED));
-            }
 
             //fill with content of Mannschaftsmitglied
             final Cell ligaFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
@@ -188,22 +191,25 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             final Cell schuetzeFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                     .add(new Paragraph(schuetze).setBold().setFontSize(25.0F));
             final Cell rueckenNrFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                    .add(new Paragraph(rNummer).setBold().setFontSize(50.0F));
+                    .add(new Paragraph(rNummer).setBold().setFontSize(100.0F));
 
-            singleDoc
+            test
                     .addCell(ligaFeld)
-                    .addCell(vereinFeld)
+                    .addCell(vereinFeld);
+            test2
                     .addCell(schuetzeFeld)
                     .addCell(rueckenNrFeld);
+            singleDoc.addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(test).setPaddingBottom(-50F))
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(test2));
 
-            docTable.addCell(singleDoc);
-
-            counter++;
+            docTable.addCell(new Cell().setBorder(Border.NO_BORDER).setBorderBottom(new DashedBorder(Border.DASHED))
+                    .add(singleDoc));
         }
 
         //Add document table to document
-        doc.add(new Div().setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
-                        .add(docTable).setBorder(Border.NO_BORDER));
+        doc.add(docTable);
 
         doc.close();
     }
