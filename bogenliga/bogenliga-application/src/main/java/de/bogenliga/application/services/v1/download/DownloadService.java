@@ -183,7 +183,7 @@ public class DownloadService implements ServiceFacade {
 
 
     /**
-     * return the Rueckennummern as pdf file for client download
+     * return the Rueckennummern of a mannschaft as pdf file for client download
      *
      * @param mannschaftid from GET-request: ID of the mannschaft
      * Usage:
@@ -201,6 +201,31 @@ public class DownloadService implements ServiceFacade {
 
 
         final byte[] fileBloB = rueckennummernComponent.getMannschaftsRueckennummernPDFasByteArray(mannschaftid);
+
+        return generateInputStream(fileBloB);
+    }
+
+
+    /**
+     * return the Rueckennummer of one dsbMitglied as pdf file for client download
+     *
+     * @param mannschaftid from GET-request: ID of the mannschaft
+     * @param dsbmitgliedid from GET-request: ID of the dsbmitglied
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/rueckennummern?mannschaftid=x?dsbmitgliedid=y}</pre>
+     *
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/rueckennummern",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadRueckennummerPdf(@RequestParam("mannschaftid") final long mannschaftid,
+                                                                 @RequestParam("dsbmitgliedid") final long dsbmitgliedid) {
+
+        final byte[] fileBloB = rueckennummernComponent.getRueckennummerPDFasByteArray(mannschaftid,dsbmitgliedid);
 
         return generateInputStream(fileBloB);
     }
