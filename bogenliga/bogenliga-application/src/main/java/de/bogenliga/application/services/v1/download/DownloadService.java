@@ -132,6 +132,27 @@ public class DownloadService implements ServiceFacade {
     }
 
     /**
+     * returns the filled in Schusszettel for two matches as pdf file for client download
+     * Usage:
+     * <pre>{@code Request: GET pdf/schusszettel_matches/{matchId1}/{matchId2}}</pre>
+     *
+     * @return PDF as InputStreamResource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/schusszettel_matches/{matchId1}/{matchId2}",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadSchusszettelFilledPdf(@PathVariable("matchId1") Long matchId1,
+                                                                      @PathVariable("matchId2") Long matchId2) {
+
+        final byte[] fileBloB = schusszettelComponent.getFilledSchusszettelPDFasByteArray(matchId1, matchId2);
+
+        return generateInputStream(fileBloB);
+    }
+
+    /**
      * returns the Meldezettel as pdf file for client download
      * <p>
      * @param wettkampfid  from GET-Request: ID for the competition
