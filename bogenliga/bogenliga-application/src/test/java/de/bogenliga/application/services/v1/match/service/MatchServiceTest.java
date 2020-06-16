@@ -107,6 +107,7 @@ public class MatchServiceTest {
     private static final Integer MM_dsbMitgliedEingesetzt = 1;
     private static final String MM_dsbMitgliedVorname = "Foo";
     private static final String MM_dsbMitgliedNachname = "Bar";
+    private static final Long MM_rueckennummer = 5L;
 
     private static final Long W_id = 5L;
     private static final String W_name = "Liga_kummulativ";
@@ -179,7 +180,8 @@ public class MatchServiceTest {
                 MM_dsbMitgliedId,
                 MM_dsbMitgliedEingesetzt,
                 MM_dsbMitgliedVorname,
-                MM_dsbMitgliedNachname
+                MM_dsbMitgliedNachname,
+                MM_rueckennummer
         );
     }
 
@@ -214,7 +216,7 @@ public class MatchServiceTest {
 
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null);
+        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null, null);
     }
 
 

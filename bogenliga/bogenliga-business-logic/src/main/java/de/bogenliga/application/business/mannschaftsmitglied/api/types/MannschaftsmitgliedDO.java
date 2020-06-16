@@ -20,6 +20,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     private Integer dsbMitgliedEingesetzt;
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
+    private Long rueckennummer;
 
 
     /**
@@ -33,6 +34,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
      * @param lastModifiedAtUtc
      * @param lastModifiedByUserId
      * @param version
+     * @param rueckennummer
      */
 
     public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId,
@@ -40,7 +42,8 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
                                  final String dsbMitgliedVorname, final String dsbMitgliedNachname,
                                  final OffsetDateTime createdAtUtc,
                                  final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                                 final Long lastModifiedByUserId, final Long version) {
+                                 final Long lastModifiedByUserId, final Long version,
+                                 final Long rueckennummer) {
         this.mannschaftId = mannschaftId;
         this.id = id;
         this.dsbMitgliedId = dsbMitgliedId;
@@ -52,6 +55,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
+        this.rueckennummer = rueckennummer;
     }
 
 
@@ -88,13 +92,14 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
 
     public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId,
                                  final Integer dsbMitgliedEingesetzt, final String dsbMitgliedVorname,
-                                 final String dsbMitgliedNachname) {
+                                 final String dsbMitgliedNachname, final Long rueckennummer) {
         this.mannschaftId = mannschaftId;
         this.id = id;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
         this.dsbMitgliedVorname = dsbMitgliedVorname;
         this.dsbMitgliedNachname = dsbMitgliedNachname;
+        this.rueckennummer = rueckennummer;
 
     }
 
@@ -139,7 +144,6 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         return dsbMitgliedEingesetzt;
     }
 
-
     public void setDsbMitgliedEingesetzt(Integer dsbMitgliedEingesetzt) {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
@@ -174,12 +178,15 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.id = id;
     }
 
+    public Long getRueckennummer() { return rueckennummer; }
+
+    public void setRueckennummer(Long rueckennummer) { this.rueckennummer = rueckennummer; }
 
     @Override
     public int hashCode() {
         return Objects.hash(mannschaftId, dsbMitgliedId, dsbMitgliedId, dsbMitgliedVorname, dsbMitgliedNachname,
                 createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
+                lastModifiedByUserId, version, rueckennummer);
     }
 
 
@@ -199,6 +206,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
                 dsbMitgliedEingesetzt.equals(that.dsbMitgliedEingesetzt) &&
                 dsbMitgliedVorname.equals(that.dsbMitgliedVorname) &&
                 dsbMitgliedNachname.equals(that.dsbMitgliedNachname) &&
-                lastModifiedAtUtc.equals(that.lastModifiedAtUtc);
+                lastModifiedAtUtc.equals(that.lastModifiedAtUtc) &&
+                rueckennummer.equals(that.rueckennummer);
     }
 }
