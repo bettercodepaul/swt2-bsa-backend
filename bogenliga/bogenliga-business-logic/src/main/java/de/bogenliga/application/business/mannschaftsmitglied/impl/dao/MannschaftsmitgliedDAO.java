@@ -36,6 +36,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     private static final String MANNSCHAFTSMITGLIED_BE_TEAM_ID = "mannschaftId";
     private static final String MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID = "dsbMitgliedId";
     private static final String MANNSCHAFTSMITGLIED_BE_INSERT = "dsbMitgliedEingesetzt";
+    private static final String MANNSCHAFTSMITGLIED_BE_RUECKENNUMMER = "rueckennummer";
 
     // new: important for the join with dsb_mitglied
     private static final String DSBMITGLIED_BE_FORENAME = "dsbMitgliedVorname";
@@ -49,10 +50,11 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     // new: important for the join with dsb_mitglied
     private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
     private static final String DSBMITGLIED_TABLE_SURNAME = "dsb_mitglied_nachname";
+    private static final String MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER = "mannschaftsmitglied_rueckennummer";
 
     private static final String[] selectedFields = {
             MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID,
-            MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME
+            MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_TABLE_SURNAME, MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER
     };
 
     private static final String FIND_ALL = new QueryBuilder()
@@ -149,6 +151,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         // new: important for the join with dsb_mitglied
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
         columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME, DSBMITGLIED_BE_SURNAME);
+        columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER, MANNSCHAFTSMITGLIED_BE_RUECKENNUMMER);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -206,7 +209,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
+        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID,
+                MANNSCHAFTSMITGLIED_BE_RUECKENNUMMER);
     }
 
 
