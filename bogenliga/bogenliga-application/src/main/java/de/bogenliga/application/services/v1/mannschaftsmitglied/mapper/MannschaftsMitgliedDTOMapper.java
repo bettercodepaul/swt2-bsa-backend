@@ -15,9 +15,10 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
         final Integer dsbMitgliedEingesetzt = mannschaftsMitgliedDO.getDsbMitgliedEingesetzt();
         final String dsbMitgliedVorname = mannschaftsMitgliedDO.getDsbMitgliedVorname();
         final String dsbMitgliedNachname = mannschaftsMitgliedDO.getDsbMitgliedNachname();
+        final Long rueckennummer = mannschaftsMitgliedDO.getRueckennummer();
 
         return new MannschaftsMitgliedDTO(id, mannschaftId,
-                dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname);
+                dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, rueckennummer);
     };
 
     public static final Function<MannschaftsMitgliedDTO, MannschaftsmitgliedDO> toDO = dto -> {
@@ -27,9 +28,10 @@ public class MannschaftsMitgliedDTOMapper implements DataTransferObject {
         final Integer dsbMitgliedEingesetzt = dto.getDsbMitgliedEingesetzt();
         final String dsbMitgliedVorname = dto.getDsbMitgliedVorname();
         final String dsbMitgliedNachname = dto.getDsbMitgliedNachname();
+        final Long rueckennummer = dto.getRueckennummer();
 
         return new MannschaftsmitgliedDO(id, mannschaftId,
-                dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname);
+                dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, rueckennummer);
     };
 
 
