@@ -34,6 +34,7 @@ public class MannschaftsmitgliedBaseDAOTest {
         valuesToMethodMap.put("getDsbMitgliedEingesetzt", dsbMitgliedEingesetzt);
         valuesToMethodMap.put("getDsbMitgliedVorname", dsbMitgliedVorname);
         valuesToMethodMap.put("getDsbMitgliedNachname", dsbMitgliedNachname);
+        valuesToMethodMap.put("getRueckennummer", rueckennummer);
     }
 
 
@@ -50,7 +51,7 @@ public class MannschaftsmitgliedBaseDAOTest {
         expectedMannschaftsmitgliedBE.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
         expectedMannschaftsmitgliedBE.setDsbMitgliedVorname(dsbMitgliedVorname);
         expectedMannschaftsmitgliedBE.setDsbMitgliedNachname(dsbMitgliedNachname);
-
+        expectedMannschaftsmitgliedBE.setRueckennummer(rueckennummer);
         expectedMannschaftsmitgliedBE.setLastModifiedByUserId(USER);
 
         return expectedMannschaftsmitgliedBE;
