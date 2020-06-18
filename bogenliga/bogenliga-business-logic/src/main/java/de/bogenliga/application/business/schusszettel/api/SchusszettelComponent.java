@@ -14,4 +14,12 @@ public interface SchusszettelComponent extends ComponentFacade {
      */
     byte[] getAllSchusszettelPDFasByteArray(long wettkampfid);
 
+    /**
+     * Generates a pdf as binary document
+     * @param matchId1 ID for the first match
+     * @param matchId2 ID for the second atch
+     * @return document
+     */
+    byte[] getFilledSchusszettelPDFasByteArray(long matchId1, long matchId2);
+
 }
