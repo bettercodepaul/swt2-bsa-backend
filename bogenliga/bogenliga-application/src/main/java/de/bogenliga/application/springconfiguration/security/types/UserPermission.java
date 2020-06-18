@@ -143,7 +143,10 @@ public enum UserPermission implements GrantedAuthority {
     /* technisches Recht für technischen User (Tablet-Einsätze)
     * Datenerfassung ermöglichen
      */
-    CAN_OPERATE_SPOTTING
+    CAN_OPERATE_SPOTTING,
+    CAN_CREATE_STAMMDATEN,
+    CAN_CREATE_SYSTEMDATEN,
+    CAN_CREATE_WETTKAMPF
 
 
     ;
