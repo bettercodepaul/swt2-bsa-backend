@@ -31,6 +31,7 @@ public class MannschaftsmitgliedServiceTest {
     private static Integer dsbMitgliedEingesetzt = 1;
     private static String dsbMitgliedVorname = "Mario";
     private static String dsbMitgliedNachname = "Gomez";
+    private static Long rueckennummer = 5L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -53,13 +54,14 @@ public class MannschaftsmitgliedServiceTest {
         expectedBE.setMannschaftId(mannschaftsId);
         expectedBE.setDsbMitgliedId(dsbMitgliedId);
         expectedBE.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
+        expectedBE.setRueckennummer(rueckennummer);
         return expectedBE;
     }
 
 
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         return new MannschaftsmitgliedDO(
-                id, mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname
+                id, mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, rueckennummer
         );
     }
 
@@ -69,6 +71,7 @@ public class MannschaftsmitgliedServiceTest {
         mannschaftsMitgliedDTO.setMannschaftsId(mannschaftsId);
         mannschaftsMitgliedDTO.setDsbMitgliedId(dsbMitgliedId);
         mannschaftsMitgliedDTO.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
+        mannschaftsMitgliedDTO.setRueckennummer(rueckennummer);
         return mannschaftsMitgliedDTO;
     }
 

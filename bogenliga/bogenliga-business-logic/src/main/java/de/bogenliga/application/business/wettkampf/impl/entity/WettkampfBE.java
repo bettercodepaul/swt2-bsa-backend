@@ -25,6 +25,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private Long wettkampfTag;
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
+    private Long kampfrichterId;
 
 
     /**
@@ -114,6 +115,9 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
         this.wettkampfTypId = wettkampfTypId;
     }
 
+    public Long getKampfrichterId() { return kampfrichterId; }
+
+    public void setKampfrichterId(final Long kampfrichterId) { this.kampfrichterId = kampfrichterId; }
 
     @Override
     public String toString() {
@@ -124,6 +128,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
                 "Wettkampfbeginn = " + getWettkampfBeginn() + "\n" +
                 "Wettkampftag = " + getWettkampfTag() + "\n" +
                 "WettkampfdiziplinId = " + getWettkampfDisziplinId() + "\n" +
-                "WettkampftypId = " + getWettkampfTypId();
+                "WettkampftypId = " + getWettkampfTypId() + "\n" +
+                "KampfrichterId = " + getKampfrichterId();
     }
 }

@@ -13,6 +13,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
     private Integer dsbMitgliedEingesetzt;
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
+    private Long rueckennummer;
 
 
     /**
@@ -76,6 +77,10 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
         this.id = id;
     }
 
+    public Long getRueckennummer() { return rueckennummer; }
+
+    public void setRueckennummer(Long rueckennummer) { this.rueckennummer = rueckennummer; }
+
 
     public void setDsbMitgliedNachname(final String dsbMitgliedNachname) {
         this.dsbMitgliedNachname = dsbMitgliedNachname;
@@ -91,6 +96,7 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
                 ", dsbMitgliedEingesetzt=" + dsbMitgliedEingesetzt +
                 ", dsbMitgliedVorname=" + dsbMitgliedVorname +
                 ", dsbMitgliedNachname=" + dsbMitgliedNachname +
+                ", rueckennummer=" + rueckennummer +
                 '}';
     }
 }
