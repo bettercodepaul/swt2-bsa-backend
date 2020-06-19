@@ -19,6 +19,7 @@ public class MannschaftsmitgliedBaseDAOTest {
     protected static Integer dsbMitgliedEingesetzt = 1;
     protected static String dsbMitgliedVorname = "Max";
     protected static String dsbMitgliedNachname = "Mustermann";
+    protected static Long rueckennummer = 0L;
 
     private static final OffsetDateTime offsetDateTime = null;
     private static final Long USER = 4L;
@@ -33,6 +34,7 @@ public class MannschaftsmitgliedBaseDAOTest {
         valuesToMethodMap.put("getDsbMitgliedEingesetzt", dsbMitgliedEingesetzt);
         valuesToMethodMap.put("getDsbMitgliedVorname", dsbMitgliedVorname);
         valuesToMethodMap.put("getDsbMitgliedNachname", dsbMitgliedNachname);
+        valuesToMethodMap.put("getRueckennummer", rueckennummer);
     }
 
 
@@ -49,7 +51,7 @@ public class MannschaftsmitgliedBaseDAOTest {
         expectedMannschaftsmitgliedBE.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
         expectedMannschaftsmitgliedBE.setDsbMitgliedVorname(dsbMitgliedVorname);
         expectedMannschaftsmitgliedBE.setDsbMitgliedNachname(dsbMitgliedNachname);
-
+        expectedMannschaftsmitgliedBE.setRueckennummer(rueckennummer);
         expectedMannschaftsmitgliedBE.setLastModifiedByUserId(USER);
 
         return expectedMannschaftsmitgliedBE;
@@ -59,7 +61,7 @@ public class MannschaftsmitgliedBaseDAOTest {
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         final MannschaftsmitgliedDO expectedMannschaftsmitgliedDO = new MannschaftsmitgliedDO(id, mannschaftId,
                 dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, offsetDateTime,
-                USER, offsetDateTime, USER, VERSION);
+                USER, offsetDateTime, USER, VERSION, rueckennummer);
 
         return expectedMannschaftsmitgliedDO;
     }

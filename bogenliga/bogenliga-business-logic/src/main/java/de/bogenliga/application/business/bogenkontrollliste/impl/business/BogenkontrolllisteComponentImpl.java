@@ -137,18 +137,18 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 //find highest Liga and check if mitglied has already shot on this Wettkampftag
                 List<MannschaftsmitgliedDO> mitgliedIn=this.mannschaftsmitgliedComponent.findByMemberId(dsbMitglied.getId());
                 for(MannschaftsmitgliedDO mitglied: mitgliedIn){
-                    if(mitglied.getDsbMitgliedEingesetzt()>=2) {
-                        List<WettkampfDO> wettkaempfe = this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
-                        for (WettkampfDO wettkampf : wettkaempfe) {
+                    List<WettkampfDO> wettkaempfe = this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
+                    for (WettkampfDO wettkampf : wettkaempfe) {
 
-                            //check Sportjahr of Veranstaltung
-                            long wettkampfSportjahr = this.veranstaltungComponent.findById(
-                                    wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
-                            if (thisSportjahr == wettkampfSportjahr) {
-                                long liga=this.veranstaltungComponent.findById(
-                                        wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+                        //check Sportjahr of Veranstaltung
+                        long wettkampfSportjahr = this.veranstaltungComponent.findById(
+                                wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                        if (thisSportjahr == wettkampfSportjahr) {
+                            long liga=this.veranstaltungComponent.findById(
+                                    wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
 
-                                //finde Stufe der Liga dieses Wettkampfes
+                            //finde Stufe der Liga dieses Wettkampfes, wenn das Mannschaftsmitglied mindestens 2 mal eingesetzt wurde
+                            if(mitglied.getDsbMitgliedEingesetzt()>=2) {
                                 currentLiga=(int)liga;
                                 int ligaStufe=0;
                                 while(currentLiga != 0){
@@ -157,9 +157,11 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                         ligaStufe++;
                                     }else{currentLiga=0;}
                                 }
-                                List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
-                                darfSchiessen = (thisLigaStufe <= ligaStufe) && !(thisWettkamptag == wettkampf.getWettkampfTag()) && passen.isEmpty() && darfSchiessen;
+                                darfSchiessen=(thisLigaStufe <= ligaStufe) && darfSchiessen;
                             }
+
+                            List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
+                            darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag()) && passen.isEmpty() && darfSchiessen;
                         }
                     }
                 }
