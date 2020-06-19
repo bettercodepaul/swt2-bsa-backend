@@ -87,7 +87,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         String Liganame = veranstaltungDO.getVeranstaltungName();
         String Verein = vereinDO.getName();
         String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
-        String Rueckennummer = "1"; //später: mannschaftsmitgliedDO.getRueckennummer();
+        String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
         List<String> Schuetzendaten = new ArrayList();
         Schuetzendaten.add(Liganame);
@@ -124,15 +124,13 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
         String Liganame = veranstaltungDO.getVeranstaltungName();
 
-        int nr = 1; //temporary
-
         for(MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
             DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
             VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
             String Verein = vereinDO.getName();
             String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
-            String Rueckennummer = Integer.toString(nr); //später: mannschaftsmitgliedDO.getRueckennummer();
+            String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
             List<String> Schuetzendaten = new ArrayList();
             Schuetzendaten.add(Liganame);
@@ -140,7 +138,6 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             Schuetzendaten.add(Schuetzenname);
             RueckennummerMapping.put(Rueckennummer,Schuetzendaten);
             LOGGER.info("Teammitglied {} mit Rückennummer {} gefunden",Schuetzenname,Rueckennummer);
-            nr++; //temporary
         }
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -204,8 +201,16 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(schuetzenInfo));
 
-            docTable.addCell(new Cell().setBorder(Border.NO_BORDER).setBorderBottom(new DashedBorder(Border.DASHED))
+            docTable.addCell(new Cell().setBorder(Border.NO_BORDER)
                     .add(singleDoc));
+
+            //add empty 1/2 A4 page
+            final Table emptySingleDoc = new Table(UnitValue.createPercentArray(1), true)
+                    .setBorder(Border.NO_BORDER)
+                    .setMargins(50F,50F,50F,50F);
+            emptySingleDoc.setHeight((PageSize.A4.getHeight()-totalMargin)/2);
+            docTable.addCell(new Cell().setBorder(Border.NO_BORDER)
+                    .add(emptySingleDoc));
         }
 
         //Add document table to document
