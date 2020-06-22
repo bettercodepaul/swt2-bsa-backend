@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService;
+import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
+import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
@@ -77,6 +80,19 @@ public class PasseService implements ServiceFacade {
         this.log(passeDTO, SERVICE_FIND_BY_ID);
         return passeDTO;
     }
+
+    @RequestMapping(value = "findByMatchId/matchid={matchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<PasseDTO> findByMatchId(@PathVariable("matchId") final long matchId) {
+        Preconditions.checkArgument(matchId >= 0, "matchId must not be negative");
+
+        LOG.debug("Received 'findByMatchId' request with matchId: '{}'", matchId);
+
+        final List<PasseDO> passeDOList = this.passeComponent.findByMatchId(matchId);
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
 
 
     @RequestMapping(method = RequestMethod.POST,
