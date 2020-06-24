@@ -92,8 +92,16 @@ public class PasseService implements ServiceFacade {
         return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+    @RequestMapping(value = "findByWettkampfId/wettkampfid={wettkampfId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<PasseDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
+        Preconditions.checkArgument(wettkampfId>= 0, "wettkampfId must not be negative");
 
+        LOG.debug("Received 'findByWettkampfId' request with wettkampfId: '{}'", wettkampfId);
 
+        final List<PasseDO> passeDOList = this.passeComponent.findByWettkampfId(wettkampfId);
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+    }
 
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
