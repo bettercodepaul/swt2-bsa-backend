@@ -28,7 +28,6 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
@@ -236,7 +235,7 @@ public class MatchServiceTest {
 
     protected PasseDTO getPasseDTO(Long id, Integer nr) {
         PasseDTO passeDTO = PasseDTOMapper.toDTO.apply(getPasseDO(id));
-        passeDTO.setSchuetzeNr(nr);
+        passeDTO.setRueckennummer(nr);
         return passeDTO;
     }
 

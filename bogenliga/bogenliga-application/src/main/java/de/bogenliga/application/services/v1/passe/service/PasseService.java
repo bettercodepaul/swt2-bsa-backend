@@ -20,7 +20,6 @@ import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
@@ -140,7 +139,7 @@ public class PasseService implements ServiceFacade {
                 passeDTO.getWettkampfId(),
                 passeDTO.getLfdNr(),
                 passeDTO.getDsbMitgliedId(),
-                passeDTO.getSchuetzeNr(),
+                passeDTO.getRueckennummer(),
                 passeDTO.getMatchId(),
                 passeDTO.getMatchNr(),
                 passeDTO.getMannschaftId()
