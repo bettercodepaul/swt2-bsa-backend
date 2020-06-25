@@ -74,7 +74,7 @@ public class RueckennummernComponentImplTest {
             return ret;
         });
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
-
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
 
         //call test method
         final byte[] actual = underTest.getRueckennummerPDFasByteArray(MANNSCHAFTSID,DSBMITGLIEDID);
