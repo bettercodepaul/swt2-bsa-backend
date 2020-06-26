@@ -86,7 +86,7 @@ public class PasseService implements ServiceFacade {
         MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
-                mannschaftsmitgliedComponent.findAllSchuetzeInTeam(passeDTO.getMannschaftId());
+                mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(passeDTO.getMannschaftId());
 
         passeDTO.setDsbMitgliedId(MatchService.getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
         final long userId = UserProvider.getCurrentUserId(principal);

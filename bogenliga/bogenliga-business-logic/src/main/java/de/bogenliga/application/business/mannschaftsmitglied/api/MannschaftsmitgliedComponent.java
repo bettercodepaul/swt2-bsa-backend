@@ -28,7 +28,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * d.h. sie haben aktiv geschossen
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeamEingesetzt(Long MannschaftsmitgliederMannschaftsId);
 
 
     /**
@@ -37,7 +37,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * unabhängig ob sie schon aktiv geschossen haben. Z.B. für die Bogenkontrollliste.
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetzeInTeamGemeldet(Long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long MannschaftsmitgliederMannschaftsId);
 
 
 

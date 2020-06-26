@@ -331,7 +331,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
@@ -347,7 +347,7 @@ public class MatchServiceTest {
         matches.add(null);
         matches.add(matchDTO);
 
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         assertThatThrownBy(() -> {
             underTest.saveMatches(matches, principal);
@@ -375,7 +375,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
@@ -405,7 +405,7 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
@@ -436,7 +436,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(getMMDO(1L));
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
