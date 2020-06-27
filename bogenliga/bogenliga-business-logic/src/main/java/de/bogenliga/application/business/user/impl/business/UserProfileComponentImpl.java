@@ -48,12 +48,11 @@ public class UserProfileComponentImpl implements UserProfileComponent {
         UserProfileDO userProfileDO = new UserProfileDO();
 
         final UserBE userBE = userDAO.findById(id); // required for email adress
-        final DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
-
         if (userBE == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
+        final DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
         if (dsbMitgliedBE == null) {
             userProfileDO.setEmail(userBE.getUserEmail());
         } else {
