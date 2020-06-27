@@ -197,7 +197,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
                     .addCell(schuetzeFeld)
                     .addCell(rueckenNrFeld);
             singleDoc.addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(veranstaltung).setPaddingBottom(-50F))
+                    .add(veranstaltung).setPaddingBottom(-50F))
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(schuetzenInfo));
 
