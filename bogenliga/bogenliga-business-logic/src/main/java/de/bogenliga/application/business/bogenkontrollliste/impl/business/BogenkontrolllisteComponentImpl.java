@@ -125,7 +125,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 int thisLigaStufe = 0;
                 int currentLiga=(int)thisLiga;
                 while(currentLiga != 0){
-                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=currentLiga) {
                         currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
                         thisLigaStufe++;
                     }else{currentLiga=0;}
@@ -152,7 +152,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                 currentLiga=(int)liga;
                                 int ligaStufe=0;
                                 while(currentLiga != 0){
-                                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=currentLiga) {
                                         currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
                                         ligaStufe++;
                                     }else{currentLiga=0;}
@@ -161,7 +161,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                             }
 
                             List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
-                            darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag()) && passen.isEmpty() && darfSchiessen;
+                            darfSchiessen = (!(thisWettkamptag == wettkampf.getWettkampfTag()) || passen.isEmpty()) && darfSchiessen;
                         }
                     }
                 }
