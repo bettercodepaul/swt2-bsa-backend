@@ -159,9 +159,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                 }
                                 darfSchiessen=(thisLigaStufe <= ligaStufe) && darfSchiessen;
                             }
-
                             List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
-                            darfSchiessen = (!(thisWettkamptag == wettkampf.getWettkampfTag()) || passen.isEmpty()) && darfSchiessen;
+                            darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag() && !passen.isEmpty()) && darfSchiessen;
                         }
                     }
                 }
