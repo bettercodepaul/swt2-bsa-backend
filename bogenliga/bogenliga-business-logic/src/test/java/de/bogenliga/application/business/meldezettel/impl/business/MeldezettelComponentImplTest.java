@@ -71,7 +71,7 @@ public class MeldezettelComponentImplTest {
         }
 
         //configure Mocks
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(vereinComponent.findById(anyLong())).thenAnswer((Answer<VereinDO>) invocation -> {
             VereinDO ret = VereinComponentImplTest.getVereinDO();
             ret.setName("Verein " + UUID.randomUUID());

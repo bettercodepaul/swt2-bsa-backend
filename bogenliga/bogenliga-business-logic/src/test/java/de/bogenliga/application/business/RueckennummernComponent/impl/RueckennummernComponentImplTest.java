@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.bogenkontrollliste.impl.business;
+package de.bogenliga.application.business.RueckennummernComponent.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,33 +16,30 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
-import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.business.LigaComponentImplTest;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest;
-import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
+import de.bogenliga.application.business.rueckennummern.impl.business.RueckennummernComponentImpl;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.business.VereinComponentImplTest;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImplTest;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
  *
- * @author Nick Kerschagel
- * @author Michael Hesse
- * @author Sebastian Eckl
+ * @author David Winkler
  */
-public class BogenkontrolllisteComponentImplTest {
+public class RueckennummernComponentImplTest {
 
-    private static final long WETTKAMPFID = 30;
+    private static final long MANNSCHAFTSID = 30;
+    private static final long DSBMITGLIEDID = 30;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -52,57 +49,81 @@ public class BogenkontrolllisteComponentImplTest {
     @Mock
     private VereinComponent vereinComponent;
     @Mock
-    private WettkampfComponent wettkampfComponent;
-    @Mock
     private VeranstaltungComponent veranstaltungComponent;
-    @Mock
-    private MatchComponent matchComponent;
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
     private DsbMitgliedComponent dsbMitgliedComponent;
-    @Mock
-    private LigaComponent ligaComponent;
 
     @InjectMocks
-    private BogenkontrolllisteComponentImpl underTest;
+    private RueckennummernComponentImpl underTest;
 
     @Test
-    public void getBogenkontrolllistePDFasByteArray() {
-        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
-            mannschaftsmitgliedDOList.add(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
-        }
+    public void getRueckennummerPDFasByteArray() {
 
         //configure Mocks
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(vereinComponent.findById(anyLong())).thenAnswer((Answer<VereinDO>) invocation -> {
             VereinDO ret = VereinComponentImplTest.getVereinDO();
             ret.setName("Verein " + UUID.randomUUID());
             return ret;
         });
-        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(MatchComponentImplTest.getMatchDO());
-        when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
         when(veranstaltungComponent.findById(anyLong())).thenReturn(VeranstaltungComponentImplTest.getVeranstaltungDO());
         when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
             DsbMannschaftDO ret = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
             ret.setNummer((long)(Math.random() * 2 + 1));
             return ret;
         });
-        List<LigaDO> ligen=new ArrayList<LigaDO>();
-        ligen.add(LigaComponentImplTest.getLigaDO());
-        when(ligaComponent.findAll()).thenReturn(ligen);
-
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
-
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
 
         //call test method
-        final byte[] actual = underTest.getBogenkontrolllistePDFasByteArray(WETTKAMPFID);
+        final byte[] actual = underTest.getRueckennummerPDFasByteArray(MANNSCHAFTSID,DSBMITGLIEDID);
 
         //assert
         Assertions.assertThat(actual).isNotEmpty();
 
         //verify invocations
-        verify(matchComponent, atLeastOnce()).findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong());
+        verify(dsbMannschaftComponent, atLeastOnce()).findById(anyLong());
+        verify(veranstaltungComponent, atLeastOnce()).findById(anyLong());
+        verify(dsbMitgliedComponent, atLeastOnce()).findById(anyLong());
+        verify(vereinComponent, atLeastOnce()).findById(anyLong());
+    }
+
+    @Test
+    public void getMannschaftsRueckennummernPDFasByteArray(){
+
+        //configure Mocks
+        when(vereinComponent.findById(anyLong())).thenAnswer((Answer<VereinDO>) invocation -> {
+            VereinDO ret = VereinComponentImplTest.getVereinDO();
+            ret.setName("Verein " + UUID.randomUUID());
+            return ret;
+        });
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(VeranstaltungComponentImplTest.getVeranstaltungDO());
+        when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
+            DsbMannschaftDO ret = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+            ret.setNummer((long)(Math.random() * 2 + 1));
+            return ret;
+        });
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            mannschaftsmitgliedDOList.add(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
+        }
+        when(mannschaftsmitgliedComponent.findByTeamId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+
+
+        //call test method
+        final byte[] actual = underTest.getMannschaftsRueckennummernPDFasByteArray(MANNSCHAFTSID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(dsbMannschaftComponent, atLeastOnce()).findById(anyLong());
+        verify(mannschaftsmitgliedComponent, atLeastOnce()).findByTeamId(anyLong());
+        verify(veranstaltungComponent, atLeastOnce()).findById(anyLong());
+        verify(dsbMitgliedComponent, atLeastOnce()).findById(anyLong());
+        verify(vereinComponent, atLeastOnce()).findById(anyLong());
     }
 }
