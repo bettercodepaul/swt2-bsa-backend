@@ -1,0 +1,10 @@
+INSERT INTO recht(
+recht_id,
+recht_name
+)
+VALUES
+       (21,'CAN_READ_DSBMITGLIEDER'),
+       (22,'CAN_CREATE_DSBMITGLIEDER'),
+       (23,'CAN_MODIFY_DSBMITGLIEDER'),
+       (24,'CAN_DELETE_DSBMITGLIEDER')
+;
