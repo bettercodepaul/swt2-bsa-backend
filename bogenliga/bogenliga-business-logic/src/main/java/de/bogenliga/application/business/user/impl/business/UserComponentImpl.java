@@ -27,6 +27,7 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER = "UserDO must not be null";
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private static final String PRECONDITION_MSG_USER_NULL = "UserID must not be null";
+    private static final String PRECONDITION_MSG_DSB_MITGLIED_NULL = "DSB-ID must reference a DSB member - must not be null";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PWD = "UserDO password must not be null or empty";
     private static final String PRECONDITON_MSG_USER_WRONG_PWD = "Current password incorrect";
@@ -136,18 +137,21 @@ public class UserComponentImpl implements UserComponent {
      * Neuen User anlegen
      * @param  email User-Name
      * @param  password Kennwort
+     * @param  dsb_mitglied_id dsb-mitlgieds_bezug
      * @param  currentUserId aktueller User mit den Rechten zur Neuanlage
      */
     @Override
-    public UserDO create(final String email, final String password, final Long currentUserId, final boolean isUsing2FA) {
+    public UserDO create(final String email, final String password, final Long dsb_mitglied_id, final Long currentUserId, final boolean isUsing2FA) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
+        Preconditions.checkNotNull(dsb_mitglied_id, PRECONDITION_MSG_DSB_MITGLIED_NULL);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_NULL);
 
         final UserBE result = new UserBE();
         final String salt = passwordHashingBA.generateSalt();
         final String pwdhash = passwordHashingBA.calculateHash(password, salt);
         result.setUserEmail(email);
+        result.setDsb_mitglied_id(dsb_mitglied_id);
         result.setUserSalt(salt);
         result.setUserPassword(pwdhash);
         result.setUsing2FA(isUsing2FA);
