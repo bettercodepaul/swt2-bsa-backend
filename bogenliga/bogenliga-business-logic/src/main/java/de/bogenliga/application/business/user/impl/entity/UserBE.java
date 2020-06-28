@@ -23,6 +23,7 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     private String userEmail;
     private String userSalt;
     private String userPassword;
+    private Long dsb_mitglied_id;
     private boolean using2FA = true;
     private boolean active = true;
 
@@ -42,6 +43,7 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
                 ", userEmail='" + userEmail + '\'' +
                 ", userSalt='" + userSalt + '\'' +
                 ", userPassword='" + userPassword + '\'' +
+                ", dsb_mitglied_id='" + dsb_mitglied_id + '\'' +
                 '}';
     }
 
@@ -83,6 +85,16 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
 
     public void setUserPassword(final String userPassword) {
         this.userPassword = userPassword;
+    }
+
+
+    public Long getDsb_mitglied_id() {
+        return dsb_mitglied_id;
+    }
+
+
+    public void setDsb_mitglied_id(final Long dsb_mitglied_id) {
+        this.dsb_mitglied_id = dsb_mitglied_id;
     }
 
 

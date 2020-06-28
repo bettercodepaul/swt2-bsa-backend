@@ -35,6 +35,7 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_BE_PASSWORD = "userPassword";
     private static final String USER_BE_USING2FA = "using2FA";
     private static final String USER_BE_SECRET = "secret";
+    private static final String USER_BE_DSB_MITGLIED_ID = "dsb_mitglied_id";
 
     private static final String USER_BE_ACTIVE = "active";
 
@@ -44,6 +45,7 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_TABLE_PASSWORD = "benutzer_password";
     private static final String USER_TABLE_USING2FA = "benutzer_using_2fa";
     private static final String USER_TABLE_SECRET = "benutzer_secret";
+    private static final String USER_TABLE_DSB_MITGLIED_ID = "benutzer_dsb_mitglied_id";
 
     private static final String USER_TABLE_ACTIVE = "benutzer_active";
 
@@ -95,6 +97,7 @@ public class UserDAO implements DataAccessObject {
         columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
         columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
         columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
+        columnsToFieldsMap.put(USER_TABLE_DSB_MITGLIED_ID, USER_BE_DSB_MITGLIED_ID);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
