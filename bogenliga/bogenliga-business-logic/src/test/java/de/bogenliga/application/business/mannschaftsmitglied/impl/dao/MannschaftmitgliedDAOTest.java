@@ -82,7 +82,7 @@ public void findAll() throws InvocationTargetException, IllegalAccessException {
     @Test
     public void findAllSchuetzeInTeam() {
         try {
-            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findAllSchuetzeInTeam(mannschaftId));
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findAllSchuetzeInTeamEingesetzt(mannschaftId));
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
