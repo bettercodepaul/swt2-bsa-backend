@@ -113,10 +113,10 @@ public class MannschaftsmitgliedComponentImplTest {
         final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
-        when(mannschaftsmitgliedDAO.findAllSchuetzeInTeam(MANNSCHAFTSID)).thenReturn(expectedBEList);
+        when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(MANNSCHAFTSID)).thenReturn(expectedBEList);
 
         // call test method
-        final List<MannschaftsmitgliedDO> actual = underTest.findAllSchuetzeInTeam(MANNSCHAFTSID);
+        final List<MannschaftsmitgliedDO> actual = underTest.findAllSchuetzeInTeamEingesetzt(MANNSCHAFTSID);
 
         // assert result
         assertThat(actual)
