@@ -1,3 +1,4 @@
+DELETE FROM rolle_recht;
 INSERT INTO rolle_recht(
   rolle_recht_rolle_id,
   rolle_recht_recht_id
@@ -48,4 +49,6 @@ VALUES (1, 0),
        (5,10),
        (5,26),
        (5,27),
-       (6, 0);
+       (6, 0),
+       (7,0),
+       (8,0);
