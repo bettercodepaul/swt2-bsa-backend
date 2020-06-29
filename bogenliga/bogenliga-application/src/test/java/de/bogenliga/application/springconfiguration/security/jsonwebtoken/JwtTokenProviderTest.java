@@ -1,5 +1,6 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -21,7 +22,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -40,9 +44,13 @@ public class JwtTokenProviderTest {
     private static final String USER_INFO = "usr";
     private static final String USER_INFO_VERSION = "version";
     private static final String USER_INFO_ID = "id";
+    private static final String USER_INFO_VEREIN_ID = "vereinId";
+    private static final String USER_INFO_VERANSTALTUNGEN_ID = "veranstaltungenIds";
     private static final String AUTH = "auth";
     private static final Long ID = 123L;
     private static final Long VERSION = 1L;
+    private static final Long VEREIN_ID = 1L;
+    private static final List<Long> VERANSTALTUNGEN_IDS = Arrays.asList(1L, 2L, 3L);
     private static final String USERNAME = "user";
     private static final String PASSWORD = "password";
     private static final String ERROR_MESSAGE = "error";
@@ -91,6 +99,9 @@ public class JwtTokenProviderTest {
         final Map<String, String> userInfo = new HashMap<>();
         userInfo.put(USER_INFO_VERSION, String.valueOf(VERSION));
         userInfo.put(USER_INFO_ID, String.valueOf(ID));
+
+        userInfo.put(USER_INFO_VEREIN_ID, String.valueOf(VEREIN_ID));
+        userInfo.put(USER_INFO_VERANSTALTUNGEN_ID, String.valueOf(VERANSTALTUNGEN_IDS));
 
         claims.put(USER_INFO, userInfo);
 
@@ -217,6 +228,16 @@ public class JwtTokenProviderTest {
         userWithPermissionsDO.setEmail(USERNAME);
         userWithPermissionsDO.setPermissions(
                 PERMISSIONS.stream().map(UserPermission::name).collect(Collectors.toList()));
+
+        final UserDO userDO = new UserDO();
+        userDO.setDsb_mitglied_id(1L);
+
+        final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(1L);
+        dsbMitgliedDO.setVereinsId(1L);
+
+        final VeranstaltungDO veranstaltungDO1 = new VeranstaltungDO(1L);
+        final VeranstaltungDO veranstaltungDO2 = new VeranstaltungDO(2L);
+        final VeranstaltungDO veranstaltungDO3 = new VeranstaltungDO(3L);
 
         // configure mocks
         when(authentication.getPrincipal()).thenReturn(userWithPermissionsDO);
