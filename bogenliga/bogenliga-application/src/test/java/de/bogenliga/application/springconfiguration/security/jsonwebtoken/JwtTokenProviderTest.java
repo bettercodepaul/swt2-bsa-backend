@@ -1,6 +1,5 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -41,20 +40,12 @@ public class JwtTokenProviderTest {
     private static final String USER_INFO = "usr";
     private static final String USER_INFO_VERSION = "version";
     private static final String USER_INFO_ID = "id";
-    private static final String USER_INFO_VEREIN_ID = "vereinId";
-    private static final String USER_INFO_VERANSTALTUNGEN_ID = "veranstaltungenIds";
     private static final String AUTH = "auth";
     private static final Long ID = 123L;
     private static final Long VERSION = 1L;
     private static final String USERNAME = "user";
     private static final String PASSWORD = "password";
     private static final String ERROR_MESSAGE = "error";
-    private static final Long VEREINID = 1L;
-    private static final Long VERANSTALTUNGID1 = 1L;
-    private static final Long VERANSTALTUNGID2 = 2L;
-    private static final Long VERANSTALTUNGID3 = 3L;
-    private static final List<Long> VERANSTALTUNGENIDS = Arrays.asList(VERANSTALTUNGID1,VERANSTALTUNGID2,VERANSTALTUNGID3);
-
     private static final List<UserPermission> PERMISSIONS = Arrays.asList(
             UserPermission.CAN_READ_SPORTJAHR,
             UserPermission.CAN_READ_STAMMDATEN);
@@ -100,8 +91,6 @@ public class JwtTokenProviderTest {
         final Map<String, String> userInfo = new HashMap<>();
         userInfo.put(USER_INFO_VERSION, String.valueOf(VERSION));
         userInfo.put(USER_INFO_ID, String.valueOf(ID));
-        userInfo.put(USER_INFO_VEREIN_ID, String.valueOf(VEREINID));
-        userInfo.put(USER_INFO_VERANSTALTUNGEN_ID,String.valueOf(VERANSTALTUNGENIDS));
 
         claims.put(USER_INFO, userInfo);
 

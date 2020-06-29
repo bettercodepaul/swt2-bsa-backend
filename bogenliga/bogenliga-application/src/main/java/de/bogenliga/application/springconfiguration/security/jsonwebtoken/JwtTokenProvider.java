@@ -1,12 +1,6 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -47,13 +41,8 @@ public class JwtTokenProvider {
     private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
     private static final String AUTH = "auth";
     private static final String DEFAULT_USER_NAME = "ligadefault";
-    private static final String USER_INFO_VEREIN_ID = "vereinId";
-    private static final String USER_INFO_VERANSTALTUNGEN_ID = "veranstaltungenIds";
     private final SecurityJsonWebTokenConfiguration securityJsonWebTokenConfiguration;
     private final UserAuthenticationProvider userAuthenticationProvider;
-    private final UserComponent userComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
 
     // defined in resources/application-<PROFILE>.properties
     private long validityInMilliseconds;
@@ -64,15 +53,9 @@ public class JwtTokenProvider {
     @Autowired
     public JwtTokenProvider(
             final SecurityJsonWebTokenConfiguration securityJsonWebTokenConfiguration,
-            final UserAuthenticationProvider userAuthenticationProvider,
-            final UserComponent userComponent,
-            final DsbMitgliedComponent dsbMitgliedComponent,
-            final VeranstaltungComponent veranstaltungComponent) {
+            final UserAuthenticationProvider userAuthenticationProvider) {
         this.securityJsonWebTokenConfiguration = securityJsonWebTokenConfiguration;
         this.userAuthenticationProvider = userAuthenticationProvider;
-        this.userComponent = userComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
     }
 
 
@@ -188,21 +171,6 @@ public class JwtTokenProvider {
         final Map<String, String> userInfo = new HashMap<>();
         userInfo.put(USER_INFO_VERSION, String.valueOf(version));
         userInfo.put(USER_INFO_ID, String.valueOf(id));
-        try {
-            UserDO user = this.userComponent.findById(id);
-            DsbMitgliedDO dsbmitglied = this.dsbMitgliedComponent.findById(user.getDsb_mitglied_id());
-            long user_verein_id = dsbmitglied.getVereinsId();
-            userInfo.put(USER_INFO_VEREIN_ID, String.valueOf(user_verein_id));
-        } catch(Exception e) {
-            userInfo.put(USER_INFO_VEREIN_ID,"");
-        }
-        try {
-            List<VeranstaltungDO> veranstaltungListe = this.veranstaltungComponent.findByLigaleiterId(id);
-            userInfo.put(USER_INFO_VERANSTALTUNGEN_ID, String.valueOf(veranstaltungListe));
-
-        } catch(Exception e) {
-            userInfo.put(USER_INFO_VERANSTALTUNGEN_ID,"");
-        }
 
         claims.put(USER_INFO, userInfo);
 
