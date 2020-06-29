@@ -141,7 +141,7 @@ public class MannschaftsmitgliedBasicDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<MannschaftsmitgliedBE> actual = underTest.findAllSchuetzeInTeam(MANNSCHHAFT_ID);
+        final List<MannschaftsmitgliedBE> actual = underTest.findAllSchuetzeInTeamEingesetzt(MANNSCHHAFT_ID);
         // assert result
         Java6Assertions.assertThat(actual)
                 .isNotNull()
