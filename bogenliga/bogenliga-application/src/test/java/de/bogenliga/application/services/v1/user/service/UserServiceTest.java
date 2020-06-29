@@ -51,6 +51,7 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
 
     private static final Long ID = 123L;
+    private static final Long DSBMITGLIEDID = 28L;
     private static final String USERNAME = "user";
     private static final String PASSWORD = "CorrectPasswordV1";
     private static final String NEUESPASSWORD = "CorrectPasswordV2";
@@ -598,14 +599,16 @@ public class UserServiceTest {
         final UserDO userCreatedDO = new UserDO();
         userCreatedDO.setEmail(USERNAME);
         userCreatedDO.setId(ID);
+        userCreatedDO.setDsb_mitglied_id(DSBMITGLIEDID);
         userCreatedDO.setVersion(VERSION);
 
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
         userCredentialsDTO.setUsername(USERNAME);
         userCredentialsDTO.setPassword(PASSWORD);
+        userCredentialsDTO.setDsb_mitglied_id(DSBMITGLIEDID);
 
         // configure mocks
-        when(userComponent.create(anyString(), anyString(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
+        when(userComponent.create(anyString(), anyString(), anyLong(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
         when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
 
         // call test method
@@ -724,6 +727,7 @@ public class UserServiceTest {
 
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
         userCredentialsDTO.setUsername(USERNAME);
+        userCredentialsDTO.setDsb_mitglied_id(DSBMITGLIEDID);
 
         String[] invalidPasswords = new String[]{
                 "ABCabc0",
