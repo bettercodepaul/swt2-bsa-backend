@@ -21,4 +21,7 @@ $$ LANGUAGE plpgsql;
 
 SELECT initRueckennummern();
 
-DROP FUNCTION initRueckennummern;
+--DROP FUNCTION initRueckennummern;
+COMMIT;
+DROP FUNCTION initRueckennummern();
+DROP SEQUENCE rNrSeq;
