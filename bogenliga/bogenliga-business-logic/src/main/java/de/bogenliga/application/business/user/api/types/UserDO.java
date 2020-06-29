@@ -25,6 +25,7 @@ public class UserDO extends CommonDataObject implements DataObject {
      */
     private Long id;
     private String email;
+    private Long dsb_mitglied_id;
     private boolean using2FA;
     private boolean active;
     private String secret;
@@ -39,13 +40,37 @@ public class UserDO extends CommonDataObject implements DataObject {
 
 
     /**
-     * Constructor with mandatory parameters
+     * Constructor with all parameters
      */
-    public UserDO(final Long id, final String email, boolean using2FA, boolean active, String secret, final OffsetDateTime createdAtUtc,
+    public UserDO(final Long id, final String email, final Long dsb_mitglied_id, boolean using2FA,
+                  boolean active, String secret, final OffsetDateTime createdAtUtc,
                   final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                   final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.email = email;
+        this.dsb_mitglied_id = dsb_mitglied_id;
+        this.using2FA = using2FA;
+        this.active = active;
+        this.secret = secret;
+
+        // set parameter from CommonDataObject
+        this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
+        this.lastModifiedAtUtc = lastModifiedAtUtc;
+        this.lastModifiedByUserId = lastModifiedByUserId;
+        this.version = version;
+    }
+
+    /**
+     * Constructor with mandatory parameters
+     */
+    public UserDO(final Long id, final String email, boolean using2FA,
+                  boolean active, String secret, final OffsetDateTime createdAtUtc,
+                  final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
+                  final Long lastModifiedByUserId, final Long version) {
+        this.id = id;
+        this.email = email;
+        this.dsb_mitglied_id = 0L;
         this.using2FA = using2FA;
         this.active = active;
         this.secret = secret;
@@ -97,12 +122,20 @@ public class UserDO extends CommonDataObject implements DataObject {
         return getId().equals(userDO.getId()) &&
                 getVersion() == userDO.getVersion() &&
                 Objects.equals(getEmail(), userDO.getEmail()) &&
+                getDsb_mitglied_id().equals(userDO.getDsb_mitglied_id()) &&
                 Objects.equals(getCreatedAtUtc(), userDO.getCreatedAtUtc()) &&
                 Objects.equals(getCreatedByUserId(), userDO.getCreatedByUserId()) &&
                 Objects.equals(getLastModifiedAtUtc(), userDO.getLastModifiedAtUtc()) &&
                 Objects.equals(getLastModifiedByUserId(), userDO.getLastModifiedByUserId());
     }
 
+    public Long getDsb_mitglied_id() {
+        return dsb_mitglied_id;
+    }
+
+    public void setDsb_mitglied_id(final long dsb_mitglied_id) {
+        this.dsb_mitglied_id = dsb_mitglied_id;
+    }
 
     public boolean isUsing2FA() {
         return using2FA;
