@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.user.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -17,6 +18,8 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
 
     private String jwt;
     private Set<UserPermission> permissions;
+    private Long vereinId;
+    private List<Long> veranstaltungenIds;
 
 
     public UserSignInDTO() {
@@ -39,6 +42,7 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
      */
     public UserSignInDTO(final UserDTO userDTO) {
         super(userDTO);
+
     }
 
 
@@ -61,4 +65,23 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
         this.permissions = permissions;
     }
 
+
+    public Long getVereinId() {
+        return vereinId;
+    }
+
+
+    public void setVereinId(Long vereinId) {
+        this.vereinId = vereinId;
+    }
+
+
+    public List<Long> getVeranstaltungenIds() {
+        return veranstaltungenIds;
+    }
+
+
+    public void setVeranstaltungenIds(List<Long> veranstaltungenIds) {
+        this.veranstaltungenIds = veranstaltungenIds;
+    }
 }
