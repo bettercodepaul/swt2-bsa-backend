@@ -62,6 +62,11 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + " FROM veranstaltung "
                     + " WHERE veranstaltung_id = ?";
 
+    private static final String FIND_BY_LIGALEITER_ID =
+            "SELECT * "
+                    + " FROM veranstaltung "
+                    + " WHERE veranstaltung_ligaleiter_id = ?";
+
     private final BasicDAO basicDao;
 
     /**
@@ -111,6 +116,11 @@ public class VeranstaltungDAO implements DataAccessObject{
      */
     public VeranstaltungBE findById(final long id) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
+    }
+
+
+    public List<VeranstaltungBE> findByLigaleiterId(long ligaleiterId) {
+        return basicDao.selectEntityList(VERANSTALTUNG,FIND_BY_LIGALEITER_ID, ligaleiterId);
     }
 
     /**
