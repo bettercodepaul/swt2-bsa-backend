@@ -408,9 +408,10 @@ public class MatchService implements ServiceFacade {
                 break;
             }
         }
-        if (mannschaftsmitglied.getId() == -1L){
-            String.format(ERR_NOT_NULL_TEMPLATE, "getMemberIdFor", "mannschaftsmitglied");
-        }
+
+        Preconditions.checkArgument(mannschaftsmitglied.getId() == -1L,
+                String.format(ERR_NOT_NULL_TEMPLATE, "getMemberIdFor", "mannschaftsmitglied"));
+
 
         return mannschaftsmitglied.getDsbMitgliedId();
         // mannschaftsmitgliedDOS.get(passeDTO.getRueckennummer()).getDsbMitgliedId();
