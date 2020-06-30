@@ -409,7 +409,7 @@ public class MatchService implements ServiceFacade {
             }
         }
 
-        Preconditions.checkArgument(mannschaftsmitglied.getId() == -1L,
+        Preconditions.checkArgument(mannschaftsmitglied.getId() != -1L,
                 String.format(ERR_NOT_NULL_TEMPLATE, "getMemberIdFor", "mannschaftsmitglied"));
 
 
