@@ -64,8 +64,9 @@ public class UserProfileComponentImplTest {
 
     public static UserBE getUserBE() {
         UserBE userBE = new UserBE();
-        userBE.setUserId(ID);
+        userBE.setUserId(USERID);
         userBE.setUserEmail(EMAIL);
+        userBE.setDsb_mitglied_id(ID);
         return userBE;
     }
 
@@ -76,11 +77,11 @@ public class UserProfileComponentImplTest {
         final UserBE expectedUserBE = getUserBE();
 
         // configure mocks
-        when(dsbMitgliedDAO.findByUserId(ID)).thenReturn(expectedDsbMitgliedBE);
-        when(userDAO.findById(ID)).thenReturn(expectedUserBE);
+        when(dsbMitgliedDAO.findById(ID)).thenReturn(expectedDsbMitgliedBE);
+        when(userDAO.findById(USERID)).thenReturn(expectedUserBE);
 
         // call test method
-        final UserProfileDO actual = underTest.findById(ID);
+        final UserProfileDO actual = underTest.findById(USERID);
 
         // assert result
         assertThat(actual).isNotNull();
