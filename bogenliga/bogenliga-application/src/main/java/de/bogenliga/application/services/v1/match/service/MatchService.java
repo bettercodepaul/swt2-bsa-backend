@@ -399,7 +399,7 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "passeDTO"));
         Preconditions.checkNotNull(passeDTO.getRueckennummer(),
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "schuetzeNr"));
-        MannschaftsmitgliedDO mannschaftsmitglied = null;
+        MannschaftsmitgliedDO mannschaftsmitglied = new MannschaftsmitgliedDO(-1L);
 
         for (MannschaftsmitgliedDO item : mannschaftsmitgliedDOS){
             LOG.debug("Rueckennummer: " + item.getRueckennummer().toString());
@@ -408,8 +408,9 @@ public class MatchService implements ServiceFacade {
                 break;
             }
         }
-        Preconditions.checkNotNull(mannschaftsmitglied,
-                String.format(ERR_NOT_NULL_TEMPLATE, "getMemberIdFor", "mannschaftsmitglied"));
+        if (mannschaftsmitglied.getId() == -1L){
+            String.format(ERR_NOT_NULL_TEMPLATE, "getMemberIdFor", "mannschaftsmitglied");
+        }
 
         return mannschaftsmitglied.getDsbMitgliedId();
         // mannschaftsmitgliedDOS.get(passeDTO.getRueckennummer()).getDsbMitgliedId();
