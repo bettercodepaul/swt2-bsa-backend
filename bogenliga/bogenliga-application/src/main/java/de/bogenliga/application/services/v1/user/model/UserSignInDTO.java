@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.user.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,7 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
     private String jwt;
     private Set<UserPermission> permissions;
     private Long vereinId;
-    private List<Long> veranstaltungenIds;
+    private ArrayList<Integer> veranstaltungenIds;
     private UserComponent userComponent;
     private DsbMitgliedComponent dsbMitgliedComponent;
     private VeranstaltungComponent veranstaltungComponent;
@@ -51,15 +52,6 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
      */
     public UserSignInDTO(final UserDTO userDTO) {
         super(userDTO);
-        UserDO userDO = userComponent.findById(userDTO.getId());
-        DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
-        this.vereinId = dsbMitgliedDO.getVereinsId();
-
-        List<VeranstaltungDO> veranstaltungDOs = veranstaltungComponent.findByLigaleiterId(userDO.getId());
-        for(VeranstaltungDO veranstaltungDO : veranstaltungDOs) {
-            this.veranstaltungenIds.add(veranstaltungDO.getVeranstaltungID());
-        }
-
     }
 
 
@@ -93,12 +85,12 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
     }
 
 
-    public List<Long> getVeranstaltungenIds() {
+    public ArrayList<Integer> getVeranstaltungenIds() {
         return veranstaltungenIds;
     }
 
 
-    public void setVeranstaltungenIds(List<Long> veranstaltungenIds) {
+    public void setVeranstaltungenIds(ArrayList<Integer> veranstaltungenIds) {
         this.veranstaltungenIds = veranstaltungenIds;
     }
 }
