@@ -51,6 +51,12 @@ public class VereinDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM verein v"
                     + " WHERE v.verein_id = ?";
+    private static final String FIND_FIRST =
+            "SELECT v.*, r.region_name "
+                    + " FROM verein v"
+                    + " JOIN region r on v.verein_region_id=r.region_id"
+                    + " ORDER BY verein_id"
+                    + " ASC LIMIT 1";
 
     private final BasicDAO basicDao;
 
@@ -94,6 +100,16 @@ public class VereinDAO implements DataAccessObject {
      */
     public VereinBE findById(final long vereinId) {
         return basicDao.selectSingleEntity(VEREIN, FIND_BY_ID, vereinId);
+    }
+
+
+    /**
+     * Returns the first "Verein" entry from the DB
+     * @return Returns the queried verein as Business Entity
+     * @author Robin Keinert
+     */
+    public VereinBE findFirst() {
+        return basicDao.selectSingleEntity(VEREIN, FIND_FIRST);
     }
 
 
