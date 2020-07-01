@@ -28,7 +28,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * d.h. sie haben aktiv geschossen
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetzeInTeamEingesetzt(Long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeamEingesetzt(Long mannschaftsmitgliederMannschaftsId);
 
 
     /**
@@ -37,7 +37,7 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * unabhängig ob sie schon aktiv geschossen haben. Z.B. für die Bogenkontrollliste.
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long mannschaftsmitgliederMannschaftsId);
 
 
 
@@ -49,28 +49,28 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * empty list, if no mannschaftsmitglied is found
      */
 
-    List<MannschaftsmitgliedDO> findByTeamId(Long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findByTeamId(Long mannschaftsmitgliederMannschaftsId);
 
 
 
     /**
      * Return a mannschaftsmitglied entry with the given id.
      *
-     * @param MannschaftsmitgliedMannschaftId of the mannschaftsmitglied,
-     * @param MannschaftsmitgliedMitgliedId of the mannschaftsmitglied
+     * @param mannschaftsmitgliedMannschaftId of the mannschaftsmitglied,
+     * @param mannschaftsmitgliedMitgliedId of the mannschaftsmitglied
      * @return single mannschaftsmitglied entry with the given id;
      * null, if no mannschaftsmitglied is found
      */
-    MannschaftsmitgliedDO findByMemberAndTeamId(Long MannschaftsmitgliedMannschaftId, Long MannschaftsmitgliedMitgliedId);
+    MannschaftsmitgliedDO findByMemberAndTeamId(Long mannschaftsmitgliedMannschaftId, Long mannschaftsmitgliedMitgliedId);
 
 
     /**
      * return all mannschaftsmitglied entries from one dsbmitglied
      *
-     * @param MannschaftsmitgliedMitgliedId of the mannschaftsmitglied
+     * @param mannschaftsmitgliedMitgliedId of the mannschaftsmitglied
      * @return lkist of mannschaftsmitglied entries with the given mitgliedsId
      */
-    List<MannschaftsmitgliedDO> findByMemberId(Long MannschaftsmitgliedMitgliedId);
+    List<MannschaftsmitgliedDO> findByMemberId(Long mannschaftsmitgliedMitgliedId);
 
 
     /**
