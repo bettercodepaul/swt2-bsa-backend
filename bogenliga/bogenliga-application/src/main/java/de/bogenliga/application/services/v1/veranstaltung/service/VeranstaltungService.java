@@ -22,7 +22,6 @@ import de.bogenliga.application.services.v1.veranstaltung.mapper.VeranstaltungDT
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import netscape.security.ForbiddenTargetException;
 
 /**
  * I'm a REST resource and handle veranstaltung CRUD requests over the HTTP protocol
@@ -161,41 +160,6 @@ public class VeranstaltungService implements ServiceFacade {
 
     }
 
-    /**
-     * I persist a newer version of the CompetitionClass in the database if The User is the Ligaleiter.
-     */
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
-    public VeranstaltungDTO updateMyVeranstaltungen(@RequestBody final VeranstaltungDTO veranstaltungDTO,
-                                                    final Principal principal) throws ForbiddenTargetException {
-
-        final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
-        for (VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(currentDsbMitglied)) {
-            if (veranstaltungDTO.getId().intValue() == veranstaltungDO.getVeranstaltungID().intValue()) {
-                LOG.debug(
-                        "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypId '{}', sportjahr '{}', meldedeadline '{}', ligaleiterId '{}', ligaId '{}'",
-                        veranstaltungDTO.getId(),
-                        veranstaltungDTO.getName(),
-                        veranstaltungDTO.getWettkampfTypId(),
-                        veranstaltungDTO.getSportjahr(),
-                        veranstaltungDTO.getMeldeDeadline(),
-                        veranstaltungDTO.getLigaleiterId(),
-                        veranstaltungDTO.getLigaId()
-                );
-
-                final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
-
-                final VeranstaltungDO updatedVeranstaltungDO = veranstaltungComponent.update(newVeranstaltungDO,
-                        currentDsbMitglied);
-                return VeranstaltungDTOMapper.toDTO.apply(updatedVeranstaltungDO);
-            }
-        }
-        LOG.debug("User is missing VeranstaltungsId '{}'", veranstaltungDTO.getId().intValue());
-        throw new ForbiddenTargetException("Keine Berechtigung für diese Veranstaltung");
-    }
-    
     /**
      * I delete an existing Veranstaltung entry from the DB.
      */
