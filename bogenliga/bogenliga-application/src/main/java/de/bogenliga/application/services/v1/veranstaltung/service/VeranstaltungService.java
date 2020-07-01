@@ -133,7 +133,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) {
 
