@@ -41,7 +41,6 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
 
 
 
-
     /**
      * Return all mannschaftsmitglied entries from one team.
      *
