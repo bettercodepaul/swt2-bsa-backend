@@ -354,6 +354,8 @@ public class MatchService implements ServiceFacade {
 
         PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
         if (passeExists(passeDO)) {
+            LOG.debug("updatePasse: " + passeDO.getId().toString());
+
             passeComponent.update(passeDO, userId);
         } else {
             LOG.debug("Trying to create passe");
@@ -366,7 +368,9 @@ public class MatchService implements ServiceFacade {
                 List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(passeDO.getPasseWettkampfId(),passeDO.getPasseDsbMitgliedId());
                 if(passen.isEmpty()){
                     MannschaftsmitgliedDO mitglied=mannschaftsmitgliedComponent.findByMemberAndTeamId(passeDO.getPasseMannschaftId(),passeDO.getPasseDsbMitgliedId());
+
                     mitglied.setDsbMitgliedEingesetzt(mitglied.getDsbMitgliedEingesetzt()+1);
+
                     mannschaftsmitgliedComponent.update(mitglied,userId);
                 }
                 passeComponent.create(passeDO, userId);
@@ -395,9 +399,11 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "passeDTO"));
         Preconditions.checkNotNull(passeDTO.getRueckennummer(),
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "schuetzeNr"));
+
         MannschaftsmitgliedDO mannschaftsmitglied = new MannschaftsmitgliedDO(-1L);
 
         for (MannschaftsmitgliedDO item : mannschaftsmitgliedDOS){
+
             if (item.getRueckennummer() == (int)passeDTO.getRueckennummer()){
                 mannschaftsmitglied = item;
                 break;
@@ -407,8 +413,8 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkArgument(mannschaftsmitglied.getId() != -1L,
                 String.format(ERR_NOT_NULL_TEMPLATE, "getMemberIdFor", "mannschaftsmitglied"));
 
-
         return mannschaftsmitglied.getDsbMitgliedId();
+
     }
 
 
