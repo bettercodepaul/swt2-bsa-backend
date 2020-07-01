@@ -368,9 +368,9 @@ public class MatchService implements ServiceFacade {
                 List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(passeDO.getPasseWettkampfId(),passeDO.getPasseDsbMitgliedId());
                 if(passen.isEmpty()){
                     MannschaftsmitgliedDO mitglied=mannschaftsmitgliedComponent.findByMemberAndTeamId(passeDO.getPasseMannschaftId(),passeDO.getPasseDsbMitgliedId());
-                    LOG.debug("inIFMatchService in CreateOrUpdatePasse Rückennummer: " + mitglied.getRueckennummer().toString());
+
                     mitglied.setDsbMitgliedEingesetzt(mitglied.getDsbMitgliedEingesetzt()+1);
-                    LOG.debug("inIFMatchService in CreateOrUpdatePasse Eingesetzt: " + mitglied.getDsbMitgliedEingesetzt().toString());
+
                     mannschaftsmitgliedComponent.update(mitglied,userId);
                 }
                 passeComponent.create(passeDO, userId);
@@ -399,20 +399,22 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "passeDTO"));
         Preconditions.checkNotNull(passeDTO.getRueckennummer(),
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, "schuetzeNr"));
-        MannschaftsmitgliedDO mannschaftsmitglied = null;
+
+        MannschaftsmitgliedDO mannschaftsmitglied = new MannschaftsmitgliedDO(-1L);
 
         for (MannschaftsmitgliedDO item : mannschaftsmitgliedDOS){
-            LOG.debug("Rueckennummer: " + item.getRueckennummer().toString());
+
             if (item.getRueckennummer() == (int)passeDTO.getRueckennummer()){
                 mannschaftsmitglied = item;
                 break;
             }
         }
-        Preconditions.checkNotNull(mannschaftsmitglied,
+
+        Preconditions.checkArgument(mannschaftsmitglied.getId() != -1L,
                 String.format(ERR_NOT_NULL_TEMPLATE, "getMemberIdFor", "mannschaftsmitglied"));
 
         return mannschaftsmitglied.getDsbMitgliedId();
-        // mannschaftsmitgliedDOS.get(passeDTO.getRueckennummer()).getDsbMitgliedId();
+
     }
 
 
@@ -698,16 +700,12 @@ public class MatchService implements ServiceFacade {
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 
             // reverse map the schuetzeNr to the passeDTO
-            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
-                    mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(matchDTO.getMannschaftId());
             for (PasseDTO passeDTO : passeDTOs) {
                 long mannschaftID = passeDTO.getMannschaftId();
                 long rueckennummer = mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftID,
                         passeDTO.getDsbMitgliedId()).getRueckennummer();
 
-                //passeDTO.setRueckennummer(getSchuetzeNrFor(passeDTO, mannschaftsmitgliedDOS));
                 passeDTO.setRueckennummer((int)rueckennummer);
-                LOG.debug(passeDTO.getRueckennummer().toString());
                 Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
