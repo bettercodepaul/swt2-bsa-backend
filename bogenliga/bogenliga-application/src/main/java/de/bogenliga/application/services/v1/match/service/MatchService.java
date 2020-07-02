@@ -149,6 +149,21 @@ public class MatchService implements ServiceFacade {
         return matchDTO;
     }
 
+    /**
+     * Finds all matches by the given id from a wettkampf
+     * @param wettkampfid
+     */
+    @RequestMapping(value = "findByWettkampfId/wettkampfid={id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<MatchDTO> findByWettkampfId(@PathVariable("id") Long wettkampfid) {
+        this.checkMatchId(wettkampfid);
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+
+        return wettkampfMatches.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+    }
 
     /**
      * There are always 2 matches on a schusszettel form
@@ -221,23 +236,6 @@ public class MatchService implements ServiceFacade {
 
         List<MatchDO> matchDOList = matchComponent.findByMannschaftId(id);
         return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
-    }
-
-
-    /**
-     * Finds all matches by the given id from a wettkampf
-     * @param wettkampfid
-     */
-    @RequestMapping(value = "findByWettkampfId/wettkampfid={id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public List<MatchDTO> findByWettkampfId(@PathVariable("id") Long wettkampfid) {
-        this.checkMatchId(wettkampfid);
-
-        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
-
-        return wettkampfMatches.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "findAllWettkampfMatches/wettkampfid={id}",
