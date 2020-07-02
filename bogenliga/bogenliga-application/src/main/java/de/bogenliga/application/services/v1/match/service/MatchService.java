@@ -241,7 +241,7 @@ public class MatchService implements ServiceFacade {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public List<MatchDTO> findByWettkampfId(@PathVariable("id") Long wettkampfid) {
+    public List<MatchDTO> findby(@PathVariable("id") Long wettkampfid) {
         this.checkMatchId(wettkampfid);
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
