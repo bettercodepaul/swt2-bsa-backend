@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.user.service;
 
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
@@ -7,6 +8,8 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -75,20 +78,24 @@ public class UserService implements ServiceFacade {
     private final UserRoleComponent userRoleComponent;
 
     private final UserProfileComponent userProfileComponent;
-
-
+    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
     @Autowired
     public UserService(final JwtTokenProvider jwtTokenProvider,
                        //final AuthenticationManager authenticationManager
                        final WebSecurityConfiguration webSecurityConfiguration,
                        final UserComponent userComponent,
                        final UserRoleComponent userRoleComponent,
-                       final UserProfileComponent userProfileComponent) {
+                       final UserProfileComponent userProfileComponent,
+                       final DsbMitgliedComponent dsbMitgliedComponent,
+                       final VeranstaltungComponent veranstaltungComponent) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.webSecurityConfiguration = webSecurityConfiguration;
         this.userComponent = userComponent;
         this.userRoleComponent = userRoleComponent;
         this.userProfileComponent = userProfileComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
 
@@ -122,7 +129,13 @@ public class UserService implements ServiceFacade {
 
                     final HttpHeaders headers = new HttpHeaders();
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
-
+                    //Get the Verein ID and teh Veranstaltungs ID's
+                    userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
+                    ArrayList<Integer> temp = new ArrayList<>();
+                    for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
+                        temp.add(veranstaltungDO.getVeranstaltungID().intValue());
+                    }
+                    userSignInDTO.setVeranstaltungenIds(temp);
                     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
                 } else {
                     errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
@@ -353,7 +366,7 @@ public class UserService implements ServiceFacade {
             value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_CREATE_SYSTEMDATEN)
     public UserDTO create(final HttpServletRequest requestWithHeader,
                           @RequestBody final UserCredentialsDTO userCredentialsDTO) {
 
