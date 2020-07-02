@@ -154,14 +154,12 @@ public class MatchDAO implements DataAccessObject {
 //            .whereEquals(MATCH_TABLE_MANNSCHAFT_ID)
 //            .compose().toString();
 
-    private static final String FIND_BY_WETTKAMPF_ID =
-            "SELECT m.match_wettkampf_id, m.match_id, m.match_nr, m.match_mannschaft_id, m.match_scheibennummer, " +
-            "m.match_begegnung, m.match_matchpunkte, m.match_satzpunkte, m.match_strafpunkte_satz_1," +
-            "m.match_strafpunkte_satz_2, m.match_strafpunkte_satz_3, m.match_strafpunkte_satz_4," +
-            "m.match_strafpunkte_satz_5" +
-                    " FROM match as m" +
-                    " WHERE m.match_wettkampf_id = ?" +
-                     "ORDER BY match_wettkampf_id, match_nr, match_begegnung, match_scheibennummer, match_id";
+    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
+            .orderBy("(CASE WHEN " + MATCH_TABLE_MATCHPUNKTE + " IS NULL THEN 0 ELSE 1 END), " + MATCH_TABLE_NR + ", " + MATCH_TABLE_SCHEIBENNUMMER)
+            .compose().toString();
 
 
 
