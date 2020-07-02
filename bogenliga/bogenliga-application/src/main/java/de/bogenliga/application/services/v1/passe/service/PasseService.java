@@ -15,15 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService;
-import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
-import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
@@ -111,7 +107,7 @@ public class PasseService implements ServiceFacade {
         MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
-                mannschaftsmitgliedComponent.findAllSchuetzeInTeam(passeDTO.getMannschaftId());
+                mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(passeDTO.getMannschaftId());
 
         passeDTO.setDsbMitgliedId(MatchService.getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -164,7 +160,7 @@ public class PasseService implements ServiceFacade {
                 passeDTO.getWettkampfId(),
                 passeDTO.getLfdNr(),
                 passeDTO.getDsbMitgliedId(),
-                passeDTO.getSchuetzeNr(),
+                passeDTO.getRueckennummer(),
                 passeDTO.getMatchId(),
                 passeDTO.getMatchNr(),
                 passeDTO.getMannschaftId()

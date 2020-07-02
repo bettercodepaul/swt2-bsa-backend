@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.Bogenkontrollliste.impl.business;
+package de.bogenliga.application.business.bogenkontrollliste.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -113,7 +113,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
             LOGGER.info("Teamname {} wurde gefunden ", teamName);
-            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeamGemeldet(matchDO.getMannschaftId());
+            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
             List<LigaDO> ligen=this.ligaComponent.findAll();
             int count = 0;

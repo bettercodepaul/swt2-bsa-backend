@@ -102,7 +102,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     //hier suchen wir  alle Teammtiglieder, die eingesetzt wurden
     // d.h. nicht nur gemeldet, sondern sie haben auch Pfeilwerte erfasst
-    private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
+    private static final String FIND_ALL_SCHUETZE_TEAM_EINGESETZT = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
@@ -115,7 +115,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     //hier suchen wir  alle Teammtiglieder, die potentiell eingesetzt werden könnten
     // d.h. sie wurden für die Mannschaft gemeldet.
-    private static final String FIND_ALL_SCHUETZE_TEAM_GEMELDET = new QueryBuilder()
+    private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
@@ -179,12 +179,12 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     }
 
 
-    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeam(final long id) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM, id);
+    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeamEingesetzt(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM_EINGESETZT, id);
     }
 
-    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeamGemeldet(final long id) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM_GEMELDET, id);
+    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeam(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM, id);
     }
 
 
@@ -209,8 +209,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID,
-                MANNSCHAFTSMITGLIED_BE_RUECKENNUMMER);
+        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
     }
 
 
