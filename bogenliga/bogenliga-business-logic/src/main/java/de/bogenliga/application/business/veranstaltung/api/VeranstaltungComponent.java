@@ -28,6 +28,15 @@ public interface VeranstaltungComponent extends ComponentFacade {
      */
     VeranstaltungDO findById(final long veranstaltungId);
 
+    /**
+     * Returns all Veranstaltungen of one ligaleiter.
+     *
+     * @param ligaleiterId id of the selected ligaleiter
+     * @return list of all Veranstaltungen with a given ligaleiter_id.
+     * empty list if the ligaleiter_id is not found in the veranstaltung-table
+     */
+    List<VeranstaltungDO> findByLigaleiterId(final long ligaleiterId);
+
 
 
     /**
@@ -84,9 +93,6 @@ public interface VeranstaltungComponent extends ComponentFacade {
      */
 
     List<SportjahrDO> findAllSportjahreDestinct();
-
-
-
 
 
 }
