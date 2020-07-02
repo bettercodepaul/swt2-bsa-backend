@@ -133,7 +133,7 @@ public class RegionenService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public RegionenDTO create(@RequestBody final RegionenDTO regionenDTO, final Principal principal) {
         checkPreconditions(regionenDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
