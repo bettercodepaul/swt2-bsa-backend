@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.veranstaltung.api;
 
 import java.util.List;
+import de.bogenliga.application.business.sportjahr.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
@@ -36,7 +37,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      * @param currentDsbMitglied Id of the currently logged in user that sent create request
      *
      * @return returns that created Verein
-    */
+     */
 
     VeranstaltungDO create(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
@@ -48,7 +49,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      * @param currentDsbMitglied id of the currently logged in user that sent the update request
      *
      * @return returns the updated verein entry
-    */
+     */
 
     VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
@@ -57,7 +58,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      * @param veranstaltungDO    Veranstaltung DataObject containing atleast an id
      * @param currentDsbMitglied id of the currently logged in user that sent the delete request
-    */
+     */
 
     void delete(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
@@ -69,6 +70,22 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      * @return returns the queried Veranstaltung
      */
+
+    /**
+     *
+     * @param sportjahr
+     * @return a list with Veranstaltungen with the same Sportjahr
+     */
+    List<VeranstaltungDO> findBySportjahr(long sportjahr);
+
+    /**
+     *
+     * @return a list with all Sportjahre distinct
+     */
+
+    List<SportjahrDO> findAllSportjahreDestinct();
+
+
 
 
 
