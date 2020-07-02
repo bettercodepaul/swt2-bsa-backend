@@ -5,12 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -26,10 +20,7 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
     private String jwt;
     private Set<UserPermission> permissions;
     private Long vereinId;
-    private ArrayList<Integer> veranstaltungenIds;
-    private UserComponent userComponent;
-    private DsbMitgliedComponent dsbMitgliedComponent;
-    private VeranstaltungComponent veranstaltungComponent;
+    private List<Integer> veranstaltungenIds;
 
 
     public UserSignInDTO() {
@@ -85,12 +76,12 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
     }
 
 
-    public ArrayList<Integer> getVeranstaltungenIds() {
+    public List<Integer> getVeranstaltungenIds() {
         return veranstaltungenIds;
     }
 
 
-    public void setVeranstaltungenIds(ArrayList<Integer> veranstaltungenIds) {
+    public void setVeranstaltungenIds(List<Integer> veranstaltungenIds) {
         this.veranstaltungenIds = veranstaltungenIds;
     }
 }

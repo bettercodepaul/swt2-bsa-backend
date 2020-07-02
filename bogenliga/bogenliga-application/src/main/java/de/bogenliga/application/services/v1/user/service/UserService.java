@@ -35,7 +35,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.DatagramSocket;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +131,7 @@ public class UserService implements ServiceFacade {
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
                     //Get the Verein ID and teh Veranstaltungs ID's
                     userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
-                    ArrayList<Integer> temp = new ArrayList<Integer>();
+                    ArrayList<Integer> temp = new ArrayList<>();
                     for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
                         temp.add(veranstaltungDO.getVeranstaltungID().intValue());
                     }
