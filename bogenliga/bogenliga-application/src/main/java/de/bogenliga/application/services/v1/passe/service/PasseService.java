@@ -93,7 +93,7 @@ public class PasseService implements ServiceFacade {
     }
 
     @RequestMapping(value = "findByWettkampfId/wettkampfid={wettkampfId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<PasseDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
         Preconditions.checkArgument(wettkampfId>= 0, "wettkampfId must not be negative");
 
