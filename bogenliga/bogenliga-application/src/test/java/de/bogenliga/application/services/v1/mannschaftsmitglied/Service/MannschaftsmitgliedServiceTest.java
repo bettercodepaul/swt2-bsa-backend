@@ -135,7 +135,7 @@ public class MannschaftsmitgliedServiceTest {
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
 
         // configure mocks
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(mannschaftsId)).thenReturn(mannschaftsmitgliedDOList);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(mannschaftsId)).thenReturn(mannschaftsmitgliedDOList);
 
         // call test method
         final List<MannschaftsMitgliedDTO> actual = underTest.findAllSchuetzeInTeam(mannschaftsId);
