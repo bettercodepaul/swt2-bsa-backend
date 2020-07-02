@@ -1,12 +1,6 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
