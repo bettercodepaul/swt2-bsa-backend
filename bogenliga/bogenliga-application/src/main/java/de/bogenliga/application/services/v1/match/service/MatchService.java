@@ -149,6 +149,21 @@ public class MatchService implements ServiceFacade {
         return matchDTO;
     }
 
+    /**
+     * Finds all matches by the given id from a wettkampf
+     * @param wettkampfid
+     */
+    @RequestMapping(value = "findByWettkampfId/wettkampfid={id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<MatchDTO> findByWettkampfId(@PathVariable("id") Long wettkampfid) {
+        this.checkMatchId(wettkampfid);
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+
+        return wettkampfMatches.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+    }
 
     /**
      * There are always 2 matches on a schusszettel form
@@ -222,9 +237,7 @@ public class MatchService implements ServiceFacade {
         return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-
-
-    @RequestMapping(value = "findByWettkampfId/wettkampfid={id}",
+    @RequestMapping(value = "findAllWettkampfMatches/wettkampfid={id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
@@ -235,8 +248,6 @@ public class MatchService implements ServiceFacade {
 
         return wettkampfMatches.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
     }
-
-
 
     // lesen aller Matches eines Wettkampfs und bestimmen der Namen der Mannschaften
     @RequestMapping(value = "findAllWettkampfMatchesAndName/wettkampfid={id}",
@@ -361,10 +372,10 @@ public class MatchService implements ServiceFacade {
             LOG.debug("Trying to create passe");
             // erst prüfen ob alle relevanten Parameter befüllt sind pk-passe!!
             if(passeDO.getPasseDsbMitgliedId()!=null &&
-            passeDO.getPasseMannschaftId()!= null &&
-            passeDO.getPasseWettkampfId()!= null&&
-            passeDO.getPasseMatchNr() !=null &&
-            passeDO.getPasseLfdnr() !=null) {
+                    passeDO.getPasseMannschaftId()!= null &&
+                    passeDO.getPasseWettkampfId()!= null&&
+                    passeDO.getPasseMatchNr() !=null &&
+                    passeDO.getPasseLfdnr() !=null) {
                 List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(passeDO.getPasseWettkampfId(),passeDO.getPasseDsbMitgliedId());
                 if(passen.isEmpty()){
                     MannschaftsmitgliedDO mitglied=mannschaftsmitgliedComponent.findByMemberAndTeamId(passeDO.getPasseMannschaftId(),passeDO.getPasseDsbMitgliedId());
