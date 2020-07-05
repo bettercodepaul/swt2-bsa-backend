@@ -59,7 +59,7 @@ public class VereineService implements ServiceFacade {
 
     /**
      * I return all the teams (Vereine) of the database.
-     * @return
+     * @return list of {@link VereineDTO} as JSON
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,7 +86,21 @@ public class VereineService implements ServiceFacade {
         return VereineDTOMapper.toDTO.apply(vereinDO);
     }
 
+    /**
+     * I return the verein Entry of the database with a specific id
+     *
+     * @return list of {@link VereineDTO} as JSON
+     */
+    @RequestMapping(value ="findfirst", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public VereineDTO findFirst(){
 
+        LOG.debug("Receive 'findFirst' ");
+
+        final VereinDO vereinDO = vereinComponent.findFirst();
+
+        return VereineDTOMapper.toDTO.apply(vereinDO);
+    }
     /**
      * I persist a newer version of the dsbMitglied in the database.
      */
@@ -143,7 +157,7 @@ public class VereineService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
         checkPreconditions(vereineDTO);
         final long userId = UserProvider.getCurrentUserId(principal);

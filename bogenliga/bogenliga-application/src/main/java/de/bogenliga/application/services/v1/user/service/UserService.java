@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.user.service;
 
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
@@ -7,6 +8,8 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -60,6 +63,7 @@ public class UserService implements ServiceFacade {
     private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
     private static final String PRECONDITION_MSG_USER_PW = "This is not a valid Password";
+    private static final String PRECONDITION_MSG_DSB_MITGLIED_ID = "User must reference an existing DSB-member -not be null or negative";
 
     private static final String PW_VALIDATION_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d#$^+=!*()@%&?]{8,}$";
 
@@ -74,20 +78,24 @@ public class UserService implements ServiceFacade {
     private final UserRoleComponent userRoleComponent;
 
     private final UserProfileComponent userProfileComponent;
-
-
+    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
     @Autowired
     public UserService(final JwtTokenProvider jwtTokenProvider,
                        //final AuthenticationManager authenticationManager
                        final WebSecurityConfiguration webSecurityConfiguration,
                        final UserComponent userComponent,
                        final UserRoleComponent userRoleComponent,
-                       final UserProfileComponent userProfileComponent) {
+                       final UserProfileComponent userProfileComponent,
+                       final DsbMitgliedComponent dsbMitgliedComponent,
+                       final VeranstaltungComponent veranstaltungComponent) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.webSecurityConfiguration = webSecurityConfiguration;
         this.userComponent = userComponent;
         this.userRoleComponent = userRoleComponent;
         this.userProfileComponent = userProfileComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
 
@@ -121,7 +129,13 @@ public class UserService implements ServiceFacade {
 
                     final HttpHeaders headers = new HttpHeaders();
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
-
+                    //Get the Verein ID and teh Veranstaltungs ID's
+                    userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
+                    ArrayList<Integer> temp = new ArrayList<>();
+                    for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
+                        temp.add(veranstaltungDO.getVeranstaltungID().intValue());
+                    }
+                    userSignInDTO.setVeranstaltungenIds(temp);
                     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
                 } else {
                     errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
@@ -352,19 +366,21 @@ public class UserService implements ServiceFacade {
             value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_CREATE_SYSTEMDATEN)
     public UserDTO create(final HttpServletRequest requestWithHeader,
                           @RequestBody final UserCredentialsDTO userCredentialsDTO) {
 
         Preconditions.checkNotNull(userCredentialsDTO, "User Credentials must not be null");
         Preconditions.checkNotNull(userCredentialsDTO.getUsername(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userCredentialsDTO.getPassword(), PRECONDITION_MSG_USER_EMAIL);
+        Preconditions.checkNotNull(userCredentialsDTO.getDsb_mitglied_id(), PRECONDITION_MSG_DSB_MITGLIED_ID);
         // Check if password is valid by running it against the regular expression for the password
         Preconditions.checkArgument(userCredentialsDTO.getPassword().matches(PW_VALIDATION_REGEX), PRECONDITION_MSG_USER_PW);
 
         LOG.debug("Receive 'create' request with username '{}', password '{}', using2FA {}",
                 userCredentialsDTO.getUsername(),
                 userCredentialsDTO.getPassword(),
+                userCredentialsDTO.getDsb_mitglied_id(),
                 userCredentialsDTO.isUsing2FA());
 
         userCredentialsDTO.getCode();
@@ -375,7 +391,7 @@ public class UserService implements ServiceFacade {
         // user anlegen
 
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(),
-                userCredentialsDTO.getPassword(), userId, userCredentialsDTO.isUsing2FA());
+                userCredentialsDTO.getPassword(), userCredentialsDTO.getDsb_mitglied_id(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
         final UserRoleDO userRoleCreatedDO = userRoleComponent.create(userCreatedDO.getId(), userId);
         return UserDTOMapper.toDTO.apply(userCreatedDO);
