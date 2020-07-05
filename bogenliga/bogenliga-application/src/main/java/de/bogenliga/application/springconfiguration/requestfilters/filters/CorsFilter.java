@@ -33,7 +33,7 @@ public class CorsFilter implements Filter {
     private static final String DEFAULT_ACCESS_CONTROL_ALLOW_METHDOS_VALUE = "POST, PUT, GET, OPTIONS, DELETE";
 
     private static final String ACCESS_CONTROL_MAX_AGE_NAME = "Access-Control-Max-Age";
-    private static final String DEFAULT_ACCESS_CONTROL_MAX_AGE_VALUE = "10000";//"3600000";
+    private static final String DEFAULT_ACCESS_CONTROL_MAX_AGE_VALUE = "3600000";
 
     private static final String ACCESS_CONTROL_ALLOW_HEADERS_NAME = "Access-Control-Allow-Headers";
     private static final String DEFAULT_ACCESS_CONTROL_ALLOW_HEADERS_VALUE = "Authorization, Content-Type";

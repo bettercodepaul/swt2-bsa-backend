@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("security.jwt")
 public class SecurityJsonWebTokenConfiguration {
 
-    static final long DEFAULT_EXPIRATION_TIME = 10000;//3600000; // ms
+    static final long DEFAULT_EXPIRATION_TIME = 3600000; // ms
     static final String DEFAULT_SECRET = "default-secret-key";
     static final int DEFAULT_REFRESH_COUNT = 3; // x times
 
