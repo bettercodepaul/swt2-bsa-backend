@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.sportjahr.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
+import de.bogenliga.application.services.v1.sportjahr.model.SportjahrDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.mapper.VeranstaltungDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -88,10 +91,39 @@ public class VeranstaltungService implements ServiceFacade {
     }
 
 
-    
-    
-    
-    
+    /**
+     *
+     * @return a list with all sportjahre distinct
+     */
+    @RequestMapping(value = "destinct/sportjahr", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<SportjahrDTO> findAllSportjahrDestinct(){
+
+        LOG.debug("Received 'findBySportyear' request for Sportjahre in Veranstaltung  ");
+        List<SportjahrDO> returnList= veranstaltungComponent.findAllSportjahreDestinct();
+
+        return returnList.stream().map(SportjahrDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+    /**
+     *
+     * @param sportjahr - filterr for sql-abfrage
+     * @return return Veranstaltungen with the same Sportjahr
+     */
+    @RequestMapping(method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            value = "find/by/year/{sportjahr}")
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findBySportjahr(@PathVariable ("sportjahr") final long sportjahr){
+
+        LOG.debug("Received 'findBySportyear' request for Veranstaltung in ", sportjahr);
+        final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findBySportjahr(sportjahr);
+
+        return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
     /**
      * I persist a new veranstaltung and return this veranstaltung entry
      *
@@ -103,7 +135,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
 
         checkPreconditions(veranstaltungDTO);
@@ -133,7 +165,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) {
 
@@ -187,5 +219,5 @@ public class VeranstaltungService implements ServiceFacade {
         Preconditions.checkNotNull(veranstaltungDTO.getLigaleiterEmail(), PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID);
         Preconditions.checkArgument(veranstaltungDTO.getLigaId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
     }
-    
+
 }
