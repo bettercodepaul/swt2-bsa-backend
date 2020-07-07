@@ -60,7 +60,7 @@ public class RequiresDataPermissionAspect {
      * @throws Throwable         if the {@link ProceedingJoinPoint} throws an exception
      * @throws BusinessException if the user has not all required permissions
      */
-    @Around("@annotation(de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission)")
+    @Around("@annotation(de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions)")
     public Object checkPermission(final ProceedingJoinPoint joinPoint) throws Throwable {
         //Getting the Variables from the Request that was made
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
