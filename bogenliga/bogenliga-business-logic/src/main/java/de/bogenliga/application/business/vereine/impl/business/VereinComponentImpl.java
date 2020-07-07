@@ -92,15 +92,6 @@ public class VereinComponentImpl implements VereinComponent {
         vereinDAO.delete(vereinBE, currentDsbMitglied);
     }
 
-    // Robin Keinert !
-    @Override
-    public VereinDO findFirst() {
-        final VereinBE vereinBE = vereinDAO.findFirst();
-        final VereinDO vereinDO = VereinMapper.toVereinDO.apply(vereinBE);
-        vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
-
-        return vereinDO;
-    }
 
 
     private void checkVereinDO(final VereinDO vereinDO, final long currentDsbMitgliedId) {
