@@ -63,7 +63,7 @@ public class VeranstaltungService implements ServiceFacade {
 
     /**
      * I return all the teams (veranstaltung) of the database.
-     * @return
+     * @return List of VeranstaltungDTOs
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -119,7 +119,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahr(@PathVariable ("sportjahr") final long sportjahr){
 
-        LOG.debug("Received 'findBySportyear' request for Veranstaltung in ", sportjahr);
+        LOG.debug("Received 'findBySportyear' request for Veranstaltung in {}", sportjahr);
         final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findBySportjahr(sportjahr);
 
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
@@ -127,6 +127,9 @@ public class VeranstaltungService implements ServiceFacade {
 
     /**
      * I persist a new veranstaltung and return this veranstaltung entry
+     *
+     * You are only able to create a Veranstaltung, if you have the explicit permission to Create it or
+     * if you are the Ligaleiter of the Veranstaltung.
      *
      * @param veranstaltungDTO
      * @param principal
@@ -136,7 +139,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    @RequiresDataPermissions(value = {UserPermission.CAN_CREATE_STAMMDATEN}, specific = {UserPermission.CAN_MODIFY_MY_VERANSTALTUNG}, type = "veranstaltung")
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
 
         checkPreconditions(veranstaltungDTO);
@@ -162,11 +165,14 @@ public class VeranstaltungService implements ServiceFacade {
 
     /**
      * I persist a newer version of the CompetitionClass in the database.
+     *
+     * You can only update a Competition, if you have the permission to Modify Stammdaten or if
+     * you are the Ligaleiter of the Veranstaltung.
      */
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_STAMMDATEN}, specific = {UserPermission.CAN_MODIFY_MY_VERANSTALTUNG}, type = "veranstaltung")
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) {
 

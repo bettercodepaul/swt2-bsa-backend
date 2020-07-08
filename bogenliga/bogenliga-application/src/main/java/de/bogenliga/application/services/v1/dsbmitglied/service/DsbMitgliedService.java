@@ -21,6 +21,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmitglied.mapper.DsbMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -174,6 +175,9 @@ public class DsbMitgliedService implements ServiceFacade {
     /**
      * I persist a new dsbMitglied and return this dsbMitglied entry.
      *
+     * You are only able to create a DsbMitglied, if you have the explicit permission to Create it or
+     * if you are the Mannschaftsführer/Sportleiter of the Verein.
+     *
      * Usage:
      * <pre>{@code Request: POST /v1/dsbmitglied
      * Body:
@@ -195,7 +199,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_DSBMITGLIEDER)
+    @RequiresDataPermissions(value = {UserPermission.CAN_CREATE_DSBMITGLIEDER}, specific = {UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER}, type = "mitglied")
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);
@@ -222,6 +226,9 @@ public class DsbMitgliedService implements ServiceFacade {
     /**
      * I persist a newer version of the dsbMitglied in the database.
      *
+     * You are only able to modify the DsbMitglied, if you have the explicit permission to Modify it or
+     * if you are the Mannschaftsführer/Sportleiter of the Verein.
+     *
      * Usage:
      * <pre>{@code Request: PUT /v1/dsbmitglied
      * Body:
@@ -234,7 +241,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_DSBMITGLIEDER)
+    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_DSBMITGLIEDER}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "mitglied")
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);

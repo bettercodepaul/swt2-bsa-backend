@@ -20,6 +20,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.vereine.mapper.VereineDTOMapper;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -103,12 +104,16 @@ public class VereineService implements ServiceFacade {
     }
     /**
      * I persist a newer version of the dsbMitglied in the database.
+     *
+     * You are only able to modify the Verein, if you have the explicit permission to Modify it or
+     * if you are the Mannschaftsführer/Sportleiter of the Verein.
+     *
      */
 
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_STAMMDATEN}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "verein")
     public VereineDTO update (@RequestBody final VereineDTO vereineDTO, final Principal principal){
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);

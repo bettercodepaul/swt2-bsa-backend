@@ -73,7 +73,7 @@ public class RequiresDataPermissionAspect {
            RequiresDataPermissions annotation  =currentMethod.getAnnotation(RequiresDataPermissions.class);
 
            final UserPermission[] override = annotation.value();
-           final UserPermission[]  my= annotation.specifc();
+           final UserPermission[]  my= annotation.specific();
            final String type = annotation.type();
            String joinedRequiredPermissions = "";
            if(hasPermisson(override)){
