@@ -3,6 +3,7 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.bogenliga.application.business.sportjahr.SportjahrDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -108,6 +109,22 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
 
     @Override
+    public List<VeranstaltungDO> findByLigaleiterId(long ligaleiterId) {
+
+        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
+        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findByLigaleiterId(ligaleiterId);
+
+        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+
+            returnList.add(i, notNull(veranstaltungBEList.get(i)));
+
+        }
+
+        return returnList;
+    }
+
+
+    @Override
     public VeranstaltungDO update(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
         Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
@@ -145,6 +162,29 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         veranstaltungDAO.delete(veranstaltungBE, currentDsbMitgliedId);
 
     }
+
+
+    @Override
+    public List<VeranstaltungDO> findBySportjahr(long sportjahr) {
+        final ArrayList<VeranstaltungDO> returnList = new ArrayList<VeranstaltungDO>();
+        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahr(sportjahr);
+        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+
+            returnList.add(i, notNull(veranstaltungBEList.get(i)));
+
+        }
+        return returnList;
+    }
+
+
+
+    @Override
+    public List<SportjahrDO> findAllSportjahreDestinct() {
+        return veranstaltungDAO.findAllSportjahreDestinct();
+
+    }
+
+
 
 
     private void checkVeranstaltungDO(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {

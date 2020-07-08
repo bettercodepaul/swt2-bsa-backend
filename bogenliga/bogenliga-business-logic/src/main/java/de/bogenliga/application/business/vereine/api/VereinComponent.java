@@ -55,4 +55,6 @@ public interface VereinComponent extends ComponentFacade {
      * @param currentDsbMitglied id of the currently logged in user that sent the delete request
      */
     void delete(VereinDO vereinDO, long currentDsbMitglied);
+
+    VereinDO findFirst();
 }
