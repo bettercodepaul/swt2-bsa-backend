@@ -15,6 +15,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequiresDataPermissions {
     UserPermission[] value();
-    UserPermission[] specifc();
+    UserPermission[] specific();
     String type();
 }

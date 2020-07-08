@@ -20,6 +20,7 @@ import de.bogenliga.application.services.v1.user.mapper.UserProfileDTOMapper;
 import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -190,6 +191,10 @@ public class UserService implements ServiceFacade {
 
     /**
      * I persist a new password for the current user and return this user entry.
+     *
+     * You are only able to modify the Users, if you have the explicit permission to Modify it or
+     * if you are the Ausrichter (Ligaleiter) of the Veranstaltung.
+     *
      * <p>
      * Usage:
      * <pre>{@code Request: PUT /v1/user
@@ -216,7 +221,7 @@ public class UserService implements ServiceFacade {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_SYSTEMDATEN}, specific = {UserPermission.CAN_MODIFY_MY_VERANSTALTUNG}, type = "veranstaltung")
     public UserDTO update(final HttpServletRequest requestWithHeader,
                           @RequestBody final UserChangeCredentialsDTO uptcredentials) {
         Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");

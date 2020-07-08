@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.setzliste.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -56,10 +57,18 @@ public class SetzlisteService implements ServiceFacade {
         this.setzlisteComponent = setzlisteComponent;
     }
 
+
+    /**
+     * You can only generate a Setzliste if you have the right to read the Wettkampf or
+     * if you are the Ausrichter/Ligaleiter of the Veranstaltung.
+     * @param wettkampfid id of the selected Wettkampf
+     * @return ArrayList of MatchDTOs of the wettkampf to fill in the pdf generator later
+     */
+
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
             path = "/generate")
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresDataPermissions(value = {UserPermission.CAN_READ_WETTKAMPF}, specific = {UserPermission.CAN_READ_MY_VERANSTALTUNG}, type = "veranstaltung")
     public @ResponseBody
     List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");

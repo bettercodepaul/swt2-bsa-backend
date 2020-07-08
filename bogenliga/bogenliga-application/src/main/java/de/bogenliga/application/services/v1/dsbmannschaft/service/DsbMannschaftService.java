@@ -21,6 +21,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -205,7 +206,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_MANNSCHAFT)
+    @RequiresDataPermissions(value = {UserPermission.CAN_CREATE_MANNSCHAFT}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "verein")
     public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
         checkPreconditions(dsbMannschaftDTO);
         final Long userId = UserProvider.getCurrentUserId(principal);
