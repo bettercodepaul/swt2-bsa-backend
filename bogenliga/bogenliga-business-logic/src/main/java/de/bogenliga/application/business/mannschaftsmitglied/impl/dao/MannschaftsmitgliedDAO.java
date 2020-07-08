@@ -102,7 +102,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     //hier suchen wir  alle Teammtiglieder, die eingesetzt wurden
     // d.h. nicht nur gemeldet, sondern sie haben auch Pfeilwerte erfasst
-    private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
+    private static final String FIND_ALL_SCHUETZE_TEAM_EINGESETZT = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
@@ -115,7 +115,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     //hier suchen wir  alle Teammtiglieder, die potentiell eingesetzt werden könnten
     // d.h. sie wurden für die Mannschaft gemeldet.
-    private static final String FIND_ALL_SCHUETZE_TEAM_GEMELDET = new QueryBuilder()
+    private static final String FIND_ALL_SCHUETZE_TEAM = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
             .join(DSB_MITGLIED_TABLE, DSB_MITGLIED_TABLE_ALIAS)
@@ -126,8 +126,12 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .compose().toString();
 
     // wrap all specific config parameters
+    private static final BusinessEntityConfiguration<MannschaftsmitgliedBE> MANNSCHAFTSMITGLIED_JOINED = new BusinessEntityConfiguration<>(
+            MannschaftsmitgliedBE.class, TABLE, getColumnsToFieldsMap(true), LOGGER);
+
+    // wrap all specific config parameters
     private static final BusinessEntityConfiguration<MannschaftsmitgliedBE> MANNSCHAFTSMITGLIED = new BusinessEntityConfiguration<>(
-            MannschaftsmitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+            MannschaftsmitgliedBE.class, TABLE, getColumnsToFieldsMap(false), LOGGER);
 
 
     private final BasicDAO basicDao;
@@ -140,18 +144,21 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     // table column label mapping to the business entity parameter names
-    private static Map<String, String> getColumnsToFieldsMap() {
+    private static Map<String, String> getColumnsToFieldsMap(boolean joined) {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_ID, MANNSCHAFTSMITGLIED_BE_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_BE_TEAM_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_EMPLOYED, MANNSCHAFTSMITGLIED_BE_INSERT);
-
-        // new: important for the join with dsb_mitglied
-        columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
-        columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME, DSBMITGLIED_BE_SURNAME);
         columnsToFieldsMap.put(MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER, MANNSCHAFTSMITGLIED_BE_RUECKENNUMMER);
+
+        // Only add DSBMitglied Columns when query using this method specifies it will result in a joined table
+        if (joined) {
+            // new: important for the join with dsb_mitglied
+            columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
+            columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME, DSBMITGLIED_BE_SURNAME);
+        }
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -163,7 +170,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
      * Return all mannschaftsmitglied entries
      */
     public List<MannschaftsmitgliedBE> findAll() {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL);
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_JOINED, FIND_ALL);
     }
 
 
@@ -175,27 +182,27 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
      * @return
      */
     public List<MannschaftsmitgliedBE> findByTeamId(final long id) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_BY_TEAM_ID, id);
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_JOINED, FIND_BY_TEAM_ID, id);
     }
 
+
+    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeamEingesetzt(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_JOINED, FIND_ALL_SCHUETZE_TEAM_EINGESETZT, id);
+    }
 
     public List<MannschaftsmitgliedBE> findAllSchuetzeInTeam(final long id) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM, id);
-    }
-
-    public List<MannschaftsmitgliedBE> findAllSchuetzeInTeamGemeldet(final long id) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_ALL_SCHUETZE_TEAM_GEMELDET, id);
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_JOINED, FIND_ALL_SCHUETZE_TEAM, id);
     }
 
 
     public MannschaftsmitgliedBE findByMemberAndTeamId(long teamId, final long memberId) {
         MannschaftsmitgliedBE test;
-        test = basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED, FIND_BY_MEMBER_AND_TEAM_ID, memberId, teamId);
+        test = basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED_JOINED, FIND_BY_MEMBER_AND_TEAM_ID, memberId, teamId);
         return test;
     }
 
     public List<MannschaftsmitgliedBE> findByMemberId(final long memberId) {
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_BY_DSBMITGLIED_ID, memberId);
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_JOINED, FIND_BY_DSBMITGLIED_ID, memberId);
     }
 
 
@@ -209,8 +216,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
     public MannschaftsmitgliedBE update(final MannschaftsmitgliedBE mannschaftsmitgliedBE, final long currentMemberId) {
         basicDao.setModificationAttributes(mannschaftsmitgliedBE, currentMemberId);
 
-        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID,
-                MANNSCHAFTSMITGLIED_BE_RUECKENNUMMER);
+        return basicDao.updateEntity(MANNSCHAFTSMITGLIED, mannschaftsmitgliedBE, MANNSCHAFTSMITGLIED_BE_DSB_MITGLIED_ID);
     }
 
 

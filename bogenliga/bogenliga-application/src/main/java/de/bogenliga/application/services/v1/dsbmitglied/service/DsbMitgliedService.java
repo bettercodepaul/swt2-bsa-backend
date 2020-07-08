@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.dsbmitglied.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
-import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmitglied.mapper.DsbMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
-import de.bogenliga.application.services.v1.kampfrichter.service.KampfrichterService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -101,14 +99,14 @@ public class DsbMitgliedService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public List<DsbMitgliedDTO> findAll() {
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAll();
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
         LOG.debug("Receive 'findAllByTeamid' request with ID '{}'", id );
@@ -133,7 +131,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
 
@@ -141,6 +139,35 @@ public class DsbMitgliedService implements ServiceFacade {
 
         final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return DsbMitgliedDTOMapper.toDTO.apply(dsbMitgliedDO);
+    }
+
+    /**
+     * I return the dsbMitglied entry of the database with a specific id.
+     *
+     * Usage:
+     * <pre>{@code Request: GET /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
+     * <pre>{@code Response:
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     *  }
+     * }
+     * </pre>
+     *
+     * @return list of {@link DsbMitgliedDTO} as JSON
+     */
+    @RequestMapping(value = "/{id}/{dsbuserid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public DsbMitgliedDTO insertUserId(@PathVariable("id") final long id, @PathVariable("dsbuserid") final long dsbuserid, final Principal principal) {
+        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
+
+        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
+        dsbMitgliedDO.setUserId(dsbuserid);
+        final DsbMitgliedDO updatedDsbMitgliedDO = dsbMitgliedComponent.update(dsbMitgliedDO, userId);
+        return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
     }
 
 
@@ -168,7 +195,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
+    @RequiresPermission(UserPermission.CAN_CREATE_DSBMITGLIEDER)
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);
@@ -207,7 +234,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_DSBMITGLIEDER)
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);
@@ -239,7 +266,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_DSBMITGLIEDER)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
