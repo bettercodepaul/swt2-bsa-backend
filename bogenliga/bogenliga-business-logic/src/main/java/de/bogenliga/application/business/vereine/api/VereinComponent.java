@@ -56,5 +56,4 @@ public interface VereinComponent extends ComponentFacade {
      */
     void delete(VereinDO vereinDO, long currentDsbMitglied);
 
-    VereinDO findFirst();
 }
