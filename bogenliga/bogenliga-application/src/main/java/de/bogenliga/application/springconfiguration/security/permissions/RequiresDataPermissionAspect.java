@@ -69,6 +69,7 @@ public class RequiresDataPermissionAspect {
         final String jwt = JwtTokenProvider.resolveToken(request);
         final String username = jwtTokenProvider.getUsername(jwt);
         Method currentMethod = getCurrentMethod(joinPoint);
+
        if (currentMethod.isAnnotationPresent(RequiresDataPermissions.class)) {
            RequiresDataPermissions annotation  =currentMethod.getAnnotation(RequiresDataPermissions.class);
 
@@ -80,7 +81,7 @@ public class RequiresDataPermissionAspect {
 
            }else{
                if(hasPermisson(my)){
-                int reqid = 0;
+                int reqid = 1;
                    ArrayList<Integer> allowedids= new ArrayList<Integer>();
                    switch(type){
                        case"verein":
