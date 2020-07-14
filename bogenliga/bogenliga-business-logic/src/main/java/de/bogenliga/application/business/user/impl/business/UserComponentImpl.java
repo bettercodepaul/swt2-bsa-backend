@@ -30,6 +30,7 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PWD = "UserDO password must not be null or empty";
     private static final String PRECONDITON_MSG_USER_WRONG_PWD = "Current password incorrect";
+    private static final String PRECONDITON_MSG_USER_WRONG_ID = "Wrond UserID";
     private static final String USER_ROLE_DEFAULT = "USER";
     private final UserDAO userDAO;
     private final SignInBA signInBA;
@@ -172,7 +173,7 @@ public class UserComponentImpl implements UserComponent {
      *
      */
     @Override
-    public UserDO update(final UserDO userDO, final String password, final String newPassword, final Long currentUserId) {
+    public UserDO updatePassword(final UserDO userDO, final String password, final String newPassword, final Long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
         Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
@@ -200,8 +201,32 @@ public class UserComponentImpl implements UserComponent {
         }
     }
 
+    /**
+     * resetPassword
+     *
+     * Passwort des Benutzers aktualiseren
+     * @param  userDO User-ID des Accounts
+     * @param  newPassword Kennwort neu
+     * @param  currentUserId aktueller User mit den Rechten zum Ändern
+     *                       - hieraus wird das Passwort zur Vergleichsprüfung bestimmt
+     *
+     */
+    @Override
+    public UserDO resetPassword(UserDO userDO, String newPassword, Long currentUserId) {
+        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
+        Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
+        Preconditions.checkNotNullOrEmpty(newPassword, PRECONDITON_MSG_USER_PWD);
+        Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
+        Preconditions.checkArgument(currentUserId > 0, PRECONDITION_MSG_USER_NULL);
 
+        final UserBE selectedUser = userDAO.findById(userDO.getId());
 
+        final String newpwdhash = passwordHashingBA.calculateHash(newPassword, selectedUser.getUserSalt());
+        selectedUser.setUserPassword(newpwdhash);
+        final UserBE persistedUserBE = userDAO.update(selectedUser, currentUserId);
+        return UserMapper.toUserDO.apply(persistedUserBE);
+
+    }
 
 
     @Override

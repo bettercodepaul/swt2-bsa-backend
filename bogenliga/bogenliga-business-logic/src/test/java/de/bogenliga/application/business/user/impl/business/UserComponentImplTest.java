@@ -404,7 +404,7 @@ public class UserComponentImplTest {
     public void update_UserDO_notNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(null, PASSWORD, NEWPASSWORD, ID))
+                .isThrownBy(() -> underTest.updatePassword(null, PASSWORD, NEWPASSWORD, ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -416,7 +416,7 @@ public class UserComponentImplTest {
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(SYSTEM_USER, PASSWORD, NEWPASSWORD, ID))
+                .isThrownBy(() -> underTest.updatePassword(SYSTEM_USER, PASSWORD, NEWPASSWORD, ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -432,7 +432,7 @@ public class UserComponentImplTest {
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, "", NEWPASSWORD, ID))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, "", NEWPASSWORD, ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -448,7 +448,7 @@ public class UserComponentImplTest {
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, "", ID))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, PASSWORD, "", ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -464,7 +464,7 @@ public class UserComponentImplTest {
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, NEWPASSWORD, 0L))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, PASSWORD, NEWPASSWORD, 0L))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -512,7 +512,7 @@ public class UserComponentImplTest {
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, PASSWORD, NEWPASSWORD, USER))
                 .withMessageContaining("password incorrect")
                 .withNoCause();
 
@@ -557,7 +557,7 @@ public class UserComponentImplTest {
         when(userDAO.update(any(UserBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final UserDO actual = underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER);
+        final UserDO actual = underTest.updatePassword(inUserDO, PASSWORD, NEWPASSWORD, USER);
 
         // assert result
         assertThat(actual).isNotNull();

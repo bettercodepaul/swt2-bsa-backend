@@ -7,10 +7,8 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
@@ -35,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.security.Principal;
 
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
@@ -267,10 +264,10 @@ public class UserServiceTest {
         userChangeCredentialsDTO.setNewpassword(NEUESPASSWORD);
 
         // configure mocks
-        when(userComponent.update(any(UserDO.class), anyString(), anyString(), anyLong())).thenReturn(expecteduserDO);
+        when(userComponent.updatePassword(any(UserDO.class), anyString(), anyString(), anyLong())).thenReturn(expecteduserDO);
 
         // call test method
-        final UserDTO actual = underTest.update(requestWithHeader, userChangeCredentialsDTO);
+        final UserDTO actual = underTest.updatePassword(requestWithHeader, userChangeCredentialsDTO);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -293,7 +290,7 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(requestWithHeader, null))
+                .isThrownBy(() -> underTest.updatePassword(requestWithHeader, null))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -321,7 +318,7 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(requestWithHeader, userChangeCredentialsDTO))
+                .isThrownBy(() -> underTest.updatePassword(requestWithHeader, userChangeCredentialsDTO))
                 .withMessageContaining("Password must not be null or empty")
                 .withNoCause();
 
@@ -349,7 +346,7 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(requestWithHeader, userChangeCredentialsDTO))
+                .isThrownBy(() -> underTest.updatePassword(requestWithHeader, userChangeCredentialsDTO))
                 .withMessageContaining("New password must not be null or empty")
                 .withNoCause();
 
