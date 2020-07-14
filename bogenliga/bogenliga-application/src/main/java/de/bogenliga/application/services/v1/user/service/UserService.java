@@ -32,7 +32,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -203,8 +202,8 @@ public class UserService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserDTO update(final HttpServletRequest requestWithHeader,
-                          @RequestBody final UserChangeCredentialsDTO uptcredentials) {
+    public UserDTO updatePassword(final HttpServletRequest requestWithHeader,
+                                  @RequestBody final UserChangeCredentialsDTO uptcredentials) {
         Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
         Preconditions.checkNotNullOrEmpty(uptcredentials.getNewPassword(), "New password must not be null or empty");
@@ -221,7 +220,7 @@ public class UserService implements ServiceFacade {
         userDO.setId(userId);
 
         //update password
-        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(),
+        final UserDO userUpdatedDO = userComponent.updatePassword(userDO, uptcredentials.getPassword(),
                 uptcredentials.getNewPassword(), userId);
 
         //prepare return DTO
@@ -229,6 +228,55 @@ public class UserService implements ServiceFacade {
         return userUpdatedDTO;
     }
 
+    /**
+     * I persist a new password for the current user and return this user entry.
+     * <p>
+     * Usage:
+     * <pre>{@code Request: PUT /v1/user
+     * Body:
+     * {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     * }
+     * }</pre>
+     * <pre>{@code Response:
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     *  }
+     * }</pre>
+     *
+     * @param uptcredentials of the request body
+     *
+     * @return {@link UserDTO} as JSON
+     */
+
+
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public UserDTO resetPassword(final HttpServletRequest requestWithHeader,
+                                  @RequestBody final UserCredentialsDTO uptcredentials) {
+        Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
+        Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "New password must not be null or empty");
+
+        ErrorDTO errorDetails = null;
+
+        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final Long userId = jwtTokenProvider.getUserId(jwt);
+
+        final UserDO userDO = new UserDO();
+        userDO.setId(userId);
+
+        //update password
+        final UserDO userUpdatedDO = userComponent.resetPassword(userDO, uptcredentials.getPassword(), userId);
+
+        //prepare return DTO
+        final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
+        return userUpdatedDTO;
+    }
 
     /**
      * Service to update multiple user roles. It will remove all roles that are not send in this request
