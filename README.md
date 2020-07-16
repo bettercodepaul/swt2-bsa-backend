@@ -2,6 +2,7 @@
 [![sonarcloud](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
 [![sonarcloud_cov](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=coverage)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
 
+> [SonarCloud: Java 8 deprecation warning!](https://sonarcloud.io/documentation/user-guide/move-analysis-java-11/)
 
 # Bogenliga Application
 
