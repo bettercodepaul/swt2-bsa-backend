@@ -15,6 +15,7 @@
     <modules>
         <module>./bogenliga-application</module>
         <module>./bogenliga-business-logic</module>
+        <module>./bogenliga-db-migration</module>
         <module>./bogenliga-common</module>
     </modules>
 
