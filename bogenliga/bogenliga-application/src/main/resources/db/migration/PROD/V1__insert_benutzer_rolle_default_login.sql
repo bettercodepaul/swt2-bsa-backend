@@ -23,12 +23,3 @@ INSERT INTO benutzer_rolle(
 )
 VALUES (2, 8) -- default
 ;
-
-
-INSERT INTO benutzer_login_verlauf (benutzer_login_verlauf_benutzer_id,
-                                    benutzer_login_verlauf_timestamp,
-                                    benutzer_login_verlauf_login_ergebnis)
-VALUES (1, '2018-10-01 11:36:17.000000', 'LOGIN_FAILED'),
-       (1, '2018-10-01 11:58:17.000000', 'LOGIN_SUCCESS')
-;
-
