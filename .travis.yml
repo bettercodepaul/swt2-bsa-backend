@@ -49,7 +49,7 @@ script:
 #- mvn cobertura:cobertura
 
 after_success:
-  - mvn clean cobertura:cobertura coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN
+  - mvn clean test org.jacoco:jacoco-maven-plugin:report org.eluder.coveralls:coveralls-maven-plugin:report -DrepoToken=$COVERALLS_REPO_TOKEN
 # upload reports to https://codecov.io
 # uses CODECOV_TOKEN environment variable
 #- bash <(curl -s https://codecov.io/bash) -s /home/travis/build/andre-lehnert/mock-backend/bogenliga/bogenliga-application/target/site/cobertura/coverage.xml
