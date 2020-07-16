@@ -283,4 +283,27 @@ public class DownloadService implements ServiceFacade {
 
         return generateInputStream(fileBloB);
     }
+
+    /**
+     * return the Lizenzen of a mannschaft as pdf file for client download
+     *
+     * @param mannschaftid from GET-request: ID of the mannschaft
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/lizenzen/?mannschaftid=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/lizenzen",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadLizenzenPdf(@RequestParam("mannschaftid") final long mannschaftid) {
+
+
+        final byte[] fileBloB = lizenzComponent.getMannschaftsLizenzenPDFasByteArray(mannschaftid);
+
+        return generateInputStream(fileBloB);
+    }
 }
