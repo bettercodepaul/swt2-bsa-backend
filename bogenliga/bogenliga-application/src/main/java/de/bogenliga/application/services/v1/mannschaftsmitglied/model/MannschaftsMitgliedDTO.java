@@ -9,8 +9,6 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
     private Long mannschaftsId;
     private Long dsbMitgliedId;
     private Integer dsbMitgliedEingesetzt;
-    private String dsbMitgliedVorname;
-    private String dsbMitgliedNachname;
     private Long rueckennummer;
 
 
@@ -20,14 +18,11 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
 
     public MannschaftsMitgliedDTO(final Long id, final Long mannschaftsId, final Long dsbMitgliedId,
                                   final Integer dsbMitgliedEingesetzt,
-                                  final String dsbMitgliedVorname, final String getDsbMitgliedNachname,
                                   final Long rueckennummer) {
         this.id = id;
         this.mannschaftsId = mannschaftsId;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
-        this.dsbMitgliedVorname = dsbMitgliedVorname;
-        this.dsbMitgliedNachname = getDsbMitgliedNachname;
         this.rueckennummer = rueckennummer;
     }
 
@@ -61,31 +56,9 @@ public class MannschaftsMitgliedDTO implements DataTransferObject {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 
-
-    public String getDsbMitgliedVorname() {
-        return dsbMitgliedVorname;
-    }
-
-
-    public void setDsbMitgliedVorname(String dsbMitgliedVorname) {
-        this.dsbMitgliedVorname = dsbMitgliedVorname;
-    }
-
-
-    public String getDsbMitgliedNachname() {
-        return dsbMitgliedNachname;
-    }
-
-
-    public void setDsbMitgliedNachname(String dsbMitgliedNachname) {
-        this.dsbMitgliedNachname = dsbMitgliedNachname;
-    }
-
-
     public Long getId() {
         return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;

@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 
 /**
  * TODO [AL] class documentation
@@ -43,8 +44,8 @@ public class MannschaftsmitgliedBaseDAOTest {
      * Also used by other test classes.
      */
 
-    public static MannschaftsmitgliedBE getMannschaftsmitgliedBE() {
-        final MannschaftsmitgliedBE expectedMannschaftsmitgliedBE = new MannschaftsmitgliedBE();
+    public static MannschaftsmitgliedExtendedBE getMannschaftsmitgliedExtendedBE() {
+        final MannschaftsmitgliedExtendedBE expectedMannschaftsmitgliedBE = new MannschaftsmitgliedExtendedBE();
         expectedMannschaftsmitgliedBE.setId(id);
         expectedMannschaftsmitgliedBE.setMannschaftId(mannschaftId);
         expectedMannschaftsmitgliedBE.setDsbMitgliedId(dsbMitgliedId);

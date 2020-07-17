@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -54,8 +55,8 @@ public class MannschaftsmitgliedComponentImplTest {
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
      */
-    public static MannschaftsmitgliedBE getMannschatfsmitgliedBE() {
-        final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
+    public static MannschaftsmitgliedExtendedBE getMannschatfsmitgliedExtendedBE() {
+        final MannschaftsmitgliedExtendedBE expectedBE = new MannschaftsmitgliedExtendedBE();
         expectedBE.setMannschaftId(MANNSCHAFTSID);
         expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
         expectedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESETZT);
@@ -80,8 +81,8 @@ public class MannschaftsmitgliedComponentImplTest {
     @Test
     public void findAll() {
         // prepare test data
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
-        final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+        final List<MannschaftsmitgliedExtendedBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(mannschaftsmitgliedDAO.findAll()).thenReturn(expectedBEList);
@@ -109,8 +110,8 @@ public class MannschaftsmitgliedComponentImplTest {
     @Test
     public void findAllSchuetzeInTeam() {
 
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
-        final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+        final List<MannschaftsmitgliedExtendedBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(MANNSCHAFTSID)).thenReturn(expectedBEList);
@@ -134,7 +135,7 @@ public class MannschaftsmitgliedComponentImplTest {
     @Test
     public void findByMemberAndTeamId() {
 
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
 
 
         // configure mocks
@@ -150,8 +151,8 @@ public class MannschaftsmitgliedComponentImplTest {
 
     @Test
     public void findByTeamId() {
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
-        final List<MannschaftsmitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+        final List<MannschaftsmitgliedExtendedBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(mannschaftsmitgliedDAO.findByTeamId(MANNSCHAFTSID)).thenReturn(expectedBEList);
@@ -169,7 +170,7 @@ public class MannschaftsmitgliedComponentImplTest {
     @Test
     public void checkExistingSchuetze() {
 
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
         // configure mocks
         when(mannschaftsmitgliedDAO.findByMemberAndTeamId(MANNSCHAFTSID, DSB_MITGLIED_ID)).thenReturn(expectedBE);
         final boolean actual = underTest.checkExistingSchuetze(MANNSCHAFTSID, DSB_MITGLIED_ID);
@@ -182,10 +183,12 @@ public class MannschaftsmitgliedComponentImplTest {
 
         final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
 
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+        final MannschaftsmitgliedExtendedBE expectedExtendedBE = getMannschatfsmitgliedExtendedBE();
 
         // configure mocks
         when(mannschaftsmitgliedDAO.create(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(expectedExtendedBE);
 
         // call test method
         final MannschaftsmitgliedDO actual = underTest.create(input, USER);
@@ -226,8 +229,14 @@ public class MannschaftsmitgliedComponentImplTest {
         expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
         expectedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESETZT);
 
+        final MannschaftsmitgliedExtendedBE expectedExtendedBE = getMannschatfsmitgliedExtendedBE();
+        expectedExtendedBE.setMannschaftId(MANNSCHAFTSID);
+        expectedExtendedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
+        expectedExtendedBE.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESETZT);
 
+        // configure mocks
         when(mannschaftsmitgliedDAO.create(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(expectedExtendedBE);
 
         // call test method
         final MannschaftsmitgliedDO actual = underTest.create(input, USER);
@@ -268,10 +277,12 @@ public class MannschaftsmitgliedComponentImplTest {
 
         final MannschaftsmitgliedDO input = getMannschatfsmitgliedDO();
 
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+        final MannschaftsmitgliedExtendedBE expectedExtendedBE = getMannschatfsmitgliedExtendedBE();
 
         // configure mocks
         when(mannschaftsmitgliedDAO.update(any(MannschaftsmitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        when(mannschaftsmitgliedDAO.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(expectedExtendedBE);
 
         // call test method
         final MannschaftsmitgliedDO actual = underTest.update(input, USER);
