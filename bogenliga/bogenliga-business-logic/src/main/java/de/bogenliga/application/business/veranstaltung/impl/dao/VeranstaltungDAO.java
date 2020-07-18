@@ -64,22 +64,6 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + " FROM veranstaltung "
                     + " WHERE veranstaltung_id = ?";
 
-    private static final String FIND_BY_SPORTJAHR =
-            "SELECT * "
-                    + "FROM veranstaltung "
-                    + "WHERE veranstaltung_sportjahr = ?";
-
-    private static final String FIND_ALL_SPORTJAHR_DESTINCT =
-            "SELECT veranstaltung_sportjahr, min(veranstaltung_id) as veranstaltung_id, min(version) as version "
-                    + "FROM veranstaltung "
-                    + "GROUP BY veranstaltung_sportjahr "
-                    + "ORDER BY veranstaltung_sportjahr DESC";
-
-    private static final String FIND_ALL_SPORTJAHR =
-            "SELECT veranstaltung_sportjahr, veranstaltung_id, version "
-                    + "FROM veranstaltung "
-                    + "ORDER BY veranstaltung_sportjahr DESC ";
-  
     private static final String FIND_BY_LIGALEITER_ID =
             "SELECT * "
                     + " FROM veranstaltung "
@@ -165,7 +149,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      *
      */
 
-    public List<SportjahrDO> findAllSportjahreDestinct(){
+    public List<SportjahrDO> findAllSportjahreDestinct() {
         List<VeranstaltungBE> veranstaltungen = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_SPORTJAHR_DESTINCT);
         ArrayList<SportjahrDO> sportjahre = new ArrayList<SportjahrDO>();
         for(int i = 0; i < veranstaltungen.size(); i++){
@@ -182,7 +166,7 @@ public class VeranstaltungDAO implements DataAccessObject{
         return basicDao.selectEntityList(VERANSTALTUNG,FIND_BY_LIGALEITER_ID, ligaleiterId);
     }
 
-        
+
     /**
      * find all sportyears destinct
      * returns a Long list with sportyears
