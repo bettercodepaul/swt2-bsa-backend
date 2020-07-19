@@ -13,8 +13,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequiresDataPermissions {
-    UserPermission[] value();
-    UserPermission[] specific();
-    String type();
+public @interface RequiresOnePermissions {
+    UserPermission[] perm();
 }
