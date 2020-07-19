@@ -1,12 +1,7 @@
 package de.bogenliga.application.springconfiguration.security.permissions;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -33,14 +28,14 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  */
 @Aspect
 @Component
-public class RequiresDataPermissionAspect {
-    private static final Logger LOG = LoggerFactory.getLogger(RequiresDataPermissionAspect.class);
+public class RequiresOnePermissionAspect {
+    private static final Logger LOG = LoggerFactory.getLogger(RequiresOnePermissionAspect.class);
 
     private final JwtTokenProvider jwtTokenProvider;
 
 
     @Autowired
-    public RequiresDataPermissionAspect(final JwtTokenProvider jwtTokenProvider) {
+    public RequiresOnePermissionAspect(final JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -60,7 +55,7 @@ public class RequiresDataPermissionAspect {
      * @throws Throwable         if the {@link ProceedingJoinPoint} throws an exception
      * @throws BusinessException if the user has not all required permissions
      */
-    @Around("@annotation(de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions)")
+    @Around("@annotation(de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions)")
     public Object checkPermission(final ProceedingJoinPoint joinPoint) throws Throwable {
         //Getting the Variables from the Request that was made
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -70,49 +65,26 @@ public class RequiresDataPermissionAspect {
         final String username = jwtTokenProvider.getUsername(jwt);
         Method currentMethod = getCurrentMethod(joinPoint);
 
-       if (currentMethod.isAnnotationPresent(RequiresDataPermissions.class)) {
-           RequiresDataPermissions annotation  =currentMethod.getAnnotation(RequiresDataPermissions.class);
+        if (currentMethod.isAnnotationPresent(RequiresOnePermissions.class)) {
+            RequiresOnePermissions annotation = currentMethod.getAnnotation(RequiresOnePermissions.class);
 
-           final UserPermission[] override = annotation.value();
-           final UserPermission[]  my= annotation.specific();
-           final String type = annotation.type();
-           String joinedRequiredPermissions = "";
-           if(hasPermisson(override)){
+            final UserPermission[] permisson = annotation.perm();
+            boolean result = false;
+            for(UserPermission entry : permisson){
+                if(hasPermission(entry)){
+                    result = true;
+                }
 
-           }else{
-               if(hasPermisson(my)){
-                int reqid = 1;
-                   ArrayList<Integer> allowedids= new ArrayList<Integer>();
-                   switch(type){
-                       case"verein":
-
-                           break;
-                       case"veranstaltung":
-                           break;
-                       case"mitglied":
-                           break;
-                   }
-
-                   if(! allowedids.contains(reqid)){
-                       throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,String.format("User '%s' is not allowed to edit Resource with id %i type %s ", username,reqid,type));
-
-                   }
-               }else{
-                   throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,String.format("User '%s' has not all required permissions ", username));
-               }
-           }
-        };
-
-
-
-
-
+            }
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
+                    String.format("User '%s' has not one of the  required permissions ", username));
+        }
         return joinPoint.proceed();
-    }
-
-    boolean hasPermisson(UserPermission[] toTest){
+    };
+    boolean hasPermission(UserPermission toTest){
         // get current http request from thread
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        boolean result = false;
         if (requestAttributes != null) {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
 
@@ -127,15 +99,14 @@ public class RequiresDataPermissionAspect {
                 final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
                 // verify all jwt permissions are part of the required permissions
-                for (UserPermission entry : toTest) {
-                    if (userPermissions.contains(entry)) {
-                        return true;
+                    if (userPermissions.contains(toTest)) {
+                        result = true;
                     }
-                }
+
             }
         }
 
-        return false;
+        return result;
     }
     Method getCurrentMethod(final ProceedingJoinPoint joinPoint) {
         final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
