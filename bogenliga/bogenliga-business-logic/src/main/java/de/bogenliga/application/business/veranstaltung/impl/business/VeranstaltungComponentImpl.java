@@ -185,6 +185,17 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     }
 
 
+    @Override
+    public List<VeranstaltungDO> findByLigaID(long ligaID) {
+        final ArrayList<VeranstaltungDO> returnList = new ArrayList<VeranstaltungDO>();
+        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findByLigaID(ligaID);
+        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+
+            returnList.add(i, notNull(veranstaltungBEList.get(i)));
+
+        }
+        return returnList;
+    }
 
 
     private void checkVeranstaltungDO(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {

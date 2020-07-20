@@ -85,6 +85,11 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + "FROM veranstaltung "
                     + "ORDER BY veranstaltung_sportjahr DESC ";
 
+    private static final String FIND_BY_LIGAID =
+            "SELECT * "
+                    + "FROM veranstaltung "
+                    + "WHERE veranstaltung_liga_id = ?";
+
     private final BasicDAO basicDao;
 
     /**
@@ -159,6 +164,10 @@ public class VeranstaltungDAO implements DataAccessObject{
         }
         return sportjahre;
 
+    }
+
+    public List<VeranstaltungBE> findByLigaID(long ligaID){
+        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGAID, ligaID);
     }
 
 
