@@ -136,6 +136,8 @@ public class UserService implements ServiceFacade {
                         temp.add(veranstaltungDO.getVeranstaltungID().intValue());
                     }
                     userSignInDTO.setVeranstaltungenIds(temp);
+                    ArrayList<Integer> wetkampftemp = new ArrayList<Integer>();
+                    userSignInDTO.setWettkampfIds(wetkampftemp);
                     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
                 } else {
                     errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
