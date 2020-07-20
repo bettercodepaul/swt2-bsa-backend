@@ -274,24 +274,39 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VEREIN)
-    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
-        checkPreconditions(dsbMannschaftDTO);
-        Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+    @RequiresOnePermissions( perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
 
-        LOG.debug("Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
+        //Check if the User has a General Permission or,
+        //check if his vereinId equals the vereinId of the mannschaft he wants to modify a Team in
+        //and if the user has the permission to modify his verein.
+        if(hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) || hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
+            //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
+            if(hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) && !hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
+                DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
+                if(dsbMannschaftDO.getVeranstaltungId() != dsbMannschaftDTO.getVeranstaltungId()) {
+                    throw new NoPermissionException();
+                }
+            }
+            checkPreconditions(dsbMannschaftDTO);
+            Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
 
-               // dsbMannschaftDTO.getId(),
-                dsbMannschaftDTO.getVereinId(),
-                dsbMannschaftDTO.getNummer(),
-                dsbMannschaftDTO.getBenutzerId(),
-                dsbMannschaftDTO.getVeranstaltungId());
+            LOG.debug(
+                    "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
 
-        final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
+                    // dsbMannschaftDTO.getId(),
+                    dsbMannschaftDTO.getVereinId(),
+                    dsbMannschaftDTO.getNummer(),
+                    dsbMannschaftDTO.getBenutzerId(),
+                    dsbMannschaftDTO.getVeranstaltungId());
 
-        final DsbMannschaftDO updatedDsbMannschaftDO = dsbMannschaftComponent.update(newDsbMannschaftDO, dsbMannschaftDTO.getId());
-        return DsbMannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
+            final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
+            final long userId = UserProvider.getCurrentUserId(principal);
+
+            final DsbMannschaftDO updatedDsbMannschaftDO = dsbMannschaftComponent.update(newDsbMannschaftDO,
+                    dsbMannschaftDTO.getId());
+            return DsbMannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
+        } else throw new NoPermissionException();
     }
 
     /**
