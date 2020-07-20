@@ -212,7 +212,7 @@ public class DsbMannschaftServiceTest {
 
 
     @Test
-    public void update() {
+    public void update() throws NoPermissionException {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
 
