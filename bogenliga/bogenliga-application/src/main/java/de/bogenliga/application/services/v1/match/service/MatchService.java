@@ -737,7 +737,13 @@ public class MatchService implements ServiceFacade {
 
 
     private boolean passeExists(PasseDO passeDO) {
-        return passeDO.getId() != null;
+        boolean exists = false;
+        if (passeDO.getId() != null) { // Is passeDO id already null
+            // If no, check if it actually exists in DB
+            PasseDO queriedPasseDO = passeComponent.findById(passeDO.getId());
+            exists = queriedPasseDO != null;
+        }
+        return exists;
     }
 
 
