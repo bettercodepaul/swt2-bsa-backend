@@ -94,5 +94,4 @@ public interface VeranstaltungComponent extends ComponentFacade {
 
     List<SportjahrDO> findAllSportjahreDestinct();
 
-
 }
