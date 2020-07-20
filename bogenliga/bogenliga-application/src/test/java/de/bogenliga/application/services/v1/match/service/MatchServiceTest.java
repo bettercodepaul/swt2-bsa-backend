@@ -366,6 +366,9 @@ public class MatchServiceTest {
 
         PasseDTO passe1 = getPasseDTO(PASSE_ID_1, toIntExact(MM_rueckennummer_1));
         PasseDTO passe2 = getPasseDTO(PASSE_ID_2, toIntExact(MM_rueckennummer_2));
+        PasseDO passe1DO = PasseDTOMapper.toDO.apply(passe1);
+        PasseDO passe2DO = PasseDTOMapper.toDO.apply(passe2);
+
         // change lfdnr of passe2 to make them distinguishable
         passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
@@ -380,6 +383,9 @@ public class MatchServiceTest {
         matches.add(matchDTO);
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(getMannschaftsMitglieder().get(0));
+        when(passeComponent.findById(PASSE_ID_1)).thenReturn(passe1DO);
+        when(passeComponent.findById(PASSE_ID_2)).thenReturn(passe2DO);
 
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
