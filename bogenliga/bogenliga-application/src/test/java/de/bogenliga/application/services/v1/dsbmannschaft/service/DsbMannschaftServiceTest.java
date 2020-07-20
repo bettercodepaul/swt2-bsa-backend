@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.dsbmannschaft.service;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
+import javax.naming.NoPermissionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -180,7 +181,7 @@ public class DsbMannschaftServiceTest {
 
 
     @Test
-    public void create() {
+    public void create() throws NoPermissionException {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
 

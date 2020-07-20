@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.setzliste.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -68,7 +68,7 @@ public class SetzlisteService implements ServiceFacade {
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
             path = "/generate")
-    @RequiresDataPermissions(value = {UserPermission.CAN_READ_WETTKAMPF}, specific = {UserPermission.CAN_READ_MY_VERANSTALTUNG}, type = "veranstaltung")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_READ_WETTKAMPF, UserPermission.CAN_READ_MY_VERANSTALTUNG})
     public @ResponseBody
     List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");

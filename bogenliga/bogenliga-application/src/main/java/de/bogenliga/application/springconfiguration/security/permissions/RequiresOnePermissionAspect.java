@@ -76,9 +76,10 @@ public class RequiresOnePermissionAspect {
                 }
 
             }
+            if(!result){
             throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
-                    String.format("User '%s' has not one of the  required permissions ", username));
-        }
+                    String.format("User '%s' has not one of the  required permissions a", username));
+        }}
         return joinPoint.proceed();
     };
     boolean hasPermission(UserPermission toTest){
