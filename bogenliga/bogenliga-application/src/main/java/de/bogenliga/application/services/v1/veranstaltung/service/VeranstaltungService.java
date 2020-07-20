@@ -1,8 +1,13 @@
 package de.bogenliga.application.services.v1.veranstaltung.service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import javax.naming.NoPermissionException;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.tomcat.jni.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.business.sportjahr.SportjahrDO;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -23,6 +33,7 @@ import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import de.bogenliga.application.services.v1.sportjahr.model.SportjahrDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.mapper.VeranstaltungDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -49,15 +60,24 @@ public class VeranstaltungService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_MELDEDEADLINE = "Veranstaltung Meldedeadline can not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID= "Veranstaltung Ligaleiter IF id can not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID= "Veranstaltung Liga id can not be negative";
+    private final  JwtTokenProvider jwtTokenProvider;
+    private final UserComponent userComponent;
+
 
     /**
      * Constructor with dependency injection
      *
      * @param veranstaltungComponent to handle the database CRUD requests
+     * @param jwtTokenProvider
+     * @param userComponent
      */
     @Autowired
-    public VeranstaltungService(final VeranstaltungComponent veranstaltungComponent){
+    public VeranstaltungService(final VeranstaltungComponent veranstaltungComponent,
+                                JwtTokenProvider jwtTokenProvider,
+                                UserComponent userComponent){
         this.veranstaltungComponent = veranstaltungComponent;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userComponent = userComponent;
     }
 
 
@@ -139,7 +159,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
 
         checkPreconditions(veranstaltungDTO);
@@ -174,7 +194,7 @@ public class VeranstaltungService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
-                          final Principal principal) {
+                          final Principal principal) throws NoPermissionException {
 
         LOG.debug(
                 "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypId '{}', sportjahr '{}', meldedeadline '{}', ligaleiterId '{}', ligaId '{}'",
@@ -189,7 +209,11 @@ public class VeranstaltungService implements ServiceFacade {
 
 
 
+        if(this.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN) || this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDTO.getId())){
 
+        }else{
+            throw new NoPermissionException();
+        }
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
@@ -225,6 +249,69 @@ public class VeranstaltungService implements ServiceFacade {
         Preconditions.checkNotNull(veranstaltungDTO.getMeldeDeadline(), PRECONDITION_MSG_VERANSTALTUNG_MELDEDEADLINE);
         Preconditions.checkNotNull(veranstaltungDTO.getLigaleiterEmail(), PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID);
         Preconditions.checkArgument(veranstaltungDTO.getLigaId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
+    }
+    /**
+     * method to check, if a user has a general permission
+     * @param toTest The permission whose existence is getting checked
+     * @return Does the User have the searched permission
+     */
+    boolean hasPermission(UserPermission toTest) {
+        //default value is: not allowed
+        boolean result = false;
+        //get the current http request from thread
+        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+            final HttpServletRequest request = servletRequestAttributes.getRequest();
+            //if a request is present:
+            if(request != null) {
+                //parse the Webtoken and get the UserPermissions of the current User
+                final String jwt = JwtTokenProvider.resolveToken(request);
+                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+                //check if the resolved Permissions
+                //contain the required Permission for the task.
+                if(userPermissions.contains(toTest)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * method to check, if a user has a Specific permission with the matching parameters
+     * @param toTest The permission whose existence is getting checked
+     * @return Does the User have searched permission
+     */
+    boolean hasSpecificPermission(UserPermission toTest, Long veranstaltungsid) {
+        //default value is: not allowed
+        boolean result = false;
+        //get the current http request from thread
+        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+            final HttpServletRequest request = servletRequestAttributes.getRequest();
+            //if a request is present:
+            if(request != null) {
+                //parse the Webtoken and get the UserPermissions of the current User
+                final String jwt = JwtTokenProvider.resolveToken(request);
+                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+                //check if the current Users vereinsId equals the given vereinsId and if the User has
+                //the required Permission (if the permission is specifi
+                Long UserId = jwtTokenProvider.getUserId(jwt);
+                UserDO userDO = this.userComponent.findById(UserId);
+                ArrayList<Integer> temp = new ArrayList<>();
+                for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(UserId)) {
+                   if(veranstaltungDO.getVeranstaltungID() == veranstaltungsid){
+                       result = true;
+                   }
+                }
+
+            }
+        }
+        return result;
     }
 
 }
