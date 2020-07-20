@@ -159,7 +159,8 @@ public enum UserPermission implements GrantedAuthority {
     CAN_MODIFY_VEREIN_DSBMITGLIEDER,
 
     CAN_DELETE_MANNSCHAFT,
-    CAN_MODIFY_MANNSCHAFT
+    CAN_MODIFY_MANNSCHAFT,
+    CAN_MODIFY_MY_WETTKAMPF
     ;
 
 
