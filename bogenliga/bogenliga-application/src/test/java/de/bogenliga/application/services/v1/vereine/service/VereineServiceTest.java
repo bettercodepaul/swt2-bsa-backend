@@ -22,6 +22,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -181,7 +182,7 @@ public class VereineServiceTest {
     }
 
     @Test
-    public void update() {
+    public void update() throws NoPermissionException {
         // prepare test data
         final VereineDTO input = getVereineDTO();
 

@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.mannschaftsmitglied.Service;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
+import javax.naming.NoPermissionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -168,7 +169,7 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void update() {
+    public void update() throws NoPermissionException {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
 
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
@@ -198,7 +199,7 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void create() {
+    public void create() throws NoPermissionException {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
 
@@ -246,7 +247,7 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void delete() {
+    public void delete() throws NoPermissionException {
         // prepare test data
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
 
