@@ -21,7 +21,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmitglied.mapper.DsbMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -199,7 +199,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresDataPermissions(value = {UserPermission.CAN_CREATE_DSBMITGLIEDER}, specific = {UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER}, type = "mitglied")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_DSBMITGLIEDER, UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER})
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);
@@ -241,7 +241,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_DSBMITGLIEDER}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "mitglied")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
 
         checkPreconditions(dsbMitgliedDTO);

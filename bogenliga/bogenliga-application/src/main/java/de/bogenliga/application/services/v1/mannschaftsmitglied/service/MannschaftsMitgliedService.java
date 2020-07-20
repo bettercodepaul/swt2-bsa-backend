@@ -20,7 +20,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.mapper.MannschaftsMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -147,7 +147,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_STAMMDATEN}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "verein")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
     public MannschaftsMitgliedDTO update(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) {
         checkPreconditions(mannschaftsMitgliedDTO);
@@ -175,7 +175,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      **/
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_STAMMDATEN}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "verein")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 

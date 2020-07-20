@@ -2,8 +2,11 @@ package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.naming.NoPermissionException;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +17,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -61,6 +73,8 @@ public class DsbMannschaftService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final UserComponent userComponent;
 
 
     /**
@@ -69,9 +83,19 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param dsbMannschaftComponent to handle the database CRUD requests
      */
     @Autowired
-    public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent) {
+    public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent,
+                                final DsbMitgliedComponent dsbMitgliedComponent,
+                                final UserComponent userComponent,
+                                final JwtTokenProvider jwtTokenProvider) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.userComponent = userComponent;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
+    /**
+     * Autowired WebTokenProvider to get the Permissions of the current User when checking them
+     */
+    JwtTokenProvider jwtTokenProvider;
 
 
     /**
@@ -206,23 +230,32 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresDataPermissions(value = {UserPermission.CAN_CREATE_MANNSCHAFT}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "verein")
-    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
-        checkPreconditions(dsbMannschaftDTO);
-        final Long userId = UserProvider.getCurrentUserId(principal);
-        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
 
-        LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
+        //Check if the User has a General Permission or,
+        //check if his vereinId equals the vereinId of the mannschaft he wants to create a Team in
+        //and if the user has the permission to modify his verein.
+        if(hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) || hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
+            //if the user has the Specific Permission and the matching VereinId:
+            checkPreconditions(dsbMannschaftDTO);
+            final Long userId = UserProvider.getCurrentUserId(principal);
+            Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
-                dsbMannschaftDTO.getVereinId(),
-                dsbMannschaftDTO.getNummer(),
-                userId,
-                dsbMannschaftDTO.getVeranstaltungId());
+            LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
-        final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
+                    dsbMannschaftDTO.getVereinId(),
+                    dsbMannschaftDTO.getNummer(),
+                    userId,
+                    dsbMannschaftDTO.getVeranstaltungId());
 
-        final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
-        return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
+            final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
+
+            final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
+            return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
+        } else throw new NoPermissionException();
+
+
     }
 
 
@@ -302,6 +335,69 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(dsbMannschaftDTO.getVeranstaltungId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE);
 
+    }
+
+
+
+    /**
+     * method to check, if a user has a general permission
+     * @param toTest The permission whose existence is getting checked
+     * @return Does the User have the searched permission
+     */
+    boolean hasPermission(UserPermission toTest) {
+        //default value is: not allowed
+        boolean result = false;
+        //get the current http request from thread
+        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+            final HttpServletRequest request = servletRequestAttributes.getRequest();
+            //if a request is present:
+            if(request != null) {
+                //parse the Webtoken and get the UserPermissions of the current User
+                final String jwt = JwtTokenProvider.resolveToken(request);
+                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+                //check if the resolved Permissions
+                //contain the required Permission for the task.
+                if(userPermissions.contains(toTest)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * method to check, if a user has a Specific permission with the matching parameters
+     * @param toTest The permission whose existence is getting checked
+     * @return Does the User have searched permission
+     */
+    boolean hasSpecificPermission(UserPermission toTest, Long vereinsId) {
+        //default value is: not allowed
+        boolean result = false;
+        //get the current http request from thread
+        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+            final HttpServletRequest request = servletRequestAttributes.getRequest();
+            //if a request is present:
+            if(request != null) {
+                //parse the Webtoken and get the UserPermissions of the current User
+                final String jwt = JwtTokenProvider.resolveToken(request);
+                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+                //check if the current Users vereinsId equals the given vereinsId and if the User has
+                //the required Permission (if the permission is specifi
+                Long UserId = jwtTokenProvider.getUserId(jwt);
+                UserDO userDO = this.userComponent.findById(UserId);
+                DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
+                if((dsbMitgliedDO.getVereinsId() == vereinsId) && userPermissions.contains(toTest)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 
 }

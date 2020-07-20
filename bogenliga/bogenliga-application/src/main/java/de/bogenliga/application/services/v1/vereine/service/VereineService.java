@@ -20,7 +20,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.vereine.mapper.VereineDTOMapper;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresDataPermissions;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -113,7 +113,7 @@ public class VereineService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresDataPermissions(value = {UserPermission.CAN_MODIFY_STAMMDATEN}, specific = {UserPermission.CAN_MODIFY_MY_VEREIN}, type = "verein")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
     public VereineDTO update (@RequestBody final VereineDTO vereineDTO, final Principal principal){
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
