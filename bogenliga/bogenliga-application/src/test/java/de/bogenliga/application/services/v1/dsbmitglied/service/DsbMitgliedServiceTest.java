@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
+import javax.naming.NoPermissionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -196,7 +197,7 @@ public class DsbMitgliedServiceTest {
 
 
     @Test
-    public void update() {
+    public void update() throws NoPermissionException {
 
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
