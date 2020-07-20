@@ -90,6 +90,24 @@ public class VeranstaltungService implements ServiceFacade {
         return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
     }
 
+    /**
+     * I return the veranstaltung Entry of the database with a specific id
+     *
+     * @return list of {@link VeranstaltungDTO} as JSON
+     */
+    @RequestMapping(value = "{ligaID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findByLigaId(@PathVariable ("ligaID") final long ligaID){
+        Preconditions.checkArgument(ligaID >= 0 , "ID must not be negative");
+
+        LOG.debug("Receive 'findByLigaID' with requested ID '{}'", ligaID);
+
+        final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
+
+        return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+
+    }
+
 
     /**
      *
