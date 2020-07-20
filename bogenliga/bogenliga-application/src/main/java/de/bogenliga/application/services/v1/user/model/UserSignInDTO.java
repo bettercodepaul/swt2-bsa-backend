@@ -21,7 +21,7 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
     private Set<UserPermission> permissions;
     private Long vereinId;
     private List<Integer> veranstaltungenIds;
-
+    private List<Integer> wettkampfIds;
 
     public UserSignInDTO() {
         // empty constructor
@@ -83,5 +83,15 @@ public class UserSignInDTO extends UserDTO implements DataTransferObject {
 
     public void setVeranstaltungenIds(List<Integer> veranstaltungenIds) {
         this.veranstaltungenIds = veranstaltungenIds;
+    }
+
+
+    public List<Integer> getWettkampfIds() {
+        return wettkampfIds;
+    }
+
+
+    public void setWettkampfIds(List<Integer> wettkampfIds) {
+        this.wettkampfIds = wettkampfIds;
     }
 }
