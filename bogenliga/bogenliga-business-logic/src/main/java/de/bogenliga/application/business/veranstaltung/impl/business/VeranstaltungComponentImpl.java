@@ -20,6 +20,7 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.time.DateProvider;
