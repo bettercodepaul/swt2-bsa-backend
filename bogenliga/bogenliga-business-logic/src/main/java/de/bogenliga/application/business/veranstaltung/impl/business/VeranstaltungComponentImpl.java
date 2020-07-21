@@ -140,16 +140,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return notNull(persistedVeranstaltungBE);
     }
 
-    private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_veranstaltungen = this.findAll();
-        for (VeranstaltungDO vdo : all_veranstaltungen) {
-            if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
@@ -230,6 +220,22 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     }
 
+    /**
+     * Checks if a Liga already has a Veranstaltung in a specific Sportjahr
+     * @param liga_id   The ID of the Liga to check
+     * @param sportjahr The Sportjahr to check
+     * @return true: when no Veranstaltung exists for Liga in Sportjahr
+     *         false: when there already is a Veranstaltung for Liga in Sportjahr
+     */
+    private boolean validLiga(final long liga_id, final long sportjahr) {
+        List<VeranstaltungDO> all_veranstaltungen = this.findAll();
+        for (VeranstaltungDO vdo : all_veranstaltungen) {
+            if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private VeranstaltungDO notNull(VeranstaltungBE veranstaltungBE) {
         LigaBE tempLigaBE = new LigaBE();
