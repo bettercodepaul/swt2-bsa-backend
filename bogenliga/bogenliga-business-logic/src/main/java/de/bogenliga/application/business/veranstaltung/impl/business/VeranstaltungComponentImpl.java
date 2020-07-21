@@ -140,10 +140,10 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return notNull(persistedVeranstaltungBE);
     }
 
-    private boolean validLiga(final long liga_id) {
+    private boolean validLiga(final long liga_id, final long sportjahr) {
         List<VeranstaltungDO> all_veranstaltungen = this.findAll();
         for (VeranstaltungDO vdo : all_veranstaltungen) {
-            if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getCreatedAtUtc().getYear() == DateProvider.currentDateTimeUtc().getYear()) {
+            if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
                 return false;
             }
         }
@@ -153,7 +153,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     @Override
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
-        Preconditions.checkArgument(validLiga(veranstaltungDO.getVeranstaltungLigaID()), PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
+        Preconditions.checkArgument(validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()), PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE presistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
