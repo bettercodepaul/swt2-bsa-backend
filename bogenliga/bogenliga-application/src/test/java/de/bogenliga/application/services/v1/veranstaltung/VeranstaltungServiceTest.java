@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.sql.Date;
 
+import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -245,7 +246,7 @@ public class VeranstaltungServiceTest {
     }
 
     @Test
-    public void update() {
+    public void update() throws NoPermissionException {
         // prepare test data
         final VeranstaltungDTO input = getVeranstaltungDTO();
 

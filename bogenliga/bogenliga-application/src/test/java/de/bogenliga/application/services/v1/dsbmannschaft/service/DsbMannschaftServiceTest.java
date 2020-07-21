@@ -181,7 +181,7 @@ public class DsbMannschaftServiceTest {
 
 
     @Test
-    public void create() throws NoPermissionException {
+    public void create() {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
 
@@ -191,23 +191,30 @@ public class DsbMannschaftServiceTest {
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
 
         // call test method
-        final DsbMannschaftDTO actual = underTest.create(input, principal);
+        try {
+            final DsbMannschaftDTO actual = underTest.create(input, principal);
 
-        // assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(input.getId());
-        assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
-        assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
 
-        // verify invocations
-        verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+            // assert result
+            assertThat(actual).isNotNull();
+            assertThat(actual.getId()).isEqualTo(input.getId());
+            assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
+            assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
 
-        final DsbMannschaftDO createdDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
 
-        assertThat(createdDsbMannschaft).isNotNull();
-        assertThat(createdDsbMannschaft.getId()).isEqualTo(input.getId());
-        assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
-        assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
+            // verify invocations
+            verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+            final DsbMannschaftDO createdDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+
+            assertThat(createdDsbMannschaft).isNotNull();
+            assertThat(createdDsbMannschaft.getId()).isEqualTo(input.getId());
+            assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
+            assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
+
+
+        } catch (NoPermissionException e) {
+        }
     }
 
 

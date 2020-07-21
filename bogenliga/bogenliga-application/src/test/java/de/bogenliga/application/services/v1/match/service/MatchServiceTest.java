@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.naming.NoPermissionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -328,7 +329,7 @@ public class MatchServiceTest {
 
 
     @Test
-    public void saveMatches() {
+    public void saveMatches() throws NoPermissionException {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         ArrayList<MatchDTO> matches = new ArrayList<>();
@@ -360,7 +361,7 @@ public class MatchServiceTest {
 
 
     @Test
-    public void saveMatches_WithPasseUpdate() {
+    public void saveMatches_WithPasseUpdate() throws NoPermissionException {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
@@ -421,7 +422,7 @@ public class MatchServiceTest {
 
 
     @Test
-    public void saveMatches_WithPasseCreate() {
+    public void saveMatches_WithPasseCreate() throws NoPermissionException {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
@@ -453,7 +454,7 @@ public class MatchServiceTest {
 
 
     @Test
-    public void create() {
+    public void create() throws NoPermissionException {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
@@ -472,7 +473,7 @@ public class MatchServiceTest {
 
 
     @Test
-    public void update() {
+    public void update() throws NoPermissionException {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
