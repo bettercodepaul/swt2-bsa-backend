@@ -125,11 +125,10 @@ public class PostgresqlTransactionManager implements TransactionManager {
             }
 
             SessionHandler.getConnection().close();
+            SessionHandler.removeConnection();
             LOG.debug("Release connection.");
         } catch (SQLException e) {
             throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
-        } finally {
-            SessionHandler.removeConnection();
         }
     }
 
@@ -167,6 +166,8 @@ public class PostgresqlTransactionManager implements TransactionManager {
                 // have not yet created user(s) for your application.
                 postgresqlDatasource.setUser(databaseConfiguration.getUser());
                 postgresqlDatasource.setPassword(databaseConfiguration.getPassword());
+
+                postgresqlDatasource.setTcpKeepAlive(true);
 
                 ds = postgresqlDatasource;
 

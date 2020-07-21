@@ -123,13 +123,15 @@ public class BasicDAO implements DataAccessObject {
     public <T> T selectSingleEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
                                     String sqlQuery,
                                     Object... params) {
+        T entity;
         try {
-            return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
+            entity = run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
                     new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
                             businessEntityConfiguration.getColumnToFieldMapping()), params);
         } catch (SQLException e) {
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         }
+        return entity;
     }
 
 
@@ -150,12 +152,16 @@ public class BasicDAO implements DataAccessObject {
                                         Object... params) {
         List<T> businessEntityList;
         try {
+            transactionManager.begin();
             businessEntityList = run.query(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
                     new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
                             businessEntityConfiguration.getColumnToFieldMapping()), params);
+            transactionManager.commit();
         } catch (SQLException e) {
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+        } finally {
+            transactionManager.release();
         }
 
         return businessEntityList == null ? Collections.emptyList() : businessEntityList;
@@ -220,20 +226,21 @@ public class BasicDAO implements DataAccessObject {
         SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
+        int affectedRows;
         try {
             transactionManager.begin();
 
-            int affectedRows = runUpdate(businessEntityConfiguration, sql);
+            affectedRows = runUpdate(businessEntityConfiguration, sql);
 
             transactionManager.commit();
 
-            return affectedRows;
         } catch (SQLException e) {
             transactionManager.rollback();
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
             transactionManager.release();
         }
+        return affectedRows;
     }
 
 
