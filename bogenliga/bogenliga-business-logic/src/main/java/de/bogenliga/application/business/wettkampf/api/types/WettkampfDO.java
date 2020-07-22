@@ -24,13 +24,14 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
     private Long kampfrichterID;
+    private Long wettkampfAusrichter;
 
 
     public WettkampfDO(final Long id, final Long veranstaltungsId, final Date datum, final String wettkampfOrt,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
                        final Long wettkampfTypId,
                        final OffsetDateTime createdAtUtc, final Long createdByUserId,
-                       final Long version, final Long kampfrichterID) {
+                       final Long version, final Long kampfrichterID, final Long wettkampfAusrichter) {
         this.id = id;
         this.wettkampfVeranstaltungsId = veranstaltungsId;
         this.wettkampfDatum = datum;
@@ -43,6 +44,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.createdByUserId = createdByUserId;
         this.version = version;
         this.kampfrichterID = kampfrichterID;
+        this.wettkampfAusrichter = wettkampfAusrichter;
 
     }
 
@@ -64,7 +66,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum, final String wettkampfOrt,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
                        final Long wettkampfTypId,
-                       final Long version, final Long kampfrichterID) {
+                       final Long version, final Long kampfrichterID, final Long wettkampfAusrichter) {
         this.id = id;
         this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
         this.wettkampfDatum = wettkampfDatum;
@@ -75,6 +77,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.wettkampfTypId = wettkampfTypId;
         this.version = version;
         this.kampfrichterID = kampfrichterID;
+        this.wettkampfAusrichter = wettkampfAusrichter;
 
     }
 
@@ -157,6 +160,16 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
 
     public void setKampfrichterID() { this.kampfrichterID = kampfrichterID; }
 
+
+    public Long getWettkampfAusrichter() {
+        return wettkampfAusrichter;
+    }
+
+    public void setWettkampfAusrichter(Long wettkampfAusrichter) {
+        this.wettkampfAusrichter = wettkampfAusrichter;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -170,11 +183,12 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
                 wettkampfTag.equals(that.wettkampfTag) &&
                 Objects.equals(wettkampfDisziplinId, that.wettkampfDisziplinId) &&
                 Objects.equals(wettkampfTypId, that.wettkampfTypId) &&
-                Objects.equals(kampfrichterID, that.kampfrichterID);
+                Objects.equals(kampfrichterID, that.kampfrichterID) &&
+                Objects.equals(wettkampfAusrichter, that.wettkampfAusrichter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfBeginn, wettkampfTag, wettkampfDisziplinId, wettkampfTypId, kampfrichterID);
+        return Objects.hash(id, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfBeginn, wettkampfTag, wettkampfDisziplinId, wettkampfTypId, kampfrichterID, wettkampfAusrichter);
     }
 }

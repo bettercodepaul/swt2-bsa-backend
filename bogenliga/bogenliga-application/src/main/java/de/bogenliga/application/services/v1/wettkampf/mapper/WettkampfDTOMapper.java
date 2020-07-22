@@ -35,9 +35,10 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfTypId = wettkampfDO.getWettkampfTypId();
         final Long version = wettkampfDO.getVersion();
         final Long kampfrichterID = wettkampfDO.getKampfrichterID();
+        final Long wettkampfAusrichter = wettkampfDO.getWettkampfAusrichter();
 
         return new WettkampfDTO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
-                wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID);
+                wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID, wettkampfAusrichter);
     };
 
 
@@ -59,9 +60,10 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfTypId = wettkampfDTO.getWettkampfTypId();
         final Long version = wettkampfDTO.getVersion();
         final Long kampfrichterID = wettkampfDTO.getKampfrichterID();
+        final Long wettkampfAusrichter = wettkampfDTO.getWettkampfAusrichter();
 
         return new WettkampfDO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
-                wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID);
+                wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID, wettkampfAusrichter);
     };
 
 

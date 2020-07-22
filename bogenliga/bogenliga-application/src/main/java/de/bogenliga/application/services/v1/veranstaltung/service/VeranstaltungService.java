@@ -115,7 +115,7 @@ public class VeranstaltungService implements ServiceFacade {
      * I return the veranstaltung Entry of the database with a specific id
      *
      * @return list of {@link VeranstaltungDTO} as JSON
-     */
+
     @RequestMapping(value = "{ligaID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findByLigaId(@PathVariable ("ligaID") final long ligaID){
@@ -128,7 +128,7 @@ public class VeranstaltungService implements ServiceFacade {
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
 
     }
-
+*/
 
     /**
      *
