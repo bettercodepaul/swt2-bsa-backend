@@ -7,13 +7,11 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 public class MannschaftsmitgliedBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 2616130134662239870L;
 
-    private Long id;
-    private Long mannschaftId;
-    private Long dsbMitgliedId;
-    private Integer dsbMitgliedEingesetzt;
-    private String dsbMitgliedVorname;
-    private String dsbMitgliedNachname;
-    private Long rueckennummer;
+    protected Long id;
+    protected Long mannschaftId;
+    protected Long dsbMitgliedId;
+    protected Integer dsbMitgliedEingesetzt;
+    protected Long rueckennummer;
 
 
     /**
@@ -52,26 +50,9 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 
-
-    public String getDsbMitgliedVorname() {
-        return dsbMitgliedVorname;
-    }
-
-
-    public void setDsbMitgliedVorname(final String dsbMitgliedVorname) {
-        this.dsbMitgliedVorname = dsbMitgliedVorname;
-    }
-
-
-    public String getDsbMitgliedNachname() {
-        return dsbMitgliedNachname;
-    }
-
-
     public Long getId() {
         return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -81,12 +62,6 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
 
     public void setRueckennummer(Long rueckennummer) { this.rueckennummer = rueckennummer; }
 
-
-    public void setDsbMitgliedNachname(final String dsbMitgliedNachname) {
-        this.dsbMitgliedNachname = dsbMitgliedNachname;
-    }
-
-
     @Override
     public String toString() {
         return "MannschaftsmitgliedBE{" +
@@ -94,8 +69,6 @@ public class MannschaftsmitgliedBE extends CommonBusinessEntity implements Busin
                 "mannschaftId=" + mannschaftId +
                 ", dsbMitgliedId=" + dsbMitgliedId +
                 ", dsbMitgliedEingesetzt=" + dsbMitgliedEingesetzt +
-                ", dsbMitgliedVorname=" + dsbMitgliedVorname +
-                ", dsbMitgliedNachname=" + dsbMitgliedNachname +
                 ", rueckennummer=" + rueckennummer +
                 '}';
     }

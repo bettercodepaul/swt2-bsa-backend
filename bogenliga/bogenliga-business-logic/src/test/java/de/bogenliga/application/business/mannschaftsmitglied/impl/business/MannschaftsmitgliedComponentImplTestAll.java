@@ -15,6 +15,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.Mannschaft
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.baseClass.impl.BasicComponentTest;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -36,20 +37,25 @@ public class MannschaftsmitgliedComponentImplTestAll extends Mannschaftsmitglied
     private MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
 
     private MannschaftsmitgliedBE expectedBE;
+    private MannschaftsmitgliedExtendedBE expectedExtendedBE;
 
     private MannschaftsmitgliedComponentImpl underTest;
 
 
     private BasicComponentTest<MannschaftsmitgliedComponentImpl, MannschaftsmitgliedDO> basicComponentTest;
     private BasicTest<MannschaftsmitgliedBE, MannschaftsmitgliedDO> basicTest;
+    private BasicTest<MannschaftsmitgliedExtendedBE, MannschaftsmitgliedDO> basicExtendedTest;
 
 
     @Before
     public void testSetup() {
-        expectedBE = getMannschaftsmitgliedBE();
+        expectedBE = getMannschaftsmitgliedExtendedBE();
+        expectedExtendedBE = getMannschaftsmitgliedExtendedBE();
         underTest = new MannschaftsmitgliedComponentImpl(mannschaftsmitgliedDAO);
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
+        basicExtendedTest = new BasicTest<>(expectedExtendedBE, getValuesToMethodMap());
+
     }
 
 
@@ -65,27 +71,29 @@ public class MannschaftsmitgliedComponentImplTestAll extends Mannschaftsmitglied
 
     @Test
     public void testAllMethodsOnCorrectness() throws InvocationTargetException, IllegalAccessException {
-        when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
-        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
-        basicTest.testAllFindMethods(underTest);
+        when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedExtendedBE));
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedExtendedBE);
+        basicExtendedTest.testAllFindMethods(underTest);
     }
 
 
     @Test
     public void testCreateOnCorrectness() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         when(basicDAO.insertEntity(any(), any())).thenReturn(expectedBE);
+        when(basicDAO.selectSingleEntity(any(),any(),any(),any())).thenReturn(expectedBE);
         MannschaftsmitgliedDO p = basicComponentTest.testCreateMethod(getMannschaftsmitgliedDO());
         BasicTest b = new BasicTest<MannschaftsmitgliedDO, MannschaftsmitgliedBE>(p, getValuesToMethodMap());
-        b.assertEntity(getMannschaftsmitgliedBE());
+        b.assertEntity(getMannschaftsmitgliedExtendedBE());
     }
 
 
     @Test
     public void testUpdateOnCorrectness() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         when(basicDAO.updateEntity(any(), any(), any())).thenReturn(expectedBE);
+        when(basicDAO.selectSingleEntity(any(),any(),any(),any())).thenReturn(expectedBE);
         MannschaftsmitgliedDO p = basicComponentTest.testUpdateMethod(getMannschaftsmitgliedDO());
         BasicTest b = new BasicTest<MannschaftsmitgliedDO, MannschaftsmitgliedBE>(p, getValuesToMethodMap());
-        b.assertEntity(getMannschaftsmitgliedBE());
+        b.assertEntity(getMannschaftsmitgliedExtendedBE());
     }
 
 

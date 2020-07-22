@@ -5,31 +5,36 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
+
 /**
- * @author Philip Dengler
+ * @author Philip Dengler; Edited by: Jonas Müller, Felix Maute
+ * To ensure that MannschaftsmitgliedDOs that get passed down to the Data-Access-Layer don't have attributes which do not exist
+ * in the database table, but MannschaftsmitgliedDOs that get passed up to the Business-Layer can still have these attributes,
+ * we separated the DO into MannschaftsmitgliedBE and MannschaftsmitgliedExtendedBE which are mapped to the DO here.
  */
 public class MannschaftsmitgliedMapper implements ValueObjectMapper {
 
+    public static final Function<MannschaftsmitgliedExtendedBE, MannschaftsmitgliedDO> toMannschaftsmitgliedDO = beExtended -> {
+        final Long id = beExtended.getId();
+        final Long mannschaftId = beExtended.getMannschaftId();
+        final Long mitgliedId = beExtended.getDsbMitgliedId();
+        final Integer mitgliedEingesetzt = beExtended.getDsbMitgliedEingesetzt();
 
-    public static final Function<MannschaftsmitgliedBE, MannschaftsmitgliedDO> toMannschaftsmitgliedDO = be -> {
-        final Long id = be.getId();
-        final Long mannschaftId = be.getMannschaftId();
-        final Long mitgliedId = be.getDsbMitgliedId();
-        final Integer mitgliedEingesetzt = be.getDsbMitgliedEingesetzt();
-        final String mitgliedVorname = be.getDsbMitgliedVorname();
-        final String mitgliedNachname = be.getDsbMitgliedNachname();
-        final Long rueckennummer = be.getRueckennummer();
+        final String mitgliedVorname = beExtended.getDsbMitgliedVorname();
+        final String mitgliedNachname = beExtended.getDsbMitgliedNachname();
+        final Long rueckennummer = beExtended.getRueckennummer();
 
         // technical parameter
-        Long createdByUserId = be.getCreatedByUserId();
-        Long lastModifiedByUserId = be.getLastModifiedByUserId();
-        Long version = be.getVersion();
+        Long createdByUserId = beExtended.getCreatedByUserId();
+        Long lastModifiedByUserId = beExtended.getLastModifiedByUserId();
+        Long version = beExtended.getVersion();
 
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
-        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
+        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(beExtended.getCreatedAtUtc());
+        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(beExtended.getLastModifiedAtUtc());
 
         return new MannschaftsmitgliedDO(id, mannschaftId, mitgliedId, mitgliedEingesetzt, mitgliedVorname,
                 mitgliedNachname,  createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, rueckennummer);
@@ -48,8 +53,6 @@ public class MannschaftsmitgliedMapper implements ValueObjectMapper {
         mannschaftsmitgliedBE.setMannschaftId(mannschaftsmitgliedDO.getMannschaftId());
         mannschaftsmitgliedBE.setDsbMitgliedId(mannschaftsmitgliedDO.getDsbMitgliedId());
         mannschaftsmitgliedBE.setDsbMitgliedEingesetzt(mannschaftsmitgliedDO.getDsbMitgliedEingesetzt());
-        mannschaftsmitgliedBE.setDsbMitgliedVorname(mannschaftsmitgliedDO.getDsbMitgliedVorname());
-        mannschaftsmitgliedBE.setDsbMitgliedNachname(mannschaftsmitgliedDO.getDsbMitgliedNachname());
 
         mannschaftsmitgliedBE.setCreatedAtUtc(createdAtUtcTimestamp);
         mannschaftsmitgliedBE.setCreatedByUserId(mannschaftsmitgliedDO.getCreatedByUserId());
