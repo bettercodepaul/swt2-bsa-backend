@@ -94,5 +94,6 @@ public interface VeranstaltungComponent extends ComponentFacade {
 
     List<SportjahrDO> findAllSportjahreDestinct();
 
+    List<VeranstaltungDO> findByLigaID(long ligaID);
 
 }
