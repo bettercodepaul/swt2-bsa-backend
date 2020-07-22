@@ -109,7 +109,7 @@ public class VereineService implements ServiceFacade {
     }
 
 
-
+/*
      * I persist a newer version of the dsbMitglied in the database.
      * <p>
      * You are only able to modify the Verein, if you have the explicit permission to Modify it or if you are the
