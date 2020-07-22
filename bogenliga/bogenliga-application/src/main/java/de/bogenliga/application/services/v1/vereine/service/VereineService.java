@@ -109,24 +109,7 @@ public class VereineService implements ServiceFacade {
     }
 
 
-    /**
-     * I return the verein Entry of the database with a specific id
-     *
-     * @return list of {@link VereineDTO} as JSON
-     */
-    @RequestMapping(value = "findfirst", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public VereineDTO findFirst() {
 
-        LOG.debug("Receive 'findFirst' ");
-
-        final VereinDO vereinDO = vereinComponent.findFirst();
-
-        return VereineDTOMapper.toDTO.apply(vereinDO);
-    }
-
-
-    /**
      * I persist a newer version of the dsbMitglied in the database.
      * <p>
      * You are only able to modify the Verein, if you have the explicit permission to Modify it or if you are the
