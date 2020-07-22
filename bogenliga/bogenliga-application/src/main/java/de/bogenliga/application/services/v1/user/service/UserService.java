@@ -136,6 +136,8 @@ public class UserService implements ServiceFacade {
                         temp.add(veranstaltungDO.getVeranstaltungID().intValue());
                     }
                     userSignInDTO.setVeranstaltungenIds(temp);
+                    ArrayList<Integer> wetkampftemp = new ArrayList<Integer>();
+                    userSignInDTO.setWettkampfIds(wetkampftemp);
                     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
                 } else {
                     errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
@@ -190,6 +192,10 @@ public class UserService implements ServiceFacade {
 
     /**
      * I persist a new password for the current user and return this user entry.
+     *
+     * You are only able to modify the Users, if you have the explicit permission to Modify it or
+     * if you are the Ausrichter (Ligaleiter) of the Veranstaltung.
+     *
      * <p>
      * Usage:
      * <pre>{@code Request: PUT /v1/user
