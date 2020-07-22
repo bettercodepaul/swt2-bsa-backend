@@ -95,7 +95,7 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
-    @RequestMapping(value = "{ligaID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "findByLigaID/{ligaID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findByLigaId(@PathVariable ("ligaID") final long ligaID){
         Preconditions.checkArgument(ligaID >= 0 , "ID must not be negative");
