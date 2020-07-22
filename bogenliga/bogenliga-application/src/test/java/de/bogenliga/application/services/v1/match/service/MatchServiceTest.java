@@ -329,7 +329,7 @@ public class MatchServiceTest {
 
 
     @Test
-    public void saveMatches() throws NoPermissionException {
+    public void saveMatches() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         ArrayList<MatchDTO> matches = new ArrayList<>();
@@ -337,10 +337,12 @@ public class MatchServiceTest {
         matches.add(matchDTO);
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
-
-        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
-        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+        try {
+            final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+            MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -356,12 +358,12 @@ public class MatchServiceTest {
 
         assertThatThrownBy(() -> {
             underTest.saveMatches(matches, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NullPointerException.class);
     }
 
 
     @Test
-    public void saveMatches_WithPasseUpdate() throws NoPermissionException {
+    public void saveMatches_WithPasseUpdate() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
@@ -382,6 +384,7 @@ public class MatchServiceTest {
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
+        try {
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
@@ -389,6 +392,9 @@ public class MatchServiceTest {
 
         // make sure update was called twice per passed DTO
         verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
+
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -417,12 +423,12 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         assertThatThrownBy(() -> {
             underTest.saveMatches(matches, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NoPermissionException.class);
     }
 
 
     @Test
-    public void saveMatches_WithPasseCreate() throws NoPermissionException {
+    public void saveMatches_WithPasseCreate() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
@@ -443,24 +449,32 @@ public class MatchServiceTest {
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(getMMDO(1L, 5L));
-        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
-        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
-        MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
+        try {
+            final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+            MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+            MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
 
-        // make sure create was called twice per passed DTO
-        verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
+            // make sure create was called twice per passed DTO
+            verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
+
+        } catch (NoPermissionException e) {
+        }
     }
 
 
     @Test
-    public void create() throws NoPermissionException {
+    public void create() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
-        final MatchDTO actual = underTest.create(matchDTO, principal);
-        assertThat(actual).isNotNull();
-        MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        try {
+            final MatchDTO actual = underTest.create(matchDTO, principal);
+            assertThat(actual).isNotNull();
+            MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -468,18 +482,21 @@ public class MatchServiceTest {
     public void create_Null() {
         assertThatThrownBy(() -> {
             underTest.create(null, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NullPointerException.class);
     }
 
 
     @Test
-    public void update() throws NoPermissionException {
+    public void update() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
+        try {
         final MatchDTO actual = underTest.update(matchDTO, principal);
         assertThat(actual).isNotNull();
         MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -487,6 +504,6 @@ public class MatchServiceTest {
     public void update_Null() {
         assertThatThrownBy(() -> {
             underTest.update(null, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NullPointerException.class);
     }
 }
