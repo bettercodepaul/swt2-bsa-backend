@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.MannschaftsmitgliedBaseDAOTest;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -32,15 +33,15 @@ public class MannschaftmitgliedDAOTest extends MannschaftsmitgliedBaseDAOTest {
     @InjectMocks
     private MannschaftsmitgliedDAO underTest;
 
-    private MannschaftsmitgliedBE expectedBE;
+    private MannschaftsmitgliedExtendedBE expectedBE;
 
     // Implements generic way to test business entities methods
-    private BasicTest<MannschaftsmitgliedBE, MannschaftsmitgliedBE> basicDAOTest;
+    private BasicTest<MannschaftsmitgliedExtendedBE, MannschaftsmitgliedExtendedBE> basicDAOTest;
 
 
     @Before
     public void testSetup() {
-        expectedBE = getMannschaftsmitgliedBE();
+        expectedBE = getMannschaftsmitgliedExtendedBE();
         basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
 
         // configure mocks
