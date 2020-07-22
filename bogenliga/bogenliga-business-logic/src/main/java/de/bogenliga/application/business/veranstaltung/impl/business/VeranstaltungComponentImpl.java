@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.bogenliga.application.business.sportjahr.SportjahrDO;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.liga.impl.business.LigaComponentImpl;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,8 +20,10 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.time.DateProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -41,6 +45,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_EMAIL = "ligaleiter email must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_NAME = "veranstaltungtypname must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_NAME = "veranstaltungliganame must be not null";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
     private final VeranstaltungDAO veranstaltungDAO;
     private final LigaDAO ligaDAO;
     private final WettkampfTypDAO wettkampftypDAO;
@@ -135,11 +140,10 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return notNull(persistedVeranstaltungBE);
     }
 
-
     @Override
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
-
+        Preconditions.checkArgument(validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()), PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE presistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
@@ -216,6 +220,22 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     }
 
+    /**
+     * Checks if a Liga already has a Veranstaltung in a specific Sportjahr
+     * @param liga_id   The ID of the Liga to check
+     * @param sportjahr The Sportjahr to check
+     * @return true: when no Veranstaltung exists for Liga in Sportjahr
+     *         false: when there already is a Veranstaltung for Liga in Sportjahr
+     */
+    private boolean validLiga(final long liga_id, final long sportjahr) {
+        List<VeranstaltungDO> all_veranstaltungen = this.findAll();
+        for (VeranstaltungDO vdo : all_veranstaltungen) {
+            if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private VeranstaltungDO notNull(VeranstaltungBE veranstaltungBE) {
         LigaBE tempLigaBE = new LigaBE();
