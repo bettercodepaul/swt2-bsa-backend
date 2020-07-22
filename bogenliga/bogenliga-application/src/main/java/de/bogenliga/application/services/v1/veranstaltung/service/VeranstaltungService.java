@@ -129,7 +129,6 @@ public class VeranstaltungService implements ServiceFacade {
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
 
     }
-*/
 
     /**
      *
