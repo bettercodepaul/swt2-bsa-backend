@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.mannschaftsmitglied.impl.entity;
 
 import org.junit.Test;
-import static de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedBE;
+import static de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedExtendedBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -17,7 +17,7 @@ public class MannschaftsmitgliedBETest {
 
     @Test
     public void assertToString() {
-        final MannschaftsmitgliedBE underTest = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE underTest = getMannschatfsmitgliedExtendedBE();
         underTest.setMannschaftId(MANNSCHHAFT_ID);
         underTest.setDsbMitgliedId(DSB_MITGLIED_ID);
         underTest.setDsbMitgliedEingesetzt(DSB_MITGLIED_EINGESETZT);
@@ -36,7 +36,7 @@ public class MannschaftsmitgliedBETest {
 
     @Test
     public void assertToString_withoutMitgliedEingesetzt() {
-        final MannschaftsmitgliedBE underTest = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedBE underTest = getMannschatfsmitgliedExtendedBE();
         underTest.setMannschaftId(MANNSCHHAFT_ID);
         underTest.setDsbMitgliedId(DSB_MITGLIED_ID);
 

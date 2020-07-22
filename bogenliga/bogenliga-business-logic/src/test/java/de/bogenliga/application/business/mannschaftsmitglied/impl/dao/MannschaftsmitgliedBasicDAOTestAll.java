@@ -39,7 +39,7 @@ public class MannschaftsmitgliedBasicDAOTestAll extends MannschaftsmitgliedBaseD
 
     @Before
     public void testSetup() {
-        expectedBE = getMannschaftsmitgliedBE();
+        expectedBE = getMannschaftsmitgliedExtendedBE();
         basicDAOTest = new BasicTest<>(expectedBE,getValuesToMethodMap());
     }
 
