@@ -31,7 +31,6 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PWD = "UserDO password must not be null or empty";
     private static final String PRECONDITON_MSG_USER_WRONG_PWD = "Current password incorrect";
-    //private static final String PRECONDITON_MSG_USER_WRONG_ID = "Wrond UserID";
     private static final String USER_ROLE_DEFAULT = "USER";
     private final UserDAO userDAO;
     private final SignInBA signInBA;
