@@ -64,7 +64,7 @@ public class CompetitionClassService implements ServiceFacade {
      */
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<CompetitionClassDTO> findAll() {
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findAll();
         return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).collect(Collectors.toList());
@@ -81,7 +81,7 @@ public class CompetitionClassService implements ServiceFacade {
             value = "{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public CompetitionClassDTO findById(@PathVariable("id") final long id){
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
 
@@ -104,7 +104,7 @@ public class CompetitionClassService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_CREATE_SYSTEMDATEN)
     public CompetitionClassDTO create(@RequestBody final CompetitionClassDTO competitionClassDTO, final Principal principal) {
         LOGGER.debug(
                 "Receive 'create' request with klasseId '{}', klasseName '{}', klasseJahrgangMin '{}', klasseJahrgangMax '{}', klasseNr '{}' ",
@@ -131,7 +131,7 @@ public class CompetitionClassService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public CompetitionClassDTO update(@RequestBody final CompetitionClassDTO competitionClassDTO,
                                       final Principal principal) {
 

@@ -1,5 +1,7 @@
 package de.bogenliga.application.services.v1.user.service;
 
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -7,6 +9,8 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
 import de.bogenliga.application.services.v1.user.model.*;
@@ -49,6 +53,8 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
 
     private static final Long ID = 123L;
+    private static final Long DSBMITGLIEDID = 28L;
+    private static final Long VEREINID = 5L;
     private static final String USERNAME = "user";
     private static final String PASSWORD = "CorrectPasswordV1";
     private static final String NEUESPASSWORD = "CorrectPasswordV2";
@@ -65,6 +71,8 @@ public class UserServiceTest {
 
     private static final Long ROLE_ID = 3L;
     private static final String ROLE_NAME = "rolename";
+
+
 
 
     @Rule
@@ -86,6 +94,10 @@ public class UserServiceTest {
     private UserProfileComponent userProfileComponent;
     @Mock
     private UserRoleComponent userRoleComponent;
+    @Mock
+    private DsbMitgliedComponent dsbMitgliedComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
 
     @InjectMocks
     private UserService underTest;
@@ -107,6 +119,21 @@ public class UserServiceTest {
         userWithPermissionsDO.setPermissions(PERMISSIONS);
         userWithPermissionsDO.setActive(true);
 
+
+        // prepare test data identity user
+        final UserSignInDTO userSignInDTO = new UserSignInDTO();
+        userSignInDTO.setJwt(JWT);
+        userSignInDTO.setEmail(USERNAME);
+        userSignInDTO.setId(ID);
+
+        final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(DSBMITGLIEDID);
+        dsbMitgliedDO.setVereinsId(VEREINID);
+
+        final UserDO userDO = new UserDO();
+        userDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        userDO.setId(ID);
+
+
         // configure mocks
         when(webSecurityConfiguration.authenticationManagerBean()).thenReturn(authenticationManager);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(
@@ -114,6 +141,9 @@ public class UserServiceTest {
         when(authentication.isAuthenticated()).thenReturn(true);
         when(authentication.getPrincipal()).thenReturn(userWithPermissionsDO);
         when(jwtTokenProvider.createToken(any(Authentication.class))).thenReturn(JWT);
+
+        when(userComponent.findById(anyLong())).thenReturn(userDO);
+        when(dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id())).thenReturn(dsbMitgliedDO);
 
         // call test method
         final ResponseEntity<UserSignInDTO> actual = underTest.login(userCredentials);
@@ -124,6 +154,7 @@ public class UserServiceTest {
         assertThat(actual.getBody().getJwt()).isEqualTo(JWT);
         assertThat(actual.getBody().getEmail()).isEqualTo(USERNAME);
         assertThat(actual.getBody().getId()).isEqualTo(ID);
+        assertThat(actual.getBody().getVereinId()).isEqualTo(VEREINID);
 
         assertThat(actual.getHeaders()).isNotNull();
         assertThat(actual.getHeaders().containsKey(AUTHORIZATION_HEADER)).isTrue();
@@ -685,14 +716,16 @@ public class UserServiceTest {
         final UserDO userCreatedDO = new UserDO();
         userCreatedDO.setEmail(USERNAME);
         userCreatedDO.setId(ID);
+        userCreatedDO.setDsb_mitglied_id(DSBMITGLIEDID);
         userCreatedDO.setVersion(VERSION);
 
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
         userCredentialsDTO.setUsername(USERNAME);
         userCredentialsDTO.setPassword(PASSWORD);
+        userCredentialsDTO.setDsb_mitglied_id(DSBMITGLIEDID);
 
         // configure mocks
-        when(userComponent.create(anyString(), anyString(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
+        when(userComponent.create(anyString(), anyString(), anyLong(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
         when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
 
         // call test method
@@ -811,6 +844,7 @@ public class UserServiceTest {
 
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
         userCredentialsDTO.setUsername(USERNAME);
+        userCredentialsDTO.setDsb_mitglied_id(DSBMITGLIEDID);
 
         String[] invalidPasswords = new String[]{
                 "ABCabc0",

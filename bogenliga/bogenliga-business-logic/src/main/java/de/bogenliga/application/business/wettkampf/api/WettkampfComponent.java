@@ -18,7 +18,7 @@ public interface WettkampfComponent extends ComponentFacade {
      */
     List<WettkampfDO> findAll();
 
-
+    List<WettkampfDO> findByAusrichter(long id);
     /**
      * Return a wettkampf entry with the given id.
      *

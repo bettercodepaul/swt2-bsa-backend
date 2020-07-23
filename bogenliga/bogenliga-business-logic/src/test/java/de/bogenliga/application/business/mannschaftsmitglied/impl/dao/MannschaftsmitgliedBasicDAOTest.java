@@ -10,8 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import static de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedBE;
+import static de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedExtendedBE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,11 +39,11 @@ public class MannschaftsmitgliedBasicDAOTest {
 
     @Test
     public void findAll() {
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
 
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
-        final List<MannschaftsmitgliedBE> actual = underTest.findAll();
+        final List<MannschaftsmitgliedExtendedBE> actual = underTest.findAll();
 
         // assert result
         assertThat(actual)
@@ -64,7 +65,7 @@ public class MannschaftsmitgliedBasicDAOTest {
 
     @Test
     public void findByMemberAndTeamId() {
-        final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE expectedBE = new MannschaftsmitgliedExtendedBE();
         expectedBE.setMannschaftId(MANNSCHHAFT_ID);
         expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
         expectedBE.setDsbMitgliedEingesetzt(1);
@@ -92,7 +93,7 @@ public class MannschaftsmitgliedBasicDAOTest {
     @Test
     public void findByTeamId() {
         // prepare test data
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
 
         expectedBE.setMannschaftId(MANNSCHHAFT_ID);
         expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
@@ -102,7 +103,7 @@ public class MannschaftsmitgliedBasicDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<MannschaftsmitgliedBE> actual = underTest.findByTeamId(MANNSCHHAFT_ID);
+        final List<MannschaftsmitgliedExtendedBE> actual = underTest.findByTeamId(MANNSCHHAFT_ID);
 
         // assert result
         assertThat(actual)
@@ -117,7 +118,7 @@ public class MannschaftsmitgliedBasicDAOTest {
     @Test
     public void checkExistingSchuetze() {
         // prepare test data
-        final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE expectedBE = new MannschaftsmitgliedExtendedBE();
         expectedBE.setMannschaftId(MANNSCHHAFT_ID);
         expectedBE.setDsbMitgliedId(DSB_MITGLIED_ID);
         expectedBE.setDsbMitgliedEingesetzt(1);
@@ -135,13 +136,13 @@ public class MannschaftsmitgliedBasicDAOTest {
     @Test
     public void findAllSchuetzeInTeam() {
 
-        final MannschaftsmitgliedBE expectedBE = getMannschatfsmitgliedBE();
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<MannschaftsmitgliedBE> actual = underTest.findAllSchuetzeInTeam(MANNSCHHAFT_ID);
+        final List<MannschaftsmitgliedExtendedBE> actual = underTest.findAllSchuetzeInTeamEingesetzt(MANNSCHHAFT_ID);
         // assert result
         Java6Assertions.assertThat(actual)
                 .isNotNull()

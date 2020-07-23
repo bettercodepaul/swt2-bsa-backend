@@ -20,11 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import de.bogenliga.application.business.Bogenkontrollliste.api.BogenkontrolllisteComponent;
-import de.bogenliga.application.business.Meldezettel.api.MeldezettelComponent;
-import de.bogenliga.application.business.Schusszettel.api.SchusszettelComponent;
-import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
+import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
+import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
+import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
+import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
+import de.bogenliga.application.business.rueckennummern.api.RueckennummernComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -65,6 +66,7 @@ public class DownloadService implements ServiceFacade {
     private final LizenzComponent lizenzComponent;
     private final MeldezettelComponent meldezettelComponent;
     private final BogenkontrolllisteComponent bogenkontrolllisteComponent;
+    private final RueckennummernComponent rueckennummernComponent;
 
 
     /**
@@ -74,12 +76,14 @@ public class DownloadService implements ServiceFacade {
     public DownloadService(final SetzlisteComponent setzlisteComponent, final LizenzComponent lizenzComponent,
                            final SchusszettelComponent schusszettelComponent,
                            final MeldezettelComponent meldezettelComponent,
-                           final BogenkontrolllisteComponent bogenkontrolllisteComponent) {
+                           final BogenkontrolllisteComponent bogenkontrolllisteComponent,
+                           final RueckennummernComponent rueckennummernComponent) {
         this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
         this.meldezettelComponent = meldezettelComponent;
         this.bogenkontrolllisteComponent = bogenkontrolllisteComponent;
+        this.rueckennummernComponent = rueckennummernComponent;
     }
   
     /**
@@ -132,6 +136,27 @@ public class DownloadService implements ServiceFacade {
     }
 
     /**
+     * returns the filled in Schusszettel for two matches as pdf file for client download
+     * Usage:
+     * <pre>{@code Request: GET pdf/schusszettel_matches/{matchId1}/{matchId2}}</pre>
+     *
+     * @return PDF as InputStreamResource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/schusszettel_matches/{matchId1}/{matchId2}",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadSchusszettelFilledPdf(@PathVariable("matchId1") Long matchId1,
+                                                                      @PathVariable("matchId2") Long matchId2) {
+
+        final byte[] fileBloB = schusszettelComponent.getFilledSchusszettelPDFasByteArray(matchId1, matchId2);
+
+        return generateInputStream(fileBloB);
+    }
+
+    /**
      * returns the Meldezettel as pdf file for client download
      * <p>
      * @param wettkampfid  from GET-Request: ID for the competition
@@ -177,6 +202,55 @@ public class DownloadService implements ServiceFacade {
         return generateInputStream(fileBloB);
     }
 
+
+    /**
+     * return the Rueckennummern of a mannschaft as pdf file for client download
+     *
+     * @param mannschaftid from GET-request: ID of the mannschaft
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/rueckennummern?mannschaftid=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+                    path = "pdf/rueckennummern",
+                    produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadRueckennummernPdf(@RequestParam("mannschaftid") final long mannschaftid) {
+
+
+        final byte[] fileBloB = rueckennummernComponent.getMannschaftsRueckennummernPDFasByteArray(mannschaftid);
+
+        return generateInputStream(fileBloB);
+    }
+
+
+    /**
+     * return the Rueckennummer of one dsbMitglied as pdf file for client download
+     *
+     * @param mannschaftid from GET-request: ID of the mannschaft
+     * @param dsbmitgliedid from GET-request: ID of the dsbmitglied
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/rueckennummer/?mannschaftid=x&dsbmitgliedid=y}</pre>
+     *
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/rueckennummer",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadRueckennummerPdf(@RequestParam("mannschaftid") final long mannschaftid,
+                                                                 @RequestParam("dsbmitgliedid") final long dsbmitgliedid) {
+
+        final byte[] fileBloB = rueckennummernComponent.getRueckennummerPDFasByteArray(mannschaftid,dsbmitgliedid);
+
+        return generateInputStream(fileBloB);
+    }
+
     /**
      * generates a pdf file as InputStreamResource from fileBloB
      * @param fileBloB bytearray from file that the pdf is based on
@@ -206,6 +280,29 @@ public class DownloadService implements ServiceFacade {
         LOG.debug("dsbMitgliedID: " + dsbMitgliedID);
         LOG.debug("teamID: " + teamID);
         final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID, teamID);
+
+        return generateInputStream(fileBloB);
+    }
+
+    /**
+     * return the Lizenzen of a mannschaft as pdf file for client download
+     *
+     * @param mannschaftid from GET-request: ID of the mannschaft
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/lizenzen/?mannschaftid=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @RequestMapping(method = RequestMethod.GET,
+            path = "pdf/lizenzen",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadLizenzenPdf(@RequestParam("mannschaftid") final long mannschaftid) {
+
+
+        final byte[] fileBloB = lizenzComponent.getMannschaftsLizenzenPDFasByteArray(mannschaftid);
 
         return generateInputStream(fileBloB);
     }

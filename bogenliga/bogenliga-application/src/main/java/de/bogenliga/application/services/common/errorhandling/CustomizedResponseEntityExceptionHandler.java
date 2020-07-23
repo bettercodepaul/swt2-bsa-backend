@@ -23,7 +23,7 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
  * I handle all application exceptions globally and generate an error response with a suitable http status code and an
  * error message
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh 
  */
 @ControllerAdvice
 @RestController
@@ -55,6 +55,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 errorStatus = HttpStatus.BAD_REQUEST;
                 break;
             case NO_SESSION_ERROR:
+                LOG.debug("BuisnessException: " + "NO_SESSION_ERROR");
                 errorStatus = HttpStatus.UNAUTHORIZED;
                 break;
             case NO_PERMISSION_ERROR:
@@ -92,6 +93,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             case UNEXPECTED_ERROR:
             case DATABASE_CONNECTION_ERROR:
             case DATABASE_TRANSACTION_ERROR:
+            case NO_SESSION_ERROR:
+                errorStatus = HttpStatus.UNAUTHORIZED;
+                break;
             case DATABASE_ERROR:
             default:
                 errorStatus = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -93,6 +93,7 @@ public class VereinComponentImpl implements VereinComponent {
     }
 
 
+
     private void checkVereinDO(final VereinDO vereinDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(vereinDO, PRECONDITION_MSG_VEREIN);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG);
