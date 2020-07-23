@@ -292,7 +292,7 @@ public class UserService implements ServiceFacade {
         UserDO selectedUserDO = userComponent.findByEmail(selectedUser.getUsername());
 
         if(currentLoggedUserId.equals(selectedUserDO.getId())) {
-            errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.PRECONDITION_MSG_RESET_PW_EQUAL_IDS,
+            errorDetails = new ErrorDTO(ErrorCode.PRECONDITION_MSG_RESET_PW_EQUAL_IDS,
                     "Reset in failed. Current logged in user id equals selected user id");
         } else {
             final UserDO userDO = new UserDO();
