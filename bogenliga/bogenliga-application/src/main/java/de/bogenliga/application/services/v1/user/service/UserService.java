@@ -293,7 +293,7 @@ public class UserService implements ServiceFacade {
 
         if(currentLoggedUserId.equals(selectedUserDO.getId())) {
             throw new BusinessException(ErrorCode.PRECONDITION_MSG_RESET_PW_EQUAL_IDS,
-                    "Reset in failed. Current logged in user id equals selected user id");
+                    "Reset failed. Current logged in user id equals selected user id");
         } else {
             final UserDO userDO = new UserDO();
             userDO.setId(selectedUserDO.getId());
