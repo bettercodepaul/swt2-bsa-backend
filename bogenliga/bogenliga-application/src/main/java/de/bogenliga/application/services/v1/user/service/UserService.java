@@ -8,7 +8,6 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -60,6 +59,7 @@ public class UserService implements ServiceFacade {
     private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
     private static final String PRECONDITION_MSG_USER_PW = "This is not a valid Password";
+    private static final String PRECONDITION_MSG_USER_PW_RESET_FAIL = "";
 
     private static final String PW_VALIDATION_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d#$^+=!*()@%&?]{8,}$";
 
@@ -245,7 +245,7 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      *
-     * @param resetCredentials of the request body
+     * @param selectedUser of the request body
      *
      * @return {@link UserDTO} as JSON
      */
@@ -258,27 +258,28 @@ public class UserService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public UserDTO resetPassword(final HttpServletRequest requestWithHeader,
-                                  @RequestBody final UserResetCredentialsDTO resetCredentials) {
-        Preconditions.checkNotNull(resetCredentials, "resetCredentials must not be null");
-        Preconditions.checkNotNull(resetCredentials.getNewPassword(), "New password must not be null");
+                                  @RequestBody final UserCredentialsDTO selectedUser) {
+        Preconditions.checkNotNull(selectedUser, "resetCredentials must not be null");
+        Preconditions.checkNotNull(selectedUser.getPassword(), "New password must not be null");
 
         ErrorDTO errorDetails = null;
         UserDTO userUpdatedDTO = new UserDTO();
 
-
+        //bestimmt den aktuell eingeloggten User, damit bei der Überprüfung die User unterschieden werden können
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
-        final Long userId = jwtTokenProvider.getUserId(jwt);
-        final Long selectedUserId = jwtTokenProvider.getUserId(jwt);
+        final Long currentLoggedUserId = jwtTokenProvider.getUserId(jwt);
 
-        if(userId.equals(selectedUserId)) {
-            errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS,
-                    "Reset in failed");
+        UserDO selectedUserDO = userComponent.findByEmail(selectedUser.getUsername());
+
+        if(currentLoggedUserId.equals(selectedUserDO.getId())) {
+            errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.PRECONDITION_MSG_RESET_PW_EQUAL_IDS,
+                    "Reset in failed. Current logged in user id equals selected user id");
         } else {
             final UserDO userDO = new UserDO();
-            userDO.setId(selectedUserId);
+            userDO.setId(selectedUserDO.getId());
 
             //reset password
-            final UserDO userUpdatedDO = userComponent.resetPassword(userDO, resetCredentials.getNewPassword(), selectedUserId);
+            final UserDO userUpdatedDO = userComponent.resetPassword(userDO, selectedUser.getPassword(), selectedUserDO.getId());
 
             //prepare return DTO
             userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);

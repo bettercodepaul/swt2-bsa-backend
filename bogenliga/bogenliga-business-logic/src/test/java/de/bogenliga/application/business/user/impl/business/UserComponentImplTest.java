@@ -571,6 +571,107 @@ public class UserComponentImplTest {
 
     }
 
+    @Test
+    public void reset_UserDO_notNull() {
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(null, NEWPASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void reset_UserDO_ID_notNull() {
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(SYSTEM_USER, NEWPASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+    @Test
+    public void reset_NewPassword_notNull() {
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(inUserDO, "", ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void reset_CurrentUserId_notNull() {
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(inUserDO, NEWPASSWORD, 0L))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void reset_sucessful() {
+
+        final OffsetDateTime dateTime = OffsetDateTime.now();
+        final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        final UserBE inputBE = new UserBE();
+        inputBE.setUserId(ID);
+        inputBE.setUserPassword(PWDHASH);
+        inputBE.setUserSalt(SALT);
+        inputBE.setUserEmail(EMAIL);
+        inputBE.setVersion(VERSION);
+        inputBE.setCreatedAtUtc(timestamp);
+        inputBE.setLastModifiedAtUtc(timestamp);
+        inputBE.setCreatedByUserId(USER);
+        inputBE.setLastModifiedByUserId(USER);
+
+        final UserBE expectedBE = new UserBE();
+        expectedBE.setUserId(ID);
+        expectedBE.setUserPassword(PWDHASH);
+        expectedBE.setUserEmail(EMAIL);
+        expectedBE.setVersion(NEWVERSION);
+        expectedBE.setCreatedAtUtc(timestamp);
+        expectedBE.setLastModifiedAtUtc(timestamp);
+        expectedBE.setCreatedByUserId(USER);
+        expectedBE.setLastModifiedByUserId(USER);
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        // configure mocks
+        when(passwordHashingBA.generateSalt()).thenReturn(SALT);
+        when(passwordHashingBA.calculateHash(anyString(), anyString())).thenReturn(PWDHASH);
+        when(userDAO.findById(anyLong())).thenReturn(inputBE);
+        when(userDAO.update(any(UserBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final UserDO actual = underTest.resetPassword(inUserDO, NEWPASSWORD, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getUserId());
+        assertThat(actual.getEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+        assertThat(actual.getVersion())
+                .isEqualTo(expectedBE.getVersion());
+
+    }
 
     @Test
     public void isTechnicalUser() {
