@@ -183,6 +183,7 @@ public class UserComponentImpl implements UserComponent {
 
 
         final UserBE currentUser = userDAO.findById(userDO.getId());
+
         // string vergleich der hash-Werte im aktuelllen BE Object und aus dem aktuellen Password
         // nur bei Identität (Passwort richtig) geht es weiter
         // check password
@@ -221,8 +222,9 @@ public class UserComponentImpl implements UserComponent {
 
         final UserBE selectedUser = userDAO.findById(userDO.getId());
 
-        final String newpwdhash = passwordHashingBA.calculateHash(newPassword, selectedUser.getUserSalt());
-        selectedUser.setUserPassword(newpwdhash);
+        final String newPWDHash = passwordHashingBA.calculateHash(newPassword, selectedUser.getUserSalt());
+
+        selectedUser.setUserPassword(newPWDHash);
         final UserBE persistedUserBE = userDAO.update(selectedUser, currentUserId);
         return UserMapper.toUserDO.apply(persistedUserBE);
 
