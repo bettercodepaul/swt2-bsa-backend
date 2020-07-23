@@ -8,6 +8,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.Mannschaftsmitg
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.MannschaftsmitgliedMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -52,29 +53,26 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
     }
 
-
     @Override
     public List<MannschaftsmitgliedDO> findAll() {
-        final List<MannschaftsmitgliedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAll();
+        final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAll();
         return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
                 Collectors.toList());
-
     }
 
-
     @Override
-    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long mannschaftsId) {
+    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeamEingesetzt(Long mannschaftsId) {
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
-        final List<MannschaftsmitgliedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeam(
+        final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(
                 mannschaftsId);
         return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
                 Collectors.toList());
     }
 
     @Override
-    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeamGemeldet(Long mannschaftsId) {
+    public List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long mannschaftsId) {
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
-        final List<MannschaftsmitgliedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeamGemeldet(
+        final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findAllSchuetzeInTeam(
                 mannschaftsId);
         return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
                 Collectors.toList());
@@ -83,12 +81,11 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     @Override
     public List<MannschaftsmitgliedDO> findByTeamId(Long mannschaftsId) {
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
-        final List<MannschaftsmitgliedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findByTeamId(
+        final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findByTeamId(
                 mannschaftsId);
         return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
                 Collectors.toList());
     }
-
 
     @Override
     public MannschaftsmitgliedDO findByMemberAndTeamId(Long mannschaftId, Long mitgliedId) {
@@ -97,7 +94,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
         Preconditions.checkArgument(mitgliedId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
 
-        final MannschaftsmitgliedBE result = mannschaftsmitgliedDAO.findByMemberAndTeamId(mannschaftId, mitgliedId);
+        final MannschaftsmitgliedExtendedBE result = mannschaftsmitgliedDAO.findByMemberAndTeamId(mannschaftId, mitgliedId);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
@@ -113,7 +110,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         checkPreconditions(mitgliedId, PRECONDITION_FIELD_MITGLIED_ID);
         Preconditions.checkArgument(mitgliedId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
 
-        final List<MannschaftsmitgliedBE> result = mannschaftsmitgliedDAO.findByMemberId(mitgliedId);
+        final List<MannschaftsmitgliedExtendedBE> result = mannschaftsmitgliedDAO.findByMemberId(mitgliedId);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
@@ -135,9 +132,10 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         final MannschaftsmitgliedBE persistedMannschaftsmitgliedBE = mannschaftsmitgliedDAO.create(
                 mannschaftsmitgliedBE, currentUserId);
 
-        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(persistedMannschaftsmitgliedBE);
+        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(
+                mannschaftsmitgliedDAO.findByMemberAndTeamId(persistedMannschaftsmitgliedBE.getMannschaftId(),
+                                                                persistedMannschaftsmitgliedBE.getDsbMitgliedId()));
     }
-
 
     @Override
     public MannschaftsmitgliedDO update(MannschaftsmitgliedDO mannschaftsmitgliedDO,
@@ -153,12 +151,14 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
         final MannschaftsmitgliedBE mannschaftsmitgliedBE = MannschaftsmitgliedMapper.toMannschaftsmitgliedBE.apply(
                 mannschaftsmitgliedDO);
-        final MannschaftsmitgliedBE persistedMannschaftsmitgliederBE = mannschaftsmitgliedDAO.update(
+        final MannschaftsmitgliedBE persistedMannschaftsmitgliedBE = mannschaftsmitgliedDAO.update(
                 mannschaftsmitgliedBE, currentUserId);
+        final MannschaftsmitgliedExtendedBE resultMannschaftsmitgliedBE =
+                mannschaftsmitgliedDAO.findByMemberAndTeamId(persistedMannschaftsmitgliedBE.getMannschaftId(),
+                        persistedMannschaftsmitgliedBE.getDsbMitgliedId());
 
-        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(persistedMannschaftsmitgliederBE);
+        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(resultMannschaftsmitgliedBE);
     }
-
 
     @Override
     public void deleteByTeamIdAndMemberId(MannschaftsmitgliedDO mannschaftsmitgliedDO, final Long currentUserId) {
@@ -189,7 +189,6 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         mannschaftsmitgliedDAO.delete(mannschaftsmitgliedBE,currentUserId);
     }
 
-
     @Override
     public boolean checkExistingSchuetze(Long mannschaftId, final Long mitgliedId) {
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
@@ -199,7 +198,6 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
         return result.getDsbMitgliedEingesetzt() > 0;
     }
-
 
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO) {
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);

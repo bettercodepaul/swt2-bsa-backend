@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.veranstaltung.impl.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.sportjahr.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -62,6 +64,32 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + " FROM veranstaltung "
                     + " WHERE veranstaltung_id = ?";
 
+    private static final String FIND_BY_LIGALEITER_ID =
+            "SELECT * "
+                    + " FROM veranstaltung "
+                    + " WHERE veranstaltung_ligaleiter_id = ?";
+
+    private static final String FIND_BY_SPORTJAHR =
+            "SELECT * "
+                    + "FROM veranstaltung "
+                    + "WHERE veranstaltung_sportjahr = ?";
+
+    private static final String FIND_ALL_SPORTJAHR_DESTINCT =
+            "SELECT veranstaltung_sportjahr, min(veranstaltung_id) as veranstaltung_id, min(version) as version "
+                    + "FROM veranstaltung "
+                    + "GROUP BY veranstaltung_sportjahr "
+                    + "ORDER BY veranstaltung_sportjahr DESC";
+
+    private static final String FIND_ALL_SPORTJAHR =
+            "SELECT veranstaltung_sportjahr, veranstaltung_id, version "
+                    + "FROM veranstaltung "
+                    + "ORDER BY veranstaltung_sportjahr DESC ";
+
+    private static final String FIND_BY_LIGAID =
+            "SELECT * "
+                    + "FROM veranstaltung "
+                    + "WHERE veranstaltung_liga_id = ?";
+
     private final BasicDAO basicDao;
 
     /**
@@ -112,6 +140,42 @@ public class VeranstaltungDAO implements DataAccessObject{
     public VeranstaltungBE findById(final long id) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
+    /**
+     Return Veranstaltungen with the same Sportjahr
+     @param sportjahr
+     */
+    public List<VeranstaltungBE> findBySportjahr(final long sportjahr){
+        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR, sportjahr);
+    }
+
+    /**
+     * find all sportyears destinct
+     * returns a Long list with sportyears
+     *
+     */
+
+    public List<SportjahrDO> findAllSportjahreDestinct() {
+        List<VeranstaltungBE> veranstaltungen = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_SPORTJAHR_DESTINCT);
+        ArrayList<SportjahrDO> sportjahre = new ArrayList<SportjahrDO>();
+        for(int i = 0; i < veranstaltungen.size(); i++){
+            sportjahre.add(new SportjahrDO(veranstaltungen.get(i).getVeranstaltung_id(),
+                    veranstaltungen.get(i).getVeranstaltung_sportjahr(),
+                    veranstaltungen.get(i).getVersion()));
+        }
+        return sportjahre;
+
+    }
+
+    public List<VeranstaltungBE> findByLigaID(long ligaID){
+        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGAID, ligaID);
+    }
+
+
+    public List<VeranstaltungBE> findByLigaleiterId(long ligaleiterId) {
+        return basicDao.selectEntityList(VERANSTALTUNG,FIND_BY_LIGALEITER_ID, ligaleiterId);
+    }
+
+
 
     /**
      * Delete existing veranstaltung entrycreated_at_utc

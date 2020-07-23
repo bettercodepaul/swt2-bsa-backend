@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,13 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public List<WettkampfDO> findAll() {
         final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
         return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<WettkampfDO> findByAusrichter(long id) {
+        ArrayList<WettkampfDO> result = new ArrayList<WettkampfDO>();
+                return result;
     }
 
 

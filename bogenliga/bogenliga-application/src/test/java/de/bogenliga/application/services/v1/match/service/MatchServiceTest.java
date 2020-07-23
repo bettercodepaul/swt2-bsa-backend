@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.naming.NoPermissionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,6 +33,7 @@ import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -106,6 +108,10 @@ public class MatchServiceTest {
     private static final Integer MM_dsbMitgliedEingesetzt = 1;
     private static final String MM_dsbMitgliedVorname = "Foo";
     private static final String MM_dsbMitgliedNachname = "Bar";
+    private static final Long MM_rueckennummer_1 = 5L;
+    private static final Long MM_rueckennummer_2 = 6L;
+    private static final Long MM_rueckennummer_3 = 7L;
+
 
     private static final Long W_id = 5L;
     private static final String W_name = "Liga_kummulativ";
@@ -171,14 +177,15 @@ public class MatchServiceTest {
     }
 
 
-    protected MannschaftsmitgliedDO getMMDO(Long id) {
+    protected MannschaftsmitgliedDO getMMDO(Long id, Long rueckennummer) {
         return new MannschaftsmitgliedDO(
                 id,
                 MM_mannschaftsId,
                 MM_dsbMitgliedId,
                 MM_dsbMitgliedEingesetzt,
                 MM_dsbMitgliedVorname,
-                MM_dsbMitgliedNachname
+                MM_dsbMitgliedNachname,
+                rueckennummer
         );
     }
 
@@ -213,7 +220,7 @@ public class MatchServiceTest {
 
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null);
+        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null, null, null);
     }
 
 
@@ -224,16 +231,16 @@ public class MatchServiceTest {
 
     protected List<MannschaftsmitgliedDO> getMannschaftsMitglieder() {
         List<MannschaftsmitgliedDO> mmdos = new ArrayList<>();
-        mmdos.add(getMMDO(MM_ID_1));
-        mmdos.add(getMMDO(MM_ID_2));
-        mmdos.add(getMMDO(MM_ID_3));
+        mmdos.add(getMMDO(MM_ID_1, 5L));
+        mmdos.add(getMMDO(MM_ID_2, 6L));
+        mmdos.add(getMMDO(MM_ID_3, 7L));
         return mmdos;
     }
 
 
     protected PasseDTO getPasseDTO(Long id, Integer nr) {
         PasseDTO passeDTO = PasseDTOMapper.toDTO.apply(getPasseDO(id));
-        passeDTO.setSchuetzeNr(nr);
+        passeDTO.setRueckennummer(nr);
         return passeDTO;
     }
 
@@ -330,10 +337,12 @@ public class MatchServiceTest {
         matches.add(matchDTO);
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
-
-        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
-        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+        try {
+            final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+            MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -349,7 +358,7 @@ public class MatchServiceTest {
 
         assertThatThrownBy(() -> {
             underTest.saveMatches(matches, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NullPointerException.class);
     }
 
 
@@ -358,8 +367,11 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, PASSE_SCHUETZE_NR_1);
-        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, PASSE_SCHUETZE_NR_2);
+        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, toIntExact(MM_rueckennummer_1));
+        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, toIntExact(MM_rueckennummer_2));
+        PasseDO passe1DO = PasseDTOMapper.toDO.apply(passe1);
+        PasseDO passe2DO = PasseDTOMapper.toDO.apply(passe2);
+
         // change lfdnr of passe2 to make them distinguishable
         passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
@@ -374,7 +386,11 @@ public class MatchServiceTest {
         matches.add(matchDTO);
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(getMannschaftsMitglieder().get(0));
+        when(passeComponent.findById(PASSE_ID_1)).thenReturn(passe1DO);
+        when(passeComponent.findById(PASSE_ID_2)).thenReturn(passe2DO);
 
+        try {
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
@@ -382,6 +398,9 @@ public class MatchServiceTest {
 
         // make sure update was called twice per passed DTO
         verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
+
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -403,14 +422,14 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
         assertThatThrownBy(() -> {
             underTest.saveMatches(matches, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NoPermissionException.class);
     }
 
 
@@ -419,8 +438,8 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        PasseDTO passe1 = getPasseDTO(null, PASSE_SCHUETZE_NR_1);
-        PasseDTO passe2 = getPasseDTO(null, PASSE_SCHUETZE_NR_2);
+        PasseDTO passe1 = getPasseDTO(null, toIntExact(MM_rueckennummer_1));
+        PasseDTO passe2 = getPasseDTO(null, toIntExact(MM_rueckennummer_2));
         // change lfdnr of passe2 to make them distinguishable
         passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
@@ -435,14 +454,18 @@ public class MatchServiceTest {
         matches.add(matchDTO);
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(getMMDO(1L, 5L));
+        try {
+            final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+            MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+            MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
 
-        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
-        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
-        MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
+            // make sure create was called twice per passed DTO
+            verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
 
-        // make sure create was called twice per passed DTO
-        verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -451,9 +474,13 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
-        final MatchDTO actual = underTest.create(matchDTO, principal);
-        assertThat(actual).isNotNull();
-        MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        try {
+            final MatchDTO actual = underTest.create(matchDTO, principal);
+            assertThat(actual).isNotNull();
+            MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -461,7 +488,7 @@ public class MatchServiceTest {
     public void create_Null() {
         assertThatThrownBy(() -> {
             underTest.create(null, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NullPointerException.class);
     }
 
 
@@ -470,9 +497,12 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
+        try {
         final MatchDTO actual = underTest.update(matchDTO, principal);
         assertThat(actual).isNotNull();
         MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -480,6 +510,6 @@ public class MatchServiceTest {
     public void update_Null() {
         assertThatThrownBy(() -> {
             underTest.update(null, principal);
-        }).isInstanceOf(BusinessException.class);
+        }).isInstanceOf(NullPointerException.class);
     }
 }

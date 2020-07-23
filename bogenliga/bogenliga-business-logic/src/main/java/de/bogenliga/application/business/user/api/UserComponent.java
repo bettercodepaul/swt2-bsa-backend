@@ -60,11 +60,13 @@ public interface UserComponent extends ComponentFacade {
      *
      * @param email of the user
      * @param password of the user
+     * @param dsb_mitglied_id current user
      * @param currentUserId current user
+     *
      *
      * @return the user, if the user exists and the password is sufficient
      */
-    UserDO create(final String email, final String password, final Long currentUserId, final boolean isUsing2FA);
+    UserDO create(final String email, final String password, final Long  dsb_mitglied_id, final Long currentUserId, final boolean isUsing2FA);
 
     /**
      * Udpate password of user

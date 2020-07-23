@@ -12,6 +12,7 @@ public class UserCredentialsDTO implements DataTransferObject {
     private static final long serialVersionUID = 7100904135169446743L;
     private String username;
     private String password;
+    private Long dsb_mitglied_id;
     private String code;
     private boolean isUsing2FA;
 
@@ -33,6 +34,13 @@ public class UserCredentialsDTO implements DataTransferObject {
 
     public void setPassword(final String password) {
         this.password = password;
+    }
+
+    public Long getDsb_mitglied_id() {
+        return dsb_mitglied_id;
+    }
+    public void setDsb_mitglied_id(final Long dsb_mitglied_id) {
+        this.dsb_mitglied_id = dsb_mitglied_id;
     }
 
 

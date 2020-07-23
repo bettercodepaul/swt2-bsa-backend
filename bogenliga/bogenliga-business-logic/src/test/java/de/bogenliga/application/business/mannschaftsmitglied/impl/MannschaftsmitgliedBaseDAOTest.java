@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 
 /**
  * TODO [AL] class documentation
@@ -19,6 +20,7 @@ public class MannschaftsmitgliedBaseDAOTest {
     protected static Integer dsbMitgliedEingesetzt = 1;
     protected static String dsbMitgliedVorname = "Max";
     protected static String dsbMitgliedNachname = "Mustermann";
+    protected static Long rueckennummer = 0L;
 
     private static final OffsetDateTime offsetDateTime = null;
     private static final Long USER = 4L;
@@ -33,6 +35,7 @@ public class MannschaftsmitgliedBaseDAOTest {
         valuesToMethodMap.put("getDsbMitgliedEingesetzt", dsbMitgliedEingesetzt);
         valuesToMethodMap.put("getDsbMitgliedVorname", dsbMitgliedVorname);
         valuesToMethodMap.put("getDsbMitgliedNachname", dsbMitgliedNachname);
+        valuesToMethodMap.put("getRueckennummer", rueckennummer);
     }
 
 
@@ -41,15 +44,15 @@ public class MannschaftsmitgliedBaseDAOTest {
      * Also used by other test classes.
      */
 
-    public static MannschaftsmitgliedBE getMannschaftsmitgliedBE() {
-        final MannschaftsmitgliedBE expectedMannschaftsmitgliedBE = new MannschaftsmitgliedBE();
+    public static MannschaftsmitgliedExtendedBE getMannschaftsmitgliedExtendedBE() {
+        final MannschaftsmitgliedExtendedBE expectedMannschaftsmitgliedBE = new MannschaftsmitgliedExtendedBE();
         expectedMannschaftsmitgliedBE.setId(id);
         expectedMannschaftsmitgliedBE.setMannschaftId(mannschaftId);
         expectedMannschaftsmitgliedBE.setDsbMitgliedId(dsbMitgliedId);
         expectedMannschaftsmitgliedBE.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
         expectedMannschaftsmitgliedBE.setDsbMitgliedVorname(dsbMitgliedVorname);
         expectedMannschaftsmitgliedBE.setDsbMitgliedNachname(dsbMitgliedNachname);
-
+        expectedMannschaftsmitgliedBE.setRueckennummer(rueckennummer);
         expectedMannschaftsmitgliedBE.setLastModifiedByUserId(USER);
 
         return expectedMannschaftsmitgliedBE;
@@ -59,7 +62,7 @@ public class MannschaftsmitgliedBaseDAOTest {
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         final MannschaftsmitgliedDO expectedMannschaftsmitgliedDO = new MannschaftsmitgliedDO(id, mannschaftId,
                 dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, offsetDateTime,
-                USER, offsetDateTime, USER, VERSION);
+                USER, offsetDateTime, USER, VERSION, rueckennummer);
 
         return expectedMannschaftsmitgliedDO;
     }

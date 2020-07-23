@@ -31,6 +31,7 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class UserComponentImplTest {
     private static final Long ID = 777L;
+    private static final Long DSBMITGLIEDID = 28L;
     private static final Long VERSION = 2L;
     private static final Long NEWVERSION = 3L;
     private static final String EMAIL = "email";
@@ -332,7 +333,7 @@ public class UserComponentImplTest {
     public void create_UserEmailnotNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create("", PASSWORD, ID, false))
+                .isThrownBy(() -> underTest.create("", PASSWORD, DSBMITGLIEDID, ID, false))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -343,7 +344,7 @@ public class UserComponentImplTest {
     public void create_UserPasswordnotNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(EMAIL, "", ID, false))
+                .isThrownBy(() -> underTest.create(EMAIL, "", DSBMITGLIEDID, ID, false))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -354,7 +355,17 @@ public class UserComponentImplTest {
     public void create_UserIDnotNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, null, false))
+                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, DSBMITGLIEDID,null, false))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void create_DSBIDIDnotNull() {
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, null,ID, false))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -382,7 +393,7 @@ public class UserComponentImplTest {
         when(userDAO.create(any(UserBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final UserDO actual = underTest.create(EMAIL, PASSWORD, USER, false);
+        final UserDO actual = underTest.create(EMAIL, PASSWORD, DSBMITGLIEDID, USER, false);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -429,6 +440,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -445,6 +457,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -461,6 +474,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -502,6 +516,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         // configure mocks
@@ -548,6 +563,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         // configure mocks

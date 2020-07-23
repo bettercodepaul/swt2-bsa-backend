@@ -1,11 +1,9 @@
 package de.bogenliga.application.services.v1.setzliste.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import de.bogenliga.application.business.Setzliste.api.SetzlisteComponent;
+import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -59,10 +57,18 @@ public class SetzlisteService implements ServiceFacade {
         this.setzlisteComponent = setzlisteComponent;
     }
 
+
+    /**
+     * You can only generate a Setzliste if you have the right to read the Wettkampf or
+     * if you are the Ausrichter/Ligaleiter of the Veranstaltung.
+     * @param wettkampfid id of the selected Wettkampf
+     * @return ArrayList of MatchDTOs of the wettkampf to fill in the pdf generator later
+     */
+
     @CrossOrigin(maxAge = 0)
     @RequestMapping(method = RequestMethod.GET,
             path = "/generate")
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_READ_WETTKAMPF, UserPermission.CAN_READ_MY_VERANSTALTUNG})
     public @ResponseBody
     List<MatchDTO> generateSetzliste(@RequestParam("wettkampfid") final long wettkampfid) {
         Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");

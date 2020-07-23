@@ -1,5 +1,6 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -21,7 +22,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -217,6 +221,16 @@ public class JwtTokenProviderTest {
         userWithPermissionsDO.setEmail(USERNAME);
         userWithPermissionsDO.setPermissions(
                 PERMISSIONS.stream().map(UserPermission::name).collect(Collectors.toList()));
+
+        final UserDO userDO = new UserDO();
+        userDO.setDsb_mitglied_id(1L);
+
+        final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(1L);
+        dsbMitgliedDO.setVereinsId(1L);
+
+        final VeranstaltungDO veranstaltungDO1 = new VeranstaltungDO(1L);
+        final VeranstaltungDO veranstaltungDO2 = new VeranstaltungDO(2L);
+        final VeranstaltungDO veranstaltungDO3 = new VeranstaltungDO(3L);
 
         // configure mocks
         when(authentication.getPrincipal()).thenReturn(userWithPermissionsDO);

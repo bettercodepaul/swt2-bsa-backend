@@ -20,7 +20,6 @@ import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.dsbmannschaft.service.DsbMannschaftService;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
@@ -57,6 +56,17 @@ public class PasseService implements ServiceFacade {
     }
 
 
+    @RequestMapping(value = "", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<PasseDTO> findAll(){
+        final List<PasseDO> passeDOList = passeComponent.findAll();
+
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+
     @RequestMapping(value = "/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,6 +77,27 @@ public class PasseService implements ServiceFacade {
         return passeDTO;
     }
 
+    @RequestMapping(value = "findByMatchId/matchid={matchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<PasseDTO> findByMatchId(@PathVariable("matchId") final long matchId) {
+        Preconditions.checkArgument(matchId >= 0, "matchId must not be negative");
+
+        LOG.debug("Received 'findByMatchId' request with matchId: '{}'", matchId);
+
+        final List<PasseDO> passeDOList = this.passeComponent.findByMatchId(matchId);
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "findByWettkampfId/wettkampfid={wettkampfId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<PasseDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
+        Preconditions.checkArgument(wettkampfId>= 0, "wettkampfId must not be negative");
+
+        LOG.debug("Received 'findByWettkampfId' request with wettkampfId: '{}'", wettkampfId);
+
+        final List<PasseDO> passeDOList = this.passeComponent.findByWettkampfId(wettkampfId);
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+    }
 
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -76,7 +107,7 @@ public class PasseService implements ServiceFacade {
         MatchService.checkPreconditions(passeDTO, MatchService.passeConditionErrors);
 
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
-                mannschaftsmitgliedComponent.findAllSchuetzeInTeam(passeDTO.getMannschaftId());
+                mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(passeDTO.getMannschaftId());
 
         passeDTO.setDsbMitgliedId(MatchService.getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -129,7 +160,7 @@ public class PasseService implements ServiceFacade {
                 passeDTO.getWettkampfId(),
                 passeDTO.getLfdNr(),
                 passeDTO.getDsbMitgliedId(),
-                passeDTO.getSchuetzeNr(),
+                passeDTO.getRueckennummer(),
                 passeDTO.getMatchId(),
                 passeDTO.getMatchNr(),
                 passeDTO.getMannschaftId()

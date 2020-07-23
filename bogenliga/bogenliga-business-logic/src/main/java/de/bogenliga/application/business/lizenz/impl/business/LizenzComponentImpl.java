@@ -2,8 +2,12 @@ package de.bogenliga.application.business.lizenz.impl.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.itextpdf.kernel.geom.PageSize;
@@ -29,9 +33,12 @@ import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.business.lizenz.impl.mapper.LizenzMapper;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -61,6 +68,10 @@ public class LizenzComponentImpl implements LizenzComponent {
     private final DsbMannschaftComponent mannschaftComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final WettkampfComponent wettkampfComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LizenzComponentImpl.class);
+
 
 
     public void checkCurrentUserPreconditions(final Long id) {
@@ -79,13 +90,16 @@ public class LizenzComponentImpl implements LizenzComponent {
     @Autowired
     public LizenzComponentImpl(final LizenzDAO lizenzDAO, final VereinComponent vereinComponent,
                                final DsbMitgliedComponent dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
-                               final VeranstaltungComponent veranstaltungComponent, final WettkampfComponent wettkampfComponent) {
+                               final VeranstaltungComponent veranstaltungComponent,
+                               final WettkampfComponent wettkampfComponent,
+                               MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
         this.lizenzDAO = lizenzDAO;
         this.vereinComponent = vereinComponent;
         this.dsbMitgliedComponent = dsbMitglied;
         this.mannschaftComponent = mannschaftComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.wettkampfComponent = wettkampfComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
 
@@ -105,17 +119,19 @@ public class LizenzComponentImpl implements LizenzComponent {
 
     }
 
+
     private void checkPrecondition(LizenzDO lizenzDO, long currentUserId) {
         Preconditions.checkNotNull(lizenzDO, PRECONDITION_LIZENZ);
         Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_CURRENT_USER_ID);
         Preconditions.checkNotNull(lizenzDO.getLizenztyp(), PRECONDITION_LIZENZ_LIZENZTYP);
         Preconditions.checkNotNull(lizenzDO.getLizenzDsbMitgliedId(), PRECONDITION_LIZENZ_DSBMITGLIED);
-        if(lizenzDO.getLizenztyp().equals("Liga")) {
+        if (lizenzDO.getLizenztyp().equals("Liga")) {
             Preconditions.checkNotNull(lizenzDO.getLizenznummer(), PRECONDITION_LIZENZ_LIZENZNUMMER);
             Preconditions.checkNotNull(lizenzDO.getLizenzRegionId(), PRECONDITION_LIZENZ_REGION);
             Preconditions.checkNotNull(lizenzDO.getLizenzDisziplinId(), PRECONDITION_LIZENZ_DISZIPLIN);
         }
     }
+
 
     @Override
     public LizenzDO create(LizenzDO lizenzDO, long currentUserId) {
@@ -132,7 +148,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     public LizenzDO update(LizenzDO lizenzDO, long currentUserId) {
 
         this.checkCurrentUserPreconditions(currentUserId);
-        this.checkPrecondition(lizenzDO,currentUserId);
+        this.checkPrecondition(lizenzDO, currentUserId);
 
 
         LizenzBE lizenzBE = this.lizenzDAO.update(LizenzMapper.toLizenzBE.apply(lizenzDO), currentUserId);
@@ -154,15 +170,74 @@ public class LizenzComponentImpl implements LizenzComponent {
     @Override
     public byte[] getLizenzPDFasByteArray(long dsbMitgliedID, long teamID) {
         byte[] result;
-        DsbMitgliedDO mitgliedDO= dsbMitgliedComponent.findById(dsbMitgliedID);
+        DsbMitgliedDO mitgliedDO = dsbMitgliedComponent.findById(dsbMitgliedID);
         DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(mannschaftDO.getVeranstaltungId());
-        List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllByVeranstaltungId(veranstaltungDO.getVeranstaltungID());
-        LizenzBE lizenz = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(mitgliedDO.getId(), wettkampfDOList.get(0).getWettkampfDisziplinId());
+        List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllByVeranstaltungId(
+                veranstaltungDO.getVeranstaltungID());
+        LizenzBE lizenz = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(mitgliedDO.getId(),
+                wettkampfDOList.get(0).getWettkampfDisziplinId());
         System.out.println(lizenz);
         result = generateDoc(mitgliedDO, lizenz, veranstaltungDO).toByteArray();
         return result;
     }
+
+
+    @Override
+    public byte[] getMannschaftsLizenzenPDFasByteArray(long dsbMannschaftsId) {
+
+        LOGGER.info("Lizenzen start here");
+
+        //Collect information
+
+        DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(dsbMannschaftsId);
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(mannschaftDO.getVeranstaltungId());
+        List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllByVeranstaltungId(
+                veranstaltungDO.getVeranstaltungID());
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOs = this.mannschaftsmitgliedComponent.findByTeamId(
+                dsbMannschaftsId);
+
+        HashMap<String, List<String>> LizenzenMapping = new HashMap<>();
+
+        String Liganame = veranstaltungDO.getVeranstaltungName();
+
+        for (MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
+            DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
+            VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
+
+            String Verein = vereinDO.getName();
+            String Schuetzenname = dsbMitgliedDO.getNachname();
+            String Schuetzenvorname = dsbMitgliedDO.getVorname();
+            LizenzBE lizenzen = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(dsbMitgliedDO.getId(),
+                    wettkampfDOList.get(0).getWettkampfDisziplinId());
+            String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
+
+            List<String> Schuetzendaten = new ArrayList();
+            Schuetzendaten.add(Liganame);
+            Schuetzendaten.add(Verein);
+            Schuetzendaten.add(Schuetzenname);
+            Schuetzendaten.add(Schuetzenvorname);
+            Schuetzendaten.add(veranstaltungDO.getVeranstaltungSportJahr().toString());
+            Schuetzendaten.add(lizenzen.getLizenznummer());
+            LizenzenMapping.put(Rueckennummer, Schuetzendaten);
+        }
+
+        try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+             PdfWriter writer = new PdfWriter(result);
+             PdfDocument pdfDocument = new PdfDocument(writer);
+             Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+            generateLizenzenDoc(doc, LizenzenMapping);
+
+            return result.toByteArray();
+
+        } catch (IOException e) {
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                    "Lizenzen PDF Dokument konnte nicht erstellt werden: " + e);
+        }
+    }
+
 
     private ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, VeranstaltungDO veranstaltung) {
         ByteArrayOutputStream ret;
@@ -170,56 +245,82 @@ public class LizenzComponentImpl implements LizenzComponent {
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
-            generateLizenzPage(doc, lizenz, mitglied, veranstaltung);
+            generateLizenzPage(doc, vereinComponent.findById(mitglied.getVereinsId()).getName(),
+                    lizenz.getLizenznummer(), mitglied.getNachname(), mitglied.getVorname(),
+                    veranstaltung.getVeranstaltungName(),
+                    veranstaltung.getVeranstaltungSportJahr().toString());
             doc.close();
             ret = result;
         } catch (final IOException e) {
-           throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF Dokument konnte nicht erstellt werden: " + e);
+            throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF Dokument konnte nicht erstellt werden: " + e);
         }
         return ret;
     }
 
+    private void generateLizenzenDoc(Document doc, HashMap<String, List<String>> LizenzenMapping) {
 
-        private void generateLizenzPage(Document doc, LizenzBE lizenz, DsbMitgliedDO mitgliedDO, VeranstaltungDO veranstaltung){
+        for (String rNummer : LizenzenMapping.keySet()) {
+            String liga = LizenzenMapping.get(rNummer).get(0);
+            String verein = LizenzenMapping.get(rNummer).get(1);
+            String schuetzename = LizenzenMapping.get(rNummer).get(2);
+            String schuetzevorname = LizenzenMapping.get(rNummer).get(3);
+            String sportjahr = LizenzenMapping.get(rNummer).get(4);
+            String lizenz = LizenzenMapping.get(rNummer).get(5);
 
+            generateLizenzPage(doc, verein, lizenz, schuetzename, schuetzevorname, liga, sportjahr);
+        }
+        doc.close();
+    }
 
+    private void generateLizenzPage(Document doc, String verein, String lizenz, String schuetzename,
+                                    String schuetzevorname, String liga, String sportjahr) {
         final Table tableHead = new Table(UnitValue.createPercentArray(1), true);
         final Table secondTable = new Table(UnitValue.createPercentArray(1), true);
         final Table thirdTable = new Table(UnitValue.createPercentArray(1), true);
         final Table fourthTable = new Table(UnitValue.createPercentArray(6), true);
         final Table fifthTable = new Table(UnitValue.createPercentArray(1), true);
+        final Table emptySingleDoc = new Table(UnitValue.createPercentArray(1), true)
+                .setBorder(Border.NO_BORDER)
+                .setMargins(80F,50F,50F,50F);
 
         DottedLine line = new DottedLine(1.5F);
 
-
         tableHead
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Lizenz").setBold().setFontSize(25.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(
+                        new Paragraph("Lizenz").setBold().setFontSize(25.0F))
                 );
 
-
         secondTable
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Lizenznummer: " + lizenz.getLizenznummer()).setBold().setFontSize(15.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(
+                        new Paragraph("Lizenznummer: " + lizenz).setBold().setFontSize(15.0F))
                 )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Name: " + mitgliedDO.getNachname()).setBold().setFontSize(12.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(
+                        new Paragraph("Name: " + schuetzename).setBold().setFontSize(12.0F))
                 )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Vorname: " + mitgliedDO.getVorname()).setBold().setFontSize(12.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(
+                        new Paragraph("Vorname: " + schuetzevorname).setBold().setFontSize(12.0F))
                 )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Verein: " + vereinComponent.findById(mitgliedDO.getVereinsId()).getName()).setBold().setFontSize(12.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(
+                        "Verein: " + verein).setBold().setFontSize(12.0F))
                 )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Liga: " + veranstaltung.getVeranstaltungName()).setBold().setFontSize(12.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(
+                        new Paragraph("Liga: " + liga).setBold().setFontSize(12.0F))
                 )
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Sportjahr: " + veranstaltung.getVeranstaltungSportJahr()).setBold().setFontSize(12.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(
+                        "Sportjahr: " + sportjahr).setBold().setFontSize(12.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER));
 
         thirdTable
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Wettkampftage teilgenommen:").setBold().setFontSize(15.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(
+                        new Paragraph("Wettkampftage teilgenommen:").setBold().setFontSize(15.0F))
                 );
 
         fourthTable
                 //1. Zeile
-                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("1").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
+                .addCell(new Cell().setHeight(50.0F).add(
+                        new Paragraph("1").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
                 )
@@ -237,7 +338,8 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
 
                 //3.Zeile
-                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("2").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
+                .addCell(new Cell().setHeight(50.0F).add(
+                        new Paragraph("2").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
                 )
@@ -255,7 +357,8 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
 
                 //5.Zeile
-                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("3").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
+                .addCell(new Cell().setHeight(50.0F).add(
+                        new Paragraph("3").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
                 )
@@ -273,7 +376,8 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
 
                 //7.Zeile
-                .addCell(new Cell().setHeight(50.0F).add(new Paragraph("4").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
+                .addCell(new Cell().setHeight(50.0F).add(
+                        new Paragraph("4").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                         .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
                 )
@@ -291,20 +395,20 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER));
 
         fifthTable
-                .addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Unterschrift Schütze:").setBold().setFontSize(15.0F))
+                .addCell(new Cell().setBorder(Border.NO_BORDER).add(
+                        new Paragraph("Unterschrift Schütze:").setBold().setFontSize(15.0F))
                 );
         doc
-            .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(10.5F, 0.0F, 2.5F, 0.0F)
-                    .add(tableHead)
-                    .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(10.5F, 0.0F, 10.5F, 0.0F)
-                            .add(secondTable))
-                    .add(thirdTable)
-                    .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(2.5F, 0.0F, 15.5F, 0.0F)
-                        .add(fourthTable)
-                    )
-                    .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(2.5F, 0.0F, 15.5F, 0.0F)
-                    .add(fifthTable)))
-                    .add(new LineSeparator(line));
-
+                .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(10.5F, 0.0F, 2.5F, 0.0F)
+                        .add(tableHead)
+                        .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(10.5F, 0.0F, 10.5F, 0.0F)
+                                .add(secondTable))
+                        .add(thirdTable)
+                        .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(2.5F, 0.0F, 15.5F, 0.0F)
+                                .add(fourthTable)
+                        )
+                        .add(new Div().setPaddings(10.0F, 0.0F, 10.0F, 0.0F).setMargins(2.5F, 0.0F, 15.5F, 0.0F)
+                                .add(fifthTable)))
+                .add(new LineSeparator(line)).add(emptySingleDoc);
     }
 }

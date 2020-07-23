@@ -96,7 +96,6 @@ public class VereinDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(VEREIN, FIND_BY_ID, vereinId);
     }
 
-
     /**
      * Creates a verein database entry
      *
