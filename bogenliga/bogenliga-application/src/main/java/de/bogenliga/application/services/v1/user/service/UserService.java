@@ -11,6 +11,7 @@ import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -282,7 +283,6 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(selectedUser, "resetCredentials must not be null");
         Preconditions.checkNotNull(selectedUser.getPassword(), "New password must not be null");
 
-        ErrorDTO errorDetails = null;
         UserDTO userUpdatedDTO = new UserDTO();
 
         //bestimmt den aktuell eingeloggten User, damit bei der Überprüfung die User unterschieden werden können
@@ -292,7 +292,7 @@ public class UserService implements ServiceFacade {
         UserDO selectedUserDO = userComponent.findByEmail(selectedUser.getUsername());
 
         if(currentLoggedUserId.equals(selectedUserDO.getId())) {
-            errorDetails = new ErrorDTO(ErrorCode.PRECONDITION_MSG_RESET_PW_EQUAL_IDS,
+            throw new BusinessException(ErrorCode.PRECONDITION_MSG_RESET_PW_EQUAL_IDS,
                     "Reset in failed. Current logged in user id equals selected user id");
         } else {
             final UserDO userDO = new UserDO();
