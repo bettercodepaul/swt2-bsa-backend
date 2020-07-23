@@ -20,6 +20,8 @@ public class UserCredentialsDTO implements DataTransferObject {
     public String getUsername() {
         return username;
     }
+
+
     public void setUsername(final String username) {
         this.username = username;
     }
@@ -28,6 +30,8 @@ public class UserCredentialsDTO implements DataTransferObject {
     public String getPassword() {
         return password;
     }
+
+
     public void setPassword(final String password) {
         this.password = password;
     }
