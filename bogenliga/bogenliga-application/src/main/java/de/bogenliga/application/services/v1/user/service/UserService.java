@@ -283,7 +283,7 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(selectedUser, "resetCredentials must not be null");
         Preconditions.checkNotNull(selectedUser.getPassword(), "New password must not be null");
 
-        UserDTO userUpdatedDTO = new UserDTO();
+        UserDTO userUpdatedDTO;
 
         //bestimmt den aktuell eingeloggten User, damit bei der Überprüfung die User unterschieden werden können
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
