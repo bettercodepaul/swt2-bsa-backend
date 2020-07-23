@@ -261,7 +261,7 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(PASSWORD);
-        userChangeCredentialsDTO.setNewpassword(NEUESPASSWORD);
+        userChangeCredentialsDTO.setNewPassword(NEUESPASSWORD);
 
         // configure mocks
         when(userComponent.updatePassword(any(UserDO.class), anyString(), anyString(), anyLong())).thenReturn(expecteduserDO);
@@ -309,7 +309,7 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(null);
-        userChangeCredentialsDTO.setNewpassword(NEUESPASSWORD);
+        userChangeCredentialsDTO.setNewPassword(NEUESPASSWORD);
 
 
         // configure mocks
@@ -337,7 +337,7 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(PASSWORD);
-        userChangeCredentialsDTO.setNewpassword(null);
+        userChangeCredentialsDTO.setNewPassword(null);
 
 
         // configure mocks
@@ -431,7 +431,7 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(null);
-        userChangeCredentialsDTO.setNewpassword(NEUESPASSWORD);
+        userChangeCredentialsDTO.setNewPassword(NEUESPASSWORD);
 
 
         // configure mocks

@@ -8,6 +8,7 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -191,22 +192,20 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      *
-     * @param uptcredentials of the request body
+     * @param uptCredentials of the request body
      *
      * @return {@link UserDTO} as JSON
      */
-
-
     @RequestMapping(
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public UserDTO updatePassword(final HttpServletRequest requestWithHeader,
-                                  @RequestBody final UserChangeCredentialsDTO uptcredentials) {
-        Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getNewPassword(), "New password must not be null or empty");
+                                  @RequestBody final UserChangeCredentialsDTO uptCredentials) {
+        Preconditions.checkNotNull(uptCredentials, "Credentials must not be null");
+        Preconditions.checkNotNullOrEmpty(uptCredentials.getPassword(), "Password must not be null or empty");
+        Preconditions.checkNotNullOrEmpty(uptCredentials.getNewPassword(), "New password must not be null or empty");
 
         ErrorDTO errorDetails = null;
 
@@ -220,8 +219,8 @@ public class UserService implements ServiceFacade {
         userDO.setId(userId);
 
         //update password
-        final UserDO userUpdatedDO = userComponent.updatePassword(userDO, uptcredentials.getPassword(),
-                uptcredentials.getNewPassword(), userId);
+        final UserDO userUpdatedDO = userComponent.updatePassword(userDO, uptCredentials.getPassword(),
+                uptCredentials.getNewPassword(), userId);
 
         //prepare return DTO
         final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
@@ -246,7 +245,7 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      *
-     * @param uptcredentials of the request body
+     * @param resetCredentials of the request body
      *
      * @return {@link UserDTO} as JSON
      */
@@ -254,27 +253,36 @@ public class UserService implements ServiceFacade {
 
     @RequestMapping(
             method = RequestMethod.PUT,
+            value = "/resetPW",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public UserDTO resetPassword(final HttpServletRequest requestWithHeader,
-                                  @RequestBody final UserCredentialsDTO uptcredentials) {
-        Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "New password must not be null or empty");
+                                  @RequestBody final UserResetCredentialsDTO resetCredentials) {
+        Preconditions.checkNotNull(resetCredentials, "resetCredentials must not be null");
+        Preconditions.checkNotNull(resetCredentials.getNewPassword(), "New password must not be null");
 
         ErrorDTO errorDetails = null;
+        UserDTO userUpdatedDTO = new UserDTO();
+
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
+        final Long selectedUserId = jwtTokenProvider.getUserId(jwt);
 
-        final UserDO userDO = new UserDO();
-        userDO.setId(userId);
+        if(userId.equals(selectedUserId)) {
+            errorDetails = errorDetails != null ? errorDetails : new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS,
+                    "Reset in failed");
+        } else {
+            final UserDO userDO = new UserDO();
+            userDO.setId(selectedUserId);
 
-        //update password
-        final UserDO userUpdatedDO = userComponent.resetPassword(userDO, uptcredentials.getPassword(), userId);
+            //reset password
+            final UserDO userUpdatedDO = userComponent.resetPassword(userDO, resetCredentials.getNewPassword(), selectedUserId);
 
-        //prepare return DTO
-        final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
+            //prepare return DTO
+            userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
+        }
         return userUpdatedDTO;
     }
 
