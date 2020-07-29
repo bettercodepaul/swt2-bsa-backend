@@ -11,6 +11,7 @@ import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -35,7 +36,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +63,7 @@ public class UserService implements ServiceFacade {
     private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
     private static final String PRECONDITION_MSG_USER_PW = "This is not a valid Password";
+
     private static final String PRECONDITION_MSG_DSB_MITGLIED_ID = "User must reference an existing DSB-member -not be null or negative";
 
     private static final String PW_VALIDATION_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d#$^+=!*()@%&?]{8,}$";
@@ -212,22 +213,20 @@ public class UserService implements ServiceFacade {
      *  }
      * }</pre>
      *
-     * @param uptcredentials of the request body
+     * @param uptCredentials of the request body
      *
      * @return {@link UserDTO} as JSON
      */
-
-
     @RequestMapping(
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public UserDTO update(final HttpServletRequest requestWithHeader,
-                          @RequestBody final UserChangeCredentialsDTO uptcredentials) {
-        Preconditions.checkNotNull(uptcredentials, "Credentials must not be null");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getPassword(), "Password must not be null or empty");
-        Preconditions.checkNotNullOrEmpty(uptcredentials.getNewPassword(), "New password must not be null or empty");
+    public UserDTO updatePassword(final HttpServletRequest requestWithHeader,
+                                  @RequestBody final UserChangeCredentialsDTO uptCredentials) {
+        Preconditions.checkNotNull(uptCredentials, "Credentials must not be null");
+        Preconditions.checkNotNullOrEmpty(uptCredentials.getPassword(), "Password must not be null or empty");
+        Preconditions.checkNotNullOrEmpty(uptCredentials.getNewPassword(), "New password must not be null or empty");
 
         ErrorDTO errorDetails = null;
 
@@ -241,14 +240,72 @@ public class UserService implements ServiceFacade {
         userDO.setId(userId);
 
         //update password
-        final UserDO userUpdatedDO = userComponent.update(userDO, uptcredentials.getPassword(),
-                uptcredentials.getNewPassword(), userId);
+        final UserDO userUpdatedDO = userComponent.updatePassword(userDO, uptCredentials.getPassword(),
+                uptCredentials.getNewPassword(), userId);
 
         //prepare return DTO
         final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
         return userUpdatedDTO;
     }
 
+    /**
+     * I persist a new password for the current user and return this user entry.
+     * <p>
+     * Usage:
+     * <pre>{@code Request: PUT /v1/user
+     * Body:
+     * {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     * }
+     * }</pre>
+     * <pre>{@code Response:
+     *  {
+     *    "id": "app.bogenliga.frontend.autorefresh.active",
+     *    "value": "true"
+     *  }
+     * }</pre>
+     *
+     * @param selectedUser of the request body
+     *
+     * @return {@link UserDTO} as JSON
+     */
+
+
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            value = "/resetPW",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    public UserDTO resetPassword(final HttpServletRequest requestWithHeader,
+                                  @RequestBody final UserCredentialsDTO selectedUser) {
+        Preconditions.checkNotNull(selectedUser, "resetCredentials must not be null");
+        Preconditions.checkNotNull(selectedUser.getPassword(), "New password must not be null");
+
+        UserDTO userUpdatedDTO;
+
+        //bestimmt den aktuell eingeloggten User, damit bei der Überprüfung die User unterschieden werden können
+        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final Long currentLoggedUserId = jwtTokenProvider.getUserId(jwt);
+
+        UserDO selectedUserDO = userComponent.findByEmail(selectedUser.getUsername());
+
+        if(currentLoggedUserId.equals(selectedUserDO.getId())) {
+            throw new BusinessException(ErrorCode.PRECONDITION_MSG_RESET_PW_EQUAL_IDS,
+                    "Reset failed. Current logged in user id equals selected user id");
+        } else {
+            final UserDO userDO = new UserDO();
+            userDO.setId(selectedUserDO.getId());
+
+            //reset password
+            final UserDO userUpdatedDO = userComponent.resetPassword(userDO, selectedUser.getPassword(), selectedUserDO.getId());
+
+            //prepare return DTO
+            userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
+        }
+        return userUpdatedDTO;
+    }
 
     /**
      * Service to update multiple user roles. It will remove all roles that are not send in this request
