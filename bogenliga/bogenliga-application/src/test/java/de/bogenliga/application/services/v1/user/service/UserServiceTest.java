@@ -13,7 +13,6 @@ import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
@@ -32,13 +31,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.security.Principal;
 
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
@@ -59,6 +58,7 @@ public class UserServiceTest {
     private static final String USERNAME = "user";
     private static final String PASSWORD = "CorrectPasswordV1";
     private static final String NEUESPASSWORD = "CorrectPasswordV2";
+    private static final String EMAIL = "test@test.com";
     private static final Boolean USING2FA = false;
     private static final String JWT = "jwt";
     private static final String ERROR_MESSAGE = "error";
@@ -294,13 +294,13 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(PASSWORD);
-        userChangeCredentialsDTO.setNewpassword(NEUESPASSWORD);
+        userChangeCredentialsDTO.setNewPassword(NEUESPASSWORD);
 
         // configure mocks
-        when(userComponent.update(any(UserDO.class), anyString(), anyString(), anyLong())).thenReturn(expecteduserDO);
+        when(userComponent.updatePassword(any(UserDO.class), anyString(), anyString(), anyLong())).thenReturn(expecteduserDO);
 
         // call test method
-        final UserDTO actual = underTest.update(requestWithHeader, userChangeCredentialsDTO);
+        final UserDTO actual = underTest.updatePassword(requestWithHeader, userChangeCredentialsDTO);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -308,6 +308,7 @@ public class UserServiceTest {
         assertThat(actual.getEmail()).isEqualTo(expecteduserDO.getEmail());
 
     }
+
     @Test
     public void update_withoutCredentials_shouldThrowException() {
         // prepare test data
@@ -323,7 +324,7 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(requestWithHeader, null))
+                .isThrownBy(() -> underTest.updatePassword(requestWithHeader, null))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -342,7 +343,7 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(null);
-        userChangeCredentialsDTO.setNewpassword(NEUESPASSWORD);
+        userChangeCredentialsDTO.setNewPassword(NEUESPASSWORD);
 
 
         // configure mocks
@@ -351,7 +352,7 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(requestWithHeader, userChangeCredentialsDTO))
+                .isThrownBy(() -> underTest.updatePassword(requestWithHeader, userChangeCredentialsDTO))
                 .withMessageContaining("Password must not be null or empty")
                 .withNoCause();
 
@@ -370,7 +371,7 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(PASSWORD);
-        userChangeCredentialsDTO.setNewpassword(null);
+        userChangeCredentialsDTO.setNewPassword(null);
 
 
         // configure mocks
@@ -379,8 +380,95 @@ public class UserServiceTest {
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(requestWithHeader, userChangeCredentialsDTO))
+                .isThrownBy(() -> underTest.updatePassword(requestWithHeader, userChangeCredentialsDTO))
                 .withMessageContaining("New password must not be null or empty")
+                .withNoCause();
+
+
+    }
+
+    // tests for reset (password)
+   /* @Test
+    public void reset_success() {
+
+        // configure mocks
+        when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
+        when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
+
+        //prepare test data ChangePWD
+        final UserDO loggedInUser = new UserDO();
+        loggedInUser.setEmail(USERNAME);
+        loggedInUser.setId(ID);
+        loggedInUser.setVersion(VERSION);
+
+        final UserDO selectedUser = new UserDO();
+        selectedUser.setEmail(EMAIL);
+        selectedUser.setId(492L);
+        selectedUser.setVersion(VERSION);
+
+        final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+        userCredentialsDTO.setUsername(EMAIL);
+        userCredentialsDTO.setPassword(PASSWORD);
+
+        // configure mocks
+        when(userComponent.resetPassword(any(UserDO.class), anyString(), anyLong())).thenReturn(selectedUser);
+
+        // call test method
+        final UserDTO actual = underTest.resetPassword(requestWithHeader, userCredentialsDTO);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isNotEqualTo(loggedInUser.getId());
+        assertThat(actual.getEmail()).isNotEqualTo(loggedInUser.getEmail());
+
+    }
+
+    */
+
+    @Test
+    public void reset_withoutCredentials_shouldThrowException() {
+        // prepare test data
+        // prepare test data identity user
+        final UserSignInDTO userSignInDTO = new UserSignInDTO();
+        userSignInDTO.setJwt(JWT);
+        userSignInDTO.setEmail(USERNAME);
+        userSignInDTO.setId(ID);
+
+        // configure mocks
+        when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
+
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(requestWithHeader, null))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+
+    }
+
+    @Test
+    public void reset_withoutNewPassword_shouldThrowException() {
+        // prepare test data
+        // prepare test data identity user
+        final UserSignInDTO userSignInDTO = new UserSignInDTO();
+        userSignInDTO.setJwt(JWT);
+        userSignInDTO.setEmail(USERNAME);
+        userSignInDTO.setId(ID);
+
+
+        final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+        userCredentialsDTO.setPassword(null);
+
+
+        // configure mocks
+        when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
+
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(requestWithHeader, userCredentialsDTO))
+                .withMessageContaining("New password must not be null")
                 .withNoCause();
 
 
@@ -464,7 +552,7 @@ public class UserServiceTest {
 
         final UserChangeCredentialsDTO userChangeCredentialsDTO = new UserChangeCredentialsDTO();
         userChangeCredentialsDTO.setPassword(null);
-        userChangeCredentialsDTO.setNewpassword(NEUESPASSWORD);
+        userChangeCredentialsDTO.setNewPassword(NEUESPASSWORD);
 
 
         // configure mocks

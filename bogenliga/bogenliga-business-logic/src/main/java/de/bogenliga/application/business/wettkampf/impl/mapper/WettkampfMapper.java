@@ -31,6 +31,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         final Long wettkampfDisziplinId = be.getWettkampfDisziplinId();
         final Long wettkampfTypId = be.getWettkampfTypId();
         final Long kampfrichterID = be.getKampfrichterId();
+        final Long wettkampfAusrichter = be.getWettkampfAusrichter();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -41,7 +42,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new WettkampfDO(id, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag, wettkampfDisziplinId, wettkampfTypId,
-                version, kampfrichterID);
+                version, kampfrichterID, wettkampfAusrichter);
     };
 
     /**
@@ -69,6 +70,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         wettkampfBe.setLastModifiedByUserId(wettkampfDO.getLastModifiedByUserId());
         wettkampfBe.setVersion(wettkampfDO.getVersion());
         wettkampfBe.setKampfrichterId(wettkampfDO.getKampfrichterID());
+        wettkampfBe.setWettkampfAusrichter(wettkampfDO.getWettkampfAusrichter());
 
         return wettkampfBe;
     };
