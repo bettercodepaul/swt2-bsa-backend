@@ -95,6 +95,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
     @Override
     public byte[] getBogenkontrolllistePDFasByteArray(long wettkampfid) {
+        byte[] bResult;
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
 
@@ -177,14 +178,15 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
 
         }
-        try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-             PdfWriter writer = new PdfWriter(result);
-             PdfDocument pdfDocument = new PdfDocument(writer);
-             Document doc = new Document(pdfDocument, PageSize.A4)) {
+        try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
+             final PdfWriter writer = new PdfWriter(result);
+             final PdfDocument pdfDocument = new PdfDocument(writer);
+             final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
             generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName, allowedMapping);
 
-            return result.toByteArray();
+            bResult = result.toByteArray();
+            return bResult;
 
         } catch (IOException e) {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
