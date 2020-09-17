@@ -22,14 +22,28 @@ Beispiele:
    
    für `V4_0__create_table_dsb_mitglied.sql` im all/ Ordner
 
-
 # Hinweise zur Baseline
 
-Die Skripte aus all/ und LOCAL/ wurden zusammen kopiert und in eine Datei geschrieben:
+Die Skripte aus all/ und PROD/ wurden zusammen kopiert und in eine Datei geschrieben:
 
 ```
-mkdir all+LOCAL                                                                 
-cp all/* all+LOCAL 
-cp LOCAL/* all+LOCAL
-for i in `ls ./all+LOCAL/*.sql | sort -V`; do cat $i >> V1_0__baseline_ss2020_all_and_LOCAL.sql; done;
+mkdir all+PROD                                                                 
+cp all/* all+PROD 
+cp PROD/* all+PROD
+for i in `ls ./all+PROD/*.sql | sort -V`; do cat $i >> V1_0__baseline_ss2020_all_and_PROD.sql; done;
 ```
+
+1. Auf der PROD werden per DB Migration keine Benutzer angelegt.
+   
+   Das Script
+   
+   ```
+   INSERT INTO benutzer_rolle(
+       benutzer_rolle_benutzer_id,
+       benutzer_rolle_rolle_id
+   )
+   VALUES  (2, 9);
+   ```
+   
+   zum Anlegen eines Moderators wurde entfernt, da es den Benutzer mit der ID = 2 nicht gibt.
+
