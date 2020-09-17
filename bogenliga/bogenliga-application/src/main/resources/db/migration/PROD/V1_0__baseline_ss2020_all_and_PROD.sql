@@ -1406,6 +1406,28 @@ DELETE from rolle
 where rolle_id in (101, 102, 103, 104, 105, 106)
 ;
 ALTER TABLE wettkampf ADD COLUMN kampfrichter_id DECIMAL(19,0) DEFAULT 0;
+
+
+INSERT INTO region (region_id, region_name, region_kuerzel, region_typ, region_uebergeordnet)
+VALUES
+(0, 'Deutscher Schützenbund',             'DSB',      'BUNDESVERBAND', NULL),
+(1, 'Württembergischer Schützenverband',  'WT',       'LANDESVERBAND', 0),
+(2, 'Badischer Sportschützenverband',     'BD',       'LANDESVERBAND', 0),
+(3, 'Bezirk Stuttgart',                   'BZ S',     'BEZIRK', 1),
+(4, 'Bezirk Ludwigsburg',                 'BZ LB',    'BEZIRK', 1),
+(5, 'Kreis Stuttgart',                    'KR S',     'KREIS', 3),
+(6, 'Kreis Ludwigsburg',                  'KR LB',    'KREIS', 4),
+(7, 'Kreis Welzheim',                     'KR WZ',    'KREIS', 8),
+(8, 'Bezirk Welzheim',                    'BZ WZ',    'BEZIRK', 1),
+(9, 'Bezirk Baden',                       'BZ BA',    'BEZIRK', 2),
+(10, 'Kreis Baden-Baden',                 'KR B-B',   'KREIS', 9),
+(11, 'Kreis Nürtingen',                   'KR NT',    'KREIS', 8),
+(12, 'Bezirk Nürtingen',                  'BZ NT',    'BEZIRK', 1);
+
+INSERT INTO verein (verein_id, verein_name, verein_dsb_identifier, verein_region_id)
+VALUES
+(0, 'SGes Gerstetten', '32WT525401', 6);
+
 /* Prüfen ob Gero als DSB-Mitglied eingetragen ist - falls nicht, dann ergänzen*/
 INSERT INTO dsb_mitglied (dsb_mitglied_vorname,
                           dsb_mitglied_nachname,
