@@ -18,7 +18,7 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  * @see <a href="https://www.baeldung.com/properties-with-spring">Properties with Spring and Spring Boot</a>
  */
-@Profile({"LOCAL", "INT", "PROD", "DOCKER"})
+@Profile({"LOCAL", "INT", "DEV", "PROD", "DOCKER"})
 @Service("TransactionManager")
 public class PostgresqlTransactionManager implements TransactionManager {
 
