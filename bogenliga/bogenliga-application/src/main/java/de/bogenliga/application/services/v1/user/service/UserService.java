@@ -130,15 +130,19 @@ public class UserService implements ServiceFacade {
 
                     final HttpHeaders headers = new HttpHeaders();
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
-                    //Get the Verein ID and teh Veranstaltungs ID's
-                    userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
-                    ArrayList<Integer> temp = new ArrayList<>();
-                    for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
-                        temp.add(veranstaltungDO.getVeranstaltungID().intValue());
+                    try {
+                        //Get the Verein ID and teh Veranstaltungs ID's
+                        userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
+                        ArrayList<Integer> temp = new ArrayList<>();
+                        for (VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
+                            temp.add(veranstaltungDO.getVeranstaltungID().intValue());
+                        }
+                        userSignInDTO.setVeranstaltungenIds(temp);
+                        ArrayList<Integer> wetkampftemp = new ArrayList<Integer>();
+                        userSignInDTO.setWettkampfIds(wetkampftemp);
+                    } catch (Exception ignore) {
+                       LOG.warn("Failed to define additional user information", ignore);
                     }
-                    userSignInDTO.setVeranstaltungenIds(temp);
-                    ArrayList<Integer> wetkampftemp = new ArrayList<Integer>();
-                    userSignInDTO.setWettkampfIds(wetkampftemp);
                     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
                 } else {
                     errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
