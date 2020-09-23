@@ -426,9 +426,9 @@ public class BasicDAOTest {
         assertThat(actual.getName()).isEqualTo(expected.getName());
 
         // verify invocations
-        verify(transactionManager).begin();
-        verify(transactionManager).commit();
-        verify(transactionManager).release();
+        verify(transactionManager, times(2)).begin();
+        verify(transactionManager, times(2)).commit();
+        verify(transactionManager, times(2)).release();
 
         verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanHandler.class),
                 eq(ID));
@@ -477,9 +477,9 @@ public class BasicDAOTest {
 
         // assert result
         // verify invocations
-        verify(transactionManager).begin();
-        verify(transactionManager).rollback();
-        verify(transactionManager).release();
+        verify(transactionManager, times(2)).begin();
+        verify(transactionManager, times(2)).rollback();
+        verify(transactionManager, times(2)).release();
 
         verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanHandler.class),
                 eq(ID));
