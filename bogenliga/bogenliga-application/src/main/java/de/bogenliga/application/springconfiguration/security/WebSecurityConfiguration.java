@@ -69,6 +69,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .ignoring()
                 .antMatchers("/v2/api-docs")
+                .and()
+                .ignoring()
+                .antMatchers(HttpMethod.POST, "/v1/signin")
                 // TODO: remove
                 .and()
                 .ignoring()
