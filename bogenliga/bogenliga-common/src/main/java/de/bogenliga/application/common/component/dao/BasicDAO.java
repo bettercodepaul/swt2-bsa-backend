@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -124,11 +125,21 @@ public class BasicDAO implements DataAccessObject {
                                     String sqlQuery,
                                     Object... params) {
         try {
-            return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
-                    new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
-                            businessEntityConfiguration.getColumnToFieldMapping()), params);
+            transactionManager.begin();
+
+            T result = run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
+                new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
+                    businessEntityConfiguration.getColumnToFieldMapping()), params);
+
+            transactionManager.commit();
+
+            return result;
+
         } catch (SQLException e) {
+            transactionManager.rollback();
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+        } finally {
+            transactionManager.release();
         }
     }
 
@@ -150,16 +161,23 @@ public class BasicDAO implements DataAccessObject {
                                         Object... params) {
         List<T> businessEntityList;
         try {
+            transactionManager.begin();
+
             businessEntityList = run.query(getConnection(),
-                    logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
-                    new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
-                            businessEntityConfiguration.getColumnToFieldMapping()), params);
+                logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
+                new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
+                    businessEntityConfiguration.getColumnToFieldMapping()), params);
+
+            transactionManager.commit();
+
+            return businessEntityList == null ? Collections.emptyList() : businessEntityList;
+
         } catch (SQLException e) {
+            transactionManager.rollback();
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+        } finally {
+            transactionManager.release();
         }
-
-        return businessEntityList == null ? Collections.emptyList() : businessEntityList;
-
     }
 
 
