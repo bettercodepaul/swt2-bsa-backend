@@ -124,22 +124,40 @@ public class BasicDAO implements DataAccessObject {
     public <T> T selectSingleEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
                                     String sqlQuery,
                                     Object... params) {
-        try {
-            transactionManager.begin();
+        boolean error = false;
+        boolean activeTX = false;
 
-            T result = run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
+        try {
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
+
+            return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
                 new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
                     businessEntityConfiguration.getColumnToFieldMapping()), params);
 
-            transactionManager.commit();
-
-            return result;
-
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
     }
 
@@ -160,23 +178,42 @@ public class BasicDAO implements DataAccessObject {
                                         String sqlQuery,
                                         Object... params) {
         List<T> businessEntityList;
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
             businessEntityList = run.query(getConnection(),
                 logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
                 new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
                     businessEntityConfiguration.getColumnToFieldMapping()), params);
 
-            transactionManager.commit();
-
             return businessEntityList == null ? Collections.emptyList() : businessEntityList;
 
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
     }
 
@@ -198,8 +235,15 @@ public class BasicDAO implements DataAccessObject {
                 businessEntityConfiguration.getColumnToFieldMapping());
 
         T businessEntityAfterInsert;
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
             businessEntityAfterInsert = run.insert(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
@@ -208,12 +252,25 @@ public class BasicDAO implements DataAccessObject {
                             businessEntityConfiguration.getColumnToFieldMapping()),
                     sql.getParameter());
 
-            transactionManager.commit();
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
 
         return businessEntityAfterInsert;
@@ -238,19 +295,38 @@ public class BasicDAO implements DataAccessObject {
         SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
-            int affectedRows = runUpdate(businessEntityConfiguration, sql);
+            return runUpdate(businessEntityConfiguration, sql);
 
-            transactionManager.commit();
-
-            return affectedRows;
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
     }
 
@@ -313,44 +389,59 @@ public class BasicDAO implements DataAccessObject {
 
         T businessEntityAfterUpdate;
 
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
             int affectedRows = run.update(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
                     sql.getParameter());
-
 
             SQL.SQLWithParameter selectSql = SQL.selectSQL(updateBusinessEntity,
                     businessEntityConfiguration.getTable(), fieldSelector,
                     businessEntityConfiguration.getColumnToFieldMapping());
 
             if (affectedRows == 1) {
-
                 businessEntityAfterUpdate = selectSingleEntity(businessEntityConfiguration, selectSql.getSql(),
                         selectSql.getParameter());
 
-                transactionManager.commit();
-
             } else if (affectedRows == 0) {
-                transactionManager.rollback();
-
+                error = true;
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' does not affect any row",
                                 updateBusinessEntity.toString()), selectSql.getParameter()[0]);
             } else {
-                transactionManager.rollback();
-
+                error = true;
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' affected %d rows",
                                 updateBusinessEntity.toString(), affectedRows), selectSql.getParameter()[0]);
             }
 
         } catch (SQLException | TechnicalException | IndexOutOfBoundsException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
 
         return businessEntityAfterUpdate;
@@ -373,28 +464,46 @@ public class BasicDAO implements DataAccessObject {
         SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
             int affectedRows = runUpdate(businessEntityConfiguration, sql);
 
             // last parameter := identifier for the update query
             Object fieldSelectorValue = sql.getParameter()[sql.getParameter().length - 1];
 
-            if (affectedRows == 1) {
-                transactionManager.commit();
-            } else {
-                transactionManager.rollback();
-
+            if (affectedRows != 1) {
+                error = true;
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Deletion of business entity '%s' does affect %d rows",
                                 deleteBusinessEntity.toString(), affectedRows), fieldSelectorValue);
             }
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
     }
 
