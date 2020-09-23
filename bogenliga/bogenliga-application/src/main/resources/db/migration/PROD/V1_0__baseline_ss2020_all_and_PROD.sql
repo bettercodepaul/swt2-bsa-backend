@@ -1043,52 +1043,6 @@ VALUES
 ;
 
 
-DELETE from klasse;
-
-INSERT INTO klasse (klasse_id, klasse_name, klasse_alter_min, klasse_alter_max, klasse_nr)
-VALUES
-
-(0,'Herren' ,21, 49 ,10),
-(1,'Damen' ,21 ,49 ,11),
-(2,'Schüler A männl.' ,13 ,14 ,20),
-(3,'Schüler A weibl.' ,13 ,14 ,21),
-(4,'Schüler B männl.' ,11 ,12 ,22),
-(5,'Schüler B weibl.' ,11 ,12 ,23),
-(6,'Jugend männl.' ,15 ,17 ,30),
-(7,'Jugend weibl.' ,15 ,17 ,31),
-(8,'Junioren' ,18 ,20 ,40),
-(9,'Junioren weibl.' ,18 ,20 ,41),
-(10,'Master m' ,50 ,65 ,12),
-(11,'Master w' ,50 ,65 ,13),
-(12,'Senioren' ,66 ,99 ,14),
-(13,'Senioren weibl.' ,66 ,99 ,15),
-(14,'unbestimmt' ,00 ,99 ,16)
-;
-
-
-
-DELETE from disziplin;
-
-INSERT INTO disziplin (disziplin_id, disziplin_name)
-VALUES (0, 'Recurve'),
-       (1, 'Compound'),
-       (2, 'Blankbogen'),
-       (3, 'Langbogen'),
-       (4, 'Instinktiv')
-;
-
-
-DELETE from wettkampftyp;
-
-INSERT INTO wettkampftyp (wettkampftyp_id, wettkampftyp_name)
-VALUES (0, 'Liga kummutativ'),
-       (1, 'Liga Satzsystem'),
-       (2, 'WA im Freien'),
-       (3, 'WA in der Halle'),
-       (4, 'WA Stern Turnier'),
-       (5, 'Feldbogen'),
-       (6, '3D Turnier')
-;
 
 --add new column veranstaltung_liga_id in TABLE veranstaltung with default value that every entry has a value and column is not null
 ALTER TABLE veranstaltung
@@ -1406,39 +1360,6 @@ DELETE from rolle
 where rolle_id in (101, 102, 103, 104, 105, 106)
 ;
 ALTER TABLE wettkampf ADD COLUMN kampfrichter_id DECIMAL(19,0) DEFAULT 0;
-
-
-INSERT INTO region (region_id, region_name, region_kuerzel, region_typ, region_uebergeordnet)
-VALUES
-(0, 'Deutscher Schützenbund',             'DSB',      'BUNDESVERBAND', NULL),
-(1, 'Württembergischer Schützenverband',  'WT',       'LANDESVERBAND', 0),
-(2, 'Badischer Sportschützenverband',     'BD',       'LANDESVERBAND', 0),
-(3, 'Bezirk Stuttgart',                   'BZ S',     'BEZIRK', 1),
-(4, 'Bezirk Ludwigsburg',                 'BZ LB',    'BEZIRK', 1),
-(5, 'Kreis Stuttgart',                    'KR S',     'KREIS', 3),
-(6, 'Kreis Ludwigsburg',                  'KR LB',    'KREIS', 4),
-(7, 'Kreis Welzheim',                     'KR WZ',    'KREIS', 8),
-(8, 'Bezirk Welzheim',                    'BZ WZ',    'BEZIRK', 1),
-(9, 'Bezirk Baden',                       'BZ BA',    'BEZIRK', 2),
-(10, 'Kreis Baden-Baden',                 'KR B-B',   'KREIS', 9),
-(11, 'Kreis Nürtingen',                   'KR NT',    'KREIS', 8),
-(12, 'Bezirk Nürtingen',                  'BZ NT',    'BEZIRK', 1);
-
-INSERT INTO verein (verein_id, verein_name, verein_dsb_identifier, verein_region_id)
-VALUES
-(0, 'SGes Gerstetten', '32WT525401', 6);
-
-/* Prüfen ob Gero als DSB-Mitglied eingetragen ist - falls nicht, dann ergänzen*/
-INSERT INTO dsb_mitglied (dsb_mitglied_vorname,
-                          dsb_mitglied_nachname,
-                          dsb_mitglied_geburtsdatum,
-                          dsb_mitglied_nationalitaet,
-                          dsb_mitglied_mitgliedsnummer,
-                          dsb_mitglied_verein_id)
-VALUES ('Gero', 'Gras', '1990-03-16', 'D', 'WT1009', 0)
-ON CONFLICT DO NOTHING;
-
-COMMIT;
 
 /* neue Spalte in Tabelle einfügen mit Defaul-Wert */
 ALTER TABLE benutzer
