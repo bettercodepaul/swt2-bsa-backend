@@ -9,7 +9,7 @@
 ## Content
 
 - Spring Boot with REST services
-- Flyway
+- Flyways
 
 
 ## How to use
