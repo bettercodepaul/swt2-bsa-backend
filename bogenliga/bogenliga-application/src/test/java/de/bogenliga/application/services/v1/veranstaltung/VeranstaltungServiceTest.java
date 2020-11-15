@@ -74,7 +74,7 @@ public class VeranstaltungServiceTest {
         expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
         expectedBE.setVeranstaltung_liga_id(LIGAID);
         expectedBE.setVeranstaltung_ligaleiter_id(LIGALEITERID);
-        expectedBE.setVeranstaltung_melde_deadline(MELDEDEADLINE);
+        expectedBE.setVeranstaltung_meldedeadline(MELDEDEADLINE);
         expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
         expectedBE.setVeranstaltung_sportjahr(SPORTJAHR);
         expectedBE.setVeranstaltung_wettkampftyp_id(WETTKAMPFTYP_ID);

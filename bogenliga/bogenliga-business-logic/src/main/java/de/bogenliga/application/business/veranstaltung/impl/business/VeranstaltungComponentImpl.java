@@ -136,6 +136,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+        System.out.println("\n\n");
         System.out.println(veranstaltungBE.toString());
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
 
@@ -151,6 +152,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
                 PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+        System.out.println("\n\n");
         System.out.println(veranstaltungBE.toString());
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
 
