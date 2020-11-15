@@ -15,7 +15,7 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     private String veranstaltung_name;
     private Long veranstaltung_sportjahr;
     private Long veranstaltung_liga_id;
-    private Date veranstaltung_meldedeadline;
+    private Date veranstaltung_melde_deadline;
     private Long veranstaltung_ligaleiter_id;
 
 
@@ -36,7 +36,7 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
                 ", veranstaltungName='" + veranstaltung_name + '\'' +
                 ", veranstaltungSportJahr=" + veranstaltung_sportjahr +
                 ", veranstaltungLigaId=" + veranstaltung_liga_id +
-                ", veranstaltungMeldeDeadline=" + veranstaltung_meldedeadline +
+                ", veranstaltungMeldeDeadline=" + veranstaltung_melde_deadline +
                 ", veranstaltungLigaleiterID=" + veranstaltung_ligaleiter_id +
                 '}';
     }
@@ -81,12 +81,12 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
         this.veranstaltung_liga_id = veranstaltung_liga_id;
     }
 
-    public Date getVeranstaltung_meldedeadline() {
-        return veranstaltung_meldedeadline;
+    public Date getVeranstaltung_melde_deadline() {
+        return veranstaltung_melde_deadline;
     }
 
-    public void setVeranstaltung_meldedeadline(Date veranstaltung_meldedeadline) {
-        this.veranstaltung_meldedeadline = veranstaltung_meldedeadline;
+    public void setVeranstaltung_melde_deadline(Date veranstaltung_melde_deadline) {
+        this.veranstaltung_melde_deadline = veranstaltung_melde_deadline;
     }
 
     public Long getVeranstaltung_ligaleiter_id() {

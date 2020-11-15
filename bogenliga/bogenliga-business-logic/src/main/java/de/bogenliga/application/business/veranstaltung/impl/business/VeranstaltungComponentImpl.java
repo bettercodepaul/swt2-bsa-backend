@@ -136,6 +136,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+        System.out.println(veranstaltungBE.toString());
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
 
         return notNull(persistedVeranstaltungBE);
@@ -150,22 +151,23 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
                 PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
-        final VeranstaltungBE presistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
+        System.out.println(veranstaltungBE.toString());
+        final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
 
         //create Wettkampftag 0
-        this.wettkampfDAO.createWettkamptag0(presistedVeranstaltungBE.getVeranstaltung_id(), currentDsbMitgliedId);
+        this.wettkampfDAO.createWettkamptag0(persistedVeranstaltungBE.getVeranstaltung_id(), currentDsbMitgliedId);
 
-        return notNull(presistedVeranstaltungBE);
+        return notNull(persistedVeranstaltungBE);
     }
 
 
     @Override
-    public void delete(final VeranstaltungDO veranstltungDO, final long currentDsbMitgliedId) {
-        Preconditions.checkNotNull(veranstltungDO, PRECONDITION_MSG_VERANSTALTUNG);
-        Preconditions.checkArgument(veranstltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+    public void delete(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
+        Preconditions.checkNotNull(veranstaltungDO, PRECONDITION_MSG_VERANSTALTUNG);
+        Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_VERANSTALTUNG);
 
-        final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstltungDO);
+        final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
 
         veranstaltungDAO.delete(veranstaltungBE, currentDsbMitgliedId);
 

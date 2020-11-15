@@ -32,7 +32,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 veranstaltungBE.getVeranstaltung_wettkampftyp_id(),
                 veranstaltungBE.getVeranstaltung_name(),
                 veranstaltungBE.getVeranstaltung_sportjahr(),
-                veranstaltungBE.getVeranstaltung_meldedeadline(),
+                veranstaltungBE.getVeranstaltung_melde_deadline(),
                 veranstaltungBE.getVeranstaltung_ligaleiter_id(),
                 veranstaltungBE.getVeranstaltung_liga_id(),
                 userBE.getUserEmail(),
@@ -58,7 +58,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
        veranstaltungBE.setVeranstaltung_id(veranstaltungDO.getVeranstaltungID());
        veranstaltungBE.setVeranstaltung_wettkampftyp_id(veranstaltungDO.getVeranstaltungWettkampftypID());
        veranstaltungBE.setVeranstaltung_name(veranstaltungDO.getVeranstaltungName());
-       veranstaltungBE.setVeranstaltung_meldedeadline(veranstaltungDO.getVeranstaltungMeldeDeadline());
+       veranstaltungBE.setVeranstaltung_melde_deadline(veranstaltungDO.getVeranstaltungMeldeDeadline());
        veranstaltungBE.setVeranstaltung_ligaleiter_id(veranstaltungDO.getVeranstaltungLigaleiterID());
        veranstaltungBE.setVeranstaltung_liga_id(veranstaltungDO.getVeranstaltungLigaID());
        veranstaltungBE.setVeranstaltung_sportjahr(veranstaltungDO.getVeranstaltungSportJahr());
