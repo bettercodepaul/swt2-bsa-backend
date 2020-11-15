@@ -78,7 +78,7 @@ public class VeranstaltungComponentImplTest {
         expectedBE.setVeranstaltung_wettkampftyp_id(VERANSTALTUNG_WETTKAMPFTYP_ID);
         expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
         expectedBE.setVeranstaltung_sportjahr(VERANSTALTUNG_SPORTJAHR);
-        expectedBE.setVeranstaltung_melde_deadline(VERANSTALTUNG_MELDEDEADLINE);
+        expectedBE.setVeranstaltung_meldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedBE.setVeranstaltung_ligaleiter_id(VERANSTALTUNG_LIGALEITER_ID);
         expectedBE.setVeranstaltung_liga_id(VERANSTALTUNG_LIGA_ID);
 
