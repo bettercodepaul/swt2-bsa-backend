@@ -74,6 +74,13 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
                     + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id"
                     + " AND benutzer.benutzer_active = TRUE";
 
+//
+    private static final String FIND_MAIL_BY_ID =
+            "SELECT benutzer_email "
+                    + " FROM benutzer "
+                    + " JOIN benutzer_rolle ON benutzer.benutzer_id = benutzer_rolle.benutzer_rolle_benutzer_id "
+                    + " WHERE benutzer_rolle_rolle_id = 1";
+
 
     private final BasicDAO basicDao;
 
@@ -136,6 +143,11 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
     public UserRoleExtBE findByEmail(final String email) {
 
         return basicDao.selectSingleEntity(USERROLE, FIND_BY_EMAIL, email);
+    }
+
+//
+    public List<UserRoleExtBE> findAdminEmails() {
+        return basicDao.selectEntityList(USERROLE, FIND_MAIL_BY_ID);
     }
 
 
