@@ -77,4 +77,6 @@ public interface UserRoleComponent extends ComponentFacade {
      */
     List<UserRoleDO> update(final List<UserRoleDO> userRolesDO, final Long currentUserId);
 
+    void sendFeedback(final String text);
+
 }
