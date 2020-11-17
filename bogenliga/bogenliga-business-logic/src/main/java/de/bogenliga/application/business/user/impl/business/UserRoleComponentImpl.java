@@ -17,7 +17,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Implementation of {@link UserComponent}
@@ -157,6 +165,53 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
         return persistedUserRoleDO;
+    }
+
+
+    @Override
+    public void sendFeedback(final String text) {
+
+        List<UserRoleExtBE>  result = userRoleExtDAO.findAdminEmails();
+        String[] recipients = new String[result.size()];
+        for (int i = 0; i< result.size(); i++) {
+            recipients[i] = (result.get(i).getUserEmail());
+
+        }
+
+        final String username = "bogenliga@gmail.com";
+        final String password = "mki4bogenliga";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("bogenliga@gmail.com"));
+            for (String recipient : recipients) {
+                message.setRecipients(Message.RecipientType.TO,
+                        InternetAddress.parse(recipient));
+            }
+            message.setSubject("Feedback");
+            message.setText(text);
+
+            Transport.send(message);
+
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 
