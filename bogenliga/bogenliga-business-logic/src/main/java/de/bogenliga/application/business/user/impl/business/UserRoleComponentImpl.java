@@ -178,7 +178,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         }
 
-        final String username = "bogenligaadmin@gmail.com";
+        final String username = "bogenliga@gmail.com";
         final String password = "mki4bogenliga";
 
         Properties props = new Properties();
@@ -197,7 +197,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("bogenligaadmin@gmail.com"));
+            message.setFrom(new InternetAddress("bogenliga@gmail.com"));
             for (String recipient : recipients) {
                 message.setRecipients(Message.RecipientType.TO,
                         InternetAddress.parse(recipient));
