@@ -51,7 +51,6 @@ public class VereineService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER = "Verein dsb Identifier must not be null";
     private static final String PRECONDITION_MSG_REGION_ID_NOT_NEG = "Verein regio ID must not be negative";
     private static final String PRECONDITION_MSG_REGION_ID = "Verein regio ID can not be null";
-    private static final String PRECONDITION_MSG_WEBSITE = "Website can not be null";
 
     private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
 
@@ -126,11 +125,12 @@ public class VereineService implements ServiceFacade {
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
 
-        LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
+        LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}', website '{}'",
                 vereineDTO.getId(),
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
-                vereineDTO.getRegionId());
+                vereineDTO.getRegionId(),
+                vereineDTO.getWebsite());
 
         if (this.hasPermissions(UserPermission.CAN_MODIFY_STAMMDATEN)) {
         } else if (this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
@@ -203,7 +203,6 @@ public class VereineService implements ServiceFacade {
         Preconditions.checkNotNull(vereinDTO.getName(), PRECONDITION_MSG_NAME);
         Preconditions.checkNotNull(vereinDTO.getIdentifier(), PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER);
         Preconditions.checkNotNull(vereinDTO.getRegionId(), PRECONDITION_MSG_REGION_ID);
-        Preconditions.checkNotNull(vereinDTO.getWebsite(), PRECONDITION_MSG_WEBSITE);
 
         Preconditions.checkArgument(vereinDTO.getRegionId() >= 0, PRECONDITION_MSG_REGION_ID_NOT_NEG);
     }
