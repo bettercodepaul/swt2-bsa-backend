@@ -17,7 +17,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Implementation of {@link UserComponent}
@@ -170,7 +178,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         }
 
-        final String username = "bogenligatest@gmail.com";
+        final String username = "bogenligaadmin@gmail.com";
         final String password = "mki4bogenliga";
 
         Properties props = new Properties();
@@ -189,7 +197,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("bogenligatest@gmail.com"));
+            message.setFrom(new InternetAddress("bogenligaadmin@gmail.com"));
             for (String recipient : recipients) {
                 message.setRecipients(Message.RecipientType.TO,
                         InternetAddress.parse(recipient));
