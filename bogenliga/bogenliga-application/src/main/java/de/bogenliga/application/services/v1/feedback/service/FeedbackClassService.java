@@ -36,7 +36,7 @@ public class FeedbackClassService implements ServiceFacade {
 
 
     @RequestMapping(value = "{feedback}", method = RequestMethod.GET)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public void sendFeedback(@PathVariable("feedback") final String feedback) {
         LOGGER.debug("Receive 'feedback' request with '{}'", feedback);
         //this.userRoleComponent.sendFeedback(feedback);
