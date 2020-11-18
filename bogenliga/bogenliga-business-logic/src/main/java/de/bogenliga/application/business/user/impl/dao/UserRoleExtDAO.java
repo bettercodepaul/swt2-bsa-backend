@@ -145,7 +145,12 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(USERROLE, FIND_BY_EMAIL, email);
     }
 
-//
+
+    /**
+     * Return emails of all admins
+     *
+     *
+     */
     public List<UserRoleExtBE> findAdminEmails() {
         return basicDao.selectEntityList(USERROLE, FIND_MAIL_BY_ID);
     }
