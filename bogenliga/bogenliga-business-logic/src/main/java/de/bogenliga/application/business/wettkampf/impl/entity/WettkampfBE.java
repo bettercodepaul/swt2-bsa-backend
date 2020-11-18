@@ -28,7 +28,6 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private Long kampfrichterId;
     private Long wettkampfAusrichter;
 
-
     /**
      * Constructor
      */
@@ -118,7 +117,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
 
 
     public Long getKampfrichterId() {
-        return kampfrichterId;
+        return this.kampfrichterId;
     }
 
 
