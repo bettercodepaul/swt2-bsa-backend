@@ -43,7 +43,7 @@ public class FeedbackClassService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public void sendFeedback(@PathVariable("feedback") final String feedback) {
         LOGGER.debug("Receive 'feedback' request with '{}'", feedback);
-        //this.userRoleComponent.sendFeedback(feedback);
+        this.userRoleComponent.sendFeedback(feedback);
     }
 
 }
