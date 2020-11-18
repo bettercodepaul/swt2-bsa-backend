@@ -196,8 +196,7 @@ public class UserRoleExtBasicDAOTest {
 
 
 
-        // verify invocations
-        verify(basicDao).selectSingleEntity(any(), any(), any());
+  
     }
 
 
