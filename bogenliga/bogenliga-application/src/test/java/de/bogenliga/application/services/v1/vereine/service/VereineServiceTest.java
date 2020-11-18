@@ -43,6 +43,7 @@ public class VereineServiceTest {
     private static final long REGION_ID_NOT_NEG = 0;
     private static final long REGION_ID = 0;
     private static final String REGION_NAME = "";
+    private static final String VEREIN_WEBSITE = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
     private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
@@ -80,6 +81,7 @@ public class VereineServiceTest {
                 VEREIN_DSB_IDENTIFIER,
                 REGION_ID,
                 REGION_NAME,
+                VEREIN_WEBSITE,
                 VEREIN_OFFSETDATETIME,
                 USER,
                 VEREIN_OFFSETDATETIME,
