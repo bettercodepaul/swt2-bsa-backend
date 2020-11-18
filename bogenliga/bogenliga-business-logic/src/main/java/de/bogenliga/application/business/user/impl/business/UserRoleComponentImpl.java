@@ -168,16 +168,27 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
 
+    /**
+     * Implementation sendFeedback method
+     * @param text Feedback text given in the Frontend, optinal with Email of the sender
+     *
+     * @return void
+     */
     @Override
     public void sendFeedback(final String text) {
 
+        //this returns all DB entries with the Benutzer_rolle_rolle_id of 1
         List<UserRoleExtBE>  result = userRoleExtDAO.findAdminEmails();
         String[] recipients = new String[result.size()];
+
+        //here we filter all the Mail-addresses
         for (int i = 0; i< result.size(); i++) {
             recipients[i] = (result.get(i).getUserEmail());
 
         }
 
+        //A G-Mail SMTP is used for now
+        //THIS IS SUBJECT TO CHANGE IN THE FUTURE AND NOT SECURE
         final String username = "bogenliga@gmail.com";
         final String password = "mki4bogenliga";
 
