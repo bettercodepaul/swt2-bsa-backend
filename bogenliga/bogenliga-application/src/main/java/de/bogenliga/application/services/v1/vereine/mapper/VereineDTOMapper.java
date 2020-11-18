@@ -23,12 +23,13 @@ public class VereineDTOMapper implements DataTransferObjectMapper {
         final String vereinIdentifier = vereinDO.getDsbIdentifier();
         final Long regionId = vereinDO.getRegionId();
         final String regionName = vereinDO.getRegionName();
+        final String vereinWebsite = vereinDO.getWebsite();
         final Long createdByUserId = vereinDO.getCreatedByUserId();
         final OffsetDateTime createdAtUtc = vereinDO.getCreatedAtUtc();
         final Long version = vereinDO.getVersion();
 
 
-        return new VereineDTO(vereinId, vereinName, vereinIdentifier, regionId, regionName, createdAtUtc,createdByUserId, version);
+        return new VereineDTO(vereinId, vereinName, vereinIdentifier, regionId, regionName, vereinWebsite, createdAtUtc,createdByUserId, version);
     };
 
     /**
@@ -40,11 +41,12 @@ public class VereineDTOMapper implements DataTransferObjectMapper {
         final String vereinName = dto.getName();
         final String vereinIdentifier = dto.getIdentifier();
         final Long regionId = dto.getRegionId();
+        final String vereinWebsite = dto.getWebsite();
         final Long createdByUserId = dto.getCreatedByUserId();
         final OffsetDateTime createdAtUtc = dto.getCreatedAtUtc();
         final Long version = dto.getVersion();
 
-        return new VereinDO(vereinId, vereinName, vereinIdentifier, regionId,
+        return new VereinDO(vereinId, vereinName, vereinIdentifier, regionId, vereinWebsite,
                 createdAtUtc, createdByUserId, version);
     };
 
@@ -55,3 +57,10 @@ public class VereineDTOMapper implements DataTransferObjectMapper {
         //empty
     }
 }
+
+
+
+
+
+
+
