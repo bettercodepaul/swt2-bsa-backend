@@ -26,6 +26,7 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import de.bogenliga.application.common.time.DateProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 
+
 /**
  * @author Daniel Schott, daniel.schott@student.reutlingen-university.de
  */
