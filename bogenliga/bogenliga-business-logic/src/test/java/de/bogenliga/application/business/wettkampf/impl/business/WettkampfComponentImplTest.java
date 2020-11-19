@@ -66,6 +66,7 @@ public class WettkampfComponentImplTest {
       expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
       expectedBE.setKampfrichterId(wettkampf_kampfrichter_Id);
       expectedBE.setWettkampfAusrichter(wettkampf_Ausrichter);
+      expectedBE.setWettkampfAusrichter(wettkampf_Ausrichter);
 
         return expectedBE;
     }
