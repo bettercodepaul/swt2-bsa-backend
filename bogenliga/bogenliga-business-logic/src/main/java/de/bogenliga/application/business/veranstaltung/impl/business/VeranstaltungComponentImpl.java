@@ -46,8 +46,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_EMAIL = "ligaleiter email must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_NAME = "veranstaltungtypname must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_NAME = "veranstaltungliganame must be not null";
-    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "\nFür diese Liga gibt es in diesem Jahr bereits eine Veranstaltung.\n" +
-            "Deswegen kann keine zweite Veranstaltung erstellt werden.";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
     private final VeranstaltungDAO veranstaltungDAO;
     private final LigaDAO ligaDAO;
     private final WettkampfTypDAO wettkampftypDAO;
