@@ -56,7 +56,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final Date DEFAULT_DATUM = Date.valueOf("1900-01-01");
     private static final String DEFAULT_ORT = " - ";
     private static final String DEFAULT_BEGINN = " - ";
-    private static final Long DEFAULT_DIZIPLIN_ID = 0L;
+    private static final Long DEFAULT_DISZIPLIN_ID = 0L;
     private static final Long DEFAULT_TYP_ID = 0L;
     private static final Long DEFAULT_KAMPFRICHTER_ID = 0L;
     private static final Long DEFAULT_WETTKAMPF_VERANSTALTER = 0L;      // WETTKAMPF_AUSRICHTER?
@@ -211,14 +211,14 @@ public class WettkampfDAO implements DataAccessObject {
      * @param veranstaltungsId
      * @param currentUserId
      */
-    public void createWettkamptag0 (final long veranstaltungsId, final long currentUserId){
+    public void createWettkampftag0(final long veranstaltungsId, final long currentUserId){
         WettkampfBE defaultWettkampfBE = new WettkampfBE();
         defaultWettkampfBE.setVeranstaltungsId(veranstaltungsId);
         defaultWettkampfBE.setWettkampfTag(0L);
         defaultWettkampfBE.setDatum(DEFAULT_DATUM);
         defaultWettkampfBE.setWettkampfBeginn(DEFAULT_BEGINN);
         defaultWettkampfBE.setWettkampfOrt(DEFAULT_ORT);
-        defaultWettkampfBE.setWettkampfDisziplinId(DEFAULT_DIZIPLIN_ID);
+        defaultWettkampfBE.setWettkampfDisziplinId(DEFAULT_DISZIPLIN_ID);
         defaultWettkampfBE.setWettkampfTypId(DEFAULT_TYP_ID);
         defaultWettkampfBE.setKampfrichterId(DEFAULT_KAMPFRICHTER_ID);
         defaultWettkampfBE.setWettkampfAusrichter(DEFAULT_WETTKAMPF_VERANSTALTER);

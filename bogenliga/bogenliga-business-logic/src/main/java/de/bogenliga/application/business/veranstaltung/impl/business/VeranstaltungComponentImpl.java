@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.bogenliga.application.business.sportjahr.SportjahrDO;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
-import de.bogenliga.application.business.liga.impl.business.LigaComponentImpl;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,10 +18,8 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampftyp.impl.dao.WettkampfTypDAO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
-import de.bogenliga.application.common.database.queries.QueryBuilder;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.common.time.DateProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 
 
@@ -157,7 +153,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
 
         //create Wettkampftag 0
-        this.wettkampfDAO.createWettkamptag0(persistedVeranstaltungBE.getVeranstaltung_id(), currentDsbMitgliedId);
+        this.wettkampfDAO.createWettkampftag0(persistedVeranstaltungBE.getVeranstaltung_id(), currentDsbMitgliedId);
 
         return notNull(persistedVeranstaltungBE);
     }
