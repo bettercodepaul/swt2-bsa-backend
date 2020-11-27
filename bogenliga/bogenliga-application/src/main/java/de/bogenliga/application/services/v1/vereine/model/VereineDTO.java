@@ -16,7 +16,6 @@ public class VereineDTO implements DataTransferObject {
     private String identifier;
     private Long regionId;
     private String regionName;
-    private String website;
     private OffsetDateTime createdAtUtc;
     private Long createdByUserId;
     private Long version;
@@ -38,31 +37,28 @@ public class VereineDTO implements DataTransferObject {
      * @param identifier
      * @param regionId
      * @param regionName
-     * @param website
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
     public VereineDTO(Long id, String name, String identifier, Long regionId, String regionName,
-                      String website, OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
+                      OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
         this.identifier = identifier;
         this.regionId = regionId;
         this.regionName = regionName;
-        this.website = website;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
     }
 
     public VereineDTO(Long id, String name, String identifier, Long regionId,
-                      String website, OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
+                      OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
         this.identifier = identifier;
         this.regionId = regionId;
-        this.website = website;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -116,12 +112,6 @@ public class VereineDTO implements DataTransferObject {
     public void setRegionName(String regionName) {
         this.regionName = regionName;
     }
-
-
-    public String getWebsite() { return website; }
-
-
-    public void setWebsite(String website) { this.website = website; }
 
 
     public OffsetDateTime getCreatedAtUtc() {

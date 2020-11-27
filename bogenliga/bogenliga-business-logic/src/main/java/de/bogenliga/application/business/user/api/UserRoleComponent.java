@@ -77,15 +77,4 @@ public interface UserRoleComponent extends ComponentFacade {
      */
     List<UserRoleDO> update(final List<UserRoleDO> userRolesDO, final Long currentUserId);
 
-
-    /**
-     * Send Mail to all Admin E-mails with Feedback given as parameter
-     *
-     *
-     * @param text text given in Frontend, optional with Mail of the sender at the end
-     *
-     * @return void
-     */
-    void sendFeedback(final String text);
-
 }

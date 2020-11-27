@@ -20,7 +20,6 @@ public class VereinDO extends CommonDataObject implements DataObject {
     private String dsbIdentifier;
     private Long regionId;
     private String regionName;
-    private String website;
 
 
     /**
@@ -30,19 +29,17 @@ public class VereinDO extends CommonDataObject implements DataObject {
      * @param name            Name of the Verein
      * @param dsbIdentifier   Unique identifier for the Verein
      * @param regionId        Region the Verein belongs to
-     * @param website         Website of the Verein
      * @param createdAtUtc    The time the Verein was created.
      * @param createdByUserId The id of the user that created the Verein
      * @param version         Version of the Verein
      */
     public VereinDO(final Long id, final String name, final String dsbIdentifier, final Long regionId,
-                    final String website, final OffsetDateTime createdAtUtc, final Long createdByUserId,
+                    final OffsetDateTime createdAtUtc, final Long createdByUserId,
                     final Long version) {
         this.id = id;
         this.name = name;
         this.dsbIdentifier = dsbIdentifier;
         this.regionId = regionId;
-        this.website = website;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -57,7 +54,6 @@ public class VereinDO extends CommonDataObject implements DataObject {
      * @param dsbIdentifier
      * @param regionId
      * @param regionName
-     * @param website
      * @param createdAtUtc
      * @param createdByUserId
      * @param lastModifiedUtc
@@ -65,7 +61,7 @@ public class VereinDO extends CommonDataObject implements DataObject {
      * @param version
      */
     public VereinDO(final Long id, final String name, final String dsbIdentifier, final Long regionId,
-                    final String regionName, final String website,
+                    final String regionName,
                     final OffsetDateTime createdAtUtc, final Long createdByUserId,
                     final OffsetDateTime lastModifiedUtc, final Long lastModifiedBy,
                     final Long version) {
@@ -74,7 +70,6 @@ public class VereinDO extends CommonDataObject implements DataObject {
         this.dsbIdentifier = dsbIdentifier;
         this.regionId = regionId;
         this.regionName = regionName;
-        this.website = website;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedUtc;
@@ -143,16 +138,10 @@ public class VereinDO extends CommonDataObject implements DataObject {
     }
 
 
-    public String getWebsite() { return website; }
-
-
-    public void setWebsite(String website) { this.website = website; }
-
-
     @Override
     public int hashCode() {
         return Objects.hash(id, name, dsbIdentifier, regionId,
-                website, createdByUserId, lastModifiedAtUtc,
+                createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     }
 
@@ -173,7 +162,6 @@ public class VereinDO extends CommonDataObject implements DataObject {
                 version == that.version &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(dsbIdentifier, that.dsbIdentifier) &&
-                Objects.equals(website, that.website) &&
                 Objects.equals(lastModifiedAtUtc, that.lastModifiedAtUtc);
     }
 }

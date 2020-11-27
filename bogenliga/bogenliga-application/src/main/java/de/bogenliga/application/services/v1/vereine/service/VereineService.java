@@ -125,12 +125,11 @@ public class VereineService implements ServiceFacade {
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
 
-        LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}', website '{}'",
+        LOG.debug("Receive  'update' request with id '{}', name '{}'; dsb_identifier '{}', region_id '{}' ",
                 vereineDTO.getId(),
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
-                vereineDTO.getRegionId(),
-                vereineDTO.getWebsite());
+                vereineDTO.getRegionId());
 
         if (this.hasPermissions(UserPermission.CAN_MODIFY_STAMMDATEN)) {
         } else if (this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
@@ -183,11 +182,10 @@ public class VereineService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug(
-                "Receive 'create' request with name '{}', identifier '{}', region id '{}', website '{}', version '{}', createdBy '{}'",
+                "Receive 'create' request with name '{}', identifier '{}', region id '{}', version '{}', createdBy '{}'",
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
                 vereineDTO.getRegionId(),
-                vereineDTO.getWebsite(),
                 vereineDTO.getVersion(),
                 userId);
 

@@ -37,7 +37,6 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class UserRoleComponentImplTest {
     private static final long ROLE_ID = 777;
-    private static final long ROLE_ROLE_ID = 777;
     private static final String EMAIL = "test@test.net";
     private static final String ROLE_NAME = "TEST_USER";
     private static final Long VERSION = 2L;
@@ -471,10 +470,6 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
-
-
-
-
 
 
 }

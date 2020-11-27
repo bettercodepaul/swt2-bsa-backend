@@ -163,13 +163,13 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
             return false;
         }
         final LigatabelleDO that = (LigatabelleDO) o;
-        return veranstaltungId.equals(that.veranstaltungId) &&
+        return veranstaltungId == that.veranstaltungId &&
                 Objects.equals(veranstaltungName, that.veranstaltungName)&&
-                wettkampfId.equals(that.wettkampfId) &&
+                wettkampfId ==that.wettkampfId &&
                 wettkampfTag == that.wettkampfTag &&
-                mannschaftId.equals(that.mannschaftId) &&
+                mannschaftId == that.mannschaftId &&
                 mannschaftNummer == that.mannschaftNummer &&
-                vereinId.equals(that.vereinId) &&
+                vereinId == that.vereinId &&
                 Objects.equals(vereinName, that.vereinName)&&
                 matchpkt == that.matchpkt &&
                 matchpkt_gegen == that.matchpkt_gegen &&

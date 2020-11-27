@@ -28,6 +28,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private Long kampfrichterId;
     private Long wettkampfAusrichter;
 
+
     /**
      * Constructor
      */
@@ -115,21 +116,14 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
         this.wettkampfTypId = wettkampfTypId;
     }
 
+    public Long getKampfrichterId() { return kampfrichterId; }
 
-    public Long getKampfrichterId() {
-        return this.kampfrichterId;
-    }
-
-
-    public void setKampfrichterId(final Long kampfrichterId) {
-        this.kampfrichterId = kampfrichterId;
-    }
+    public void setKampfrichterId(final Long kampfrichterId) { this.kampfrichterId = kampfrichterId; }
 
 
     public Long getWettkampfAusrichter() {
         return wettkampfAusrichter;
     }
-
 
     public void setWettkampfAusrichter(Long wettkampfAusrichter) {
         this.wettkampfAusrichter = wettkampfAusrichter;
@@ -138,17 +132,15 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
 
     @Override
     public String toString() {
-        return "WettkampfBE {\n" +
-                "\tWettkampfId = " + getId() + ",\n" +
-                "\tVeranstaltungsId =  " + getVeranstaltungsId() + ",\n" +
-                "\tDatum = " + getDatum() + ",\n" +
-                "\tWettkampfort = " + getWettkampfOrt() + ",\n" +
-                "\tWettkampfbeginn = " + getWettkampfBeginn() + ",\n" +
-                "\tWettkampftag = " + getWettkampfTag() + ",\n" +
-                "\tWettkampfdiziplinId = " + getWettkampfDisziplinId() + ",\n" +
-                "\tWettkampftypId = " + getWettkampfTypId() + ",\n" +
-                "\tKampfrichterId = " + getKampfrichterId() + ",\n" +
-                "\tWettkampfAusrichter = " + getWettkampfAusrichter() + "\n" +
-                "}";
+        return "WettkampfId = " + getId() + "\n" +
+                "VeranstaltungsId =  " + getVeranstaltungsId() + "\n" +
+                "Datum = " + getDatum() + "\n" +
+                "Wettkampf Ort = " + getWettkampfOrt() + "\n" +
+                "Wettkampfbeginn = " + getWettkampfBeginn() + "\n" +
+                "Wettkampftag = " + getWettkampfTag() + "\n" +
+                "WettkampfdiziplinId = " + getWettkampfDisziplinId() + "\n" +
+                "WettkampftypId = " + getWettkampfTypId() + "\n" +
+                "KampfrichterId = " + getKampfrichterId() + "\n" +
+                "WettkampfAusrichter = "  + getWettkampfAusrichter();
     }
 }

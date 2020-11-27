@@ -18,5 +18,4 @@ public class BogenligaApplication {
         SpringApplication.run(BogenligaApplication.class, args);
     }
 
-    
 }

@@ -7,7 +7,6 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.MannschaftSortierungDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftSortierungDTO;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -51,7 +50,7 @@ public class MannschaftSortierungService implements ServiceFacade {
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    @RequiresPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG)
     public MannschaftSortierungDTO update(@RequestBody final MannschaftSortierungDTO maSortierungDTO, final Principal principal) {
         Preconditions.checkNotNull(maSortierungDTO,PRECONDITION_MSG_DSBMANNSCHAFT_DO);
         Preconditions.checkNotNull(maSortierungDTO.getId(), PRECONDITION_MSG_DSBMANNSCHAFT_ID);
