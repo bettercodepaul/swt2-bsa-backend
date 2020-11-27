@@ -17,7 +17,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Implementation of {@link UserComponent}
@@ -157,6 +165,64 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
         return persistedUserRoleDO;
+    }
+
+
+    /**
+     * Implementation sendFeedback method
+     * @param text Feedback text given in the Frontend, optinal with Email of the sender
+     *
+     * @return void
+     */
+    @Override
+    public void sendFeedback(final String text) {
+
+        //this returns all DB entries with the Benutzer_rolle_rolle_id of 1
+        List<UserRoleExtBE>  result = userRoleExtDAO.findAdminEmails();
+        String[] recipients = new String[result.size()];
+
+        //here we filter all the Mail-addresses
+        for (int i = 0; i< result.size(); i++) {
+            recipients[i] = (result.get(i).getUserEmail());
+
+        }
+
+        //A G-Mail SMTP is used for now
+        //THIS IS SUBJECT TO CHANGE IN THE FUTURE AND NOT SECURE
+        final String username = "bogenliga@gmail.com";
+        final String password = "mki4bogenliga";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("bogenliga@gmail.com"));
+            for (String recipient : recipients) {
+                message.setRecipients(Message.RecipientType.TO,
+                        InternetAddress.parse(recipient));
+            }
+            message.setSubject("Feedback");
+            message.setText(text);
+
+            Transport.send(message);
+
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 

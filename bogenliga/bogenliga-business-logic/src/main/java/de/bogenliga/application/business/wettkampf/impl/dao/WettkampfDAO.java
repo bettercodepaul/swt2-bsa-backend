@@ -59,7 +59,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final Long DEFAULT_DIZIPLIN_ID = 0L;
     private static final Long DEFAULT_TYP_ID = 0L;
     private static final Long DEFAULT_KAMPFRICHTER_ID = 0L;
-    private static final Long DEFAULT_WETTKAMPF_VERANSTALTER = 0L;
+    private static final Long DEFAULT_WETTKAMPF_VERANSTALTER = 0L;      // WETTKAMPF_AUSRICHTER?
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<WettkampfBE> WETTKAMPF = new BusinessEntityConfiguration<>(
