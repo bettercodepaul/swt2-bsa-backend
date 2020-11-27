@@ -4,16 +4,15 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
  * I´m the data transfer object of the kampfrichter.
- *
+ * <p>
  * I define the payload for the external REST interface of the kampfrichter business entity.
- *
  *
  * @see DataTransferObject
  */
 public class KampfrichterDTO implements DataTransferObject {
     private static final long serialVersionUID = 8559563978424033907L;
-    private Long id;
-    private Long userid;
+    private Long userID;
+    private Long wettkampfID;
     private boolean leitend;
 
 
@@ -25,37 +24,39 @@ public class KampfrichterDTO implements DataTransferObject {
     }
 
 
-    public KampfrichterDTO(final long wettkampfId,
-                           final Long userId, final boolean leitend) {
-        this.id = wettkampfId;
-
-
-        this.userid = userId;
+    public KampfrichterDTO(final Long userId, final long wettkampfId, final boolean leitend) {
+        this.userID = userId;
+        this.wettkampfID = wettkampfId;
         this.leitend = leitend;
     }
 
 
-    public Long getWettkampfId() {
-        return id;
-    }
-
-
-    public void setWettkampfId(final Long wettkampfId) {
-        this.id = wettkampfId;
-    }
-
-
-
     public Long getUserId() {
-        return userid;
+        return userID;
     }
 
 
     public void setUserId(final Long userId) {
-        this.userid = userId;
+        this.userID = userId;
     }
 
-    public boolean getLeitend(){return leitend;}
 
-    public void setLeitend(final boolean leitend) {this.leitend = leitend;}
+    public Long getWettkampfId() {
+        return wettkampfID;
+    }
+
+
+    public void setWettkampfId(final Long wettkampfId) {
+        this.wettkampfID = wettkampfId;
+    }
+
+
+    public boolean getLeitend() {
+        return leitend;
+    }
+
+
+    public void setLeitend(final boolean leitend) {
+        this.leitend = leitend;
+    }
 }
