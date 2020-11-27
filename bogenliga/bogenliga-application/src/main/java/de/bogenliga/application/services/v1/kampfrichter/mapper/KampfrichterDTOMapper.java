@@ -21,14 +21,10 @@ public final class KampfrichterDTOMapper implements DataTransferObjectMapper {
     public static final Function<KampfrichterDO, KampfrichterDTO> toDTO = kampfrichterDO -> {
 
         final Long kampfrichterUserId = kampfrichterDO.getUserId();
-
         final long kampfrichterWettkampfId = kampfrichterDO.getWettkampfId();
         final boolean kampfrichterLeitend = kampfrichterDO.isLeitend();
 
-        return new KampfrichterDTO(kampfrichterWettkampfId,
-                kampfrichterUserId,
-                kampfrichterLeitend
-                );
+        return new KampfrichterDTO(kampfrichterUserId, kampfrichterWettkampfId, kampfrichterLeitend);
     };
 
 
@@ -37,13 +33,13 @@ public final class KampfrichterDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<KampfrichterDTO, KampfrichterDO> toDO = dto -> {
 
-        final Long kampfrichterWetterkampfId = dto.getWettkampfId();
-        final boolean kampfrichterLeitend = dto.getLeitend();
         final Long kampfrichterUserId = dto.getUserId();
+        final Long kampfrichterWettkampfId = dto.getWettkampfId();
+        final boolean kampfrichterLeitend = dto.getLeitend();
 
         return new KampfrichterDO(
                 kampfrichterUserId,
-                kampfrichterWetterkampfId,
+                kampfrichterWettkampfId,
                 kampfrichterLeitend);
     };
 
