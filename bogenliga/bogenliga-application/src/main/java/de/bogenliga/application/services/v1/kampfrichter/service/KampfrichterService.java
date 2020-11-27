@@ -39,7 +39,8 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/")
+@RequestMapping("v1/kampfrichter")
 public class KampfrichterService implements ServiceFacade {
+    // TODO: Implement this entire class
 
 }
