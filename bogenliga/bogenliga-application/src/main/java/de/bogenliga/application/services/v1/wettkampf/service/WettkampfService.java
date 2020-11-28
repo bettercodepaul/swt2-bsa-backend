@@ -288,8 +288,9 @@ public class WettkampfService implements ServiceFacade {
                 UserDO userDO = this.userComponent.findById(UserId);
                 ArrayList<Integer> temp = new ArrayList<>();
                 for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
-                    if(wettkampfDO.getId() ==wettkampfid){
+                    if (wettkampfDO.getId().equals(wettkampfid)) {
                         result = true;
+                        break;
                     }
                 }
 
