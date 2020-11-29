@@ -104,7 +104,7 @@ public class KampfrichterService implements ServiceFacade {
     }
 
 
-    // TODO: The Kampfrichter gets lost here. Fix this.
+    // TODO: The User ID and Wettkampf ID are always null. This needs to be fixed
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
