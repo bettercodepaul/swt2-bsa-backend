@@ -104,12 +104,14 @@ public class KampfrichterService implements ServiceFacade {
     }
 
 
+    // TODO: The Kampfrichter gets lost here. Fix this.
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
     public KampfrichterDTO update(@RequestBody final KampfrichterDTO kampfrichterDTO,
                                   final Principal principal) throws NoPermissionException {
+        System.out.println("KAMPFRICHTER_DTO:\n" + kampfrichterDTO.toString());
         checkPreconditions(kampfrichterDTO);
 
         LOG.debug(
@@ -191,6 +193,8 @@ public class KampfrichterService implements ServiceFacade {
 
     private void checkPreconditions(@RequestBody final KampfrichterDTO kampfrichterDTO) {
         Preconditions.checkNotNull(kampfrichterDTO, PRECONDITION_MSG_KAMPFRICHTER);
+        Preconditions.checkNotNull(kampfrichterDTO.getUserId(), PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID);
+        Preconditions.checkNotNull(kampfrichterDTO.getWettkampfId(), PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID);
         Preconditions.checkArgument(kampfrichterDTO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID);
         Preconditions.checkArgument(kampfrichterDTO.getWettkampfId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID);
     }
