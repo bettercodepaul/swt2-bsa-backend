@@ -59,4 +59,14 @@ public class KampfrichterDTO implements DataTransferObject {
     public void setLeitend(final boolean leitend) {
         this.leitend = leitend;
     }
+
+
+    @Override
+    public String toString() {
+        return "KampfrichterDTO{" +
+                "userID=" + userID +
+                ", wettkampfID=" + wettkampfID +
+                ", leitend=" + leitend +
+                '}';
+    }
 }
