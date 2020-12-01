@@ -1,22 +1,24 @@
 package de.bogenliga.application.business.einstellungen.impl.business;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.einstellungen.api.EinstellungenComponent;
 import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
 import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
 import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.business.einstellungen.impl.mapper.EinstellungenMapper;
-import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
-import de.bogenliga.application.business.lizenz.impl.mapper.LizenzMapper;
-import de.bogenliga.application.business.passe.impl.entity.PasseBE;
-import de.bogenliga.application.business.passe.impl.mapper.PasseMapper;
+
 
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class EinstellungenComponentImpl implements EinstellungenComponent {
 
 
@@ -30,45 +32,46 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
 
     private static final Logger LOGGER= LoggerFactory.getLogger(EinstellungenComponentImpl.class);
 
-
-    public EinstellungenComponentImpl(
-            EinstellungenDAO einstellungenDAO) {
+    @Autowired
+    public EinstellungenComponentImpl(EinstellungenDAO einstellungenDAO) {
         this.einstellungenDAO = einstellungenDAO;
     }
 
-
-    public EinstellungenDO create(EinstellungenDO einstellungenDO,final Long currentUserId){
-
-        final EinstellungenBE einstellungenBE = EinstellungenMapper.toEinstellungenBE.apply(einstellungenDO);
-
-        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.create(einstellungenBE, currentUserId);
-        return PasseMapper.toEinstellungenDO.apply(persistedEinstellungenBE);
-
+    @Override
+    public List<EinstellungenDO> findAll() {
+        final List<EinstellungenBE> einstellungenList = einstellungenDAO.findAll();
+        return einstellungenList.stream().map(EinstellungenMapper.toEinstellungenDO).collect(Collectors.toList());
     }
 
-    public EinstellungenDO update(EinstellungenDO einstellungenDO,final Long currentUserId){
 
+
+    @Override
+    public EinstellungenDO create(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
 
         final EinstellungenBE einstellungenBE = EinstellungenMapper.toEinstellungenBE.apply(einstellungenDO);
 
-        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.update(einstellungenBE, currentUserId);
+        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.create(einstellungenBE, currentEinstellungenId);
         return EinstellungenMapper.toEinstellungenDO.apply(persistedEinstellungenBE);
 
-
-
-
-
     }
 
-    public EinstellungenDO delete(EinstellungenDO einstellungenDO,final Long currentMemberId){
+    @Override
+    public EinstellungenDO update(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
 
 
         final EinstellungenBE einstellungenBE = EinstellungenMapper.toEinstellungenBE.apply(einstellungenDO);
-        einstellungenDAO.delete(einstellungenBE, currentMemberId);
 
+        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.update(einstellungenBE, currentEinstellungenId);
+        return EinstellungenMapper.toEinstellungenDO.apply(persistedEinstellungenBE);
 
+    }
 
-        return null;
+    @Override
+    public void delete(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
+
+        final EinstellungenBE einstellungenBE = EinstellungenMapper.toEinstellungenBE.apply(einstellungenDO);
+        einstellungenDAO.delete(einstellungenBE, currentEinstellungenId);
+
     }
 
 

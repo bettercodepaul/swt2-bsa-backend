@@ -23,7 +23,8 @@ public class EinstellungenMapper implements ValueObjectMapper {
      */
     public static final Function<EinstellungenBE, EinstellungenDO> toEinstellungenDO = be -> {
 
-        final Long id = be.getEinstellungenId();
+        final Long id = be.getId();
+
         final String value = be.getValue();
         final String key = be.getKey();
 
@@ -44,19 +45,19 @@ public class EinstellungenMapper implements ValueObjectMapper {
      */
     public static final Function<EinstellungenDO, EinstellungenBE> toEinstellungenBE = einstellungenDO -> {
 
-        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(EinstellungenDO.getCreatedAtUtc());
-        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime((EinstellungenDO.getLastModifiedAtUtc());
+        //Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(EinstellungenDO.getCreatedAtUtc());
+        //Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime((EinstellungenDO.getLastModifiedAtUtc());
 
         EinstellungenBE einstellungenBE = new EinstellungenBE();
         einstellungenBE.setId(einstellungenDO.getId());
         einstellungenBE.setValue(einstellungenDO.getValue());
         einstellungenBE.setKey(einstellungenDO.getKey());
 
-        einstellungenBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        /*einstellungenBE.setCreatedAtUtc(createdAtUtcTimestamp);
         einstellungenBE.setCreatedByUserId(einstellungenDO.getCreatedByUserId());
         einstellungenBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
         einstellungenBE.setLastModifiedByUserId(einstellungenDO.getLastModifiedByUserId());
-        einstellungenBE.setVersion(einstellungenDO.getVersion());
+        einstellungenBE.setVersion(einstellungenDO.getVersion());*/
 
         return einstellungenBE;
     };

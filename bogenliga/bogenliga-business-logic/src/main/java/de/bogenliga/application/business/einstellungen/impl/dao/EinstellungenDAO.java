@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -16,6 +17,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
  *
  * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
  */
+@Repository
 public class EinstellungenDAO implements DataAccessObject {
     // define logger context
     private static final Logger LOG = LoggerFactory.getLogger(EinstellungenDAO.class);

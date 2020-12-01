@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import de.bogenliga.application.business.user.api.UserRoleComponent;
+import de.bogenliga.application.business.einstellungen.api.EinstellungenComponent;
+import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
 import de.bogenliga.application.services.v1.einstellungen.mapper.EinstellungenDTOMapper;
 import de.bogenliga.application.services.v1.einstellungen.model.EinstellungenDTO;
 import de.bogenliga.application.services.v1.feedback.service.FeedbackClassService;
@@ -28,15 +29,15 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RequestMapping("v1/einstellungen")
 public class EinstellungenService {
 
-    private final UserRoleComponent userRoleComponent;
+    private final EinstellungenComponent einstellungenComponent;
     private static final Logger LOGGER = LoggerFactory.getLogger(FeedbackClassService.class);
 
     /**
      * Create a intance of UserRoleComponent
      */
     @Autowired
-    public EinstellungenService(UserRoleComponent userRoleComponent) {
-        this.userRoleComponent = userRoleComponent;
+    public EinstellungenService(EinstellungenComponent einstellungenComponent) {
+        this.einstellungenComponent = einstellungenComponent;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
