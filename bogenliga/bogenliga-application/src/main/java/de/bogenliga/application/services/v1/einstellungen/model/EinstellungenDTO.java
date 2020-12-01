@@ -11,57 +11,42 @@ public class EinstellungenDTO implements DataTransferObject {
 
     private Long id;
 
-    private String smtpName;
-    private String smtpHost;
-    private Integer smtpPort;
-    private String smtpPasswort;
+    private String value;
+    private String key;
 
 
-    public EinstellungenDTO(Long id, String name, String host, Integer port, String passwort ) {
+    public EinstellungenDTO(Long id, String value, String key) {
         this.id = id;
-        this.smtpName = name;
-        this.smtpHost = host;
-        this.smtpPort = port;
-        this.smtpPasswort = passwort;
+        this.value = value;
+        this.key = key;
+
     }
 
     public EinstellungenDTO() {
-        //leerr Konstruktor
+        //leerer Konstruktor
     }
 
     public void setId(Long id) {
         this.id = id;
     }
-    public void setSmtpName(String name) {
-        this.smtpName = name;
+    public void setValue(String value) {
+        this.value = value;
     }
     public void setSmtpHost(String host) {
-        this.smtpHost = host;
+        this.key = key;
     }
-    public void setSmtpPort(Integer port) {
-        this.smtpPort = port;
-    }
-    public void setSmtpPasswort(String passwort) {
-        this.smtpPasswort = passwort;
-    }
+
 
     public Long getId() {
         return id;
     }
 
-    public String getSmtpName() {
-        return smtpName;
+    public String getValue() {
+        return value;
     }
 
-    public String getSmtpHost() {
-        return smtpHost;
+    public String getKey() {
+        return key;
     }
 
-    public Integer getSmtpPort() {
-        return smtpPort;
-    }
-
-    public String getSmtpPasswort() {
-        return smtpPasswort;
-    }
 }
