@@ -43,6 +43,7 @@ public class EinstellungenService {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EinstellungenDTO> findAll() {
         final List<EinstellungenDO> einstellungenDOList = einstellungenComponent.findAll();
+        LOGGER.debug("Receive Einstellungen request");
         return einstellungenDOList.stream().map(EinstellungenDTOMapper.toDTO).collect(Collectors.toList());
     }
 
