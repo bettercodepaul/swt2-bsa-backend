@@ -40,7 +40,7 @@ public class EinstellungenDAO implements DataAccessObject {
             EinstellungenBE.class, TABLE, getColumnsToFieldsMap(), LOG);
 
     private static final String FIND_ALL =
-            "SELEC * "
+            "SELECT * "
                     + "FROM einstellungen";
 
 
