@@ -140,6 +140,7 @@ public class MatchServiceTest {
     private static final Long REGION_ID = 0L;
     private static final String REGION_NAME = "";
     private static final String VEREIN_WEBSITE = "";
+    private static final String VEREIN_DESCRIPTION = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
 
 
@@ -199,6 +200,7 @@ public class MatchServiceTest {
                 REGION_ID,
                 REGION_NAME,
                 VEREIN_WEBSITE,
+                VEREIN_DESCRIPTION,
                 VEREIN_OFFSETDATETIME,
                 VEREIN_USER,
                 VEREIN_OFFSETDATETIME,
