@@ -37,6 +37,7 @@ public class VereinComponentImplTest {
     private static final String VEREIN_DSB_IDENTIFIER = "";
     private static final long VEREIN_REGION_ID = 0;
     private static final String VEREIN_WEBSITE = "";
+    private static final String VEREIN_DESCRIPTION = "";
     private static final long USER_ID = 0;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
     private static final Long REGION_ID = 0L;
@@ -65,6 +66,7 @@ public class VereinComponentImplTest {
         //expectedBE.setRegionName();
         expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
         expectedBE.setVereinWebsite(VEREIN_WEBSITE);
+        expectedBE.setVereinDescription(VEREIN_DESCRIPTION);
 
         return expectedBE;
     }
@@ -75,6 +77,7 @@ public class VereinComponentImplTest {
                 VEREIN_DSB_IDENTIFIER,
                 VEREIN_REGION_ID,
                 VEREIN_WEBSITE,
+                VEREIN_DESCRIPTION,
                 VEREIN_OFFSETDATETIME,
                 USER_ID,
                 VERSION);
@@ -124,6 +127,8 @@ public class VereinComponentImplTest {
                 .isEqualTo(expectedBE.getVereinDsbIdentifier());
         assertThat(actual.get(0).getWebsite())
                 .isEqualTo(expectedBE.getVereinWebsite());
+        assertThat(actual.get(0).getDescription())
+                .isEqualTo(expectedBE.getVereinDescription());
         assertThat(actual.get(0).getRegionName())
                 .isEqualTo(expectedRegionBE.getRegionName());
 
@@ -259,6 +264,7 @@ public class VereinComponentImplTest {
                 VEREIN_DSB_IDENTIFIER,
                 VEREIN_REGION_ID,
                 VEREIN_WEBSITE,
+                VEREIN_DESCRIPTION,
                 VEREIN_OFFSETDATETIME,
                 USER_ID,
                 VERSION);
