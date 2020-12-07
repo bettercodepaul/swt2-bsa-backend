@@ -133,7 +133,8 @@ public class VereineService implements ServiceFacade {
                 vereineDTO.getIdentifier(),
                 vereineDTO.getRegionId(),
                 vereineDTO.getWebsite(),
-                vereineDTO.getDescription());
+                vereineDTO.getDescription(),
+                vereineDTO.getIcon());
 
         if (this.hasPermissions(UserPermission.CAN_MODIFY_STAMMDATEN)) {
         } else if (this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
@@ -193,6 +194,7 @@ public class VereineService implements ServiceFacade {
                 vereineDTO.getRegionId(),
                 vereineDTO.getWebsite(),
                 vereineDTO.getDescription(),
+                vereineDTO.getIcon(),
                 vereineDTO.getVersion(),
                 userId);
 
