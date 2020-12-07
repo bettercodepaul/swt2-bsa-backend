@@ -10,41 +10,45 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class EinstellungenBE extends CommonBusinessEntity implements BusinessEntity {
 
-    private Long id;
-    private String key;
-    private String value;
+    private Long einstellungenId;
+    private String einstellungenKey;
+    private String einstellungenValue;
+
+    public EinstellungenBE() {
+        //empty constructor
+    }
 
     @Override
     public String toString() {
         return "EinstellungenBE{" +
-                "id=" + id +
-                "key=" + key +
-                "value=" + value +
+                "id=" + einstellungenId +
+                "key=" + einstellungenKey +
+                "value=" + einstellungenValue +
                 "}";
     }
 
     public Long getId() {
-        return id;
+        return einstellungenId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.einstellungenId = id;
     }
 
     public String getKey() {
-        return key;
+        return einstellungenKey;
     }
 
     public void setKey(String key) {
-        this.key = key;
+        this.einstellungenKey = key;
     }
 
     public String getValue() {
-        return value;
+        return einstellungenValue;
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.einstellungenValue = value;
     }
 
 

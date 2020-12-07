@@ -40,6 +40,7 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
     @Override
     public List<EinstellungenDO> findAll() {
         final List<EinstellungenBE> einstellungenList = einstellungenDAO.findAll();
+
         return einstellungenList.stream().map(EinstellungenMapper.toEinstellungenDO).collect(Collectors.toList());
     }
 

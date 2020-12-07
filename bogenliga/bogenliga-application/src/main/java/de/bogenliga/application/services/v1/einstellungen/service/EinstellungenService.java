@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.einstellungen.api.EinstellungenComponent;
 import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
+import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.services.v1.einstellungen.mapper.EinstellungenDTOMapper;
 import de.bogenliga.application.services.v1.einstellungen.model.EinstellungenDTO;
 import de.bogenliga.application.services.v1.feedback.service.FeedbackClassService;
@@ -27,7 +28,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RestController
 @CrossOrigin
 @RequestMapping("v1/einstellungen")
-public class EinstellungenService {
+public class EinstellungenService implements ServiceFacade {
 
     private final EinstellungenComponent einstellungenComponent;
     private static final Logger LOGGER = LoggerFactory.getLogger(FeedbackClassService.class);
@@ -40,10 +41,12 @@ public class EinstellungenService {
         this.einstellungenComponent = einstellungenComponent;
     }
 
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EinstellungenDTO> findAll() {
         final List<EinstellungenDO> einstellungenDOList = einstellungenComponent.findAll();
         LOGGER.debug("Receive Einstellungen request");
+        LOGGER.debug(einstellungenDOList.get(0).getValue());
         return einstellungenDOList.stream().map(EinstellungenDTOMapper.toDTO).collect(Collectors.toList());
     }
 

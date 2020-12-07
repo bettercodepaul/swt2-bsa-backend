@@ -26,9 +26,9 @@ public class EinstellungenDAO implements DataAccessObject {
     private static final String TABLE = "einstellungen";
 
     // business entity parameters
-    private static final String EINSTELLUNGEN_ID = "einstellungenId";
-    private static final String EINSTELLUNGEN_KEY = "einstellungenKey";
-    private static final String EINSTELLUNGEN_VALUE = "einstellungenValue";
+    private static final String EINSTELLUNGEN_BE_ID = "einstellungenId";
+    private static final String EINSTELLUNGEN_BE_KEY = "einstellungenKey";
+    private static final String EINSTELLUNGEN_BE_VALUE = "einstellungenValue";
 
     // table columns
     private static final String EINSTELLUNGEN_TABLE_ID = "einstellungen_id";
@@ -41,7 +41,8 @@ public class EinstellungenDAO implements DataAccessObject {
 
     private static final String FIND_ALL =
             "SELECT * "
-                    + "FROM einstellungen";
+                    + " FROM einstellungen"
+                    + " ORDER BY einstellungen_id";
 
 
     private final BasicDAO basicDao;
@@ -61,9 +62,11 @@ public class EinstellungenDAO implements DataAccessObject {
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
-        columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_ID, EINSTELLUNGEN_ID);
-        columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_KEY, EINSTELLUNGEN_KEY);
-        columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_VALUE, EINSTELLUNGEN_VALUE);
+        columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_ID, EINSTELLUNGEN_BE_ID);
+        columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_KEY, EINSTELLUNGEN_BE_KEY);
+        columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_VALUE, EINSTELLUNGEN_BE_VALUE);
+
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
         return columnsToFieldsMap;
     }
@@ -72,6 +75,8 @@ public class EinstellungenDAO implements DataAccessObject {
      * Return all einstellungen entries
      */
     public List<EinstellungenBE> findAll() {
+
+        LOG.debug(basicDao.selectEntityList(EINSTELLUNGEN, FIND_ALL).toString());
         return basicDao.selectEntityList(EINSTELLUNGEN, FIND_ALL);
     }
 
@@ -100,7 +105,7 @@ public class EinstellungenDAO implements DataAccessObject {
      */
     public EinstellungenBE update(final EinstellungenBE einstellungenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(einstellungenBE, currentUserId);
-        return basicDao.updateEntity(EINSTELLUNGEN, einstellungenBE, EINSTELLUNGEN_ID);
+        return basicDao.updateEntity(EINSTELLUNGEN, einstellungenBE, EINSTELLUNGEN_BE_ID);
     }
 
 
@@ -112,7 +117,7 @@ public class EinstellungenDAO implements DataAccessObject {
      */
     public void delete(final EinstellungenBE einstellungenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(einstellungenBE, currentUserId);
-        basicDao.deleteEntity(EINSTELLUNGEN, einstellungenBE, EINSTELLUNGEN_ID);
+        basicDao.deleteEntity(EINSTELLUNGEN, einstellungenBE, EINSTELLUNGEN_BE_ID);
     }
 
 }
