@@ -5,6 +5,7 @@ import java.util.function.Function;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
+import java.io.*;
 
 /**
  * I map the {@link VereinDO} and {@link VereineDTO} objects
@@ -25,6 +26,7 @@ public class VereineDTOMapper implements DataTransferObjectMapper {
         final String regionName = vereinDO.getRegionName();
         final String vereinWebsite = vereinDO.getWebsite();
         final String vereinDescription = vereinDO.getDescription();
+        final File vereinIcon = vereinDO.getIcon();
         final Long createdByUserId = vereinDO.getCreatedByUserId();
         final OffsetDateTime createdAtUtc = vereinDO.getCreatedAtUtc();
         final Long version = vereinDO.getVersion();
@@ -45,12 +47,13 @@ public class VereineDTOMapper implements DataTransferObjectMapper {
         final Long regionId = dto.getRegionId();
         final String vereinWebsite = dto.getWebsite();
         final String vereinDescription = dto.getDescription();
+        final File vereinIcon = dto.getIcon();
         final Long createdByUserId = dto.getCreatedByUserId();
         final OffsetDateTime createdAtUtc = dto.getCreatedAtUtc();
         final Long version = dto.getVersion();
 
         return new VereinDO(vereinId, vereinName, vereinIdentifier, regionId, vereinWebsite,
-                            vereinDescription, createdAtUtc, createdByUserId, version);
+                            vereinDescription, vereinIcon, createdAtUtc, createdByUserId, version);
     };
 
     /**
