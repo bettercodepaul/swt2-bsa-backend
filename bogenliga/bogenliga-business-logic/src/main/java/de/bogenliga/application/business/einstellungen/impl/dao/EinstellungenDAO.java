@@ -66,6 +66,7 @@ public class EinstellungenDAO implements DataAccessObject {
         columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_KEY, EINSTELLUNGEN_BE_KEY);
         columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_VALUE, EINSTELLUNGEN_BE_VALUE);
 
+        //kann theoretisch weg
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
         return columnsToFieldsMap;
