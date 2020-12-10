@@ -33,8 +33,8 @@ public final class KampfrichterDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<KampfrichterDTO, KampfrichterDO> toDO = dto -> {
 
-        final Long kampfrichterUserId = dto.getUserId();
-        final Long kampfrichterWettkampfId = dto.getWettkampfId();
+        final Long kampfrichterUserId = dto.getUserID();
+        final Long kampfrichterWettkampfId = dto.getWettkampfID();
         final boolean kampfrichterLeitend = dto.getLeitend();
 
         return new KampfrichterDO(

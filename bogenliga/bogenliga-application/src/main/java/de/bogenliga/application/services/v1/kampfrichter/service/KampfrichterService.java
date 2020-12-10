@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.kampfrichter.service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,10 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterDTO;
 import de.bogenliga.application.services.v1.kampfrichter.mapper.KampfrichterDTOMapper;
@@ -92,19 +88,19 @@ public class KampfrichterService implements ServiceFacade {
         checkPreconditions(kampfrichterDTO);
 
         LOG.debug("Received 'create' request with userID '{}', wettkampfID '{}', leitend'{}'",
-                kampfrichterDTO.getUserId(),
-                kampfrichterDTO.getWettkampfId(),
+                kampfrichterDTO.getUserID(),
+                kampfrichterDTO.getWettkampfID(),
                 kampfrichterDTO.getLeitend());
 
         final KampfrichterDO newKampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
+        // TODO: What does this do and why do we need it?
+//        final long userId = UserProvider.getCurrentUserId(principal);
 
-        final KampfrichterDO savedKampfrichterDO = kampfrichterComponent.create(newKampfrichterDO, userId);
+        final KampfrichterDO savedKampfrichterDO = kampfrichterComponent.create(newKampfrichterDO, newKampfrichterDO.getUserId());
         return KampfrichterDTOMapper.toDTO.apply(savedKampfrichterDO);
     }
 
 
-    // TODO: The User ID and Wettkampf ID are always null. This needs to be fixed
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -116,8 +112,8 @@ public class KampfrichterService implements ServiceFacade {
 
         LOG.debug(
                 "Received 'update' request with userID '{}', wettkampfID '{}', leitend'{}'",
-                kampfrichterDTO.getUserId(),
-                kampfrichterDTO.getWettkampfId(),
+                kampfrichterDTO.getUserID(),
+                kampfrichterDTO.getWettkampfID(),
                 kampfrichterDTO.getLeitend());
 
 //        if (this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) || this.hasSpecificPermission(
@@ -127,9 +123,13 @@ public class KampfrichterService implements ServiceFacade {
 //            throw new NoPermissionException();
 //        }
         final KampfrichterDO newKampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
 
-        final KampfrichterDO updatedKampfrichterDO = kampfrichterComponent.update(newKampfrichterDO, userId);
+        // TODO: What does this do and why do we need it?
+//        final long userId = UserProvider.getCurrentUserId(principal);
+//        System.out.println("userId:");
+//        System.out.println(userId);
+
+        final KampfrichterDO updatedKampfrichterDO = kampfrichterComponent.update(newKampfrichterDO, newKampfrichterDO.getUserId());
         return KampfrichterDTOMapper.toDTO.apply(updatedKampfrichterDO);
     }
 
@@ -193,9 +193,9 @@ public class KampfrichterService implements ServiceFacade {
 
     private void checkPreconditions(@RequestBody final KampfrichterDTO kampfrichterDTO) {
         Preconditions.checkNotNull(kampfrichterDTO, PRECONDITION_MSG_KAMPFRICHTER);
-        Preconditions.checkNotNull(kampfrichterDTO.getUserId(), PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID);
-        Preconditions.checkNotNull(kampfrichterDTO.getWettkampfId(), PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID);
-        Preconditions.checkArgument(kampfrichterDTO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID);
-        Preconditions.checkArgument(kampfrichterDTO.getWettkampfId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID);
+        Preconditions.checkNotNull(kampfrichterDTO.getUserID(), PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID);
+        Preconditions.checkNotNull(kampfrichterDTO.getWettkampfID(), PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID);
+        Preconditions.checkArgument(kampfrichterDTO.getUserID() >= 0, PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID);
+        Preconditions.checkArgument(kampfrichterDTO.getWettkampfID() >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID);
     }
 }

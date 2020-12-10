@@ -66,6 +66,7 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
     @Override
     public KampfrichterDO create(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
         //checkKampfrichterDO(kampfrichterDO, currentKampfrichterUserId);
+        Preconditions.checkArgument(kampfrichterDO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
 
         final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
         final KampfrichterBE persistedKampfrichterBE = kampfrichterDAO.create(kampfrichterBE, currentKampfrichterUserId);
