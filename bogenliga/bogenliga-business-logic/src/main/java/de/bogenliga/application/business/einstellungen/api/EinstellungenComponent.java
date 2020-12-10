@@ -24,23 +24,26 @@ public interface EinstellungenComponent extends ComponentFacade {
      * Update an existing Einstellungen. The Einstellungen is identified by the id.
      *
      * @param einstellungenDO existing EinstellungenDO to update
+     * @param userId current user
      * @return persisted version of the Einstellungen
      */
-    EinstellungenDO update(EinstellungenDO einstellungenDO, long currentEinstellungenId);
+    EinstellungenDO update(EinstellungenDO einstellungenDO, long userId);
 
     /**
      * Create a new Einstellungen in the database.
      *
      * @param einstellungenDO new Einstellungen
+     * @param userId current user
      * @return persisted version of the einstellungen
      */
-    EinstellungenDO create(EinstellungenDO einstellungenDO, long currentEinstellungenId);
+    EinstellungenDO create(EinstellungenDO einstellungenDO, long userId);
 
     /**
      * Delete an existing einstellungen. The einstellungen is identified by the id.
      *
      * @param einstellungenDO einstellungen to delete
+     * @param userId current user
      */
-    void delete(EinstellungenDO einstellungenDO, long currentEinstellungenId);
+    void delete(EinstellungenDO einstellungenDO, long userId);
 
 }

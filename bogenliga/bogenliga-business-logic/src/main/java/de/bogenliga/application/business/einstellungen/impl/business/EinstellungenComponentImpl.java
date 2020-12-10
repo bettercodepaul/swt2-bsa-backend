@@ -2,8 +2,6 @@ package de.bogenliga.application.business.einstellungen.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.einstellungen.api.EinstellungenComponent;
@@ -22,26 +20,31 @@ import de.bogenliga.application.business.einstellungen.impl.mapper.Einstellungen
 public class EinstellungenComponentImpl implements EinstellungenComponent {
 
 
-    private static final String PREDICTION_EINSTELLUNG = "EinstzellungenDO must not be null";
+    private static final String PREDICTION_EINSTELLUNG = "EinstellungenDO must not be null";
     private static final String PRECONDITION_CURRENT_EEINSTELLUNGEN_ID = "Current Einstellungen ID must not be null";
     private static final String PRECONDITION_CURRENT_EINSTELLUNGEN_ID_NEGATIVE = "Current User ID must not be negativ";
 
     private final EinstellungenDAO einstellungenDAO;
 
-
-
-    private static final Logger LOGGER= LoggerFactory.getLogger(EinstellungenComponentImpl.class);
+    /**
+     * Constructor
+     *
+     * dependency injection with {@link Autowired}
+     *
+     * @param einstellungenDAO to access the database and return configuration representations
+     */
 
     @Autowired
-    public EinstellungenComponentImpl(EinstellungenDAO einstellungenDAO) {
+    public EinstellungenComponentImpl(final EinstellungenDAO einstellungenDAO) {
+
         this.einstellungenDAO = einstellungenDAO;
     }
 
     @Override
     public List<EinstellungenDO> findAll() {
-        final List<EinstellungenBE> einstellungenList = einstellungenDAO.findAll();
+        final List<EinstellungenBE> einstellungenBEList = einstellungenDAO.findAll();
 
-        return einstellungenList.stream().map(EinstellungenMapper.toEinstellungenDO).collect(Collectors.toList());
+        return einstellungenBEList.stream().map(EinstellungenMapper.toDO).collect(Collectors.toList());
     }
 
 
@@ -49,10 +52,10 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
     @Override
     public EinstellungenDO create(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
 
-        final EinstellungenBE einstellungenBE = EinstellungenMapper.toEinstellungenBE.apply(einstellungenDO);
+        final EinstellungenBE einstellungenBE = EinstellungenMapper.toBE.apply(einstellungenDO);
 
         final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.create(einstellungenBE, currentEinstellungenId);
-        return EinstellungenMapper.toEinstellungenDO.apply(persistedEinstellungenBE);
+        return EinstellungenMapper.toDO.apply(persistedEinstellungenBE);
 
     }
 
@@ -60,17 +63,17 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
     public EinstellungenDO update(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
 
 
-        final EinstellungenBE einstellungenBE = EinstellungenMapper.toEinstellungenBE.apply(einstellungenDO);
+        final EinstellungenBE einstellungenBE = EinstellungenMapper.toBE.apply(einstellungenDO);
 
         final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.update(einstellungenBE, currentEinstellungenId);
-        return EinstellungenMapper.toEinstellungenDO.apply(persistedEinstellungenBE);
+        return EinstellungenMapper.toDO.apply(persistedEinstellungenBE);
 
     }
 
     @Override
     public void delete(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
 
-        final EinstellungenBE einstellungenBE = EinstellungenMapper.toEinstellungenBE.apply(einstellungenDO);
+        final EinstellungenBE einstellungenBE = EinstellungenMapper.toBE.apply(einstellungenDO);
         einstellungenDAO.delete(einstellungenBE, currentEinstellungenId);
 
     }

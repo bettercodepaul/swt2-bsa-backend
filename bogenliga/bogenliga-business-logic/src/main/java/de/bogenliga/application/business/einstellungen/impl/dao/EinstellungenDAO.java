@@ -1,21 +1,25 @@
 package de.bogenliga.application.business.einstellungen.impl.dao;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * TODO [AL] class documentation
- *
+ * DataAccessObject for the einstellungen entity in the database.
  * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
+ *
+ * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods.
+ *
  */
 @Repository
 public class EinstellungenDAO implements DataAccessObject {
@@ -66,14 +70,15 @@ public class EinstellungenDAO implements DataAccessObject {
         columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_KEY, EINSTELLUNGEN_BE_KEY);
         columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_VALUE, EINSTELLUNGEN_BE_VALUE);
 
-        //kann theoretisch weg
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
         return columnsToFieldsMap;
     }
 
+
     /**
      * Return all einstellungen entries
+     * @return list of {@link EinstellungenBE} or an empty list if no result found
      */
     public List<EinstellungenBE> findAll() {
 
@@ -85,8 +90,8 @@ public class EinstellungenDAO implements DataAccessObject {
     /**
      * Create a new einstellungen entry
      *
-     * @param einstellungenBE
-     * @param currentUserId
+     * @param einstellungenBE einstellung die angelegt werden soll
+     * @param currentUserId user der die Änderung vornimmt
      *
      * @return Business Entity corresponding to the created einstellungen entry
      */
@@ -99,8 +104,8 @@ public class EinstellungenDAO implements DataAccessObject {
     /**
      * Update an existing einstellungen entry
      *
-     * @param einstellungenBE
-     * @param currentUserId
+     * @param einstellungenBE einstellung die geändert werden soll
+     * @param currentUserId user der die Änderung vornimmt
      *
      * @return Business Entity corresponding to the updated einstellungen entry
      */
@@ -113,8 +118,8 @@ public class EinstellungenDAO implements DataAccessObject {
     /**
      * Delete existing einstellungen
      *
-     * @param einstellungenBE
-     * @param currentUserId
+     * @param einstellungenBE einstellung die gelöscht werden soll
+     * @param currentUserId user der die Änderung vornimmt
      */
     public void delete(final EinstellungenBE einstellungenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(einstellungenBE, currentUserId);

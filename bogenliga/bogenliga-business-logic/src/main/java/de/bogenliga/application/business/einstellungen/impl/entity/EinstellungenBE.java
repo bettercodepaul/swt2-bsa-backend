@@ -21,34 +21,34 @@ public class EinstellungenBE extends CommonBusinessEntity implements BusinessEnt
     @Override
     public String toString() {
         return "EinstellungenBE{" +
-                "id=" + einstellungenId +
-                "key=" + einstellungenKey +
-                "value=" + einstellungenValue +
+                ", id=" + einstellungenId + '\'' +
+                ", key=" + einstellungenKey + '\'' +
+                ", value=" + einstellungenValue + '\'' +
                 "}";
     }
 
-    public Long getId() {
+    public Long geteinstellungenId() {
         return einstellungenId;
     }
 
-    public void setId(Long id) {
-        this.einstellungenId = id;
+    public void seteinstellungenId(final Long einstellungenId) {
+        this.einstellungenId = einstellungenId;
     }
 
-    public String getKey() {
+    public String geteinstellungenKey() {
         return einstellungenKey;
     }
 
-    public void setKey(String key) {
-        this.einstellungenKey = key;
+    public void seteinstellungenKey(final String einstellungenKey) {
+        this.einstellungenKey = einstellungenKey;
     }
 
-    public String getValue() {
+    public String geteinstellungenValue() {
         return einstellungenValue;
     }
 
-    public void setValue(String value) {
-        this.einstellungenValue = value;
+    public void seteinstellungenValue(final String einstellungenValue) {
+        this.einstellungenValue = einstellungenValue;
     }
 
 
