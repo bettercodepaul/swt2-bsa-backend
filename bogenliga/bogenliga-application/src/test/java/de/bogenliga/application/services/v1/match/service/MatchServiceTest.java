@@ -28,7 +28,6 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
@@ -121,6 +120,10 @@ public class MatchServiceTest {
     private static final Long W_tag = 5L;
     private static final Date W_datum = new Date(20190521L);
     private static final String W_ort = "Hier";
+    private static final String W_strasse = "Reutlingerstr. 6";
+    private static final String W_plz = "72764";
+    private static final String W_ortsname = "Reutlingen";
+    private static final String W_ortsinfo= "Hinter dem Haus";
     private static final String W_begin = "gestern";
     private static final Long W_disId = 12345L;
 
@@ -222,7 +225,7 @@ public class MatchServiceTest {
 
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null, null, null);
+        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_strasse, W_plz, W_ortsname, W_ortsinfo, W_begin, W_tag, W_disId, W_typId, null,null,null, null, null);
     }
 
 

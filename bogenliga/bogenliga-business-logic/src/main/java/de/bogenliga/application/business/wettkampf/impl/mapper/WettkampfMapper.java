@@ -26,6 +26,10 @@ public class WettkampfMapper implements ValueObjectMapper {
         final Long veranstaltungsId = be.getVeranstaltungsId();
         final Date datum = be.getDatum();
         final String wettkampfOrt = be.getWettkampfOrt();
+        final String wettkampfStrasse = be.getWettkampfStrasse();
+        final String wettkampfPlz = be.getWettkampfPlz();
+        final String wettkampfOrtsname = be.getWettkampfOrtsname();
+        final String wettkampfOrstinfo = be.getWettkampfOrtsinfo();
         final String wettkampfBeginn = be.getWettkampfBeginn();
         final Long wettkampfTag = be.getWettkampfTag();
         final Long wettkampfDisziplinId = be.getWettkampfDisziplinId();
@@ -41,7 +45,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new WettkampfDO(id, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag, wettkampfDisziplinId, wettkampfTypId,
+        return new WettkampfDO(id, veranstaltungsId, datum, wettkampfOrt, wettkampfStrasse, wettkampfPlz, wettkampfOrtsname, wettkampfOrstinfo ,wettkampfBeginn, wettkampfTag, wettkampfDisziplinId, wettkampfTypId,
                 version, kampfrichterID, wettkampfAusrichter);
     };
 
@@ -58,6 +62,10 @@ public class WettkampfMapper implements ValueObjectMapper {
         wettkampfBe.setVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId());
         wettkampfBe.setDatum(wettkampfDO.getWettkampfDatum());
         wettkampfBe.setWettkampfOrt(wettkampfDO.getWettkampfOrt());
+        wettkampfBe.setWettkampfStrasse(wettkampfDO.getWettkampfStrasse());
+        wettkampfBe.setWettkampfPlz(wettkampfDO.getWettkampfPlz());
+        wettkampfBe.setWettkampfOrtsname(wettkampfDO.getWettkampfOrtsname());
+        wettkampfBe.setWettkampfOrtsinfo(wettkampfDO.getWettkampfOrtsinfo());
         wettkampfBe.setWettkampfBeginn(wettkampfDO.getWettkampfBeginn());
         wettkampfBe.setWettkampfTag(wettkampfDO.getWettkampfTag());
         wettkampfBe.setWettkampfDisziplinId(wettkampfDO.getWettkampfDisziplinId());
