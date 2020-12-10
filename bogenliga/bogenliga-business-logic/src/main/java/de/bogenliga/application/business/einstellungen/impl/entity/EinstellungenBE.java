@@ -10,7 +10,6 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class EinstellungenBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private Long einstellungenId;
     private String einstellungenKey;
     private String einstellungenValue;
 
@@ -21,18 +20,9 @@ public class EinstellungenBE extends CommonBusinessEntity implements BusinessEnt
     @Override
     public String toString() {
         return "EinstellungenBE{" +
-                ", id=" + einstellungenId + '\'' +
                 ", key=" + einstellungenKey + '\'' +
                 ", value=" + einstellungenValue + '\'' +
                 "}";
-    }
-
-    public Long geteinstellungenId() {
-        return einstellungenId;
-    }
-
-    public void seteinstellungenId(final Long einstellungenId) {
-        this.einstellungenId = einstellungenId;
     }
 
     public String geteinstellungenKey() {

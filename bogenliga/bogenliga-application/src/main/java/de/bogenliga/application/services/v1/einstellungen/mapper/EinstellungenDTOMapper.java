@@ -16,11 +16,10 @@ public final class EinstellungenDTOMapper implements DataTransferObjectMapper {
 
     public static final Function<EinstellungenDO, EinstellungenDTO> toDTO = einstellungenDO -> {
 
-        final Long einstellungenId = einstellungenDO.getId();
         final String einstellungenValue = einstellungenDO.getValue();
         final String einstellungenKey = einstellungenDO.getKey();
 
-        return new EinstellungenDTO(einstellungenId, einstellungenValue, einstellungenKey);
+        return new EinstellungenDTO(/*einstellungenId, */einstellungenValue, einstellungenKey);
 
     };
 
@@ -29,11 +28,10 @@ public final class EinstellungenDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<EinstellungenDTO, EinstellungenDO> toDO = dto -> {
 
-        final Long einstellungenId = dto.getId();
         final String einstellungenValue = dto.getValue();
         final String einstellungenKey = dto.getKey();
 
-        return new EinstellungenDO(einstellungenId,einstellungenValue,einstellungenKey);
+        return new EinstellungenDO(einstellungenValue,einstellungenKey);
 
     };
 

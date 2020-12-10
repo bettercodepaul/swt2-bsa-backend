@@ -50,31 +50,31 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
 
 
     @Override
-    public EinstellungenDO create(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
+    public EinstellungenDO create(EinstellungenDO einstellungenDO, long currentUserId) {
 
         final EinstellungenBE einstellungenBE = EinstellungenMapper.toBE.apply(einstellungenDO);
 
-        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.create(einstellungenBE, currentEinstellungenId);
+        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.create(einstellungenBE, currentUserId);
         return EinstellungenMapper.toDO.apply(persistedEinstellungenBE);
 
     }
 
     @Override
-    public EinstellungenDO update(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
+    public EinstellungenDO update(EinstellungenDO einstellungenDO, long currentUserId) {
 
 
         final EinstellungenBE einstellungenBE = EinstellungenMapper.toBE.apply(einstellungenDO);
 
-        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.update(einstellungenBE, currentEinstellungenId);
+        final EinstellungenBE persistedEinstellungenBE = einstellungenDAO.update(einstellungenBE, currentUserId);
         return EinstellungenMapper.toDO.apply(persistedEinstellungenBE);
 
     }
 
     @Override
-    public void delete(EinstellungenDO einstellungenDO, long currentEinstellungenId) {
+    public void delete(EinstellungenDO einstellungenDO, long currentUserId) {
 
         final EinstellungenBE einstellungenBE = EinstellungenMapper.toBE.apply(einstellungenDO);
-        einstellungenDAO.delete(einstellungenBE, currentEinstellungenId);
+        einstellungenDAO.delete(einstellungenBE, currentUserId);
 
     }
 
