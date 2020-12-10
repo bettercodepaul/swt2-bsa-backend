@@ -1,5 +1,4 @@
 package de.bogenliga.application.services.v1.wettkampf.mapper;
-import java.time.OffsetDateTime;
 import java.sql.Date;
 import java.util.function.Function;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
@@ -24,11 +23,12 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
     public static final Function<WettkampfDO, WettkampfDTO> toDTO = wettkampfDO -> {
         final Long wettkampfId = wettkampfDO.getId();
         final Long wettkampfVeranstaltungsId = wettkampfDO.getWettkampfVeranstaltungsId();
-
         final Date wettkampfDatum = wettkampfDO.getWettkampfDatum();
-
-
         final String wettkampfOrt = wettkampfDO.getWettkampfOrt();
+        final String wettkampfStrasse = wettkampfDO.getWettkampfStrasse();
+        final String wettkampfPlz = wettkampfDO.getWettkampfPlz();
+        final String wettkampfOrtsname = wettkampfDO.getWettkampfOrtsname();
+        final String wettkampfOrtsinfo = wettkampfDO.getWettkampfOrtsinfo();
         final String wettkampfBeginn = wettkampfDO.getWettkampfBeginn();
         final Long wettkampfTag = wettkampfDO.getWettkampfTag();
         final Long wettkampfDisziplinId = wettkampfDO.getWettkampfDisziplinId();
@@ -37,7 +37,8 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long kampfrichterID = wettkampfDO.getKampfrichterID();
         final Long wettkampfAusrichter = wettkampfDO.getWettkampfAusrichter();
 
-        return new WettkampfDTO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
+        return new WettkampfDTO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfStrasse,
+                wettkampfPlz, wettkampfOrtsname, wettkampfOrtsinfo, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID, wettkampfAusrichter);
     };
 
@@ -49,11 +50,12 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
 
         final Long wettkampfId = wettkampfDTO.getId();
         final Long wettkampfVeranstaltungsId = wettkampfDTO.getwettkampfVeranstaltungsId();
-
         final Date wettkampfDatum = wettkampfDTO.getDatum();
-
-
         final String wettkampfOrt = wettkampfDTO.getWettkampfOrt();
+        final String wettkampfStrasse = wettkampfDTO.getWettkampfStrasse();
+        final String wettkampfPlz = wettkampfDTO.getWettkampfPlz();
+        final String wettkampfOrtsname = wettkampfDTO.getWettkampfOrtsname();
+        final String wettkampfOrtsinfo = wettkampfDTO.getWettkampfOrtsinfo();
         final String wettkampfBeginn = wettkampfDTO.getWettkampfBeginn();
         final Long wettkampfTag = wettkampfDTO.getWettkampfTag();
         final Long wettkampfDisziplinId = wettkampfDTO.getWettkampfDisziplinId();
@@ -62,7 +64,8 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long kampfrichterID = wettkampfDTO.getKampfrichterID();
         final Long wettkampfAusrichter = wettkampfDTO.getWettkampfAusrichter();
 
-        return new WettkampfDO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
+        return new WettkampfDO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfStrasse,
+                wettkampfPlz, wettkampfOrtsname, wettkampfOrtsinfo, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID, wettkampfAusrichter);
     };
 
