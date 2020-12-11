@@ -232,8 +232,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.host", SMTPHost);
         props.put("mail.smtp.port", SMTPPort);
-        props.put("mail.smtp.socketFactory.class",
-                "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
         Session session = Session.getDefaultInstance(props,
                 new javax.mail.Authenticator() {
@@ -255,11 +254,9 @@ public class UserRoleComponentImpl implements UserRoleComponent {
                 msg.setRecipients(Message.RecipientType.TO,
                         InternetAddress.parse(recipient));
             }
-            System.out.println("Message is ready");
-            System.out.println("Mail:" + SMTPEMail + " Host:" + SMTPHost + " PW:" + SMTPPW + " Port:" + SMTPPort);
+
             Transport.send(msg);
 
-            System.out.println("EMail Sent Successfully!!");
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             unsupportedEncodingException.printStackTrace();
         } catch (AddressException addressException) {

@@ -4,7 +4,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * TODO [AL] class documentation
+ * I represent an entry in the Database
  *
  * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
  */

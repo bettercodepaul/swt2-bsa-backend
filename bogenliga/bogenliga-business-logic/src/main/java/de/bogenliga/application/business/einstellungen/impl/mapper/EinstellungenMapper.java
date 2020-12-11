@@ -13,7 +13,7 @@ import de.bogenliga.application.common.time.DateProvider;
  * I convert the einstellungen DataObjects and BusinessEntities
  * I convert the {@link EinstellungenBE} and the {@link EinstellungenDO}
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Fabio Care, fabio_silas.care@student.reutlingen.university.de
  */
 public class EinstellungenMapper implements ValueObjectMapper {
 
