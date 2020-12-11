@@ -52,13 +52,15 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
     /**
      * Constructor
-     *
+     * <p>
      * dependency injection with {@link Autowired}
-     * @param userRoleExtDAO  to access the database and return user role (including name, email - not IDs only)
-     * @param roleDAO  to access the database and return default role
+     *
+     * @param userRoleExtDAO to access the database and return user role (including name, email - not IDs only)
+     * @param roleDAO        to access the database and return default role
      */
     @Autowired
-    public UserRoleComponentImpl(final UserRoleExtDAO userRoleExtDAO, RoleDAO roleDAO, EinstellungenDAO einstellungenDAO) {
+    public UserRoleComponentImpl(final UserRoleExtDAO userRoleExtDAO, RoleDAO roleDAO,
+                                 EinstellungenDAO einstellungenDAO) {
 
         this.userRoleExtDAO = userRoleExtDAO;
         this.roleDAO = roleDAO;
@@ -72,6 +74,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         return userRoleExtBEList.stream().map(UserRoleMapper.extToUserRoleDO).collect(Collectors.toList());
     }
 
+
     @Override
     public List<UserRoleDO> findById(final Long id) {
         Preconditions.checkNotNull(id, PRECONDITION_MSG_USERROLE);
@@ -84,7 +87,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
                     String.format("No result found for ID '%s'", id));
         }
         List<UserRoleDO> userRoleDOList = new ArrayList<>();
-        for(UserRoleExtBE userRoleExtBE : result){
+        for (UserRoleExtBE userRoleExtBE : result) {
             userRoleDOList.add(UserRoleMapper.extToUserRoleDO.apply(userRoleExtBE));
         }
 
@@ -113,7 +116,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
 
         // find the default role
-        final RoleBE defaultRoleBE =  roleDAO.findByName(USER_ROLE_DEFAULT);
+        final RoleBE defaultRoleBE = roleDAO.findByName(USER_ROLE_DEFAULT);
 
 
         final UserRoleBE result = new UserRoleBE();
@@ -124,6 +127,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         return UserRoleMapper.toUserRoleDO.apply(persistedUserRoleBE);
     }
+
 
     // create with role and userid
     public UserRoleDO create(final Long userId, final Long roleId, final Long currentUserId) {
@@ -143,7 +147,8 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
     /**
      * Implementation for userRole update method
-     * @param userRoleDOS list of userroles
+     *
+     * @param userRoleDOS   list of userroles
      * @param currentUserId current user
      *
      * @return
@@ -157,7 +162,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
 
         List<UserRoleBE> userRoleBES = new ArrayList<>();
-        for(UserRoleDO userRoleDO : userRoleDOS) {
+        for (UserRoleDO userRoleDO : userRoleDOS) {
             UserRoleBE result = new UserRoleBE();
             result.setUserId(userRoleDO.getId());
             result.setRoleId(userRoleDO.getRoleId());
@@ -168,7 +173,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
 
         List<UserRoleDO> persistedUserRoleDO = new ArrayList<>();
-        for(UserRoleBE userRoleBE: persistedUserRoleBE){
+        for (UserRoleBE userRoleBE : persistedUserRoleBE) {
             persistedUserRoleDO.add(UserRoleMapper.toUserRoleDO.apply(userRoleBE));
         }
 
@@ -178,6 +183,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
     /**
      * Implementation sendFeedback method
+     *
      * @param text Feedback text given in the Frontend, optinal with Email of the sender
      *
      * @return void
@@ -186,11 +192,11 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     public void sendFeedback(final String text) {
 
         //this returns all DB entries with the Benutzer_rolle_rolle_id of 1
-        List<UserRoleExtBE>  result = userRoleExtDAO.findAdminEmails();
+        List<UserRoleExtBE> result = userRoleExtDAO.findAdminEmails();
         String[] recipients = new String[result.size()];
 
         //here we filter all the Mail-addresses
-        for (int i = 0; i< result.size(); i++) {
+        for (int i = 0; i < result.size(); i++) {
             recipients[i] = (result.get(i).getUserEmail());
         }
 
@@ -204,15 +210,15 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         for (int i = 0; i < einstellungen.size(); i++) {
             String tempKey = einstellungen.get(i).geteinstellungenKey();
-            if(tempKey.equals("SMTPHost")) {
+            if (tempKey.equals("SMTPHost")) {
                 SMTPHost = einstellungen.get(i).geteinstellungenValue();
-            } else if(tempKey.equals("SMTPPasswort")) {
+            } else if (tempKey.equals("SMTPPasswort")) {
                 SMTPPW = einstellungen.get(i).geteinstellungenValue();
-            }  else if(tempKey.equals("SMTPBenutzer")) {
+            } else if (tempKey.equals("SMTPBenutzer")) {
                 SMTPBenutzer = einstellungen.get(i).geteinstellungenValue();
-            }   else if(tempKey.equals("SMTPEmail")) {
+            } else if (tempKey.equals("SMTPEmail")) {
                 SMTPEMail = einstellungen.get(i).geteinstellungenValue();
-            }   else if(tempKey.equals("SMTPPort")) {
+            } else if (tempKey.equals("SMTPPort")) {
                 SMTPPort = einstellungen.get(i).geteinstellungenValue();
             }
 
@@ -250,7 +256,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
                         InternetAddress.parse(recipient));
             }
             System.out.println("Message is ready");
-            System.out.println("Mail:" + SMTPEMail + " Host:"  + SMTPHost + " PW:" + SMTPPW + " Port:" + SMTPPort);
+            System.out.println("Mail:" + SMTPEMail + " Host:" + SMTPHost + " PW:" + SMTPPW + " Port:" + SMTPPort);
             Transport.send(msg);
 
             System.out.println("EMail Sent Successfully!!");
@@ -263,7 +269,6 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
     }
-
 
 
 }
