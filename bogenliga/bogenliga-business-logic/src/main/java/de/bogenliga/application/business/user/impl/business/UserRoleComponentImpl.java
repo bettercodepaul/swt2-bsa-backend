@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
+import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
+import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
@@ -15,7 +17,9 @@ import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -24,6 +28,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -42,6 +47,8 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
     private final RoleDAO roleDAO;
 
+    private EinstellungenDAO einstellungenDAO;
+
 
     /**
      * Constructor
@@ -51,10 +58,11 @@ public class UserRoleComponentImpl implements UserRoleComponent {
      * @param roleDAO  to access the database and return default role
      */
     @Autowired
-    public UserRoleComponentImpl(final UserRoleExtDAO userRoleExtDAO, RoleDAO roleDAO) {
+    public UserRoleComponentImpl(final UserRoleExtDAO userRoleExtDAO, RoleDAO roleDAO, EinstellungenDAO einstellungenDAO) {
 
         this.userRoleExtDAO = userRoleExtDAO;
         this.roleDAO = roleDAO;
+        this.einstellungenDAO = einstellungenDAO;
     }
 
 
@@ -184,21 +192,44 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         //here we filter all the Mail-addresses
         for (int i = 0; i< result.size(); i++) {
             recipients[i] = (result.get(i).getUserEmail());
+        }
+
+        List<EinstellungenBE> einstellungen = einstellungenDAO.findAll();
+
+        String SMTPHost = "";
+        String SMTPPW = "";
+        String SMTPBenutzer = "";
+        String SMTPEMail = "";
+        String SMTPPort = "";
+
+        for (int i = 0; i < einstellungen.size(); i++) {
+            String tempKey = einstellungen.get(i).geteinstellungenKey();
+            if(tempKey.equals("SMTPHost")) {
+                SMTPHost = einstellungen.get(i).geteinstellungenValue();
+            } else if(tempKey.equals("SMTPPasswort")) {
+                SMTPPW = einstellungen.get(i).geteinstellungenValue();
+            }  else if(tempKey.equals("SMTPBenutzer")) {
+                SMTPBenutzer = einstellungen.get(i).geteinstellungenValue();
+            }   else if(tempKey.equals("SMTPEmail")) {
+                SMTPEMail = einstellungen.get(i).geteinstellungenValue();
+            }   else if(tempKey.equals("SMTPPort")) {
+                SMTPPort = einstellungen.get(i).geteinstellungenValue();
+            }
 
         }
 
-        //A G-Mail SMTP is used for now
-        //THIS IS SUBJECT TO CHANGE IN THE FUTURE AND NOT SECURE
-        final String username = "bogenliga@gmail.com";
-        final String password = "mki4bogenliga";
+        final String username = SMTPBenutzer;
+        final String password = SMTPPW;
 
         Properties props = new Properties();
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.host", SMTPHost);
+        props.put("mail.smtp.port", SMTPPort);
+        props.put("mail.smtp.socketFactory.class",
+                "javax.net.ssl.SSLSocketFactory");
 
-        Session session = Session.getInstance(props,
+        Session session = Session.getDefaultInstance(props,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(username, password);
@@ -206,22 +237,30 @@ public class UserRoleComponentImpl implements UserRoleComponent {
                 });
 
         try {
+            MimeMessage msg = new MimeMessage(session);
 
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("bogenliga@gmail.com"));
+            msg.setFrom(new InternetAddress(SMTPEMail, "NoReply-Bogenliga"));
+
+            msg.setSubject("Feedback", "UTF-8");
+
+            msg.setText(text);
+
             for (String recipient : recipients) {
-                message.setRecipients(Message.RecipientType.TO,
+                msg.setRecipients(Message.RecipientType.TO,
                         InternetAddress.parse(recipient));
             }
-            message.setSubject("Feedback");
-            message.setText(text);
+            System.out.println("Message is ready");
+            System.out.println("Mail:" + SMTPEMail + " Host:"  + SMTPHost + " PW:" + SMTPPW + " Port:" + SMTPPort);
+            Transport.send(msg);
 
-            Transport.send(message);
-
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            System.out.println("EMail Sent Successfully!!");
+        } catch (UnsupportedEncodingException unsupportedEncodingException) {
+            unsupportedEncodingException.printStackTrace();
+        } catch (AddressException addressException) {
+            addressException.printStackTrace();
+        } catch (MessagingException messagingException) {
+            messagingException.printStackTrace();
         }
-
 
     }
 
