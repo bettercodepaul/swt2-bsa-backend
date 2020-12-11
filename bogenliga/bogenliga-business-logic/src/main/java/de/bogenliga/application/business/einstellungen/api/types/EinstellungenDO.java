@@ -27,6 +27,7 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
         // empty constructor
     }
 
+
     /**
      * Constructor with mandatory parameters
      */
@@ -43,27 +44,33 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
         this.version = version;
     }
 
+
     public EinstellungenDO(final String key, final String value) {
         this.key = key;
         this.value = value;
 
     }
 
+
     public String getKey() {
         return this.key;
     }
+
 
     public void setKey(final String key) {
         this.key = key;
     }
 
+
     public String getValue() {
         return this.value;
     }
 
+
     public void setValue(final String value) {
         this.value = value;
     }
+
 
     @Override
     public int hashCode() {
@@ -80,7 +87,7 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
             return false;
         }
         final EinstellungenDO einstellungenDO = (EinstellungenDO) o;
-        return  Objects.equals(getKey(), einstellungenDO.getKey()) &&
+        return Objects.equals(getKey(), einstellungenDO.getKey()) &&
                 Objects.equals(getValue(), einstellungenDO.getValue());
     }
 

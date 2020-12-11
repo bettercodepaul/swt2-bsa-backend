@@ -10,8 +10,8 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
- * I convert the einstellungen DataObjects and BusinessEntities
- * I convert the {@link EinstellungenBE} and the {@link EinstellungenDO}
+ * I convert the einstellungen DataObjects and BusinessEntities I convert the {@link EinstellungenBE} and the {@link
+ * EinstellungenDO}
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -19,12 +19,11 @@ public class EinstellungenMapper implements ValueObjectMapper {
 
     /**
      * Converts a {@link EinstellungenBE} to a {@link EinstellungenDO}
-     *
      */
     public static final Function<EinstellungenBE, EinstellungenDO> toDO = be -> {
 
-        final String value = be.geteinstellungenValue();
-        final String key = be.geteinstellungenKey();
+        final String value = be.getEinstellungenValue();
+        final String key = be.getEinstellungenKey();
 
         Long createdByUserId = be.getCreatedByUserId();
         Long lastModifiedByUserId = be.getLastModifiedByUserId();
@@ -33,22 +32,23 @@ public class EinstellungenMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new EinstellungenDO(value, key, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new EinstellungenDO(value, key, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId,
+                version);
 
     };
 
     /**
      * Converts a {@link EinstellungenDO} to a {@link EinstellungenBE}
-     *
      */
     public static final Function<EinstellungenDO, EinstellungenBE> toBE = einstellungenDO -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(einstellungenDO.getCreatedAtUtc());
-        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(einstellungenDO.getLastModifiedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(
+                einstellungenDO.getLastModifiedAtUtc());
 
         EinstellungenBE einstellungenBE = new EinstellungenBE();
-        einstellungenBE.seteinstellungenValue(einstellungenDO.getValue());
-        einstellungenBE.seteinstellungenKey(einstellungenDO.getKey());
+        einstellungenBE.setEinstellungenValue(einstellungenDO.getValue());
+        einstellungenBE.setEinstellungenKey(einstellungenDO.getKey());
 
         einstellungenBE.setCreatedAtUtc(createdAtUtcTimestamp);
         einstellungenBE.setCreatedByUserId(einstellungenDO.getCreatedByUserId());
@@ -58,6 +58,7 @@ public class EinstellungenMapper implements ValueObjectMapper {
 
         return einstellungenBE;
     };
+
 
     /**
      * Private constructor

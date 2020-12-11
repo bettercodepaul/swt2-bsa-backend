@@ -14,8 +14,7 @@ public interface EinstellungenComponent extends ComponentFacade {
     /**
      * Return all einstellungen entries
      *
-     * @return list of all einstellungen in the database
-     * empty list, if no einstellungen is found
+     * @return list of all einstellungen in the database empty list, if no einstellungen is found
      */
     List<EinstellungenDO> findAll();
 
@@ -24,7 +23,8 @@ public interface EinstellungenComponent extends ComponentFacade {
      * Update an existing Einstellungen. The Einstellungen is identified by the id.
      *
      * @param einstellungenDO existing EinstellungenDO to update
-     * @param userId current user
+     * @param userId          current user
+     *
      * @return persisted version of the Einstellungen
      */
     EinstellungenDO update(EinstellungenDO einstellungenDO, long userId);
@@ -33,7 +33,8 @@ public interface EinstellungenComponent extends ComponentFacade {
      * Create a new Einstellungen in the database.
      *
      * @param einstellungenDO new Einstellungen
-     * @param userId current user
+     * @param userId          current user
+     *
      * @return persisted version of the einstellungen
      */
     EinstellungenDO create(EinstellungenDO einstellungenDO, long userId);
@@ -42,7 +43,7 @@ public interface EinstellungenComponent extends ComponentFacade {
      * Delete an existing einstellungen. The einstellungen is identified by the id.
      *
      * @param einstellungenDO einstellungen to delete
-     * @param userId current user
+     * @param userId          current user
      */
     void delete(EinstellungenDO einstellungenDO, long userId);
 
