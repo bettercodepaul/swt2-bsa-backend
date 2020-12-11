@@ -28,7 +28,7 @@ public class EinstellungenDAO implements DataAccessObject {
     private static final Logger LOG = LoggerFactory.getLogger(EinstellungenDAO.class);
 
     // table name in the DB
-    private static final String TABLE = "configuration";
+    private static final String TABLE = "einstellungen";
 
     // business entity parameters
     private static final String EINSTELLUNGEN_BE_KEY = "einstellungenKey";
@@ -118,7 +118,7 @@ public class EinstellungenDAO implements DataAccessObject {
      */
     public EinstellungenBE update(final EinstellungenBE einstellungenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(einstellungenBE, currentUserId);
-        return basicDao.updateEntity(EINSTELLUNGEN, einstellungenBE/*, EINSTELLUNGEN_BE_ID*/);
+        return basicDao.updateEntity(EINSTELLUNGEN, einstellungenBE, EINSTELLUNGEN_BE_ID);
     }
 
 

@@ -23,8 +23,8 @@ public class EinstellungenMapper implements ValueObjectMapper {
      */
     public static final Function<EinstellungenBE, EinstellungenDO> toDO = be -> {
         final String id = be.getEinstellungenId();
-        final String value = be.geteinstellungenValue();
-        final String key = be.geteinstellungenKey();
+        final String value = be.getEinstellungenValue();
+        final String key = be.getEinstellungenKey();
 
 
         Long createdByUserId = be.getCreatedByUserId();
@@ -49,8 +49,8 @@ public class EinstellungenMapper implements ValueObjectMapper {
 
         EinstellungenBE einstellungenBE = new EinstellungenBE();
         einstellungenBE.setEinstellungenId(einstellungenDO.getId());
-        einstellungenBE.seteinstellungenValue(einstellungenDO.getValue());
-        einstellungenBE.seteinstellungenKey(einstellungenDO.getKey());
+        einstellungenBE.setEinstellungenValue(einstellungenDO.getValue());
+        einstellungenBE.setEinstellungenKey(einstellungenDO.getKey());
 
         einstellungenBE.setCreatedAtUtc(createdAtUtcTimestamp);
         einstellungenBE.setCreatedByUserId(einstellungenDO.getCreatedByUserId());
