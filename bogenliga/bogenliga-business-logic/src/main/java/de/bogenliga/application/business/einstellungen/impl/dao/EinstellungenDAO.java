@@ -16,10 +16,10 @@ import java.util.Map;
 
 /**
  * DataAccessObject for the einstellungen entity in the database.
+ *
  * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods.
- *
  */
 @Repository
 public class EinstellungenDAO implements DataAccessObject {
@@ -48,6 +48,7 @@ public class EinstellungenDAO implements DataAccessObject {
 
     private final BasicDAO basicDao;
 
+
     /**
      * Initialize the transaction manager to provide a database connection
      *
@@ -73,11 +74,10 @@ public class EinstellungenDAO implements DataAccessObject {
 
     /**
      * Return all einstellungen entries
+     *
      * @return list of {@link EinstellungenBE} or an empty list if no result found
      */
     public List<EinstellungenBE> findAll() {
-
-        LOG.debug(basicDao.selectEntityList(EINSTELLUNGEN, FIND_ALL).toString());
         return basicDao.selectEntityList(EINSTELLUNGEN, FIND_ALL);
     }
 
@@ -86,7 +86,7 @@ public class EinstellungenDAO implements DataAccessObject {
      * Create a new einstellungen entry
      *
      * @param einstellungenBE einstellung die angelegt werden soll
-     * @param currentUserId user der die Änderung vornimmt
+     * @param currentUserId   user der die Änderung vornimmt
      *
      * @return Business Entity corresponding to the created einstellungen entry
      */
@@ -100,13 +100,13 @@ public class EinstellungenDAO implements DataAccessObject {
      * Update an existing einstellungen entry
      *
      * @param einstellungenBE einstellung die geändert werden soll
-     * @param currentUserId user der die Änderung vornimmt
+     * @param currentUserId   user der die Änderung vornimmt
      *
      * @return Business Entity corresponding to the updated einstellungen entry
      */
     public EinstellungenBE update(final EinstellungenBE einstellungenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(einstellungenBE, currentUserId);
-        return basicDao.updateEntity(EINSTELLUNGEN, einstellungenBE/*, EINSTELLUNGEN_BE_ID*/);
+        return basicDao.updateEntity(EINSTELLUNGEN, einstellungenBE, EINSTELLUNGEN_BE_KEY);
     }
 
 
@@ -114,11 +114,11 @@ public class EinstellungenDAO implements DataAccessObject {
      * Delete existing einstellungen
      *
      * @param einstellungenBE einstellung die gelöscht werden soll
-     * @param currentUserId user der die Änderung vornimmt
+     * @param currentUserId   user der die Änderung vornimmt
      */
     public void delete(final EinstellungenBE einstellungenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(einstellungenBE, currentUserId);
-        basicDao.deleteEntity(EINSTELLUNGEN, einstellungenBE/*, EINSTELLUNGEN_BE_ID*/);
+        basicDao.deleteEntity(EINSTELLUNGEN, einstellungenBE, EINSTELLUNGEN_BE_KEY);
     }
 
 }

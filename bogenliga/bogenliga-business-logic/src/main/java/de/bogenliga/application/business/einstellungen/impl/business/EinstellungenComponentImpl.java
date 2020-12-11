@@ -26,9 +26,10 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
 
     private final EinstellungenDAO einstellungenDAO;
 
+
     /**
      * Constructor
-     *
+     * <p>
      * dependency injection with {@link Autowired}
      *
      * @param einstellungenDAO to access the database and return configuration representations
@@ -40,13 +41,13 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
         this.einstellungenDAO = einstellungenDAO;
     }
 
+
     @Override
     public List<EinstellungenDO> findAll() {
         final List<EinstellungenBE> einstellungenBEList = einstellungenDAO.findAll();
 
         return einstellungenBEList.stream().map(EinstellungenMapper.toDO).collect(Collectors.toList());
     }
-
 
 
     @Override
@@ -59,6 +60,7 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
 
     }
 
+
     @Override
     public EinstellungenDO update(EinstellungenDO einstellungenDO, long currentUserId) {
 
@@ -70,6 +72,7 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
 
     }
 
+
     @Override
     public void delete(EinstellungenDO einstellungenDO, long currentUserId) {
 
@@ -77,7 +80,6 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
         einstellungenDAO.delete(einstellungenBE, currentUserId);
 
     }
-
 
 
 }

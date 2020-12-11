@@ -13,9 +13,11 @@ public class EinstellungenBE extends CommonBusinessEntity implements BusinessEnt
     private String einstellungenKey;
     private String einstellungenValue;
 
+
     public EinstellungenBE() {
         //empty constructor
     }
+
 
     @Override
     public String toString() {
@@ -25,23 +27,25 @@ public class EinstellungenBE extends CommonBusinessEntity implements BusinessEnt
                 "}";
     }
 
-    public String geteinstellungenKey() {
+
+    public String getEinstellungenKey() {
         return einstellungenKey;
     }
 
-    public void seteinstellungenKey(final String einstellungenKey) {
+
+    public void setEinstellungenKey(final String einstellungenKey) {
         this.einstellungenKey = einstellungenKey;
     }
 
-    public String geteinstellungenValue() {
+
+    public String getEinstellungenValue() {
         return einstellungenValue;
     }
 
-    public void seteinstellungenValue(final String einstellungenValue) {
+
+    public void setEinstellungenValue(final String einstellungenValue) {
         this.einstellungenValue = einstellungenValue;
     }
-
-
 
 
 }
