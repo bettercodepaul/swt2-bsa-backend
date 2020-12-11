@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +49,16 @@ public class EinstellungenService implements ServiceFacade {
         LOGGER.debug("Receive Einstellungen request");
         LOGGER.debug(einstellungenDOList.get(0).getValue());
         return einstellungenDOList.stream().map(EinstellungenDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    @RequestMapping(value = "{id}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public EinstellungenDTO findById(@PathVariable("id")final long id){
+
+        LOGGER.debug("Receive Einstellungen findbyid request");
+        final EinstellungenDO einstellungenDO= einstellungenComponent.findById(id);
+        return EinstellungenDTOMapper.toDTO.apply(einstellungenDO);
+
     }
 
 }

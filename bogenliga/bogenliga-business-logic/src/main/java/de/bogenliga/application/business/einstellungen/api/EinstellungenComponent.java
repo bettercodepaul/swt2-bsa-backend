@@ -20,6 +20,8 @@ public interface EinstellungenComponent extends ComponentFacade {
     List<EinstellungenDO> findAll();
 
 
+    EinstellungenDO findById(long id);
+
     /**
      * Update an existing Einstellungen. The Einstellungen is identified by the id.
      *

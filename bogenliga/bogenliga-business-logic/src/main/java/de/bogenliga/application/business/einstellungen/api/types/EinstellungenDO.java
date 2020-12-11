@@ -16,6 +16,7 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
     /**
      * business parameter
      */
+    private String id;
     private String key;
     private String value;
 
@@ -30,9 +31,10 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with mandatory parameters
      */
-    public EinstellungenDO(final String key, final String value, final OffsetDateTime createdAtUtc,
+    public EinstellungenDO(final String id,final String key, final String value, final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                            final Long lastModifiedByUserId, final Long version) {
+        this.id=id;
         this.key = key;
         this.value = value;
 
@@ -43,10 +45,24 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
         this.version = version;
     }
 
-    public EinstellungenDO(final String key, final String value) {
+
+
+
+
+    public EinstellungenDO(final String id, final String key, final String value) {
+        this.id=id;
         this.key = key;
         this.value = value;
 
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getKey() {
@@ -81,7 +97,8 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
         }
         final EinstellungenDO einstellungenDO = (EinstellungenDO) o;
         return  Objects.equals(getKey(), einstellungenDO.getKey()) &&
-                Objects.equals(getValue(), einstellungenDO.getValue());
+                Objects.equals(getValue(), einstellungenDO.getValue()) &&
+                Objects.equals(getId(), einstellungenDO.getId());
     }
 
 

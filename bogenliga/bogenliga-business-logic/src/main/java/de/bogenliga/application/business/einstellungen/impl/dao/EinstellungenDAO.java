@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.einstellungen.impl.dao;
 
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
+import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
 import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -32,10 +33,13 @@ public class EinstellungenDAO implements DataAccessObject {
     // business entity parameters
     private static final String EINSTELLUNGEN_BE_KEY = "einstellungenKey";
     private static final String EINSTELLUNGEN_BE_VALUE = "einstellungenValue";
+    private static final String EINSTELLUNGEN_BE_ID = "einstellungenId";
 
     // table columns
-    private static final String EINSTELLUNGEN_TABLE_KEY = "configuration_key";
-    private static final String EINSTELLUNGEN_TABLE_VALUE = "configuration_value";
+    private static final String EINSTELLUNGEN_TABLE_KEY = "einstellungen_key";
+    private static final String EINSTELLUNGEN_TABLE_VALUE = "einstellungen_value";
+
+    private static final String EINSTELLUNGEN_TABLE_ID = "einstellungen_id";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<EinstellungenBE> EINSTELLUNGEN = new BusinessEntityConfiguration<>(
@@ -43,7 +47,13 @@ public class EinstellungenDAO implements DataAccessObject {
 
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM configuration";
+                    + " FROM einstellungen";
+
+    private static final String FIND_BY_ID =
+            "SELECT * "
+                    + " FROM einstellungen"
+                    + " WHERE einstellungen_id = ?";
+
 
 
     private final BasicDAO basicDao;
@@ -64,6 +74,8 @@ public class EinstellungenDAO implements DataAccessObject {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
         columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_KEY, EINSTELLUNGEN_BE_KEY);
         columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_VALUE, EINSTELLUNGEN_BE_VALUE);
+        columnsToFieldsMap.put(EINSTELLUNGEN_TABLE_ID, EINSTELLUNGEN_BE_ID);
+
 
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
@@ -119,6 +131,12 @@ public class EinstellungenDAO implements DataAccessObject {
     public void delete(final EinstellungenBE einstellungenBE, final Long currentUserId) {
         basicDao.setModificationAttributes(einstellungenBE, currentUserId);
         basicDao.deleteEntity(EINSTELLUNGEN, einstellungenBE/*, EINSTELLUNGEN_BE_ID*/);
+    }
+
+
+    public EinstellungenBE findById(final long id) {
+        return basicDao.selectSingleEntity(EINSTELLUNGEN,FIND_BY_ID,id);
+
     }
 
 }
