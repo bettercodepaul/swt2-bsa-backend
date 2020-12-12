@@ -9,6 +9,12 @@ import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO
 import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
 import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.business.einstellungen.impl.mapper.EinstellungenMapper;
+import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.validation.Preconditions;
 
 
 /**
@@ -49,6 +55,17 @@ public class EinstellungenComponentImpl implements EinstellungenComponent {
         return einstellungenBEList.stream().map(EinstellungenMapper.toDO).collect(Collectors.toList());
     }
 
+    @Override
+    public EinstellungenDO findById(final long id) {
+
+        final EinstellungenBE result = einstellungenDAO.findById(id);
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, String.format("no match found for id "));
+        }
+        return EinstellungenMapper.toDO.apply(result);
+
+
+    }
 
     @Override
     public EinstellungenDO create(EinstellungenDO einstellungenDO, long currentUserId) {
