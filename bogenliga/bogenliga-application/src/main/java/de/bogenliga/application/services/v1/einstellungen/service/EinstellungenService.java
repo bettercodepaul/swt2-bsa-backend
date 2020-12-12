@@ -122,4 +122,18 @@ public class EinstellungenService implements ServiceFacade {
         return EinstellungenDTOMapper.toDTO.apply(saveEinstellungenDO);
     }
 
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOGGER.debug("Receive 'delete' request with id '{}'", id);
+
+        // allow value == null, the value will be ignored
+        final EinstellungenDO einstellungenDO = new EinstellungenDO();
+        einstellungenDO.setId(id);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        einstellungenComponent.delete(einstellungenDO, userId);
+    }
+
 }
