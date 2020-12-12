@@ -9,7 +9,7 @@ alter table configuration alter column configuration_id set not null;
 create unique index configuration_configuration_id_uindex
     on configuration (configuration_id);
 
-alter table configuration drop constraint configuration_pk;
+alter table configuration drop constraint pk_configuration_key;
 
 alter table configuration
     add constraint configuration_pk
