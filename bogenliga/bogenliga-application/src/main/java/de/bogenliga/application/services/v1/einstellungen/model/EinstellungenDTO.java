@@ -9,11 +9,13 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class EinstellungenDTO implements DataTransferObject {
 
+    private Long id;
     private String value;
     private String key;
 
 
-    public EinstellungenDTO(String value, String key) {
+    public EinstellungenDTO(Long id, String value, String key) {
+        this.id = id;
         this.value = value;
         this.key = key;
 
@@ -22,10 +24,14 @@ public class EinstellungenDTO implements DataTransferObject {
     public EinstellungenDTO() {
         //leerer Konstruktor
     }
+    public void setId(Long id) { this.id = id;}
+
+    public Long getId() {return this.id;}
+
     public void setValue(String value) {
         this.value = value;
     }
-    public void setSmtpHost(String host) {
+    public void setKey(String key) {
         this.key = key;
     }
 

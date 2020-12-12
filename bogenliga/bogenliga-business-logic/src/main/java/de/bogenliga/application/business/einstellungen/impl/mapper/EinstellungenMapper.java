@@ -22,6 +22,7 @@ public class EinstellungenMapper implements ValueObjectMapper {
      */
     public static final Function<EinstellungenBE, EinstellungenDO> toDO = be -> {
 
+        final Long id = be.getEinstellungenId();
         final String value = be.getEinstellungenValue();
         final String key = be.getEinstellungenKey();
 
@@ -32,7 +33,7 @@ public class EinstellungenMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new EinstellungenDO(value, key, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId,
+        return new EinstellungenDO(id, value, key, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId,
                 version);
 
     };
@@ -47,6 +48,7 @@ public class EinstellungenMapper implements ValueObjectMapper {
                 einstellungenDO.getLastModifiedAtUtc());
 
         EinstellungenBE einstellungenBE = new EinstellungenBE();
+        einstellungenBE.setEinstellungenId(einstellungenDO.getId());
         einstellungenBE.setEinstellungenValue(einstellungenDO.getValue());
         einstellungenBE.setEinstellungenKey(einstellungenDO.getKey());
 
