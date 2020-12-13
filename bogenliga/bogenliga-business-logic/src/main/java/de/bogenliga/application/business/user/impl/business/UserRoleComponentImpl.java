@@ -209,17 +209,17 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         String SMTPPort = "";
 
         for (int i = 0; i < einstellungen.size(); i++) {
-            String tempKey = einstellungen.get(i).geteinstellungenKey();
+            String tempKey = einstellungen.get(i).getEinstellungenKey();
             if (tempKey.equals("SMTPHost")) {
-                SMTPHost = einstellungen.get(i).geteinstellungenValue();
+                SMTPHost = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPPasswort")) {
-                SMTPPW = einstellungen.get(i).geteinstellungenValue();
+                SMTPPW = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPBenutzer")) {
-                SMTPBenutzer = einstellungen.get(i).geteinstellungenValue();
+                SMTPBenutzer = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPEmail")) {
-                SMTPEMail = einstellungen.get(i).geteinstellungenValue();
+                SMTPEMail = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPPort")) {
-                SMTPPort = einstellungen.get(i).geteinstellungenValue();
+                SMTPPort = einstellungen.get(i).getEinstellungenValue();
             }
 
         }
