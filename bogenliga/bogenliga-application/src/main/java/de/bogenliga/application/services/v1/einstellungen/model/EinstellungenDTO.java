@@ -14,7 +14,7 @@ public class EinstellungenDTO implements DataTransferObject {
     private String key;
 
 
-    public EinstellungenDTO(Long id, String value, String key) {
+    public EinstellungenDTO(Long id, String key, String value) {
         this.id = id;
         this.value = value;
         this.key = key;
