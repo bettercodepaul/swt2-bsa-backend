@@ -51,6 +51,14 @@ public class EinstellungenService implements ServiceFacade {
         this.einstellungenComponent = einstellungenComponent;
     }
 
+
+    /**
+     * I return all einstellungen entries of the database.
+     *
+     *
+     *
+     * @return list of {@link EinstellungenDTO} as JSON
+     */
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EinstellungenDTO> findAll() {
@@ -60,6 +68,13 @@ public class EinstellungenService implements ServiceFacade {
         return einstellungenDOList.stream().map(EinstellungenDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+
+    /**
+     * I return the einstellungen entry of the database with a specific id.
+     *
+     *
+     * @return list of {@link EinstellungenDTO} as JSON
+     */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public EinstellungenDTO findById(@PathVariable("id") final long id) {
@@ -69,6 +84,10 @@ public class EinstellungenService implements ServiceFacade {
         return EinstellungenDTOMapper.toDTO.apply(einstellungenDO);
     }
 
+    /**
+     * I persist a newer version of the einstellungen in the database.
+     *
+     */
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public EinstellungenDTO update(@RequestBody final EinstellungenDTO einstellungenDTO, final Principal principal) {
@@ -80,28 +99,11 @@ public class EinstellungenService implements ServiceFacade {
     }
 
     /**
-     * I persist a new dsbMitglied and return this dsbMitglied entry.
+     * I persist a new einstellungen and return this einstellungen entry.
      *
-     * You are only able to create a DsbMitglied, if you have the explicit permission to Create it or
-     * if you are the Mannschaftsführer/Sportleiter of the Verein.
-     *
-     * Usage:
-     * <pre>{@code Request: POST /v1/dsbmitglied
-     * Body:
-     * {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     * }
-     * }</pre>
-     * <pre>{@code Response:
-     *  {
-     *    "id": "app.bogenliga.frontend.autorefresh.active",
-     *    "value": "true"
-     *  }
-     * }</pre>
      * @param einstellungenDTO of the request body
      * @param principal authenticated user
-     * @return list of {@link DsbMitgliedDTO} as JSON
+     * @return list of {@link EinstellungenDTO} as JSON
      */
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -122,6 +124,10 @@ public class EinstellungenService implements ServiceFacade {
         return EinstellungenDTOMapper.toDTO.apply(saveEinstellungenDO);
     }
 
+    /**
+     * I delete an existing einstellungen entry from the database.
+     *
+     */
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
