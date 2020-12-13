@@ -1,6 +1,5 @@
 package de.bogenliga.application.services.v1.einstellungen.mapper;
 
-import java.sql.Date;
 import java.util.function.Function;
 import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
@@ -8,12 +7,16 @@ import de.bogenliga.application.services.v1.einstellungen.model.EinstellungenDTO
 
 
 /**
- * TODO [AL] class documentation
+ * I map the {@link EinstellungenDO} and {@link EinstellungenDTO} objects
  *
  * @author Lars Bahnmüller, Lars_Herbert.Bahnmueller@Student.Reutlingen-University.DE
  */
 public final class EinstellungenDTOMapper implements DataTransferObjectMapper {
 
+
+    /**
+     * I map the {@link EinstellungenDO} object to the {@link EinstellungenDTO} object
+     */
     public static final Function<EinstellungenDO, EinstellungenDTO> toDTO = einstellungenDO -> {
 
         final Long einstellungenId = einstellungenDO.getId();
@@ -33,7 +36,7 @@ public final class EinstellungenDTOMapper implements DataTransferObjectMapper {
         final String einstellungenValue = dto.getValue();
         final String einstellungenKey = dto.getKey();
 
-        return new EinstellungenDO(einstellungenId, einstellungenValue,einstellungenKey);
+        return new EinstellungenDO(einstellungenId, einstellungenValue, einstellungenKey);
 
     };
 
