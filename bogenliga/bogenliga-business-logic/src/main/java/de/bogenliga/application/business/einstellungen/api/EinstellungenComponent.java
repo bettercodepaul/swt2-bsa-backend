@@ -5,9 +5,9 @@ import de.bogenliga.application.common.component.ComponentFacade;
 import java.util.List;
 
 /**
- * TODO [AL] class documentation
+ * I contain the signatures for the functions necessary to manage configurations
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
  */
 public interface EinstellungenComponent extends ComponentFacade {
 
@@ -19,6 +19,12 @@ public interface EinstellungenComponent extends ComponentFacade {
     List<EinstellungenDO> findAll();
 
 
+    /**
+     * Return a single einstellungen entry found by its id
+     *
+     * @param id        id of the entry
+     * @return a single entry or empty list, if no einstellungen is found
+     */
     EinstellungenDO findById(final long id);
 
 

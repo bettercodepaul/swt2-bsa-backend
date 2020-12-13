@@ -7,14 +7,14 @@ import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
 /**
- * TODO [AL] class documentation
+ * Contains values for the vusiness entities of a configuration
  *
  * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
  */
 public class EinstellungenDO extends CommonDataObject implements DataObject {
 
     /**
-     * business parameter
+     * business entitiy parameter
      */
     private Long id;
     private String key;
@@ -30,7 +30,7 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
 
 
     /**
-     * Constructor with mandatory parameters
+     * Constructor with all parameters
      */
     public EinstellungenDO(final Long id, final String key, final String value, final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
@@ -47,6 +47,9 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
     }
 
 
+    /**
+     * Constructor with mandatory parameters
+     */
     public EinstellungenDO(final Long id, final String key, final String value) {
         this.id = id;
         this.key = key;
