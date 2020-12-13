@@ -19,6 +19,8 @@ public interface EinstellungenComponent extends ComponentFacade {
     List<EinstellungenDO> findAll();
 
 
+    EinstellungenDO findById(long id);
+
     /**
      * Return a single einstellungen entry found by its id
      *
