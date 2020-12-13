@@ -27,3 +27,24 @@ ALTER TABLE IF EXISTS configuration
 ADD last_modified_by      DECIMAL(19,0)    NULL        DEFAULT NULL;
 ALTER TABLE IF EXISTS configuration
 ADD version               DECIMAL(19,0)    NOT NULL    DEFAULT 0;
+
+INSERT INTO configuration (configuration_key, configuration_value)
+VALUES('SMTPHost','mx2f1a.netcup.net')
+ON CONFLICT (configuration_key) DO
+    NOTHING;
+INSERT INTO configuration (configuration_key, configuration_value)
+VALUES('SMTPEmail','noreply@bsapp.de')
+ON CONFLICT (configuration_key) DO
+    NOTHING;
+INSERT INTO configuration (configuration_key, configuration_value)
+VALUES('SMTPBenutzer','noreply@bsapp.de')
+ON CONFLICT (configuration_key) DO
+    NOTHING;
+INSERT INTO configuration (configuration_key, configuration_value)
+VALUES('SMTPPort','465')
+ON CONFLICT (configuration_key) DO
+    NOTHING;
+INSERT INTO configuration (configuration_key, configuration_value)
+VALUES('SMTPPasswort','Passwort bitte ändern')
+ON CONFLICT (configuration_key) DO
+    NOTHING;
