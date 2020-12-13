@@ -193,6 +193,10 @@ public class WettkampfService implements ServiceFacade {
                         wettkampfDTO.getwettkampfVeranstaltungsId(),
                         wettkampfDTO.getWettkampfDisziplinId(),
                         wettkampfDTO.getWettkampfOrt(),
+                        wettkampfDTO.getWettkampfStrasse(),
+                        wettkampfDTO.getWettkampfPlz(),
+                        wettkampfDTO.getWettkampfOrtsname(),
+                        wettkampfDTO.getWettkampfOrtsinfo(),
                         wettkampfDTO.getWettkampfTag(),
                         wettkampfDTO.getWettkampfBeginn(),
                         wettkampfDTO.getWettkampfTypId());
