@@ -1,19 +1,16 @@
 package de.bogenliga.application.business.einstellungen.impl.dao;
 
-import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
-import de.bogenliga.application.common.component.dao.DataAccessObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the einstellungen entity in the database.

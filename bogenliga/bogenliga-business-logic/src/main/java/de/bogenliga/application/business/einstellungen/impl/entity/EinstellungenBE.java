@@ -4,7 +4,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * I represent an entry in the Database
+ * I represent a single entry in the configuration database
  *
  * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
  */

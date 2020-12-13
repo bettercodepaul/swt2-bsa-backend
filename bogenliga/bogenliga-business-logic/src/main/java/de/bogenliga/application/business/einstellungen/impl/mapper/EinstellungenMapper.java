@@ -13,7 +13,7 @@ import de.bogenliga.application.common.time.DateProvider;
  * I convert the einstellungen DataObjects and BusinessEntities I convert the {@link EinstellungenBE} and the {@link
  * EinstellungenDO}
  *
- * @author Fabio Care, fabio_silas.care@student.reutlingen.university.de
+ * @author Fabio Care, fabio_silas.care@student.reutlingen-university.de
  */
 public class EinstellungenMapper implements ValueObjectMapper {
 
@@ -33,7 +33,7 @@ public class EinstellungenMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new EinstellungenDO(id, value, key, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId,
+        return new EinstellungenDO(id, key, value, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId,
                 version);
 
     };
