@@ -34,7 +34,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_VERANSTALTUNGS_ID= "veranstaltungsId";
     private static final String WETTKAMPF_BE_WETTKAMPF_DATUM= "datum";
     private static final String WETTKAMPF_BE_WETTKAMPF_ORT= "wettkampfOrt";
-    private static final String WETTKAMPF_BE_WETTKAMPF_STRASSE= "wettkampfstrasse";
+    private static final String WETTKAMPF_BE_WETTKAMPF_STRASSE= "wettkampfStrasse";
     private static final String WETTKAMPF_BE_WETTKAMPF_PLZ= "wettkampfPlz";
     private static final String WETTKAMPF_BE_WETTKAMPF_ORTSNAME= "wettkampfOrtsname";
     private static final String WETTKAMPF_BE_WETTKAMPF_ORTSINFO= "wettkampfOrtsinfo";
@@ -49,10 +49,10 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_VERANSTALTUNGS_ID= "wettkampf_veranstaltung_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DATUM= "wettkampf_datum";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_ORT= "wettkampf_ort";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_STRASSE= "wettkampfstrasse";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_PLZ= "wettkampfPlz";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_ORTSNAME= "wettkampfOrtsname";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_ORTSINFO= "wettkampfOrtsinfo";
+    private static final String WETTKAMPF_TABLE_WETTKAMPF_STRASSE= "wettkampf_strasse";
+    private static final String WETTKAMPF_TABLE_WETTKAMPF_PLZ= "wettkampf_plz";
+    private static final String WETTKAMPF_TABLE_WETTKAMPF_ORTSNAME= "wettkampf_ortsname";
+    private static final String WETTKAMPF_TABLE_WETTKAMPF_ORTSINFO= "wettkampf_ortsinfo";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_BEGINN = "wettkampf_beginn";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_TAG = "wettkampf_tag";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
