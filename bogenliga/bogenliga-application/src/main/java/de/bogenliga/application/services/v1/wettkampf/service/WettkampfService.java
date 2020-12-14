@@ -50,6 +50,10 @@ public class WettkampfService implements ServiceFacade {
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "Wettkampfveranstaltungsid must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "Format: YYYY-MM-DD Format must be correct,  Wettkampfdatum must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_ORT = "WettkampfOrt must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_STRASSE = "WettkampfStraße must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_Plz = "Wettkampfplz must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_Ortsname = "WettkampfNamemust not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_Ortsinfo = "WettkampfOrstinfo must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_BEGINN = "Format: HH:MM, Format must be correct, Wettkampfbeginn must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_TAG = "Must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "Must not be null and must not be negative";
@@ -163,6 +167,10 @@ public class WettkampfService implements ServiceFacade {
                 wettkampfDTO.getwettkampfVeranstaltungsId(),
                 wettkampfDTO.getWettkampfDisziplinId(),
                 wettkampfDTO.getWettkampfOrt(),
+                wettkampfDTO.getWettkampfStrasse(),
+                wettkampfDTO.getWettkampfPlz(),
+                wettkampfDTO.getWettkampfOrtsname(),
+                wettkampfDTO.getWettkampfOrtsinfo(),
                 wettkampfDTO.getWettkampfTag(),
                 wettkampfDTO.getWettkampfBeginn(),
                 wettkampfDTO.getWettkampfTypId());
@@ -199,6 +207,10 @@ public class WettkampfService implements ServiceFacade {
                 wettkampfDTO.getwettkampfVeranstaltungsId(),
                 wettkampfDTO.getWettkampfDisziplinId(),
                 wettkampfDTO.getWettkampfOrt(),
+                wettkampfDTO.getWettkampfStrasse(),
+                wettkampfDTO.getWettkampfPlz(),
+                wettkampfDTO.getWettkampfOrtsname(),
+                wettkampfDTO.getWettkampfOrtsinfo(),
                 wettkampfDTO.getWettkampfTag(),
                 wettkampfDTO.getWettkampfBeginn(),
                 wettkampfDTO.getWettkampfTypId());
