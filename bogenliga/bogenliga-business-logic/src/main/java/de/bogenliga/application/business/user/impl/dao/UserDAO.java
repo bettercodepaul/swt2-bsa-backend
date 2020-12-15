@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -72,6 +74,11 @@ public class UserDAO implements DataAccessObject {
                     + " WHERE upper(benutzer_email) = upper(?)"
                     + " AND benutzer_active = TRUE";
 
+    private static final String FIND_BY_DSBMITGLIED_ID =
+            "SELECT * "
+                    + " FROM benutzer "
+                    + " WHERE benutzer_dsb_mitglied_id = ?";
+
     private final BasicDAO basicDao;
 
 
@@ -133,6 +140,14 @@ public class UserDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(USER, FIND_BY_EMAIL, email);
     }
 
+    /**
+     * Return user entry with specific dsbMitgliedId
+     *
+     * @param dsbMitgliedId
+     */
+    public UserBE findByDsbMitgliedId(final long dsbMitgliedId) {
+        return basicDao.selectSingleEntity(USER, FIND_BY_DSBMITGLIED_ID, dsbMitgliedId);
+    }
 
     /**
      * Create a new user entry
@@ -144,8 +159,15 @@ public class UserDAO implements DataAccessObject {
      */
     public UserBE create(final UserBE userBE, final long currentUserId) {
         basicDao.setCreationAttributes(userBE, currentUserId);
+        UserBE persistedUser = basicDao.insertEntity(USER, userBE);
 
-        return basicDao.insertEntity(USER, userBE);
+        // Save UserId in the column dsb_mitglied_benutzer_id of entity dsb_mitglied
+        DsbMitgliedDAO DsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
+        DsbMitgliedBE DsbMitgliedBE = DsbMitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
+        DsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
+        DsbMitgliedDAO.update(DsbMitgliedBE, DsbMitgliedBE.getDsbMitgliedId());
+
+        return persistedUser;
     }
 
 
