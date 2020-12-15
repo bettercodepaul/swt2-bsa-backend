@@ -25,7 +25,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "wettkampfID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "wettkampfVeranstaltungsID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "wettkampfDatum must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_ORT = "wettkampfOrt must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_BEGINN = "wettkampfBeginn must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_TAG = "wettkampfTag must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinID must not be null and must not be negative";
@@ -142,7 +141,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(wettkampfDO.getWettkampfVeranstaltungsId() >= 0,
                 PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);
-        Preconditions.checkNotNull(wettkampfDO.getWettkampfOrt(), PRECONDITION_MSG_WETTKAMPF_ORT);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfBeginn(), PRECONDITION_MSG_WETTKAMPF_BEGINN);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfTag(), PRECONDITION_MSG_WETTKAMPF_TAG);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfDisziplinId(), PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
