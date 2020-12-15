@@ -16,7 +16,6 @@ public class WettkampfDTO implements DataTransferObject {
     private Long id;
     private Long wettkampfVeranstaltungsId;
     private String wettkampfDatum;
-    private String wettkampfOrt;
     private String wettkampfStrasse;
     private String wettkampfPlz;
     private String wettkampfOrtsname;
@@ -30,7 +29,7 @@ public class WettkampfDTO implements DataTransferObject {
     private Long wettkampfAusrichter;
 
 
-    public WettkampfDTO(Long wettkampfId, Long wettkampfVeranstaltungsId, Date wettkampfDatum, String wettkampfOrt,
+    public WettkampfDTO(Long wettkampfId, Long wettkampfVeranstaltungsId, Date wettkampfDatum,
                         String wettkampfStrasse,
                         String wettkampfPlz, String wettkampfOrtsname, String wettkampfOrtsinfo,
                         String wettkampfBeginn, Long wettkampfTag,
@@ -40,7 +39,6 @@ public class WettkampfDTO implements DataTransferObject {
         this.setId(wettkampfId);
         this.setwettkampfVeranstaltungsId(wettkampfVeranstaltungsId);
         this.setDatum(wettkampfDatum);
-        this.setWettkampfOrt(wettkampfOrt);
         this.setWettkampfStrasse(wettkampfStrasse);
         this.setWettkampfPlz(wettkampfPlz);
         this.setWettkampfOrtsname(wettkampfOrtsname);
@@ -86,11 +84,6 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
-    }
-
-
     public String getWettkampfStrasse() {
         return wettkampfStrasse;
     }
@@ -130,10 +123,6 @@ public class WettkampfDTO implements DataTransferObject {
         this.wettkampfOrtsinfo = wettkampfOrtsinfo;
     }
 
-
-    public void setWettkampfOrt(String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
-    }
 
 
     public String getWettkampfBeginn() {
@@ -212,7 +201,6 @@ public class WettkampfDTO implements DataTransferObject {
                 "id='" + this.id + '\'' +
                 ", wettkampfVeranstaltungsId='" + this.wettkampfVeranstaltungsId + '\'' +
                 ", wettkampfDatum='" + this.wettkampfDatum + '\'' +
-                ", wettkampfOrt='" + this.wettkampfOrt + '\'' +
                 ", wettkampfStrasse='"+ this.wettkampfStrasse + '\'' +
                 ", wettkampfPlz='"+ this.wettkampfPlz + '\'' +
                 ", wettkampfOrtsname='"+ this.wettkampfOrtsname + '\'' +
