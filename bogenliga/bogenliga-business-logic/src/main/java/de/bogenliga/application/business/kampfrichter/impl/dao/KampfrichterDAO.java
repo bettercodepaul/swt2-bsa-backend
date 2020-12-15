@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.kampfrichter.impl.dao;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +13,19 @@ import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
+import de.bogenliga.application.common.database.SQL;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
  * DataAccessObject for the kampfrichter entity in the database.
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
  * @author Rahul Pöse
  */
 @Repository
-public class KampfrichterDAO  implements DataAccessObject {
+public class KampfrichterDAO implements DataAccessObject {
 
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(KampfrichterDAO.class);
@@ -111,6 +116,7 @@ public class KampfrichterDAO  implements DataAccessObject {
      *
      * @param kampfrichterBE
      * @param currentKampfrichterUserId
+     *
      * @return Business Entity corresponding to the created kampfrichter entry
      */
     public KampfrichterBE create(final KampfrichterBE kampfrichterBE, final long currentKampfrichterUserId) {
@@ -125,6 +131,7 @@ public class KampfrichterDAO  implements DataAccessObject {
      *
      * @param kampfrichterBE
      * @param currentKampfrichterUserId
+     *
      * @return Business Entity corresponding to the updated kampfrichter entry
      */
     public KampfrichterBE update(final KampfrichterBE kampfrichterBE, final long currentKampfrichterUserId) {
@@ -132,6 +139,7 @@ public class KampfrichterDAO  implements DataAccessObject {
 
         return basicDao.updateEntity(KAMPFRICHTER, kampfrichterBE, KAMPFRICHTER_BE_ID);
     }
+
 
     /**
      * Delete existing kampfrichter entry
@@ -144,4 +152,45 @@ public class KampfrichterDAO  implements DataAccessObject {
 
         basicDao.deleteEntity(KAMPFRICHTER, kampfrichterBE, KAMPFRICHTER_BE_ID);
     }
+
+
+    // TODO: Delete all this if not needed
+    public void myDelete(final KampfrichterBE kampfrichterBE) {
+        String string = String.format(
+                "DELETE FROM kampfrichter WHERE kampfrichter_benutzer_id = %s AND kampfrichter_wettkampf_id = %s;",
+                kampfrichterBE.getKampfrichterUserId().toString(),
+                kampfrichterBE.getKampfrichterWettkampfId().toString());
+//        String.format("The user with the username %s already exists.", user.getUsername())
+    }
+
+
+//    public static SQL.SQLWithParameter deleteSQL(final Object updateObj, final String tableName,
+//                                                 final String[] fieldSelector,
+//                                                 final Map<String, String> columnToFieldMapping) {
+//        final SQL.SQLWithParameter sqlWithParameter = new SQL().new SQLWithParameter();
+//        final StringBuilder sql = new StringBuilder();
+//        final List<Object> para;
+//
+//        sql.append("DELETE FROM ");
+//
+//        try {
+//            final String tName = updateObj.getClass().getSimpleName();
+//
+//            if (tableName != null) {
+//                sql.append(tableName);
+//            } else {
+//                sql.append(tName);
+//            }
+//
+//            final Field[] fields = updateObj.getClass().getDeclaredFields();
+//
+//            para = appendFieldsToDeleteStatement(updateObj, fieldSelector, fields);
+//        } catch (final SecurityException | IllegalArgumentException | NoSuchMethodException | IllegalAccessException
+//                | InvocationTargetException e) {
+//            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+//        }
+//
+//        sqlWithParameter.setParameter(para.toArray());
+//        return appendWhereStatements(sql, fieldSelector, columnToFieldMapping, sqlWithParameter);
+//    }
 }

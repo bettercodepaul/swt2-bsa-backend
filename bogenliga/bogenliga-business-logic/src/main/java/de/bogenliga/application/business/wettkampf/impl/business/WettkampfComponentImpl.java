@@ -17,7 +17,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 /**
  * Implementation of {@link WettkampfComponent}
  *
- * @Autor Marvin Holm, Daniel Schott
+ * Autor: Marvin Holm, Daniel Schott
  */
 @Component
 public class WettkampfComponentImpl implements WettkampfComponent {
@@ -55,11 +55,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
     }
 
-
+    // Do we need this method for anything or does it purely exist because it has to implement the interfaces method?
     @Override
     public List<WettkampfDO> findByAusrichter(long id) {
-        ArrayList<WettkampfDO> result = new ArrayList<WettkampfDO>();
-        return result;
+        return new ArrayList<>();
     }
 
 
