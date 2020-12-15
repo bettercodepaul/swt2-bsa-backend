@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.einstellungen.api.EinstellungenComponent;
 import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
 import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
