@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +22,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterDTO;
 import de.bogenliga.application.services.v1.kampfrichter.mapper.KampfrichterDTOMapper;
@@ -131,6 +134,46 @@ public class KampfrichterService implements ServiceFacade {
 
         final KampfrichterDO updatedKampfrichterDO = kampfrichterComponent.update(newKampfrichterDO, newKampfrichterDO.getUserId());
         return KampfrichterDTOMapper.toDTO.apply(updatedKampfrichterDO);
+    }
+
+    /**
+     * Delete-Method removes an entry from the database
+     *
+     * @param id
+     * @param principal
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        // allow value == null, the value will be ignored
+        final KampfrichterDO kampfrichterDO = new KampfrichterDO(id, 999L, false);
+//        final long userId = UserProvider.getCurrentUserId(principal);
+
+        kampfrichterComponent.delete(kampfrichterDO, id);
+    }
+
+
+    // TODO: See if this works
+    @RequestMapping(method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    public void testDelete(@RequestBody final KampfrichterDTO kampfrichterDTO,
+                           final Principal principal) {
+//        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+//
+//        LOG.debug("Receive 'delete' request with id '{}'", id);
+//
+//        // allow value == null, the value will be ignored
+//        final KampfrichterDO kampfrichterDO = new KampfrichterDO(id, 999L, false);
+//        final long userId = UserProvider.getCurrentUserId(principal);
+
+        final KampfrichterDO kampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
+
+        kampfrichterComponent.testDelete(kampfrichterDO);
     }
 
 

@@ -154,6 +154,17 @@ public class KampfrichterDAO implements DataAccessObject {
     }
 
 
+    // TODO: See if this works
+    public void testDelete(final KampfrichterBE kampfrichterBE) {
+        basicDao.setModificationAttributes(kampfrichterBE, kampfrichterBE.getKampfrichterUserId());
+
+        String sqlString = String.format("kampfrichter_wettkampf_id = %s AND %s;",
+                kampfrichterBE.getKampfrichterWettkampfId().toString(), KAMPFRICHTER_BE_ID);
+
+        basicDao.deleteEntity(KAMPFRICHTER, kampfrichterBE, sqlString);
+    }
+
+
     // TODO: Delete all this if not needed
     public void myDelete(final KampfrichterBE kampfrichterBE) {
         String string = String.format(
