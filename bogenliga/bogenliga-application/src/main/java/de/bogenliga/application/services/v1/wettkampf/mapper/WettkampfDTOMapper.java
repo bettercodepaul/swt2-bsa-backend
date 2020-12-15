@@ -24,7 +24,6 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfId = wettkampfDO.getId();
         final Long wettkampfVeranstaltungsId = wettkampfDO.getWettkampfVeranstaltungsId();
         final Date wettkampfDatum = wettkampfDO.getWettkampfDatum();
-        final String wettkampfOrt = wettkampfDO.getWettkampfOrt();
         final String wettkampfStrasse = wettkampfDO.getWettkampfStrasse();
         final String wettkampfPlz = wettkampfDO.getWettkampfPlz();
         final String wettkampfOrtsname = wettkampfDO.getWettkampfOrtsname();
@@ -37,7 +36,7 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long kampfrichterID = wettkampfDO.getKampfrichterID();
         final Long wettkampfAusrichter = wettkampfDO.getWettkampfAusrichter();
 
-        return new WettkampfDTO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfStrasse,
+        return new WettkampfDTO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfStrasse,
                 wettkampfPlz, wettkampfOrtsname, wettkampfOrtsinfo, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID, wettkampfAusrichter);
     };
@@ -51,7 +50,6 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfId = wettkampfDTO.getId();
         final Long wettkampfVeranstaltungsId = wettkampfDTO.getwettkampfVeranstaltungsId();
         final Date wettkampfDatum = wettkampfDTO.getDatum();
-        final String wettkampfOrt = wettkampfDTO.getWettkampfOrt();
         final String wettkampfStrasse = wettkampfDTO.getWettkampfStrasse();
         final String wettkampfPlz = wettkampfDTO.getWettkampfPlz();
         final String wettkampfOrtsname = wettkampfDTO.getWettkampfOrtsname();
@@ -64,7 +62,7 @@ public class WettkampfDTOMapper implements DataTransferObjectMapper {
         final Long kampfrichterID = wettkampfDTO.getKampfrichterID();
         final Long wettkampfAusrichter = wettkampfDTO.getWettkampfAusrichter();
 
-        return new WettkampfDO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfStrasse,
+        return new WettkampfDO(wettkampfId, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfStrasse,
                 wettkampfPlz, wettkampfOrtsname, wettkampfOrtsinfo, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, version, kampfrichterID, wettkampfAusrichter);
     };

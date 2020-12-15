@@ -41,7 +41,6 @@ public class WettkampfServiceTest {
     private static final long wettkampf_Veranstaltung_Id = 0;
     private static final Date wettkampf_Datum = new Date(20190521L);
     private static final String wettkampf_Datum_S = "2019-05-21";
-    private static final String wettkampf_Ort = "Sporthalle,72810 Gomaringen";
     private static final String wettkampf_Strasse = "Reutlingerstr. 6";
     private static final String wettkampf_Plz = "72764";
     private static final String wettkampf_Ortsname = "Reutlingen";
@@ -84,7 +83,6 @@ public class WettkampfServiceTest {
         expectedBE.setVeranstaltungsId(wettkampf_Veranstaltung_Id);
         expectedBE.setWettkampfBeginn(wettkampf_Beginn);
         expectedBE.setWettkampfDisziplinId(wettkampf_Disziplin_Id);
-        expectedBE.setWettkampfOrt(wettkampf_Ort);
         expectedBE.setWettkampfStrasse(wettkampf_Strasse);
         expectedBE.setWettkampfPlz(wettkampf_Plz);
         expectedBE.setWettkampfOrtsname(wettkampf_Ortsname);
@@ -103,7 +101,6 @@ public class WettkampfServiceTest {
                 wettkampf_Id,
                 wettkampf_Veranstaltung_Id,
                 wettkampf_Datum,
-                wettkampf_Ort,
                 wettkampf_Strasse,
                 wettkampf_Plz,
                 wettkampf_Ortsname,
@@ -126,7 +123,6 @@ public class WettkampfServiceTest {
                 wettkampf_Id,
                 wettkampf_Veranstaltung_Id,
                 wettkampf_Datum,
-                wettkampf_Ort,
                 wettkampf_Strasse,
                 wettkampf_Plz,
                 wettkampf_Ortsname,
