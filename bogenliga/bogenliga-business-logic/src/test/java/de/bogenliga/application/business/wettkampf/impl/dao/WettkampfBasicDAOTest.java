@@ -29,7 +29,10 @@ public class WettkampfBasicDAOTest {
     private static final long wettkampf_Id = 322;
     private static final long wettkampf_Veranstaltung_Id = 0;
     private static final String wettkampf_Datum = "2019-05-21";
-    private static final String wettkampf_Ort ="Sporthalle,72810 Gomaringen";
+    private static final String wettkampf_Strasse = "Teststrasse 4";
+    private static final String wettkampf_Plz = "72768";
+    private static final String wettkampf_Ortsname = "Testort";
+    private static final String wettkampf_Ortsinfo = "hinter dem busch";
     private static final String wettkampf_Beginn ="8:00";
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
