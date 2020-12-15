@@ -33,7 +33,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_ID = "id";
     private static final String WETTKAMPF_BE_VERANSTALTUNGS_ID= "veranstaltungsId";
     private static final String WETTKAMPF_BE_WETTKAMPF_DATUM= "datum";
-    private static final String WETTKAMPF_BE_WETTKAMPF_ORT= "wettkampfOrt";
     private static final String WETTKAMPF_BE_WETTKAMPF_STRASSE= "wettkampfStrasse";
     private static final String WETTKAMPF_BE_WETTKAMPF_PLZ= "wettkampfPlz";
     private static final String WETTKAMPF_BE_WETTKAMPF_ORTSNAME= "wettkampfOrtsname";
@@ -48,7 +47,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
     private static final String WETTKAMPF_TABLE_VERANSTALTUNGS_ID= "wettkampf_veranstaltung_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DATUM= "wettkampf_datum";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_ORT= "wettkampf_ort";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_STRASSE= "wettkampf_strasse";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_PLZ= "wettkampf_plz";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_ORTSNAME= "wettkampf_ortsname";
@@ -62,7 +60,6 @@ public class WettkampfDAO implements DataAccessObject {
 
     //default Values for Wettkampftag 0
     private static final Date DEFAULT_DATUM = Date.valueOf("1900-01-01");
-    private static final String DEFAULT_ORT = " - ";
     private static final String DEFAULT_STRASSE = " - ";
     private static final String DEFAULT_PLZ = " - ";
     private static final String DEFAULT_ORTSNAME = " - ";
@@ -136,7 +133,6 @@ public class WettkampfDAO implements DataAccessObject {
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_BEGINN, WETTKAMPF_BE_WETTKAMPF_BEGINN);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_DATUM, WETTKAMPF_BE_WETTKAMPF_DATUM);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID, WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID);
-        columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_ORT, WETTKAMPF_BE_WETTKAMPF_ORT);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_STRASSE, WETTKAMPF_BE_WETTKAMPF_STRASSE);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_PLZ, WETTKAMPF_BE_WETTKAMPF_PLZ);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_ORTSNAME, WETTKAMPF_BE_WETTKAMPF_ORTSNAME);
@@ -233,7 +229,6 @@ public class WettkampfDAO implements DataAccessObject {
         defaultWettkampfBE.setWettkampfTag(0L);
         defaultWettkampfBE.setDatum(DEFAULT_DATUM);
         defaultWettkampfBE.setWettkampfBeginn(DEFAULT_BEGINN);
-        defaultWettkampfBE.setWettkampfOrt(DEFAULT_ORT);
         defaultWettkampfBE.setWettkampfStrasse(DEFAULT_STRASSE);
         defaultWettkampfBE.setWettkampfPlz(DEFAULT_PLZ);
         defaultWettkampfBE.setWettkampfOrtsname(DEFAULT_ORTSNAME);

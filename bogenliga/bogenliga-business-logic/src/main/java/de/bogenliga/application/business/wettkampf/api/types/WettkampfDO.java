@@ -18,7 +18,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private Long id;
     private Long wettkampfVeranstaltungsId;
     private Date wettkampfDatum;
-    private String wettkampfOrt;
     private String wettkampfStrasse;
     private String wettkampfPlz;
     private String wettkampfOrtsname;
@@ -31,7 +30,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private Long wettkampfAusrichter;
 
 
-    public WettkampfDO(final Long id, final Long veranstaltungsId, final Date datum, final String wettkampfOrt,
+    public WettkampfDO(final Long id, final Long veranstaltungsId, final Date datum,
                        final String wettkampfStrasse, final String wettkampfPlz, final String wettkampfOrtsname,
                        final String wettkampfOrtsinfo,
                        final String wettkampfBeginn,
@@ -43,7 +42,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.wettkampfVeranstaltungsId = veranstaltungsId;
         this.wettkampfDatum = datum;
-        this.wettkampfOrt = wettkampfOrt;
         this.wettkampfStrasse = wettkampfStrasse;
         this.wettkampfPlz = wettkampfPlz;
         this.wettkampfOrtsname = wettkampfOrtsname;
@@ -67,7 +65,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
      * @param id
      * @param wettkampfVeranstaltungsId
      * @param wettkampfDatum
-     * @param wettkampfOrt
      * @param wettkampfStrasse
      * @param wettkampfPlz
      * @param wettkampfOrtsname
@@ -80,7 +77,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
      * @param kampfrichterID
      */
     public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum,
-                       final String wettkampfOrt, final String wettkampfStrasse, final String wettkampfPlz,
+                       final String wettkampfStrasse, final String wettkampfPlz,
                        final String wettkampfOrtsname,
                        final String wettkampfOrtsinfo,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
@@ -89,7 +86,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
         this.wettkampfDatum = wettkampfDatum;
-        this.wettkampfOrt = wettkampfOrt;
         this.wettkampfStrasse = wettkampfStrasse;
         this.wettkampfPlz = wettkampfPlz;
         this.wettkampfOrtsname = wettkampfOrtsname;
@@ -147,11 +143,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
-    }
-
-
     public String getWettkampfStrasse() {
         return wettkampfStrasse;
     }
@@ -189,11 +180,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
 
     public void setWettkampfOrtsinfo(String wettkampfOrtsinfo) {
         this.wettkampfOrtsinfo = wettkampfOrtsinfo;
-    }
-
-
-    public void setWettkampfOrt(String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
     }
 
 
@@ -269,7 +255,10 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         return id.equals(that.id) &&
                 wettkampfVeranstaltungsId.equals(that.wettkampfVeranstaltungsId) &&
                 Objects.equals(wettkampfDatum, that.wettkampfDatum) &&
-                Objects.equals(wettkampfOrt, that.wettkampfOrt) &&
+                Objects.equals(wettkampfStrasse, that.wettkampfStrasse) &&
+                Objects.equals(wettkampfPlz, that.wettkampfPlz) &&
+                Objects.equals(wettkampfOrtsname, that.wettkampfOrtsname) &&
+                Objects.equals(wettkampfOrtsinfo, that.wettkampfOrtsinfo) &&
                 Objects.equals(wettkampfBeginn, that.wettkampfBeginn) &&
                 wettkampfTag.equals(that.wettkampfTag) &&
                 Objects.equals(wettkampfDisziplinId, that.wettkampfDisziplinId) &&
@@ -281,7 +270,8 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
+        return Objects.hash(id, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfStrasse, wettkampfPlz,
+                wettkampfOrtsname, wettkampfOrtsinfo, wettkampfBeginn, wettkampfTag,
                 wettkampfDisziplinId, wettkampfTypId, kampfrichterID, wettkampfAusrichter);
     }
 

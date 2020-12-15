@@ -20,7 +20,6 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private Long id;
     private Long veranstaltungsId;
     private Date datum;
-    private String wettkampfOrt;
     private String wettkampfStrasse;
     private String wettkampfPlz;
     private String wettkampfOrtsname;
@@ -70,15 +69,6 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
         this.datum = datum;
     }
 
-
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
-    }
-
-
-    public void setWettkampfOrt(final String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
-    }
 
 
     public String getWettkampfOrtsinfo() {
@@ -187,7 +177,6 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
                 "\tWettkampfId = " + getId() + ",\n" +
                 "\tVeranstaltungsId =  " + getVeranstaltungsId() + ",\n" +
                 "\tDatum = " + getDatum() + ",\n" +
-                "\tWettkampfort = " + getWettkampfOrt() + ",\n" +
                 "\tWettkampfstrasse = " + getWettkampfStrasse() + ",\n" +
                 "\tWettkampfplz = " + getWettkampfPlz() + ",\n" +
                 "\tWettkampfortsname = " + getWettkampfOrtsname() + ",\n" +
