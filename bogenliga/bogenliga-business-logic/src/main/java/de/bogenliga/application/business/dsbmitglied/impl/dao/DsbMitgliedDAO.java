@@ -197,16 +197,16 @@ public class DsbMitgliedDAO implements DataAccessObject {
     public DsbMitgliedBE update(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        DsbMitgliedBE persistedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
-        // Check if DsbMitGliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
-        if(persistedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
+        DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
+        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
             UserDAO UserDAO = new UserDAO(basicDao);
-            UserBE UserBE = UserDAO.findByDsbMitgliedId(persistedDsbMitgliedBE.getDsbMitgliedId());
-            persistedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
-            persistedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, persistedDsbMitgliedBE, DSBMITGLIED_BE_ID);
+            UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+            updatedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
+            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
         }
 
-        return persistedDsbMitgliedBE;
+        return updatedDsbMitgliedBE;
     }
 
 
