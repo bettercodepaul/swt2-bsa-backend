@@ -1,25 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
-import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.UserRoleComponent;
-import de.bogenliga.application.business.user.api.types.UserRoleDO;
-import de.bogenliga.application.business.user.impl.dao.UserRoleExtDAO;
-import de.bogenliga.application.business.role.impl.dao.RoleDAO;
-import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
-import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
-import de.bogenliga.application.business.role.impl.entity.RoleBE;
-import de.bogenliga.application.business.user.impl.mapper.UserRoleMapper;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import de.bogenliga.application.common.validation.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -31,6 +13,24 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
+import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
+import de.bogenliga.application.business.role.impl.dao.RoleDAO;
+import de.bogenliga.application.business.role.impl.entity.RoleBE;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.UserRoleComponent;
+import de.bogenliga.application.business.user.api.types.UserRoleDO;
+import de.bogenliga.application.business.user.impl.dao.UserRoleExtDAO;
+import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
+import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
+import de.bogenliga.application.business.user.impl.mapper.UserRoleMapper;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.validation.Preconditions;
 
 /**
  * Implementation of {@link UserComponent}
@@ -48,6 +48,8 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     private final RoleDAO roleDAO;
 
     private EinstellungenDAO einstellungenDAO;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRoleComponentImpl.class);
 
 
     /**
@@ -202,37 +204,38 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         List<EinstellungenBE> einstellungen = einstellungenDAO.findAll();
 
-        String SMTPHost = "";
-        String SMTPPW = "";
-        String SMTPBenutzer = "";
-        String SMTPEMail = "";
-        String SMTPPort = "";
+        String smtpHost = "";
+        String smtpPW = "";
+        String smtpBenutzer = "";
+        String smtpEMail = "";
+        String smtpPort = "";
 
         for (int i = 0; i < einstellungen.size(); i++) {
             String tempKey = einstellungen.get(i).getEinstellungenKey();
             if (tempKey.equals("SMTPHost")) {
-                SMTPHost = einstellungen.get(i).getEinstellungenValue();
+                smtpHost = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPPasswort")) {
-                SMTPPW = einstellungen.get(i).getEinstellungenValue();
+                smtpPW = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPBenutzer")) {
-                SMTPBenutzer = einstellungen.get(i).getEinstellungenValue();
+                smtpBenutzer = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPEmail")) {
-                SMTPEMail = einstellungen.get(i).getEinstellungenValue();
+                smtpEMail = einstellungen.get(i).getEinstellungenValue();
             } else if (tempKey.equals("SMTPPort")) {
-                SMTPPort = einstellungen.get(i).getEinstellungenValue();
+                smtpPort = einstellungen.get(i).getEinstellungenValue();
             }
 
         }
 
-        final String username = SMTPBenutzer;
-        final String password = SMTPPW;
+        final String username = smtpBenutzer;
+        final String password = smtpPW;
 
         Properties props = new Properties();
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.host", SMTPHost);
-        props.put("mail.smtp.port", SMTPPort);
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.ssl.checkserveridentity", true);
 
         Session session = Session.getDefaultInstance(props,
                 new javax.mail.Authenticator() {
@@ -244,7 +247,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         try {
             MimeMessage msg = new MimeMessage(session);
 
-            msg.setFrom(new InternetAddress(SMTPEMail, "NoReply-Bogenliga"));
+            msg.setFrom(new InternetAddress(smtpEMail, "NoReply-Bogenliga"));
 
             msg.setSubject("Feedback", "UTF-8");
 
@@ -258,11 +261,11 @@ public class UserRoleComponentImpl implements UserRoleComponent {
             Transport.send(msg);
 
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
-            unsupportedEncodingException.printStackTrace();
+            LOGGER.debug(unsupportedEncodingException.getMessage());
         } catch (AddressException addressException) {
-            addressException.printStackTrace();
+            LOGGER.debug(addressException.getMessage());
         } catch (MessagingException messagingException) {
-            messagingException.printStackTrace();
+            LOGGER.debug(messagingException.getMessage());
         }
 
     }

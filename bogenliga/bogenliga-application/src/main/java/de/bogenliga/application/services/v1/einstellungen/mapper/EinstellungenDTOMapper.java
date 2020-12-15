@@ -1,8 +1,6 @@
 package de.bogenliga.application.services.v1.einstellungen.mapper;
 
 import java.util.function.Function;
-import java.sql.Date;
-import java.util.function.Function;
 import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.einstellungen.model.EinstellungenDTO;
