@@ -164,8 +164,10 @@ public class UserDAO implements DataAccessObject {
         // Save UserId in the column dsb_mitglied_benutzer_id of entity dsb_mitglied
         DsbMitgliedDAO DsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
         DsbMitgliedBE DsbMitgliedBE = DsbMitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
-        DsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
-        DsbMitgliedDAO.update(DsbMitgliedBE, DsbMitgliedBE.getDsbMitgliedId());
+        if(DsbMitgliedBE != null) {
+            DsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
+            DsbMitgliedDAO.update(DsbMitgliedBE, DsbMitgliedBE.getDsbMitgliedId());
+        }
 
         return persistedUser;
     }
