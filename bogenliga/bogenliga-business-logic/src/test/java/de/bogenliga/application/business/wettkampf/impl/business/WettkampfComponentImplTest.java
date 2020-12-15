@@ -31,7 +31,6 @@ public class WettkampfComponentImplTest {
     private static final long wettkampf_Id = 322;
     private static final long wettkampf_Veranstaltung_Id = 0;
     private static final Date wettkampf_Datum = new Date(20190521L);
-    private static final String wettkampf_Ort = "Sporthalle,72810 Gomaringen";
     private static final String wettkampf_Strasse = "Reutlingerstr. 6";
     private static final String wettkampf_Plz = "72764";
     private static final String wettkampf_Ortsname = "Reutlingen";
@@ -63,7 +62,6 @@ public class WettkampfComponentImplTest {
         expectedBE.setId(wettkampf_Id);
         expectedBE.setVeranstaltungsId(wettkampf_Veranstaltung_Id);
         expectedBE.setDatum(wettkampf_Datum);
-        expectedBE.setWettkampfOrt(wettkampf_Ort);
         expectedBE.setWettkampfStrasse(wettkampf_Strasse);
         expectedBE.setWettkampfPlz(wettkampf_Plz);
         expectedBE.setWettkampfOrtsname(wettkampf_Ortsname);
@@ -84,7 +82,6 @@ public class WettkampfComponentImplTest {
         return new WettkampfDO(wettkampf_Id,
                 wettkampf_Veranstaltung_Id,
                 wettkampf_Datum,
-                wettkampf_Ort,
                 wettkampf_Strasse,
                 wettkampf_Plz,
                 wettkampf_Ortsname,
@@ -130,8 +127,6 @@ public class WettkampfComponentImplTest {
                 .isEqualTo(expectedBE.getVeranstaltungsId());
         assertThat(actual.get(0).getWettkampfDatum())
                 .isEqualTo(expectedBE.getDatum());
-        assertThat(actual.get(0).getWettkampfOrt())
-                .isEqualTo(expectedBE.getWettkampfOrt());
         assertThat(actual.get(0).getWettkampfStrasse())
                 .isEqualTo(expectedBE.getWettkampfStrasse());
         assertThat(actual.get(0).getWettkampfPlz())
