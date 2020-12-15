@@ -49,11 +49,10 @@ public class WettkampfService implements ServiceFacade {
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "Wettkampfveranstaltungsid must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "Format: YYYY-MM-DD Format must be correct,  Wettkampfdatum must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_ORT = "WettkampfOrt must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_STRASSE = "WettkampfStraße must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_Plz = "Wettkampfplz must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_Ortsname = "WettkampfNamemust not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_Ortsinfo = "WettkampfOrstinfo must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_PLZ = "Wettkampfplz must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_ORTSNAME = "WettkampfNamemust not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_ORTSINFO = "WettkampfOrstinfo must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_BEGINN = "Format: HH:MM, Format must be correct, Wettkampfbeginn must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_TAG = "Must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "Must not be null and must not be negative";
@@ -160,13 +159,12 @@ public class WettkampfService implements ServiceFacade {
         checkPreconditions(wettkampfDTO);
 
         LOG.debug(
-                "Received 'create' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
+                "Received 'create' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfstrasse'{}', Wettkampfplz'{}', Wettkampfortsname'{}', Wettkampfortsinfo'{}'," +
                         " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
                 wettkampfDTO.getId(),
                 wettkampfDTO.getDatum(),
                 wettkampfDTO.getwettkampfVeranstaltungsId(),
                 wettkampfDTO.getWettkampfDisziplinId(),
-                wettkampfDTO.getWettkampfOrt(),
                 wettkampfDTO.getWettkampfStrasse(),
                 wettkampfDTO.getWettkampfPlz(),
                 wettkampfDTO.getWettkampfOrtsname(),
@@ -206,7 +204,6 @@ public class WettkampfService implements ServiceFacade {
                 wettkampfDTO.getDatum(),
                 wettkampfDTO.getwettkampfVeranstaltungsId(),
                 wettkampfDTO.getWettkampfDisziplinId(),
-                wettkampfDTO.getWettkampfOrt(),
                 wettkampfDTO.getWettkampfStrasse(),
                 wettkampfDTO.getWettkampfPlz(),
                 wettkampfDTO.getWettkampfOrtsname(),
@@ -259,7 +256,11 @@ public class WettkampfService implements ServiceFacade {
         Preconditions.checkNotNull(wettkampfDTO.getDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);
 
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfBeginn(), PRECONDITION_MSG_WETTKAMPF_BEGINN);
-        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrt(), PRECONDITION_MSG_WETTKAMPF_ORT);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfStrasse(), PRECONDITION_MSG_WETTKAMPF_STRASSE);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfPlz(), PRECONDITION_MSG_WETTKAMPF_PLZ);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrtsname(), PRECONDITION_MSG_WETTKAMPF_ORTSNAME);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrtsinfo(), PRECONDITION_MSG_WETTKAMPF_ORTSINFO);
+
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfDisziplinId() >= 0,
                 PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
         Preconditions.checkNotNull(wettkampfDTO.getwettkampfVeranstaltungsId() >= 0,
