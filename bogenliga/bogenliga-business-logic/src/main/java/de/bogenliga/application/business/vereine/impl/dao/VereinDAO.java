@@ -32,12 +32,14 @@ public class VereinDAO implements DataAccessObject {
     private static final String VEREIN_BE_DSB_IDENTIFIER = "vereinDsbIdentifier";
     private static final String VEREIN_BE_REGION_ID = "vereinRegionId";
     private static final String VEREIN_BE_WEBSITE = "vereinWebsite";
+    private static final String VEREIN_BE_DESCRIPTION = "vereinDescription";
 
     private static final String VEREIN_TABLE_ID = "verein_id";
     private static final String VEREIN_TABLE_NAME = "verein_name";
     private static final String VEREIN_TABLE_DSB_IDENTIFIER = "verein_dsb_identifier";
     private static final String VEREIN_TABLE_REGION_ID = "verein_region_id";
     private static final String VEREIN_TABLE_WEBSITE = "verein_website";
+    private static final String VEREIN_TABLE_DESCRIPTION = "verein_description";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<VereinBE> VEREIN = new BusinessEntityConfiguration<>(
@@ -72,6 +74,7 @@ public class VereinDAO implements DataAccessObject {
         columnsToFieldsMap.put(VEREIN_TABLE_DSB_IDENTIFIER, VEREIN_BE_DSB_IDENTIFIER);
         columnsToFieldsMap.put(VEREIN_TABLE_REGION_ID, VEREIN_BE_REGION_ID);
         columnsToFieldsMap.put(VEREIN_TABLE_WEBSITE, VEREIN_BE_WEBSITE);
+        columnsToFieldsMap.put(VEREIN_TABLE_DESCRIPTION, VEREIN_BE_DESCRIPTION);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
