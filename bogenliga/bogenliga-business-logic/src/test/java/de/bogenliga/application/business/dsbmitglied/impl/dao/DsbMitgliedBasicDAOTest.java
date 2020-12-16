@@ -140,6 +140,7 @@ public class DsbMitgliedBasicDAOTest {
         final DsbMitgliedBE input = new DsbMitgliedBE();
         input.setDsbMitgliedId(ID);
         input.setDsbMitgliedVorname(VORNAME);
+        input.setDsbMitgliedUserId(USERID);
 
         // configure mocks
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
