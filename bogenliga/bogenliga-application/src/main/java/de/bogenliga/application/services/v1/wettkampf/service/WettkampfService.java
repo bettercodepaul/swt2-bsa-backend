@@ -1,4 +1,5 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
+
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,10 @@ public class WettkampfService implements ServiceFacade {
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "Wettkampfveranstaltungsid must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "Format: YYYY-MM-DD Format must be correct,  Wettkampfdatum must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_ORT = "WettkampfOrt must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_STRASSE = "WettkampfStraße must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_PLZ = "Wettkampfplz must not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_ORTSNAME = "WettkampfNamemust not be null";
+    private static final String PRECONDITION_MSG_WETTKAMPF_ORTSINFO = "WettkampfOrstinfo must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_BEGINN = "Format: HH:MM, Format must be correct, Wettkampfbeginn must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_TAG = "Must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "Must not be null and must not be negative";
@@ -63,7 +67,8 @@ public class WettkampfService implements ServiceFacade {
 
     /**
      * Constructor with dependency injection
-     *  @param wettkampfComponent to handle the database CRUD requests
+     *
+     * @param wettkampfComponent to handle the database CRUD requests
      * @param jwtTokenProvider
      * @param userComponent
      */
@@ -71,11 +76,12 @@ public class WettkampfService implements ServiceFacade {
     @Autowired
     public WettkampfService(final WettkampfComponent wettkampfComponent,
                             JwtTokenProvider jwtTokenProvider,
-                            UserComponent userComponent){
+                            UserComponent userComponent) {
         this.wettkampfComponent = wettkampfComponent;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userComponent = userComponent;
     }
+
 
     /**
      * findAll-Method gives back all Wettkämpfe safed in the Database.
@@ -90,10 +96,12 @@ public class WettkampfService implements ServiceFacade {
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+
     /**
      * findByID-Method gives back a specific Wettkampf according to a single Wettkampf_ID
      *
      * @param id - single id of the Wettkampf you want te access
+     *
      * @return
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -103,7 +111,7 @@ public class WettkampfService implements ServiceFacade {
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
 
-        final WettkampfDO wettkampfDO= wettkampfComponent.findById(id);
+        final WettkampfDO wettkampfDO = wettkampfComponent.findById(id);
         wettkampfDO.toString();
         return WettkampfDTOMapper.toDTO.apply(wettkampfDO);
     }
@@ -122,6 +130,7 @@ public class WettkampfService implements ServiceFacade {
         return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+
     @RequestMapping(value = "byVeranstaltungId/{veranstaltungId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfDTO> findAllByVeranstaltungId(@PathVariable("veranstaltungId") final long veranstaltungId) {
@@ -135,8 +144,10 @@ public class WettkampfService implements ServiceFacade {
 
     /**
      * create-Method() writes a new entry of Wettkampf into the database
+     *
      * @param wettkampfDTO
      * @param principal
+     *
      * @return
      */
     @RequestMapping(method = RequestMethod.POST,
@@ -147,13 +158,17 @@ public class WettkampfService implements ServiceFacade {
 
         checkPreconditions(wettkampfDTO);
 
-        LOG.debug("Received 'create' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
+        LOG.debug(
+                "Received 'create' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfstrasse'{}', Wettkampfplz'{}', Wettkampfortsname'{}', Wettkampfortsinfo'{}'," +
                         " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
                 wettkampfDTO.getId(),
                 wettkampfDTO.getDatum(),
                 wettkampfDTO.getwettkampfVeranstaltungsId(),
                 wettkampfDTO.getWettkampfDisziplinId(),
-                wettkampfDTO.getWettkampfOrt(),
+                wettkampfDTO.getWettkampfStrasse(),
+                wettkampfDTO.getWettkampfPlz(),
+                wettkampfDTO.getWettkampfOrtsname(),
+                wettkampfDTO.getWettkampfOrtsinfo(),
                 wettkampfDTO.getWettkampfTag(),
                 wettkampfDTO.getWettkampfBeginn(),
                 wettkampfDTO.getWettkampfTypId());
@@ -161,36 +176,45 @@ public class WettkampfService implements ServiceFacade {
         final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final WettkampfDO savedWettkampfDO= wettkampfComponent.create(newWettkampfDO, userId);
+        final WettkampfDO savedWettkampfDO = wettkampfComponent.create(newWettkampfDO, userId);
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
 
+
     /**
      * Update-Method changes the chosen Wettkampf entry in the Database
+     *
      * @param wettkampfDTO
      * @param principal
+     *
      * @return
      */
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_WETTKAMPF})
-    public WettkampfDTO update(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) throws NoPermissionException {
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+    public WettkampfDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
+                               final Principal principal) throws NoPermissionException {
         checkPreconditions(wettkampfDTO);
 
-                LOG.debug("Received 'update' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
-                                " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
-                        wettkampfDTO.getId(),
-                        wettkampfDTO.getDatum(),
-                        wettkampfDTO.getwettkampfVeranstaltungsId(),
-                        wettkampfDTO.getWettkampfDisziplinId(),
-                        wettkampfDTO.getWettkampfOrt(),
-                        wettkampfDTO.getWettkampfTag(),
-                        wettkampfDTO.getWettkampfBeginn(),
-                        wettkampfDTO.getWettkampfTypId());
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF)  ||this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,wettkampfDTO.getId())){
+        LOG.debug(
+                "Received 'update' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
+                        " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
+                wettkampfDTO.getId(),
+                wettkampfDTO.getDatum(),
+                wettkampfDTO.getwettkampfVeranstaltungsId(),
+                wettkampfDTO.getWettkampfDisziplinId(),
+                wettkampfDTO.getWettkampfStrasse(),
+                wettkampfDTO.getWettkampfPlz(),
+                wettkampfDTO.getWettkampfOrtsname(),
+                wettkampfDTO.getWettkampfOrtsinfo(),
+                wettkampfDTO.getWettkampfTag(),
+                wettkampfDTO.getWettkampfBeginn(),
+                wettkampfDTO.getWettkampfTypId());
+        if (this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) || this.hasSpecificPermission(
+                UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDTO.getId())) {
 
-        }else{
+        } else {
             throw new NoPermissionException();
         }
         final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
@@ -200,8 +224,10 @@ public class WettkampfService implements ServiceFacade {
         return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 
+
     /**
      * Delete-Method removes an entry from the database
+     *
      * @param id
      * @param principal
      */
@@ -219,24 +245,36 @@ public class WettkampfService implements ServiceFacade {
         wettkampfComponent.delete(wettkampfDO, userId);
     }
 
+
     /**
      * checks the preconditions defined above in this class
+     *
      * @param wettkampfDTO
      */
     private void checkPreconditions(@RequestBody final WettkampfDTO wettkampfDTO) {
         Preconditions.checkNotNull(wettkampfDTO, PRECONDITION_MSG_WETTKAMPF);
         Preconditions.checkNotNull(wettkampfDTO.getDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);
 
-        Preconditions.checkNotNull(wettkampfDTO.getWettkampfBeginn(),PRECONDITION_MSG_WETTKAMPF_BEGINN);
-        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrt(),PRECONDITION_MSG_WETTKAMPF_ORT);
-        Preconditions.checkNotNull(wettkampfDTO.getWettkampfDisziplinId()>=0, PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
-        Preconditions.checkNotNull(wettkampfDTO.getwettkampfVeranstaltungsId()>=0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfBeginn(), PRECONDITION_MSG_WETTKAMPF_BEGINN);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfStrasse(), PRECONDITION_MSG_WETTKAMPF_STRASSE);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfPlz(), PRECONDITION_MSG_WETTKAMPF_PLZ);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrtsname(), PRECONDITION_MSG_WETTKAMPF_ORTSNAME);
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrtsinfo(), PRECONDITION_MSG_WETTKAMPF_ORTSINFO);
+
+        Preconditions.checkNotNull(wettkampfDTO.getWettkampfDisziplinId() >= 0,
+                PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
+        Preconditions.checkNotNull(wettkampfDTO.getwettkampfVeranstaltungsId() >= 0,
+                PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_TYP_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTag() >= 0, PRECONDITION_MSG_WETTKAMPF_TAG);
     }
+
+
     /**
      * method to check, if a user has a general permission
+     *
      * @param toTest The permission whose existence is getting checked
+     *
      * @return Does the User have the searched permission
      */
     boolean hasPermission(UserPermission toTest) {
@@ -248,14 +286,14 @@ public class WettkampfService implements ServiceFacade {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
             //if a request is present:
-            if(request != null) {
+            if (request != null) {
                 //parse the Webtoken and get the UserPermissions of the current User
                 final String jwt = JwtTokenProvider.resolveToken(request);
                 final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
                 //check if the resolved Permissions
                 //contain the required Permission for the task.
-                if(userPermissions.contains(toTest)) {
+                if (userPermissions.contains(toTest)) {
                     result = true;
                 }
             }
@@ -263,12 +301,15 @@ public class WettkampfService implements ServiceFacade {
         return result;
     }
 
+
     /**
      * method to check, if a user has a Specific permission with the matching parameters
+     *
      * @param toTest The permission whose existence is getting checked
+     *
      * @return Does the User have searched permission
      */
-    boolean hasSpecificPermission(UserPermission toTest, Long wettkampfid) {
+    boolean hasSpecificPermission(UserPermission toTest, Long wettkampfID) {
         //default value is: not allowed
         boolean result = false;
         //get the current http request from thread
@@ -277,7 +318,7 @@ public class WettkampfService implements ServiceFacade {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
             //if a request is present:
-            if(request != null) {
+            if (request != null) {
                 //parse the Webtoken and get the UserPermissions of the current User
                 final String jwt = JwtTokenProvider.resolveToken(request);
                 final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
@@ -287,9 +328,10 @@ public class WettkampfService implements ServiceFacade {
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
                 ArrayList<Integer> temp = new ArrayList<>();
-                for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
-                    if(wettkampfDO.getId() ==wettkampfid){
+                for (WettkampfDO wettkampfDO : this.wettkampfComponent.findByAusrichter(UserId)) {
+                    if (wettkampfDO.getId().equals(wettkampfID)) {
                         result = true;
+                        break;
                     }
                 }
 
