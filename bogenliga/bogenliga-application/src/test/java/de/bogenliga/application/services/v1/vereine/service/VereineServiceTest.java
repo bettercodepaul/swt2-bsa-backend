@@ -43,6 +43,8 @@ public class VereineServiceTest {
     private static final long REGION_ID_NOT_NEG = 0;
     private static final long REGION_ID = 0;
     private static final String REGION_NAME = "";
+    private static final String VEREIN_WEBSITE = "";
+    private static final String VEREIN_DESCRIPTION = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
     private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
@@ -70,6 +72,8 @@ public class VereineServiceTest {
         expectedBE.setVereinName(VEREIN_NAME);
         expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
         expectedBE.setVereinRegionId(REGION_ID);
+        expectedBE.setVereinWebsite(VEREIN_WEBSITE);
+        expectedBE.setVereinDescription(VEREIN_DESCRIPTION);
 
         return expectedBE;
     }
@@ -80,6 +84,8 @@ public class VereineServiceTest {
                 VEREIN_DSB_IDENTIFIER,
                 REGION_ID,
                 REGION_NAME,
+                VEREIN_WEBSITE,
+                VEREIN_DESCRIPTION,
                 VEREIN_OFFSETDATETIME,
                 USER,
                 VEREIN_OFFSETDATETIME,

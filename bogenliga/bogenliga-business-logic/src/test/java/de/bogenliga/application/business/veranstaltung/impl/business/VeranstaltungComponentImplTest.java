@@ -56,7 +56,11 @@ public class VeranstaltungComponentImplTest {
 
     private static final Long WETTKAMPF_ID = 0L;
     private static final Date WETTKAMPF_DATUM = new Date(1L);
-    private  static final String WETTKAMPF_ORT = "München";
+    private  static final String WETTKAMPF_STRASSE = "Münchenerstr. 4";
+    private  static final String WETTKAMPF_PLZ = "80331";
+    private  static final String WETTKAMPF_ORTSNAME = "München";
+    private  static final String WETTKAMPF_ORTSINFO = "Sporthalle";
+
     private static final String WETTKAMPF_BEGINN ="13:00";
 
 
@@ -143,8 +147,12 @@ public class VeranstaltungComponentImplTest {
         wettkampfBE.setId(WETTKAMPF_ID);
         wettkampfBE.setDatum(WETTKAMPF_DATUM);
         wettkampfBE.setWettkampfBeginn(WETTKAMPF_BEGINN);
-        wettkampfBE.setWettkampfOrt(WETTKAMPF_ORT);
-         return wettkampfBE;
+        wettkampfBE.setWettkampfStrasse(WETTKAMPF_STRASSE);
+        wettkampfBE.setWettkampfPlz(WETTKAMPF_PLZ);
+        wettkampfBE.setWettkampfOrtsname(WETTKAMPF_ORTSNAME);
+        wettkampfBE.setWettkampfOrtsinfo(WETTKAMPF_ORTSINFO);
+
+        return wettkampfBE;
     }
 
 

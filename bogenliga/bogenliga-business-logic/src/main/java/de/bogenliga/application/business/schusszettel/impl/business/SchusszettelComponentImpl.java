@@ -398,6 +398,22 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
                 }
             }
+
+
+            // Turn all Strafpunkte into "0" if null
+            String[] strafpunkte = new String[] {
+                    currentMatch.getStrafPunkteSatz1() == null ? "0" : currentMatch.getStrafPunkteSatz1().toString(),
+                    currentMatch.getStrafPunkteSatz2() == null ? "0" : currentMatch.getStrafPunkteSatz2().toString(),
+                    currentMatch.getStrafPunkteSatz3() == null ? "0" : currentMatch.getStrafPunkteSatz3().toString(),
+                    currentMatch.getStrafPunkteSatz4() == null ? "0" : currentMatch.getStrafPunkteSatz4().toString(),
+                    currentMatch.getStrafPunkteSatz5() == null ? "0" : currentMatch.getStrafPunkteSatz5().toString()
+            };
+
+            //Save sum with including the Strafpunkte
+            for (int j = 0; j < 5; j++) {
+                sums[j] -= Integer.parseInt(strafpunkte[j]) ;
+            }
+
             // Save sums to array in outside scope
             matchSatzSums[i-1] = sums;
 
@@ -428,14 +444,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
-            // Turn all Strafpunkte into "0" if null
-            String[] strafpunkte = new String[] {
-                    currentMatch.getStrafPunkteSatz1() == null ? "0" : currentMatch.getStrafPunkteSatz1().toString(),
-                    currentMatch.getStrafPunkteSatz2() == null ? "0" : currentMatch.getStrafPunkteSatz2().toString(),
-                    currentMatch.getStrafPunkteSatz3() == null ? "0" : currentMatch.getStrafPunkteSatz3().toString(),
-                    currentMatch.getStrafPunkteSatz4() == null ? "0" : currentMatch.getStrafPunkteSatz4().toString(),
-                    currentMatch.getStrafPunkteSatz5() == null ? "0" : currentMatch.getStrafPunkteSatz5().toString()
-            };
 
             // Add Fehlerpunkte
             // Third part

@@ -15,7 +15,8 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     private String vereinName;
     private String vereinDsbIdentifier;
     private Long vereinRegionId;
-
+    private String vereinWebsite;
+    private String vereinDescription;
 
     /**
      * Empty constructor
@@ -65,6 +66,17 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
+    public String getVereinWebsite() { return vereinWebsite; }
+
+
+    public void setVereinWebsite(String vereinWebsite) { this.vereinWebsite = vereinWebsite; }
+
+
+    public String getVereinDescription() { return vereinDescription; }
+
+
+    public void setVereinDescription(String vereinDescription) { this.vereinDescription = vereinDescription; }
+
 
     @Override
     public String toString() {
@@ -73,6 +85,8 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
                 ", vereinName='" + vereinName + '\'' +
                 ", vereinDsbIdentifier='" + vereinDsbIdentifier + '\'' +
                 ", vereinRegionId='" + vereinRegionId + '\'' +
+                ", vereinWebsite='" + vereinWebsite + '\'' +
+                ", vereinDescription='" + vereinDescription + '\'' +
                 "}";
     }
 }

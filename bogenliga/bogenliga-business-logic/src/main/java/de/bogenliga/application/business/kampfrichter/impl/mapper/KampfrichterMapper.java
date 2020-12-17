@@ -11,13 +11,11 @@ import de.bogenliga.application.common.time.DateProvider;
 
 /**
  * I convert the kampfrichter DataObjects and BusinessEntities.
- *
  */
 public class KampfrichterMapper implements ValueObjectMapper {
 
     /**
      * Converts a {@link KampfrichterBE} to a {@link KampfrichterDO}
-     *
      */
     public static final Function<KampfrichterBE, KampfrichterDO> toKampfrichterDO = be -> {
 
@@ -43,12 +41,17 @@ public class KampfrichterMapper implements ValueObjectMapper {
     public static final Function<KampfrichterDO, KampfrichterBE> toKampfrichterBE = kampfrichterDO -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(kampfrichterDO.getCreatedAtUtc());
-        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(kampfrichterDO.getLastModifiedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(
+                kampfrichterDO.getLastModifiedAtUtc());
 
         KampfrichterBE kampfrichterBE = new KampfrichterBE();
         kampfrichterBE.setKampfrichterUserId(kampfrichterDO.getUserId());
-        kampfrichterBE.setKampfrichterWettkampfId((long)9999);
-        kampfrichterBE.setKampfrichterLeitend(false);
+
+        // TODO: Why is the wettkampfID set to 9999?
+//        kampfrichterBE.setKampfrichterWettkampfId((long)9999);
+        kampfrichterBE.setKampfrichterWettkampfId(kampfrichterDO.getWettkampfId());
+//        kampfrichterBE.setKampfrichterLeitend(false);
+        kampfrichterBE.setKampfrichterLeitend(kampfrichterDO.isLeitend());
 
         kampfrichterBE.setCreatedAtUtc(createdAtUtcTimestamp);
         kampfrichterBE.setCreatedByUserId(kampfrichterDO.getCreatedByUserId());
