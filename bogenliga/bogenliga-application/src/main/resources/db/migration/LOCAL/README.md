@@ -11,6 +11,7 @@ Beispiele:
 
 - `V1_1__insert_into_benutzer_create_default_user.sql` 
    
+   
    für `V1_0__create_table_benutzer.sql` im all/ Ordner
 - `V2_1__insert_into_rolle_create_default_roles.sql`
    
