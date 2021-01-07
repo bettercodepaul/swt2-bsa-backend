@@ -462,7 +462,7 @@ public class BasicDAO implements DataAccessObject {
      *                                    "object-relational" mapping between the business entity and the database
      *                                    table
      * @param deleteBusinessEntity        business entity to delete the DELETE sql query is automatically generated
-     * @param fieldSelector               to identify the target table row in the WHERE clause
+     * @param fieldSelector               to identify the target table row in the WHERE clause (you can have more than one fieldSelector)
      *
      * @throws BusinessException if no or more than 1 row is affected by the delete.
      */
