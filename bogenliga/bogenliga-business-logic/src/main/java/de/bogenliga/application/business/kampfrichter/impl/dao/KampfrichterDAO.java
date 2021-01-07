@@ -150,11 +150,12 @@ public class KampfrichterDAO implements DataAccessObject {
     public void delete(final KampfrichterBE kampfrichterBE, final long currentKampfrichterUserId) {
         basicDao.setModificationAttributes(kampfrichterBE, currentKampfrichterUserId);
 
-        basicDao.deleteEntity(KAMPFRICHTER, kampfrichterBE, KAMPFRICHTER_BE_ID);
+        basicDao.deleteEntity(KAMPFRICHTER, kampfrichterBE, KAMPFRICHTER_BE_ID, KAMPFRICHTER_BE_COMPETITION_ID);
     }
 
 
-    // TODO: See if this works
+
+    // TODO: Delete this, because it didn't work
     public void testDelete(final KampfrichterBE kampfrichterBE) {
         basicDao.setModificationAttributes(kampfrichterBE, kampfrichterBE.getKampfrichterUserId());
 
