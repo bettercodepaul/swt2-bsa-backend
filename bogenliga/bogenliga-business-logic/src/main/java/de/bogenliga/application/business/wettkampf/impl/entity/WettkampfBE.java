@@ -20,13 +20,17 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private Long id;
     private Long veranstaltungsId;
     private Date datum;
-    private String wettkampfOrt;
+    private String wettkampfStrasse;
+    private String wettkampfPlz;
+    private String wettkampfOrtsname;
+    private String wettkampfOrtsinfo;
     private String wettkampfBeginn;
     private Long wettkampfTag;
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
     private Long kampfrichterId;
     private Long wettkampfAusrichter;
+
 
     /**
      * Constructor
@@ -66,13 +70,44 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
+
+    public String getWettkampfOrtsinfo() {
+        return wettkampfOrtsinfo;
     }
 
 
-    public void setWettkampfOrt(final String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
+    public void setWettkampfOrtsinfo(final String wettkampfOrtsinfo) {
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
+    }
+
+
+    public String getWettkampfOrtsname() {
+        return wettkampfOrtsname;
+    }
+
+
+    public void setWettkampfOrtsname(final String wettkampfOrtsname) {
+        this.wettkampfOrtsname = wettkampfOrtsname;
+    }
+
+
+    public String getWettkampfPlz() {
+        return wettkampfPlz;
+    }
+
+
+    public void setWettkampfPlz(final String wettkampfPlz) {
+        this.wettkampfPlz = wettkampfPlz;
+    }
+
+
+    public String getWettkampfStrasse() {
+        return wettkampfStrasse;
+    }
+
+
+    public void setWettkampfStrasse(final String wettkampfStrasse) {
+        this.wettkampfStrasse = wettkampfStrasse;
     }
 
 
@@ -142,7 +177,10 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
                 "\tWettkampfId = " + getId() + ",\n" +
                 "\tVeranstaltungsId =  " + getVeranstaltungsId() + ",\n" +
                 "\tDatum = " + getDatum() + ",\n" +
-                "\tWettkampfort = " + getWettkampfOrt() + ",\n" +
+                "\tWettkampfstrasse = " + getWettkampfStrasse() + ",\n" +
+                "\tWettkampfplz = " + getWettkampfPlz() + ",\n" +
+                "\tWettkampfortsname = " + getWettkampfOrtsname() + ",\n" +
+                "\tWettkampfortsinfo = " + getWettkampfOrtsinfo() + ",\n" +
                 "\tWettkampfbeginn = " + getWettkampfBeginn() + ",\n" +
                 "\tWettkampftag = " + getWettkampfTag() + ",\n" +
                 "\tWettkampfdiziplinId = " + getWettkampfDisziplinId() + ",\n" +
@@ -151,4 +189,6 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
                 "\tWettkampfAusrichter = " + getWettkampfAusrichter() + "\n" +
                 "}";
     }
+
+
 }
