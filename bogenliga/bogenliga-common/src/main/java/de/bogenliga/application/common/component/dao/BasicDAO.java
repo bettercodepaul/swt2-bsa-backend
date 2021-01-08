@@ -43,10 +43,12 @@ public class BasicDAO implements DataAccessObject {
     private final TransactionManager transactionManager;
     private QueryRunner run = new QueryRunner();
 
+
     @Autowired
     public BasicDAO(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
+
 
     /**
      * Package-protected constructor with all dependencies
@@ -93,8 +95,6 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
-
-
     /**
      * I set the modification parameter for the user and the timestamp.
      *
@@ -111,14 +111,15 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I return a single {@link BusinessEntity} for the given
-     * sql SELECT query.
+     * I return a single {@link BusinessEntity} for the given sql SELECT query.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the "
-     *                                    object-relational" mapping between the business entity and the database table.
+     *                                    object-relational" mapping between the business entity and the database
+     *                                    table.
      * @param sqlQuery                    to request the business entity
-     * @param params                      The parameter(s) are used to identify the single business entity
-     *                                    in the WHERE clause.
+     * @param params                      The parameter(s) are used to identify the single business entity in the WHERE
+     *                                    clause.
+     *
      * @return instance of the business entity which is defined in the {@code businessEntityConfiguration}
      */
     public <T> T selectSingleEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
@@ -135,8 +136,8 @@ public class BasicDAO implements DataAccessObject {
             }
 
             return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
-                new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
-                    businessEntityConfiguration.getColumnToFieldMapping()), params);
+                    new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
+                            businessEntityConfiguration.getColumnToFieldMapping()), params);
 
         } catch (SQLException e) {
             error = true;
@@ -163,15 +164,16 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I return a list of {@link BusinessEntity} for the given
-     * sql SELECT query.
-     *
+     * I return a list of {@link BusinessEntity} for the given sql SELECT query.
+     * <p>
      * The instance of the business entity is defined in the {@code businessEntityConfiguration}
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
      * @param sqlQuery                    to request the list of business entities
      * @param params                      The parameter(s) are used to select the business entities in the WHERE clause
+     *
      * @return list of business entities
      */
     public <T> List<T> selectEntityList(BusinessEntityConfiguration<T> businessEntityConfiguration,
@@ -189,9 +191,9 @@ public class BasicDAO implements DataAccessObject {
             }
 
             businessEntityList = run.query(getConnection(),
-                logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
-                new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
-                    businessEntityConfiguration.getColumnToFieldMapping()), params);
+                    logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
+                    new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
+                            businessEntityConfiguration.getColumnToFieldMapping()), params);
 
             return businessEntityList == null ? Collections.emptyList() : businessEntityList;
 
@@ -220,13 +222,14 @@ public class BasicDAO implements DataAccessObject {
 
     /**
      * I persist a single {@link BusinessEntity}
-     *
+     * <p>
      * Encapsulate the INSERT query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param insertBusinessEntity        business entity to persist
-     *                                    the INSERT sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param insertBusinessEntity        business entity to persist the INSERT sql query is automatically generated
+     *
      * @return instance of the persisted business entity
      */
     public <T> T insertEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
@@ -278,16 +281,16 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I update one or more {@link BusinessEntity} objects
-     * in the database.
-     *
+     * I update one or more {@link BusinessEntity} objects in the database.
+     * <p>
      * Encapsulate the UPDATE query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param updateBusinessEntity        business entity to persist
-     *                                    the UPDATE sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param updateBusinessEntity        business entity to persist the UPDATE sql query is automatically generated
      * @param fieldSelector               to identify the target table rows in the WHERE clause
+     *
      * @return number of modified table rows
      */
     <T> int updateEntities(BusinessEntityConfiguration<T> businessEntityConfiguration,
@@ -332,19 +335,21 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I update a single {@link CommonBusinessEntity} object
-     * in the database.
-     *
+     * I update a single {@link CommonBusinessEntity} object in the database.
+     * <p>
      * I validate the version of the given object and detect concurrent modification conflicts.
-     *
+     * <p>
      * I encapsulate the UPDATE and SELECT query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param updateBusinessEntity        business entity with a version field to persist
-     *                                    the UPDATE sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param updateBusinessEntity        business entity with a version field to persist the UPDATE sql query is
+     *                                    automatically generated
      * @param fieldSelector               to identify the target table row in the WHERE clause
+     *
      * @return instance of the updated business entity
+     *
      * @throws BusinessException if no or more than 1 row is affected by the update
      */
     <T extends CommonBusinessEntity> T updateVersionedEntity(BusinessEntityConfiguration<T>
@@ -360,7 +365,8 @@ public class BasicDAO implements DataAccessObject {
                 selectSql.getParameter());
 
         if (objectBeforeUpdate.getVersion() != updateBusinessEntity.getVersion()) {
-            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "The business entity was modified by an other user.");
+            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR,
+                    "The business entity was modified by an other user.");
         } // else: do update
 
         return updateEntity(businessEntityConfiguration, updateBusinessEntity, fieldSelector);
@@ -368,17 +374,18 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I update a single {@link BusinessEntity} object
-     * in the database.
-     *
+     * I update a single {@link BusinessEntity} object in the database.
+     * <p>
      * Encapsulate the UPDATE and SELECT query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param updateBusinessEntity        business entity to persist
-     *                                    the UPDATE sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param updateBusinessEntity        business entity to persist the UPDATE sql query is automatically generated
      * @param fieldSelector               to identify the target table row in the WHERE clause
+     *
      * @return instance of the updated business entity
+     *
      * @throws BusinessException if no or more than 1 row is affected by the update
      */
     public <T> T updateEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
@@ -449,18 +456,18 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I delete a single {@link BusinessEntity} object
-     * from the database.
+     * I delete a single {@link BusinessEntity} object from the database.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param deleteBusinessEntity        business entity to delete
-     *                                    the DELETE sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param deleteBusinessEntity        business entity to delete the DELETE sql query is automatically generated
      * @param fieldSelector               to identify the target table row in the WHERE clause
+     *
      * @throws BusinessException if no or more than 1 row is affected by the delete.
      */
     public <T> void deleteEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
-    T deleteBusinessEntity, String... fieldSelector) {
+                                 T deleteBusinessEntity, String... fieldSelector) {
         SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
@@ -511,9 +518,11 @@ public class BasicDAO implements DataAccessObject {
     /**
      * I log the sql query with the given logger instance and return the query to the query runner.
      *
-     * @param logger            specific {@link DataAccessObject} logger to log the logging message source in the log output
+     * @param logger            specific {@link DataAccessObject} logger to log the logging message source in the log
+     *                          output
      * @param sql               query with ?-parameters to log
      * @param sqlQueryParameter the ?-parameters are replaced with the {@code sqlQueryParameter}
+     *
      * @return sql query with parameters
      */
     public final String logSQL(Logger logger, String sql, Object... sqlQueryParameter) {
@@ -552,6 +561,7 @@ public class BasicDAO implements DataAccessObject {
      *
      * @param logger specific {@link DataAccessObject} logger to log the logging message source in the log output
      * @param sql    query to log
+     *
      * @return sql query
      */
     final String logSQL(Logger logger, String sql) {

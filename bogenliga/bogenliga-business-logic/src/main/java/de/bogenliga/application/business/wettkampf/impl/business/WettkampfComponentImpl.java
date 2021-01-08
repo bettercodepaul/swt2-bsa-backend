@@ -17,7 +17,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 /**
  * Implementation of {@link WettkampfComponent}
  *
- * @Autor Marvin Holm, Daniel Schott
+ * Autor: Marvin Holm, Daniel Schott
  */
 @Component
 public class WettkampfComponentImpl implements WettkampfComponent {
@@ -25,7 +25,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "wettkampfID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "wettkampfVeranstaltungsID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "wettkampfDatum must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_ORT = "wettkampfOrt must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_BEGINN = "wettkampfBeginn must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_TAG = "wettkampfTag must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinID must not be null and must not be negative";
@@ -55,11 +54,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
     }
 
-
+    // Do we need this method for anything or does it purely exist because it has to implement the interfaces method?
     @Override
     public List<WettkampfDO> findByAusrichter(long id) {
-        ArrayList<WettkampfDO> result = new ArrayList<WettkampfDO>();
-        return result;
+        return new ArrayList<>();
     }
 
 
@@ -143,7 +141,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(wettkampfDO.getWettkampfVeranstaltungsId() >= 0,
                 PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);
-        Preconditions.checkNotNull(wettkampfDO.getWettkampfOrt(), PRECONDITION_MSG_WETTKAMPF_ORT);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfBeginn(), PRECONDITION_MSG_WETTKAMPF_BEGINN);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfTag(), PRECONDITION_MSG_WETTKAMPF_TAG);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfDisziplinId(), PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
