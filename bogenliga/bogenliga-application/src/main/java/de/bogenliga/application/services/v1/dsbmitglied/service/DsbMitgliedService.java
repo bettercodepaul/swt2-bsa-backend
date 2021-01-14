@@ -3,7 +3,7 @@ package de.bogenliga.application.services.v1.dsbmitglied.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+impoasdrt java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
 import javax.servlet.http.HttpServletRequest;
