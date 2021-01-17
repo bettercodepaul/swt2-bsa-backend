@@ -18,6 +18,7 @@ public class VereineDTO implements DataTransferObject {
     private String regionName;
     private String website;
     private String description;
+    private String icon;
     private OffsetDateTime createdAtUtc;
     private Long createdByUserId;
     private Long version;
@@ -46,7 +47,7 @@ public class VereineDTO implements DataTransferObject {
      * @param version
      */
     public VereineDTO(Long id, String name, String identifier, Long regionId, String regionName,
-                      String website, String description, OffsetDateTime createdAtUtc,
+                      String website, String description, String icon, OffsetDateTime createdAtUtc,
                       Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
@@ -55,13 +56,14 @@ public class VereineDTO implements DataTransferObject {
         this.regionName = regionName;
         this.website = website;
         this.description = description;
+        this.icon = icon;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
     }
 
     public VereineDTO(Long id, String name, String identifier, Long regionId,
-                      String website, String description, OffsetDateTime createdAtUtc,
+                      String website, String description, String icon, OffsetDateTime createdAtUtc,
                       Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
@@ -69,6 +71,7 @@ public class VereineDTO implements DataTransferObject {
         this.regionId = regionId;
         this.website = website;
         this.description = description;
+        this.icon = icon;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -134,6 +137,12 @@ public class VereineDTO implements DataTransferObject {
 
 
     public void setDescription(String description) { this.description = description; }
+
+
+    public String getIcon() { return icon; }
+
+
+    public void setIcon(String icon) { this.icon = icon; }
 
 
     public OffsetDateTime getCreatedAtUtc() {
