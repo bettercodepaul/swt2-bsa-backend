@@ -7,7 +7,6 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
-import java.io.*;
 
 /**
  * I convert Verein DataObjects into BusinessEntities and vice versa.
@@ -28,7 +27,7 @@ public class VereinMapper implements ValueObjectMapper {
         final Long regionId = be.getVereinRegionId();
         final String website = be.getVereinWebsite();
         final String description = be.getVereinDescription();
-        final File icon = be.getVereinIcon();
+        final String icon = be.getVereinIcon();
 
         // technical params
         final Long createdByUserId = be.getCreatedByUserId();

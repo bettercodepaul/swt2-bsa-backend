@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.*;
 
 public class VereinComponentImplTest {
 
@@ -40,7 +39,7 @@ public class VereinComponentImplTest {
     private static final long VEREIN_REGION_ID = 0;
     private static final String VEREIN_WEBSITE = "";
     private static final String VEREIN_DESCRIPTION = "";
-    private static final File VEREIN_ICON = null;
+    private static final String VEREIN_ICON = "";
     private static final long USER_ID = 0;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
     private static final Long REGION_ID = 0L;

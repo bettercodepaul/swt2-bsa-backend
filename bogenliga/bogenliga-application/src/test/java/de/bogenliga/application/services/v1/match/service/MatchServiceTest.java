@@ -144,7 +144,7 @@ public class MatchServiceTest {
     private static final String REGION_NAME = "";
     private static final String VEREIN_WEBSITE = "";
     private static final String VEREIN_DESCRIPTION = "";
-    private static final File VEREIN_ICON = null;
+    private static final String VEREIN_ICON = null;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
 
 

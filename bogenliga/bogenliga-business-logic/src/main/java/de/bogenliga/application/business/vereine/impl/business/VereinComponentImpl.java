@@ -1,9 +1,16 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
@@ -14,6 +21,7 @@ import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.mapper.VereinMapper;
 import de.bogenliga.application.common.validation.Preconditions;
+import java.io.File;
 
 /**
  * Implementation of {@link VereinComponent}
@@ -40,7 +48,6 @@ public class VereinComponentImpl implements VereinComponent {
         this.regionenDAO = regionenDao;
     }
 
-
     @Override
     public List<VereinDO> findAll() {
         final List<VereinBE> vereinBEList = vereinDAO.findAll();
@@ -48,7 +55,6 @@ public class VereinComponentImpl implements VereinComponent {
 
         return alterDoByRegionName(vereinDOList);
     }
-
 
     @Override
     public VereinDO create(VereinDO vereinDO, long currentDsbMitglied) {
@@ -59,7 +65,6 @@ public class VereinComponentImpl implements VereinComponent {
 
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
-
 
     @Override
     public VereinDO findById(long vereinId) {
@@ -80,7 +85,6 @@ public class VereinComponentImpl implements VereinComponent {
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
 
-
     @Override
     public void delete(VereinDO vereinDO, long currentDsbMitglied) {
         Preconditions.checkNotNull(vereinDO, PRECONDITION_MSG_VEREIN);
@@ -92,8 +96,6 @@ public class VereinComponentImpl implements VereinComponent {
         vereinDAO.delete(vereinBE, currentDsbMitglied);
     }
 
-
-
     private void checkVereinDO(final VereinDO vereinDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(vereinDO, PRECONDITION_MSG_VEREIN);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG);
@@ -103,7 +105,6 @@ public class VereinComponentImpl implements VereinComponent {
 
         Preconditions.checkArgument(vereinDO.getRegionId() >= 0, PRECONDITION_MSG_VEREIN_REGION_ID_NOT_NEG);
     }
-
 
     /**
      * Alters a {@VereinDO} with a regionName that matches to the regionId

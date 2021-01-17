@@ -2,7 +2,6 @@ package de.bogenliga.application.business.vereine.impl.entity;
 
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
-import java.io.*;
 
 /**
  * I represent the verein business entitity
@@ -18,7 +17,7 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     private Long vereinRegionId;
     private String vereinWebsite;
     private String vereinDescription;
-    private File vereinIcon;
+    private String vereinIcon;
 
     /**
      * Empty constructor
@@ -80,10 +79,10 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     public void setVereinDescription(String vereinDescription) { this.vereinDescription = vereinDescription; }
 
 
-    public File getVereinIcon() { return vereinIcon; }
+    public String getVereinIcon() { return vereinIcon; }
 
 
-    public void setVereinIcon(File vereinIcon) { this.vereinIcon = vereinIcon; }
+    public void setVereinIcon(String vereinIcon) { this.vereinIcon = vereinIcon; }
 
 
     @Override
@@ -95,6 +94,7 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
                 ", vereinRegionId='" + vereinRegionId + '\'' +
                 ", vereinWebsite='" + vereinWebsite + '\'' +
                 ", vereinDescription='" + vereinDescription + '\'' +
+                ", vereinIcon='" + vereinIcon + '\'' +
                 "}";
     }
 }
