@@ -160,7 +160,9 @@ public enum UserPermission implements GrantedAuthority {
 
     CAN_DELETE_MANNSCHAFT,
     CAN_MODIFY_MANNSCHAFT,
-    CAN_MODIFY_MY_WETTKAMPF
+    CAN_MODIFY_MY_WETTKAMPF,
+
+    CAN_MODIFY_SYSTEMDATEN_LIGALEITER
     ;
 
 
