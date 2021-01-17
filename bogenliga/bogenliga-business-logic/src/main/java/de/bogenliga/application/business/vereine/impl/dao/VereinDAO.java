@@ -69,7 +69,8 @@ public class VereinDAO implements DataAccessObject {
 
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
-        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+        final Map<String, String> columnsToFieldsMap;
+        columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(VEREIN_TABLE_ID, VEREIN_BE_ID);
         columnsToFieldsMap.put(VEREIN_TABLE_NAME, VEREIN_BE_NAME);

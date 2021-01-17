@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.vereine.model;
 
 import java.time.OffsetDateTime;
 import de.bogenliga.application.common.service.types.DataTransferObject;
-import java.io.*;
 
 /**
  * I'm the data transfer Object of Vereine.
@@ -19,7 +18,7 @@ public class VereineDTO implements DataTransferObject {
     private String regionName;
     private String website;
     private String description;
-    private File icon;
+    private String icon;
     private OffsetDateTime createdAtUtc;
     private Long createdByUserId;
     private Long version;
@@ -48,7 +47,7 @@ public class VereineDTO implements DataTransferObject {
      * @param version
      */
     public VereineDTO(Long id, String name, String identifier, Long regionId, String regionName,
-                      String website, String description, OffsetDateTime createdAtUtc,
+                      String website, String description, String icon, OffsetDateTime createdAtUtc,
                       Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
@@ -64,7 +63,7 @@ public class VereineDTO implements DataTransferObject {
     }
 
     public VereineDTO(Long id, String name, String identifier, Long regionId,
-                      String website, String description, OffsetDateTime createdAtUtc,
+                      String website, String description, String icon, OffsetDateTime createdAtUtc,
                       Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
@@ -140,10 +139,10 @@ public class VereineDTO implements DataTransferObject {
     public void setDescription(String description) { this.description = description; }
 
 
-    public File getIcon() { return icon; }
+    public String getIcon() { return icon; }
 
 
-    public void setIcon(File icon) { this.icon = icon; }
+    public void setIcon(String icon) { this.icon = icon; }
 
 
     public OffsetDateTime getCreatedAtUtc() {

@@ -47,7 +47,7 @@ public class VereineServiceTest {
     private static final String REGION_NAME = "";
     private static final String VEREIN_WEBSITE = "";
     private static final String VEREIN_DESCRIPTION = "";
-    private static final File VEREIN_ICON = null;
+    private static final String VEREIN_ICON = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
     private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
