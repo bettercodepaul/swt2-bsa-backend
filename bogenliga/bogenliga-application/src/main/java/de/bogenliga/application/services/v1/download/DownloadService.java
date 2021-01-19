@@ -151,7 +151,14 @@ public class DownloadService implements ServiceFacade {
     ResponseEntity<InputStreamResource> downloadSchusszettelFilledPdf(@PathVariable("matchId1") Long matchId1,
                                                                       @PathVariable("matchId2") Long matchId2) {
 
-        final byte[] fileBloB = schusszettelComponent.getFilledSchusszettelPDFasByteArray(matchId1, matchId2);
+        //WIP solutin for the Long -> byte[] conversion (maybe use this maybe not i dont know)
+        //byte[] fileBloB = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(matchId1).array();
+        final byte[] fileBloB = new byte[2];
+        fileBloB[0] = (byte)Integer.parseInt(matchId1.toString());
+        fileBloB[1] = (byte)Integer.parseInt(matchId2.toString());
+
+
+        // final byte[] fileBloB = schusszettelComponent.getFilledSchusszettelPDFasByteArray(matchId1, matchId2);
 
         return generateInputStream(fileBloB);
     }
@@ -258,6 +265,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     private ResponseEntity<InputStreamResource> generateInputStream(byte[] fileBloB) {
+
         final Resource resource = new InputStreamResource(new ByteArrayInputStream(fileBloB));
         try {
             InputStream is = new ByteArrayInputStream(fileBloB);
