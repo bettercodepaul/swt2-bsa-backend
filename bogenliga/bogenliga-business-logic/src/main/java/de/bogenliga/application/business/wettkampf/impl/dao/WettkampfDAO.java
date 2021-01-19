@@ -38,7 +38,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_WETTKAMPF_TAG = "wettkampfTag";
     private static final String WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinId";
     private static final String WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampfTypId";
-    private static final String WETTKAMPF_BE_WETTKAMPF_KAMPFRICHTER_ID= "kampfrichterId";
     private static final String WETTKAMPF_BE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
 
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
@@ -49,7 +48,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_WETTKAMPF_TAG = "wettkampf_tag";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampf_wettkampftyp_id";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_KAMPFRICHTER_ID= "kampfrichter_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
 
     //default Values for Wettkampftag 0
@@ -58,7 +56,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String DEFAULT_BEGINN = " - ";
     private static final Long DEFAULT_DISZIPLIN_ID = 0L;
     private static final Long DEFAULT_TYP_ID = 0L;
-    private static final Long DEFAULT_KAMPFRICHTER_ID = 0L;
     private static final Long DEFAULT_WETTKAMPF_VERANSTALTER = 0L;      // WETTKAMPF_AUSRICHTER?
 
     // wrap all specific config parameters
@@ -127,7 +124,6 @@ public class WettkampfDAO implements DataAccessObject {
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_ORT, WETTKAMPF_BE_WETTKAMPF_ORT);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_TAG, WETTKAMPF_BE_WETTKAMPF_TAG);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID, WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID);
-        columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_KAMPFRICHTER_ID, WETTKAMPF_BE_WETTKAMPF_KAMPFRICHTER_ID);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER, WETTKAMPF_BE_WETTKAMPF_AUSRICHTER);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -220,7 +216,6 @@ public class WettkampfDAO implements DataAccessObject {
         defaultWettkampfBE.setWettkampfOrt(DEFAULT_ORT);
         defaultWettkampfBE.setWettkampfDisziplinId(DEFAULT_DISZIPLIN_ID);
         defaultWettkampfBE.setWettkampfTypId(DEFAULT_TYP_ID);
-        defaultWettkampfBE.setKampfrichterId(DEFAULT_KAMPFRICHTER_ID);
         defaultWettkampfBE.setWettkampfAusrichter(DEFAULT_WETTKAMPF_VERANSTALTER);
         this.create(defaultWettkampfBE, currentUserId);
     }
