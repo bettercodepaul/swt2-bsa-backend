@@ -21,6 +21,7 @@ import de.bogenliga.application.services.v1.user.mapper.UserProfileDTOMapper;
 import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -433,7 +434,7 @@ public class UserService implements ServiceFacade {
             value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_SYSTEMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_SYSTEMDATEN, UserPermission.CAN_CREATE_SYSTEMDATEN_LIGALEITER})
     public UserDTO create(final HttpServletRequest requestWithHeader,
                           @RequestBody final UserCredentialsDTO userCredentialsDTO) {
 
