@@ -1,0 +1,2 @@
+-- i reserved a sql script number and didnt need it anymore :(
+-- this script is a placeholder, so that the migration runs through
