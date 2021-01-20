@@ -17,6 +17,8 @@ public class VereineDTO implements DataTransferObject {
     private Long regionId;
     private String regionName;
     private String website;
+    private String description;
+    private String icon;
     private OffsetDateTime createdAtUtc;
     private Long createdByUserId;
     private Long version;
@@ -39,30 +41,37 @@ public class VereineDTO implements DataTransferObject {
      * @param regionId
      * @param regionName
      * @param website
+     * @param description
      * @param createdAtUtc
      * @param createdByUserId
      * @param version
      */
     public VereineDTO(Long id, String name, String identifier, Long regionId, String regionName,
-                      String website, OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
+                      String website, String description, String icon, OffsetDateTime createdAtUtc,
+                      Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
         this.identifier = identifier;
         this.regionId = regionId;
         this.regionName = regionName;
         this.website = website;
+        this.description = description;
+        this.icon = icon;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
     }
 
     public VereineDTO(Long id, String name, String identifier, Long regionId,
-                      String website, OffsetDateTime createdAtUtc, Long createdByUserId, Long version) {
+                      String website, String description, String icon, OffsetDateTime createdAtUtc,
+                      Long createdByUserId, Long version) {
         this.id = id;
         this.name = name;
         this.identifier = identifier;
         this.regionId = regionId;
         this.website = website;
+        this.description = description;
+        this.icon = icon;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
@@ -122,6 +131,18 @@ public class VereineDTO implements DataTransferObject {
 
 
     public void setWebsite(String website) { this.website = website; }
+
+
+    public String getDescription() { return description; }
+
+
+    public void setDescription(String description) { this.description = description; }
+
+
+    public String getIcon() { return icon; }
+
+
+    public void setIcon(String icon) { this.icon = icon; }
 
 
     public OffsetDateTime getCreatedAtUtc() {

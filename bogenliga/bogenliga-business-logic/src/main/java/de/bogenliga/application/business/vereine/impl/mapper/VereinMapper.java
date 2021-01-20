@@ -26,6 +26,8 @@ public class VereinMapper implements ValueObjectMapper {
         final String dsbIdentifier = be.getVereinDsbIdentifier();
         final Long regionId = be.getVereinRegionId();
         final String website = be.getVereinWebsite();
+        final String description = be.getVereinDescription();
+        final String icon = be.getVereinIcon();
 
         // technical params
         final Long createdByUserId = be.getCreatedByUserId();
@@ -35,7 +37,9 @@ public class VereinMapper implements ValueObjectMapper {
         final OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         final OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new VereinDO(id, name, dsbIdentifier, regionId, "", website, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new VereinDO(id, name, dsbIdentifier, regionId, "",
+                            website, description, icon, createdAtUtc, createdByUserId,
+                            lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
     public static final Function<VereinDO, VereinBE> toVereinBE = vereinDO -> {
@@ -49,6 +53,8 @@ public class VereinMapper implements ValueObjectMapper {
         vereinBE.setVereinDsbIdentifier(vereinDO.getDsbIdentifier());
         vereinBE.setVereinRegionId(vereinDO.getRegionId());
         vereinBE.setVereinWebsite(vereinDO.getWebsite());
+        vereinBE.setVereinDescription(vereinDO.getDescription());
+        vereinBE.setVereinIcon(vereinDO.getIcon());
 
         vereinBE.setCreatedAtUtc(createdAtUtcTimestamp);
         vereinBE.setCreatedByUserId(vereinBE.getCreatedByUserId());

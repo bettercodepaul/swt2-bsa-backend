@@ -24,15 +24,18 @@ import static org.mockito.Mockito.*;
  */
 public class WettkampfComponentImplTest {
 
-    private static final long user_Id=13;
+    private static final long user_Id = 13;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private static final long version = 1234;
 
     private static final long wettkampf_Id = 322;
     private static final long wettkampf_Veranstaltung_Id = 0;
     private static final Date wettkampf_Datum = new Date(20190521L);
-    private static final String wettkampf_Ort ="Sporthalle,72810 Gomaringen";
-    private static final String wettkampf_Beginn ="8:00";
+    private static final String wettkampf_Strasse = "Reutlingerstr. 6";
+    private static final String wettkampf_Plz = "72764";
+    private static final String wettkampf_Ortsname = "Reutlingen";
+    private static final String wettkampf_Ortsinfo = "Im Keller";
+    private static final String wettkampf_Beginn = "8:00";
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
     private static final long wettkampf_Wettkampftyp_Id = 1;
@@ -55,26 +58,32 @@ public class WettkampfComponentImplTest {
      */
     public static WettkampfBE getWettkampfBE() {
         final WettkampfBE expectedBE = new WettkampfBE();
-      expectedBE.setId(wettkampf_Id);
-      expectedBE.setVeranstaltungsId(wettkampf_Veranstaltung_Id);
-      expectedBE.setDatum(wettkampf_Datum);
-      expectedBE.setWettkampfOrt(wettkampf_Ort);
-      expectedBE.setWettkampfBeginn(wettkampf_Beginn);
-      expectedBE.setWettkampfTag(wettkampf_Tag);
-      expectedBE.setWettkampfDisziplinId(wettkampf_Disziplin_Id);
-      expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
-      expectedBE.setWettkampfAusrichter(wettkampf_Ausrichter);
-      expectedBE.setWettkampfAusrichter(wettkampf_Ausrichter);
+        expectedBE.setId(wettkampf_Id);
+        expectedBE.setVeranstaltungsId(wettkampf_Veranstaltung_Id);
+        expectedBE.setDatum(wettkampf_Datum);
+        expectedBE.setWettkampfStrasse(wettkampf_Strasse);
+        expectedBE.setWettkampfPlz(wettkampf_Plz);
+        expectedBE.setWettkampfOrtsname(wettkampf_Ortsname);
+        expectedBE.setWettkampfOrtsinfo(wettkampf_Ortsinfo);
+        expectedBE.setWettkampfBeginn(wettkampf_Beginn);
+        expectedBE.setWettkampfTag(wettkampf_Tag);
+        expectedBE.setWettkampfDisziplinId(wettkampf_Disziplin_Id);
+        expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
+        expectedBE.setWettkampfAusrichter(wettkampf_Ausrichter);
+        expectedBE.setWettkampfAusrichter(wettkampf_Ausrichter);
 
         return expectedBE;
     }
 
 
     public static WettkampfDO getWettkampfDO() {
-        return new WettkampfDO( wettkampf_Id,
+        return new WettkampfDO(wettkampf_Id,
                 wettkampf_Veranstaltung_Id,
                 wettkampf_Datum,
-                wettkampf_Ort,
+                wettkampf_Strasse,
+                wettkampf_Plz,
+                wettkampf_Ortsname,
+                wettkampf_Ortsinfo,
                 wettkampf_Beginn,
                 wettkampf_Tag,
                 wettkampf_Disziplin_Id,
@@ -83,8 +92,9 @@ public class WettkampfComponentImplTest {
                 user_Id,
                 version,
                 wettkampf_Ausrichter
-                );
+        );
     }
+
 
     @Test
     public void findAll() {
@@ -114,8 +124,14 @@ public class WettkampfComponentImplTest {
                 .isEqualTo(expectedBE.getVeranstaltungsId());
         assertThat(actual.get(0).getWettkampfDatum())
                 .isEqualTo(expectedBE.getDatum());
-        assertThat(actual.get(0).getWettkampfOrt())
-                .isEqualTo(expectedBE.getWettkampfOrt());
+        assertThat(actual.get(0).getWettkampfStrasse())
+                .isEqualTo(expectedBE.getWettkampfStrasse());
+        assertThat(actual.get(0).getWettkampfPlz())
+                .isEqualTo(expectedBE.getWettkampfPlz());
+        assertThat(actual.get(0).getWettkampfOrtsname())
+                .isEqualTo(expectedBE.getWettkampfOrtsname());
+        assertThat(actual.get(0).getWettkampfOrtsinfo())
+                .isEqualTo(expectedBE.getWettkampfOrtsinfo());
         assertThat(actual.get(0).getWettkampfTag())
                 .isEqualTo(expectedBE.getWettkampfTag());
         assertThat(actual.get(0).getWettkampfDisziplinId())
@@ -128,6 +144,7 @@ public class WettkampfComponentImplTest {
         // verify invocations
         verify(wettkampfDAO).findAll();
     }
+
 
     @Test
     public void findById() {
@@ -149,6 +166,7 @@ public class WettkampfComponentImplTest {
         // verify invocations
         verify(wettkampfDAO).findById(wettkampf_Id);
     }
+
 
     @Test
     public void create() {
@@ -179,6 +197,7 @@ public class WettkampfComponentImplTest {
         assertThat(persistedBE.getId())
                 .isEqualTo(input.getId());
     }
+
 
     @Test
     public void delete() {

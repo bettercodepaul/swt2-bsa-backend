@@ -1,8 +1,11 @@
 package de.bogenliga.application.business.vereine.api;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.ComponentFacade;
+import java.io.File;
 
 /**
  * Responsible for the vereine database requests.
@@ -55,5 +58,4 @@ public interface VereinComponent extends ComponentFacade {
      * @param currentDsbMitglied id of the currently logged in user that sent the delete request
      */
     void delete(VereinDO vereinDO, long currentDsbMitglied);
-
 }
