@@ -29,15 +29,22 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private Long wettkampfAusrichter;
 
 
-    public WettkampfDO(final Long id, final Long veranstaltungsId, final Date datum,
-                       final String wettkampfStrasse, final String wettkampfPlz, final String wettkampfOrtsname,
-                       final String wettkampfOrtsinfo,
-                       final String wettkampfBeginn,
-                       final Long wettkampfTag,
-                       final Long wettkampfDisziplinId,
-                       final Long wettkampfTypId,
-                       final OffsetDateTime createdAtUtc, final Long createdByUserId,
-                       final Long version, final Long wettkampfAusrichter) {
+    public WettkampfDO(
+            final Long id,
+            final Long veranstaltungsId,
+            final Date datum,
+            final String wettkampfStrasse,
+            final String wettkampfPlz,
+            final String wettkampfOrtsname,
+            final String wettkampfOrtsinfo,
+            final String wettkampfBeginn,
+            final Long wettkampfTag,
+            final Long wettkampfDisziplinId,
+            final Long wettkampfTypId,
+            final OffsetDateTime createdAtUtc,
+            final Long createdByUserId,
+            final Long version,
+            final Long wettkampfAusrichter) {
         this.id = id;
         this.wettkampfVeranstaltungsId = veranstaltungsId;
         this.wettkampfDatum = datum;
@@ -73,12 +80,13 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
      * @param wettkampfTypId
      * @param version
      */
-    public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum, final String wettkampfStrasse, final String wettkampfPlz,
+    public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum,
+                       final String wettkampfStrasse, final String wettkampfPlz,
                        final String wettkampfOrtsname,
                        final String wettkampfOrtsinfo,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
                        final Long wettkampfTypId,
-                       final Long version, final Long kampfrichterID, final Long wettkampfAusrichter) {
+                       final Long version, final Long wettkampfAusrichter) {
         this.id = id;
         this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
         this.wettkampfDatum = wettkampfDatum;
@@ -138,7 +146,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-
     public String getWettkampfStrasse() {
         return wettkampfStrasse;
     }
@@ -177,7 +184,6 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     public void setWettkampfOrtsinfo(String wettkampfOrtsinfo) {
         this.wettkampfOrtsinfo = wettkampfOrtsinfo;
     }
-
 
 
     public String getWettkampfBeginn() {
