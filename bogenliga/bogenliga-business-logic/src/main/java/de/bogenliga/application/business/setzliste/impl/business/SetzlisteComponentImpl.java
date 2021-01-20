@@ -165,7 +165,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         doc.add(new Paragraph("Setzliste " +
                 wettkampfDO.getWettkampfTag() + ". Wettkampf " + veranstaltungDO.getVeranstaltungName()));
         doc.add(new Paragraph("am " + dateFormatted + " in"));
-        doc.add(new Paragraph(wettkampfDO.getWettkampfOrt() + ", " + wettkampfDO.getWettkampfBeginn() + " Uhr"));
+        doc.add(new Paragraph(wettkampfDO.getWettkampfStrasse() + ", " +  wettkampfDO.getWettkampfPlz() + " " + wettkampfDO.getWettkampfOrtsname() + ", " + wettkampfDO.getWettkampfBeginn() + " Uhr"));
 
         doc.add(new Paragraph(""));
 
