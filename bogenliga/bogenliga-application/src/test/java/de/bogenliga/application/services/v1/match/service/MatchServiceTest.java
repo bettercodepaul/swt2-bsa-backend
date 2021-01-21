@@ -37,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import java.io.*;
 
 /**
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
@@ -143,6 +144,7 @@ public class MatchServiceTest {
     private static final String REGION_NAME = "";
     private static final String VEREIN_WEBSITE = "";
     private static final String VEREIN_DESCRIPTION = "";
+    private static final String VEREIN_ICON = null;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
 
 
@@ -203,6 +205,7 @@ public class MatchServiceTest {
                 REGION_NAME,
                 VEREIN_WEBSITE,
                 VEREIN_DESCRIPTION,
+                VEREIN_ICON,
                 VEREIN_OFFSETDATETIME,
                 VEREIN_USER,
                 VEREIN_OFFSETDATETIME,
@@ -226,7 +229,7 @@ public class MatchServiceTest {
 
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_strasse, W_plz, W_ortsname, W_ortsinfo, W_begin, W_tag, W_disId, W_typId, null,null,null, null, null);
+        return new WettkampfDO(id, W_vid, W_datum, W_strasse, W_plz, W_ortsname, W_ortsinfo, W_begin, W_tag, W_disId, W_typId, null,null,null, null);
     }
 
 

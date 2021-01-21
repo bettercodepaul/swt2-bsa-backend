@@ -54,7 +54,4 @@ public interface KampfrichterComponent extends ComponentFacade {
      * @param kampfrichterDO kampfrichter to delete
      */
     void delete(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
-
-    // TODO: See if this works
-    void testDelete(KampfrichterDO kampfrichterDO);
 }

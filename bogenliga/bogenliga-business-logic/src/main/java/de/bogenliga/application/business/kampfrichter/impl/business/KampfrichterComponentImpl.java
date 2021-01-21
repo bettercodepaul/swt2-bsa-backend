@@ -99,18 +99,6 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     }
 
-    // TODO: See if this works
-    @Override
-    public void testDelete(final KampfrichterDO kampfrichterDO) {
-        Preconditions.checkNotNull(kampfrichterDO, PRECONDITION_MSG_KAMPFRICHTER);
-        Preconditions.checkArgument(kampfrichterDO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
-//        Preconditions.checkArgument(currentKampfrichterUserId >= 0, PRECONDITION_MSG_CURRENT_KAMPFRICHTER);
-
-        final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
-
-        kampfrichterDAO.testDelete(kampfrichterBE);
-
-    }
 
     private void checkKampfrichterDO(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
         Preconditions.checkNotNull(kampfrichterDO, PRECONDITION_MSG_KAMPFRICHTER);

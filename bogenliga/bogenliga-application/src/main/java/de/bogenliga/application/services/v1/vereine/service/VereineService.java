@@ -66,7 +66,6 @@ public class VereineService implements ServiceFacade {
      *
      * @param vereinComponent to handle the database CRUD requests
      */
-
     @Autowired
     public VereineService(final VereinComponent vereinComponent, final JwtTokenProvider jwtTokenProvider,
                           final DsbMitgliedComponent dsbMitgliedComponent, final UserComponent userComponent) {
@@ -75,7 +74,6 @@ public class VereineService implements ServiceFacade {
         this.jwtTokenProvider = jwtTokenProvider;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
-
 
     /**
      * I return all the teams (Vereine) of the database.
@@ -89,7 +87,6 @@ public class VereineService implements ServiceFacade {
         final List<VereinDO> vereinDOList = vereinComponent.findAll();
         return vereinDOList.stream().map(VereineDTOMapper.toDTO).collect(Collectors.toList());
     }
-
 
     /**
      * I return the verein Entry of the database with a specific id
@@ -108,14 +105,12 @@ public class VereineService implements ServiceFacade {
         return VereineDTOMapper.toDTO.apply(vereinDO);
     }
 
-
-/*
+    /**
      * I persist a newer version of the dsbMitglied in the database.
      * <p>
      * You are only able to modify the Verein, if you have the explicit permission to Modify it or if you are the
      * Mannschaftsführer/Sportleiter of the Verein.
      */
-
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -127,13 +122,14 @@ public class VereineService implements ServiceFacade {
 
         LOG.debug(
                 "Receive  'update' request with id '{}', name '{}', dsb_identifier '{}'," +
-                "region_id '{}', website '{}', description '{}'",
+                "region_id '{}', website '{}', description '{}', icon '{}'",
                 vereineDTO.getId(),
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
                 vereineDTO.getRegionId(),
                 vereineDTO.getWebsite(),
-                vereineDTO.getDescription());
+                vereineDTO.getDescription(),
+                vereineDTO.getIcon());
 
         if (this.hasPermissions(UserPermission.CAN_MODIFY_STAMMDATEN)) {
         } else if (this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
@@ -151,7 +147,6 @@ public class VereineService implements ServiceFacade {
         return VereineDTOMapper.toDTO.apply(updateVereinDO);
     }
 
-
     /**
      * I delete an existing Verein entry from the DB.
      */
@@ -167,7 +162,6 @@ public class VereineService implements ServiceFacade {
         vereinComponent.delete(vereinDO, userId);
     }
 
-
     /**
      * I persist a new verein and return this verein entry.
      *
@@ -176,7 +170,6 @@ public class VereineService implements ServiceFacade {
      *
      * @return list of {@link VereineDTO} as JSON
      */
-
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -186,13 +179,14 @@ public class VereineService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug(
-                "Receive 'create' request with name '{}', identifier '{}'," +
-                "region id '{}', website '{}', description '{}' version '{}', createdBy '{}'",
+                "Receive 'create' request with name '{}', identifier '{}', region id '{}', website '{}', " +
+                        "description '{}', icon '{}', version '{}', createdBy '{}'",
                 vereineDTO.getName(),
                 vereineDTO.getIdentifier(),
                 vereineDTO.getRegionId(),
                 vereineDTO.getWebsite(),
                 vereineDTO.getDescription(),
+                vereineDTO.getIcon(),
                 vereineDTO.getVersion(),
                 userId);
 
@@ -202,7 +196,6 @@ public class VereineService implements ServiceFacade {
         return VereineDTOMapper.toDTO.apply(persistedVereinDO);
     }
 
-
     private void checkPreconditions(@RequestBody final VereineDTO vereinDTO) {
         Preconditions.checkNotNull(vereinDTO, PRECONDITION_MSG_VEREIN);
         Preconditions.checkNotNull(vereinDTO.getName(), PRECONDITION_MSG_NAME);
@@ -211,7 +204,6 @@ public class VereineService implements ServiceFacade {
 
         Preconditions.checkArgument(vereinDTO.getRegionId() >= 0, PRECONDITION_MSG_REGION_ID_NOT_NEG);
     }
-
 
     /**
      * method to check, if a user has a Specific permission with the matching parameters
@@ -246,7 +238,6 @@ public class VereineService implements ServiceFacade {
         }
         return result;
     }
-
 
     boolean hasPermissions(UserPermission toTest) {
         boolean result = false;

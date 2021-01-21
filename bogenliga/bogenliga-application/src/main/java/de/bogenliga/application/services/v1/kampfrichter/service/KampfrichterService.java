@@ -51,7 +51,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @CrossOrigin
 @RequestMapping("v1/kampfrichter")
 public class KampfrichterService implements ServiceFacade {
-    // TODO: Implement this entire class
     private static final String PRECONDITION_MSG_KAMPFRICHTER = "KampfrichterDO must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID = "KampfrichterBenutzerID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID = "KampfrichterWettkampfID must not be negative and must not be null";
@@ -99,81 +98,80 @@ public class KampfrichterService implements ServiceFacade {
         // TODO: What does this do and why do we need it?
 //        final long userId = UserProvider.getCurrentUserId(principal);
 
-        final KampfrichterDO savedKampfrichterDO = kampfrichterComponent.create(newKampfrichterDO, newKampfrichterDO.getUserId());
+        final KampfrichterDO savedKampfrichterDO = kampfrichterComponent.create(newKampfrichterDO,
+                newKampfrichterDO.getUserId());
         return KampfrichterDTOMapper.toDTO.apply(savedKampfrichterDO);
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
-    public KampfrichterDTO update(@RequestBody final KampfrichterDTO kampfrichterDTO,
-                                  final Principal principal) throws NoPermissionException {
-        System.out.println("KAMPFRICHTER_DTO:\n" + kampfrichterDTO.toString());
-        checkPreconditions(kampfrichterDTO);
-
-        LOG.debug(
-                "Received 'update' request with userID '{}', wettkampfID '{}', leitend'{}'",
-                kampfrichterDTO.getUserID(),
-                kampfrichterDTO.getWettkampfID(),
-                kampfrichterDTO.getLeitend());
-
-//        if (this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) || this.hasSpecificPermission(
-//                UserPermission.CAN_MODIFY_MY_WETTKAMPF, kampfrichterDTO.getUserId())) {
+//    @RequestMapping(method = RequestMethod.PUT,
+//            consumes = MediaType.APPLICATION_JSON_VALUE,
+//            produces = MediaType.APPLICATION_JSON_VALUE)
+//    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+//    public KampfrichterDTO update(@RequestBody final KampfrichterDTO kampfrichterDTO,
+//                                  final Principal principal) throws NoPermissionException {
+//        System.out.println("KAMPFRICHTER_DTO:\n" + kampfrichterDTO.toString());
+//        checkPreconditions(kampfrichterDTO);
 //
-//        } else {
-//            throw new NoPermissionException();
-//        }
-        final KampfrichterDO newKampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
+//        LOG.debug(
+//                "Received 'update' request with userID '{}', wettkampfID '{}', leitend'{}'",
+//                kampfrichterDTO.getUserID(),
+//                kampfrichterDTO.getWettkampfID(),
+//                kampfrichterDTO.getLeitend());
+//
+////        if (this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) || this.hasSpecificPermission(
+////                UserPermission.CAN_MODIFY_MY_WETTKAMPF, kampfrichterDTO.getUserId())) {
+////
+////        } else {
+////            throw new NoPermissionException();
+////        }
+//        final KampfrichterDO newKampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
+//
+//        // TODO: What does this do and why do we need it?
+////        final long userId = UserProvider.getCurrentUserId(principal);
+////        System.out.println("userId:");
+////        System.out.println(userId);
+//
+//        final KampfrichterDO updatedKampfrichterDO = kampfrichterComponent.update(newKampfrichterDO,
+//                newKampfrichterDO.getUserId());
+//        return KampfrichterDTOMapper.toDTO.apply(updatedKampfrichterDO);
+//    }
 
-        // TODO: What does this do and why do we need it?
-//        final long userId = UserProvider.getCurrentUserId(principal);
-//        System.out.println("userId:");
-//        System.out.println(userId);
-
-        final KampfrichterDO updatedKampfrichterDO = kampfrichterComponent.update(newKampfrichterDO, newKampfrichterDO.getUserId());
-        return KampfrichterDTOMapper.toDTO.apply(updatedKampfrichterDO);
-    }
 
     /**
      * Delete-Method removes an entry from the database
      *
-     * @param id
+     * @param userID
      * @param principal
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-    public void delete(@PathVariable("id") final long id, final Principal principal) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
-
-        LOG.debug("Receive 'delete' request with id '{}'", id);
-
-        // allow value == null, the value will be ignored
-        final KampfrichterDO kampfrichterDO = new KampfrichterDO(id, 999L, false);
-//        final long userId = UserProvider.getCurrentUserId(principal);
-
-        kampfrichterComponent.delete(kampfrichterDO, id);
-    }
-
-
-    // TODO: See if this works
-    @RequestMapping(method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-    public void testDelete(@RequestBody final KampfrichterDTO kampfrichterDTO,
-                           final Principal principal) {
+//    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+//    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+//    public void delete(@PathVariable("id") final long id, final Principal principal) {
 //        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 //
 //        LOG.debug("Receive 'delete' request with id '{}'", id);
 //
 //        // allow value == null, the value will be ignored
 //        final KampfrichterDO kampfrichterDO = new KampfrichterDO(id, 999L, false);
+////        final long userId = UserProvider.getCurrentUserId(principal);
+//
+//        kampfrichterComponent.delete(kampfrichterDO, id);
+//    }
+
+    @RequestMapping(value = "{userID}/{wettkampfID}", method = RequestMethod.DELETE)
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    public void delete(@PathVariable("userID") final long userID, @PathVariable("wettkampfID") final long wettkampfID,
+                       final Principal principal) {
+        Preconditions.checkArgument(userID >= 0, "User-ID must not be negative.");
+        Preconditions.checkArgument(wettkampfID >= 0, "Wettkampf-ID must not be negative.");
+
+        LOG.debug("Receive 'delete' request with user-ID '{}' and wettkampf-ID '{}'", userID, wettkampfID);
+
+        // allow value == null, the value will be ignored
+        final KampfrichterDO kampfrichterDO = new KampfrichterDO(userID, wettkampfID, false);
 //        final long userId = UserProvider.getCurrentUserId(principal);
 
-        final KampfrichterDO kampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
-
-        kampfrichterComponent.testDelete(kampfrichterDO);
+        kampfrichterComponent.delete(kampfrichterDO, userID);
     }
 
 

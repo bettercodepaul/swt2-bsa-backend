@@ -52,7 +52,6 @@ public class WettkampfServiceTest {
     private static final long mannschafts_id = 1;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private static final long version = 1234;
-    private static final long wettkampf_kampfrichter_Id = 8;
     private static final long wettkampfAusrichter = 8;
 
 
@@ -89,7 +88,6 @@ public class WettkampfServiceTest {
         expectedBE.setWettkampfOrtsinfo(wettkampf_Ortsinfo);
         expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
         expectedBE.setWettkampfTag(wettkampf_Tag);
-        expectedBE.setKampfrichterId(wettkampf_kampfrichter_Id);
         expectedBE.setWettkampfAusrichter(wettkampfAusrichter);
 
         return expectedBE;
@@ -112,7 +110,6 @@ public class WettkampfServiceTest {
                 created_At_Utc,
                 user_Id,
                 version,
-                wettkampf_kampfrichter_Id,
                 wettkampfAusrichter
         );
     }
@@ -132,7 +129,6 @@ public class WettkampfServiceTest {
                 wettkampf_Disziplin_Id,
                 wettkampf_Wettkampftyp_Id,
                 version,
-                wettkampf_kampfrichter_Id,
                 wettkampfAusrichter
 
         );

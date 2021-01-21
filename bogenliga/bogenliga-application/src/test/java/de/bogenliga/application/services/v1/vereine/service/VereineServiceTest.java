@@ -30,6 +30,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.*;
+
 public class VereineServiceTest {
 
     private static final long USER = 0;
@@ -45,6 +47,7 @@ public class VereineServiceTest {
     private static final String REGION_NAME = "";
     private static final String VEREIN_WEBSITE = "";
     private static final String VEREIN_DESCRIPTION = "";
+    private static final String VEREIN_ICON = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
     private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
@@ -74,6 +77,7 @@ public class VereineServiceTest {
         expectedBE.setVereinRegionId(REGION_ID);
         expectedBE.setVereinWebsite(VEREIN_WEBSITE);
         expectedBE.setVereinDescription(VEREIN_DESCRIPTION);
+        expectedBE.setVereinIcon(VEREIN_ICON);
 
         return expectedBE;
     }
@@ -86,6 +90,7 @@ public class VereineServiceTest {
                 REGION_NAME,
                 VEREIN_WEBSITE,
                 VEREIN_DESCRIPTION,
+                VEREIN_ICON,
                 VEREIN_OFFSETDATETIME,
                 USER,
                 VEREIN_OFFSETDATETIME,

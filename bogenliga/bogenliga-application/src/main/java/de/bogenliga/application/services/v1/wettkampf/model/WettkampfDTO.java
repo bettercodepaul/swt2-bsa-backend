@@ -25,7 +25,6 @@ public class WettkampfDTO implements DataTransferObject {
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
     private Long version;
-    private Long kampfrichterID;
     private Long wettkampfAusrichter;
 
 
@@ -34,7 +33,7 @@ public class WettkampfDTO implements DataTransferObject {
                         String wettkampfPlz, String wettkampfOrtsname, String wettkampfOrtsinfo,
                         String wettkampfBeginn, Long wettkampfTag,
                         Long wettkampfDisziplinId, Long wettkampfTypId,
-                        Long version, Long kampfrichterID, Long wettkampfAusrichter) {
+                        Long version, Long wettkampfAusrichter) {
 
         this.setId(wettkampfId);
         this.setwettkampfVeranstaltungsId(wettkampfVeranstaltungsId);
@@ -48,7 +47,6 @@ public class WettkampfDTO implements DataTransferObject {
         this.setWettkampfDisziplinId(wettkampfDisziplinId);
         this.setWettkampfTypId(wettkampfTypId);
         this.setVersion(version);
-        this.setKampfrichterID(kampfrichterID);
         this.setWettkampfAusrichter(wettkampfAusrichter);
 
     }
@@ -175,16 +173,6 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
-    public Long getKampfrichterID() {
-        return this.kampfrichterID;
-    }
-
-
-    public void setKampfrichterID(Long kampfrichterID) {
-        this.kampfrichterID = kampfrichterID;
-    }
-
-
     public Long getWettkampfAusrichter() {
         return wettkampfAusrichter;
     }
@@ -210,7 +198,6 @@ public class WettkampfDTO implements DataTransferObject {
                 ", wettkampfDisziplinId='" + this.wettkampfDisziplinId + '\'' +
                 ", wettkampfTypId='" + this.wettkampfTypId + '\'' +
                 ", version='" + this.version + '\'' +
-                ", kampfrichterID='" + this.kampfrichterID + '\'' +
                 ", wettkampfAusrichter='" + this.wettkampfAusrichter +
                 "}";
     }
