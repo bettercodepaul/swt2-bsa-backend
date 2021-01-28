@@ -29,6 +29,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_TAG = "wettkampfTag must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_WETTKAMPFTYP_ID = "wettkampfTypID must not be null and must not be negative";
+    private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
 
 
     private final WettkampfDAO wettkampfDAO;
@@ -55,6 +56,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     // Do we need this method for anything or does it purely exist because it has to implement the interfaces method?
+    //TODO - hier fehlt die Implementierung, es wird explizit aus dem Match-Service aus aufgerufen.
     @Override
     public List<WettkampfDO> findByAusrichter(long id) {
         return new ArrayList<>();
@@ -94,46 +96,57 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
 
     @Override
-    public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentWettkampfID) {
-        checkDsbMitgliedDO(wettkampfDO, currentWettkampfID);
+    public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentUserID) {
+        checkParams(wettkampfDO, currentUserID);
 
         final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
         System.out.println("\n\n");
         System.out.println(wettkampfBE.toString());
-        final WettkampfBE persistedWettkampfBe = wettkampfDAO.create(wettkampfBE, currentWettkampfID);
+        final WettkampfBE persistedWettkampfBe = wettkampfDAO.create(wettkampfBE, currentUserID);
 
+        return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
+    }
+
+    public WettkampfDO createWT0(long veranstaltungID, final long currentUserID) {
+        Preconditions.checkNotNull(veranstaltungID, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkArgument(veranstaltungID >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
+
+        final WettkampfBE persistedWettkampfBe = wettkampfDAO.createWettkampftag0(veranstaltungID, currentUserID);
+//        System.out.println("\n\n");
+//        System.out.println(persistedWettkampfBe.toString());
         return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
     }
 
 
     @Override
-    public WettkampfDO update(final WettkampfDO wettkampfDO, final long currentWettkampfID) {
-        checkDsbMitgliedDO(wettkampfDO, currentWettkampfID);
+    public WettkampfDO update(final WettkampfDO wettkampfDO, final long currentUserID) {
+        checkParams(wettkampfDO, currentUserID);
         Preconditions.checkArgument(wettkampfDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
         final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
-        System.out.println("\n\n");
-        System.out.println(wettkampfBE.toString());
-        final WettkampfBE persistedWettkampfBe = wettkampfDAO.update(wettkampfBE, currentWettkampfID);
+//        System.out.println("\n\n");
+//        System.out.println(wettkampfBE.toString());
+        final WettkampfBE persistedWettkampfBe = wettkampfDAO.update(wettkampfBE, currentUserID);
 
         return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
     }
 
 
     @Override
-    public void delete(final WettkampfDO wettkampfDO, final long currentWettkampfID) {
+    public void delete(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkArgument(wettkampfDO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        Preconditions.checkArgument(currentWettkampfID >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
 
         final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
 
-        wettkampfDAO.delete(wettkampfBE, currentWettkampfID);
+        wettkampfDAO.delete(wettkampfBE, currentUserID);
 
     }
 
 
-    private void checkDsbMitgliedDO(final WettkampfDO wettkampfDO, final long currentWettkampfID) {
+    private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
 
         Preconditions.checkNotNull(wettkampfDO.getWettkampfVeranstaltungsId(),
@@ -147,6 +160,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(wettkampfDO.getWettkampfDisziplinId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfTypId(), PRECONDITION_MSG_WETTKAMPF_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(wettkampfDO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
 
     }
 
