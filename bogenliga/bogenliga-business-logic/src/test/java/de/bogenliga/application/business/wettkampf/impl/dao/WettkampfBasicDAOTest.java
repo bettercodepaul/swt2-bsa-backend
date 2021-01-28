@@ -170,4 +170,6 @@ public class WettkampfBasicDAOTest {
         verify(basicDao).deleteEntity(any(), eq(input), any());
     }
 
+
+
 }

@@ -1,6 +1,9 @@
 package de.bogenliga.application.business.veranstaltung.impl.mapper;
 
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import java.sql.Timestamp;
@@ -22,7 +25,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
      * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
      *
      */
-    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserBE userBE, WettkampfTypBE wettkamptypBE, LigaBE ligaBE){
+    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserDO userDO, WettkampfTypDO wettkamptypDO, LigaDO ligaDO){
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getLastModifiedAtUtc());
@@ -35,9 +38,9 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 veranstaltungBE.getVeranstaltung_meldedeadline(),
                 veranstaltungBE.getVeranstaltung_ligaleiter_id(),
                 veranstaltungBE.getVeranstaltung_liga_id(),
-                userBE.getUserEmail(),
-                wettkamptypBE.getwettkampftypname(),
-                ligaBE.getLigaName()
+                userDO.getEmail(),
+                wettkamptypDO.getName(),
+                ligaDO.getName()
         );
         veranstaltungDO.setCreatedAtUtc(createdAtUtc);
         veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);
