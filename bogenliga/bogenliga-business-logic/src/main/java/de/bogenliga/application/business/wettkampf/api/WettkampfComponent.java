@@ -40,36 +40,45 @@ public interface WettkampfComponent extends ComponentFacade {
     /**
      * retruns all wettkämpfe with the given veranstaltungId
      *
-     * @param id id of the veranstaltung
+     * @param veranstaltung_id id of the veranstaltung
      * @return a list with wettkampf entries
      */
 
-    List<WettkampfDO> findAllByVeranstaltungId(long id);
+    List<WettkampfDO> findAllByVeranstaltungId(long veranstaltung_id);
 
 
     /**
      * Create a new wettkampf in the database.
      *
      * @param wettkampfDO new wettkampf
-     * @return persisted version of the dsbmitglied
+     * @return persisted version of the wettkampf
      */
-    WettkampfDO create(WettkampfDO wettkampfDO, long currentWettkampfID);
+    WettkampfDO create(WettkampfDO wettkampfDO, long currentUserID);
 
 
     /**
-     * Update an existing wettkampf. The wettkampf is identified by the id.
+     * Create a new wettkampf in the database.
+     *
+     * @param veranstaltung_id veranstaltung for which to create a new Day0 Entry
+     * @return persisted version of the wettkampf
+     */
+     WettkampfDO createWT0(long veranstaltung_id, long currentUserID);
+
+
+    /**
+     * Update an existing wettkampf. The user is identified by the id.
      *
      * @param wettkampfDO existing wettkampfDO to update
      * @return persisted version of the wettkampfDO
      */
-    WettkampfDO update(WettkampfDO wettkampfDO, long currentWettkampfID);
+    WettkampfDO update(WettkampfDO wettkampfDO, long currentUserID);
 
 
     /**
-     * Delete an existing wettkampf. The wettkampf is identified by the id.
+     * Delete an existing wettkampf. The user is identified by the id.
      *
      * @param wettkampfDO wettkampf to delete
      */
-    void delete(WettkampfDO wettkampfDO, long currentWettkampfID);
+    void delete(WettkampfDO wettkampfDO, long currentUserID);
 
 }
