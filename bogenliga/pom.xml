@@ -243,6 +243,11 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <goals>
+                           <goal>report</goal>
+                        </goals>
+                     </execution>
                 </executions>
             </plugin>
 
