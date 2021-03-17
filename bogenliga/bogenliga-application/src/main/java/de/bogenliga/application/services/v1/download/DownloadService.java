@@ -202,6 +202,13 @@ public class DownloadService implements ServiceFacade {
         return generateInputStream(fileBloB);
     }
 
+    public void testMethod() {
+        String a = "i hope this will fail";
+        String b = "i hope this will fai";
+        if(a == b) {
+            String c = a + b;
+        }
+    }
 
     /**
      * return the Rueckennummern of a mannschaft as pdf file for client download
