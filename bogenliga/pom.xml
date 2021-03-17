@@ -237,19 +237,21 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
+                  <executions>
                     <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
+                      <id>jacoco-initialize</id>
+                      <goals>
+                        <goal>prepare-agent</goal>
+                      </goals>
+                      <phase>test-compile</phase>
                     </execution>
                     <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                           <goal>report</goal>
-                        </goals>
-                     </execution>
+                      <id>jacoco-site</id>
+                      <phase>verify</phase>
+                      <goals>
+                        <goal>report</goal>
+                      </goals>
+                    </execution>
                 </executions>
             </plugin>
 
