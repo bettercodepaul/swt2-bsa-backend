@@ -2,12 +2,6 @@ package de.bogenliga.application.services.v1.setzliste.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +9,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
  * This is a rest resource that generates the matches.
@@ -39,8 +35,6 @@ import de.bogenliga.application.services.v1.match.model.MatchDTO;
 @RestController
 @RequestMapping("v1/setzliste")
 public class SetzlisteService implements ServiceFacade {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SetzlisteService.class);
 
     /*
      * Business components
