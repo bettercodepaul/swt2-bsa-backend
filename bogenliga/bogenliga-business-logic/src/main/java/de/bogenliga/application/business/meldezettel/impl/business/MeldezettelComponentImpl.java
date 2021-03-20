@@ -57,6 +57,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private static final String PRECONDITION_DISZIPLINNAME =  "DisziplinName cannot be null";
     private static final String PRECONDITION_WETTKAMPFDATUM =  "WettkampfDatum cannot be null";
     private static final String PRECONDITION_TEAM_MAPPING = "TeamMemberMapping cannot be empty";
+    private static final String MELDEZETTEL_MATCH = "Match";
+    private static final String MELDEZETTEL_SCHUETZEN = "Schützen";
+    private static final String MELDEZETTEL_UNTERSCHRIFT ="Unterschrift des Mannschaftsführers";
 
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
@@ -206,7 +209,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableFirstRowFirstPartThirdRow
                 .addCell(new Cell(5, 1).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID)).setBorderLeft(new SolidBorder(Border.SOLID))
                     .add(new Paragraph("1").setBold().setFontSize(10.0F))
@@ -286,7 +289,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     .add(new Paragraph("\n"))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(60.0F)))
+                        .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(60.0F)))
                 )
             ;
 
@@ -305,7 +308,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableSecondRowFirstPartThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
                 .addCell(new Cell().setHeight(45.0F))
@@ -318,7 +321,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                     .add(new Paragraph("7").setBold().setFontSize(15.0F))
@@ -329,7 +332,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
                 )
             ;
 
@@ -348,7 +351,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableSecondRowSecondPartThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                        .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
+                        .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
                 .addCell(new Cell().setHeight(45.0F))
@@ -361,7 +364,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                     .add(new Paragraph("6").setBold().setFontSize(15.0F))
@@ -372,7 +375,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
                 )
             ;
 
@@ -391,7 +394,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableThirdRowFirstPartThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
                 .addCell(new Cell().setHeight(45.0F))
@@ -404,7 +407,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                     .add(new Paragraph("5").setBold().setFontSize(15.0F))
@@ -415,7 +418,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
                 )
             ;
 
@@ -434,7 +437,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableThirdRowSecondPartThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
                 .addCell(new Cell().setHeight(45.0F))
@@ -447,7 +450,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                     .add(new Paragraph("4").setBold().setFontSize(15.0F))
@@ -458,7 +461,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
                 )
             ;
 
@@ -477,7 +480,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableFourthRowFirstPartThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
                 .addCell(new Cell().setHeight(45.0F))
@@ -490,7 +493,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                     .add(new Paragraph("3").setBold().setFontSize(15.0F))
@@ -501,7 +504,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
                 )
             ;
 
@@ -520,7 +523,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableFourthRowSecondPartThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
                 .addCell(new Cell().setHeight(45.0F))
@@ -533,7 +536,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                     .add(new Paragraph("2").setBold().setFontSize(15.0F))
@@ -544,7 +547,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
                 )
             ;
 
@@ -587,7 +590,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             mainTableFifthRowSecondPartThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Schützen").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
                 // Add three cells for text input
                 .addCell(new Cell().setHeight(45.0F))
@@ -600,7 +603,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Match").setBold().setFontSize(10.0F))
+                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                     .add(new Paragraph("1").setBold().setFontSize(15.0F))
@@ -611,7 +614,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Unterschrift des Mannschaftsführers").setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
                 )
             ;
 
