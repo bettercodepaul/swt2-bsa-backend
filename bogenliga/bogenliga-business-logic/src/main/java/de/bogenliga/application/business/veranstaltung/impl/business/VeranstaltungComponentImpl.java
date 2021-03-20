@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.bogenliga.application.business.liga.api.types.LigaDO;
-import de.bogenliga.application.business.sportjahr.SportjahrDO;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
