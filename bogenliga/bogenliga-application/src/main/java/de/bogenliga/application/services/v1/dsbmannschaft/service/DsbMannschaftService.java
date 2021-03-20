@@ -24,7 +24,6 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -50,16 +49,14 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaft Verein ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaft Nummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID = "DsbMannschaft Benutzer Id must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaft Veranstaltung ID must not be null";
 
 
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID_NEGATIVE = "DsbMannschaft Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
-
+    private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
 
 
@@ -152,7 +149,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(value = "byVereinsID/{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
@@ -170,7 +167,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(value = "byVeranstaltungsID/{veranstaltungsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllByVeranstaltungsId(@PathVariable("veranstaltungsId") final long id) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID '{}'", id);
 
@@ -197,7 +194,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public DsbMannschaftDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
         final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
@@ -318,7 +315,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
