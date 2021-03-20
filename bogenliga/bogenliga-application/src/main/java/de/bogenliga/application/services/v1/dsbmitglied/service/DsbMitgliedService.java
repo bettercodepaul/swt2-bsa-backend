@@ -62,6 +62,7 @@ public class DsbMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMITGLIED_MITGLIEDSNUMMER = "DsbMitglied mitgliedsnummer must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
+    private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
 
     private static final Logger LOG = LoggerFactory.getLogger(DsbMitgliedService.class);
@@ -125,7 +126,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(value = "/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
         LOG.debug("Receive 'findAllByTeamid' request with ID '{}'", id );
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAllByTeamId(id);
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
@@ -150,7 +151,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 
@@ -176,7 +177,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(value = "/{id}/{dsbuserid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public DsbMitgliedDTO insertUserId(@PathVariable("id") final long id, @PathVariable("dsbuserid") final long dsbuserid, final Principal principal) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
@@ -299,7 +300,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_DELETE_DSBMITGLIEDER)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
