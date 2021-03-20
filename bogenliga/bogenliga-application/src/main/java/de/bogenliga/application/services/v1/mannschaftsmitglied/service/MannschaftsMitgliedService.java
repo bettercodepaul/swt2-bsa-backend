@@ -48,6 +48,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE = "MannschaftsMitglied ID must not be negative";
     private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE = "MannschaftsMitglied DSB MITGLIED ID must not be negative";
     private static final Logger LOG = LoggerFactory.getLogger(MannschaftsMitgliedService.class);
+    private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
 
 
@@ -116,8 +117,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("teamId") final long mannschaftsId,
                                                         @PathVariable("memberId") final long mitgliedId) {
-        Preconditions.checkArgument(mannschaftsId > 0, "ID must not be negative.");
-        Preconditions.checkArgument(mitgliedId > 0, "ID must not be negative.");
+        Preconditions.checkArgument(mannschaftsId > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(mitgliedId > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findByMemberAndTeamId' request with memberID '{}' and teamID '{}'", mitgliedId,
                 mannschaftsId);
@@ -134,7 +135,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findByMemberId(@PathVariable("memberId") final long memberId) {
-        Preconditions.checkArgument(memberId > 0, "ID must not be negative.");
+        Preconditions.checkArgument(memberId > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findByMemberId' request with ID '{}'", memberId);
 
