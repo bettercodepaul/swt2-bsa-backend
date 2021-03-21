@@ -1,5 +1,5 @@
-package de.bogenliga.application.services.v1.sportjahr.model;
-import de.bogenliga.application.business.sportjahr.SportjahrDO;
+package de.bogenliga.application.services.v1.sportjahr.mapper;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import java.util.function.*;
