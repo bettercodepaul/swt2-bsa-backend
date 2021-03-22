@@ -134,7 +134,7 @@ public class VereineService implements ServiceFacade {
         if (this.hasPermissions(UserPermission.CAN_MODIFY_STAMMDATEN)) {
         } else if (this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
             VereinDO temp = vereinComponent.findById(vereineDTO.getId());
-            if (temp.getRegionId() != vereineDTO.getRegionId()) {
+            if (!temp.getRegionId().equals(vereineDTO.getRegionId())) {
                 throw new NoPermissionException();
             }
         } else {
