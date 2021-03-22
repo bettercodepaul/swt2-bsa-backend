@@ -318,7 +318,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
                 DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
-                if ((dsbMitgliedDO.getVereinsId() == vereinsId) && userPermissions.contains(toTest)) {
+                if ((dsbMitgliedDO.getVereinsId().equals(vereinsId)) && userPermissions.contains(toTest)) {
                     result = true;
                 }
             }
