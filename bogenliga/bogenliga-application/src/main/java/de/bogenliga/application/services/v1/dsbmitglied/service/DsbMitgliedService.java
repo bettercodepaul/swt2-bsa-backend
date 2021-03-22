@@ -370,22 +370,22 @@ public class DsbMitgliedService implements ServiceFacade {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
             //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+            if(request != null)
+        }
+        return result;{
+            //parse the Webtoken and get the UserPermissions of the current User
+            final String jwt = JwtTokenProvider.resolveToken(request);
+            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
-                DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
-                if((dsbMitgliedDO.getVereinsId() == vereinsId) && userPermissions.contains(toTest)) {
-                    result = true;
-                }
+            //check if the current Users vereinsId equals the given vereinsId and if the User has
+            //the required Permission (if the permission is specifi
+            Long UserId = jwtTokenProvider.getUserId(jwt);
+            UserDO userDO = this.userComponent.findById(UserId);
+            DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
+            if((dsbMitgliedDO.getVereinsId().equals(vereinsId)) && userPermissions.contains(toTest)) {
+                result = true;
             }
         }
-        return result;
     }
 
 }
