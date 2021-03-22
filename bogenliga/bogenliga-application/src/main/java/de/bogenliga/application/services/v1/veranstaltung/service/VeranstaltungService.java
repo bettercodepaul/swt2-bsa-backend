@@ -322,7 +322,7 @@ public class VeranstaltungService implements ServiceFacade {
                 UserDO userDO = this.userComponent.findById(UserId);
                 ArrayList<Integer> temp = new ArrayList<>();
                 for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(UserId)) {
-                   if(veranstaltungDO.getVeranstaltungID() == veranstaltungsid){
+                   if(veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid)){
                        result = true;
                    }
                 }
