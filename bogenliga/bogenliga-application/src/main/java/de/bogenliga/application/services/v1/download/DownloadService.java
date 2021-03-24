@@ -266,7 +266,7 @@ public class DownloadService implements ServiceFacade {
                     .contentLength(r)
                     .body(new InputStreamResource(is));
         } catch (final IOException e) {
-            LOG.error("Error: ", e);
+            LOG.error("Error: {}", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF download failed", e);
         }
     }
@@ -277,8 +277,8 @@ public class DownloadService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public ResponseEntity<InputStreamResource> downloadLizenz(@PathVariable("dsbMitgliedId") final long dsbMitgliedID,
     @PathVariable("teamId") final long teamID) {
-        LOG.debug("dsbMitgliedID: ", dsbMitgliedID);
-        LOG.debug("teamID: ", teamID);
+        LOG.debug("dsbMitgliedID: {}", dsbMitgliedID);
+        LOG.debug("teamID: {}", teamID);
         final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID, teamID);
 
         return generateInputStream(fileBloB);
