@@ -266,7 +266,7 @@ public class DownloadService implements ServiceFacade {
                     .contentLength(r)
                     .body(new InputStreamResource(is));
         } catch (final IOException e) {
-            LOG.error("Error: {}", e);
+            LOG.error("Error: ", e);
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF download failed", e);
         }
     }
