@@ -89,7 +89,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
         String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-        List<String> Schuetzendaten = new ArrayList();
+        List<String> Schuetzendaten = new ArrayList<String>();
         Schuetzendaten.add(Liganame);
         Schuetzendaten.add(Verein);
         Schuetzendaten.add(Schuetzenname);
@@ -132,7 +132,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
             String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-            List<String> Schuetzendaten = new ArrayList();
+            List<String> Schuetzendaten = new ArrayList<String>();
             Schuetzendaten.add(Liganame);
             Schuetzendaten.add(Verein);
             Schuetzendaten.add(Schuetzenname);
@@ -162,7 +162,8 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         //Table for the entire document
         final Table docTable = new Table(UnitValue.createPercentArray(1), true).setBorder(Border.NO_BORDER);
         //iterate over all Mannschaftsmitglieder
-        for(String rNummer : RueckennummerMapping.keySet()){
+        for(String rNummer : RueckennummerMapping.keySet())
+        {
             String liga = RueckennummerMapping.get(rNummer).get(0);
             String verein = RueckennummerMapping.get(rNummer).get(1);
             String schuetze = RueckennummerMapping.get(rNummer).get(2);
