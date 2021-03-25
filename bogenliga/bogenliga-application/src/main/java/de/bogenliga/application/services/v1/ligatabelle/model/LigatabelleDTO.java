@@ -17,8 +17,7 @@ public class LigatabelleDTO implements DataTransferObject {
      * business parameter
      */
 
-    private Long id;
-    private Long version;
+
     private Long veranstaltungId;
     private String veranstaltungName;
     private Long wettkampfId;
@@ -87,8 +86,6 @@ public class LigatabelleDTO implements DataTransferObject {
         this.satzpkt_differenz = satzpkt_differenz;
         this.sortierung = sortierung;
         this.tabellenplatz = tabellenplatz;
-        this.id= null;
-        this.version = 1L;
     }
 
 
