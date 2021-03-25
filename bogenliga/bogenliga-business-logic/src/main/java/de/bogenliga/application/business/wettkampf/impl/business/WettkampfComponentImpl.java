@@ -3,11 +3,6 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -38,13 +33,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     private final WettkampfDAO wettkampfDAO;
 
-    //logging messages - delete if log not necessary
-    Logger logger
-            = Logger.getLogger(
-            WettkampfComponentImpl.class.getName());
-    LogRecord recordCreatedDAO = new LogRecord(Level.INFO,
-            "created DAO object");
-
 
     /**
      * Constructor
@@ -56,7 +44,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Autowired
     public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO) {
         this.wettkampfDAO = wettkampfDAO;
-        logger.log(recordCreatedDAO);
     }
 
 
