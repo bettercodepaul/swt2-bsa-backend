@@ -54,7 +54,7 @@ public class DownloadService implements ServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(DownloadService.class);
 
-    private final String PRECONDITION_WETTKAMPFID = "WettkampfID cannot be negative";
+    private static final String PRECONDITION_WETTKAMPFID = "WettkampfID cannot be negative";
 
     /*
      * Business components
