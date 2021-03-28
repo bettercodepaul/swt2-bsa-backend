@@ -101,9 +101,6 @@ public class VeranstaltungServiceTest {
         );
     }
 
-
-
-
     public static VeranstaltungDTO getVeranstaltungDTO() {
         final VeranstaltungDTO veranstaltungDTO = new VeranstaltungDTO();
         veranstaltungDTO.setId(VERANSTALTUNG_ID);
@@ -125,11 +122,11 @@ public class VeranstaltungServiceTest {
         when(principal.getName()).thenReturn(String.valueOf(USER));
     }
 
+
     @Test
     public void findAll() {
         // prepare test data
         final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
-
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
@@ -159,11 +156,10 @@ public class VeranstaltungServiceTest {
         assertThat(actualDTO.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
         */
 
-
-
         // verify invocations
         verify(VeranstaltungComponent).findAll();
     }
+
 
     @Test
     public void findById() {
@@ -191,11 +187,10 @@ public class VeranstaltungServiceTest {
         assertThat(actual.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
         */
 
-
-
         // verify invocations
         verify(VeranstaltungComponent).findById(ID);
     }
+
 
     @Test
     public void findByLigaId() {
@@ -216,6 +211,7 @@ public class VeranstaltungServiceTest {
         verify(VeranstaltungComponent).findByLigaID(ID);
     }
 
+
     /*@Test
     public void findAllSportjahrDestinct() {
         // prepare test data
@@ -235,11 +231,16 @@ public class VeranstaltungServiceTest {
         verify(VeranstaltungComponent).findByLigaID(ID);
     }*/
 
+
+    /*@Test
+    public void findBySportjahr() {
+    }*/
+
+
     @Test
     public void create() {
         // prepare test data
         final VeranstaltungDTO input = getVeranstaltungDTO();
-
         final VeranstaltungDO expected = getVeranstaltungDO();
 
         // configure mocks
@@ -258,7 +259,6 @@ public class VeranstaltungServiceTest {
         assertThat(actual.getMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
         assertThat(actual.getLigaleiterID()).isEqualTo(input.getLigaleiterID());
         assertThat(actual.getLigaID()).isEqualTo(input.getLigaID());
-
         assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
         assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());;
         assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
@@ -278,20 +278,17 @@ public class VeranstaltungServiceTest {
         assertThat(createdVeranstaltung.getVeranstaltungMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
         assertThat(createdVeranstaltung.getVeranstaltungLigaleiterID()).isEqualTo(input.getLigaleiterID());
         assertThat(createdVeranstaltung.getVeranstaltungLigaID()).isEqualTo(input.getLigaID());
-
         assertThat(createdVeranstaltung.getVeranstaltungLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
         assertThat(createdVeranstaltung.getVeranstaltungWettkampftypName()).isEqualTo(input.getWettkampftypName());
         assertThat(createdVeranstaltung.getVeranstaltungLigaName()).isEqualTo(input.getLigaName());
-
          */
-
     }
+
 
     @Test
     public void update() {
         // prepare test data
         final VeranstaltungDTO input = getVeranstaltungDTO();
-
         final VeranstaltungDO expected = getVeranstaltungDO();
 
         // configure mocks
@@ -314,9 +311,7 @@ public class VeranstaltungServiceTest {
             assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
             assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());;
             assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
-
              */
-
 
             // verify invocations
             verify(VeranstaltungComponent).update(VeranstaltungDOArgumentCaptor.capture(), anyLong());
@@ -335,12 +330,10 @@ public class VeranstaltungServiceTest {
             assertThat(updatedVeranstaltung.getVeranstaltungLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
             assertThat(updatedVeranstaltung.getVeranstaltungWettkampftypName()).isEqualTo(input.getWettkampftypName());
             assertThat(updatedVeranstaltung.getVeranstaltungLigaName()).isEqualTo(input.getLigaName());
-
              */
-        }catch (NoPermissionException e) {
-        }
-
+        }catch (NoPermissionException e) { }
     }
+
 
     @Test
     public void delete() {
@@ -363,4 +356,14 @@ public class VeranstaltungServiceTest {
         assertThat(deletedVeranstaltung.getVeranstaltungID()).isEqualTo(expected.getVeranstaltungID());
         assertThat(deletedVeranstaltung.getVeranstaltungName()).isNullOrEmpty();
     }
+
+
+    /*@Test
+    public void hasPermission() {
+    }*/
+
+
+    /*@Test
+    public void hasSpecificPermission() {
+    }*/
 }

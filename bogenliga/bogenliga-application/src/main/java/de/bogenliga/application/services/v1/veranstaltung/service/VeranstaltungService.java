@@ -89,14 +89,15 @@ public class VeranstaltungService implements ServiceFacade {
      * @return List of VeranstaltungDTOs
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAll(){
 
         LOG.debug("Received 'findAll' request for Veranstaltung");
         final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findAll();
+
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
+
 
     /**
      * I return the veranstaltung Entry of the database with a specific id
@@ -104,16 +105,16 @@ public class VeranstaltungService implements ServiceFacade {
      * @return list of {@link VeranstaltungDTO} as JSON
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public VeranstaltungDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
         LOG.debug("Receive 'findById' with requested ID '{}'", id);
-
         final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(id);
+
         return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
     }
+
 
     /**
      * I return the veranstaltung Entry of the database with a specific id
@@ -121,25 +122,22 @@ public class VeranstaltungService implements ServiceFacade {
      * @return list of {@link VeranstaltungDTO} as JSON
      */
     @GetMapping(value = "findByLigaID/{ligaID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequestMapping(value = "findByLigaID/{ligaID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findByLigaId(@PathVariable ("ligaID") final long ligaID){
         Preconditions.checkArgument(ligaID >= 0 , "ID must not be negative");
 
         LOG.debug("Receive 'findByLigaID' with requested ID '{}'", ligaID);
-
         final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
 
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
-
     }
+
 
     /**
      *
      * @return a list with all sportjahre distinct
      */
     @GetMapping(value = "destinct/sportjahr", produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequestMapping(value = "destinct/sportjahr", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<SportjahrDTO> findAllSportjahrDestinct(){
 
@@ -156,7 +154,6 @@ public class VeranstaltungService implements ServiceFacade {
      * @return return Veranstaltungen with the same Sportjahr
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "find/by/year/{sportjahr}")
-    //@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, value = "find/by/year/{sportjahr}")
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahr(@PathVariable ("sportjahr") final long sportjahr){
 
@@ -165,6 +162,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
+
 
     /**
      * I persist a new veranstaltung and return this veranstaltung entry
@@ -178,7 +176,6 @@ public class VeranstaltungService implements ServiceFacade {
      * @return list of {@link VeranstaltungDTO} as JSON
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
 
@@ -196,7 +193,6 @@ public class VeranstaltungService implements ServiceFacade {
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
-
         final VeranstaltungDO savedVeranstaltungDO = veranstaltungComponent.create(newVeranstaltungDO,
                 currentDsbMitglied);
         return VeranstaltungDTOMapper.toDTO.apply(savedVeranstaltungDO);
@@ -210,7 +206,6 @@ public class VeranstaltungService implements ServiceFacade {
      * you are the Ligaleiter of the Veranstaltung.
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) throws NoPermissionException {
@@ -226,7 +221,6 @@ public class VeranstaltungService implements ServiceFacade {
                 veranstaltungDTO.getLigaId()
                 );
 
-
         if( !(this.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)) || !(this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDTO.getId()))){
             throw new NoPermissionException();
         }
@@ -237,14 +231,13 @@ public class VeranstaltungService implements ServiceFacade {
         final VeranstaltungDO updatedVeranstaltungDO = veranstaltungComponent.update(newVeranstaltungDO,
                 currentDsbMitglied);
         return VeranstaltungDTOMapper.toDTO.apply(updatedVeranstaltungDO);
-
     }
+
 
     /**
      * I delete an existing Veranstaltung entry from the DB.
      */
     @DeleteMapping(value = "{id}")
-    //@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
@@ -260,7 +253,6 @@ public class VeranstaltungService implements ServiceFacade {
     private void checkPreconditions(@RequestBody final VeranstaltungDTO veranstaltungDTO) {
         Preconditions.checkNotNull(veranstaltungDTO, PRECONDITION_MSG_VERANSTALTUNG);
 
-
         Preconditions.checkNotNull(veranstaltungDTO.getName(), PRECONDITION_MSG_VERANSTALTUNG_NAME);
         Preconditions.checkArgument(veranstaltungDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(veranstaltungDTO.getSportjahr() >= 0, PRECONDITION_MSG_VERANSTALTUNG_SPORTJARHR);
@@ -268,6 +260,8 @@ public class VeranstaltungService implements ServiceFacade {
         Preconditions.checkNotNull(veranstaltungDTO.getLigaleiterEmail(), PRECONDITION_MSG_VERANSTALTUNG_LIGALEITER_ID);
         Preconditions.checkArgument(veranstaltungDTO.getLigaId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
     }
+
+
     /**
      * method to check, if a user has a general permission
      * @param toTest The permission whose existence is getting checked
@@ -296,6 +290,7 @@ public class VeranstaltungService implements ServiceFacade {
         }
         return result;
     }
+
 
     /**
      * method to check, if a user has a Specific permission with the matching parameters
