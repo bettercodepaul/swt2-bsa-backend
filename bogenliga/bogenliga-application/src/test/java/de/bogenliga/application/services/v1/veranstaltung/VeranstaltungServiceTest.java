@@ -1,8 +1,12 @@
 package de.bogenliga.application.services.v1.veranstaltung;
 
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
+import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 
@@ -192,6 +196,44 @@ public class VeranstaltungServiceTest {
         // verify invocations
         verify(VeranstaltungComponent).findById(ID);
     }
+
+    @Test
+    public void findByLigaId() {
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+        final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findByLigaID(anyLong())).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findByLigaId(ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations
+        verify(VeranstaltungComponent).findByLigaID(ID);
+    }
+
+    /*@Test
+    public void findAllSportjahrDestinct() {
+        // prepare test data
+        final SportjahrDO SportjahrDO = getSportjahrDO();
+        final List<SportjahrDO> SportjahrDOList = Collections.singletonList(SportjahrDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findByLigaID(anyLong())).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findByLigaId(ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations
+        verify(VeranstaltungComponent).findByLigaID(ID);
+    }*/
 
     @Test
     public void create() {
