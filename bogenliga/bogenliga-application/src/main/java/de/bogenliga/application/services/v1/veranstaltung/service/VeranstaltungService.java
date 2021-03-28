@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +54,6 @@ public class VeranstaltungService implements ServiceFacade {
     private final VeranstaltungComponent veranstaltungComponent;
 
     private static final String PRECONDITION_MSG_VERANSTALTUNG = "Veranstaltung must not be null";
-    private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_NAME = "Veranstaltung Name can not be null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_WETTKAMPFTYP_ID = "Veranstaltung Wettkampftyp id can not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SPORTJARHR = "Veranstaltung Sportjahr can not be negative";
@@ -226,12 +226,10 @@ public class VeranstaltungService implements ServiceFacade {
                 );
 
 
-
-        if(this.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN) || this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDTO.getId())){
-
-        }else{
+        if( !(this.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)) || !(this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDTO.getId()))){
             throw new NoPermissionException();
         }
+
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
@@ -320,7 +318,7 @@ public class VeranstaltungService implements ServiceFacade {
                 //the required Permission (if the permission is specifi
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>();
+                ArrayList<Integer> temp = new ArrayList<>()
                 for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(UserId)) {
                    if(veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid)){
                        result = true;
