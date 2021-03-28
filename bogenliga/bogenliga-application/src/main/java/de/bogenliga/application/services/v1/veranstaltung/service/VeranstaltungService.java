@@ -312,13 +312,17 @@ public class VeranstaltungService implements ServiceFacade {
             if(request != null) {
                 //parse the Webtoken and get the UserPermissions of the current User
                 final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+                //  final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
                 //the required Permission (if the permission is specifi
                 Long UserId = jwtTokenProvider.getUserId(jwt);
+
+                /*
                 UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>()
+                ArrayList<Integer> temp = new ArrayList<>();
+                */
+
                 for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(UserId)) {
                    if(veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid)){
                        result = true;
