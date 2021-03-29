@@ -52,6 +52,8 @@ public class VeranstaltungServiceTest {
     private static final String WETTKAMPTYP_NAME = "";
     private static final String LIGANAME = "";
 
+    private static final long SPORTJAHR_ID = 0;
+    private static final long SPORTJAHR_JAHR = 0;
 
    
     @Rule
@@ -115,6 +117,18 @@ public class VeranstaltungServiceTest {
         veranstaltungDTO.setLigaName(LIGANAME);
 
         return veranstaltungDTO;
+    }
+
+    public static SportjahrDO getSportjahrDO() {
+        return new SportjahrDO(SPORTJAHR_ID, SPORTJAHR_JAHR);
+    }
+
+    public static SportjahrDTO getSportjahrDTO() {
+        final SportjahrDTO sportjahrDTO = new SportjahrDTO();
+        sportjahrDTO.setId(SPORTJAHR_ID);
+        sportjahrDTO.setSportjahr(WETTKAMPFTYP_ID  );
+
+        return sportjahrDTO;
     }
 
     @Before
@@ -212,24 +226,24 @@ public class VeranstaltungServiceTest {
     }
 
 
-    /*@Test
+    @Test
     public void findAllSportjahrDestinct() {
         // prepare test data
         final SportjahrDO SportjahrDO = getSportjahrDO();
         final List<SportjahrDO> SportjahrDOList = Collections.singletonList(SportjahrDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findByLigaID(anyLong())).thenReturn(VeranstaltungDOList);
+        when(VeranstaltungComponent.findAllSportjahreDestinct()).thenReturn(SportjahrDOList);
 
         // call test method
-        final List<VeranstaltungDTO> actual = underTest.findByLigaId(ID);
+        final List<SportjahrDTO> actual = underTest.findAllSportjahrDestinct();
 
         // assert result
         assertThat(actual).isNotNull();
 
         // verify invocations
-        verify(VeranstaltungComponent).findByLigaID(ID);
-    }*/
+        verify(VeranstaltungComponent).findAllSportjahreDestinct();
+    }
 
 
     /*@Test

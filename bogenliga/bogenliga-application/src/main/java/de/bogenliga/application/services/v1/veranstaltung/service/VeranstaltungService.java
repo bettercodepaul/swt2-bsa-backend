@@ -142,9 +142,9 @@ public class VeranstaltungService implements ServiceFacade {
     public List<SportjahrDTO> findAllSportjahrDestinct(){
 
         LOG.debug("Received 'findBySportyear' request for Sportjahre in Veranstaltung  ");
-        List<SportjahrDO> returnList= veranstaltungComponent.findAllSportjahreDestinct();
+        final List<SportjahrDO> SportjahrDOList = veranstaltungComponent.findAllSportjahreDestinct();
 
-        return returnList.stream().map(SportjahrDTOMapper.toDTO).collect(Collectors.toList());
+        return SportjahrDOList.stream().map(SportjahrDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
