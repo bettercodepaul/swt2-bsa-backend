@@ -15,7 +15,7 @@ public class SportjahrDO extends CommonDataObject implements DataObject {
 
 
 
-    public SportjahrDO(){
+    public SportjahrDO(long sportjahrId, long sportjahrJahr){
         //empty
     }
 
