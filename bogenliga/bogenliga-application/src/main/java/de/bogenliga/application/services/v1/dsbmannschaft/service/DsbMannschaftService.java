@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestAttributes;
@@ -115,8 +116,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * }
      * </pre>
      *
-     * @return list of {@link DsbMannschaftDTO} as JSON
-     */
+     * @return list of {@link DsbMannschaftDTO} as JSON*/
     @RequestMapping(method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -281,6 +281,7 @@ public class DsbMannschaftService implements ServiceFacade {
             //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
             if(hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) && !hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
                 DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
+                /**Replaced '!=' with !equals() */
                 if(!(dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) ) {
                     throw new NoPermissionException();
                 }
@@ -405,7 +406,8 @@ public class DsbMannschaftService implements ServiceFacade {
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
                 DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
-                if((dsbMitgliedDO.getVereinsId() == vereinsId) && userPermissions.contains(toTest)) {
+                /**Replaced '==' with equals() */
+                if((dsbMitgliedDO.getVereinsId().equals(vereinsId)) && userPermissions.contains(toTest)) {
                     result = true;
                 }
             }
