@@ -226,8 +226,8 @@ public class MatchService implements ServiceFacade {
      * I return the match entries of the database with the given mannschaftId.
      * <p>
      * Usage:
-     * <pre>{@Code Request: GET /v1/match/byMannschaftsId/{id}}</pre>
-     * <pre>{@Code Response:
+     * <pre> Request: GET /v1/match/byMannschaftsId/{id}</pre>
+     * <pre> Response:
      * [
      *  {
      *      "id": "app.bogenliga.frontend.autorefresh.active",
@@ -315,8 +315,8 @@ public class MatchService implements ServiceFacade {
     public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) throws NoPermissionException {
         if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
                 this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTOs.get(0).getWettkampfId())){
-
-        }else{
+        }
+        else{
             throw new NoPermissionException();
         }
         Preconditions.checkNotNull(matchDTOs,
@@ -433,7 +433,7 @@ public class MatchService implements ServiceFacade {
      * @param passeDTO
      * @param mannschaftsmitgliedDOS
      *
-     * @return
+     * @return mannschaftsmitglied
      */
     public static Long getMemberIdFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
 
@@ -486,7 +486,7 @@ public class MatchService implements ServiceFacade {
      * in der Liste aller Matches des Wettkampftages, der zugehörigen andren Scheibe und identischer Begegnungs-nr.
      * @param matchId
      *
-     * @return
+     * @return wettkampfMatches
      */
     @RequestMapping(value = "{matchId}/pair",
             method = RequestMethod.GET,
@@ -586,7 +586,7 @@ public class MatchService implements ServiceFacade {
      *
      * @param matchId
      *
-     * @return
+     * @return wettkampfmatches
      */
     @RequestMapping(value = "{matchId}/next",
             method = RequestMethod.GET,
@@ -628,7 +628,7 @@ public class MatchService implements ServiceFacade {
      *
      * @param matchDTO
      *
-     * @return
+     * @return MatchDTOMapper
      */
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -878,7 +878,7 @@ public class MatchService implements ServiceFacade {
                 final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
+                //the required Permission (if the permission is specific
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
                 for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
@@ -905,7 +905,7 @@ public class MatchService implements ServiceFacade {
                 final String jwt = JwtTokenProvider.resolveToken(request);
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
+                //the required Permission (if the permission is specific
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(UserId)){
                     if(veranstaltungDO.getVeranstaltungID().equals(wettkampfid)){
