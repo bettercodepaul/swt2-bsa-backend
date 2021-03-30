@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.veranstaltung.service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -283,17 +282,15 @@ public class VeranstaltungService implements ServiceFacade {
         if (requestAttributes != null) {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-                //check if the resolved Permissions
-                //contain the required Permission for the task.
-                if(userPermissions.contains(toTest)) {
-                    result = true;
-                }
+            //parse the Webtoken and get the UserPermissions of the current User
+            final String jwt = JwtTokenProvider.resolveToken(request);
+            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+            //check if the resolved Permissions
+            //contain the required Permission for the task.
+            if(userPermissions.contains(toTest)) {
+                result = true;
             }
         }
         return result;
@@ -313,21 +310,18 @@ public class VeranstaltungService implements ServiceFacade {
         if (requestAttributes != null) {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
 
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
+            //parse the Webtoken and get the UserPermissions of the current User
+            final String jwt = JwtTokenProvider.resolveToken(request);
 
-                for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(UserId)) {
-                   if(veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid)){
-                       result = true;
-                   }
-                }
+            //check if the current Users vereinsId equals the given vereinsId and if the User has
+            //the required Permission (if the permission is specifi
+            Long UserId = jwtTokenProvider.getUserId(jwt);
 
+            for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(UserId)) {
+               if(veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid)){
+                   result = true;
+               }
             }
         }
         return result;
