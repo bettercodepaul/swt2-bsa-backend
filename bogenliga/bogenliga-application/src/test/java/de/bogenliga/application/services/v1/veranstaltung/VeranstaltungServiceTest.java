@@ -246,9 +246,24 @@ public class VeranstaltungServiceTest {
     }
 
 
-    /*@Test
+    @Test
     public void findBySportjahr() {
-    }*/
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+        final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findBySportjahr(anyLong())).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findBySportjahr(SPORTJAHR);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR);
+    }
 
 
     @Test
