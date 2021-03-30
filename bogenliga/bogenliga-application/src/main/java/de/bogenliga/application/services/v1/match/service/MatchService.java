@@ -195,7 +195,7 @@ public class MatchService implements ServiceFacade {
      * @param matchId1
      * @param matchId2
      *
-     * @return
+     * @return matches
      */
     @RequestMapping(value = "schusszettel/{matchId1}/{matchId2}",
             method = RequestMethod.GET,
@@ -305,7 +305,7 @@ public class MatchService implements ServiceFacade {
      *
      * @param matchDTOs
      *
-     * @return
+     * @return matchDTOs
      */
     @RequestMapping(value = "schusszettel",
             method = RequestMethod.POST,
@@ -466,7 +466,7 @@ public class MatchService implements ServiceFacade {
      * Derives the schuetzeNr from the position in the member list
      * @param passeDTO
      * @param mannschaftsmitgliedDOS
-     * @return
+     * @return schuetzeNr
      */
     public static Integer getSchuetzeNrFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
         int idx = 0;
@@ -659,7 +659,7 @@ public class MatchService implements ServiceFacade {
      *
      * @param veranstaltungDTO
      *
-     * @return
+     * @return veranstaltungDTO
      */
     @RequestMapping(value = "WT0",
             method = RequestMethod.POST,
@@ -688,7 +688,7 @@ public class MatchService implements ServiceFacade {
      * @param matchDTO
      * @param principal
      *
-     * @return
+     * @return MatchDTOMapper
      */
     @RequestMapping(method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -751,7 +751,7 @@ public class MatchService implements ServiceFacade {
      * Each passe object then gets its schuetzeNr (see getSchuetzeNrFor).
      * @param matchId
      * @param addPassen
-     * @return
+     * @return matchDTO
      */
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
         final MatchDO matchDo = matchComponent.findById(matchId);
@@ -881,7 +881,6 @@ public class MatchService implements ServiceFacade {
                 //the required Permission (if the permission is specifi
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>();
                 for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
                     if(wettkampfDO.getId().equals(wettkampfid)){
                         result = true;
@@ -904,13 +903,10 @@ public class MatchService implements ServiceFacade {
             if(request != null) {
                 //parse the Webtoken and get the UserPermissions of the current User
                 final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
                 //the required Permission (if the permission is specifi
                 Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>();
                 for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(UserId)){
                     if(veranstaltungDO.getVeranstaltungID().equals(wettkampfid)){
                         result = true;
