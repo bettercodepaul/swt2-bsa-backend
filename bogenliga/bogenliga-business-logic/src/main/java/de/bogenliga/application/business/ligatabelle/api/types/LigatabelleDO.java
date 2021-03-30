@@ -3,7 +3,7 @@ package de.bogenliga.application.business.ligatabelle.api.types;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
-import java.time.OffsetDateTime;
+
 import java.util.Objects;
 
 /**
