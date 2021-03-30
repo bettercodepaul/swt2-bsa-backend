@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.lizenz.mapper;
 
 import java.util.function.Function;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.lizenz.model.LizenzDTO;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
