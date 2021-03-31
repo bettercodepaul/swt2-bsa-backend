@@ -878,7 +878,7 @@ public class MatchService implements ServiceFacade {
                 final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specific
+                //the required Permission (if the permission is specify
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
                 for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
@@ -905,7 +905,7 @@ public class MatchService implements ServiceFacade {
                 final String jwt = JwtTokenProvider.resolveToken(request);
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specific
+                //the required Permission (if the permission is specify
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(UserId)){
                     if(veranstaltungDO.getVeranstaltungID().equals(wettkampfid)){
