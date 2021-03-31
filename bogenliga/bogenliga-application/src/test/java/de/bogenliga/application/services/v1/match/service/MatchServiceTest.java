@@ -37,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import java.io.*;
 
 /**
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
@@ -282,9 +281,7 @@ public class MatchServiceTest {
     public void findById_Null() {
         when(matchComponent.findById(anyLong())).thenReturn(null);
         // expect a NPE as the null-state should be checked in MatchComponentImpl
-        assertThatThrownBy(() -> {
-            underTest.findById(MATCH_ID);
-        }).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> underTest.findById(MATCH_ID)).isInstanceOf(NullPointerException.class);
     }
 
 
@@ -310,9 +307,7 @@ public class MatchServiceTest {
     public void findMatchesByIds_Null() {
         when(matchComponent.findById(anyLong())).thenReturn(null);
         // expect a NPE as the null-state should be checked in MatchComponentImpl
-        assertThatThrownBy(() -> {
-            underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
-        }).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> underTest.findMatchesByIds(MATCH_ID, MATCH_ID)).isInstanceOf(NullPointerException.class);
     }
 
 
@@ -365,9 +360,7 @@ public class MatchServiceTest {
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
-        assertThatThrownBy(() -> {
-            underTest.saveMatches(matches, principal);
-        }).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> underTest.saveMatches(matches, principal)).isInstanceOf(NullPointerException.class);
     }
 
 
@@ -436,9 +429,7 @@ public class MatchServiceTest {
         ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
-        assertThatThrownBy(() -> {
-            underTest.saveMatches(matches, principal);
-        }).isInstanceOf(NoPermissionException.class);
+        assertThatThrownBy(() -> underTest.saveMatches(matches, principal)).isInstanceOf(NoPermissionException.class);
     }
 
 
@@ -495,9 +486,7 @@ public class MatchServiceTest {
 
     @Test
     public void create_Null() {
-        assertThatThrownBy(() -> {
-            underTest.create(null, principal);
-        }).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> underTest.create(null, principal)).isInstanceOf(NullPointerException.class);
     }
 
 
@@ -517,8 +506,6 @@ public class MatchServiceTest {
 
     @Test
     public void update_Null() {
-        assertThatThrownBy(() -> {
-            underTest.update(null, principal);
-        }).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> underTest.update(null, principal)).isInstanceOf(NullPointerException.class);
     }
 }
