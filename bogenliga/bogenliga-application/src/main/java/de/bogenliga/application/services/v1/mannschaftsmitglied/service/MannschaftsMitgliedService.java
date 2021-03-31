@@ -159,6 +159,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
+        // If user doesnt have the required Permissions, throw an exception
         if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
@@ -189,6 +190,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
+        // If user doesnt have the required Permissions, throw an exception
         if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
@@ -219,6 +221,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(id);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
+        // If User doesnt have the required Permissions, throw an exception
         if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
@@ -241,6 +244,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
+        // If User doesnt have the required Permissions, throw an exception
         if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
