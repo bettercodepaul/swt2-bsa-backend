@@ -313,12 +313,11 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) throws NoPermissionException {
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTOs.get(0).getWettkampfId())){
-        }
-        else{
+        if(!(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
+                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTOs.get(0).getWettkampfId()))){
             throw new NoPermissionException();
         }
+
         Preconditions.checkNotNull(matchDTOs,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST));
         Preconditions.checkArgument(matchDTOs.size() == 2, String.format(
@@ -497,12 +496,12 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
         MatchDO matchDO = matchComponent.findById(matchId);
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId())){
-
-        }else{
+        if(!(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
+                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId()))){
             throw new NoPermissionException();
+
         }
+
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
@@ -539,12 +538,11 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
         MatchDO matchDO = matchComponent.findById(matchId);
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId())){
-
-        }else{
+        if(!(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
+                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId()))){
             throw new NoPermissionException();
         }
+
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
         Long scheibeNr = 0L;
         if(matchDO.getScheibenNummer() <7 ){
@@ -596,12 +594,11 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
         MatchDO matchDO = matchComponent.findById(matchId);
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId())){
-
-        }else{
+        if((this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
+                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId()))){
             throw new NoPermissionException();
         }
+
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
@@ -635,12 +632,11 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException {
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTO.getWettkampfId())){
-
-        }else{
+        if(!(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
+                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTO.getWettkampfId()))){
             throw new NoPermissionException();
         }
+
         Preconditions.checkNotNull(principal,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO, matchConditionErrors);
@@ -695,12 +691,11 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException {
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTO.getWettkampfId())){
-
-        }else{
+        if(!(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
+                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTO.getWettkampfId()))){
             throw new NoPermissionException();
         }
+
         Preconditions.checkNotNull(principal,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, CHECKED_PARAM_PRINCIPAL));
         checkPreconditions(matchDTO, matchConditionErrors);
