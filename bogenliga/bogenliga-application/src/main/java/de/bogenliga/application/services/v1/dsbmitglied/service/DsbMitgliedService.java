@@ -11,12 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -115,7 +110,7 @@ public class DsbMitgliedService implements ServiceFacade {
      *
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public List<DsbMitgliedDTO> findAll() {
@@ -123,7 +118,7 @@ public class DsbMitgliedService implements ServiceFacade {
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/team/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
@@ -148,7 +143,7 @@ public class DsbMitgliedService implements ServiceFacade {
      *
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public DsbMitgliedDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
@@ -174,7 +169,7 @@ public class DsbMitgliedService implements ServiceFacade {
      *
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @RequestMapping(value = "/{id}/{dsbuserid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}/{dsbuserid}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public DsbMitgliedDTO insertUserId(@PathVariable("id") final long id, @PathVariable("dsbuserid") final long dsbuserid, final Principal principal) {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
@@ -213,7 +208,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * @param principal authenticated user
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_DSBMITGLIEDER, UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER})
@@ -255,7 +250,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * }
      * }</pre>
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
@@ -297,7 +292,7 @@ public class DsbMitgliedService implements ServiceFacade {
      * Usage:
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_DSBMITGLIEDER)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);

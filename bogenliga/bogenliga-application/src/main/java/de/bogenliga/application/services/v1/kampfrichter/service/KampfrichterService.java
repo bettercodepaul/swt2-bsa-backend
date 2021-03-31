@@ -10,12 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -72,7 +67,7 @@ public class KampfrichterService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<KampfrichterDTO> findAll() {
@@ -81,7 +76,7 @@ public class KampfrichterService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
@@ -158,7 +153,7 @@ public class KampfrichterService implements ServiceFacade {
 //        kampfrichterComponent.delete(kampfrichterDO, id);
 //    }
 
-    @RequestMapping(value = "{userID}/{wettkampfID}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{userID}/{wettkampfID}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("userID") final long userID, @PathVariable("wettkampfID") final long wettkampfID,
                        final Principal principal) {

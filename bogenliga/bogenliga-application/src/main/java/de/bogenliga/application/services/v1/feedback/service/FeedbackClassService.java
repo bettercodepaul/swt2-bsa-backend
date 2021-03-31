@@ -3,11 +3,7 @@ package de.bogenliga.application.services.v1.feedback.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -39,7 +35,7 @@ public class FeedbackClassService implements ServiceFacade {
     /**
      * I recieve the feedback.
      */
-    @RequestMapping(value = "{feedback}", method = RequestMethod.GET)
+    @GetMapping(value = "{feedback}")
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
     public void sendFeedback(@PathVariable("feedback") final String feedback) {
         LOGGER.debug("Receive 'feedback' request with '{}'", feedback);
