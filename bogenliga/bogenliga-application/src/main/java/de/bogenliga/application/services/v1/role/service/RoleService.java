@@ -78,7 +78,7 @@ public class RoleService implements ServiceFacade {
      *
      * @return list of {@link RoleDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RoleDTO> findAll() {
