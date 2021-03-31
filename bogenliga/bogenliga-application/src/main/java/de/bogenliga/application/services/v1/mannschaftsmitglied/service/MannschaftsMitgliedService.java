@@ -159,9 +159,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
-        if (this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || this.hasSpecificPermission(
+        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-        } else {
             throw new NoPermissionException();
         }
         final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
@@ -190,9 +189,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
-        if (this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || this.hasSpecificPermission(
+        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-        } else {
             throw new NoPermissionException();
         }
         final MannschaftsmitgliedDO newMannschaftsMitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
@@ -221,9 +219,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(id);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
-        if (this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || this.hasSpecificPermission(
+        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-        } else {
             throw new NoPermissionException();
         }
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
@@ -244,9 +241,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
-        if (this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || this.hasSpecificPermission(
+        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-        } else {
             throw new NoPermissionException();
         }
         mannschaftsMitgliedComponent.deleteByTeamIdAndMemberId(mannschaftsMitgliedDO, currentUserId);
