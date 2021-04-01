@@ -2,9 +2,9 @@ package de.bogenliga.application.services.v1.errortesting;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.common.errorhandling.ErrorCategory;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -33,7 +33,7 @@ public class ErrorTestingService implements ServiceFacade {
     private static final Logger logger = LoggerFactory.getLogger(ErrorTestingService.class);
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/error-code/{errorCode}")
+    @GetMapping(value = "/error-code/{errorCode}")
     public String generateErrorCode(@PathVariable("errorCode") final String errorCode) {
         logger.debug("Receive 'generateErrorCode' request with {}", errorCode);
 

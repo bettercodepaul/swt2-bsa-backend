@@ -1,6 +1,5 @@
 package de.bogenliga.application.services.v1.tabletsession.service;
 
-import java.util.ArrayList;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,12 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.tabletsession.api.TabletSessionComponent;
@@ -51,7 +45,7 @@ public class TabletSessionService implements ServiceFacade {
         this.tabletSessionComponent = tabletSessionComponent;
         this.matchComponent = matchComponent;
     }
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<TabletSessionDTO> findAll() {
@@ -61,8 +55,7 @@ public class TabletSessionService implements ServiceFacade {
 
 
 
-    @RequestMapping(value = "/{wettkampfId}/{scheibenNr}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "/{wettkampfId}/{scheibenNr}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public TabletSessionDTO findById(@PathVariable("wettkampfId") Long wettkampfId,
@@ -75,8 +68,7 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "/{wettkampfId}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "/{wettkampfId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<TabletSessionDTO> findByWettkampfId(@PathVariable("wettkampfId") Long wettkampfId,
@@ -125,7 +117,7 @@ public class TabletSessionService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
