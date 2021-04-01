@@ -322,6 +322,9 @@ public class VeranstaltungService implements ServiceFacade {
                    result = true;
                }
             }
+        } else {
+            throw new NullPointerException(
+                    "NullPointerException: RequestAttributes from current http request must not be null");
         }
         return result;
     }
