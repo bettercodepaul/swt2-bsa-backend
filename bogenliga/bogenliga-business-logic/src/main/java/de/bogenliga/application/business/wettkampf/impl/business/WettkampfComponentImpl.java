@@ -32,8 +32,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
 
     private final WettkampfDAO wettkampfDAO;
-
-
+    
     /**
      * Constructor
      * <p>
