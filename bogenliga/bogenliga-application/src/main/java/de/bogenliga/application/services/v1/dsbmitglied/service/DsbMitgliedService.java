@@ -376,8 +376,8 @@ public class DsbMitgliedService implements ServiceFacade {
                 final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
                 //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
+                Long userId = jwtTokenProvider.getUserId(jwt);
+                UserDO userDO = this.userComponent.findById(userId);
                 DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
                 if((dsbMitgliedDO.getVereinsId().equals(vereinsId)) && userPermissions.contains(toTest)) {
                     result = true;
