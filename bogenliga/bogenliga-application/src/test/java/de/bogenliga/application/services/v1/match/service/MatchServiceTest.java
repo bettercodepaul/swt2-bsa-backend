@@ -258,6 +258,28 @@ public class MatchServiceTest {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
     }
 
+    @Test
+    public void findAll(){
+        final MatchDO matchDO = getMatchDO();
+        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
+
+        when(matchComponent.findAll()).thenReturn(matchDOList);
+
+        final List<MatchDTO> actual = underTest.findAll();
+
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final MatchDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(matchDO.getMannschaftId());
+        //assertThat(actualDTO.get)
+
+        verify(matchComponent).findAll();
+    }
+
 
     @Test
     public void findById() {
