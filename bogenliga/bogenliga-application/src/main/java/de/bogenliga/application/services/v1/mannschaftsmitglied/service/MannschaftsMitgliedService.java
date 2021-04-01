@@ -105,9 +105,9 @@ public class MannschaftsMitgliedService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId) {
-        final List<MannschaftsmitgliedDO> MannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeamEingesetzt(
+        final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeamEingesetzt(
                 mannschaftsId);
-        return MannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -315,8 +315,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
                 //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
+                Long userId = jwtTokenProvider.getUserId(jwt);
+                UserDO userDO = this.userComponent.findById(userId);
                 DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
                 if ((dsbMitgliedDO.getVereinsId().equals(vereinsId)) && userPermissions.contains(toTest)) {
                     result = true;
