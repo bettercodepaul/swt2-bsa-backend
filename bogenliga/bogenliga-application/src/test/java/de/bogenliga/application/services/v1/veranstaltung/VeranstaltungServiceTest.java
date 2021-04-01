@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.veranstaltung;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
@@ -394,10 +395,25 @@ public class VeranstaltungServiceTest {
     public void hasPermission() {
         final RequestAttributes expectedRequestAttributes = RequestContextHolder.getRequestAttributes();
         assertThat(expectedRequestAttributes).isNotNull();
-    }*/
+    }
 
 
-    /*@Test
+    @Test
     public void hasSpecificPermission() {
+        // prepare test data
+        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
+        final UserDO userDO = getUserDO();
+
+        // configure mocks
+        when(VeranstaltungComponent.findBySportjahr(anyLong())).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findBySportjahr(SPORTJAHR);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR);
     }*/
 }
