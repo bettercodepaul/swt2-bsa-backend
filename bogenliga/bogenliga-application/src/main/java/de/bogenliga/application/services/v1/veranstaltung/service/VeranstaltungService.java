@@ -26,7 +26,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -93,9 +92,9 @@ public class VeranstaltungService implements ServiceFacade {
     public List<VeranstaltungDTO> findAll(){
 
         LOG.debug("Received 'findAll' request for Veranstaltung");
-        final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findAll();
+        final List<VeranstaltungDO> veranstaltungDOList = veranstaltungComponent.findAll();
 
-        return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+        return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -129,9 +128,9 @@ public class VeranstaltungService implements ServiceFacade {
         Preconditions.checkArgument(ligaID >= 0 , "ID must not be negative");
 
         LOG.debug("Receive 'findByLigaID' with requested ID '{}'", ligaID);
-        final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
+        final List<VeranstaltungDO> veranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
 
-        return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+        return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -145,9 +144,9 @@ public class VeranstaltungService implements ServiceFacade {
     public List<SportjahrDTO> findAllSportjahrDestinct(){
 
         LOG.debug("Received 'findBySportyear' request for Sportjahre in Veranstaltung  ");
-        final List<SportjahrDO> SportjahrDOList = veranstaltungComponent.findAllSportjahreDestinct();
+        final List<SportjahrDO> sportjahrDOList = veranstaltungComponent.findAllSportjahreDestinct();
 
-        return SportjahrDOList.stream().map(SportjahrDTOMapper.toDTO).collect(Collectors.toList());
+        return sportjahrDOList.stream().map(SportjahrDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -162,9 +161,9 @@ public class VeranstaltungService implements ServiceFacade {
     public List<VeranstaltungDTO> findBySportjahr(@PathVariable ("sportjahr") final long sportjahr){
 
         LOG.debug("Received 'findBySportyear' request for Veranstaltung in {}", sportjahr);
-        final List<VeranstaltungDO> VeranstaltungDOList = veranstaltungComponent.findBySportjahr(sportjahr);
+        final List<VeranstaltungDO> veranstaltungDOList = veranstaltungComponent.findBySportjahr(sportjahr);
 
-        return VeranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+        return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
