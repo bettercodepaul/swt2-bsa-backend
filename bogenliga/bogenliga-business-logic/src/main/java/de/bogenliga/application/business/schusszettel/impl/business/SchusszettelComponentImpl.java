@@ -168,9 +168,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         for (int i = 1; i <= 2; i++) {
             Map<Long, List<PasseDO>> schuetzenPasseMap = new HashMap<>();
             for (PasseDO passeDO : passenDOs[i-1]) {
-                // schuetzenPasseMap.computeIfAbsent(passeDO.getPasseDsbMitgliedId(), k -> new ArrayList<>());
-                // schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
-
                 // Only pick 3 schuetzen
                 if (!schuetzenPasseMap.containsKey(passeDO.getPasseDsbMitgliedId())) {
                     if (schuetzenPasseMap.size() < 3) {
