@@ -151,7 +151,7 @@ public class MatchService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "", method = RequestMethod.GET,
+    @GetMapping(value = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MatchDTO> findAll(){
@@ -161,8 +161,7 @@ public class MatchService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{id}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public MatchDTO findById(@PathVariable("id") Long matchId) {
@@ -177,8 +176,7 @@ public class MatchService implements ServiceFacade {
      * Finds all matches by the given id from a wettkampf
      * @param wettkampfid
      */
-    @RequestMapping(value = "findByWettkampfId/wettkampfid={id}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "findByWettkampfId/wettkampfid={id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MatchDTO> findByWettkampfId(@PathVariable("id") Long wettkampfid) {
@@ -197,8 +195,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "schusszettel/{matchId1}/{matchId2}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "schusszettel/{matchId1}/{matchId2}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<MatchDTO> findMatchesByIds(@PathVariable("matchId1") Long matchId1,
@@ -245,8 +242,7 @@ public class MatchService implements ServiceFacade {
      * @return list of {@link MatchDTO} as JSON
      */
 
-    @RequestMapping(value = "byMannschaftsId/{id}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "byMannschaftsId/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<MatchDTO> findAllByMannschaftId(@PathVariable("id") final Long id) {
@@ -261,8 +257,7 @@ public class MatchService implements ServiceFacade {
         return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "findAllWettkampfMatches/wettkampfid={id}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "findAllWettkampfMatches/wettkampfid={id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<MatchDTO> findby(@PathVariable("id") Long wettkampfid) {
@@ -274,8 +269,7 @@ public class MatchService implements ServiceFacade {
     }
 
     // lesen aller Matches eines Wettkampfs und bestimmen der Namen der Mannschaften
-    @RequestMapping(value = "findAllWettkampfMatchesAndName/wettkampfid={id}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "findAllWettkampfMatchesAndName/wettkampfid={id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
 
@@ -307,8 +301,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "schusszettel",
-            method = RequestMethod.POST,
+    @PostMapping(value = "schusszettel",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
@@ -488,8 +481,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "{matchId}/pair",
-            method = RequestMethod.GET,
+    @GetMapping(value = "{matchId}/pair",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<Long> pair(@PathVariable final Long matchId) throws NoPermissionException {
@@ -531,8 +523,7 @@ public class MatchService implements ServiceFacade {
      * @return
      * List (MatchDO) oder null wenn es im gleichen Wettkampf das letzte Match ist.
      */
-    @RequestMapping(value = "{matchId}/pairToFollow",
-            method = RequestMethod.GET,
+    @GetMapping(value = "{matchId}/pairToFollow",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<Long> pairToFollow(@PathVariable final Long matchId) throws NoPermissionException {
@@ -588,8 +579,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "{matchId}/next",
-            method = RequestMethod.GET,
+    @GetMapping(value = "{matchId}/next",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<Long> next(@PathVariable final Long matchId) throws NoPermissionException {
@@ -630,7 +620,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
@@ -661,8 +651,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "WT0",
-            method = RequestMethod.POST,
+    @PostMapping(value = "WT0",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
@@ -690,7 +679,7 @@ public class MatchService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})

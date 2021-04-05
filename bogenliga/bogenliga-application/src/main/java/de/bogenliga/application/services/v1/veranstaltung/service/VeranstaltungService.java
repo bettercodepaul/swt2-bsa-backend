@@ -12,12 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -85,7 +80,7 @@ public class VeranstaltungService implements ServiceFacade {
      * I return all the teams (veranstaltung) of the database.
      * @return List of VeranstaltungDTOs
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAll(){
@@ -100,7 +95,7 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public VeranstaltungDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
@@ -117,7 +112,7 @@ public class VeranstaltungService implements ServiceFacade {
      * @return list of {@link VeranstaltungDTO} as JSON
 
      */
-    @RequestMapping(value = "findByLigaID/{ligaID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "findByLigaID/{ligaID}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findByLigaId(@PathVariable ("ligaID") final long ligaID){
         Preconditions.checkArgument(ligaID >= 0 , "ID must not be negative");
@@ -134,7 +129,7 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return a list with all sportjahre distinct
      */
-    @RequestMapping(value = "destinct/sportjahr", method = RequestMethod.GET,
+    @GetMapping(value = "destinct/sportjahr",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<SportjahrDTO> findAllSportjahrDestinct(){
@@ -151,7 +146,7 @@ public class VeranstaltungService implements ServiceFacade {
      * @param sportjahr - filterr for sql-abfrage
      * @return return Veranstaltungen with the same Sportjahr
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE,
             value = "find/by/year/{sportjahr}")
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -174,7 +169,7 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
@@ -207,7 +202,7 @@ public class VeranstaltungService implements ServiceFacade {
      * You can only update a Competition, if you have the permission to Modify Stammdaten or if
      * you are the Ligaleiter of the Veranstaltung.
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
@@ -244,7 +239,7 @@ public class VeranstaltungService implements ServiceFacade {
     /**
      * I delete an existing Veranstaltung entry from the DB.
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
