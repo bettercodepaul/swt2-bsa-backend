@@ -13,13 +13,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
@@ -96,7 +90,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -122,7 +116,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/schusszettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -143,7 +137,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/schusszettel_matches/{matchId1}/{matchId2}",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -166,7 +160,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/meldezettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -189,7 +183,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/bogenkontrollliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -213,7 +207,7 @@ public class DownloadService implements ServiceFacade {
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
                     path = "pdf/rueckennummern",
                     produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -238,7 +232,7 @@ public class DownloadService implements ServiceFacade {
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/rueckennummer",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -271,7 +265,7 @@ public class DownloadService implements ServiceFacade {
         }
     }
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/schuetzenlizenz/{dsbMitgliedId}/{teamId}",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
@@ -294,7 +288,7 @@ public class DownloadService implements ServiceFacade {
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/lizenzen",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
