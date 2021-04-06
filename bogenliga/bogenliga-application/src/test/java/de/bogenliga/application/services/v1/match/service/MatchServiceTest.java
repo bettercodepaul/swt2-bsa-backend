@@ -303,6 +303,24 @@ public class MatchServiceTest {
 
     }
 
+    @Test
+    public void findby(){
+        //prepare test data
+        final MatchDO matchDO = getMatchDO();
+        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        //call test method
+        final List<MatchDTO> actual = underTest.findByWettkampfId(MATCH_ID);
+        //assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.get(0).getWettkampfId()).isEqualTo(matchDO.getWettkampfId());
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(MATCH_ID);
+    }
+
 
     @Test
     public void findById() {
@@ -354,7 +372,6 @@ public class MatchServiceTest {
         // expect a NPE as the null-state should be checked in MatchComponentImpl
         assertThatThrownBy(() -> underTest.findMatchesByIds(MATCH_ID, MATCH_ID)).isInstanceOf(NullPointerException.class);
     }
-
 
     @Test
     public void findByMannschaftId() {
@@ -512,7 +529,6 @@ public class MatchServiceTest {
         } catch (NoPermissionException e) {
         }
     }
-
 
     @Test
     public void create() {
