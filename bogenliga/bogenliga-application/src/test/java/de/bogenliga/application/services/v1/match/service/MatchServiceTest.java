@@ -260,13 +260,17 @@ public class MatchServiceTest {
 
     @Test
     public void findAll(){
+        //prepare test data
         final MatchDO matchDO = getMatchDO();
         final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
 
+        //configure mocks
         when(matchComponent.findAll()).thenReturn(matchDOList);
 
+        //call test method
         final List<MatchDTO> actual = underTest.findAll();
 
+        //assert result
         assertThat(actual)
                 .isNotNull()
                 .hasSize(1);
@@ -275,9 +279,28 @@ public class MatchServiceTest {
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(matchDO.getMannschaftId());
-        //assertThat(actualDTO.get)
 
+        //verify invocations
         verify(matchComponent).findAll();
+    }
+
+    @Test
+    public void findByWettkampfId(){
+        //prepare test data
+        final MatchDO matchDO = getMatchDO();
+        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        //call test method
+        final List<MatchDTO> actual = underTest.findByWettkampfId(MATCH_ID);
+        //assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.get(0).getWettkampfId()).isEqualTo(matchDO.getWettkampfId());
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(MATCH_ID);
+
     }
 
 
