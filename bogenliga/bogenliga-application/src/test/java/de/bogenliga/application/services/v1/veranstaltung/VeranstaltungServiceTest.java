@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.veranstaltung;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
+import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
@@ -10,6 +11,7 @@ import de.bogenliga.application.services.v1.mannschaftsmitglied.model.Mannschaft
 import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,18 +25,26 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 import java.security.Principal;
 
 import java.util.Collections;
 import java.util.List;
 import java.sql.Date;
+import java.util.Set;
 
 import javax.naming.NoPermissionException;
+import static de.bogenliga.application.springconfiguration.security.types.UserPermission.CAN_MODIFY_MY_VERANSTALTUNG;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.web.context.request.RequestContextHolder.getRequestAttributes;
@@ -59,6 +69,7 @@ public class VeranstaltungServiceTest {
     private static final long SPORTJAHR_ID = 0;
     private static final long SPORTJAHR_JAHR = 0;
 
+    private static final UserPermission TO_TEST = CAN_MODIFY_MY_VERANSTALTUNG;
    
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -390,30 +401,67 @@ public class VeranstaltungServiceTest {
         assertThat(deletedVeranstaltung.getVeranstaltungName()).isNullOrEmpty();
     }
 
-
-    /*@Test
-    public void hasPermission() {
-        final RequestAttributes expectedRequestAttributes = RequestContextHolder.getRequestAttributes();
-        assertThat(expectedRequestAttributes).isNotNull();
-    }
-
-
+    /*
     @Test
-    public void hasSpecificPermission() {
+    public void hasPermission() {
         // prepare test data
-        final VeranstaltungDO veranstaltungDO = getVeranstaltungDO();
-        final UserDO userDO = getUserDO();
+        final RequestAttributes requestAttributes = ;               //Z 282
+        final ServletRequestAttributes servletRequestAttributes = ; //Z 284
+        final HttpServletRequest httpServletRequest = ;             //Z 285
+        final String string = ;                                     //Z 289
+        final JwtTokenProvider jwtTokenProvider = ;
+        final Set<UserPermission> userPermission = ;                //Z 290
 
         // configure mocks
-        when(VeranstaltungComponent.findBySportjahr(anyLong())).thenReturn(VeranstaltungDOList);
+        when(RequestContextHolder.getRequestAttributes()).thenReturn(requestAttributes);    //Z 282
+        //when((ServletRequestAttributes) requestAttributes).thenReturn();                  //Z 284
+        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);         //Z 285
+        when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 289
+        when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 290
 
         // call test method
-        final List<VeranstaltungDTO> actual = underTest.findBySportjahr(SPORTJAHR);
+        final boolean actual = underTest.hasPermission(TO_TEST);
 
         // assert result
         assertThat(actual).isNotNull();
 
         // verify invocations
-        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR);
+        verify(VeranstaltungComponent).hasPermission(any());
     }*/
+
+    /*
+    @Test
+    public void hasSpecificPermission() {
+        // prepare test data
+        final RequestAttributes requestAttributes = ;               Z 312
+        final ServletRequestAttributes servletRequestAttributes = ; Z 314
+        final HttpServletRequest httpServletRequest = ;             Z 315
+        final String string = ;                                     Z 319
+        final JwtTokenProvider jwtTokenProvider = ;
+        final Set<UserPermission> userPermission = ;                Z 320
+        final Long userid = ;                                       Z 324
+        final UserDO userdo = ;                                     Z 325
+        final UserComponent userComponent = ;
+
+
+        // configure mocks
+        when(RequestContextHolder.getRequestAttributes()).thenReturn(requestAttributes);    //Z 312
+        //when((ServletRequestAttributes) requestAttributes).thenReturn();                  //Z 314
+        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);         //Z 315
+        when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 319
+        when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 320
+        when(jwtTokenProvider.getUserId(anyString())).thenReturn(userid);                   //Z 324
+        when(userComponent.findById(anyLong())).thenReturn(userdo);                         //Z 325
+
+        // call test method
+        final boolean actual = underTest.hasSpecificPermission(TO_TEST, VERANSTALTUNG_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations
+        verify(VeranstaltungComponent).hasSpecificPermission(any(), anyLong());
+    }
+    */
+
 }
