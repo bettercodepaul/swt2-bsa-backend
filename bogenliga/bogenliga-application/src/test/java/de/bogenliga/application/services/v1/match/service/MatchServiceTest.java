@@ -373,7 +373,7 @@ public class MatchServiceTest {
 
         MatchService.checkPreconditions(actualDTO, MatchService.matchConditionErrors);
     }
-    
+
     @Test
     public void saveMatches() {
         MatchDO matchDO1 = getMatchDO();
