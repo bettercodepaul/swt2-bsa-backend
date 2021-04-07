@@ -44,6 +44,7 @@ public class DsbMitgliedServiceTest {
     private static final String MITGLIEDSNUMMER = "223344uu";
     private static final long VEREINSID = 2;
     private static final long USERID = 4242;
+    private static final long USERIDUPDATE = 2121;
 
     private static final boolean KAMPFRICHTER = true;
 
@@ -190,6 +191,30 @@ public class DsbMitgliedServiceTest {
 
         // verify invocations
         verify(dsbMitgliedComponent).findById(ID);
+    }
+
+    @Test
+    public void insertUserId(){
+        // prepare test data
+        final DsbMitgliedDTO input = getDsbMitgliedDTO();
+        final DsbMitgliedDO expected = getDsbMitgliedDO();
+        final DsbMitgliedDO expectedupdate = getDsbMitgliedDO();
+        expectedupdate.setUserId(USERIDUPDATE);
+
+        // configure mocks
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expected);
+        when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
+
+        // call test method
+        final DsbMitgliedDTO actual = underTest.insertUserId(ID, USERIDUPDATE, principal);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getUserId()).isEqualTo(USERIDUPDATE);
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findById(anyLong());
+        verify(dsbMitgliedComponent).update(any(), anyLong());
     }
     
 
