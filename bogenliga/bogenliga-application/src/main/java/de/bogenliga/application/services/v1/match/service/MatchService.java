@@ -901,8 +901,8 @@ public class MatchService implements ServiceFacade {
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
                 //the required Permission (if the permission is specify
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(UserId)){
+                Long userId = jwtTokenProvider.getUserId(jwt);
+                for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(userId)){
                     if(veranstaltungDO.getVeranstaltungID().equals(wettkampfid)){
                         result = true;
                     }
