@@ -278,7 +278,7 @@ public class MatchServiceTest {
         final MatchDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getId()).isEqualTo(matchDO.getMannschaftId());
+        assertThat(actualDTO.getId()).isEqualTo(matchDO.getId());
 
         //verify invocations
         verify(matchComponent).findAll();
@@ -293,34 +293,15 @@ public class MatchServiceTest {
         //configure Mocks
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
         //call test method
-        final List<MatchDTO> actual = underTest.findByWettkampfId(MATCH_ID);
+        final List<MatchDTO> actual = underTest.findByWettkampfId(MATCH_WETTKAMPF_ID);
         //assert result
         assertThat(actual).isNotNull();
         assertThat(actual.get(0).getWettkampfId()).isEqualTo(matchDO.getWettkampfId());
 
         //verify invocations
-        verify(matchComponent).findByWettkampfId(MATCH_ID);
+        verify(matchComponent).findByWettkampfId(MATCH_WETTKAMPF_ID);
 
     }
-
-    @Test
-    public void findby(){
-        //prepare test data
-        final MatchDO matchDO = getMatchDO();
-        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
-
-        //configure Mocks
-        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
-        //call test method
-        final List<MatchDTO> actual = underTest.findByWettkampfId(MATCH_ID);
-        //assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.get(0).getWettkampfId()).isEqualTo(matchDO.getWettkampfId());
-
-        //verify invocations
-        verify(matchComponent).findByWettkampfId(MATCH_ID);
-    }
-
 
     @Test
     public void findById() {
@@ -392,8 +373,7 @@ public class MatchServiceTest {
 
         MatchService.checkPreconditions(actualDTO, MatchService.matchConditionErrors);
     }
-
-
+    
     @Test
     public void saveMatches() {
         MatchDO matchDO1 = getMatchDO();
