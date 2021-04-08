@@ -234,7 +234,7 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDTO> actual = underTest.findByLigaId(ID);
 
         // assert result
-        assertThat(actual).isNotNull();
+        assertThat(actual).isNotNull().hasSize(1);
 
         // verify invocations
         verify(VeranstaltungComponent).findByLigaID(ID);
@@ -254,7 +254,7 @@ public class VeranstaltungServiceTest {
         final List<SportjahrDTO> actual = underTest.findAllSportjahrDestinct();
 
         // assert result
-        assertThat(actual).isNotNull();
+        assertThat(actual).isNotNull().hasSize(1);
 
         // verify invocations
         verify(VeranstaltungComponent).findAllSportjahreDestinct();
@@ -274,7 +274,7 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDTO> actual = underTest.findBySportjahr(SPORTJAHR);
 
         // assert result
-        assertThat(actual).isNotNull();
+        assertThat(actual).isNotNull().hasSize(1);
 
         // verify invocations
         verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR);
@@ -337,8 +337,6 @@ public class VeranstaltungServiceTest {
 
         // configure mocks
         when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
-        //when(this.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)).thenReturn();
-        //when(this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDTO.getId())).thenReturn();
 
         try {
             // call test method
