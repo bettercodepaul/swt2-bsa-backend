@@ -337,6 +337,8 @@ public class VeranstaltungServiceTest {
 
         // configure mocks
         when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
+        //when(this.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)).thenReturn();
+        //when(this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDTO.getId())).thenReturn();
 
         try {
             // call test method
@@ -405,19 +407,21 @@ public class VeranstaltungServiceTest {
     @Test
     public void hasPermission() {
         // prepare test data
-        final RequestAttributes requestAttributes = ;               //Z 282
-        final ServletRequestAttributes servletRequestAttributes = ; //Z 284
-        final HttpServletRequest httpServletRequest = ;             //Z 285
-        final String string = ;                                     //Z 289
+        final RequestAttributes requestAttributes = ;               //Z 274
+        final ServletRequestAttributes servletRequestAttributes = ; //Z 276
+        final HttpServletRequest httpServletRequest = ;             //Z 277
+        final String string = ;                                     //Z 281
         final JwtTokenProvider jwtTokenProvider = ;
-        final Set<UserPermission> userPermission = ;                //Z 290
+        final Set<UserPermission> userPermission = ;                //Z 282
+
 
         // configure mocks
-        when(RequestContextHolder.getRequestAttributes()).thenReturn(requestAttributes);    //Z 282
-        //when((ServletRequestAttributes) requestAttributes).thenReturn();                  //Z 284
-        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);         //Z 285
-        when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 289
-        when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 290
+        when(RequestContextHolder.getRequestAttributes()).thenReturn(requestAttributes);    //Z 274
+        //when((ServletRequestAttributes) requestAttributes).thenReturn();                  //Z 276
+        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);         //Z 277
+        when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 281
+        when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 282
+        when(userPermission.contains(any())).thenReturn();                                  //Z 286
 
         // call test method
         final boolean actual = underTest.hasPermission(TO_TEST);
@@ -433,25 +437,25 @@ public class VeranstaltungServiceTest {
     @Test
     public void hasSpecificPermission() {
         // prepare test data
-        final RequestAttributes requestAttributes = ;               Z 312
-        final ServletRequestAttributes servletRequestAttributes = ; Z 314
-        final HttpServletRequest httpServletRequest = ;             Z 315
-        final String string = ;                                     Z 319
+        final RequestAttributes requestAttributes = ;               Z 304
+        final ServletRequestAttributes servletRequestAttributes = ; Z 306
+        final HttpServletRequest httpServletRequest = ;             Z 307
+        final String string = ;                                     Z 311
         final JwtTokenProvider jwtTokenProvider = ;
-        final Set<UserPermission> userPermission = ;                Z 320
-        final Long userid = ;                                       Z 324
-        final UserDO userdo = ;                                     Z 325
+        final Set<UserPermission> userPermission = ;                Z 312
+        final Long userid = ;                                       Z 316
+        final UserDO userdo = ;                                     Z 317
         final UserComponent userComponent = ;
 
 
         // configure mocks
-        when(RequestContextHolder.getRequestAttributes()).thenReturn(requestAttributes);    //Z 312
-        //when((ServletRequestAttributes) requestAttributes).thenReturn();                  //Z 314
-        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);         //Z 315
-        when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 319
-        when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 320
-        when(jwtTokenProvider.getUserId(anyString())).thenReturn(userid);                   //Z 324
-        when(userComponent.findById(anyLong())).thenReturn(userdo);                         //Z 325
+        when(RequestContextHolder.getRequestAttributes()).thenReturn(requestAttributes);    //Z 304
+        //when((ServletRequestAttributes) requestAttributes).thenReturn();                  //Z 306
+        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);         //Z 307
+        when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 311
+        when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 312
+        when(jwtTokenProvider.getUserId(anyString())).thenReturn(userid);                   //Z 316
+        when(userComponent.findById(anyLong())).thenReturn(userdo);                         //Z 317
 
         // call test method
         final boolean actual = underTest.hasSpecificPermission(TO_TEST, VERANSTALTUNG_ID);
