@@ -88,7 +88,6 @@ public class VeranstaltungService implements ServiceFacade {
      * I return all the teams (veranstaltung) of the database.
      * @return List of VeranstaltungDTOs
      */
-    //@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAll(){
@@ -105,7 +104,6 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
-    //@GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public VeranstaltungDTO findById(@PathVariable ("id") final long id){
@@ -123,7 +121,6 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
-    //@GetMapping(value = "findByLigaID/{ligaID}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "findByLigaID/{ligaID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findByLigaId(@PathVariable ("ligaID") final long ligaID){
@@ -140,7 +137,6 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return a list with all sportjahre distinct
      */
-    //@GetMapping(value = "destinct/sportjahr", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "destinct/sportjahr", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<SportjahrDTO> findAllSportjahrDestinct(){
@@ -157,7 +153,6 @@ public class VeranstaltungService implements ServiceFacade {
      * @param sportjahr - filterr for sql-abfrage
      * @return return Veranstaltungen with the same Sportjahr
      */
-    //@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "find/by/year/{sportjahr}")
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, value = "find/by/year/{sportjahr}")
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahr(@PathVariable ("sportjahr") final long sportjahr){
@@ -180,7 +175,6 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
-    //@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
@@ -211,7 +205,6 @@ public class VeranstaltungService implements ServiceFacade {
      * You can only update a Competition, if you have the permission to Modify Stammdaten or if
      * you are the Ligaleiter of the Veranstaltung.
      */
-    //@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
@@ -244,7 +237,6 @@ public class VeranstaltungService implements ServiceFacade {
     /**
      * I delete an existing Veranstaltung entry from the DB.
      */
-    //@DeleteMapping(value = "{id}")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
