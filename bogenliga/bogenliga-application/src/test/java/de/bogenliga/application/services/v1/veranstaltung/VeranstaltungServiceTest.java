@@ -430,21 +430,25 @@ public class VeranstaltungServiceTest {
         assertThat(actual).isNotNull();
 
         // verify invocations
-        verify(VeranstaltungComponent).hasPermission(any());
+        verify(RequestContextHolder).getRequestAttributes();
+        verify(servletRequestAttributes).getRequest();
+        verify(JwtTokenProvider).resolveToken(any());
+        verify(jwtTokenProvider).getPermissions(anyString());
+        verify(userPermission).contains(any());
     }*/
 
     /*
     @Test
     public void hasSpecificPermission() {
         // prepare test data
-        final RequestAttributes requestAttributes = ;               Z 304
-        final ServletRequestAttributes servletRequestAttributes = ; Z 306
-        final HttpServletRequest httpServletRequest = ;             Z 307
-        final String string = ;                                     Z 311
+        final RequestAttributes requestAttributes = ;               //Z 304
+        final ServletRequestAttributes servletRequestAttributes = ; //Z 306
+        final HttpServletRequest httpServletRequest = ;             //Z 307
+        final String string = ;                                     //Z 311
         final JwtTokenProvider jwtTokenProvider = ;
-        final Set<UserPermission> userPermission = ;                Z 312
-        final Long userid = ;                                       Z 316
-        final UserDO userdo = ;                                     Z 317
+        final Set<UserPermission> userPermission = ;                //Z 312
+        final Long userid = ;                                       //Z 316
+        final UserDO userdo = ;                                     //Z 317
         final UserComponent userComponent = ;
 
 
@@ -455,7 +459,7 @@ public class VeranstaltungServiceTest {
         when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 311
         when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 312
         when(jwtTokenProvider.getUserId(anyString())).thenReturn(userid);                   //Z 316
-        when(userComponent.findById(anyLong())).thenReturn(userdo);                         //Z 317
+        //when(underTest.userComponent.findById(anyLong())).thenReturn(userdo);             //Z 317
 
         // call test method
         final boolean actual = underTest.hasSpecificPermission(TO_TEST, VERANSTALTUNG_ID);
@@ -464,8 +468,12 @@ public class VeranstaltungServiceTest {
         assertThat(actual).isNotNull();
 
         // verify invocations
-        verify(VeranstaltungComponent).hasSpecificPermission(any(), anyLong());
+        verify(RequestContextHolder).getRequestAttributes();
+        verify(servletRequestAttributes).getRequest();
+        verify(JwtTokenProvider).resolveToken(any());
+        verify(jwtTokenProvider).getPermissions(anyString());
+        verify(jwtTokenProvider).getUserId(anyString());
     }
-    */
+*/
 
 }
