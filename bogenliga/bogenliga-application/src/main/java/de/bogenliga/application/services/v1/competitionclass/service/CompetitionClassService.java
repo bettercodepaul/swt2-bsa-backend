@@ -7,12 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.competitionclass.api.CompetitionClassComponent;
 import de.bogenliga.application.business.competitionclass.api.types.CompetitionClassDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -62,8 +57,7 @@ public class CompetitionClassService implements ServiceFacade {
      *
      * @return lost of {@link CompetitionClassDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<CompetitionClassDTO> findAll() {
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findAll();
@@ -77,9 +71,8 @@ public class CompetitionClassService implements ServiceFacade {
      * @param id id of the klasse to be returned
      * @return returns a klasse
      */
-    @RequestMapping(
+    @GetMapping(
             value = "{id}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public CompetitionClassDTO findById(@PathVariable("id") final long id){
@@ -101,7 +94,7 @@ public class CompetitionClassService implements ServiceFacade {
      *
      * @return list of {@link CompetitionClassDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_SYSTEMDATEN)
@@ -128,7 +121,7 @@ public class CompetitionClassService implements ServiceFacade {
     /**
      * I persist a newer version of the CompetitionClass in the database.
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)

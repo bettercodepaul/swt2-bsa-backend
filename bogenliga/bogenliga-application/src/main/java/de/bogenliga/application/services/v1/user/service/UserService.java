@@ -101,8 +101,7 @@ public class UserService implements ServiceFacade {
     }
 
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+    @PostMapping(
             value = "/signin",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -165,8 +164,7 @@ public class UserService implements ServiceFacade {
     }
 
 
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
@@ -183,7 +181,7 @@ public class UserService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOwnIdentity
     public UserProfileDTO getUserProfileById(@PathVariable("id") final Long id) {
         Preconditions.checkNotNull(id, "UserID must not be null.");
@@ -222,8 +220,7 @@ public class UserService implements ServiceFacade {
      *
      * @return {@link UserDTO} as JSON
      */
-    @RequestMapping(
-            method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
@@ -277,8 +274,7 @@ public class UserService implements ServiceFacade {
      */
 
 
-    @RequestMapping(
-            method = RequestMethod.PUT,
+    @PutMapping(
             value = "/resetPW",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -318,8 +314,7 @@ public class UserService implements ServiceFacade {
      * @param updatedUserRoles there is a single UserRoleDTO for every role that is send to this service
      * @return
      */
-    @RequestMapping(
-            method = RequestMethod.PUT,
+    @PutMapping(
             value = "/uptRoles",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -366,8 +361,7 @@ public class UserService implements ServiceFacade {
      *
      * @return list of {@link UserDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<UserRoleDTO> findAll() {
         final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
@@ -388,7 +382,7 @@ public class UserService implements ServiceFacade {
      *
      * @return list of {@link UserDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             value = "/userrole/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -430,7 +424,7 @@ public class UserService implements ServiceFacade {
      */
 
 
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -472,7 +466,7 @@ public class UserService implements ServiceFacade {
      * @param requestWithHeader JwtToken used to prevent deleting your own user
      * @return true, if the deactivation was successful or the user is already disabled
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
     public boolean deactivate(@PathVariable("id") final long id, final HttpServletRequest requestWithHeader) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
