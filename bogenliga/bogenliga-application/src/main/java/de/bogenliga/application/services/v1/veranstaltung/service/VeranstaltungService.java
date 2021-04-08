@@ -16,10 +16,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestAttributes;
@@ -309,14 +305,14 @@ public class VeranstaltungService implements ServiceFacade {
             if(request != null) {
                 //parse the Webtoken and get the UserPermissions of the current User
                 final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);   //remove?
 
                 //check if the current Users vereinsId equals the given vereinsId and if the User has
                 //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>();
-                for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(UserId)) {
+                Long userId = jwtTokenProvider.getUserId(jwt);
+                UserDO userDO = this.userComponent.findById(userId);    //remove?
+                ArrayList<Integer> temp = new ArrayList<>();            //remove?
+                for(VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userId)) {
                     if(veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid)){
                         result = true;
                     }
