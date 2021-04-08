@@ -10,12 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -80,7 +75,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAll() {
@@ -89,8 +84,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{teamId}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "{teamId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findByTeamId(@PathVariable("teamId") final long mannschaftsId) {
@@ -100,8 +94,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId) {
@@ -111,8 +104,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{memberId}/{teamId}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "{memberId}/{teamId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("teamId") final long mannschaftsId,
@@ -130,8 +122,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "/byMemberId/{memberId}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "/byMemberId/{memberId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findByMemberId(@PathVariable("memberId") final long memberId) {
@@ -144,7 +135,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
@@ -175,7 +166,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
@@ -210,7 +201,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      * the Mannschaftsführer/Sportleiter of the Verein.
      **/
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
     public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
@@ -230,7 +221,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{mannschaftsId}/{mitgliedId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{mannschaftsId}/{mitgliedId}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void deleteByTeamIdAndMemberId(@PathVariable("mannschaftsId") final long mannschaftsId,
                                           @PathVariable("mitgliedId") final long mitgliedId,

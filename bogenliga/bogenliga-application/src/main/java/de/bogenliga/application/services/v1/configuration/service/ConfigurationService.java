@@ -7,12 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -84,8 +79,7 @@ public class ConfigurationService implements ServiceFacade {
      *
      * @return list of {@link ConfigurationDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<ConfigurationDTO> findAll() {
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
@@ -108,7 +102,7 @@ public class ConfigurationService implements ServiceFacade {
      *
      * @return list of {@link ConfigurationDTO} as JSON
      */
-    @RequestMapping(value = "{key}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public ConfigurationDTO findByKey(@PathVariable("key") final String key) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
@@ -141,7 +135,7 @@ public class ConfigurationService implements ServiceFacade {
      * @param principal authenticated user
      * @return list of {@link ConfigurationDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
@@ -173,8 +167,7 @@ public class ConfigurationService implements ServiceFacade {
      * }
      * }</pre>
      */
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public ConfigurationDTO update(@RequestBody final ConfigurationDTO configurationDTO, final Principal principal) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
@@ -198,7 +191,7 @@ public class ConfigurationService implements ServiceFacade {
      * Usage:
      * <pre>{@code Request: DELETE /v1/configuration/app.bogenliga.frontend.autorefresh.active}</pre>
      */
-    @RequestMapping(value = "{key}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{key}")
     @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
     public void delete(@PathVariable("key") final String key, final Principal principal) {
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");

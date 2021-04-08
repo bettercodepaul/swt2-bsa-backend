@@ -7,12 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.einstellungen.api.EinstellungenComponent;
 import de.bogenliga.application.business.einstellungen.api.types.EinstellungenDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -54,7 +49,7 @@ public class EinstellungenService implements ServiceFacade {
      * @return list of {@link EinstellungenDTO} as JSON
      */
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EinstellungenDTO> findAll() {
         final List<EinstellungenDO> einstellungenDOList = einstellungenComponent.findAll();
         LOGGER.debug("Receive Einstellungen request");
@@ -67,7 +62,7 @@ public class EinstellungenService implements ServiceFacade {
      *
      * @return list of {@link EinstellungenDTO} as JSON
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public EinstellungenDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
@@ -81,7 +76,7 @@ public class EinstellungenService implements ServiceFacade {
      * I persist a newer version of the einstellungen in the database.
      */
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public EinstellungenDTO update(@RequestBody final EinstellungenDTO einstellungenDTO, final Principal principal) {
         final EinstellungenDO einstellungenDO = EinstellungenDTOMapper.toDO.apply(einstellungenDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -98,7 +93,7 @@ public class EinstellungenService implements ServiceFacade {
      *
      * @return list of {@link EinstellungenDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public EinstellungenDTO create(@RequestBody final EinstellungenDTO einstellungenDTO, final Principal principal) {
@@ -120,7 +115,7 @@ public class EinstellungenService implements ServiceFacade {
     /**
      * I delete an existing einstellungen entry from the database.
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
