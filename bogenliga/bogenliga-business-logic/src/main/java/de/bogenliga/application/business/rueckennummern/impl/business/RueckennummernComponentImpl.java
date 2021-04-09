@@ -89,7 +89,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
         String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-        List<String> Schuetzendaten = new ArrayList<String>();
+        List<String> Schuetzendaten = new ArrayList<>();
         Schuetzendaten.add(Liganame);
         Schuetzendaten.add(Verein);
         Schuetzendaten.add(Schuetzenname);
@@ -132,7 +132,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
             String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-            List<String> Schuetzendaten = new ArrayList<String>();
+            List<String> Schuetzendaten = new ArrayList<>();
             Schuetzendaten.add(Liganame);
             Schuetzendaten.add(Verein);
             Schuetzendaten.add(Schuetzenname);
