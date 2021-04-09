@@ -37,8 +37,8 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class LizenzService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIZENZ = "Lizenz must not be null";
     private static final String PRECONDITION_MSG_LIGA_ID = "Liga Id must not be negative";
-    private static final String PRECONDITION_MSG_LIGA_REGION = "Region can not be null";
-    private static final String PRECONDITION_MSG_LIGA_REGION_ID_NEG = "Region id can not be negative";
+    //private static final String PRECONDITION_MSG_LIGA_REGION = "Region can not be null";
+    //private static final String PRECONDITION_MSG_LIGA_REGION_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIZENZTYP = "Lizenztyp must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIEDID = "DSBMITGLIEDSID must not be null";
 
