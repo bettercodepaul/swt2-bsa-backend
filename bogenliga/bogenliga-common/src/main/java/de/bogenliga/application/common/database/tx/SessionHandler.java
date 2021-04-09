@@ -78,6 +78,7 @@ final class SessionHandler {
 
         THREAD_LOCAL.get().remove(CONNECTION);
         THREAD_LOCAL.get().put(IS_ACTIVE, false);
+        THREAD_LOCAL.remove();
     }
 
 
