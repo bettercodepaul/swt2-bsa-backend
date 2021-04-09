@@ -364,7 +364,7 @@ public class BasicDAO implements DataAccessObject {
         T objectBeforeUpdate = selectSingleEntity(businessEntityConfiguration, selectSql.getSql(),
                 selectSql.getParameter());
 
-        if (objectBeforeUpdate.getVersion() != updateBusinessEntity.getVersion()) {
+        if (objectBeforeUpdate.getVersion() != null &&  !objectBeforeUpdate.getVersion().equals(updateBusinessEntity.getVersion()) ) {
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR,
                     "The business entity was modified by an other user.");
         } // else: do update
