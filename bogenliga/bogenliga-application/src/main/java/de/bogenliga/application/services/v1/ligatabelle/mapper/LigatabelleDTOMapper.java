@@ -26,10 +26,10 @@ public class LigatabelleDTOMapper implements DataTransferObjectMapper {
         final Long vereinId = ligatabelleDO.getvereinId();
         final String vereinName = ligatabelleDO.getvereinName();
         final int matchpkt = ligatabelleDO.getmatchpkt();
-        final int matchpkt_gegen = ligatabelleDO.getmatchpkt_gegen();
+        final int matchpkt_gegen = ligatabelleDO.getmatchpktGegen();
         final int satzpkt = ligatabelleDO.getsatzpkt();
-        final int satzpkt_gegen = ligatabelleDO.getsatzpkt_gegen();
-        final int satzpkt_differenz = ligatabelleDO.getsatzpkt_differenz();
+        final int satzpkt_gegen = ligatabelleDO.getsatzpktGegen();
+        final int satzpkt_differenz = ligatabelleDO.getsatzpktDifferenz();
         final int sortierung = ligatabelleDO.getsortierung();
         final int tabellenplatz = ligatabelleDO.gettabellenplatz();
 
@@ -55,10 +55,10 @@ public class LigatabelleDTOMapper implements DataTransferObjectMapper {
         ligatabelleDO.setvereinId(dto.getVereinId());
         ligatabelleDO.setvereinName(dto.getVereinName());
         ligatabelleDO.setmatchpkt(dto.getMatchpkt());
-        ligatabelleDO.setmatchpkt_gegen(dto.getMatchpkt_gegen());
+        ligatabelleDO.setmatchpktGegen(dto.getMatchpkt_gegen());
         ligatabelleDO.setsatzpkt(dto.getSatzpkt());
-        ligatabelleDO.setsatzpkt_gegen(dto.getSatzpkt_gegen());
-        ligatabelleDO.setsatzpkt_differenz(dto.getSatzpkt_differenz());
+        ligatabelleDO.setsatzpktGegen(dto.getSatzpkt_gegen());
+        ligatabelleDO.setsatzpktDifferenz(dto.getSatzpkt_differenz());
         ligatabelleDO.setsortierung(dto.getSortierung());
         ligatabelleDO.settabellenplatz(dto.getTabellenplatz());
 
