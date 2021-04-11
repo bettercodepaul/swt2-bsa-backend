@@ -47,10 +47,9 @@ public class KampfrichterMapper implements ValueObjectMapper {
         KampfrichterBE kampfrichterBE = new KampfrichterBE();
         kampfrichterBE.setKampfrichterUserId(kampfrichterDO.getUserId());
 
-        // TODO: Why is the wettkampfID set to 9999?
-//        kampfrichterBE.setKampfrichterWettkampfId((long)9999);
+
         kampfrichterBE.setKampfrichterWettkampfId(kampfrichterDO.getWettkampfId());
-//        kampfrichterBE.setKampfrichterLeitend(false);
+
         kampfrichterBE.setKampfrichterLeitend(kampfrichterDO.isLeitend());
 
         kampfrichterBE.setCreatedAtUtc(createdAtUtcTimestamp);
