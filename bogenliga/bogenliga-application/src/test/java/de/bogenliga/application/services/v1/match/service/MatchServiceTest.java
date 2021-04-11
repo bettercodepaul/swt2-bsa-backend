@@ -10,11 +10,12 @@ import javax.naming.NoPermissionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Captor;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.web.bind.annotation.RequestBody;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -29,12 +30,10 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
-import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
@@ -75,6 +74,9 @@ public class MatchServiceTest {
 
     @InjectMocks
     private MatchService underTest;
+
+    @Captor
+    private  ArgumentCaptor<MatchDO> matchDOArgumentCaptor;
 
     protected static final Long MATCH_ID = 1L;
     protected static final Long MATCH_NR = 1L;
@@ -168,7 +170,7 @@ public class MatchServiceTest {
         );
     }
 
-    public static MatchDTO getMatchDTO() {
+    protected MatchDTO getMatchDTO() {
         final MatchDTO matchDTO = new MatchDTO();
         matchDTO.setMannschaftName(M_name);
         //matchDTO.setPassen();
@@ -537,15 +539,27 @@ public class MatchServiceTest {
 
     @Test
     public void create() {
-        MatchDO matchDO1 = getMatchDO();
-        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
-        when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
-        try {
-            final MatchDTO actual = underTest.create(matchDTO, principal);
-            assertThat(actual).isNotNull();
-            MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        //prepare test data
+        final MatchDTO input = getMatchDTO();
+        final MatchDO expected = getMatchDO();
 
-        } catch (NoPermissionException e) {
+        //configure mocks
+        when(matchComponent.create(any(), anyLong())).thenReturn(expected);
+
+        try{
+            //call test method
+            final MatchDTO actual = underTest.create(input, principal);
+
+            //assert result
+            assertThat(actual).isNotNull();
+
+            //verify invocations
+            verify(matchComponent).create(matchDOArgumentCaptor.capture(), anyLong());
+
+            final MatchDO createdMatch = matchDOArgumentCaptor.getValue();
+
+            assertThat(createdMatch).isNotNull();
+        } catch(NoPermissionException e){
         }
     }
 
