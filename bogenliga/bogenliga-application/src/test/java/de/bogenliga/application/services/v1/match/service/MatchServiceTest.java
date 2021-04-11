@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.web.bind.annotation.RequestBody;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -28,10 +29,12 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
@@ -163,6 +166,28 @@ public class MatchServiceTest {
                 MATCH_STRAFPUNKTE_SATZ4,
                 MATCH_STRAFPUNKTE_SATZ5
         );
+    }
+
+    public static MatchDTO getMatchDTO() {
+        final MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setMannschaftName(M_name);
+        //matchDTO.setPassen();
+        matchDTO.setMatchpunkte(MATCH_MATCHPUNKTE);
+        matchDTO.setMannschaftId(MATCH_MANNSCHAFT_ID);
+        matchDTO.setBegegnung(MATCH_BEGEGNUNG);
+        matchDTO.setSatzpunkte(MATCH_SATZPUNKTE);
+        matchDTO.setScheibenNummer(MATCH_SCHEIBENNUMMER);
+        matchDTO.setStrafPunkteSatz1(MATCH_STRAFPUNKTE_SATZ1);
+        matchDTO.setStrafPunkteSatz2(MATCH_STRAFPUNKTE_SATZ3);
+        matchDTO.setStrafPunkteSatz3(MATCH_STRAFPUNKTE_SATZ3);
+        matchDTO.setStrafPunkteSatz4(MATCH_STRAFPUNKTE_SATZ4);
+        matchDTO.setStrafPunkteSatz5(MATCH_STRAFPUNKTE_SATZ5);
+        matchDTO.setVersion(VERSION);
+        matchDTO.setWettkampfId(MATCH_WETTKAMPF_ID);
+        matchDTO.setWettkampfTag(W_tag);
+        //matchDTO.setWettkampfTyp();
+
+        return matchDTO;
     }
 
 
@@ -523,7 +548,6 @@ public class MatchServiceTest {
         } catch (NoPermissionException e) {
         }
     }
-
 
     @Test
     public void create_Null() {
