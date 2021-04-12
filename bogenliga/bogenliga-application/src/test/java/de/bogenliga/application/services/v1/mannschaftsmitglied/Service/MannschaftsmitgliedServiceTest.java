@@ -162,8 +162,6 @@ public class MannschaftsmitgliedServiceTest {
                 mannschaftsmitgliedDO);
         final MannschaftsMitgliedDTO actual = underTest.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId);
 
-        assertThat(actual.getMannschaftsId() > 0);
-        assertThat(actual.getDsbMitgliedId() > 0);
         assertThat(actual).isNotNull();
         assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
         assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
@@ -295,16 +293,5 @@ public class MannschaftsmitgliedServiceTest {
         // verify invocations
         verify(mannschaftsmitgliedComponent).findByMemberId(dsbMitgliedId);
     }
-
-
-    @Test
-    public void hasPermissions() {
-
-    }
-
-
-    @Test
-    public void hasSpecificPermission() {
-
-    }
+    
 }
