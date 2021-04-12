@@ -60,6 +60,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     private static final String PRECONDITION_LIZENZ_LIZENZNUMMER = "LizenzDO_lizenznummer must not be null";
     private static final String PRECONDITION_LIZENZ_DISZIPLIN = "LizenzDO_Disziplin must not be null";
     private static final String PRECONDITION_LIZENZ_REGION = "LizenzDO_Region must not be null";
+    private static final String LIZENZ_UNTERSCHRIFT = "Unterschrift:";
 
 
     private final LizenzDAO lizenzDAO;
@@ -322,7 +323,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("1").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -341,7 +342,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("2").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -360,7 +361,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("3").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -379,7 +380,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("4").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))

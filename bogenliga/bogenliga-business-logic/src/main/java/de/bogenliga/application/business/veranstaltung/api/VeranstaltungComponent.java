@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.veranstaltung.api;
 
 import java.util.List;
-import de.bogenliga.application.business.sportjahr.SportjahrDO;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
