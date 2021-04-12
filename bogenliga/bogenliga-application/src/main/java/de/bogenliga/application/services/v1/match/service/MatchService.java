@@ -580,7 +580,7 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
         MatchDO matchDO = matchComponent.findById(matchId);
-        if((this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
+        if(!(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
                 this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId()))){
             throw new NoPermissionException();
         }
