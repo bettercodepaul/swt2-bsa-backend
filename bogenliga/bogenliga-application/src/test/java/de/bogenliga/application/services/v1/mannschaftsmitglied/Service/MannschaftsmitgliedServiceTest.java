@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -161,6 +162,8 @@ public class MannschaftsmitgliedServiceTest {
                 mannschaftsmitgliedDO);
         final MannschaftsMitgliedDTO actual = underTest.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId);
 
+        assertThat(actual.getMannschaftsId() > 0);
+        assertThat(actual.getDsbMitgliedId() > 0);
         assertThat(actual).isNotNull();
         assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
         assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
@@ -206,7 +209,6 @@ public class MannschaftsmitgliedServiceTest {
     public void create() {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
         // configure mocks
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
@@ -222,7 +224,6 @@ public class MannschaftsmitgliedServiceTest {
 
             // verify invocations
             verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
-
             final MannschaftsmitgliedDO createdDsbMannschaft = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
             assertThat(createdDsbMannschaft).isNotNull();
@@ -275,5 +276,35 @@ public class MannschaftsmitgliedServiceTest {
 
         } catch (NoPermissionException | NullPointerException e) {
         }
+    }
+
+
+    @Test
+    public void findByMemberId() {
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+        final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
+
+        //configure Mocks
+        when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        // call test method
+        final List<MannschaftsMitgliedDTO> actual = underTest.findByMemberId(dsbMitgliedId);
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedId());
+
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).findByMemberId(dsbMitgliedId);
+    }
+
+
+    @Test
+    public void hasPermissions() {
+
+    }
+
+
+    @Test
+    public void hasSpecificPermission() {
+
     }
 }
