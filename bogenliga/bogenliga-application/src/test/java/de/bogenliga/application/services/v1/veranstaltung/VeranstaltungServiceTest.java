@@ -1,17 +1,12 @@
 package de.bogenliga.application.services.v1.veranstaltung;
 
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,9 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -47,7 +42,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.web.context.request.RequestContextHolder.getRequestAttributes;
 
 public class VeranstaltungServiceTest {
 
@@ -134,6 +128,7 @@ public class VeranstaltungServiceTest {
         return veranstaltungDTO;
     }
 
+
     public static SportjahrDO getSportjahrDO() {
         return new SportjahrDO(SPORTJAHR_ID, SPORTJAHR_JAHR);
     }
@@ -145,6 +140,8 @@ public class VeranstaltungServiceTest {
 
         return sportjahrDTO;
     }
+
+
 
     @Before
     public void initMocks() {
@@ -174,16 +171,6 @@ public class VeranstaltungServiceTest {
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(VeranstaltungDO.getVeranstaltungID());
         assertThat(actualDTO.getName()).isEqualTo(VeranstaltungDO.getVeranstaltungName());
-        /*
-        assertThat(actualDTO.getWettkampfTypId()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypID());
-        assertThat(actualDTO.getSportjahr()).isEqualTo(VeranstaltungDO.getVeranstaltungSportJahr());
-        assertThat(actualDTO.getMeldeDeadline()).isEqualTo(VeranstaltungDO.getVeranstaltungMeldeDeadline());
-        assertThat(actualDTO.getLigaleiterID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterID());
-        assertThat(actualDTO.getLigaID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaID());
-        assertThat(actualDTO.getLigaleiterEmail()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterEmail());
-        assertThat(actualDTO.getWettkampftypName()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypName());;
-        assertThat(actualDTO.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
-        */
 
         // verify invocations
         verify(VeranstaltungComponent).findAll();
@@ -205,16 +192,6 @@ public class VeranstaltungServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(VeranstaltungDO.getVeranstaltungID());
         assertThat(actual.getName()).isEqualTo(VeranstaltungDO.getVeranstaltungName());
-        /*
-        assertThat(actual.getWettkampfTypId()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypID());
-        assertThat(actual.getSportjahr()).isEqualTo(VeranstaltungDO.getVeranstaltungSportJahr());
-        assertThat(actual.getMeldeDeadline()).isEqualTo(VeranstaltungDO.getVeranstaltungMeldeDeadline());
-        assertThat(actual.getLigaleiterID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterID());
-        assertThat(actual.getLigaID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaID());
-        assertThat(actual.getLigaleiterEmail()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterEmail());
-        assertThat(actual.getWettkampftypName()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypName());;
-        assertThat(actual.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
-        */
 
         // verify invocations
         verify(VeranstaltungComponent).findById(ID);
@@ -297,16 +274,6 @@ public class VeranstaltungServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getName()).isEqualTo(input.getName());
-        /*
-        assertThat(actual.getWettkampfTypId()).isEqualTo(input.getWettkampfTypId());
-        assertThat(actual.getSportjahr()).isEqualTo(input.getSportjahr());
-        assertThat(actual.getMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-        assertThat(actual.getLigaleiterID()).isEqualTo(input.getLigaleiterID());
-        assertThat(actual.getLigaID()).isEqualTo(input.getLigaID());
-        assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-        assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());;
-        assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
-         */
 
         // verify invocations
         verify(VeranstaltungComponent).create(VeranstaltungDOArgumentCaptor.capture(), anyLong());
@@ -316,16 +283,6 @@ public class VeranstaltungServiceTest {
         assertThat(createdVeranstaltung).isNotNull();
         assertThat(createdVeranstaltung.getVeranstaltungID()).isEqualTo(input.getId());
         assertThat(createdVeranstaltung.getVeranstaltungName()).isEqualTo(input.getName());
-        /*
-        assertThat(createdVeranstaltung.getVeranstaltungWettkampftypID()).isEqualTo(input.getWettkampftypName());
-        assertThat(createdVeranstaltung.getVeranstaltungSportJahr()).isEqualTo(input.getSportjahr());
-        assertThat(createdVeranstaltung.getVeranstaltungMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-        assertThat(createdVeranstaltung.getVeranstaltungLigaleiterID()).isEqualTo(input.getLigaleiterID());
-        assertThat(createdVeranstaltung.getVeranstaltungLigaID()).isEqualTo(input.getLigaID());
-        assertThat(createdVeranstaltung.getVeranstaltungLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-        assertThat(createdVeranstaltung.getVeranstaltungWettkampftypName()).isEqualTo(input.getWettkampftypName());
-        assertThat(createdVeranstaltung.getVeranstaltungLigaName()).isEqualTo(input.getLigaName());
-         */
     }
 
 
@@ -346,16 +303,6 @@ public class VeranstaltungServiceTest {
             assertThat(actual).isNotNull();
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getName()).isEqualTo(input.getName());
-            /*
-            assertThat(actual.getWettkampfTypId()).isEqualTo(input.getWettkampfTypId());
-            assertThat(actual.getSportjahr()).isEqualTo(input.getSportjahr());
-            assertThat(actual.getMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-            assertThat(actual.getLigaleiterID()).isEqualTo(input.getLigaleiterID());
-            assertThat(actual.getLigaID()).isEqualTo(input.getLigaID());
-            assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-            assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());;
-            assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
-             */
 
             // verify invocations
             verify(VeranstaltungComponent).update(VeranstaltungDOArgumentCaptor.capture(), anyLong());
@@ -365,18 +312,10 @@ public class VeranstaltungServiceTest {
             assertThat(updatedVeranstaltung).isNotNull();
             assertThat(updatedVeranstaltung.getVeranstaltungID()).isEqualTo(input.getId());
             assertThat(updatedVeranstaltung.getVeranstaltungName()).isEqualTo(input.getName());
-            /*
-            assertThat(updatedVeranstaltung.getVeranstaltungWettkampftypID()).isEqualTo(input.getWettkampftypName());
-            assertThat(updatedVeranstaltung.getVeranstaltungSportJahr()).isEqualTo(input.getSportjahr());
-            assertThat(updatedVeranstaltung.getVeranstaltungMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaleiterID()).isEqualTo(input.getLigaleiterID());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaID()).isEqualTo(input.getLigaID());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-            assertThat(updatedVeranstaltung.getVeranstaltungWettkampftypName()).isEqualTo(input.getWettkampftypName());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaName()).isEqualTo(input.getLigaName());
-             */
+
         }catch (NoPermissionException e) { }
     }
+
 
 
     @Test
@@ -401,7 +340,7 @@ public class VeranstaltungServiceTest {
         assertThat(deletedVeranstaltung.getVeranstaltungName()).isNullOrEmpty();
     }
 
-    /*
+/*
     @Test
     public void hasPermission() {
         // prepare test data
@@ -431,8 +370,8 @@ public class VeranstaltungServiceTest {
         verify(JwtTokenProvider).resolveToken(any());
         verify(jwtTokenProvider).getPermissions(anyString());
         verify(userPermission).contains(any());
-    }*/
-
+    }
+*/
     /*
     @Test
     public void hasSpecificPermission() {
