@@ -602,6 +602,30 @@ public class MatchServiceTest {
 
 
     @Test
+    public void pair() {
+        // prepare test data
+        final MatchDO matchDO = getMatchDO();
+        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
+
+        // configure mocks
+        when(matchComponent.findById(anyLong())).thenReturn(matchDO);
+        //when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+
+        // call test method
+        try {
+            final List<Long> actual = underTest.pair(MATCH_ID);
+
+            // assert result
+            assertThat(actual).isNotNull().hasSize(1);
+        }catch (NoPermissionException e) { }
+
+        // verify invocations
+        verify(matchComponent).findById(MATCH_ID);
+        //verify(matchComponent).findByWettkampfId(MATCH_WETTKAMPF_ID);
+    }
+
+
+    @Test
     public void create() {
         //prepare test data
         final MatchDTO input = getMatchDTO();
