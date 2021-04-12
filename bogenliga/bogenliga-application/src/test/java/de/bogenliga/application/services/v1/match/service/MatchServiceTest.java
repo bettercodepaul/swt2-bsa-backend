@@ -24,6 +24,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.Mannschaftsmitg
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -34,6 +35,7 @@ import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
@@ -402,6 +404,52 @@ public class MatchServiceTest {
     }
 
     @Test
+    public void findby() {
+        // prepare test data
+        final MatchDO matchDO = getMatchDO();
+        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
+
+        // configure mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+
+        // call test method
+        final List<MatchDTO> actual = underTest.findby(MATCH_WETTKAMPF_ID);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        // verify invocations
+        verify(matchComponent).findByWettkampfId(MATCH_WETTKAMPF_ID);
+    }
+
+    @Test
+    public void findInklNameby() {
+        // prepare test data
+        final MatchDO matchDO = getMatchDO();
+        final List<MatchDO> matchDOList = Collections.singletonList(matchDO);
+        final MatchDTO matchDTO = getMatchDTO();
+        final DsbMannschaftDO dsbMannschaftDO = getMannschaftDO(1L);
+        final VereinDO vereinDO = getVereinDO(1L);
+
+        // configure mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        //MatchDTOMapper.toDTO.apply(einmatch)
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+
+        // call test method
+        final List<MatchDTO> actual = underTest.findInklNameby(MATCH_WETTKAMPF_ID);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        // verify invocations
+        verify(matchComponent).findByWettkampfId(MATCH_WETTKAMPF_ID);
+        verify(mannschaftComponent).findById(MATCH_MANNSCHAFT_ID) ;
+        verify(vereinComponent).findById(M_vereinId);
+    }
+
+    @Test
     public void saveMatches() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
@@ -537,6 +585,22 @@ public class MatchServiceTest {
         }
     }
 
+
+    @Test
+    public void getSchuetzeNrFor() {
+        // prepare test data
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMMDO(1L, 1L);
+        PasseDTO passeDTO = getPasseDTO(1L, 1);
+        List<MannschaftsmitgliedDO> mmdoList = getMannschaftsMitglieder();
+
+        // call test method
+        final Integer actual = underTest.getSchuetzeNrFor(passeDTO, mmdoList);
+
+        // assert result
+        assertThat(actual).isNotNull();
+    }
+
+
     @Test
     public void create() {
         //prepare test data
@@ -587,4 +651,24 @@ public class MatchServiceTest {
     public void update_Null() {
         assertThatThrownBy(() -> underTest.update(null, principal)).isInstanceOf(NullPointerException.class);
     }
+
+    /*
+    @Test
+    public void passeExists() {
+        // prepare test data
+        final MatchDO matchDO = getMatchDO();
+        PasseDO passeDO = getPasseDO(1L);
+
+        // configure mocks
+        when(passeComponent.findById(anyLong())).thenReturn(passeDO);
+
+        // call test method
+        final boolean actual = underTest.passeExists(passeDO);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        // verify invocations
+        verify(passeComponent).findById(PASSE_ID_1);
+    }*/
 }
