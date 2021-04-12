@@ -1,9 +1,13 @@
 package de.bogenliga.application.services.v1.veranstaltung;
 
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.common.configuration.SecurityJsonWebTokenConfiguration;
 import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
@@ -20,20 +24,42 @@ import org.mockito.junit.MockitoRule;
 
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import de.bogenliga.application.springconfiguration.security.authentication.UserAuthenticationProvider;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.sql.Date;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.naming.NoPermissionException;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
 import static de.bogenliga.application.springconfiguration.security.types.UserPermission.CAN_MODIFY_MY_VERANSTALTUNG;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,8 +89,432 @@ public class VeranstaltungServiceTest {
     private static final long SPORTJAHR_ID = 0;
     private static final long SPORTJAHR_JAHR = 0;
 
-    private static final UserPermission TO_TEST = CAN_MODIFY_MY_VERANSTALTUNG;
-   
+    private static RequestAttributes requestAttributes = new RequestAttributes() {
+        @Override
+        public Object getAttribute(String s, int i) {
+            return null;
+        }
+
+        @Override
+        public void setAttribute(String s, Object o, int i) { }
+
+        @Override
+        public void removeAttribute(String s, int i) { }
+
+        @Override
+        public String[] getAttributeNames(int i) {
+            return new String[0];
+        }
+
+        @Override
+        public void registerDestructionCallback(String s, Runnable runnable, int i) { }
+
+        @Override
+        public Object resolveReference(String s) {
+            return null;
+        }
+
+        @Override
+        public String getSessionId() {
+            return null;
+        }
+
+        @Override
+        public Object getSessionMutex() {
+            return null;
+        }
+    };
+    private static HttpServletRequest httpServletRequest = new HttpServletRequest() {
+        @Override
+        public String getAuthType() {
+            return null;
+        }
+
+        @Override
+        public Cookie[] getCookies() {
+            return new Cookie[0];
+        }
+
+        @Override
+        public long getDateHeader(String s) {
+            return 0;
+        }
+
+        @Override
+        public String getHeader(String s) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getHeaders(String s) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getHeaderNames() {
+            return null;
+        }
+
+        @Override
+        public int getIntHeader(String s) {
+            return 0;
+        }
+
+        @Override
+        public String getMethod() {
+            return null;
+        }
+
+        @Override
+        public String getPathInfo() {
+            return null;
+        }
+
+        @Override
+        public String getPathTranslated() {
+            return null;
+        }
+
+        @Override
+        public String getContextPath() {
+            return null;
+        }
+
+        @Override
+        public String getQueryString() {
+            return null;
+        }
+
+        @Override
+        public String getRemoteUser() {
+            return null;
+        }
+
+        @Override
+        public boolean isUserInRole(String s) {
+            return false;
+        }
+
+        @Override
+        public Principal getUserPrincipal() {
+            return null;
+        }
+
+        @Override
+        public String getRequestedSessionId() {
+            return null;
+        }
+
+        @Override
+        public String getRequestURI() {
+            return null;
+        }
+
+        @Override
+        public StringBuffer getRequestURL() {
+            return null;
+        }
+
+        @Override
+        public String getServletPath() {
+            return null;
+        }
+
+        @Override
+        public HttpSession getSession(boolean b) {
+            return null;
+        }
+
+        @Override
+        public HttpSession getSession() {
+            return null;
+        }
+
+        @Override
+        public String changeSessionId() {
+            return null;
+        }
+
+        @Override
+        public boolean isRequestedSessionIdValid() {
+            return false;
+        }
+
+        @Override
+        public boolean isRequestedSessionIdFromCookie() {
+            return false;
+        }
+
+        @Override
+        public boolean isRequestedSessionIdFromURL() {
+            return false;
+        }
+
+        @Override
+        public boolean isRequestedSessionIdFromUrl() {
+            return false;
+        }
+
+        @Override
+        public boolean authenticate(HttpServletResponse httpServletResponse) throws IOException, ServletException {
+            return false;
+        }
+
+        @Override
+        public void login(String s, String s1) throws ServletException { }
+
+        @Override
+        public void logout() throws ServletException { }
+
+        @Override
+        public Collection<Part> getParts() throws IOException, ServletException {
+            return null;
+        }
+
+        @Override
+        public Part getPart(String s) throws IOException, ServletException {
+            return null;
+        }
+
+        @Override
+        public <T extends HttpUpgradeHandler> T upgrade(Class<T> aClass) throws IOException, ServletException {
+            return null;
+        }
+
+        @Override
+        public Object getAttribute(String s) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNames() {
+            return null;
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return null;
+        }
+
+        @Override
+        public void setCharacterEncoding(String s) throws UnsupportedEncodingException { }
+
+        @Override
+        public int getContentLength() {
+            return 0;
+        }
+
+        @Override
+        public long getContentLengthLong() {
+            return 0;
+        }
+
+        @Override
+        public String getContentType() {
+            return null;
+        }
+
+        @Override
+        public ServletInputStream getInputStream() throws IOException {
+            return null;
+        }
+
+        @Override
+        public String getParameter(String s) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getParameterNames() {
+            return null;
+        }
+
+        @Override
+        public String[] getParameterValues(String s) {
+            return new String[0];
+        }
+
+        @Override
+        public Map<String, String[]> getParameterMap() {
+            return null;
+        }
+
+        @Override
+        public String getProtocol() {
+            return null;
+        }
+
+        @Override
+        public String getScheme() {
+            return null;
+        }
+
+        @Override
+        public String getServerName() {
+            return null;
+        }
+
+        @Override
+        public int getServerPort() {
+            return 0;
+        }
+
+        @Override
+        public BufferedReader getReader() throws IOException {
+            return null;
+        }
+
+        @Override
+        public String getRemoteAddr() {
+            return null;
+        }
+
+        @Override
+        public String getRemoteHost() {
+            return null;
+        }
+
+        @Override
+        public void setAttribute(String s, Object o) { }
+
+        @Override
+        public void removeAttribute(String s) { }
+
+        @Override
+        public Locale getLocale() {
+            return null;
+        }
+
+        @Override
+        public Enumeration<Locale> getLocales() {
+            return null;
+        }
+
+        @Override
+        public boolean isSecure() {
+            return false;
+        }
+
+        @Override
+        public RequestDispatcher getRequestDispatcher(String s) {
+            return null;
+        }
+
+        @Override
+        public String getRealPath(String s) {
+            return null;
+        }
+
+        @Override
+        public int getRemotePort() {
+            return 0;
+        }
+
+        @Override
+        public String getLocalName() {
+            return null;
+        }
+
+        @Override
+        public String getLocalAddr() {
+            return null;
+        }
+
+        @Override
+        public int getLocalPort() {
+            return 0;
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return null;
+        }
+
+        @Override
+        public AsyncContext startAsync() throws IllegalStateException {
+            return null;
+        }
+
+        @Override
+        public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+            return null;
+        }
+
+        @Override
+        public boolean isAsyncStarted() {
+            return false;
+        }
+
+        @Override
+        public boolean isAsyncSupported() {
+            return false;
+        }
+
+        @Override
+        public AsyncContext getAsyncContext() {
+            return null;
+        }
+
+        @Override
+        public DispatcherType getDispatcherType() {
+            return null;
+        }
+    };
+    private static ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(httpServletRequest);
+    private static String jwtString = " ";
+    private static UserComponent userComponent = new UserComponent() {
+        @Override
+        public List<UserDO> findAll() {
+            return null;
+        }
+
+        @Override
+        public UserDO findById(Long id) {
+            return null;
+        }
+
+        @Override
+        public UserDO findByEmail(String email) {
+            return null;
+        }
+
+        @Override
+        public UserWithPermissionsDO signIn(String email, String password) {
+            return null;
+        }
+
+        @Override
+        public UserDO create(String email, String password, Long dsb_mitglied_id, Long currentUserId, boolean isUsing2FA) {
+            return null;
+        }
+
+        @Override
+        public UserDO updatePassword(UserDO userDO, String password, String newPassword, Long currentUserId) {
+            return null;
+        }
+
+        @Override
+        public UserDO resetPassword(UserDO userDO, String newPassword, Long currentUserId) {
+            return null;
+        }
+
+        @Override
+        public boolean isTechnicalUser(UserDO userDO) {
+            return false;
+        }
+
+        @Override
+        public boolean deactivate(long id) {
+            return false;
+        }
+    };
+    private static SecurityJsonWebTokenConfiguration securityJWTConfig = new SecurityJsonWebTokenConfiguration();
+    private static UserAuthenticationProvider userAutentProvider = new UserAuthenticationProvider(userComponent);
+    private static JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(securityJWTConfig, userAutentProvider);
+    private static Set<UserPermission> userPermission = new HashSet<>();
+
+
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -79,6 +529,9 @@ public class VeranstaltungServiceTest {
 
     @Captor
     private ArgumentCaptor<VeranstaltungDO> VeranstaltungDOArgumentCaptor;
+    private JwtTokenProvider JwtTokenProvider;
+    private RequestContextHolder RequestContextHolder;
+
 
     /***
      * Utility methods for creating business entities/data objects.
@@ -340,38 +793,32 @@ public class VeranstaltungServiceTest {
         assertThat(deletedVeranstaltung.getVeranstaltungName()).isNullOrEmpty();
     }
 
-/*
+    /*
     @Test
     public void hasPermission() {
         // prepare test data
-        final RequestAttributes requestAttributes = ;               //Z 271
-        final ServletRequestAttributes servletRequestAttributes = ; //Z 273
-        final HttpServletRequest httpServletRequest = ;             //Z 274
-        final String string = ;                                     //Z 278
-        final JwtTokenProvider jwtTokenProvider = ;
-        final Set<UserPermission> userPermission = ;                //Z 279
-
 
         // configure mocks
         when(RequestContextHolder.getRequestAttributes()).thenReturn(requestAttributes);    //Z 271
         when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);         //Z 274
-        when(JwtTokenProvider.resolveToken(any())).thenReturn(string);                      //Z 278
+        when(JwtTokenProvider.resolveToken(any())).thenReturn(jwtString);                   //Z 278
         when(jwtTokenProvider.getPermissions(anyString())).thenReturn(userPermission);      //Z 279
-        when(userPermission.contains(any())).thenReturn();                                  //Z 283
 
         // call test method
+        //final boolean actual = underTest.hasPermission();
 
         // assert result
-        assertThat(actual).isNotNull();
+        //assertThat(actual).isNotNull();
 
         // verify invocations
         verify(RequestContextHolder).getRequestAttributes();
         verify(servletRequestAttributes).getRequest();
-        verify(JwtTokenProvider).resolveToken(any());
-        verify(jwtTokenProvider).getPermissions(anyString());
-        verify(userPermission).contains(any());
+        verify(JwtTokenProvider).resolveToken(httpServletRequest);
+        verify(jwtTokenProvider).getPermissions(jwtString);
     }
-*/
+    */
+
+
     /*
     @Test
     public void hasSpecificPermission() {
