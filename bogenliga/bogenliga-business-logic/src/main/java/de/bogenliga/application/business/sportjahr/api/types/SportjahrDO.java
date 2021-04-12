@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.sportjahr;
+package de.bogenliga.application.business.sportjahr.api.types;
 
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
@@ -12,7 +12,7 @@ public class SportjahrDO extends CommonDataObject implements DataObject {
 
     private Long id;
     private Long sportjahr;
-    private Long version;
+
 
 
     public SportjahrDO(){

@@ -7,12 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -66,7 +61,7 @@ public class RegionenService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RegionenDTO> findAll() {
@@ -75,7 +70,7 @@ public class RegionenService implements ServiceFacade {
         return regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "ID/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "ID/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public RegionenDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
@@ -88,7 +83,7 @@ public class RegionenService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
@@ -111,7 +106,7 @@ public class RegionenService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
@@ -130,7 +125,7 @@ public class RegionenService implements ServiceFacade {
      * @param principal the current User, who is locked in
      * @return the new RegionenDTO
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
@@ -160,7 +155,7 @@ public class RegionenService implements ServiceFacade {
      * @param type of the regions
      * @return list of {@RegionenDTO}
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             value = "{type}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
