@@ -104,6 +104,19 @@ public class SchusszettelComponentImplTest {
 
     }
 
+    @Test
+    public void getAllSchusszettelPDFasByteArrayInIf_ShouldThrowException() {
+        final String ELSE_CONDITION_WETTKAMPFID = "Matches für den Wettkampf noch nicht erzeugt";
+        List<MatchDO> lokaleListe = new ArrayList();
+        thrown.expect(BusinessException.class);
+        thrown.expectMessage(ELSE_CONDITION_WETTKAMPFID);
+
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(lokaleListe);
+
+        underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+    }
+
     private static List<MatchDO> getMatchesForWettkampf(){
         List<MatchDO> result = new ArrayList<>();
         //iterate through matches
