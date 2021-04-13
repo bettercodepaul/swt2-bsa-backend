@@ -29,10 +29,10 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @Aspect
 @Component
 public class RequiresOnePermissionAspect {
+
     private static final Logger LOG = LoggerFactory.getLogger(RequiresOnePermissionAspect.class);
 
     private final JwtTokenProvider jwtTokenProvider;
-
 
     @Autowired
     public RequiresOnePermissionAspect(final JwtTokenProvider jwtTokenProvider) {
@@ -57,30 +57,42 @@ public class RequiresOnePermissionAspect {
      */
     @Around("@annotation(de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions)")
     public Object checkPermission(final ProceedingJoinPoint joinPoint) throws Throwable {
-        //Getting the Variables from the Request that was made
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-        final HttpServletRequest request = servletRequestAttributes.getRequest();
-        final String jwt = JwtTokenProvider.resolveToken(request);
-        final String username = jwtTokenProvider.getUsername(jwt);
-        Method currentMethod = getCurrentMethod(joinPoint);
+        final ServletRequestAttributes servletRequestAttributes;
+        final HttpServletRequest request;
+        final String jwt;
+        final String username;
+        Method currentMethod;
 
-        if (currentMethod.isAnnotationPresent(RequiresOnePermissions.class)) {
-            RequiresOnePermissions annotation = currentMethod.getAnnotation(RequiresOnePermissions.class);
-
-            final UserPermission[] permisson = annotation.perm();
-            boolean result = false;
-            for(UserPermission entry : permisson){
-                if(hasPermission(entry)){
-                    result = true;
-                }
-
+            //Getting the Variables from the Request that was made
+            final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            if (requestAttributes == null) {
+                throw new NullPointerException();
+            } else {
+                servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+                request = servletRequestAttributes.getRequest();
+                jwt = JwtTokenProvider.resolveToken(request);
+                username = jwtTokenProvider.getUsername(jwt);
+                currentMethod = getCurrentMethod(joinPoint);
             }
-            if(!result){
-            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
-                    String.format("User '%s' has not one of the  required permissions a", username));
-        }}
-        return joinPoint.proceed();
+
+            if (currentMethod.isAnnotationPresent(RequiresOnePermissions.class)) {
+                RequiresOnePermissions annotation = currentMethod.getAnnotation(RequiresOnePermissions.class);
+
+                final UserPermission[] permisson = annotation.perm();
+                boolean result = false;
+                for (UserPermission entry : permisson) {
+                    if (hasPermission(entry)) {
+                        result = true;
+                    }
+
+                }
+                if (!result) {
+                    throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR,
+                            String.format("User '%s' has not one of the  required permissions a", username));
+                }
+            }
+
+            return joinPoint.proceed();
     };
     boolean hasPermission(UserPermission toTest){
         // get current http request from thread
@@ -114,4 +126,3 @@ public class RequiresOnePermissionAspect {
         return signature.getMethod();
     }
 }
-
