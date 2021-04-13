@@ -29,10 +29,10 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @Aspect
 @Component
 public class RequiresOnePermissionAspect {
+
     private static final Logger LOG = LoggerFactory.getLogger(RequiresOnePermissionAspect.class);
 
     private final JwtTokenProvider jwtTokenProvider;
-
 
     @Autowired
     public RequiresOnePermissionAspect(final JwtTokenProvider jwtTokenProvider) {
@@ -62,7 +62,7 @@ public class RequiresOnePermissionAspect {
         final String jwt;
         final String username;
         Method currentMethod;
-        try {
+
             //Getting the Variables from the Request that was made
             final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
             if (requestAttributes == null) {
@@ -93,9 +93,6 @@ public class RequiresOnePermissionAspect {
             }
 
             return joinPoint.proceed();
-        } catch (Exception NullPointerException) {
-            return null;
-        }
     };
     boolean hasPermission(UserPermission toTest){
         // get current http request from thread
@@ -129,4 +126,3 @@ public class RequiresOnePermissionAspect {
         return signature.getMethod();
     }
 }
-
