@@ -497,6 +497,12 @@ public class DsbMannschaftComponentImplTest {
                 .withMessageContaining("must not be negative")
                 .withNoCause();
 
+        tmpMannschaft.setId(-1L);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(tmpMannschaft, USER))
+                .withMessageContaining("must not be negative")
+                .withNoCause();
+
         // assert result
 
         // verify invocations
