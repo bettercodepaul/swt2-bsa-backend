@@ -404,6 +404,13 @@ public class DsbMannschaftComponentImplTest {
                 .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
                 .withMessageContaining("must not be negative")
                 .withNoCause();
+        tmpMannschaft.setVereinId(VEREIN_ID);
+
+        tmpMannschaft.setVeranstaltungId(-1);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
+                .withMessageContaining("must not be negative")
+                .withNoCause();
 
         // assert result
 
@@ -475,6 +482,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void update_withoutInput_shouldThrowException() {
         // prepare test data
+        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1);
 
         // configure mocks
 
@@ -482,6 +490,11 @@ public class DsbMannschaftComponentImplTest {
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.update(null, USER))
                 .withMessageContaining("must not be null")
+                .withNoCause();
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(tmpMannschaft, -1))
+                .withMessageContaining("must not be negative")
                 .withNoCause();
 
         // assert result
