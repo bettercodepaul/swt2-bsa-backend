@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.kampfrichter.impl.dao;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,7 @@ import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.SQL;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
+
 
 /**
  * DataAccessObject for the kampfrichter entity in the database.
