@@ -281,7 +281,7 @@ public class DsbMannschaftService implements ServiceFacade {
             //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
             if(hasSpecificPermission(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) && !hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
                 DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
-                if(dsbMannschaftDO.getVeranstaltungId() != dsbMannschaftDTO.getVeranstaltungId()) {
+                if(!dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
                     throw new NoPermissionException();
                 }
             }
@@ -404,7 +404,7 @@ public class DsbMannschaftService implements ServiceFacade {
                 Long UserId = jwtTokenProvider.getUserId(jwt);
                 UserDO userDO = this.userComponent.findById(UserId);
                 DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
-                if((dsbMitgliedDO.getVereinsId() == vereinsId) && userPermissions.contains(toTest)) {
+                if((dsbMitgliedDO.getVereinsId().equals(vereinsId)) && userPermissions.contains(toTest)) {
                     result = true;
                 }
             }
