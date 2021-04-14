@@ -5,15 +5,17 @@ import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -24,9 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class DsbMannschaftComponentImplTest {
     private static final Long USER = 0L;
@@ -157,11 +157,10 @@ public class DsbMannschaftComponentImplTest {
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findAllByVereinsId(VEREIN_ID);
 
-        // check if expected exception is thrown if id isn't contained
-        assertThatThrownBy(()->{
-            underTest.findById(VEREIN_ID+1);
-        }).isInstanceOf(BusinessException.class)
-                .hasMessageContaining(String.format("'%d'", VEREIN_ID+1));
+        // check if expected exception is thrown if id is negative
+        assertThatThrownBy(()-> underTest.findAllByVereinsId(-1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.INVALID_ARGUMENT_ERROR.getValue());
 
         // assert result
         assertThat(actual)
@@ -202,11 +201,10 @@ public class DsbMannschaftComponentImplTest {
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
 
-        // check if expected exception is thrown if id isn't contained
-        assertThatThrownBy(()->{
-            underTest.findById(VERANSTALTUNG_ID+1);
-        }).isInstanceOf(BusinessException.class)
-                .hasMessageContaining(String.format("'%d'", VERANSTALTUNG_ID+1));
+        // check if expected exception is thrown if id is negative
+        assertThatThrownBy(()-> underTest.findAllByVeranstaltungsId(-1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.INVALID_ARGUMENT_ERROR.getValue());
 
         // assert result
         assertThat(actual)
@@ -247,10 +245,14 @@ public class DsbMannschaftComponentImplTest {
         final DsbMannschaftDO actual = underTest.findById(ID);
 
         // check if expected exception is thrown if id isn't contained
-        assertThatThrownBy(()->{
-            underTest.findById(ID+1);
-        }).isInstanceOf(BusinessException.class)
+        assertThatThrownBy(()-> underTest.findById(ID+1))
+                .isInstanceOf(BusinessException.class)
                 .hasMessageContaining(String.format("'%d'", ID+1));
+
+        // check if expected exception is thrown if id is negative
+        assertThatThrownBy(()-> underTest.findById(-1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.INVALID_ARGUMENT_ERROR.getValue());
 
         // assert result
         assertThat(actual).isNotNull();
@@ -350,6 +352,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void create_withoutInput_shouldThrowException() {
         // prepare test data
+        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1);
 
         // configure mocks
 
@@ -357,6 +360,37 @@ public class DsbMannschaftComponentImplTest {
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.create(null, USER))
                 .withMessageContaining("must not be null")
+                .withNoCause();
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(tmpMannschaft, -1))
+                .withMessageContaining("must not be negative")
+                .withNoCause();
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
+                .withMessageContaining("must not be negative")
+                .withNoCause();
+        tmpMannschaft.setVereinId(VEREIN_ID);
+
+        tmpMannschaft.setNummer(-1);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
+                .withMessageContaining("must not be negative")
+                .withNoCause();
+        tmpMannschaft.setNummer(NUMMER);
+
+        tmpMannschaft.setBenutzerId(-1);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
+                .withMessageContaining("must not be negative")
+                .withNoCause();
+        tmpMannschaft.setBenutzerId(BENUTZER_ID);
+
+        tmpMannschaft.setVereinId(-1);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(tmpMannschaft, USER))
+                .withMessageContaining("must not be negative")
                 .withNoCause();
 
         // assert result
@@ -682,4 +716,3 @@ public class DsbMannschaftComponentImplTest {
         verify(vereinDAO).findById(anyLong());
     }
 }
-
