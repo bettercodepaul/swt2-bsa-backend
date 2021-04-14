@@ -153,9 +153,15 @@ public class DsbMannschaftComponentImplTest {
 
         // configure mocks
         when(dsbMannschaftDAO.findAllByVereinsId(VEREIN_ID)).thenReturn(expectedBEList);
+        when(dsbMannschaftDAO.findAllByVereinsId(VEREIN_ID+1)).thenReturn(null);
 
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findAllByVereinsId(VEREIN_ID);
+
+        // check if expected exception is thrown if id isn't contained
+        assertThatThrownBy(()-> underTest.findAllByVereinsId(VEREIN_ID+1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(String.format("'%d'", VEREIN_ID+1));
 
         // check if expected exception is thrown if id is negative
         assertThatThrownBy(()-> underTest.findAllByVereinsId(-1))
@@ -197,9 +203,15 @@ public class DsbMannschaftComponentImplTest {
 
         // configure mocks
         when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(expectedBEList);
+        when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID+1)).thenReturn(null);
 
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+
+        // check if expected exception is thrown if id isn't contained
+        assertThatThrownBy(()-> underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID+1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(String.format("'%d'", VERANSTALTUNG_ID+1));
 
         // check if expected exception is thrown if id is negative
         assertThatThrownBy(()-> underTest.findAllByVeranstaltungsId(-1))
