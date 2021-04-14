@@ -579,6 +579,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void delete_withoutInput_shouldThrowException() {
         // prepare test data
+        final DsbMannschaftDO input = getDsbMannschaftDO();
 
         // configure mocks
 
@@ -586,6 +587,17 @@ public class DsbMannschaftComponentImplTest {
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.delete(null, USER))
                 .withMessageContaining("must not be null")
+                .withNoCause();
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.delete(getDsbMannschaftDO(), -1))
+                .withMessageContaining("must not be negative")
+                .withNoCause();
+
+        input.setId(-1L);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.delete(input, USER))
+                .withMessageContaining("must not be negative")
                 .withNoCause();
 
         // assert result
@@ -661,6 +673,13 @@ public class DsbMannschaftComponentImplTest {
         // configure mocks
 
         // call test method
+        input.setVereinId(-1L);
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.updateSortierung(input, USER))
+                .withMessageContaining("must not be null or negative")
+                .withNoCause();
+        input.setVereinId(getSortierungsDO().getVereinId());
+
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.updateSortierung(input, USER))
                 .withMessageContaining("must not be null or negative")
