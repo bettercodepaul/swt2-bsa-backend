@@ -7,12 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -60,7 +55,7 @@ public class LigaService implements ServiceFacade {
      *
      * @return lost of {@link de.bogenliga.application.services.v1.liga.model.LigaDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaDTO> findAll() {
@@ -76,9 +71,8 @@ public class LigaService implements ServiceFacade {
      *
      * @return returns a klasse
      */
-    @RequestMapping(
+    @GetMapping(
             value = "{id}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public LigaDTO findById(@PathVariable("id") final long id) {
@@ -100,7 +94,7 @@ public class LigaService implements ServiceFacade {
      *
      * @return list of {@link LigaDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
@@ -127,7 +121,7 @@ public class LigaService implements ServiceFacade {
     /**
      * I persist a newer version of the CompetitionClass in the database.
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
@@ -155,7 +149,7 @@ public class LigaService implements ServiceFacade {
     /**
      * I delete an existing Liga entry from the DB.
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");

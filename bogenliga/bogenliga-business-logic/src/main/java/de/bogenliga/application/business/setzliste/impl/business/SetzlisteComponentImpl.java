@@ -157,8 +157,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         doc.setFontSize(9.2f);
 
-        //description
-        DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
+        // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
         WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid());
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
