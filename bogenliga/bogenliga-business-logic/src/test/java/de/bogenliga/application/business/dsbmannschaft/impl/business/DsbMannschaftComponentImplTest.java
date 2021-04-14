@@ -576,7 +576,6 @@ public class DsbMannschaftComponentImplTest {
                 .isEqualTo(input.getId());
     }
 
-
     @Test
     public void delete_withoutInput_shouldThrowException() {
         // prepare test data
