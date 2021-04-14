@@ -11,6 +11,9 @@ import java.util.List;
  */
 public class SportjahrDTOMapper implements DataTransferObjectMapper {
 
+    private SportjahrDTOMapper(){
+
+    }
 
     public static final Function<SportjahrDO, SportjahrDTO> toDTO = sportjahrDO -> {
         final Long id = sportjahrDO.getId();

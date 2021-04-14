@@ -7,8 +7,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -91,9 +89,9 @@ public class RequiresOnePermissionAspect {
                             String.format("User '%s' has not one of the  required permissions a", username));
                 }
             }
-
             return joinPoint.proceed();
-    };
+    }
+
     boolean hasPermission(UserPermission toTest){
         // get current http request from thread
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -102,26 +100,28 @@ public class RequiresOnePermissionAspect {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
 
             final HttpServletRequest request = servletRequestAttributes.getRequest();
+            //If-Abfrage (request != null) gelöscht, da request einen WErt zugewiesen bekommt und dadurch nicht null sein kann
 
-            // if request present
-            if (request != null) {
-                // parse json web token with roles
-                final String jwt = JwtTokenProvider.resolveToken(request);
+            // parse json web token with roles
+            final String jwt = JwtTokenProvider.resolveToken(request);
 
-                // custom permission check
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+            // custom permission check
+            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-                // verify all jwt permissions are part of the required permissions
-                    if (userPermissions.contains(toTest)) {
-                        result = true;
-                    }
-
+            // verify all jwt permissions are part of the required permissions
+            if (userPermissions.contains(toTest)) {
+                result = true;
             }
+
         }
 
         return result;
     }
     Method getCurrentMethod(final ProceedingJoinPoint joinPoint) {
+        if(joinPoint == null) {
+            System.out.println("joinPoint is null");  //NullPointerException will be thrown
+            return null;
+        }
         final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         return signature.getMethod();
     }

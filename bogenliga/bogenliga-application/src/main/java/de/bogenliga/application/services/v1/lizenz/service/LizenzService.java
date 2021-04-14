@@ -8,13 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -37,8 +31,8 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class LizenzService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIZENZ = "Lizenz must not be null";
     private static final String PRECONDITION_MSG_LIGA_ID = "Liga Id must not be negative";
-    private static final String PRECONDITION_MSG_LIGA_REGION = "Region can not be null";
-    private static final String PRECONDITION_MSG_LIGA_REGION_ID_NEG = "Region id can not be negative";
+    //private static final String PRECONDITION_MSG_LIGA_REGION = "Region can not be null";
+    //private static final String PRECONDITION_MSG_LIGA_REGION_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIZENZTYP = "Lizenztyp must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIEDID = "DSBMITGLIEDSID must not be null";
 
@@ -63,7 +57,7 @@ public class LizenzService implements ServiceFacade {
      *
      * @return list of {@link LizenzDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LizenzDTO> findAll() {
@@ -79,9 +73,8 @@ public class LizenzService implements ServiceFacade {
      *
      * @return returns a list with all Lizenz Entires
      */
-    @RequestMapping(
+    @GetMapping(
             value = "{id}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LizenzDTO> findByDsbMitgliedId(@PathVariable("id") final long id) {
@@ -107,7 +100,7 @@ public class LizenzService implements ServiceFacade {
      *
      * @return newly persisted {@link LizenzDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
@@ -127,7 +120,7 @@ public class LizenzService implements ServiceFacade {
     /**
      * I persist a newer version of the Lizenzentry in the database.
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
@@ -146,7 +139,7 @@ public class LizenzService implements ServiceFacade {
     /**
      * I delete an existing Lizenz entry from the DB by its ID.
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission({UserPermission.CAN_DELETE_STAMMDATEN})
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
