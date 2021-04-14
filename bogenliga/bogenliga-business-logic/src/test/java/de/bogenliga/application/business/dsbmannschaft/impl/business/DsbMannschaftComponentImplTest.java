@@ -13,12 +13,14 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -155,6 +157,12 @@ public class DsbMannschaftComponentImplTest {
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findAllByVereinsId(VEREIN_ID);
 
+        // check if expected exception is thrown if id isn't contained
+        assertThatThrownBy(()->{
+            underTest.findById(VEREIN_ID+1);
+        }).isInstanceOf(BusinessException.class)
+                .hasMessageContaining(String.format("'%d'", VEREIN_ID+1));
+
         // assert result
         assertThat(actual)
                 .isNotNull()
@@ -194,6 +202,12 @@ public class DsbMannschaftComponentImplTest {
         // call test method
         final List<DsbMannschaftDO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
 
+        // check if expected exception is thrown if id isn't contained
+        assertThatThrownBy(()->{
+            underTest.findById(VERANSTALTUNG_ID+1);
+        }).isInstanceOf(BusinessException.class)
+                .hasMessageContaining(String.format("'%d'", VERANSTALTUNG_ID+1));
+
         // assert result
         assertThat(actual)
                 .isNotNull()
@@ -231,6 +245,12 @@ public class DsbMannschaftComponentImplTest {
 
         // call test method
         final DsbMannschaftDO actual = underTest.findById(ID);
+
+        // check if expected exception is thrown if id isn't contained
+        assertThatThrownBy(()->{
+            underTest.findById(ID+1);
+        }).isInstanceOf(BusinessException.class)
+                .hasMessageContaining(String.format("'%d'", ID+1));
 
         // assert result
         assertThat(actual).isNotNull();
