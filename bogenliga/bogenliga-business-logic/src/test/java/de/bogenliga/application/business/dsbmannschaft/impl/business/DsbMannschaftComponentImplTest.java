@@ -727,4 +727,13 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).findById(ID);
         verify(vereinDAO).findById(anyLong());
     }
+
+    @Test
+    public void getDAO(){
+        // assert result
+        assertThat(dsbMannschaftDAO).isEqualTo(underTest.getDAO());
+
+        // verify invocations
+        verifyZeroInteractions(dsbMannschaftDAO);
+    }
 }
