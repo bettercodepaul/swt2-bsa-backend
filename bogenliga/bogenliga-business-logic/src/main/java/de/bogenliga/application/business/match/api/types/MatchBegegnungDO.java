@@ -25,7 +25,7 @@ public class MatchBegegnungDO extends CommonDataObject {
     private Long strafPunkteSatz3;
     private Long strafPunkteSatz4;
     private Long strafPunkteSatz5;
-    
+
 
     public MatchBegegnungDO(Long wettkampfId,
                             Long matchnummer,
@@ -39,7 +39,10 @@ public class MatchBegegnungDO extends CommonDataObject {
                             Long satzpunkte,
                             Long strafPunkteSatz1, Long strafPunkteSatz2,
                             Long strafPunkteSatz3,
-                            Long strafPunkteSatz4, Long strafPunkteSatz5) {
+                            Long strafPunkteSatz4, Long strafPunkteSatz5,
+                            final OffsetDateTime createdAtUtc,
+                            final Long createdByUserId, final OffsetDateTime lastModifiedUtc,
+                            final Long lastModifiedByUserId, final Long version) {
         this.setWettkampfId(wettkampfId);
         this.setMatchnummer(matchnummer);
         this.setMatchid(matchid);
@@ -56,6 +59,11 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.setStrafPunkteSatz4(strafPunkteSatz4);
         this.setStrafPunkteSatz5(strafPunkteSatz5);
 
+        this.setVersion(version);
+        this.setLastModifiedAtUtc(lastModifiedUtc);
+        this.setCreatedAtUtc(createdAtUtc);
+        this.setCreatedByUserId(createdByUserId);
+        this.setLastModifiedByUserId(lastModifiedByUserId);
     }
 
 
