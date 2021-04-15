@@ -65,7 +65,7 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     @Override
     public KampfrichterDO create(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
-        //checkKampfrichterDO(kampfrichterDO, currentKampfrichterUserId);
+
         Preconditions.checkArgument(kampfrichterDO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
 
         final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
@@ -77,7 +77,7 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     @Override
     public KampfrichterDO update(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
-        //checkKampfrichterDO(kampfrichterDO, currentKampfrichterUserId);
+
         Preconditions.checkArgument(kampfrichterDO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
 
         final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
@@ -99,11 +99,4 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     }
 
-
-    private void checkKampfrichterDO(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
-        Preconditions.checkNotNull(kampfrichterDO, PRECONDITION_MSG_KAMPFRICHTER);
-        Preconditions.checkArgument(currentKampfrichterUserId >= 0, PRECONDITION_MSG_CURRENT_KAMPFRICHTER);
-        Preconditions.checkNotNull(kampfrichterDO.getWettkampfId(), PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID);
-        Preconditions.checkNotNull(kampfrichterDO.isLeitend(), PRECONDITION_MSG_KAMPFRICHTER_LEITEND);
-    }
 }
