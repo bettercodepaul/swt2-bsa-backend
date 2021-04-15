@@ -596,7 +596,7 @@ public class DsbMannschaftComponentImplTest {
                 .withNoCause();
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.delete(getDsbMannschaftDO(), -1))
+                .isThrownBy(() -> underTest.delete(input, -1))
                 .withMessageContaining("must not be negative")
                 .withNoCause();
 
