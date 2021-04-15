@@ -2,12 +2,10 @@ package de.bogenliga.application.business.kampfrichter.impl.business;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -39,15 +37,11 @@ public class KampfrichterComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long USERID = 1337L;
-    private static final Long USERID_FALSE = -1337L;
     private static final long WETTKAMPFID = 9999;
     private static final boolean LEITEND = true;
 
-
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
     @Mock
     private KampfrichterDAO kampfrichterDAO;
     @InjectMocks
@@ -109,24 +103,6 @@ public class KampfrichterComponentImplTest {
         verify(kampfrichterDAO).findAll();
     }
 
-    @Test
-    public void findById_PreconditionTest_shouldThrowException() {
-
-        //String that gets used by the exception.
-        final String PRECONDITION_MSG_KAMPFRICHTER_ID = "KampfrichterDO ID must not be negative";
-
-        //To prevent the second BusinessException in case USERID_FALSE is positive.
-        final KampfrichterBE expectedBE = getKampfrichterBE();
-        when(kampfrichterDAO.findById(anyLong())).thenReturn(expectedBE);
-
-        //Set expectations
-        thrown.expect(BusinessException.class);
-        thrown.expectMessage("INVALID_ARGUMENT_ERROR");
-
-        // call test method
-        underTest.findById(USERID_FALSE);
-
-    }
 
     @Test
     public void findById() {
@@ -149,22 +125,6 @@ public class KampfrichterComponentImplTest {
         verify(kampfrichterDAO).findById(USERID);
     }
 
-    @Test
-    public void findById_When_Result_Null_shouldThrowException(){
-
-        //String that gets used by the exception.
-        final String PRECONDITION_MSG_KAMPFRICHTER = "No result found for ID";
-
-        //Set expectations.
-        thrown.expect(BusinessException.class);
-        thrown.expectMessage(PRECONDITION_MSG_KAMPFRICHTER);
-
-        when(kampfrichterDAO.findById(anyLong())).thenReturn(null);
-
-        // call test method.
-        underTest.findById(USERID);
-
-    }
 
     @Test
     public void create() {
@@ -196,22 +156,6 @@ public class KampfrichterComponentImplTest {
                 .isEqualTo(input.getUserId());
     }
 
-    @Test
-    public void create_PreconditionTest_shouldThrowException() {
-
-        //String that gets used by the exception.
-        final String PRECONDITION_MSG_KAMPFRICHTER_ID = "KampfrichterDO ID must not be negative";
-
-        // prepare test data
-        final KampfrichterDO input = new KampfrichterDO(USERID_FALSE,WETTKAMPFID,LEITEND);
-
-        //Set expectations.
-        thrown.expect(BusinessException.class);
-        thrown.expectMessage(PRECONDITION_MSG_KAMPFRICHTER_ID);
-
-        // call test method.
-        underTest.create(input,anyLong());
-    }
 
     @Test
     public void create_with_mandatory_parameters() {
@@ -285,25 +229,6 @@ public class KampfrichterComponentImplTest {
                 .isEqualTo(input.getUserId());
     }
 
-    @Test
-    public void update_PreconditionTest_shouldThrowException() {
-
-        //String that gets used by the exception.
-        final String PRECONDITION_MSG_KAMPFRICHTER_ID = "KampfrichterDO ID must not be negative";
-
-        // prepare test data
-        //final KampfrichterDO input = new KampfrichterDO(USERID_FALSE,WETTKAMPFID,LEITEND);
-        KampfrichterDO input = getKampfrichterDO();
-        input.setUserId(USERID_FALSE);
-
-        //Set expectations.
-        thrown.expect(BusinessException.class);
-        thrown.expectMessage(PRECONDITION_MSG_KAMPFRICHTER_ID);
-
-        // call test method.
-        underTest.update(input,USERID);
-    }
-
 
     @Test
     public void delete() {
@@ -333,7 +258,9 @@ public class KampfrichterComponentImplTest {
 
     @Test
     public void delete_withoutInput_shouldThrowException() {
+        // prepare test data
 
+        // configure mocks
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
@@ -341,39 +268,9 @@ public class KampfrichterComponentImplTest {
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
+        // assert result
+
         // verify invocations
         verifyZeroInteractions(kampfrichterDAO);
-    }
-
-    @Test
-    public void delete_getUserIDPrecondition_shouldThrowException() {
-
-        // prepare test data
-        final KampfrichterDO input = getKampfrichterDO();
-        input.setUserId(USERID_FALSE);
-        final String PRECONDITION_MSG_KAMPFRICHTER_ID = "KampfrichterDO ID must not be negative";
-
-        thrown.expect(BusinessException.class);
-        thrown.expectMessage(PRECONDITION_MSG_KAMPFRICHTER_ID);
-
-        underTest.delete(input, USERID);
-
-    }
-
-    @Test
-    public void delete_getUserIDPreconditionCurrentKampfrichterUserID_shouldThrowException() {
-        // prepare test data.
-        final KampfrichterDO input = getKampfrichterDO();
-
-        //String that gets used by the exception.
-        final String PRECONDITION_MSG_CURRENT_KAMPFRICHTER = "Current kampfrichter userId must not be negative";
-
-        //Set expectations.
-        thrown.expect(BusinessException.class);
-        thrown.expectMessage(PRECONDITION_MSG_CURRENT_KAMPFRICHTER);
-
-        // call test method.
-        underTest.delete(input,USERID_FALSE);
-
     }
 }
