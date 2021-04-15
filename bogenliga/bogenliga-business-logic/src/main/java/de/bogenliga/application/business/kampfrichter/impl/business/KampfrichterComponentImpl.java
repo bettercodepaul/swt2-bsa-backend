@@ -22,8 +22,6 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     private static final String PRECONDITION_MSG_KAMPFRICHTER = "KampfrichterDO must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_ID = "KampfrichterDO ID must not be negative";
-    private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID = "Kampfrichter wettkampfId must not be negative";
-    private static final String PRECONDITION_MSG_KAMPFRICHTER_LEITEND = "Kampfrichter leitend must not be null";
     private static final String PRECONDITION_MSG_CURRENT_KAMPFRICHTER = "Current kampfrichter userId must not be negative";
 
     private final KampfrichterDAO kampfrichterDAO;
