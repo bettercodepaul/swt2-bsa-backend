@@ -11,20 +11,4 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class FeedbackClassDTO implements DataTransferObject {
     private String feedBack;
-
-    /**
-     * @param mfeedBack
-     */
-    private FeedbackClassDTO (String mfeedBack) {
-        this.feedBack = mfeedBack;
-    }
-
-    public String getFeedback() { return this.feedBack; }
-
-
-    public void setFeedback(String feedBack) {
-        this.feedBack = feedBack;
-    }
-
-
 }

@@ -2,9 +2,8 @@ package de.bogenliga.application.business.sportjahr.api.types;
 
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
-import java.util.List;
 /**
- * TODO [AL] class documentation
+ * Erstellt ein SportjahrDO Objekt.
  *
  * @author Philipp Schmidt,
  */

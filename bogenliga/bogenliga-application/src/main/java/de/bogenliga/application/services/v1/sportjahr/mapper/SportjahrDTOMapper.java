@@ -3,10 +3,10 @@ import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import java.util.function.*;
-import java.util.List;
+
 /**
- * TODO [AL] class documentation
  *
+ * Es wird ein SportjahrDTO Objekt erzeugt
  * @author Philipp Schmidt
  */
 public class SportjahrDTOMapper implements DataTransferObjectMapper {
