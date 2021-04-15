@@ -72,10 +72,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
-    private static final String FIND_KAMPFRICHTER =
-            "SELECT * "
-                    + " FROM lizenz "
-                    + " WHERE lizenz_typ = 'Kampfrichter' AND lizenz_dsb_mitglied_id = ?";
+
 
     private static final String FIND_DSB_KAMPFRICHTER =
             "SELECT * FROM dsb_mitglied" +

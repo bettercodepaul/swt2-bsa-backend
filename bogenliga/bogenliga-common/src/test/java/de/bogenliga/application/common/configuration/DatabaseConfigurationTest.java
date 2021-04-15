@@ -21,7 +21,7 @@ public class DatabaseConfigurationTest {
     public void asert() {
         final DatabaseConfiguration underTest = new DatabaseConfiguration();
         assertThat(underTest.getHost()).isNull();
-        assertThat(underTest.getPort()).isEqualTo(0);
+        assertThat(underTest.getPort()).isZero();
         assertThat(underTest.getDatabaseName()).isNull();
         assertThat(underTest.getUser()).isNull();
         assertThat(underTest.getPassword()).isNull();
