@@ -2,6 +2,7 @@ package de.bogenliga.application.springconfiguration.security.permissions;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -117,7 +118,7 @@ public class RequiresOnePermissionAspect {
     }
     Method getCurrentMethod(final ProceedingJoinPoint joinPoint) {
         if(joinPoint == null) {
-            System.out.println("joinPoint is null");  //NullPointerException will be thrown
+            Logger.getLogger("joinPoint is null");  //NullPointerException will be thrown
             return null;
         }
         final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
