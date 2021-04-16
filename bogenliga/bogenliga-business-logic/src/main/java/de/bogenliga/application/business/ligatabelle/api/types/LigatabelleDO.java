@@ -3,7 +3,7 @@ package de.bogenliga.application.business.ligatabelle.api.types;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
-import java.time.OffsetDateTime;
+
 import java.util.Objects;
 
 /**
@@ -26,10 +26,10 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
     private Long vereinId;
     private String vereinName;
     private int matchpkt;
-    private int matchpkt_gegen;
+    private int matchpktGegen;
     private int satzpkt;
-    private int satzpkt_gegen;
-    private int satzpkt_differenz;
+    private int satzpktGegen;
+    private int satzpktDifferenz;
     private int sortierung;
     private int tabellenplatz;
 
@@ -53,10 +53,10 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
      * @param vereinId;
      * @param vereinName;
      * @param matchpkt;
-     * @param matchpkt_gegen;
+     * @param matchpktGegen;
      * @param satzpkt;
-     * @param satzpkt_gegen;
-     * @param satzpkt_differenz;
+     * @param satzpktGegen;
+     * @param satzpktDifferenz;
      * @param sortierung;
      * @param tabellenplatz;
 
@@ -71,10 +71,10 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
             final Long vereinId,
             final String vereinName,
             final int matchpkt,
-            final int matchpkt_gegen,
+            final int matchpktGegen,
             final int satzpkt,
-            final int satzpkt_gegen,
-            final int satzpkt_differenz,
+            final int satzpktGegen,
+            final int satzpktDifferenz,
             final int sortierung,
             final int tabellenplatz
             ) {
@@ -87,10 +87,10 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
         this.vereinId = vereinId;
         this.vereinName = vereinName;
         this.matchpkt = matchpkt;
-        this.matchpkt_gegen = matchpkt_gegen;
+        this.matchpktGegen = matchpktGegen;
         this.satzpkt = satzpkt;
-        this.satzpkt_gegen = satzpkt_gegen;
-        this.satzpkt_differenz = satzpkt_differenz;
+        this.satzpktGegen = satzpktGegen;
+        this.satzpktDifferenz = satzpktDifferenz;
         this.sortierung = sortierung;
         this.tabellenplatz = tabellenplatz;
     }
@@ -127,17 +127,17 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
     public int getmatchpkt() { return matchpkt; }
     public void setmatchpkt(int matchpkt) { this.matchpkt = matchpkt; }
 
-    public int getmatchpkt_gegen() { return matchpkt_gegen; }
-    public void setmatchpkt_gegen(int matchpkt_gegen) { this.matchpkt_gegen = matchpkt_gegen; }
+    public int getmatchpktGegen() { return matchpktGegen; }
+    public void setmatchpktGegen(int matchpktGegen) { this.matchpktGegen = matchpktGegen; }
 
     public int getsatzpkt() { return satzpkt; }
     public void setsatzpkt(int satzpkt) { this.satzpkt = satzpkt; }
 
-    public int getsatzpkt_gegen() { return satzpkt_gegen; }
-    public void setsatzpkt_gegen(int satzpkt_gegen) { this.satzpkt_gegen = satzpkt_gegen; }
+    public int getsatzpktGegen() { return satzpktGegen; }
+    public void setsatzpktGegen(int satzpktGegen) { this.satzpktGegen = satzpktGegen; }
 
-    public int getsatzpkt_differenz() { return satzpkt_differenz; }
-    public void setsatzpkt_differenz(int satzpkt_differenz) { this.satzpkt_differenz = satzpkt_differenz; }
+    public int getsatzpktDifferenz() { return satzpktDifferenz; }
+    public void setsatzpktDifferenz(int satzpktDifferenz) { this.satzpktDifferenz = satzpktDifferenz; }
 
     public int getsortierung() { return sortierung; }
     public void setsortierung(int sortierung) { this.sortierung = sortierung; }
@@ -150,8 +150,8 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt,
-                satzpkt_gegen, satzpkt_differenz, sortierung, tabellenplatz);
+                mannschaftNummer, vereinId, vereinName, matchpkt, matchpktGegen, satzpkt,
+                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz);
     }
 
     @Override
@@ -172,10 +172,10 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
                 vereinId.equals(that.vereinId) &&
                 Objects.equals(vereinName, that.vereinName)&&
                 matchpkt == that.matchpkt &&
-                matchpkt_gegen == that.matchpkt_gegen &&
+                matchpktGegen == that.matchpktGegen &&
                 satzpkt == that.satzpkt &&
-                satzpkt_gegen == that.satzpkt_gegen &&
-                satzpkt_differenz == that.satzpkt_differenz &&
+                satzpktGegen == that.satzpktGegen &&
+                satzpktDifferenz == that.satzpktDifferenz &&
                 sortierung == that.sortierung &&
                 tabellenplatz == that.tabellenplatz;
 

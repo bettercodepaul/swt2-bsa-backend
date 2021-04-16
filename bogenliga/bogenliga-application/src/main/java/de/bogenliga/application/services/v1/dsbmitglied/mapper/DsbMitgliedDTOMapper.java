@@ -42,7 +42,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
-                dsbMitgliedUserId, dsbMitgliedKampfrichterlizenz);//,dsbMitgliedKampfrichter);
+                dsbMitgliedUserId, dsbMitgliedKampfrichterlizenz);
     };
 
     /**
