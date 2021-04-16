@@ -90,8 +90,6 @@ public class KampfrichterService implements ServiceFacade {
                 kampfrichterDTO.getLeitend());
 
         final KampfrichterDO newKampfrichterDO = KampfrichterDTOMapper.toDO.apply(kampfrichterDTO);
-        // TODO: What does this do and why do we need it?
-//        final long userId = UserProvider.getCurrentUserId(principal);
 
         final KampfrichterDO savedKampfrichterDO = kampfrichterComponent.create(newKampfrichterDO,
                 newKampfrichterDO.getUserId());
