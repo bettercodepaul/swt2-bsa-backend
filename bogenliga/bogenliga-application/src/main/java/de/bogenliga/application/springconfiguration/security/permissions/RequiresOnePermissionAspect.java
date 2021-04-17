@@ -99,19 +99,19 @@ public class RequiresOnePermissionAspect {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
 
             final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //If-Abfrage (request != null) gelöscht, da request einen WErt zugewiesen bekommt und dadurch nicht null sein kann
+            if(request != null) { 
 
-            // parse json web token with roles
-            final String jwt = JwtTokenProvider.resolveToken(request);
+                // parse json web token with roles
+                final String jwt = JwtTokenProvider.resolveToken(request);
 
-            // custom permission check
-            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+                // custom permission check
+                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-            // verify all jwt permissions are part of the required permissions
-            if (userPermissions.contains(toTest)) {
-                result = true;
+                // verify all jwt permissions are part of the required permissions
+                if (userPermissions.contains(toTest)) {
+                    result = true;
+                }
             }
-
         }
 
         return result;
