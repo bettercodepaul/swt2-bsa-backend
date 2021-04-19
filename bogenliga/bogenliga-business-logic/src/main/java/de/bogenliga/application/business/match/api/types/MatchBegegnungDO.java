@@ -66,38 +66,6 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.setLastModifiedByUserId(lastModifiedByUserId);
     }
 
-    public MatchBegegnungDO(Long wettkampfId,
-                            Long matchnummer,
-                            Long matchid,
-                            Long matchid_gegner,
-                            String mannschaften,
-                            Long begegnung,
-                            Long scheibenNummer,
-                            Long scheibenNummer_gegner,
-                            Long matchpunkte,
-                            Long satzpunkte,
-                            Long strafPunkteSatz1, Long strafPunkteSatz2,
-                            Long strafPunkteSatz3,
-                            Long strafPunkteSatz4, Long strafPunkteSatz5) {
-        this.setWettkampfId(wettkampfId);
-        this.setMatchnummer(matchnummer);
-        this.setMatchid(matchid);
-        this.setMatchid_gegner(matchid_gegner);
-        this.setMannschaften(mannschaften);
-        this.setBegegnung(begegnung);
-        this.setScheibenNummer(scheibenNummer);
-        this.setScheibenNummer_gegner(scheibenNummer_gegner);
-        this.setMatchpunkte(matchpunkte);
-        this.setSatzpunkte(satzpunkte);
-        this.setStrafPunkteSatz1(strafPunkteSatz1);
-        this.setStrafPunkteSatz2(strafPunkteSatz2);
-        this.setStrafPunkteSatz3(strafPunkteSatz3);
-        this.setStrafPunkteSatz4(strafPunkteSatz4);
-        this.setStrafPunkteSatz5(strafPunkteSatz5);
-
-    }
-
-
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
