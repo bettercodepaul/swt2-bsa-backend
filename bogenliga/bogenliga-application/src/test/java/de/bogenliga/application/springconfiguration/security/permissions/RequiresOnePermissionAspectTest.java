@@ -1,5 +1,6 @@
 package de.bogenliga.application.springconfiguration.security.permissions;
 
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.Assert;
@@ -7,11 +8,24 @@ import org.junit.Assert;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import org.mockito.InjectMocks;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
+
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoRule;
 import org.mockito.junit.MockitoJUnit;
 
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Test for RequiresOnePermissionAspect
@@ -24,6 +38,9 @@ public class RequiresOnePermissionAspectTest {
     //Mock Daten
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
 
     @InjectMocks
     private RequiresOnePermissionAspect underTest;
@@ -42,7 +59,23 @@ public class RequiresOnePermissionAspectTest {
     @Test
     public void testHasPermission_requestAttributesNull_returnFalse() {
         UserPermission userPermission = UserPermission.CAN_READ_DEFAULT;
-        Assert.assertEquals(false, underTest.hasPermission(userPermission));
+        assertFalse(underTest.hasPermission(userPermission));
+    }
+
+    @Test
+    public void testHasPermission() {
+        // wir mocken keine statischen Aufrufe,
+        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer testpermission");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_READ_DEFAULT, UserPermission.CAN_CREATE_STAMMDATEN));
+        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+
+        assertTrue(underTest.hasPermission(UserPermission.CAN_READ_DEFAULT));
+        assertFalse(underTest.hasPermission(UserPermission.CAN_READ_STAMMDATEN));
+
     }
 
     /* TODO: Implement this test */
