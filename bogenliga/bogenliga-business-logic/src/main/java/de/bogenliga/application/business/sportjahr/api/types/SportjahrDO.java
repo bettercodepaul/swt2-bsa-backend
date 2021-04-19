@@ -37,14 +37,5 @@ public class SportjahrDO extends CommonDataObject implements DataObject {
         this.sportjahr = sportjahr;
     }
 
-    @Override
-    public Long getVersion() {
-        return version;
-    }
-
-    @Override
-    public void setVersion(Long version) {
-        this.version = version;
-    }
 }
 
