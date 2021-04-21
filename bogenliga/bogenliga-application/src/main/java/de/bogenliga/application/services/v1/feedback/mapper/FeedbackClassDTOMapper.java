@@ -5,5 +5,5 @@ package de.bogenliga.application.services.v1.feedback.mapper;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class FeedbackClassDTOMapper {
+public interface FeedbackClassDTOMapper {
 }
