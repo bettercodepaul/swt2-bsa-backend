@@ -23,7 +23,7 @@ public interface EinstellungenComponent extends ComponentFacade {
     /**
      * Return a single einstellungen entry found by its id
      *
-     * @param id        id of the entry
+     * @param id id of the entry
      * @return a single entry or empty list, if no einstellungen is found
      */
     EinstellungenDO findById(final long id);
