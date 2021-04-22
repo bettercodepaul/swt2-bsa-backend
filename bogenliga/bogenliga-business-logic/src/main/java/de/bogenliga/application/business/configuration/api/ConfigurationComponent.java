@@ -22,6 +22,15 @@ public interface ConfigurationComponent extends ComponentFacade {
 
 
     /**
+     * Return a single configuration entry found by its id
+     *
+     * @param id        id of the entry
+     * @return a single entry or empty list, if no configuration is found
+     */
+    ConfigurationDO findById(final long id);
+
+
+    /**
      * I return a configuration entry with the given key.
      *
      * @param key of the configuration key-value pair
