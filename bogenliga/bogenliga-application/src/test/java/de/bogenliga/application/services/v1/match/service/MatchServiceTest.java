@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import javax.naming.NoPermissionException;
 
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Before;
@@ -41,8 +43,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import java.io.*;
@@ -63,6 +64,9 @@ public class MatchServiceTest {
 
     @Mock
     private WettkampfComponent wettkampfComponent;
+
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
 
     @Mock
     private WettkampfTypComponent wettkampfTypComponent;
@@ -588,26 +592,72 @@ public class MatchServiceTest {
         request.addHeader("Authorization", "Bearer testpermission");
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_READ_DEFAULT, UserPermission.CAN_CREATE_STAMMDATEN));
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_CREATE_STAMMDATEN));
         Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
 
-        assertTrue(underTest.hasPermission(UserPermission.CAN_READ_DEFAULT));
-        assertFalse(underTest.hasPermission(UserPermission.CAN_READ_STAMMDATEN));
+        assertTrue(underTest.hasPermission(1L).equals(1L));
 
     }
 
-    public void testHasSpecificPermissionWettkampf() {
+    @Test
+    public void testHasPermissionMyWettkampf() {
         // wir mocken keine statischen Aufrufe,
         // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer testpermission");
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_READ_DEFAULT, UserPermission.CAN_CREATE_STAMMDATEN));
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_MY_WETTKAMPF, UserPermission.CAN_CREATE_STAMMDATEN));
         Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
 
-        assertTrue(underTest.hasPermission(UserPermission.CAN_READ_DEFAULT));
-        assertFalse(underTest.hasPermission(UserPermission.CAN_READ_STAMMDATEN));
+        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
+        ArrayList<WettkampfDO> wettkaempfeDOS = new ArrayList<>();
+        wettkaempfeDOS.add(wettkampfDO);
 
+        when(wettkampfComponent.findByAusrichter(anyLong())).thenReturn(wettkaempfeDOS);
+
+        assertTrue(underTest.hasPermission(W_id).equals(1L));
+        assertFalse(underTest.hasPermission(1L).equals(1L));
     }
+    @Test
+    public void testHasPermissionMyVeranstaltung() {
+        // wir mocken keine statischen Aufrufe,
+        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer testpermission");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, UserPermission.CAN_CREATE_STAMMDATEN));
+        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
+
+        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungID(W_vid);
+        ArrayList<VeranstaltungDO> veranstaltungenDOS = new ArrayList<>();
+        veranstaltungenDOS.add(veranstaltungDO);
+        when(veranstaltungComponent.findByLigaleiterId(anyLong())).thenReturn(veranstaltungenDOS);
+
+        assertTrue(underTest.hasPermission(W_id).equals(1L));
+    }
+
+    @Test
+    public void testHasPermissionNoPermissionException() {
+        // wir mocken keine statischen Aufrufe,
+        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer testpermission");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_CREATE_STAMMDATEN));
+        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
+
+        assertTrue(underTest.hasPermission(W_id).equals(0L));
+    }
+
 }
