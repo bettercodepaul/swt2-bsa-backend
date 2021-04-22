@@ -3,15 +3,17 @@ package de.bogenliga.application.services.v1.match.service;
 import java.security.Principal;
 import java.sql.Date;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -32,9 +34,15 @@ import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import java.io.*;
@@ -69,7 +77,11 @@ public class MatchServiceTest {
     private MatchComponent matchComponent;
 
     @Mock
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+
 
     @InjectMocks
     private MatchService underTest;
@@ -257,6 +269,21 @@ public class MatchServiceTest {
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
+    }
+
+    @Test
+    public void testFindAll() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        ArrayList<MatchDO> matchesDO = new ArrayList<>();
+        matchesDO.add(matchDO1);
+        matchesDO.add(matchDO1);
+
+        when(matchComponent.findAll()).thenReturn(matchesDO);
+        final List<MatchDTO> actual = underTest.findAll();
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+
     }
 
 
@@ -520,5 +547,67 @@ public class MatchServiceTest {
         assertThatThrownBy(() -> {
             underTest.update(null, principal);
         }).isInstanceOf(NullPointerException.class);
+    }
+
+
+    @Test
+    public void testFindByWettkampfId() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        ArrayList<MatchDO> matchesDO = new ArrayList<>();
+        matchesDO.add(matchDO1);
+        matchesDO.add(matchDO1);
+
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
+        VereinDO vereinDO = getVereinDO(VEREIN_ID);
+
+        matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
+
+
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchesDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        final List<MatchDTO> actual = underTest.findByWettkampfId(1L);
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+
+        final MatchDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(matchDTO.getId());
+        assertThat(actualDTO.getMannschaftId()).isEqualTo(matchDTO.getMannschaftId());
+        assertThat(actualDTO.getMannschaftName()).isEqualTo(matchDTO.getMannschaftName());
+
+    }
+
+    @Test
+    public void testHasPermission() {
+        // wir mocken keine statischen Aufrufe,
+        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer testpermission");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_READ_DEFAULT, UserPermission.CAN_CREATE_STAMMDATEN));
+        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+
+        assertTrue(underTest.hasPermission(UserPermission.CAN_READ_DEFAULT));
+        assertFalse(underTest.hasPermission(UserPermission.CAN_READ_STAMMDATEN));
+
+    }
+
+    public void testHasSpecificPermissionWettkampf() {
+        // wir mocken keine statischen Aufrufe,
+        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer testpermission");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_READ_DEFAULT, UserPermission.CAN_CREATE_STAMMDATEN));
+        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+
+        assertTrue(underTest.hasPermission(UserPermission.CAN_READ_DEFAULT));
+        assertFalse(underTest.hasPermission(UserPermission.CAN_READ_STAMMDATEN));
+
     }
 }

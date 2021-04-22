@@ -184,7 +184,17 @@ public class MatchService implements ServiceFacade {
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
 
-        return wettkampfMatches.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+        final List<MatchDTO> matchDTOs = new ArrayList<>();
+
+        for( MatchDO einmatch: wettkampfMatches) {
+            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
+            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
+            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
+            matchDTOs.add(matchDTO);
+        }
+
+        return matchDTOs;
     }
 
     /**
@@ -257,40 +267,6 @@ public class MatchService implements ServiceFacade {
         return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    @GetMapping(value = "findAllWettkampfMatches/wettkampfid={id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-    public List<MatchDTO> findby(@PathVariable("id") Long wettkampfid) {
-        this.checkMatchId(wettkampfid);
-
-        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
-
-        return wettkampfMatches.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
-    }
-
-    // lesen aller Matches eines Wettkampfs und bestimmen der Namen der Mannschaften
-    @GetMapping(value = "findAllWettkampfMatchesAndName/wettkampfid={id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
-
-    public List<MatchDTO> findInklNameby(@PathVariable("id") Long wettkampfid) {
-
-        this.checkMatchId(wettkampfid);
-
-        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
-
-        final List<MatchDTO> matchDTOs = new ArrayList<>();
-
-        for( MatchDO einmatch: wettkampfMatches) {
-            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
-            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
-            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
-            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
-            matchDTOs.add(matchDTO);
-        }
-
-        return matchDTOs;
-    }
 
 
     /**
