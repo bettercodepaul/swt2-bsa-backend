@@ -50,7 +50,6 @@ public class EinstellungenDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.key = key;
         this.value = value;
-
     }
 
     public Long getId() {
