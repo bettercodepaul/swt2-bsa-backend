@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
 import javax.servlet.http.HttpServletRequest;
 import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
@@ -116,7 +115,6 @@ public class MatchService implements ServiceFacade {
     private final DsbMannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserComponent userComponent;
     private final VeranstaltungComponent veranstaltungsComponent;
 
 
@@ -124,7 +122,6 @@ public class MatchService implements ServiceFacade {
      * Constructor with dependency injection
      * @param matchComponent to handle the database CRUD requests
      * @param jwtTokenProvider
-     * @param userComponent
      * @param veranstaltungsComponent
      */
     @Autowired
@@ -136,7 +133,6 @@ public class MatchService implements ServiceFacade {
                         final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                         final WettkampfTypComponent wettkampftypComponent,
                         JwtTokenProvider jwtTokenProvider,
-                        UserComponent userComponent,
                         VeranstaltungComponent veranstaltungsComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
@@ -146,7 +142,6 @@ public class MatchService implements ServiceFacade {
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.wettkampfTypComponent = wettkampftypComponent;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userComponent = userComponent;
         this.veranstaltungsComponent = veranstaltungsComponent;
     }
 
@@ -200,8 +195,8 @@ public class MatchService implements ServiceFacade {
     /**
      * There are always 2 matches on a schusszettel form
      *
-     * @param matchId1
-     * @param matchId2
+     * @param matchId1 das erste Match auf dem Schusszettel
+     * @param matchId2 das zweite Match auf dem Schusszettel
      *
      * @return
      */
@@ -273,7 +268,8 @@ public class MatchService implements ServiceFacade {
      * Save the two edited matches from the findMatchesByIds service.
      * Also save the passe objects in case there are some.
      *
-     * @param matchDTOs
+     * @param matchDTOs die abzuspeichernden Matches
+     * @param principal User Id der ändernden Users
      *
      * @return
      */
@@ -282,11 +278,18 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) throws NoPermissionException {
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTOs.get(0).getWettkampfId())){
-
-        }else{
-            throw new NoPermissionException();
+        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        Long userId= this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF);
+        if(userId.equals(0L)){
+            //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ausrichter editieren?
+            userId = this.hasSpecificPermissionWettkampf(UserPermission.CAN_MODIFY_MY_WETTKAMPF, matchDTOs.get(0).getWettkampfId());
+            if (userId.equals(0L)){
+                //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ligaleiter editieren?
+                userId = this.hasSpecificPermissionLiga(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, matchDTOs.get(0).getWettkampfId());
+                if (userId.equals(0L)) {
+                    throw new NoPermissionException();
+                }
+            }
         }
         Preconditions.checkNotNull(matchDTOs,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST));
@@ -314,8 +317,6 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO1, SERVICE_SAVE_MATCHES);
         this.log(matchDTO2, SERVICE_SAVE_MATCHES);
 
-        final long userId = UserProvider.getCurrentUserId(principal);
-
         saveMatch(matchDTO1, userId);
         saveMatch(matchDTO2, userId);
 
@@ -325,8 +326,8 @@ public class MatchService implements ServiceFacade {
 
     /**
      * Save a single match, also creates/updates related passe objects.
-     * @param matchDTO
-     * @param userId
+     * @param matchDTO das einzelne Match, dass zu speichen ist
+     * @param userId des ändernden Users
      */
     private void saveMatch(MatchDTO matchDTO, Long userId) throws NoPermissionException {
 
@@ -352,9 +353,9 @@ public class MatchService implements ServiceFacade {
     /**
      * Checks whether the given passe object already exists.
      * If so, just update it, if not, create it.
-     * @param passeDTO
-     * @param userId
-     * @param mannschaftsmitgliedDOS
+     * @param passeDTO die Passe die zu aktualiseren ist
+     * @param userId ändernder User
+     * @param mannschaftsmitgliedDOS Liste der Mannschaftsmitglieder
      */
     private void createOrUpdatePasse(PasseDTO passeDTO, Long userId,
                                      List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) throws NoPermissionException {
@@ -399,8 +400,8 @@ public class MatchService implements ServiceFacade {
      * schuetzeNr. 3 -> mmgId: 125154
      * etc..
      *
-     * @param passeDTO
-     * @param mannschaftsmitgliedDOS
+     * @param passeDTO passe für die die Mannschaftsmitlgider zu identifizieren sind
+     * @param mannschaftsmitgliedDOS liste in der die die Rückennummern zuzuordnen sind
      *
      * @return
      */
@@ -453,7 +454,7 @@ public class MatchService implements ServiceFacade {
     /**
      * Sucht nach dem zweiten Match einer Begegnung - das erste wird als Parameter mitgegeben
      * in der Liste aller Matches des Wettkampftages, der zugehörigen andren Scheibe und identischer Begegnungs-nr.
-     * @param matchId
+     * @param matchId Match zu welchem der Partner gesucht wird
      *
      * @return
      */
@@ -465,11 +466,18 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
         MatchDO matchDO = matchComponent.findById(matchId);
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId())){
-
-        }else{
-            throw new NoPermissionException();
+        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        Long userId= this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF);
+        if(userId.equals(0L)){
+            //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ausrichter editieren?
+            userId = this.hasSpecificPermissionWettkampf(UserPermission.CAN_MODIFY_MY_WETTKAMPF, matchId);
+            if (userId.equals(0L)){
+                //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ligaleiter editieren?
+                userId = this.hasSpecificPermissionLiga(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, matchId);
+                if (userId.equals(0L)) {
+                    throw new NoPermissionException();
+                }
+            }
         }
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
 
@@ -494,7 +502,7 @@ public class MatchService implements ServiceFacade {
     /**
      * Sucht nach dem zweiten Match einer Begegnung - das erste wird als Parameter mitgegeben
      * in der Liste aller Matches des Wettkampftages, der zugehörigen andren Scheibe und identischer Begegnungs-nr.
-     * @param matchId
+     * @param matchId das zugehörige Match
      *
      * @return
      * List (MatchDO) oder null wenn es im gleichen Wettkampf das letzte Match ist.
@@ -506,11 +514,18 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
         MatchDO matchDO = matchComponent.findById(matchId);
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId())){
-
-        }else{
-            throw new NoPermissionException();
+        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        Long userId= this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF);
+        if(userId.equals(0L)){
+            //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ausrichter editieren?
+            userId = this.hasSpecificPermissionWettkampf(UserPermission.CAN_MODIFY_MY_WETTKAMPF, matchId);
+            if (userId.equals(0L)){
+                //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ligaleiter editieren?
+                userId = this.hasSpecificPermissionLiga(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, matchId);
+                if (userId.equals(0L)) {
+                    throw new NoPermissionException();
+                }
+            }
         }
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
         Long scheibeNr = 0L;
@@ -551,7 +566,7 @@ public class MatchService implements ServiceFacade {
     /**
      * Return the ids of the next two matches happening after the given match on a single Wettkampftag.
      *
-     * @param matchId
+     * @param matchId zu welchem die beiden folgenden Matches gesucht werden
      *
      * @return
      */
@@ -562,11 +577,18 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
         MatchDO matchDO = matchComponent.findById(matchId);
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDO.getWettkampfId())){
-
-        }else{
-            throw new NoPermissionException();
+        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        Long userId= this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF);
+        if(userId.equals(0L)){
+            //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ausrichter editieren?
+            userId = this.hasSpecificPermissionWettkampf(UserPermission.CAN_MODIFY_MY_WETTKAMPF, matchId);
+            if (userId.equals(0L)){
+                //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ligaleiter editieren?
+                userId = this.hasSpecificPermissionLiga(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, matchId);
+                if (userId.equals(0L)) {
+                    throw new NoPermissionException();
+                }
+            }
         }
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
 
@@ -592,7 +614,7 @@ public class MatchService implements ServiceFacade {
     /**
      * create-Method() writes a new entry of match into the database
      *
-     * @param matchDTO
+     * @param matchDTO anzulegenden Match
      *
      * @return
      */
@@ -601,11 +623,18 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public MatchDTO create(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException {
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTO.getWettkampfId())){
-
-        }else{
-            throw new NoPermissionException();
+        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        Long userId= this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF);
+        if(userId.equals(0L)){
+            //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ausrichter editieren?
+            userId = this.hasSpecificPermissionWettkampf(UserPermission.CAN_MODIFY_MY_WETTKAMPF, matchDTO.getWettkampfId());
+            if (userId.equals(0L)){
+                //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ligaleiter editieren?
+                userId = this.hasSpecificPermissionLiga(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, matchDTO.getWettkampfId());
+                if (userId.equals(0L)) {
+                    throw new NoPermissionException();
+                }
+            }
         }
         Preconditions.checkNotNull(principal,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_CREATE, CHECKED_PARAM_PRINCIPAL));
@@ -614,7 +643,6 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO, SERVICE_CREATE);
 
         final MatchDO newMatch = MatchDTOMapper.toDO.apply(matchDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
 
         final MatchDO savedNewMatch = matchComponent.create(newMatch, userId);
         return MatchDTOMapper.toDTO.apply(savedNewMatch);
@@ -623,7 +651,7 @@ public class MatchService implements ServiceFacade {
     /**
      *
      *
-     * @param veranstaltungDTO
+     * @param veranstaltungDTO mehrere intiale Matches  für den WT0 anlegen
      *
      * @return
      */
@@ -650,8 +678,8 @@ public class MatchService implements ServiceFacade {
     /**
      * Update-Method changes the chosen match entry in the Database
      *
-     * @param matchDTO
-     * @param principal
+     * @param matchDTO Match das upzudaten ist
+     * @param principal ändernden user
      *
      * @return
      */
@@ -660,11 +688,18 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException {
-        if(this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) ||
-                this.hasSpecificPermission(UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,matchDTO.getWettkampfId())){
-
-        }else{
-            throw new NoPermissionException();
+        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        Long userId= this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF);
+        if(userId.equals(0L)){
+            //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ausrichter editieren?
+            userId = this.hasSpecificPermissionWettkampf(UserPermission.CAN_MODIFY_MY_WETTKAMPF, matchDTO.getWettkampfId());
+            if (userId.equals(0L)){
+                //er hat das allgemeine Recht nicht - jetzt prüfen, darf er als Ligaleiter editieren?
+                userId = this.hasSpecificPermissionLiga(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, matchDTO.getWettkampfId());
+                if (userId.equals(0L)) {
+                    throw new NoPermissionException();
+                }
+            }
         }
         Preconditions.checkNotNull(principal,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, CHECKED_PARAM_PRINCIPAL));
@@ -673,7 +708,6 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO, SERVICE_UPDATE);
 
         final MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
 
         final MatchDO updatedMatchDO = matchComponent.update(matchDO, userId);
         return MatchDTOMapper.toDTO.apply(updatedMatchDO);
@@ -797,100 +831,60 @@ public class MatchService implements ServiceFacade {
     /**
      * method to check, if a user has a general permission
      * @param toTest The permission whose existence is getting checked
-     * @return Does the User have the searched permission
+     * @return UserID Does the User have the searched permission
      */
-    boolean hasPermission(UserPermission toTest) {
+    Long hasPermission(UserPermission toTest) {
         //default value is: not allowed
-        boolean result = false;
+        Long userID = 0L;
         //get the current http request from thread
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
-
-                //check if the resolved Permissions
-                //contain the required Permission for the task.
-                if(userPermissions.contains(toTest)) {
-                    result = true;
-                }
+            //parse the Webtoken and get the UserPermissions of the current User
+            final String jwt = JwtTokenProvider.resolveToken(request);
+            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+            //check if the resolved Permissions
+            //contain the required Permission for the task.
+            if (userPermissions.contains(toTest)) {
+                userID = jwtTokenProvider.getUserId(jwt);
             }
         }
-        return result;
+        return userID;
     }
 
     /**
-     * method to check, if a user has a Specific permission with the matching parameters
+     * method to check, if a user has a Specific permission for a single "Wettkampf"
+     * with the matching parameters
      * @param toTest The permission whose existence is getting checked
-     * @return Does the User have searched permission
+     * @return the UserID of the current in case permission is existing, 0L otherwise
      */
-    boolean hasSpecificPermissionWettkampf(UserPermission toTest, Long wettkampfid) {
-        //default value is: not allowed
-        boolean result = false;
-        //get the current http request from thread
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-            final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
-
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>();
-                for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
-                    if(wettkampfDO.getId() ==wettkampfid){
-                        result = true;
-                    }
-                }
-
+    Long hasSpecificPermissionWettkampf(UserPermission toTest, Long wettkampfid) {
+        //get the userId while checking whether the required permission is existing
+        Long UserId = hasPermission(toTest);
+        for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
+            if(wettkampfDO.getId().equals(wettkampfid)){
+                return UserId;
             }
         }
-        return result;
+        return 0L;
     }
-    boolean hasSpecificPermissionLiga(UserPermission toTest, Long wettkampfid) {
-        //default value is: not allowed
-        boolean result = false;
-        //get the current http request from thread
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-            final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>();
-                for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(UserId)){
-                    if(veranstaltungDO.getVeranstaltungID() == wettkampfid){
-                        result = true;
-                    }
-                }
-
+    /**
+     * method to check, if a user has a Specific permission for a single "Veranstaltung"
+     * with the matching parameters
+     * @param toTest The permission whose existence is getting checked
+     * @return the UserID of the current in case permission is existing, 0L otherwise
+     */
+    Long hasSpecificPermissionLiga(UserPermission toTest, Long wettkampfid) {
+        //get the userId while checking whether the required permission is existing
+        Long UserId = hasPermission(toTest);
+        WettkampfDO wettkampfDO = this.wettkampfComponent.findById(wettkampfid);
+        for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(UserId)){
+            if(veranstaltungDO.getVeranstaltungID().equals(wettkampfDO.getWettkampfVeranstaltungsId())){
+                return UserId;
             }
         }
-        return result;
+        return 0L;
     }
-    boolean hasSpecificPermission(UserPermission wettkampfPerm, UserPermission ligaPerm,long wettkampfid){
-        long ligaid = 0;
-        return this.hasSpecificPermissionWettkampf(wettkampfPerm,wettkampfid)|| this.hasSpecificPermissionLiga(ligaPerm,ligaid);
-    }
-
-
-
 }
