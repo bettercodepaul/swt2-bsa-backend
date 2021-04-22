@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
-import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -87,11 +86,6 @@ public class ConfigurationDAO implements DataAccessObject {
      */
     public List<ConfigurationBE> findAll() {
         return basicDao.selectEntityList(CONFIG, FIND_ALL);
-    }
-
-    // Temporary TODO
-    public ConfigurationBE findById(long id){
-        return null;
     }
 
     public ConfigurationBE findByKey(final String key) {
