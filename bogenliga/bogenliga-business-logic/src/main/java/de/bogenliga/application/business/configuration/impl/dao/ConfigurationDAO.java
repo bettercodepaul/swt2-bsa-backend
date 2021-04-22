@@ -80,6 +80,10 @@ public class ConfigurationDAO implements DataAccessObject {
         return basicDao.selectEntityList(CONFIG, FIND_ALL);
     }
 
+    // Temporary TODO
+    public ConfigurationBE findById(long id){
+        return null;
+    }
 
     public ConfigurationBE findByKey(final String key) {
         return basicDao.selectSingleEntity(CONFIG, FIND_BY_KEY, key);

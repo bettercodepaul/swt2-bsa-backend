@@ -9,6 +9,8 @@ import de.bogenliga.application.business.configuration.api.types.ConfigurationDO
 import de.bogenliga.application.business.configuration.impl.dao.ConfigurationDAO;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import de.bogenliga.application.business.configuration.impl.mapper.ConfigurationMapper;
+import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
+import de.bogenliga.application.business.einstellungen.impl.mapper.EinstellungenMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -48,6 +50,16 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
     public List<ConfigurationDO> findAll() {
         final List<ConfigurationBE> configurationBEList = configurationDAO.findAll();
         return configurationBEList.stream().map(ConfigurationMapper.toDO).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public ConfigurationDO findById(long id) {
+        final ConfigurationBE result = configurationDAO.findById(id);
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "no match found for id ");
+        }
+        return ConfigurationMapper.toDO.apply(result);
     }
 
 
