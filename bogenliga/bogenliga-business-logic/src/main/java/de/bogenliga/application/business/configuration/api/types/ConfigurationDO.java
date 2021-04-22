@@ -46,6 +46,11 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
         this.value = value;
     }
 
+    public ConfigurationDO(final String key, final String value) {
+        this.key = key;
+        this.value = value;
+    }
+
 
     public Long getId() {
         return this.id;
