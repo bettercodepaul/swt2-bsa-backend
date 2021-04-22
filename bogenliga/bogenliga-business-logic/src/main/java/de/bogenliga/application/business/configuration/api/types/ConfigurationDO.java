@@ -92,11 +92,12 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RoleDO)) {
+        if (!(o instanceof ConfigurationDO)) {
             return false;
         }
         final ConfigurationDO configurationDO = (ConfigurationDO) o;
-        return Objects.equals(getKey(), configurationDO.getKey()) &&
+        return  Objects.equals(getId(), configurationDO.getId()) &&
+                Objects.equals(getKey(), configurationDO.getKey()) &&
                 Objects.equals(getValue(), configurationDO.getValue());
     }
 }
