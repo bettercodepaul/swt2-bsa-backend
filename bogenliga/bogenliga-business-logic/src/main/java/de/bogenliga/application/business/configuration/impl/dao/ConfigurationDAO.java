@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
+import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -27,10 +28,13 @@ public class ConfigurationDAO implements DataAccessObject {
 
     // table name in the database
     private static final String TABLE = "configuration";
+
     // business entity parameter names
+    private static final String CONFIGURATION_BE_ID = "configurationId";
     private static final String CONFIGURATION_BE_KEY = "configurationKey";
     private static final String CONFIGURATION_BE_VALUE = "configurationValue";
 
+    private static final String CONFIGURATION_TABLE_ID = "configuration_id";
     private static final String CONFIGURATION_TABLE_KEY = "configuration_key";
     private static final String CONFIGURATION_TABLE_VALUE = "configuration_value";
 
@@ -47,6 +51,10 @@ public class ConfigurationDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM configuration "
                     + " WHERE configuration_key = ?";
+    private static final String FIND_BY_ID =
+            "SELECT * "
+                    + " FROM configuration"
+                    + " WHERE configuration_id = ?";
 
     private final BasicDAO basicDao;
 
@@ -65,6 +73,7 @@ public class ConfigurationDAO implements DataAccessObject {
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
+        columnsToFieldsMap.put(CONFIGURATION_TABLE_ID, CONFIGURATION_BE_ID);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_KEY, CONFIGURATION_BE_KEY);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_VALUE, CONFIGURATION_BE_VALUE);
         return columnsToFieldsMap;
@@ -90,11 +99,13 @@ public class ConfigurationDAO implements DataAccessObject {
         return basicDao.insertEntity(CONFIG, configurationBE);
     }
 
+    public ConfigurationBE findById(final long id) {
+        return basicDao.selectSingleEntity(CONFIG, FIND_BY_ID, id);
+    }
 
     public ConfigurationBE update(final ConfigurationBE configurationBE, final long currentUserId) {
         return basicDao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
-
 
     public void delete(final ConfigurationBE configurationBE, final long currentUserId) {
         basicDao.deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
