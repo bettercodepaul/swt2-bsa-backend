@@ -91,7 +91,7 @@ public class ConfigurationServiceTest {
 
 
     @Test
-    public void findByKey() {
+    public void findByKey() {   //TODO remove unused lines
         // prepare test data
         final ConfigurationDO configurationDO = new ConfigurationDO();
         configurationDO.setId(ID);
@@ -99,10 +99,12 @@ public class ConfigurationServiceTest {
         configurationDO.setValue(VALUE);
 
         // configure mocks
-        when(configurationComponent.findByKey(any())).thenReturn(configurationDO);
+        //when(configurationComponent.findByKey(any())).thenReturn(configurationDO);
+        when(configurationComponent.findById(anyLong())).thenReturn(configurationDO);
 
         // call test method
-        final ConfigurationDTO actual = underTest.findByKey(KEY);
+        //final ConfigurationDTO actual = underTest.findByKey(KEY);
+        final ConfigurationDTO actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -111,7 +113,8 @@ public class ConfigurationServiceTest {
         assertThat(actual.getValue()).isEqualTo(configurationDO.getValue());
 
         // verify invocations
-        verify(configurationComponent).findByKey(KEY);
+        //verify(configurationComponent).findByKey(KEY);
+        verify(configurationComponent).findById(ID);
     }
 
 
@@ -190,16 +193,17 @@ public class ConfigurationServiceTest {
 
 
     @Test
-    public void delete() {
+    public void delete() {  //TODO remove unused lines
         // prepare test data
         final ConfigurationDO expected = new ConfigurationDO();
-        //expected.setId(ID);
-        expected.setKey(KEY);
+        expected.setId(ID);
+        //expected.setKey(KEY);
 
         // configure mocks
 
         // call test method
-        underTest.delete(KEY, principal);
+        //underTest.delete(KEY, principal);
+        underTest.delete(ID, principal);
 
         // assert result
 
@@ -209,8 +213,8 @@ public class ConfigurationServiceTest {
         final ConfigurationDO deletedConfiguration = configurationVOArgumentCaptor.getValue();
 
         assertThat(deletedConfiguration).isNotNull();
-        //assertThat(deletedConfiguration.getId()).isEqualTo(expected.getId());
-        assertThat(deletedConfiguration.getKey()).isEqualTo(expected.getKey());
+        assertThat(deletedConfiguration.getId()).isEqualTo(expected.getId());
+        //assertThat(deletedConfiguration.getKey()).isEqualTo(expected.getKey());
         assertThat(deletedConfiguration.getValue()).isNullOrEmpty();
     }
 }
