@@ -11,6 +11,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * @see DataTransferObject
  */
 public class ConfigurationDTO implements DataTransferObject {
+    private Long id;
     private String key;
     private String value;
 
@@ -29,9 +30,26 @@ public class ConfigurationDTO implements DataTransferObject {
      * @param key   of the key-value-pair
      * @param value of the key-value-pair
      */
+    /*
     public ConfigurationDTO(final String key, final String value) {
         this.key = key;
         this.value = value;
+    }*/
+
+    public ConfigurationDTO(final Long id, final String key, final String value){
+        this.id = id;
+        this.key = key;
+        this.value = value;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 
