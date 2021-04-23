@@ -114,8 +114,8 @@ public class LizenzComponentImpl implements LizenzComponent {
 
     @Override
     public List<LizenzDO> findByDsbMitgliedId(long id) {
-        final List<LizenzBE> LizenzBEList = lizenzDAO.findByDsbMitgliedId(id);
-        return LizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
+        final List<LizenzBE> lizenzBEList = lizenzDAO.findByDsbMitgliedId(id);
+        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
                 Collectors.toList());
 
     }
@@ -178,7 +178,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 veranstaltungDO.getVeranstaltungID());
         LizenzBE lizenz = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(mitgliedDO.getId(),
                 wettkampfDOList.get(0).getWettkampfDisziplinId());
-        System.out.println(lizenz);
+        LOGGER.info("Lizenz:\n {}", lizenz);
         result = generateDoc(mitgliedDO, lizenz, veranstaltungDO).toByteArray();
         return result;
     }
@@ -199,29 +199,29 @@ public class LizenzComponentImpl implements LizenzComponent {
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOs = this.mannschaftsmitgliedComponent.findByTeamId(
                 dsbMannschaftsId);
 
-        HashMap<String, List<String>> LizenzenMapping = new HashMap<>();
+        HashMap<String, List<String>> lizenzenMapping = new HashMap<>();
 
-        String Liganame = veranstaltungDO.getVeranstaltungName();
+        String liganame = veranstaltungDO.getVeranstaltungName();
 
         for (MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
             DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
             VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
-            String Verein = vereinDO.getName();
-            String Schuetzenname = dsbMitgliedDO.getNachname();
-            String Schuetzenvorname = dsbMitgliedDO.getVorname();
+            String verein = vereinDO.getName();
+            String schuetzenname = dsbMitgliedDO.getNachname();
+            String schuetzenvorname = dsbMitgliedDO.getVorname();
             LizenzBE lizenzen = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(dsbMitgliedDO.getId(),
                     wettkampfDOList.get(0).getWettkampfDisziplinId());
-            String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
+            String rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-            List<String> Schuetzendaten = new ArrayList();
-            Schuetzendaten.add(Liganame);
-            Schuetzendaten.add(Verein);
-            Schuetzendaten.add(Schuetzenname);
-            Schuetzendaten.add(Schuetzenvorname);
-            Schuetzendaten.add(veranstaltungDO.getVeranstaltungSportJahr().toString());
-            Schuetzendaten.add(lizenzen.getLizenznummer());
-            LizenzenMapping.put(Rueckennummer, Schuetzendaten);
+            List<String> schuetzendaten = new ArrayList<>();
+            schuetzendaten.add(liganame);
+            schuetzendaten.add(verein);
+            schuetzendaten.add(schuetzenname);
+            schuetzendaten.add(schuetzenvorname);
+            schuetzendaten.add(veranstaltungDO.getVeranstaltungSportJahr().toString());
+            schuetzendaten.add(lizenzen.getLizenznummer());
+            lizenzenMapping.put(rueckennummer, schuetzendaten);
         }
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -229,7 +229,7 @@ public class LizenzComponentImpl implements LizenzComponent {
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateLizenzenDoc(doc, LizenzenMapping);
+            generateLizenzenDoc(doc, lizenzenMapping);
 
             return result.toByteArray();
 
@@ -250,7 +250,6 @@ public class LizenzComponentImpl implements LizenzComponent {
                     lizenz.getLizenznummer(), mitglied.getNachname(), mitglied.getVorname(),
                     veranstaltung.getVeranstaltungName(),
                     veranstaltung.getVeranstaltungSportJahr().toString());
-            doc.close();
             ret = result;
         } catch (final IOException e) {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF Dokument konnte nicht erstellt werden: " + e);
@@ -258,15 +257,15 @@ public class LizenzComponentImpl implements LizenzComponent {
         return ret;
     }
 
-    private void generateLizenzenDoc(Document doc, HashMap<String, List<String>> LizenzenMapping) {
+    private void generateLizenzenDoc(Document doc, HashMap<String, List<String>> lizenzenmapping) {
 
-        for (String rNummer : LizenzenMapping.keySet()) {
-            String liga = LizenzenMapping.get(rNummer).get(0);
-            String verein = LizenzenMapping.get(rNummer).get(1);
-            String schuetzename = LizenzenMapping.get(rNummer).get(2);
-            String schuetzevorname = LizenzenMapping.get(rNummer).get(3);
-            String sportjahr = LizenzenMapping.get(rNummer).get(4);
-            String lizenz = LizenzenMapping.get(rNummer).get(5);
+        for (String rNummer : lizenzenmapping.keySet()) {
+            String liga = lizenzenmapping.get(rNummer).get(0);
+            String verein = lizenzenmapping.get(rNummer).get(1);
+            String schuetzename = lizenzenmapping.get(rNummer).get(2);
+            String schuetzevorname = lizenzenmapping.get(rNummer).get(3);
+            String sportjahr = lizenzenmapping.get(rNummer).get(4);
+            String lizenz = lizenzenmapping.get(rNummer).get(5);
 
             generateLizenzPage(doc, verein, lizenz, schuetzename, schuetzevorname, liga, sportjahr);
         }
