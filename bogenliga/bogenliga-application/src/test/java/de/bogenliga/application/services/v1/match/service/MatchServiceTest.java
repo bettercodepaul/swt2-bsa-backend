@@ -660,4 +660,5 @@ public class MatchServiceTest {
         assertTrue(underTest.hasPermission(W_id).equals(0L));
     }
 
+
 }
