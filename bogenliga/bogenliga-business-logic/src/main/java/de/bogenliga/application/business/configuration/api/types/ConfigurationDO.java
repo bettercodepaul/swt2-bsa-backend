@@ -2,7 +2,6 @@ package de.bogenliga.application.business.configuration.api.types;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import de.bogenliga.application.business.role.api.types.RoleDO;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
