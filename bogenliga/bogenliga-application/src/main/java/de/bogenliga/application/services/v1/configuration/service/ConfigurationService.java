@@ -83,6 +83,7 @@ public class ConfigurationService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<ConfigurationDTO> findAll() {
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
+        LOG.debug("Received Configuration request");
         return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -104,7 +105,7 @@ public class ConfigurationService implements ServiceFacade {
      */
     @GetMapping(value = "{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
-    public ConfigurationDTO findByKey(@PathVariable("key") final String key) {
+    public ConfigurationDTO findByKey(@PathVariable("key") final String key) {  //TODO change key to id
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 
         LOG.debug("Receive 'findByKey' request with key '{}'", key);
@@ -141,13 +142,15 @@ public class ConfigurationService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public ConfigurationDTO create(@RequestBody final ConfigurationDTO configurationDTO, final Principal principal) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
+        Preconditions.checkArgument(configurationDTO.getId() >= 0, "ConfigurationDTO id must not be negative");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
 
-        LOG.debug("Receive 'create' request with key '{}' and value '{}'", configurationDTO.getKey(),
+        LOG.debug("Receive 'create' request with id '{}' key '{}' and value '{}'", configurationDTO.getId(),
+                configurationDTO.getKey(),
                 configurationDTO.getValue());
 
-        final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
+        final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toDO.apply(configurationDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final ConfigurationDO savedConfigurationDO = configurationComponent.create(newConfigurationDO, userId);
@@ -171,13 +174,14 @@ public class ConfigurationService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     public ConfigurationDTO update(@RequestBody final ConfigurationDTO configurationDTO, final Principal principal) {
         Preconditions.checkNotNull(configurationDTO, "ConfigurationDTO must not null");
+        Preconditions.checkArgument(configurationDTO.getId() >= 0, "ConfigurationDTO id must not be negative");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
 
         LOG.debug("Receive 'update' request with key '{}' and value '{}'", configurationDTO.getKey(),
                 configurationDTO.getValue());
 
-        final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toVO.apply(configurationDTO);
+        final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toDO.apply(configurationDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final ConfigurationDO updatedConfigurationDO = configurationComponent.update(newConfigurationDO, userId);
@@ -193,7 +197,7 @@ public class ConfigurationService implements ServiceFacade {
      */
     @DeleteMapping(value = "{key}")
     @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
-    public void delete(@PathVariable("key") final String key, final Principal principal) {
+    public void delete(@PathVariable("key") final String key, final Principal principal) {  //TODO change key to id
         Preconditions.checkNotNullOrEmpty(key, "Key string must not null or empty");
 
         LOG.debug("Receive 'delete' request with key '{}'", key);
