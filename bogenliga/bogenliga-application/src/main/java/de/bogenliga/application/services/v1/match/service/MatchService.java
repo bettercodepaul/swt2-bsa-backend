@@ -432,25 +432,6 @@ public class MatchService implements ServiceFacade {
 
 
     /**
-     * Derives the schuetzeNr from the position in the member list
-     * @param passeDTO Daten (DsbMitgliedID) des Schützen
-     * @param mannschaftsmitgliedDOS Liste der Mannshcaftsmitlgider
-     * @return Integer der Schützennummer im Team
-     */
-    public static Integer getSchuetzeNrFor(PasseDTO passeDTO, List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS) {
-        int idx = 0;
-        Integer schuetzeNr = 0;
-        for (MannschaftsmitgliedDO mmdo : mannschaftsmitgliedDOS) {
-            if (mmdo.getDsbMitgliedId().equals(passeDTO.getDsbMitgliedId())) {
-                schuetzeNr = idx + 1;
-            }
-            idx++;
-        }
-        return schuetzeNr;
-    }
-
-
-    /**
      * Sucht nach dem zweiten Match einer Begegnung - das erste wird als Parameter mitgegeben
      * in der Liste aller Matches des Wettkampftages, der zugehörigen andren Scheibe und identischer Begegnungs-nr.
      * @param matchId Match zu welchem der Partner gesucht wird
