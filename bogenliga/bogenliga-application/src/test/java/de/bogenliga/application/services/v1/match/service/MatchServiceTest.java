@@ -278,7 +278,6 @@ public class MatchServiceTest {
     @Test
     public void testFindAll() {
         MatchDO matchDO1 = getMatchDO();
-        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
         ArrayList<MatchDO> matchesDO = new ArrayList<>();
         matchesDO.add(matchDO1);
@@ -583,7 +582,7 @@ public class MatchServiceTest {
         assertThat(actualDTO.getMannschaftName()).isEqualTo(matchDTO.getMannschaftName());
 
     }
-
+/*
     @Test
     public void testHasPermission() {
         // wir mocken keine statischen Aufrufe,
@@ -659,6 +658,13 @@ public class MatchServiceTest {
 
         assertTrue(underTest.hasPermission(W_id).equals(0L));
     }
-
-
+*/
+    //erst mal den OK Fall testen
+    @Test
+    public void testGetMemberIdFor() {
+        //zum testen brauchen wir eine Pass DTO mit Rückennummer eines existierenden
+        // Mannschaftsmitglieds (6 - ist das zweite Elemente der Liste)
+        PasseDTO passeDTOok = getPasseDTO(1L, 6);
+        assertEquals(MM_dsbMitgliedId, underTest.getMemberIdFor(passeDTOok, getMannschaftsMitglieder()));
+    }
 }
