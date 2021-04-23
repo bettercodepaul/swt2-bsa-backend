@@ -6,28 +6,28 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 import java.security.Principal;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.sql.Date;
 
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +55,10 @@ public class VeranstaltungServiceTest {
 
     @Mock
     private VeranstaltungComponent VeranstaltungComponent;
+
+
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
 
     @Mock
     private Principal principal;
@@ -255,6 +259,16 @@ public class VeranstaltungServiceTest {
         // configure mocks
         when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
 
+        //configure permission mock
+        // wir mocken keine statischen Aufrufe,
+        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer testpermission");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN));
+        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+
         try {
             // call test method
             final VeranstaltungDTO actual = underTest.update(input, principal);
@@ -263,17 +277,17 @@ public class VeranstaltungServiceTest {
             assertThat(actual).isNotNull();
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getName()).isEqualTo(input.getName());
-            /*
+
             assertThat(actual.getWettkampfTypId()).isEqualTo(input.getWettkampfTypId());
             assertThat(actual.getSportjahr()).isEqualTo(input.getSportjahr());
             assertThat(actual.getMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-            assertThat(actual.getLigaleiterID()).isEqualTo(input.getLigaleiterID());
-            assertThat(actual.getLigaID()).isEqualTo(input.getLigaID());
+            assertThat(actual.getLigaleiterId()).isEqualTo(input.getLigaleiterId());
+            assertThat(actual.getLigaId()).isEqualTo(input.getLigaId());
             assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
             assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());;
             assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
 
-             */
+
 
 
             // verify invocations
@@ -284,17 +298,35 @@ public class VeranstaltungServiceTest {
             assertThat(updatedVeranstaltung).isNotNull();
             assertThat(updatedVeranstaltung.getVeranstaltungID()).isEqualTo(input.getId());
             assertThat(updatedVeranstaltung.getVeranstaltungName()).isEqualTo(input.getName());
-            /*
-            assertThat(updatedVeranstaltung.getVeranstaltungWettkampftypID()).isEqualTo(input.getWettkampftypName());
-            assertThat(updatedVeranstaltung.getVeranstaltungSportJahr()).isEqualTo(input.getSportjahr());
-            assertThat(updatedVeranstaltung.getVeranstaltungMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaleiterID()).isEqualTo(input.getLigaleiterID());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaID()).isEqualTo(input.getLigaID());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-            assertThat(updatedVeranstaltung.getVeranstaltungWettkampftypName()).isEqualTo(input.getWettkampftypName());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaName()).isEqualTo(input.getLigaName());
+        }catch (NoPermissionException e) {
+        }
 
-             */
+    }
+
+    @Test
+    public void updateNoPermission() {
+        // prepare test data
+        final VeranstaltungDTO input = getVeranstaltungDTO();
+
+        final VeranstaltungDO expected = getVeranstaltungDO();
+
+        // configure mocks
+        when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
+
+        //configure permission mock
+        // wir mocken keine statischen Aufrufe,
+        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer testpermission");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_CREATE_STAMMDATEN));
+        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
+        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
+
+        try {
+            // call test method
+            final VeranstaltungDTO actual = underTest.update(input, principal);
         }catch (NoPermissionException e) {
         }
 
