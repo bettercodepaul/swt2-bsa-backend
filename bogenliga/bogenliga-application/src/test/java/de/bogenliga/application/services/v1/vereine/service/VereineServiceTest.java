@@ -4,6 +4,7 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Rule;
@@ -55,6 +56,9 @@ public class VereineServiceTest {
 
     @Mock
     private VereinComponent vereinComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
     private Principal principal;
@@ -201,6 +205,7 @@ public class VereineServiceTest {
 
         // configure mocks
         when(vereinComponent.update(any(), anyLong())).thenReturn(expected);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
 
         try {
             // call test method
