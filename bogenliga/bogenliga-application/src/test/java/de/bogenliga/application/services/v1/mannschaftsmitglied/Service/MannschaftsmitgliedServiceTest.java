@@ -15,7 +15,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,13 +27,13 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
 public class MannschaftsmitgliedServiceTest {
 
     private static final Long USER = 0L;
-    private static Long id = 1L;
-    private static Long mannschaftsId = 1L;
-    private static Long dsbMitgliedId = 100L;
-    private static Integer dsbMitgliedEingesetzt = 1;
-    private static String dsbMitgliedVorname = "Mario";
-    private static String dsbMitgliedNachname = "Gomez";
-    private static Long rueckennummer = 5L;
+    private static final Long id = 1L;
+    private static final Long mannschaftsId = 1L;
+    private static final Long dsbMitgliedId = 100L;
+    private static final Integer dsbMitgliedEingesetzt = 1;
+    private static final String dsbMitgliedVorname = "Mario";
+    private static final String dsbMitgliedNachname = "Gomez";
+    private static final Long rueckennummer = 5L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -54,15 +53,6 @@ public class MannschaftsmitgliedServiceTest {
     @Captor
     private ArgumentCaptor<MannschaftsmitgliedDO> mannschaftsmitgliedVOArgumentCaptor;
 
-
-    public static MannschaftsmitgliedBE getMannschaftsmitgliedBE() {
-        final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
-        expectedBE.setMannschaftId(mannschaftsId);
-        expectedBE.setDsbMitgliedId(dsbMitgliedId);
-        expectedBE.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
-        expectedBE.setRueckennummer(rueckennummer);
-        return expectedBE;
-    }
 
 
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
