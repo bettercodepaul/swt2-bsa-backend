@@ -42,7 +42,7 @@ public class VereineService implements ServiceFacade {
 
     private final VereinComponent vereinComponent;
 
-     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
     /**
