@@ -20,6 +20,7 @@ import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 /**
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -55,6 +56,9 @@ public class DsbMitgliedServiceTest {
 
     @Mock
     private Principal principal;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @InjectMocks
     private DsbMitgliedService underTest;
@@ -205,6 +209,7 @@ public class DsbMitgliedServiceTest {
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
