@@ -161,6 +161,28 @@ public class WettkampfService implements ServiceFacade {
     }
 
 
+
+    /**
+     * Delete-Method removes an entry from the database
+     *
+     * @param id Datensatz zu löschen
+     * @param principal ändernder User
+     */
+    @DeleteMapping(value = "{id}")
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        // allow value == null, the value will be ignored
+        final WettkampfDO wettkampfDO = new WettkampfDO(id);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        wettkampfComponent.delete(wettkampfDO, userId);
+    }
+
+
     /**
      * Update-Method changes the chosen Wettkampf entry in the Database
      *
@@ -207,27 +229,6 @@ public class WettkampfService implements ServiceFacade {
 
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
         return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
-    }
-
-
-    /**
-     * Delete-Method removes an entry from the database
-     *
-     * @param id Datensatz zu löschen
-     * @param principal ändernder User
-     */
-    @DeleteMapping(value = "{id}")
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-    public void delete(@PathVariable("id") final long id, final Principal principal) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
-
-        LOG.debug("Receive 'delete' request with id '{}'", id);
-
-        // allow value == null, the value will be ignored
-        final WettkampfDO wettkampfDO = new WettkampfDO(id);
-        final long userId = UserProvider.getCurrentUserId(principal);
-
-        wettkampfComponent.delete(wettkampfDO, userId);
     }
 
 

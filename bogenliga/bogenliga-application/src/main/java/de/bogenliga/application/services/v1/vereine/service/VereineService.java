@@ -88,6 +88,41 @@ public class VereineService implements ServiceFacade {
     }
 
     /**
+     * I persist a new verein and return this verein entry.
+     *
+     * @param vereineDTO of the request body
+     * @param principal  authenticated user
+     *
+     * @return list of {@link VereineDTO} as JSON
+     */
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
+        checkPreconditions(vereineDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        LOG.debug(
+                "Receive 'create' request with name '{}', identifier '{}', region id '{}', website '{}', " +
+                        "description '{}', icon '{}', version '{}', createdBy '{}'",
+                vereineDTO.getName(),
+                vereineDTO.getIdentifier(),
+                vereineDTO.getRegionId(),
+                vereineDTO.getWebsite(),
+                vereineDTO.getDescription(),
+                vereineDTO.getIcon(),
+                vereineDTO.getVersion(),
+                userId);
+
+        final VereinDO vereinDO = VereineDTOMapper.toDO.apply(vereineDTO);
+        final VereinDO persistedVereinDO = vereinComponent.create(vereinDO, userId);
+
+        return VereineDTOMapper.toDTO.apply(persistedVereinDO);
+    }
+
+
+    /**
      * I persist a newer version of the dsbMitglied in the database.
      * <p>
      * You are only able to modify the Verein, if you have the explicit permission to Modify it or if you are the
@@ -144,41 +179,7 @@ public class VereineService implements ServiceFacade {
         vereinComponent.delete(vereinDO, userId);
     }
 
-    /**
-     * I persist a new verein and return this verein entry.
-     *
-     * @param vereineDTO of the request body
-     * @param principal  authenticated user
-     *
-     * @return list of {@link VereineDTO} as JSON
-     */
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
-    public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
-        checkPreconditions(vereineDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
-
-        LOG.debug(
-                "Receive 'create' request with name '{}', identifier '{}', region id '{}', website '{}', " +
-                        "description '{}', icon '{}', version '{}', createdBy '{}'",
-                vereineDTO.getName(),
-                vereineDTO.getIdentifier(),
-                vereineDTO.getRegionId(),
-                vereineDTO.getWebsite(),
-                vereineDTO.getDescription(),
-                vereineDTO.getIcon(),
-                vereineDTO.getVersion(),
-                userId);
-
-        final VereinDO vereinDO = VereineDTOMapper.toDO.apply(vereineDTO);
-        final VereinDO persistedVereinDO = vereinComponent.create(vereinDO, userId);
-
-        return VereineDTOMapper.toDTO.apply(persistedVereinDO);
-    }
-
-    private void checkPreconditions(@RequestBody final VereineDTO vereinDTO) {
+     private void checkPreconditions(@RequestBody final VereineDTO vereinDTO) {
         Preconditions.checkNotNull(vereinDTO, PRECONDITION_MSG_VEREIN);
         Preconditions.checkNotNull(vereinDTO.getName(), PRECONDITION_MSG_NAME);
         Preconditions.checkNotNull(vereinDTO.getIdentifier(), PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER);
