@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
 
-import de.bogenliga.application.common.service.UserProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
