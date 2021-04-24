@@ -521,6 +521,19 @@ public class MatchServiceTest {
         }
     }
 
+    @Test
+    public void createNoPermission() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.create(matchDTO, principal));
+    }
+
 
     @Test
     public void create_Null() {
@@ -542,6 +555,19 @@ public class MatchServiceTest {
         MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
         } catch (NoPermissionException e) {
         }
+    }
+
+    @Test
+    public void updateNoPermission() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(matchDTO, principal));
     }
 
 
