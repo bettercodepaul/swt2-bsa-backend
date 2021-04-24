@@ -2,21 +2,16 @@ package de.bogenliga.application.services.v1.veranstaltung;
 
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 
 import java.security.Principal;
@@ -27,6 +22,7 @@ import java.sql.Date;
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,7 +31,6 @@ public class VeranstaltungServiceTest {
 
     private static final long USER = 0;
     private static final long ID = 0;
-    private static final long VERSION = 0;
 
     private static final long VERANSTALTUNG_ID = 0;
     private static final long WETTKAMPFTYP_ID = 0;
@@ -56,9 +51,8 @@ public class VeranstaltungServiceTest {
     @Mock
     private VeranstaltungComponent VeranstaltungComponent;
 
-
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
     private Principal principal;
@@ -69,22 +63,6 @@ public class VeranstaltungServiceTest {
     @Captor
     private ArgumentCaptor<VeranstaltungDO> VeranstaltungDOArgumentCaptor;
 
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static VeranstaltungBE VeranstaltungBE() {
-        final VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
-        expectedBE.setVeranstaltung_liga_id(LIGAID);
-        expectedBE.setVeranstaltung_ligaleiter_id(LIGALEITERID);
-        expectedBE.setVeranstaltung_meldedeadline(MELDEDEADLINE);
-        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltung_sportjahr(SPORTJAHR);
-        expectedBE.setVeranstaltung_wettkampftyp_id(WETTKAMPFTYP_ID);
-
-        return expectedBE;
-    }
 
     public static VeranstaltungDO getVeranstaltungDO() {
         return new VeranstaltungDO(
@@ -257,17 +235,9 @@ public class VeranstaltungServiceTest {
         final VeranstaltungDO expected = getVeranstaltungDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
 
-        //configure permission mock
-        // wir mocken keine statischen Aufrufe,
-        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer testpermission");
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN));
-        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
 
         try {
             // call test method
@@ -284,7 +254,7 @@ public class VeranstaltungServiceTest {
             assertThat(actual.getLigaleiterId()).isEqualTo(input.getLigaleiterId());
             assertThat(actual.getLigaId()).isEqualTo(input.getLigaId());
             assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-            assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());;
+            assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());
             assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
 
 
@@ -311,24 +281,14 @@ public class VeranstaltungServiceTest {
         final VeranstaltungDO expected = getVeranstaltungDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
         when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
 
-        //configure permission mock
-        // wir mocken keine statischen Aufrufe,
-        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer testpermission");
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_CREATE_STAMMDATEN));
-        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
-        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.update(input, principal));
 
-        try {
-            // call test method
-            final VeranstaltungDTO actual = underTest.update(input, principal);
-        }catch (NoPermissionException e) {
-        }
 
     }
 

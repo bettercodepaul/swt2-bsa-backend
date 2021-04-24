@@ -578,7 +578,7 @@ public class MatchService implements ServiceFacade {
                 !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
                         UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, wettkampfDO.getWettkampfVeranstaltungsId())&&
                 !this.requiresOnePermissionAspect.hasSpecificPermissionAusrichter(
-                        UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDO.getWettkampfTypId())) {
+                        UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDO.getId())) {
             //keines der Rechte besitzt der user
             throw new NoPermissionException();
         }

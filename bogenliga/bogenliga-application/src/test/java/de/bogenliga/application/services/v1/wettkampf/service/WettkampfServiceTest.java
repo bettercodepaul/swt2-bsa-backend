@@ -27,6 +27,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+
 
 /**
  * Test class for Wettkampf Service
@@ -60,6 +62,10 @@ public class WettkampfServiceTest {
 
     @Mock
     private WettkampfComponent wettkampfComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
+
 
     @Mock
     private Principal principal;
@@ -253,6 +259,7 @@ public class WettkampfServiceTest {
         final WettkampfDO expected = getWettkampfDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(wettkampfComponent.update(any(), anyLong())).thenReturn(expected);
 
         try {

@@ -1,23 +1,14 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -25,10 +16,10 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 
 /**
@@ -41,7 +32,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RequestMapping("v1/wettkampf")
 public class WettkampfService implements ServiceFacade {
     private static final String PRECONDITION_MSG_WETTKAMPF = "WettkampfDO must not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "Wettkampfveranstaltungsid must not be negative and must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "Format: YYYY-MM-DD Format must be correct,  Wettkampfdatum must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_STRASSE = "WettkampfStraße must not be null";
@@ -56,25 +46,21 @@ public class WettkampfService implements ServiceFacade {
     private static final Logger LOG = LoggerFactory.getLogger(WettkampfService.class);
 
     private final WettkampfComponent wettkampfComponent;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserComponent userComponent;
+    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
     /**
      * Constructor with dependency injection
      *
      * @param wettkampfComponent to handle the database CRUD requests
-     * @param jwtTokenProvider
-     * @param userComponent
+     * @param requiresOnePermissionAspect Zugang zur datenspezifischen Berechtigungsprüfung
      */
 
     @Autowired
     public WettkampfService(final WettkampfComponent wettkampfComponent,
-                            JwtTokenProvider jwtTokenProvider,
-                            UserComponent userComponent) {
+                            RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.wettkampfComponent = wettkampfComponent;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userComponent = userComponent;
+        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
 
@@ -97,7 +83,7 @@ public class WettkampfService implements ServiceFacade {
      *
      * @param id - single id of the Wettkampf you want te access
      *
-     * @return
+     * @return wettkampfDTO
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -107,7 +93,6 @@ public class WettkampfService implements ServiceFacade {
         LOG.debug("Receive 'findById' request with ID '{}'", id);
 
         final WettkampfDO wettkampfDO = wettkampfComponent.findById(id);
-        wettkampfDO.toString();
         return WettkampfDTOMapper.toDTO.apply(wettkampfDO);
     }
 
@@ -140,10 +125,10 @@ public class WettkampfService implements ServiceFacade {
     /**
      * create-Method() writes a new entry of Wettkampf into the database
      *
-     * @param wettkampfDTO
-     * @param principal
+     * @param wettkampfDTO anzulegender wettkampf
+     * @param principal user der arbeitet
      *
-     * @return
+     * @return angelegter wettkampf DTO
      */
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -179,10 +164,10 @@ public class WettkampfService implements ServiceFacade {
     /**
      * Update-Method changes the chosen Wettkampf entry in the Database
      *
-     * @param wettkampfDTO
-     * @param principal
+     * @param wettkampfDTO wettkmapf mit zu aktualiserenden Daten
+     * @param principal ändernder User
      *
-     * @return
+     * @return aktualisierter WettkampfDto
      */
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -193,23 +178,28 @@ public class WettkampfService implements ServiceFacade {
         checkPreconditions(wettkampfDTO);
 
         LOG.debug(
-                "Received 'update' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfort'{}'," +
-                        " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
+                "Received 'update' request with id '{}', Datum '{}', " +
+                        "VeranstaltungsID'{}', WettkampfDisziplinID'{}'," +
+                        " Wettkampfort'{}'," + " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
                 wettkampfDTO.getId(),
                 wettkampfDTO.getDatum(),
                 wettkampfDTO.getwettkampfVeranstaltungsId(),
                 wettkampfDTO.getWettkampfDisziplinId(),
-                wettkampfDTO.getWettkampfStrasse(),
-                wettkampfDTO.getWettkampfPlz(),
                 wettkampfDTO.getWettkampfOrtsname(),
-                wettkampfDTO.getWettkampfOrtsinfo(),
                 wettkampfDTO.getWettkampfTag(),
                 wettkampfDTO.getWettkampfBeginn(),
                 wettkampfDTO.getWettkampfTypId());
-        if (this.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF) || this.hasSpecificPermission(
-                UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDTO.getId())) {
+        //sowohl der Liagleiter als auch der Ausrichter dürfen hier updaten - wenn
+        //es sich um ihre zugewiesenen Wettkämpfe /Ligen handelt...
+        //daher eine datenspezische Berechtigungsprüfung zusätzlich..
+        WettkampfDO wettkampfDO = this.wettkampfComponent.findById(wettkampfDTO.getId());
 
-        } else {
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF)&&
+                !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                        UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, wettkampfDO.getWettkampfVeranstaltungsId())&&
+                !this.requiresOnePermissionAspect.hasSpecificPermissionAusrichter(
+                        UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDO.getId())) {
+            //keines der Rechte besitzt der user
             throw new NoPermissionException();
         }
         final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
@@ -223,8 +213,8 @@ public class WettkampfService implements ServiceFacade {
     /**
      * Delete-Method removes an entry from the database
      *
-     * @param id
-     * @param principal
+     * @param id Datensatz zu löschen
+     * @param principal ändernder User
      */
     @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
@@ -244,7 +234,7 @@ public class WettkampfService implements ServiceFacade {
     /**
      * checks the preconditions defined above in this class
      *
-     * @param wettkampfDTO
+     * @param wettkampfDTO datensatz zu prüfen
      */
     private void checkPreconditions(@RequestBody final WettkampfDTO wettkampfDTO) {
         Preconditions.checkNotNull(wettkampfDTO, PRECONDITION_MSG_WETTKAMPF);
@@ -265,73 +255,4 @@ public class WettkampfService implements ServiceFacade {
     }
 
 
-    /**
-     * method to check, if a user has a general permission
-     *
-     * @param toTest The permission whose existence is getting checked
-     *
-     * @return Does the User have the searched permission
-     */
-    boolean hasPermission(UserPermission toTest) {
-        //default value is: not allowed
-        boolean result = false;
-        //get the current http request from thread
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-            final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if (request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
-
-                //check if the resolved Permissions
-                //contain the required Permission for the task.
-                if (userPermissions.contains(toTest)) {
-                    result = true;
-                }
-            }
-        }
-        return result;
-    }
-
-
-    /**
-     * method to check, if a user has a Specific permission with the matching parameters
-     *
-     * @param toTest The permission whose existence is getting checked
-     *
-     * @return Does the User have searched permission
-     */
-    boolean hasSpecificPermission(UserPermission toTest, Long wettkampfID) {
-        //default value is: not allowed
-        boolean result = false;
-        //get the current http request from thread
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-            final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if (request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
-
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                Long UserId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(UserId);
-                ArrayList<Integer> temp = new ArrayList<>();
-                for (WettkampfDO wettkampfDO : this.wettkampfComponent.findByAusrichter(UserId)) {
-                    if (wettkampfDO.getId().equals(wettkampfID)) {
-                        result = true;
-                        break;
-                    }
-                }
-
-            }
-        }
-        return result;
-    }
-}
+ }
