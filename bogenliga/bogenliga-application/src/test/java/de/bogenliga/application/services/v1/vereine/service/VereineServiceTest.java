@@ -2,10 +2,8 @@ package de.bogenliga.application.services.v1.vereine.service;
 
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
-import org.assertj.core.data.Offset;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.time.OffsetDateTime;
@@ -25,13 +21,11 @@ import java.util.List;
 
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.*;
 
 public class VereineServiceTest {
 
@@ -41,16 +35,13 @@ public class VereineServiceTest {
 
     private static final String VEREIN_NAME = "";
     private static final long VEREIN_ID = 0;
-    private static final String VEREIN = "";
     private static final String VEREIN_DSB_IDENTIFIER = "";
-    private static final long REGION_ID_NOT_NEG = 0;
     private static final long REGION_ID = 0;
     private static final String REGION_NAME = "";
     private static final String VEREIN_WEBSITE = "";
     private static final String VEREIN_DESCRIPTION = "";
     private static final String VEREIN_ICON = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
-    private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -69,22 +60,6 @@ public class VereineServiceTest {
     @Captor
     private ArgumentCaptor<VereinDO> vereinDOArgumentCaptor;
 
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static VereinBE getDsbMitgliedBE() {
-        final VereinBE expectedBE = new VereinBE();
-        expectedBE.setVereinId(VEREIN_ID);
-        expectedBE.setVereinName(VEREIN_NAME);
-        expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
-        expectedBE.setVereinRegionId(REGION_ID);
-        expectedBE.setVereinWebsite(VEREIN_WEBSITE);
-        expectedBE.setVereinDescription(VEREIN_DESCRIPTION);
-        expectedBE.setVereinIcon(VEREIN_ICON);
-
-        return expectedBE;
-    }
 
     public static VereinDO getVereinDO() {
         return new VereinDO(VEREIN_ID,
