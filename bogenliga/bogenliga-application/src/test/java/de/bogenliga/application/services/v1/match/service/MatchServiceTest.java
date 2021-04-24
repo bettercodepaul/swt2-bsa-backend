@@ -8,6 +8,7 @@ import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Before;
@@ -39,9 +40,11 @@ import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -73,6 +76,9 @@ public class MatchServiceTest {
 
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
     private Principal principal;
@@ -375,6 +381,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         try {
             final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
@@ -393,6 +400,7 @@ public class MatchServiceTest {
         matches.add(null);
         matches.add(matchDTO);
 
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         assertThatThrownBy(() -> {
@@ -424,6 +432,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(getMannschaftsMitglieder().get(0));
         when(passeComponent.findById(PASSE_ID_1)).thenReturn(passe1DO);
@@ -443,6 +452,7 @@ public class MatchServiceTest {
     }
 
 
+    //test Null -< NullPointerException
     @Test
     public void saveMatches_WithPasseUpdate_Null() {
         MatchDO matchDO1 = getMatchDO();
@@ -461,16 +471,15 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(getMannschaftsMitglieder());
 
         ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
-        assertThatThrownBy(() -> {
-            underTest.saveMatches(matches, principal);
-        }).isInstanceOf(NoPermissionException.class);
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.saveMatches(matches, principal));
     }
-
 
     @Test
     public void saveMatches_WithPasseCreate() {
@@ -492,6 +501,7 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
         when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(getMMDO(1L, 5L));
         try {
@@ -512,6 +522,8 @@ public class MatchServiceTest {
     public void create() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
         try {
             final MatchDTO actual = underTest.create(matchDTO, principal);
@@ -535,6 +547,8 @@ public class MatchServiceTest {
     public void update() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
         try {
         final MatchDTO actual = underTest.update(matchDTO, principal);
@@ -582,83 +596,6 @@ public class MatchServiceTest {
         assertThat(actualDTO.getMannschaftName()).isEqualTo(matchDTO.getMannschaftName());
 
     }
-/*
-    @Test
-    public void testHasPermission() {
-        // wir mocken keine statischen Aufrufe,
-        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer testpermission");
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_CREATE_STAMMDATEN));
-        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
-        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
-
-        assertTrue(underTest.hasPermission(1L).equals(1L));
-
-    }
-
-    @Test
-    public void testHasPermissionMyWettkampf() {
-        // wir mocken keine statischen Aufrufe,
-        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer testpermission");
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_MY_WETTKAMPF, UserPermission.CAN_CREATE_STAMMDATEN));
-        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
-        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
-
-        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
-        ArrayList<WettkampfDO> wettkaempfeDOS = new ArrayList<>();
-        wettkaempfeDOS.add(wettkampfDO);
-
-        when(wettkampfComponent.findByAusrichter(anyLong())).thenReturn(wettkaempfeDOS);
-
-        assertTrue(underTest.hasPermission(W_id).equals(1L));
-        assertFalse(underTest.hasPermission(1L).equals(1L));
-    }
-    @Test
-    public void testHasPermissionMyVeranstaltung() {
-        // wir mocken keine statischen Aufrufe,
-        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer testpermission");
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, UserPermission.CAN_CREATE_STAMMDATEN));
-        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
-        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
-
-        WettkampfDO wettkampfDO = getWettkampfDO(W_id);
-        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
-
-        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
-        veranstaltungDO.setVeranstaltungID(W_vid);
-        ArrayList<VeranstaltungDO> veranstaltungenDOS = new ArrayList<>();
-        veranstaltungenDOS.add(veranstaltungDO);
-        when(veranstaltungComponent.findByLigaleiterId(anyLong())).thenReturn(veranstaltungenDOS);
-
-        assertTrue(underTest.hasPermission(W_id).equals(1L));
-    }
-
-    @Test
-    public void testHasPermissionNoPermissionException() {
-        // wir mocken keine statischen Aufrufe,
-        // sondern erzeugen uns valide Daten für das Ausführen der statischen Calls
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer testpermission");
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        Set<UserPermission> permissions = new HashSet<>(Arrays.asList(UserPermission.CAN_CREATE_STAMMDATEN));
-        Mockito.doReturn(permissions).when(jwtTokenProvider).getPermissions("testpermission");
-        Mockito.doReturn(1L).when(jwtTokenProvider).getUserId(anyString());
-
-        assertTrue(underTest.hasPermission(W_id).equals(0L));
-    }
-*/
     //erst mal den OK Fall testen
     @Test
     public void testGetMemberIdFor() {
