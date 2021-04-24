@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+
 
 public class MannschaftsmitgliedServiceTest {
 
@@ -39,6 +41,9 @@ public class MannschaftsmitgliedServiceTest {
 
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
     private Principal principal;
@@ -175,6 +180,7 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
         // call test method
@@ -209,6 +215,7 @@ public class MannschaftsmitgliedServiceTest {
 
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
         try {
@@ -258,6 +265,9 @@ public class MannschaftsmitgliedServiceTest {
     public void delete() {
         // prepare test data
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
 
         // call test method
         try {
