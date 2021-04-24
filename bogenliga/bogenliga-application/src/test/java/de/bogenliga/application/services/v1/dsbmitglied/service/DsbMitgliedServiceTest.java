@@ -16,7 +16,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -67,23 +66,6 @@ public class DsbMitgliedServiceTest {
     private ArgumentCaptor<DsbMitgliedDO> dsbMitgliedVOArgumentCaptor;
 
 
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static DsbMitgliedBE getDsbMitgliedBE() {
-        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
-        expectedBE.setDsbMitgliedId(ID);
-        expectedBE.setDsbMitgliedVorname(VORNAME);
-        expectedBE.setDsbMitgliedNachname(NACHNAME);
-        expectedBE.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
-        expectedBE.setDsbMitgliedNationalitaet(NATIONALITAET);
-        expectedBE.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
-        expectedBE.setDsbMitgliedVereinsId(VEREINSID);
-        expectedBE.setDsbMitgliedUserId(USERID);
-
-        return expectedBE;
-    }
 
 
     private static DsbMitgliedDO getDsbMitgliedDO() {
