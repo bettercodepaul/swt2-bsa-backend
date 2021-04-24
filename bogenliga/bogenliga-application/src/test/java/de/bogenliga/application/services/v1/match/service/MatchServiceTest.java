@@ -7,16 +7,12 @@ import java.util.*;
 import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
-import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -37,9 +33,6 @@ import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 import static java.lang.Math.toIntExact;
@@ -49,7 +42,6 @@ import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import java.io.*;
 
 /**
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
@@ -85,9 +77,6 @@ public class MatchServiceTest {
 
     @Mock
     private MatchComponent matchComponent;
-
-    @Mock
-    private JwtTokenProvider jwtTokenProvider;
 
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
@@ -318,9 +307,8 @@ public class MatchServiceTest {
     public void findById_Null() {
         when(matchComponent.findById(anyLong())).thenReturn(null);
         // expect a NPE as the null-state should be checked in MatchComponentImpl
-        assertThatThrownBy(() -> {
-            underTest.findById(MATCH_ID);
-        }).isInstanceOf(NullPointerException.class);
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.findById(MATCH_ID));
     }
 
 
@@ -346,10 +334,9 @@ public class MatchServiceTest {
     public void findMatchesByIds_Null() {
         when(matchComponent.findById(anyLong())).thenReturn(null);
         // expect a NPE as the null-state should be checked in MatchComponentImpl
-        assertThatThrownBy(() -> {
-            underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
-        }).isInstanceOf(NullPointerException.class);
-    }
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.findMatchesByIds(MATCH_ID, MATCH_ID));
+     }
 
 
     @Test
@@ -403,10 +390,10 @@ public class MatchServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
-        assertThatThrownBy(() -> {
-            underTest.saveMatches(matches, principal);
-        }).isInstanceOf(NullPointerException.class);
-    }
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.saveMatches(matches, principal));
+
+     }
 
 
     @Test
@@ -537,10 +524,9 @@ public class MatchServiceTest {
 
     @Test
     public void create_Null() {
-        assertThatThrownBy(() -> {
-            underTest.create(null, principal);
-        }).isInstanceOf(NullPointerException.class);
-    }
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.create(null, principal));
+     }
 
 
     @Test
@@ -561,10 +547,9 @@ public class MatchServiceTest {
 
     @Test
     public void update_Null() {
-        assertThatThrownBy(() -> {
-            underTest.update(null, principal);
-        }).isInstanceOf(NullPointerException.class);
-    }
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.update(null, principal));
+     }
 
 
     @Test
