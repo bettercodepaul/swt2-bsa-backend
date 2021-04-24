@@ -519,6 +519,47 @@ public class MatchService implements ServiceFacade {
     }
 
 
+    /**
+     * Update-Method changes the chosen match entry in the Database
+     *
+     * @param matchDTO Match das upzudaten ist
+     * @param principal ändernden user
+     *
+     * @return MatchDTO
+     */
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException {
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
+        //wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
+        // wir für die rechte "_MY_..." die Datenprüfen müssen, d.h. die UserID mit
+        // LigaleiterID bzw. AusrichterID vergleichen müssen
+
+        //dazu bestimmen wir den Wettkampf-Datensatz
+        WettkampfDO wettkampfDO = this.wettkampfComponent.findById(matchDTO.getWettkampfId());
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF)&&
+                !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                        UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, wettkampfDO.getWettkampfVeranstaltungsId())&&
+                !this.requiresOnePermissionAspect.hasSpecificPermissionAusrichter(
+                        UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDO.getWettkampfTypId())) {
+            //keines der Rechte besitzt der user - wir machen nicht weiter
+            throw new NoPermissionException();
+        }
+        Preconditions.checkNotNull(principal,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, CHECKED_PARAM_PRINCIPAL));
+        checkPreconditions(matchDTO, matchConditionErrors);
+
+        this.log(matchDTO, SERVICE_UPDATE);
+
+        final MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
+
+        final MatchDO updatedMatchDO = matchComponent.update(matchDO, userId);
+        return MatchDTOMapper.toDTO.apply(updatedMatchDO);
+    }
+
 
     /**
      * Return the ids of the next two matches happening after the given match on a single Wettkampftag.
@@ -618,47 +659,6 @@ public class MatchService implements ServiceFacade {
         return veranstaltungDTO;
     }
 
-
-    /**
-     * Update-Method changes the chosen match entry in the Database
-     *
-     * @param matchDTO Match das upzudaten ist
-     * @param principal ändernden user
-     *
-     * @return MatchDTO
-     */
-    @PutMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
-    public MatchDTO update(@RequestBody final MatchDTO matchDTO, final Principal principal) throws NoPermissionException {
-        final Long userId = UserProvider.getCurrentUserId(principal);
-        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
-        //wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
-        // wir für die rechte "_MY_..." die Datenprüfen müssen, d.h. die UserID mit
-        // LigaleiterID bzw. AusrichterID vergleichen müssen
-
-        //dazu bestimmen wir den Wettkampf-Datensatz
-        WettkampfDO wettkampfDO = this.wettkampfComponent.findById(matchDTO.getWettkampfId());
-        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF)&&
-                !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
-                        UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, wettkampfDO.getWettkampfVeranstaltungsId())&&
-                !this.requiresOnePermissionAspect.hasSpecificPermissionAusrichter(
-                        UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDO.getWettkampfTypId())) {
-            //keines der Rechte besitzt der user - wir machen nicht weiter
-            throw new NoPermissionException();
-        }
-        Preconditions.checkNotNull(principal,
-                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_UPDATE, CHECKED_PARAM_PRINCIPAL));
-        checkPreconditions(matchDTO, matchConditionErrors);
-
-        this.log(matchDTO, SERVICE_UPDATE);
-
-        final MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
-
-        final MatchDO updatedMatchDO = matchComponent.update(matchDO, userId);
-        return MatchDTOMapper.toDTO.apply(updatedMatchDO);
-    }
 
 
     /**
