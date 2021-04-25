@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.lizenz.impl.business;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -10,18 +11,22 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
-import de.bogenliga.application.business.regionen.impl.business.RegionenComponentImpl;
-import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
-import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import static org.mockito.Mockito.*;
 
 public class LizenzComponentImplTest {
@@ -38,8 +43,20 @@ public class LizenzComponentImplTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Mock
     private LizenzDAO lizenzDAO;
+    @Mock
+    private DsbMitgliedComponent dsbMitgliedComponent;
+    @Mock
+    private DsbMannschaftComponent mannschaftComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+    @Mock
+    private WettkampfComponent wettkampfComponent;
+    @Mock
+    private VereinComponent vereinComponent;
+
     @InjectMocks
     private LizenzComponentImpl underTest;
     @Captor
@@ -224,7 +241,40 @@ public class LizenzComponentImplTest {
     }
 
 
+    @Test
+    public void getLizenzPDFasByteArray(){
+        DsbMitgliedDO expectedMitglied = new DsbMitgliedDO(123L);
+        DsbMannschaftDO expectedMannschaft = new DsbMannschaftDO(321L);
+        expectedMannschaft.setVeranstaltungId(456L);
+        VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(456L);
+        List<WettkampfDO> expectedWettkampfList = new ArrayList<>();
+        WettkampfDO wettkampfDO = new WettkampfDO(654L);
+        wettkampfDO.setWettkampfDisziplinId(546L);
+        expectedWettkampfList.add(wettkampfDO);
 
+        VereinDO expectedVerein = new VereinDO(231L);
+        expectedVerein.setName("VereinName");
+        expectedMitglied.setNachname("Nachname");
+        expectedMitglied.setVorname("Vorname");
+        expectedVeranstaltung.setVeranstaltungName("Veranstaltung");
+        expectedVeranstaltung.setVeranstaltungSportJahr(2021L);
+
+
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(expectedMannschaft);
+        when(veranstaltungComponent.findById(expectedMannschaft.getVeranstaltungId())).thenReturn(expectedVeranstaltung);
+        when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
+        when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
+                expectedMitglied.getId(),
+                expectedWettkampfList.get(0).getWettkampfDisziplinId())).thenReturn(getLizenzBE());
+
+        when(vereinComponent.findById(anyLong())).thenReturn(expectedVerein);
+
+
+        //byte[] result = underTest.getLizenzPDFasByteArray(987L, 876L);
+
+        //Assertions.assertThat(result).isNotNull();
+    }
 
 
 //
