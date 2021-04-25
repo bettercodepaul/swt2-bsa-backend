@@ -240,7 +240,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     }
 
 
-    private ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, VeranstaltungDO veranstaltung) {
+    ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, VeranstaltungDO veranstaltung) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
@@ -257,7 +257,7 @@ public class LizenzComponentImpl implements LizenzComponent {
         return ret;
     }
 
-    private void generateLizenzenDoc(Document doc, HashMap<String, List<String>> lizenzenmapping) {
+    void generateLizenzenDoc(Document doc, HashMap<String, List<String>> lizenzenmapping) {
 
         for (String rNummer : lizenzenmapping.keySet()) {
             String liga = lizenzenmapping.get(rNummer).get(0);
@@ -272,7 +272,7 @@ public class LizenzComponentImpl implements LizenzComponent {
         doc.close();
     }
 
-    private void generateLizenzPage(Document doc, String verein, String lizenz, String schuetzename,
+    void generateLizenzPage(Document doc, String verein, String lizenz, String schuetzename,
                                     String schuetzevorname, String liga, String sportjahr) {
         final Table tableHead = new Table(UnitValue.createPercentArray(1), true);
         final Table secondTable = new Table(UnitValue.createPercentArray(1), true);
