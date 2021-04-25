@@ -184,12 +184,13 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
     /**
-     * You are only able to delete a MannschaftsMitglied, if you have the explicit permission to Modify it or if you are
-     * the Mannschaftsführer/Sportleiter of the Verein.
+     * You are only able to delete a MannschaftsMitglied, if you have the explicit permission
+     * Sportleiter should have a specific right to delete a single member but there is a
+     * read-vy-id function missing in MannschaftsMitgliedDAO/ MannschaftsMitgliedComponent
      **/
 
     @DeleteMapping(value = "{id}")
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN})
     public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
@@ -198,12 +199,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         // allow value == null, the value will be ignored
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(id);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
-        long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
-        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
-                && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
-                UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-            throw new NoPermissionException();
-        }
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
     }
 

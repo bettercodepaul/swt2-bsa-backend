@@ -18,6 +18,7 @@ import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
@@ -215,6 +216,25 @@ public class DsbMitgliedServiceTest {
 
         } catch (NoPermissionException e) {
         }
+
+    }
+
+    @Test
+    public void updateNoPermission() {
+
+        // prepare test data
+        final DsbMitgliedDTO input = getDsbMitgliedDTO();
+
+        final DsbMitgliedDO expected = getDsbMitgliedDO();
+
+        // configure mocks
+        when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
+
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(input, principal));
 
     }
 

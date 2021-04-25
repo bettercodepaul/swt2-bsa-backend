@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -202,6 +203,22 @@ public class VereineServiceTest {
 
         }catch (NoPermissionException e) {
         }
+    }
+
+    @Test
+    public void updateNoPermission() {
+        // prepare test data
+        final VereineDTO input = getVereineDTO();
+
+        final VereinDO expected = getVereinDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+        when(vereinComponent.update(any(), anyLong())).thenReturn(expected);
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(input, principal));
+
     }
 
     @Test
