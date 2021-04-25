@@ -49,6 +49,7 @@ public class WettkampfService implements ServiceFacade {
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
+
     /**
      * Constructor with dependency injection
      *
