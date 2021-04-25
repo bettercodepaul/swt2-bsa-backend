@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
 
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,6 +46,9 @@ public class MannschaftsmitgliedServiceTest {
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     @Mock
+    private DsbMannschaftComponent dsbMannschaftComponent;
+
+    @Mock
     private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
@@ -55,6 +60,13 @@ public class MannschaftsmitgliedServiceTest {
     @Captor
     private ArgumentCaptor<MannschaftsmitgliedDO> mannschaftsmitgliedVOArgumentCaptor;
 
+
+    public static DsbMannschaftDO getDsbMannschaftDO() {
+        return new DsbMannschaftDO(
+                mannschaftsId, "die Mannschaft", id, 23,
+                id, id, 2L
+        );
+    }
 
 
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
@@ -168,10 +180,11 @@ public class MannschaftsmitgliedServiceTest {
     @Test
     public void update() {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
@@ -204,8 +217,10 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
 
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
@@ -240,14 +255,16 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
 
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
 
-        assertThatExceptionOfType(NullPointerException.class)
+        assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.create(input, principal));
     }
 
@@ -258,7 +275,10 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
 
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
@@ -291,7 +311,10 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
 
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
@@ -325,12 +348,15 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
 
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
-        assertThatExceptionOfType(NullPointerException.class)
+        assertThatExceptionOfType(NoPermissionException.class)
            .isThrownBy(()-> underTest.create(input, principal));
 
     }
@@ -362,6 +388,7 @@ public class MannschaftsmitgliedServiceTest {
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        doNothing().when(mannschaftsmitgliedComponent).delete(any(), anyLong());
 
         /* call test method */
         try {
@@ -370,57 +397,11 @@ public class MannschaftsmitgliedServiceTest {
             // verify invocations
             verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-            final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
-
-            assertThat(deletedDsbMitglied).isNotNull();
-            assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
-            assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
-
 
         } catch (NoPermissionException | NullPointerException e) {
         }
     }
 
-    @Test
-    public void deleteDataSpecificPermission() {
-        // prepare test data
-        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
-
-        // configure mocks
-        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
-        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
-
-        /* call test method */
-        try {
-            underTest.delete(mannschaftsId, principal);
-
-            // verify invocations
-            verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
-
-            final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
-
-            assertThat(deletedDsbMitglied).isNotNull();
-            assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
-            assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
-
-
-        } catch (NoPermissionException | NullPointerException e) {
-        }
-    }
-
-    @Test
-    public void deleteNoPermission() {
-        // prepare test data
-        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
-
-        // configure mocks
-        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
-        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
-
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(()-> underTest.delete(mannschaftsId, principal));
-
-    }
 
 
 
@@ -432,6 +413,7 @@ public class MannschaftsmitgliedServiceTest {
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        doNothing().when(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(any(), anyLong());
 
         // call test method
         try {

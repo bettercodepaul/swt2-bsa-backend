@@ -17,6 +17,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -204,6 +205,23 @@ public class DsbMannschaftServiceTest {
         }
     }
 
+    @Test
+    public void createNoPermission() {
+        // prepare test data
+        final DsbMannschaftDTO input = getDsbMannschaftDTO();
+
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        // configure mocks
+        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.create(input, principal));
+
+    }
+
 
     @Test
     public void update() {
@@ -242,6 +260,22 @@ public class DsbMannschaftServiceTest {
 
     }
 
+    @Test
+    public void updateNoPermission() {
+        // prepare test data
+        final DsbMannschaftDTO input = getDsbMannschaftDTO();
+
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+
+        // configure mocks
+        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(input, principal));
+
+    }
 
     @Test
     public void delete() {
