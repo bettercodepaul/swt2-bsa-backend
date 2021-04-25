@@ -13,6 +13,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import com.itextpdf.layout.Document;
@@ -55,8 +56,6 @@ public class LizenzComponentImplTest {
     private VeranstaltungComponent veranstaltungComponent;
     @Mock
     private WettkampfComponent wettkampfComponent;
-    @Mock
-    private VereinComponent vereinComponent;
 
     @InjectMocks
     private LizenzComponentImpl underTest;
@@ -244,21 +243,29 @@ public class LizenzComponentImplTest {
 
     @Test
     public void getLizenzPDFasByteArray(){
-        DsbMitgliedDO expectedMitglied = new DsbMitgliedDO(123L);
-        DsbMannschaftDO expectedMannschaft = new DsbMannschaftDO(321L);
-        expectedMannschaft.setVeranstaltungId(456L);
-        VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(456L);
+        // prepare test data
+        final long mitgliedId = 123L;
+        final long teamId = 321L;
+        final long veranstaltungId = 456L;
+
+        DsbMitgliedDO expectedMitglied = Mockito.mock(DsbMitgliedDO.class);
+        expectedMitglied.setId(mitgliedId);
+        DsbMannschaftDO expectedMannschaft = Mockito.mock(DsbMannschaftDO.class);
+        expectedMannschaft.setId(teamId);
+        expectedMannschaft.setVeranstaltungId(veranstaltungId);
+        VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(veranstaltungId);
         List<WettkampfDO> expectedWettkampfList = new ArrayList<>();
-        WettkampfDO wettkampfDO = new WettkampfDO(654L);
+        WettkampfDO wettkampfDO = Mockito.mock(WettkampfDO.class);
+        wettkampfDO.setId(654L);
         wettkampfDO.setWettkampfDisziplinId(546L);
         expectedWettkampfList.add(wettkampfDO);
 
 
         LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
 
-
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
-        when(mannschaftComponent.findById(anyLong())).thenReturn(expectedMannschaft);
+        // configure mocks
+        when(dsbMitgliedComponent.findById(mitgliedId)).thenReturn(expectedMitglied);
+        when(mannschaftComponent.findById(teamId)).thenReturn(expectedMannschaft);
         when(veranstaltungComponent.findById(expectedMannschaft.getVeranstaltungId())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
         when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
@@ -268,16 +275,22 @@ public class LizenzComponentImplTest {
         doNothing().when(testClass).generateLizenzenDoc(any(), any());
 
 
-        byte[] result = testClass.getLizenzPDFasByteArray(987L, 876L);
+        // call test method
+        byte[] result = testClass.getLizenzPDFasByteArray(mitgliedId, teamId);
 
 
+        // assert result
         Assertions.assertThat(result).isNull();
+
+        // verify invocations
+        verify(expectedMitglied).getId();
+        verify(expectedMannschaft).getVeranstaltungId();
+        verify(wettkampfDO).getWettkampfDisziplinId();
     }
 
     @Test
     public void generateLizenzenDoc(){
-        Document doc = Mockito.mock(Document.class);
-
+        // prepare test data
         HashMap<String, List<String>> mapping = new HashMap<>();
         List<String> list = new ArrayList<>();
         list.add("Liga");
@@ -288,17 +301,24 @@ public class LizenzComponentImplTest {
         list.add("1234");
         mapping.put("456", list);
 
+        Document doc = Mockito.mock(Document.class);
         LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
 
+        // configure mocks
         doNothing().when(testClass).generateLizenzPage(
                 any(Document.class),
                 anyString(), anyString(),
                 anyString(), anyString(),
                 anyString(), anyString());
 
+        // call test method
         testClass.generateLizenzenDoc(doc, mapping);
 
+        // assert result
         Assertions.assertThat(doc).isNotNull();
+
+        // verify invocations
+
     }
 
 
