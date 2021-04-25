@@ -80,6 +80,17 @@ public class LizenzComponentImpl implements LizenzComponent {
         Preconditions.checkArgument(id >= 0, PRECONDITION_CURRENT_USER_ID_NEGATIVE);
     }
 
+    private void checkPrecondition(LizenzDO lizenzDO, long currentUserId) {
+        Preconditions.checkNotNull(lizenzDO, PRECONDITION_LIZENZ);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_CURRENT_USER_ID);
+        Preconditions.checkNotNull(lizenzDO.getLizenztyp(), PRECONDITION_LIZENZ_LIZENZTYP);
+        Preconditions.checkNotNull(lizenzDO.getLizenzDsbMitgliedId(), PRECONDITION_LIZENZ_DSBMITGLIED);
+        if (lizenzDO.getLizenztyp().equals("Liga")) {
+            Preconditions.checkNotNull(lizenzDO.getLizenznummer(), PRECONDITION_LIZENZ_LIZENZNUMMER);
+            Preconditions.checkNotNull(lizenzDO.getLizenzRegionId(), PRECONDITION_LIZENZ_REGION);
+            Preconditions.checkNotNull(lizenzDO.getLizenzDisziplinId(), PRECONDITION_LIZENZ_DISZIPLIN);
+        }
+    }
 
     /**
      * Constructor
@@ -103,15 +114,6 @@ public class LizenzComponentImpl implements LizenzComponent {
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
-
-    @Override
-    public List<LizenzDO> findAll() {
-        final List<LizenzBE> lizenzBEList = this.lizenzDAO.findAll();
-        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
-                Collectors.toList());
-    }
-
-
     @Override
     public List<LizenzDO> findByDsbMitgliedId(long id) {
         final List<LizenzBE> lizenzBEList = lizenzDAO.findByDsbMitgliedId(id);
@@ -120,17 +122,11 @@ public class LizenzComponentImpl implements LizenzComponent {
 
     }
 
-
-    private void checkPrecondition(LizenzDO lizenzDO, long currentUserId) {
-        Preconditions.checkNotNull(lizenzDO, PRECONDITION_LIZENZ);
-        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_CURRENT_USER_ID);
-        Preconditions.checkNotNull(lizenzDO.getLizenztyp(), PRECONDITION_LIZENZ_LIZENZTYP);
-        Preconditions.checkNotNull(lizenzDO.getLizenzDsbMitgliedId(), PRECONDITION_LIZENZ_DSBMITGLIED);
-        if (lizenzDO.getLizenztyp().equals("Liga")) {
-            Preconditions.checkNotNull(lizenzDO.getLizenznummer(), PRECONDITION_LIZENZ_LIZENZNUMMER);
-            Preconditions.checkNotNull(lizenzDO.getLizenzRegionId(), PRECONDITION_LIZENZ_REGION);
-            Preconditions.checkNotNull(lizenzDO.getLizenzDisziplinId(), PRECONDITION_LIZENZ_DISZIPLIN);
-        }
+    @Override
+    public List<LizenzDO> findAll() {
+        final List<LizenzBE> lizenzBEList = this.lizenzDAO.findAll();
+        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
+                Collectors.toList());
     }
 
 
@@ -146,6 +142,17 @@ public class LizenzComponentImpl implements LizenzComponent {
 
 
     @Override
+    public void delete(LizenzDO lizenzDO, long currentUserId) {
+
+        Preconditions.checkNotNull(lizenzDO.getLizenzId(), PRECONDITION_LIZENZ_ID);
+        this.checkCurrentUserPreconditions(currentUserId);
+
+        LizenzBE lizenzBE = LizenzMapper.toLizenzBE.apply(lizenzDO);
+        lizenzDAO.delete(lizenzBE, currentUserId);
+    }
+
+
+    @Override
     public LizenzDO update(LizenzDO lizenzDO, long currentUserId) {
 
         this.checkCurrentUserPreconditions(currentUserId);
@@ -154,17 +161,6 @@ public class LizenzComponentImpl implements LizenzComponent {
 
         LizenzBE lizenzBE = this.lizenzDAO.update(LizenzMapper.toLizenzBE.apply(lizenzDO), currentUserId);
         return LizenzMapper.toLizenzDO.apply(lizenzBE);
-    }
-
-
-    @Override
-    public void delete(LizenzDO lizenzDO, long currentUserId) {
-
-        Preconditions.checkNotNull(lizenzDO.getLizenzId(), PRECONDITION_LIZENZ_ID);
-        this.checkCurrentUserPreconditions(currentUserId);
-
-        LizenzBE lizenzBE = LizenzMapper.toLizenzBE.apply(lizenzDO);
-        lizenzDAO.delete(lizenzBE, currentUserId);
     }
 
 
