@@ -2,32 +2,28 @@ package de.bogenliga.application.services.v1.veranstaltung;
 
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 
 import java.security.Principal;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.sql.Date;
 
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +31,6 @@ public class VeranstaltungServiceTest {
 
     private static final long USER = 0;
     private static final long ID = 0;
-    private static final long VERSION = 0;
 
     private static final long VERANSTALTUNG_ID = 0;
     private static final long WETTKAMPFTYP_ID = 0;
@@ -57,6 +52,9 @@ public class VeranstaltungServiceTest {
     private VeranstaltungComponent VeranstaltungComponent;
 
     @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
+
+    @Mock
     private Principal principal;
 
     @InjectMocks
@@ -65,22 +63,6 @@ public class VeranstaltungServiceTest {
     @Captor
     private ArgumentCaptor<VeranstaltungDO> VeranstaltungDOArgumentCaptor;
 
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static VeranstaltungBE VeranstaltungBE() {
-        final VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
-        expectedBE.setVeranstaltung_liga_id(LIGAID);
-        expectedBE.setVeranstaltung_ligaleiter_id(LIGALEITERID);
-        expectedBE.setVeranstaltung_meldedeadline(MELDEDEADLINE);
-        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltung_sportjahr(SPORTJAHR);
-        expectedBE.setVeranstaltung_wettkampftyp_id(WETTKAMPFTYP_ID);
-
-        return expectedBE;
-    }
 
     public static VeranstaltungDO getVeranstaltungDO() {
         return new VeranstaltungDO(
@@ -253,7 +235,9 @@ public class VeranstaltungServiceTest {
         final VeranstaltungDO expected = getVeranstaltungDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
+
 
         try {
             // call test method
@@ -263,17 +247,17 @@ public class VeranstaltungServiceTest {
             assertThat(actual).isNotNull();
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getName()).isEqualTo(input.getName());
-            /*
+
             assertThat(actual.getWettkampfTypId()).isEqualTo(input.getWettkampfTypId());
             assertThat(actual.getSportjahr()).isEqualTo(input.getSportjahr());
             assertThat(actual.getMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-            assertThat(actual.getLigaleiterID()).isEqualTo(input.getLigaleiterID());
-            assertThat(actual.getLigaID()).isEqualTo(input.getLigaID());
+            assertThat(actual.getLigaleiterId()).isEqualTo(input.getLigaleiterId());
+            assertThat(actual.getLigaId()).isEqualTo(input.getLigaId());
             assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-            assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());;
+            assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());
             assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
 
-             */
+
 
 
             // verify invocations
@@ -284,19 +268,27 @@ public class VeranstaltungServiceTest {
             assertThat(updatedVeranstaltung).isNotNull();
             assertThat(updatedVeranstaltung.getVeranstaltungID()).isEqualTo(input.getId());
             assertThat(updatedVeranstaltung.getVeranstaltungName()).isEqualTo(input.getName());
-            /*
-            assertThat(updatedVeranstaltung.getVeranstaltungWettkampftypID()).isEqualTo(input.getWettkampftypName());
-            assertThat(updatedVeranstaltung.getVeranstaltungSportJahr()).isEqualTo(input.getSportjahr());
-            assertThat(updatedVeranstaltung.getVeranstaltungMeldeDeadline()).isEqualTo(input.getMeldeDeadline());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaleiterID()).isEqualTo(input.getLigaleiterID());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaID()).isEqualTo(input.getLigaID());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
-            assertThat(updatedVeranstaltung.getVeranstaltungWettkampftypName()).isEqualTo(input.getWettkampftypName());
-            assertThat(updatedVeranstaltung.getVeranstaltungLigaName()).isEqualTo(input.getLigaName());
-
-             */
         }catch (NoPermissionException e) {
         }
+
+    }
+
+    @Test
+    public void updateNoPermission() {
+        // prepare test data
+        final VeranstaltungDTO input = getVeranstaltungDTO();
+
+        final VeranstaltungDO expected = getVeranstaltungDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
+        when(VeranstaltungComponent.update(any(), anyLong())).thenReturn(expected);
+
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.update(input, principal));
+
 
     }
 
