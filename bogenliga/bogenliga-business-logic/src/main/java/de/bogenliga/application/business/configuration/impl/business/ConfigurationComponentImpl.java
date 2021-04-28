@@ -9,8 +9,6 @@ import de.bogenliga.application.business.configuration.api.types.ConfigurationDO
 import de.bogenliga.application.business.configuration.impl.dao.ConfigurationDAO;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import de.bogenliga.application.business.configuration.impl.mapper.ConfigurationMapper;
-import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
-import de.bogenliga.application.business.einstellungen.impl.mapper.EinstellungenMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
