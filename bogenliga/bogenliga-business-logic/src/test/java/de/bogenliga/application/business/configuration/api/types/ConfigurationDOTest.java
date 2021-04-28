@@ -53,6 +53,7 @@ public class ConfigurationDOTest {
         String notInstanceOfRoleDO = "Some String";
 
         assertThat(underTest)
+                .isEqualTo(underTest)
                 .isNotEqualTo(notInstanceOfRoleDO)
                 .isEqualTo(underTest2);
     }
