@@ -52,9 +52,8 @@ public class ConfigurationDOTest {
         ConfigurationDO underTest2 = getConfigurationDO();
         String notInstanceOfRoleDO = "Some String";
 
-
-        assertThat(underTest.equals(underTest)).isTrue();
-        assertThat(underTest.equals(notInstanceOfRoleDO)).isFalse();
-        assertThat(underTest.equals(underTest2)).isTrue();
+        assertThat(underTest)
+                .isNotEqualTo(notInstanceOfRoleDO)
+                .isEqualTo(underTest2);
     }
 }
