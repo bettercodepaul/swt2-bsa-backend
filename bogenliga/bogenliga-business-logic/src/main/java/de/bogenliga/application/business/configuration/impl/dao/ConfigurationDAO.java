@@ -43,15 +43,16 @@ public class ConfigurationDAO implements DataAccessObject {
     /*
      * SQL queries
      */
+    private static final String SELECT = "SELECT * ";
     private static final String FIND_ALL =
-            "SELECT * "
+            SELECT
                     + " FROM configuration";
     private static final String FIND_BY_KEY =
-            "SELECT * "
+            SELECT
                     + " FROM configuration "
                     + " WHERE configuration_key = ?";
     private static final String FIND_BY_ID =
-            "SELECT * "
+            SELECT
                     + " FROM configuration"
                     + " WHERE configuration_id = ?";
 
