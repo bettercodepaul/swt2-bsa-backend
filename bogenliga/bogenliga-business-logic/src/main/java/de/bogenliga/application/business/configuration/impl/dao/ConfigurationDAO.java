@@ -75,6 +75,10 @@ public class ConfigurationDAO implements DataAccessObject {
         columnsToFieldsMap.put(CONFIGURATION_TABLE_ID, CONFIGURATION_BE_ID);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_KEY, CONFIGURATION_BE_KEY);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_VALUE, CONFIGURATION_BE_VALUE);
+
+        //fill null fields
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
         return columnsToFieldsMap;
     }
 
