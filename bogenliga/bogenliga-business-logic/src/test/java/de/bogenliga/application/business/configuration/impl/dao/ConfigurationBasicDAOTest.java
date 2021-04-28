@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -166,5 +167,22 @@ public class ConfigurationBasicDAOTest {
 
         // verify invocations
         verify(basicDao).deleteEntity(any(), eq(input), any());
+    }
+
+    @Test
+    public void findById() {
+        // prepare test data
+        long id = 1223;
+
+        ConfigurationBE expected = new ConfigurationBE();
+
+        // configure mocks
+        when(basicDao.selectSingleEntity(any(), any(), eq(id))).thenReturn(expected);
+
+        // call test method
+        ConfigurationBE result = underTest.findById(id);
+
+        // assert result
+        assertThat(result).isEqualTo(expected);
     }
 }
