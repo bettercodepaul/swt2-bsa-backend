@@ -21,6 +21,8 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
+
+
 /**
  * I'm a REST resource and handle vereine CRUD requests over the HTTP protocol
  *
@@ -57,18 +59,19 @@ public class VereineService implements ServiceFacade {
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
+
     /**
      * I return all the teams (Vereine) of the database.
      *
      * @return list of {@link VereineDTO} as JSON
      */
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VereineDTO> findAll() {
         final List<VereinDO> vereinDOList = vereinComponent.findAll();
         return vereinDOList.stream().map(VereineDTOMapper.toDTO).collect(Collectors.toList());
     }
+
 
     /**
      * I return the verein Entry of the database with a specific id
@@ -87,6 +90,7 @@ public class VereineService implements ServiceFacade {
         return VereineDTOMapper.toDTO.apply(vereinDO);
     }
 
+
     /**
      * I persist a new verein and return this verein entry.
      *
@@ -95,9 +99,7 @@ public class VereineService implements ServiceFacade {
      *
      * @return list of {@link VereineDTO} as JSON
      */
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
         checkPreconditions(vereineDTO);
@@ -128,9 +130,7 @@ public class VereineService implements ServiceFacade {
      * You are only able to modify the Verein, if you have the explicit permission to Modify it or if you are the
      * Mannschaftsführer/Sportleiter of the Verein.
      */
-    @PutMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
     public VereineDTO update(@RequestBody final VereineDTO vereineDTO,
                              final Principal principal) throws NoPermissionException {
@@ -164,6 +164,7 @@ public class VereineService implements ServiceFacade {
         return VereineDTOMapper.toDTO.apply(updateVereinDO);
     }
 
+
     /**
      * I delete an existing Verein entry from the DB.
      */
@@ -178,6 +179,7 @@ public class VereineService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
         vereinComponent.delete(vereinDO, userId);
     }
+
 
      private void checkPreconditions(@RequestBody final VereineDTO vereinDTO) {
         Preconditions.checkNotNull(vereinDTO, PRECONDITION_MSG_VEREIN);

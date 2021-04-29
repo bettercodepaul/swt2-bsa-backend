@@ -91,6 +91,8 @@ public class VereineServiceTest {
         return vereineDTO;
     }
 
+
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(USER));
@@ -100,7 +102,6 @@ public class VereineServiceTest {
     public void findAll() {
         // prepare test data
         final VereinDO vereinDO = getVereinDO();
-
         final List<VereinDO> VereinDOList = Collections.singletonList(vereinDO);
 
         // configure mocks
@@ -110,9 +111,7 @@ public class VereineServiceTest {
         final List<VereineDTO> actual = underTest.findAll();
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
+        assertThat(actual).isNotNull().hasSize(1);
 
         final VereineDTO actualDTO = actual.get(0);
 
@@ -123,6 +122,7 @@ public class VereineServiceTest {
         // verify invocations
         verify(vereinComponent).findAll();
     }
+
 
     @Test
     public void findById() {
@@ -144,11 +144,11 @@ public class VereineServiceTest {
         verify(vereinComponent).findById(ID);
     }
 
+
     @Test
     public void create() {
         // prepare test data
         final VereineDTO input = getVereineDTO();
-
         final VereinDO expected = getVereinDO();
 
         // configure mocks
@@ -172,11 +172,11 @@ public class VereineServiceTest {
         assertThat(createdDsbMitglied.getName()).isEqualTo(input.getName());
     }
 
+
     @Test
     public void update() {
         // prepare test data
         final VereineDTO input = getVereineDTO();
-
         final VereinDO expected = getVereinDO();
 
         // configure mocks
@@ -201,37 +201,33 @@ public class VereineServiceTest {
             assertThat(updatedDsbMitglied.getId()).isEqualTo(input.getId());
             assertThat(updatedDsbMitglied.getName()).isEqualTo(input.getName());
 
-        }catch (NoPermissionException e) {
-        }
+        }catch (NoPermissionException e) { }
     }
+
 
     @Test
     public void updateNoPermission() {
         // prepare test data
         final VereineDTO input = getVereineDTO();
-
         final VereinDO expected = getVereinDO();
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(vereinComponent.update(any(), anyLong())).thenReturn(expected);
+
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
-
     }
+
 
     @Test
     public void delete() {
         // prepare test data
         final VereinDO expected = getVereinDO();
 
-        // configure mocks
-
         // call test method
         underTest.delete(ID, principal);
-
-        // assert result
 
         // verify invocations
         verify(vereinComponent).delete(vereinDOArgumentCaptor.capture(), anyLong());
