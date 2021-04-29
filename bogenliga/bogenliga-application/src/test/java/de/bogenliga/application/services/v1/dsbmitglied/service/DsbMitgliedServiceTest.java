@@ -69,7 +69,6 @@ public class DsbMitgliedServiceTest {
 
 
 
-
     private static DsbMitgliedDO getDsbMitgliedDO() {
         return new DsbMitgliedDO(
                 ID,
@@ -109,7 +108,6 @@ public class DsbMitgliedServiceTest {
     public void findAll() {
         // prepare test data
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
-
         final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
 
         // configure mocks
@@ -119,9 +117,7 @@ public class DsbMitgliedServiceTest {
         final List<DsbMitgliedDTO> actual = underTest.findAll();
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
+        assertThat(actual).isNotNull().hasSize(1);
 
         final DsbMitgliedDTO actualDTO = actual.get(0);
 
@@ -132,6 +128,7 @@ public class DsbMitgliedServiceTest {
         // verify invocations
         verify(dsbMitgliedComponent).findAll();
     }
+
 
     @Test
     public void findAllByTeamId(){
@@ -146,9 +143,7 @@ public class DsbMitgliedServiceTest {
         final List<DsbMitgliedDTO> actual = underTest.findAllByTeamId(ID);
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
+        assertThat(actual).isNotNull().hasSize(1);
 
         final DsbMitgliedDTO actualDTO = actual.get(0);
 
@@ -159,6 +154,7 @@ public class DsbMitgliedServiceTest {
         // verify invocations
         verify(dsbMitgliedComponent).findAllByTeamId(ID);
     }
+
 
     @Test
     public void findById() {
@@ -179,6 +175,7 @@ public class DsbMitgliedServiceTest {
         // verify invocations
         verify(dsbMitgliedComponent).findById(ID);
     }
+
 
     @Test
     public void insertUserId(){
@@ -209,7 +206,6 @@ public class DsbMitgliedServiceTest {
     public void create() {
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
-
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
         // configure mocks
@@ -236,10 +232,8 @@ public class DsbMitgliedServiceTest {
 
     @Test
     public void update() {
-
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
-
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
         // configure mocks
@@ -264,29 +258,23 @@ public class DsbMitgliedServiceTest {
             assertThat(updatedDsbMitglied.getId()).isEqualTo(input.getId());
             assertThat(updatedDsbMitglied.getVorname()).isEqualTo(input.getVorname());
 
-
-        } catch (NoPermissionException e) {
-        }
-
+        } catch (NoPermissionException e) { }
     }
+
 
     @Test
     public void updateNoPermission() {
-
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
-
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
         // configure mocks
         when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
-
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
-
     }
 
 
@@ -295,12 +283,8 @@ public class DsbMitgliedServiceTest {
         // prepare test data
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
-        // configure mocks
-
         // call test method
         underTest.delete(ID, principal);
-
-        // assert result
 
         // verify invocations
         verify(dsbMitgliedComponent).delete(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
