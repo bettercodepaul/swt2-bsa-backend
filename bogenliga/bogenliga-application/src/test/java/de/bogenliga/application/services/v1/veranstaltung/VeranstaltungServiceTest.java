@@ -3,6 +3,8 @@ package de.bogenliga.application.services.v1.veranstaltung;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
+import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 
 import org.junit.Before;
@@ -42,6 +44,8 @@ public class VeranstaltungServiceTest {
     private static final String LIGALEITER_EMAIL = "";
     private static final String WETTKAMPTYP_NAME = "";
     private static final String LIGANAME = "";
+    private static final long SPORTJAHR_ID = 0;
+    private static final long SPORTJAHR_JAHR = 0;
 
 
    
@@ -96,6 +100,10 @@ public class VeranstaltungServiceTest {
         veranstaltungDTO.setLigaName(LIGANAME);
 
         return veranstaltungDTO;
+    }
+
+    public static SportjahrDO getSportjahrDO() {
+        return new SportjahrDO(SPORTJAHR_ID, SPORTJAHR_JAHR);
     }
 
     @Before
@@ -173,6 +181,66 @@ public class VeranstaltungServiceTest {
 
         // verify invocations
         verify(VeranstaltungComponent).findById(ID);
+    }
+
+
+    @Test
+    public void findByLigaId() {
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+        final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findByLigaID(anyLong())).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findByLigaId(ID);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        // verify invocations
+        verify(VeranstaltungComponent).findByLigaID(ID);
+    }
+
+
+    @Test
+    public void findAllSportjahrDestinct() {
+        // prepare test data
+        final SportjahrDO SportjahrDO = getSportjahrDO();
+        final List<SportjahrDO> SportjahrDOList = Collections.singletonList(SportjahrDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findAllSportjahreDestinct()).thenReturn(SportjahrDOList);
+
+        // call test method
+        final List<SportjahrDTO> actual = underTest.findAllSportjahrDestinct();
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        // verify invocations
+        verify(VeranstaltungComponent).findAllSportjahreDestinct();
+    }
+
+
+    @Test
+    public void findBySportjahr() {
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+        final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findBySportjahr(anyLong())).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findBySportjahr(SPORTJAHR);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        // verify invocations
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR);
     }
 
     @Test
