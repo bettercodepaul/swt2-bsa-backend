@@ -36,6 +36,7 @@ public class DownloadServiceTest {
 
     }
 
+
     @Test
     public void downloadSetzlistePdf() {
 
@@ -54,4 +55,6 @@ public class DownloadServiceTest {
         verify(setzlisteComponent).getPDFasByteArray(WETTKAMPF_ID);
 
     }
+
+
 }

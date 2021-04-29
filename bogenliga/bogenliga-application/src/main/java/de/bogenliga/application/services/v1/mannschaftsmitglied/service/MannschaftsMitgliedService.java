@@ -2,34 +2,25 @@ package de.bogenliga.application.services.v1.mannschaftsmitglied.service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.mapper.MannschaftsMitgliedDTOMapper;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 @RestController
 @CrossOrigin
@@ -54,24 +45,19 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      */
 
     private final MannschaftsmitgliedComponent mannschaftsMitgliedComponent;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserComponent userComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
     @Autowired
     public MannschaftsMitgliedService(MannschaftsmitgliedComponent mannschaftsMitgliedComponent,
-                                      JwtTokenProvider jwtTokenProvider,
-                                      UserComponent userComponent,
-                                      DsbMitgliedComponent dsbMitgliedComponent,
-                                      DsbMannschaftComponent dsbMannschaftComponent) {
+                                      DsbMannschaftComponent dsbMannschaftComponent,
+                                      final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.mannschaftsMitgliedComponent = mannschaftsMitgliedComponent;
 
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userComponent = userComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+
     }
 
 
@@ -94,16 +80,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @GetMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId) {
-        final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeamEingesetzt(
-                mannschaftsId);
-        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
-    }
-
-
     @GetMapping(value = "{memberId}/{teamId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -117,9 +93,19 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByMemberAndTeamId(
                 mannschaftsId, mitgliedId);
-        System.out.println(MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO));
         return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
     }
+
+
+    @GetMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId) {
+        final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeamEingesetzt(
+                mannschaftsId);
+        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
 
     @GetMapping(value = "/byMemberId/{memberId}",
@@ -132,37 +118,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByMemberId(memberId);
         return mannschaftsmitgliedDO.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
-    }
-
-
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
-    public MannschaftsMitgliedDTO create(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
-                                         final Principal principal) throws NoPermissionException {
-
-        checkPreconditions(mannschaftsMitgliedDTO);
-
-        LOG.debug("Receive 'create' request with mannschaftsId '{}', dsbMitgliedId '{}', DsbMitgliedEingesetzt '{}',",
-
-                mannschaftsMitgliedDTO.getMannschaftsId(),
-                mannschaftsMitgliedDTO.getDsbMitgliedId(),
-                mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
-        long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
-        // If user doesnt have the required Permissions, throw an exception
-        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
-                UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-            throw new NoPermissionException();
-        }
-        final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
-                mannschaftsMitgliedDTO);
-        final long currentMemberId = UserProvider.getCurrentUserId(principal);
-
-
-        final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = mannschaftsMitgliedComponent.create(
-                newMannschaftsmitgliedDO, currentMemberId);
-        return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsmitgliedDO);
     }
 
 
@@ -181,8 +136,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
-        // If user doesnt have the required Permissions, throw an exception
-        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
         }
@@ -196,13 +151,46 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
+
+
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public MannschaftsMitgliedDTO create(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
+                                         final Principal principal) throws NoPermissionException {
+
+        checkPreconditions(mannschaftsMitgliedDTO);
+
+        LOG.debug("Receive 'create' request with mannschaftsId '{}', dsbMitgliedId '{}', DsbMitgliedEingesetzt '{}',",
+
+                mannschaftsMitgliedDTO.getMannschaftsId(),
+                mannschaftsMitgliedDTO.getDsbMitgliedId(),
+                mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
+        long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
+            throw new NoPermissionException();
+        }
+        final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
+                mannschaftsMitgliedDTO);
+        final long currentMemberId = UserProvider.getCurrentUserId(principal);
+
+
+        final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = mannschaftsMitgliedComponent.create(
+                newMannschaftsmitgliedDO, currentMemberId);
+        return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsmitgliedDO);
+    }
+
     /**
-     * You are only able to delete a MannschaftsMitglied, if you have the explicit permission to Modify it or if you are
-     * the Mannschaftsführer/Sportleiter of the Verein.
+     * You are only able to delete a MannschaftsMitglied, if you have the explicit permission
+     * Sportleiter should have a specific right to delete a single member but there is a
+     * read-vy-id function missing in MannschaftsMitgliedDAO/ MannschaftsMitgliedComponent
      **/
 
     @DeleteMapping(value = "{id}")
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN})
     public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
@@ -211,12 +199,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         // allow value == null, the value will be ignored
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(id);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
-        long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
-        // If User doesnt have the required Permissions, throw an exception
-        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
-                UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-            throw new NoPermissionException();
-        }
         mannschaftsMitgliedComponent.delete(mannschaftsMitgliedDO, currentUserId);
     }
 
@@ -235,8 +217,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
-        // If User doesnt have the required Permissions, throw an exception
-        if (!this.hasPermissions(UserPermission.CAN_MODIFY_MANNSCHAFT) || !this.hasSpecificPermission(
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
         }
@@ -258,63 +240,5 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    boolean hasPermissions(UserPermission toTest) {
-        boolean result = false;
-        // get current http request from thread
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-
-            final HttpServletRequest request = servletRequestAttributes.getRequest();
-
-            // if request present
-            if (request != null) {
-                // parse json web token with roles
-                final String jwt = JwtTokenProvider.resolveToken(request);
-
-                // custom permission check
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
-                if (userPermissions.contains(toTest)) {
-                    result = true;
-                }
-            }
-        }
-        return result;
-    }
-
-
-    /**
-     * method to check, if a user has a Specific permission with the matching parameters
-     *
-     * @param toTest The permission whose existence is getting checked
-     *
-     * @return Does the User have searched permission
-     */
-    boolean hasSpecificPermission(UserPermission toTest, Long vereinsId) {
-        //default value is: not allowed
-        boolean result = false;
-        //get the current http request from thread
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null) {
-            final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-            final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if (request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
-
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                Long userId = jwtTokenProvider.getUserId(jwt);
-                UserDO userDO = this.userComponent.findById(userId);
-                DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
-                if ((dsbMitgliedDO.getVereinsId().equals(vereinsId)) && userPermissions.contains(toTest)) {
-                    result = true;
-                }
-            }
-        }
-        return result;
-    }
 
 }
