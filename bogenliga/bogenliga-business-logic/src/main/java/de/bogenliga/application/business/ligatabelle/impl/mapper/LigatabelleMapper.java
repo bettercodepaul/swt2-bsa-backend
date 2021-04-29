@@ -73,10 +73,10 @@ public class LigatabelleMapper implements ValueObjectMapper {
         ligatabelleBE.setVereinId(vo.getvereinId());
         ligatabelleBE.setVereinName(vo.getvereinName());
         ligatabelleBE.setMatchpkt(vo.getmatchpkt());
-        ligatabelleBE.setMatchpkt_gegen(vo.getmatchpkt_gegen());
+        ligatabelleBE.setMatchpkt_gegen(vo.getmatchpktGegen());
         ligatabelleBE.setSatzpkt(vo.getsatzpkt());
-        ligatabelleBE.setSatzpkt_gegen(vo.getsatzpkt_gegen());
-        ligatabelleBE.setSatzpkt_differenz(vo.getsatzpkt_differenz());
+        ligatabelleBE.setSatzpkt_gegen(vo.getsatzpktGegen());
+        ligatabelleBE.setSatzpkt_differenz(vo.getsatzpktDifferenz());
         ligatabelleBE.setSortierung(vo.getsortierung());
         ligatabelleBE.setTabellenplatz(vo.gettabellenplatz());
 

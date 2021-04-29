@@ -1,26 +1,21 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.business;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
-import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
-import org.springframework.beans.factory.annotation.Autowired;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
-import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
+import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
+import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Philip Dengler
@@ -39,6 +34,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private static final String PRECONDITION_MSG_SORTIERUNG = "The Sortierung must not be null or negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs ID must not be negative";
 
+    private static final String EXCEPTION_NO_RESULTS = "No result for ID '%s'";
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
     private final VereinDAO vereinDAO;
@@ -77,7 +73,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByVereinsId(id);
         if(dsbMannschaftBeList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result for ID '%s", id));
+                    String.format(EXCEPTION_NO_RESULTS, id));
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
@@ -90,7 +86,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByVeranstaltungsId(id);
         if(dsbMannschaftBeList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result for ID '%s", id));
+                    String.format(EXCEPTION_NO_RESULTS, id));
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
@@ -106,7 +102,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
         if(result == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result for ID '%s", id));
+                    String.format(EXCEPTION_NO_RESULTS, id));
         }
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(result));
     }
@@ -158,7 +154,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      * @return the same Mannschaften as given but with their names filled.
      */
     private List<DsbMannschaftDO> fillAllNames(List<DsbMannschaftDO> mannschaften){
-        return mannschaften.stream().map(mannschaft -> this.fillName(mannschaft)).collect(Collectors.toList());
+        return mannschaften.stream().map(this::fillName).collect(Collectors.toList());
     }
 
     /**
@@ -213,14 +209,14 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      */
     private void fillDO(DsbMannschaftDO mannschaftDO){
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
-        DsbMannschaftDO DoFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
+        DsbMannschaftDO doFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
 
-        if(DoFromDatabase != null) {
-            checkSortierung(mannschaftDO, DoFromDatabase);
-            mannschaftDO.setVereinId(DoFromDatabase.getVereinId());
-            mannschaftDO.setNummer(DoFromDatabase.getNummer());
-            mannschaftDO.setVeranstaltungId(DoFromDatabase.getVeranstaltungId());
-            mannschaftDO.setBenutzerId(DoFromDatabase.getBenutzerId());
+        if(doFromDatabase != null) {
+            checkSortierung(mannschaftDO, doFromDatabase);
+            mannschaftDO.setVereinId(doFromDatabase.getVereinId());
+            mannschaftDO.setNummer(doFromDatabase.getNummer());
+            mannschaftDO.setVeranstaltungId(doFromDatabase.getVeranstaltungId());
+            mannschaftDO.setBenutzerId(doFromDatabase.getBenutzerId());
         }
     }
 
@@ -239,21 +235,20 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      * In this call the sortierung will be 0.
      * To avoid this the method compares the given value of sortierung with the one from the database.
      * @param mannschaftDO
-     * @param DoFromDatabase A optional parameter to increase performance in the updateSorteirung mehtod.
+     * @param doFromDatabase A optional parameter to increase performance in the updateSorteirung mehtod.
      *                       null allowed!
      * @return
      */
-    private DsbMannschaftDO checkSortierung(DsbMannschaftDO mannschaftDO, DsbMannschaftDO DoFromDatabase){
+    private DsbMannschaftDO checkSortierung(DsbMannschaftDO mannschaftDO, DsbMannschaftDO doFromDatabase){
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
 
-        if(DoFromDatabase == null) {
-            DoFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
+        if(doFromDatabase == null) {
+            doFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
         }
-        if(mannschaftDO.getSortierung() == null && DoFromDatabase != null){
-            mannschaftDO.setSortierung(DoFromDatabase.getSortierung());
-        }else if(mannschaftDO.getSortierung() != null && mannschaftDO.getSortierung().equals(0L)
-                && DoFromDatabase != null && DoFromDatabase.getSortierung() > 0){
-            mannschaftDO.setSortierung(DoFromDatabase.getSortierung());
+        if( (mannschaftDO.getSortierung() == null && doFromDatabase != null) ||
+                (mannschaftDO.getSortierung() != null && mannschaftDO.getSortierung().equals(0L) &&
+                        doFromDatabase != null && doFromDatabase.getSortierung() > 0) ) {
+            mannschaftDO.setSortierung(doFromDatabase.getSortierung());
         }
         return mannschaftDO;
     }

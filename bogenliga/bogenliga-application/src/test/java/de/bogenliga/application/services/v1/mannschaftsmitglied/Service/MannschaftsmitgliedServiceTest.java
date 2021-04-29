@@ -4,6 +4,9 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,31 +18,38 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+
 
 public class MannschaftsmitgliedServiceTest {
 
     private static final Long USER = 0L;
-    private static Long id = 1L;
-    private static Long mannschaftsId = 1L;
-    private static Long dsbMitgliedId = 100L;
-    private static Integer dsbMitgliedEingesetzt = 1;
-    private static String dsbMitgliedVorname = "Mario";
-    private static String dsbMitgliedNachname = "Gomez";
-    private static Long rueckennummer = 5L;
+    private static final Long id = 1L;
+    private static final Long mannschaftsId = 1L;
+    private static final Long dsbMitgliedId = 100L;
+    private static final Integer dsbMitgliedEingesetzt = 1;
+    private static final String dsbMitgliedVorname = "Mario";
+    private static final String dsbMitgliedNachname = "Gomez";
+    private static final Long rueckennummer = 5L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+
+    @Mock
+    private DsbMannschaftComponent dsbMannschaftComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
     private Principal principal;
@@ -51,13 +61,11 @@ public class MannschaftsmitgliedServiceTest {
     private ArgumentCaptor<MannschaftsmitgliedDO> mannschaftsmitgliedVOArgumentCaptor;
 
 
-    public static MannschaftsmitgliedBE getMannschaftsmitgliedBE() {
-        final MannschaftsmitgliedBE expectedBE = new MannschaftsmitgliedBE();
-        expectedBE.setMannschaftId(mannschaftsId);
-        expectedBE.setDsbMitgliedId(dsbMitgliedId);
-        expectedBE.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
-        expectedBE.setRueckennummer(rueckennummer);
-        return expectedBE;
+    public static DsbMannschaftDO getDsbMannschaftDO() {
+        return new DsbMannschaftDO(
+                mannschaftsId, "die Mannschaft", id, 23,
+                id, id, 2L
+        );
     }
 
 
@@ -172,10 +180,49 @@ public class MannschaftsmitgliedServiceTest {
     @Test
     public void update() {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
+
+        // call test method
+        try {
+            final MannschaftsMitgliedDTO actual = underTest.update(input, principal);
+
+            // assert result
+            assertThat(actual).isNotNull();
+
+            assertThat(actual.getMannschaftsId())
+                    .isEqualTo(input.getMannschaftsId());
+
+            // verify invocations
+            verify(mannschaftsmitgliedComponent).update(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+
+            final MannschaftsmitgliedDO persistedDO = mannschaftsmitgliedVOArgumentCaptor.getValue();
+
+            assertThat(persistedDO).isNotNull();
+
+            assertThat(persistedDO.getMannschaftId())
+                    .isEqualTo(input.getMannschaftsId());
+
+        } catch (NoPermissionException | NullPointerException e) {
+        }
+    }
+
+    @Test
+    public void updateDataSepcificPermission() {
+        final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
+
+        final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
         // call test method
@@ -204,11 +251,35 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
+    public void updateNoPermission() {
+        final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
+
+        final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+        when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
+
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.create(input, principal));
+    }
+
+
+    @Test
     public void create() {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
+
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
         // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
         try {
@@ -222,6 +293,7 @@ public class MannschaftsmitgliedServiceTest {
 
             // verify invocations
             verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+
             final MannschaftsmitgliedDO createdDsbMannschaft = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
             assertThat(createdDsbMannschaft).isNotNull();
@@ -232,6 +304,63 @@ public class MannschaftsmitgliedServiceTest {
         } catch (NoPermissionException | NullPointerException e) {
         }
     }
+
+    @Test
+    public void createOnlyDataSepcificPermission() {
+        // prepare test data
+        final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
+
+        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
+        when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
+
+        try {
+            // call test method
+            final MannschaftsMitgliedDTO actual = underTest.create(input, principal);
+
+            // assert result
+            assertThat(actual).isNotNull();
+            assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
+            assertThat(actual.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
+
+            // verify invocations
+            verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+
+            final MannschaftsmitgliedDO createdDsbMannschaft = mannschaftsmitgliedVOArgumentCaptor.getValue();
+
+            assertThat(createdDsbMannschaft).isNotNull();
+            assertThat(createdDsbMannschaft.getMannschaftId()).isEqualTo(input.getMannschaftsId());
+            assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
+
+
+        } catch (NoPermissionException | NullPointerException e) {
+        }
+    }
+
+    @Test
+    public void createNoPermission() {
+        // prepare test data
+        final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
+
+        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+        when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+           .isThrownBy(()-> underTest.create(input, principal));
+
+    }
+
 
 
     // @Test
@@ -252,11 +381,39 @@ public class MannschaftsmitgliedServiceTest {
     //     assertThat(actualDTO.isDsbMitgliedEingesetzt()).isEqualTo(true);
     // }
 
-
     @Test
     public void delete() {
         // prepare test data
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        doNothing().when(mannschaftsmitgliedComponent).delete(any(), anyLong());
+
+        /* call test method */
+        try {
+            underTest.delete(mannschaftsId, principal);
+
+            // verify invocations
+            verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+
+
+        } catch (NoPermissionException | NullPointerException e) {
+        }
+    }
+
+
+
+
+
+    @Test
+    public void deleteByTeamMember() {
+        // prepare test data
+        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        doNothing().when(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(any(), anyLong());
 
         // call test method
         try {
@@ -278,20 +435,43 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void findByMemberId() {
-        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
-        final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
+    public void deleteByTeamMemberOnlyDataSpecificPermission() {
+        // prepare test data
+        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
 
-        //configure Mocks
-        when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
+
         // call test method
-        final List<MannschaftsMitgliedDTO> actual = underTest.findByMemberId(dsbMitgliedId);
-        // assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedId());
+        try {
+            underTest.deleteByTeamIdAndMemberId(mannschaftsId, dsbMitgliedId, principal);
 
-        // verify invocations
-        verify(mannschaftsmitgliedComponent).findByMemberId(dsbMitgliedId);
+            // verify invocations
+            verify(mannschaftsmitgliedComponent).deleteByTeamIdAndMemberId(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
+
+            final MannschaftsmitgliedDO deletedDsbMitglied = mannschaftsmitgliedVOArgumentCaptor.getValue();
+
+            assertThat(deletedDsbMitglied).isNotNull();
+            assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
+            assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
+
+
+        } catch (NoPermissionException | NullPointerException e) {
+        }
     }
-    
+    @Test
+    public void deleteByTeamMemberNoPermission() {
+        // prepare test data
+        final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(()-> underTest.deleteByTeamIdAndMemberId(mannschaftsId, dsbMitgliedId, principal));
+     }
+
+
 }

@@ -1,5 +1,6 @@
-[![sonarcloud](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
-[![sonarcloud_cov](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=coverage)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=exxcellent_swt2-bsa-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=exxcellent_swt2-bsa-backend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=exxcellent_swt2-bsa-backend&metric=coverage)](https://sonarcloud.io/dashboard?id=exxcellent_swt2-bsa-backend)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=exxcellent_swt2-bsa-backend&metric=code_smells)](https://sonarcloud.io/dashboard?id=exxcellent_swt2-bsa-backend)
 
 
 # Bogenliga Application

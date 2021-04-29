@@ -16,10 +16,11 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 /**
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -57,6 +58,9 @@ public class DsbMitgliedServiceTest {
     @Mock
     private Principal principal;
 
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
+
     @InjectMocks
     private DsbMitgliedService underTest;
 
@@ -64,23 +68,6 @@ public class DsbMitgliedServiceTest {
     private ArgumentCaptor<DsbMitgliedDO> dsbMitgliedVOArgumentCaptor;
 
 
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static DsbMitgliedBE getDsbMitgliedBE() {
-        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
-        expectedBE.setDsbMitgliedId(ID);
-        expectedBE.setDsbMitgliedVorname(VORNAME);
-        expectedBE.setDsbMitgliedNachname(NACHNAME);
-        expectedBE.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
-        expectedBE.setDsbMitgliedNationalitaet(NATIONALITAET);
-        expectedBE.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
-        expectedBE.setDsbMitgliedVereinsId(VEREINSID);
-        expectedBE.setDsbMitgliedUserId(USERID);
-
-        return expectedBE;
-    }
 
 
     private static DsbMitgliedDO getDsbMitgliedDO() {
@@ -256,6 +243,7 @@ public class DsbMitgliedServiceTest {
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
@@ -279,6 +267,25 @@ public class DsbMitgliedServiceTest {
 
         } catch (NoPermissionException e) {
         }
+
+    }
+
+    @Test
+    public void updateNoPermission() {
+
+        // prepare test data
+        final DsbMitgliedDTO input = getDsbMitgliedDTO();
+
+        final DsbMitgliedDO expected = getDsbMitgliedDO();
+
+        // configure mocks
+        when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
+
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(input, principal));
 
     }
 

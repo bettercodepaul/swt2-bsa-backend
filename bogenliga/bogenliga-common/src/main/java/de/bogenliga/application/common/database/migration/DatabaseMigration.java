@@ -3,9 +3,6 @@ package de.bogenliga.application.common.database.migration;
 import de.bogenliga.application.common.configuration.DatabaseConfiguration;
 import de.bogenliga.application.common.database.tx.PostgresqlTransactionManager;
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.Location;
-import org.flywaydb.core.api.logging.Log;
-import org.flywaydb.core.api.logging.LogCreator;
 import org.flywaydb.core.api.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +12,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
