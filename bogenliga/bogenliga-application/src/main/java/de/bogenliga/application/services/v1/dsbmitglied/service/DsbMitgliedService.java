@@ -52,7 +52,6 @@ public class DsbMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
-
     private static final Logger LOG = LoggerFactory.getLogger(DsbMitgliedService.class);
 
     /*
@@ -61,9 +60,8 @@ public class DsbMitgliedService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMitgliedComponent dsbMitgliedComponent;
-
-
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+
 
     /**
      * Constructor with dependency injection
@@ -80,7 +78,6 @@ public class DsbMitgliedService implements ServiceFacade {
 
     /**
      * I return all dsbMitglied entries of the database.
-
      *
      * Usage:
      * <pre>{@code Request: GET /v1/dsbmitglied}</pre>
@@ -100,13 +97,13 @@ public class DsbMitgliedService implements ServiceFacade {
      *
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public List<DsbMitgliedDTO> findAll() {
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAll();
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
+
 
     @GetMapping(value = "/team/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
@@ -143,6 +140,7 @@ public class DsbMitgliedService implements ServiceFacade {
         final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return DsbMitgliedDTOMapper.toDTO.apply(dsbMitgliedDO);
     }
+
 
     /**
      * I return the dsbMitglied entry of the database with a specific id.
@@ -198,12 +196,9 @@ public class DsbMitgliedService implements ServiceFacade {
      * @param principal authenticated user
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_DSBMITGLIEDER, UserPermission.CAN_CREATE_VEREIN_DSBMITGLIEDER})
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
-
         checkPreconditions(dsbMitgliedDTO);
 
         LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
@@ -218,7 +213,6 @@ public class DsbMitgliedService implements ServiceFacade {
 
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
-
         final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
 
         return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
@@ -240,12 +234,9 @@ public class DsbMitgliedService implements ServiceFacade {
      * }
      * }</pre>
      */
-    @PutMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_DSBMITGLIEDER, UserPermission.CAN_MODIFY_MY_VEREIN})
     public DsbMitgliedDTO update(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) throws NoPermissionException {
-
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to create a Team in
         //and if the user has the permission to modify his verein.
@@ -270,12 +261,11 @@ public class DsbMitgliedService implements ServiceFacade {
 
             final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
             final long userId = UserProvider.getCurrentUserId(principal);
-
             final DsbMitgliedDO updatedDsbMitgliedDO = dsbMitgliedComponent.update(newDsbMitgliedDO, userId);
+
             return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
 
         } else throw new NoPermissionException();
-
     }
 
 
