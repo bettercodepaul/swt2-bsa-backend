@@ -52,6 +52,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
     }
 
+
     // Do we need this method for anything or does it purely exist because it has to implement the interfaces method?
     //TODO - hier fehlt die Implementierung, es wird explizit aus dem Match-Service aus aufgerufen.
     @Override
@@ -87,6 +88,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Override
     public List<WettkampfDO> findAllByVeranstaltungId(long veranstaltungId) {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+
         final List<WettkampfBE> wettkampfBEList = this.wettkampfDAO.findAllByVeranstaltungId(veranstaltungId);
         return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
     }
@@ -102,6 +104,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
         return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
     }
+
 
     public WettkampfDO createWT0(long veranstaltungID, final long currentUserID) {
         Preconditions.checkNotNull(veranstaltungID, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
@@ -136,17 +139,13 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
 
         wettkampfDAO.delete(wettkampfBE, currentUserID);
-
     }
 
 
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
-
-        Preconditions.checkNotNull(wettkampfDO.getWettkampfVeranstaltungsId(),
-                PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
-        Preconditions.checkArgument(wettkampfDO.getWettkampfVeranstaltungsId() >= 0,
-                PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkNotNull(wettkampfDO.getWettkampfVeranstaltungsId(), PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkArgument(wettkampfDO.getWettkampfVeranstaltungsId() >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfDatum(), PRECONDITION_MSG_WETTKAMPF_DATUM);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfBeginn(), PRECONDITION_MSG_WETTKAMPF_BEGINN);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfTag(), PRECONDITION_MSG_WETTKAMPF_TAG);
@@ -155,7 +154,5 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkNotNull(wettkampfDO.getWettkampfTypId(), PRECONDITION_MSG_WETTKAMPF_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(wettkampfDO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
-
     }
-
 }
