@@ -86,6 +86,7 @@ public class MannschaftsmitgliedServiceTest {
     }
 
 
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(USER));
@@ -94,27 +95,26 @@ public class MannschaftsmitgliedServiceTest {
 
     @Test
     public void findAll() {
+        // prepare test data
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
-        //configure Mocks
+
+        // configure Mocks
         when(mannschaftsmitgliedComponent.findAll()).thenReturn(mannschaftsmitgliedDOList);
+
         // call test method
         final List<MannschaftsMitgliedDTO> actual = underTest.findAll();
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
+        assertThat(actual).isNotNull().hasSize(1);
 
         final MannschaftsMitgliedDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getMannschaftsId()).isEqualTo(mannschaftsmitgliedDO.getMannschaftId());
-        //assertThat(actualDTO.getVereinId()).isEqualTo(dsbMannschaftDO.getVereinId());
 
         // verify invocations
         verify(mannschaftsmitgliedComponent).findAll();
-
     }
 
 
@@ -124,14 +124,15 @@ public class MannschaftsmitgliedServiceTest {
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
 
-        //configure Mocks
+        // configure Mocks
         when(mannschaftsmitgliedComponent.findByTeamId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+
         // call test method
         final List<MannschaftsMitgliedDTO> actual = underTest.findByTeamId(mannschaftsId);
+
         // assert result
         assertThat(actual).isNotNull();
         assertThat(actual.get(0).getMannschaftsId()).isEqualTo(mannschaftsmitgliedDO.getMannschaftId());
-
 
         // verify invocations
         verify(mannschaftsmitgliedComponent).findByTeamId(mannschaftsId);
@@ -139,8 +140,25 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void findAllSchuetzeInTeam() {
+    public void findByMemberAndTeamId() {
+        // prepare test data
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
 
+        // configure mocks
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId)).thenReturn(
+                mannschaftsmitgliedDO);
+
+        final MannschaftsMitgliedDTO actual = underTest.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
+        assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
+    }
+
+
+    @Test
+    public void findAllSchuetzeInTeam() {
+        // prepare test data
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
 
@@ -151,10 +169,8 @@ public class MannschaftsmitgliedServiceTest {
         final List<MannschaftsMitgliedDTO> actual = underTest.findAllSchuetzeInTeam(mannschaftsId);
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+
         assertThat(actual.get(0).getMannschaftsId()).isEqualTo(mannschaftsmitgliedDO.getMannschaftId());
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedId());
         assertThat(actual.get(0).getDsbMitgliedEingesetzt()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedEingesetzt());
@@ -162,18 +178,23 @@ public class MannschaftsmitgliedServiceTest {
 
 
     @Test
-    public void findByMemberAndTeamId() {
+    public void findByMemberId() {
+        // prepare test data
         final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+        final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
 
-        // configure mocks
-        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId)).thenReturn(
-                mannschaftsmitgliedDO);
-        final MannschaftsMitgliedDTO actual = underTest.findByMemberAndTeamId(mannschaftsId, dsbMitgliedId);
+        //configure Mocks
+        when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
 
+        // call test method
+        final List<MannschaftsMitgliedDTO> actual = underTest.findByMemberId(dsbMitgliedId);
+
+        // assert result
         assertThat(actual).isNotNull();
-        assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
-        assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedId());
 
+        // verify invocations
+        verify(mannschaftsmitgliedComponent).findByMemberId(dsbMitgliedId);
     }
 
 
@@ -194,9 +215,7 @@ public class MannschaftsmitgliedServiceTest {
 
             // assert result
             assertThat(actual).isNotNull();
-
-            assertThat(actual.getMannschaftsId())
-                    .isEqualTo(input.getMannschaftsId());
+            assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
 
             // verify invocations
             verify(mannschaftsmitgliedComponent).update(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
@@ -204,18 +223,16 @@ public class MannschaftsmitgliedServiceTest {
             final MannschaftsmitgliedDO persistedDO = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
             assertThat(persistedDO).isNotNull();
+            assertThat(persistedDO.getMannschaftId()).isEqualTo(input.getMannschaftsId());
 
-            assertThat(persistedDO.getMannschaftId())
-                    .isEqualTo(input.getMannschaftsId());
-
-        } catch (NoPermissionException | NullPointerException e) {
-        }
+        } catch (NoPermissionException | NullPointerException e) { }
     }
+
 
     @Test
     public void updateDataSepcificPermission() {
+        // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
@@ -231,9 +248,7 @@ public class MannschaftsmitgliedServiceTest {
 
             // assert result
             assertThat(actual).isNotNull();
-
-            assertThat(actual.getMannschaftsId())
-                    .isEqualTo(input.getMannschaftsId());
+            assertThat(actual.getMannschaftsId()).isEqualTo(input.getMannschaftsId());
 
             // verify invocations
             verify(mannschaftsmitgliedComponent).update(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
@@ -241,19 +256,16 @@ public class MannschaftsmitgliedServiceTest {
             final MannschaftsmitgliedDO persistedDO = mannschaftsmitgliedVOArgumentCaptor.getValue();
 
             assertThat(persistedDO).isNotNull();
+            assertThat(persistedDO.getMannschaftId()).isEqualTo(input.getMannschaftsId());
 
-            assertThat(persistedDO.getMannschaftId())
-                    .isEqualTo(input.getMannschaftsId());
-
-        } catch (NoPermissionException | NullPointerException e) {
-        }
+        } catch (NoPermissionException | NullPointerException e) { }
     }
 
 
     @Test
     public void updateNoPermission() {
+        // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
@@ -262,7 +274,6 @@ public class MannschaftsmitgliedServiceTest {
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
-
 
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.create(input, principal));
@@ -273,7 +284,6 @@ public class MannschaftsmitgliedServiceTest {
     public void create() {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
@@ -301,15 +311,14 @@ public class MannschaftsmitgliedServiceTest {
             assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
 
 
-        } catch (NoPermissionException | NullPointerException e) {
-        }
+        } catch (NoPermissionException | NullPointerException e) { }
     }
+
 
     @Test
     public void createOnlyDataSepcificPermission() {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
@@ -337,16 +346,14 @@ public class MannschaftsmitgliedServiceTest {
             assertThat(createdDsbMannschaft.getMannschaftId()).isEqualTo(input.getMannschaftsId());
             assertThat(createdDsbMannschaft.getDsbMitgliedId()).isEqualTo(input.getDsbMitgliedId());
 
-
-        } catch (NoPermissionException | NullPointerException e) {
-        }
+        } catch (NoPermissionException | NullPointerException e) { }
     }
+
 
     @Test
     public void createNoPermission() {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
-
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
@@ -358,28 +365,8 @@ public class MannschaftsmitgliedServiceTest {
 
         assertThatExceptionOfType(NoPermissionException.class)
            .isThrownBy(()-> underTest.create(input, principal));
-
     }
 
-
-
-    // @Test
-    // public void checkExistingSchuetze() {
-    //     final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
-//
-    //     // call test method
-    //     final boolean actual = underTest.checkExistingSchuetze(mannschaftsId, dsbMitgliedId, principal);
-//
-    //     // assert result
-    //     assertThat(actual)
-    //             .isNotNull();
-//
-    //     final MannschaftsMitgliedDTO actualDTO = getMannschaftsmitgliedDTO();
-//
-    //     assertThat(actualDTO).isNotNull();
-    //     assertThat(actualDTO.isDsbMitgliedEingesetzt()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedEingesetzt());
-    //     assertThat(actualDTO.isDsbMitgliedEingesetzt()).isEqualTo(true);
-    // }
 
     @Test
     public void delete() {
@@ -397,13 +384,8 @@ public class MannschaftsmitgliedServiceTest {
             // verify invocations
             verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-
-        } catch (NoPermissionException | NullPointerException e) {
-        }
+        } catch (NoPermissionException | NullPointerException e) { }
     }
-
-
-
 
 
     @Test
@@ -428,9 +410,7 @@ public class MannschaftsmitgliedServiceTest {
             assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
             assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
 
-
-        } catch (NoPermissionException | NullPointerException e) {
-        }
+        } catch (NoPermissionException | NullPointerException e) { }
     }
 
 
@@ -456,10 +436,10 @@ public class MannschaftsmitgliedServiceTest {
             assertThat(deletedDsbMitglied.getMannschaftId()).isEqualTo(expected.getMannschaftId());
             assertThat(deletedDsbMitglied.getDsbMitgliedId()).isEqualTo(expected.getDsbMitgliedId());
 
-
-        } catch (NoPermissionException | NullPointerException e) {
-        }
+        } catch (NoPermissionException | NullPointerException e) { }
     }
+
+
     @Test
     public void deleteByTeamMemberNoPermission() {
         // prepare test data
@@ -472,6 +452,4 @@ public class MannschaftsmitgliedServiceTest {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(()-> underTest.deleteByTeamIdAndMemberId(mannschaftsId, dsbMitgliedId, principal));
      }
-
-
 }
