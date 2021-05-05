@@ -81,4 +81,6 @@ public interface WettkampfComponent extends ComponentFacade {
      */
     void delete(WettkampfDO wettkampfDO, long currentUserID);
 
+    public byte[] getEinzelstatistikPDFasByteArray();
+
 }
