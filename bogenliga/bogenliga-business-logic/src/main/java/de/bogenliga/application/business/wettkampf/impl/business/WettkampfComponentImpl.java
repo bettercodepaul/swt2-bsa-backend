@@ -155,4 +155,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(wettkampfDO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
     }
+
+    @Override
+    public byte[] getEinzelstatistikPDFasByteArray() {
+        System.out.println("do something");
+        return null;
+    }
 }
