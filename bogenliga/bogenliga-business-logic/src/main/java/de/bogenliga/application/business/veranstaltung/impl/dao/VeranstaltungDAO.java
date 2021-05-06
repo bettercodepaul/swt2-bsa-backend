@@ -90,6 +90,12 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + "FROM veranstaltung "
                     + "WHERE veranstaltung_liga_id = ?";
 
+    private static final String FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA =
+            "SELECT DISTINCT liga_id, veranstaltung_name, veranstaltung_id"
+                + "FROM liga, veranstaltung, ligatabelle"
+                + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND  veranstaltung_sportjahr= ? AND veranstaltung_liga_id= liga_id)";
+
+
     private final BasicDAO basicDao;
 
     /**
@@ -175,6 +181,9 @@ public class VeranstaltungDAO implements DataAccessObject{
         return basicDao.selectEntityList(VERANSTALTUNG,FIND_BY_LIGALEITER_ID, ligaleiterId);
     }
 
+    public List<VeranstaltungBE> findBySportjahrDestinct(long sportjahr){
+        return basicDao.selectEntityList(VERANSTALTUNG,FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA,sportjahr);
+    }
 
 
     /**

@@ -22,9 +22,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -525,4 +528,13 @@ public class VeranstaltungComponentImplTest {
         // verify invocations
         verify(veranstaltungDAO).findByLigaID(VERANSTALTUNG_LIGA_ID);
     }
+
+
+    @Test
+    public void testfindBySportjahrDestinct(){
+        System.out.println(underTest.findBySportjahrDestinct(2018).isEmpty());
+
+    }
+
+
 }
