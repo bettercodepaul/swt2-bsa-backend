@@ -25,6 +25,11 @@ public class ConfigurationDOTest {
         assertThat(underTest.getId()).isEqualTo(id);
         assertThat(underTest.getKey()).isEqualTo(key);
         assertThat(underTest.getValue()).isEqualTo(value);
+
+        underTest = new ConfigurationDO(key, value);
+
+        assertThat(underTest.getKey()).isEqualTo(key);
+        assertThat(underTest.getValue()).isEqualTo(value);
     }
 
 
