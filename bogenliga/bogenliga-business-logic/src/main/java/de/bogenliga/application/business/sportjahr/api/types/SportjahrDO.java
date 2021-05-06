@@ -14,7 +14,7 @@ public class SportjahrDO extends CommonDataObject implements DataObject {
 
 
 
-    public SportjahrDO(){
+    public SportjahrDO(long sportjahrId, long sportjahrJahr){
         //empty
     }
 
@@ -22,6 +22,10 @@ public class SportjahrDO extends CommonDataObject implements DataObject {
         this.id = id;
         this.sportjahr = sportjahr;
         this.version = version;
+    }
+
+    public SportjahrDO() {
+
     }
 
     //getter setter
