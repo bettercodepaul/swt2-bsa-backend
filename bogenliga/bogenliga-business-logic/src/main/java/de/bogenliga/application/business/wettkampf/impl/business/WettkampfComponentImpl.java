@@ -157,8 +157,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     @Override
-    public byte[] getEinzelstatistikPDFasByteArray() {
-        System.out.println("do something");
+    public byte[] getEinzelstatistikPDFasByteArray(long currentMannschaftid) {
+        System.out.println(currentMannschaftid);
         return null;
     }
 }
