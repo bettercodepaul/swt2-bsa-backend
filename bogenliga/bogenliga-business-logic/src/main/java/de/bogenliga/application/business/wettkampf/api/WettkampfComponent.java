@@ -81,6 +81,12 @@ public interface WettkampfComponent extends ComponentFacade {
      */
     void delete(WettkampfDO wettkampfDO, long currentUserID);
 
-    public byte[] getEinzelstatistikPDFasByteArray();
+
+    /**
+     * Generates a pdf as binary document
+     * @param wettkampfid ID for the competition
+     * @return document
+     */
+    byte[] getEinzelstatistikPDFasByteArray(long wettkampfid);
 
 }

@@ -1,10 +1,20 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.itextpdf.io.source.ByteArrayOutputStream;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import de.bogenliga.application.business.setzliste.impl.business.SetzlisteComponentImpl;
+import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -12,6 +22,7 @@ import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.business.wettkampf.impl.mapper.WettkampfMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.validation.Preconditions;
 
 /**
@@ -32,6 +43,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
 
     private final WettkampfDAO wettkampfDAO;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
     
     /**
      * Constructor
@@ -142,6 +154,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
 
+
+
+
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfVeranstaltungsId(), PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
@@ -157,8 +172,38 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     @Override
-    public byte[] getEinzelstatistikPDFasByteArray() {
-        System.out.println("do something");
-        return null;
+    public byte[] getEinzelstatistikPDFasByteArray(long wettkampfid){
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(wettkampfid);
+        byte[] bResult;
+        if (!wettkampflisteBEList.isEmpty()) {
+            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 PdfWriter writer = new PdfWriter(result);
+                 PdfDocument pdfDocument = new PdfDocument(writer);
+                 Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+                //generateDoc(doc, wettkampflisteBEList);
+
+                bResult = result.toByteArray();
+                LOGGER.debug("Einzelstatistik erstellt");
+            } catch(IOException e){
+                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: " + e);
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF Einzelstatistik konnte nicht erstellt werden: " + e);
+            }
+        }
+        else
+        {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
+
+        return bResult;
+
     }
+
+    private void generateDoc(Document doc) {
+
+    }
+
 }
