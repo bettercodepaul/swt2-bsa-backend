@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.business.WettkampfComponentImpl;
+import de.bogenliga.application.services.v1.wettkampf.service.WettkampfService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -313,9 +314,10 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadeinzelstatistikPdf() {
+    ResponseEntity<InputStreamResource> downloadeinzelstatistikPdf(@RequestParam("wettkampfid") final long wettkampfid) {
         System.out.println("das ist ein tests");
-        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray();
+
+        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(wettkampfid);
 
         return generateInputStream(fileBloB);
     }
