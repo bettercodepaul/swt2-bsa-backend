@@ -11,6 +11,7 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import static org.mockito.Mockito.*;
 
 /**
@@ -27,6 +28,9 @@ public class DownloadServiceTest {
 
     @Mock
     private SetzlisteComponent setzlisteComponent;
+
+    @Mock
+    private WettkampfComponent wettkampfComponent;
 
     @InjectMocks
     private DownloadService DownloadService;
@@ -56,5 +60,21 @@ public class DownloadServiceTest {
 
     }
 
+    @Test
+    public void downloadeinzelstatistikPdf()
+    {
+        final byte[] test = new byte[0];
 
+        //configure Mocks
+        when(wettkampfComponent.getEinzelstatistikPDFasByteArray(WETTKAMPF_ID)).thenReturn(test);
+
+        //call Method
+        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadEinzelstatistikPdf(WETTKAMPF_ID);
+
+        //result is nut NULL
+        Assertions.assertThat(actual).isNotNull();
+
+        //verify invocations
+        verify(wettkampfComponent).getEinzelstatistikPDFasByteArray(WETTKAMPF_ID);
+    }
 }
