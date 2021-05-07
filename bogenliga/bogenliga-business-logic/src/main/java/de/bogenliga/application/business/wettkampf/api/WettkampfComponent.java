@@ -87,6 +87,6 @@ public interface WettkampfComponent extends ComponentFacade {
      * @param wettkampfid ID for the competition
      * @return document
      */
-    byte[] getEinzelstatistikPDFasByteArray(long wettkampfid);
+    byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr);
 
 }
