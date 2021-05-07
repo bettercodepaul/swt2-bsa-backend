@@ -172,10 +172,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     @Override
-    public byte[] getEinzelstatistikPDFasByteArray(long wettkampfid){
-        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-
-        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(wettkampfid);
+    public byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr){
+        Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        System.out.println(veranstaltungsid);
+        System.out.println(manschaftsid);
+        System.out.println(jahr);
+        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
         byte[] bResult;
         if (!wettkampflisteBEList.isEmpty()) {
             try (ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -195,7 +197,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         else
         {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + manschaftsid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
 
         return bResult;

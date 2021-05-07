@@ -308,11 +308,11 @@ public class DownloadService implements ServiceFacade {
     }
 
     /**
-     * return Statistic for a wettkampf
+     * return Einzelstatistik einer manschaft an einer veranstaltung in einem jahr
      *
-     * @param wettkampfid from Get-request: ID of the wettkampf
+     * @param werte from Get-request:
      * Usage:
-     * <pre>{@code Request: GET /v1/download/pdf/Einzelstatistik/?wettkampfid=x}</pre>
+     * <pre>{@code Request: GET /v1/download/pdf/Einzelstatistik/?werte=x}</pre>
      *
      * @return pdf as InputStreamRessource
     */
@@ -322,10 +322,17 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("wettkampfid") final long wettkampfid) {
-        System.out.println("das ist ein tests");
+    ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("werte") final String werte) {
+        System.out.println("test 123");
+        System.out.println(werte);
 
-        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(wettkampfid);
+        // spliten der mit "," getrennten werte in veranstalungsid, manschaftsid und jahr
+        String parameter[] = werte.split(",");
+        long veranstalungsid = Long.parseLong(parameter[0]);
+        long manschaftsid = Long.parseLong(parameter[1]);
+        int jahr = Integer.parseInt(parameter[2]);
+
+        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(veranstalungsid,manschaftsid,jahr);
 
         return generateInputStream(fileBloB);
     }

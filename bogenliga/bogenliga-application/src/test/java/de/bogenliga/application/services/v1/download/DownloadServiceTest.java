@@ -21,6 +21,10 @@ import static org.mockito.Mockito.*;
 public class DownloadServiceTest {
 
     private static final int WETTKAMPF_ID = 30;
+    private static final String WERTE_EINZELSTATISTIK = "0,101,2018";
+    private static final long VERANSTALTUNGS_ID = 0;
+    private static final long MANSCHAFTS_ID = 101;
+    private static final int JAHR = 2018;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -66,15 +70,15 @@ public class DownloadServiceTest {
         final byte[] test = new byte[0];
 
         //configure Mocks
-        when(wettkampfComponent.getEinzelstatistikPDFasByteArray(WETTKAMPF_ID)).thenReturn(test);
+        when(wettkampfComponent.getEinzelstatistikPDFasByteArray(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR)).thenReturn(test);
 
         //call Method
-        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadEinzelstatistikPdf(WETTKAMPF_ID);
+        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadEinzelstatistikPdf(WERTE_EINZELSTATISTIK);
 
         //result is nut NULL
         Assertions.assertThat(actual).isNotNull();
 
         //verify invocations
-        verify(wettkampfComponent).getEinzelstatistikPDFasByteArray(WETTKAMPF_ID);
+        verify(wettkampfComponent).getEinzelstatistikPDFasByteArray(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
     }
 }
