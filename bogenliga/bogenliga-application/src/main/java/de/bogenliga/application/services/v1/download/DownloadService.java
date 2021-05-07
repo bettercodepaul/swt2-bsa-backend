@@ -313,9 +313,9 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadeinzelstatistikPdf() {
+    ResponseEntity<InputStreamResource> downloadeinzelstatistikPdf(@RequestParam("manschaft") final long currentMannschaftid) {
         System.out.println("das ist ein tests");
-        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray();
+        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(currentMannschaftid);
 
         return generateInputStream(fileBloB);
     }
