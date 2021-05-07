@@ -307,7 +307,15 @@ public class DownloadService implements ServiceFacade {
         return generateInputStream(fileBloB);
     }
 
-    //test for Einzelstatistik
+    /**
+     * return Statistic for a wettkampf
+     *
+     * @param wettkampfid from Get-request: ID of the wettkampf
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/Einzelstatistik/?wettkampfid=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+    */
     @CrossOrigin(maxAge = 0)
     @GetMapping(
             path = "pdf/Einzelstatistik",

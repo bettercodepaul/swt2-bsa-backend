@@ -59,7 +59,7 @@ public class DownloadServiceTest {
         verify(setzlisteComponent).getPDFasByteArray(WETTKAMPF_ID);
 
     }
-
+    
     @Test
     public void downloadeinzelstatistikPdf()
     {
