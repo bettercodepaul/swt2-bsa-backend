@@ -143,6 +143,22 @@ public class VeranstaltungService implements ServiceFacade {
     }
 
     /**
+     *
+     * @param sportjahr - filterr for sql-abfrage
+     * @return retrun Veranstaltung sorted by exisiting data, in descending order based on the last modification date and "veranslatung_id".
+     */
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            value = "find/by/sorted/{sportjahr}")
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findBySportjahrDestinct(@PathVariable ("sportjahr") final long sportjahr){
+
+        LOG.debug("Received 'findBySportyear' request for Veranstaltung in {}", sportjahr);
+
+        return veranstaltungComponent.findBySportjahrDestinct(sportjahr).stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    /**
      * I persist a new veranstaltung and return this veranstaltung entry
      *
      * You are only able to create a Veranstaltung, if you have the explicit permission to Create it or
