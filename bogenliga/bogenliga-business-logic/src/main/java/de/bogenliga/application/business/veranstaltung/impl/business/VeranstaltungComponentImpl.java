@@ -208,7 +208,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     }
 
-
     @Override
     public List<VeranstaltungDO> findByLigaID(long ligaID) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
