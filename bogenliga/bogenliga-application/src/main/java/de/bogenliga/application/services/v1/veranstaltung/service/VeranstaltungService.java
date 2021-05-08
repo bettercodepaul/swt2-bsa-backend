@@ -153,9 +153,10 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahrDestinct(@PathVariable ("sportjahr") final long sportjahr){
 
-        LOG.debug("Received 'findBySportyear' request for Veranstaltung in {}", sportjahr);
+        LOG.debug("Received 'findBySportjahrDestinct' request for Veranstaltung in {}", sportjahr);
+        List <VeranstaltungDO> returnList = veranstaltungComponent.findBySportjahrDestinct(sportjahr);
 
-        return veranstaltungComponent.findBySportjahrDestinct(sportjahr).stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+        return returnList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     /**
