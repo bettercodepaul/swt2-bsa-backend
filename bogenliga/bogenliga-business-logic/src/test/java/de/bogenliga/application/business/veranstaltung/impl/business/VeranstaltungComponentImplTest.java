@@ -1,15 +1,12 @@
 package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
-import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -24,12 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
