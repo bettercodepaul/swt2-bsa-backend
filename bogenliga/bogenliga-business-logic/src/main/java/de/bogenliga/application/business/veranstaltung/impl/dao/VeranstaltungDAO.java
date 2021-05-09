@@ -94,7 +94,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA =
             "SELECT veranstaltung_liga_id, veranstaltung_name, veranstaltung_id, match.last_modified_at_utc "
                     + "FROM liga, veranstaltung,ligatabelle, match "
-                    + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND veranstaltung_liga_id= liga_id) "
+                    + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id) "
                     + "GROUP BY veranstaltung_liga_id, veranstaltung_name, veranstaltung_id, match.last_modified_at_utc "
                     + "ORDER BY max(match.last_modified_at_utc) DESC NULLS LAST, veranstaltung_id ";
 
