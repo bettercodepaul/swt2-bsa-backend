@@ -20,6 +20,8 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
@@ -55,6 +57,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final VeranstaltungDAO veranstaltungDAO;
     private final DsbMannschaftDAO dsbMannschaftDAO;
     private final VereinDAO vereinDAO;
+    private final DsbMitgliedDAO dsbMitgliedDAO;
     private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
     
     /**
@@ -65,11 +68,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @param wettkampfDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO,final DsbMannschaftDAO dsbMannschaftDAO, final VereinDAO vereinDAO) {
+    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO,final DsbMannschaftDAO dsbMannschaftDAO, final VereinDAO vereinDAO, final DsbMitgliedDAO dsbMitgliedDAO) {
         this.wettkampfDAO = wettkampfDAO;
         this.veranstaltungDAO = veranstaltungDAO;
         this.dsbMannschaftDAO = dsbMannschaftDAO;
         this.vereinDAO = vereinDAO;
+        this.dsbMitgliedDAO = dsbMitgliedDAO;
     }
 
 
@@ -223,14 +227,42 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         VereinBE selectedVerein = vereinDAO.findById(dsbMannschaftDAO.findById(manschaftsid).getVereinId());
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
         // description
+
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
         doc.add(new Paragraph("Einzelstatistik"));
         doc.add(new Paragraph(selectedVeranstaltung.getVeranstaltung_name()));
         doc.add(new Paragraph(selectedVerein.getVereinName()));
         doc.add(new Paragraph(Integer.toString(jahr)));
-
         doc.add(new Paragraph(""));
 
+        for(WettkampfBE wettkampf : wettkampflisteBEList)
+        {
+            doc.add(new Paragraph("Wettkampftag " + String.valueOf(wettkampf.getWettkampfTag())));
+
+            Table table = new Table(new float[]{40, 150, 150, 250});
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Mannschaft")));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze")));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match")));
+
+            table.addCell(new Cell().add(new Paragraph()));
+            table.addCell(new Cell().add(new Paragraph(selectedVerein.getVereinName())));
+            table.addCell(new Cell().add(new Paragraph("")));
+            table.addCell(new Cell().add(new Paragraph("")));
+
+            table.addCell(new Cell().add(new Paragraph()));
+            table.addCell(new Cell().add(new Paragraph(selectedVerein.getVereinName())));
+            table.addCell(new Cell().add(new Paragraph("")));
+            table.addCell(new Cell().add(new Paragraph("")));
+
+            table.addCell(new Cell().add(new Paragraph()));
+            table.addCell(new Cell().add(new Paragraph(selectedVerein.getVereinName())));
+            table.addCell(new Cell().add(new Paragraph("")));
+            table.addCell(new Cell().add(new Paragraph("")));
+
+            doc.add(table);
+            doc.add(new Paragraph(""));
+        }
         doc.close();
     }
 
