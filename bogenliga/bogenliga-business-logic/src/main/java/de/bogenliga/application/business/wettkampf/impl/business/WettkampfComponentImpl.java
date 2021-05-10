@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,14 +17,16 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.UnitValue;
-import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -56,9 +56,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     private final WettkampfDAO wettkampfDAO;
     private final VeranstaltungDAO veranstaltungDAO;
-    private final DsbMannschaftDAO dsbMannschaftDAO;
-    private final VereinDAO vereinDAO;
-    private final DsbMitgliedDAO dsbMitgliedDAO;
+    private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+    private final PasseComponent passeComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final VereinComponent vereinComponent;
     private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
     
     /**
@@ -69,12 +70,14 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @param wettkampfDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO,final DsbMannschaftDAO dsbMannschaftDAO, final VereinDAO vereinDAO, final DsbMitgliedDAO dsbMitgliedDAO) {
+    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO, final MannschaftsmitgliedDAO mannschaftsmitgliedDAO
+                                    ,final DsbMannschaftComponent dsbMannschaftComponent, final VereinComponent vereinComponent, final PasseComponent passeComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.veranstaltungDAO = veranstaltungDAO;
-        this.dsbMannschaftDAO = dsbMannschaftDAO;
-        this.vereinDAO = vereinDAO;
-        this.dsbMitgliedDAO = dsbMitgliedDAO;
+        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.vereinComponent = vereinComponent;
+        this.passeComponent = passeComponent;
     }
 
 
@@ -174,9 +177,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
 
-
-
-
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfVeranstaltungsId(), PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
@@ -222,49 +222,102 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     }
 
-    private void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long manschaftsid,int jahr) {
-
-        doc.setFontSize(9.2f);
-        VereinBE selectedVerein = vereinDAO.findById(dsbMannschaftDAO.findById(manschaftsid).getVereinId());
+    private void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
+    {
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
-        // description
 
-        DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
-        doc.add(new Paragraph("Einzelstatistik"));
+        doc.setFontSize(20.0f);
+        doc.add(new Paragraph("Einzelstatistik").setBold());
+        doc.setFontSize(9.2f);
         doc.add(new Paragraph(selectedVeranstaltung.getVeranstaltung_name()));
-        doc.add(new Paragraph(selectedVerein.getVereinName()));
+        doc.add(new Paragraph(getTeamName(mannschaftsid)));
         doc.add(new Paragraph(Integer.toString(jahr)));
         doc.add(new Paragraph(""));
 
         for(WettkampfBE wettkampf : wettkampflisteBEList)
         {
-            doc.add(new Paragraph("Wettkampftag " + String.valueOf(wettkampf.getWettkampfTag())));
+            List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
 
             Table table = new Table(new float[]{40, 150, 150, 250});
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Mannschaft")));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze")));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match")));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Mannschaft").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
 
-            table.addCell(new Cell().add(new Paragraph()));
-            table.addCell(new Cell().add(new Paragraph(selectedVerein.getVereinName())));
-            table.addCell(new Cell().add(new Paragraph("")));
-            table.addCell(new Cell().add(new Paragraph("")));
-
-            table.addCell(new Cell().add(new Paragraph()));
-            table.addCell(new Cell().add(new Paragraph(selectedVerein.getVereinName())));
-            table.addCell(new Cell().add(new Paragraph("")));
-            table.addCell(new Cell().add(new Paragraph("")));
-
-            table.addCell(new Cell().add(new Paragraph()));
-            table.addCell(new Cell().add(new Paragraph(selectedVerein.getVereinName())));
-            table.addCell(new Cell().add(new Paragraph("")));
-            table.addCell(new Cell().add(new Paragraph("")));
-
-            doc.add(table);
-            doc.add(new Paragraph(""));
+            for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
+            {
+                    List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
+                    if(!passen.isEmpty())
+                    {
+                        table.addCell(new Cell().add(new Paragraph("1")));
+                        table.addCell(new Cell().add(new Paragraph(getTeamName(mannschaftsid))));
+                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen)))));
+                    }
+            }
+            if(table.getNumberOfRows() > 1)
+            {
+                doc.setFontSize(12.0f);
+                doc.add(new Paragraph("Wettkampftag " + wettkampf.getWettkampfTag()).setBold());
+                doc.setFontSize(9.2f);
+                doc.add(table);
+                doc.add(new Paragraph(""));
+            }
         }
         doc.close();
     }
+    private String getTeamName(long teamID) {
+        Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
+        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
+        if (dsbMannschaftDO.getNummer() >= 1) {
+            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        } else {
+            return vereinDO.getName();
+        }
+    }
 
+    float calcAverage( List<PasseDO> passen )
+    {
+        float average = 0;
+        int count = 0;
+
+        for(PasseDO passe : passen)
+        {
+
+            if(passe.getPfeil1() != null)
+            {
+                average += passe.getPfeil1();
+                count++;
+            }
+            if(passe.getPfeil2() != null)
+            {
+                average += passe.getPfeil2();
+                count++;
+            }
+            if(passe.getPfeil3() != null)
+            {
+                average += passe.getPfeil3();
+                count++;
+            }
+            if(passe.getPfeil4() != null)
+            {
+                average += passe.getPfeil4();
+                count++;
+            }
+            if(passe.getPfeil5() != null)
+            {
+                average += passe.getPfeil5();
+                count++;
+            }
+            if(passe.getPfeil6() != null)
+            {
+                average += passe.getPfeil6();
+                count++;
+            }
+
+        }
+        average = average / count;
+        return average;
+    }
 }
