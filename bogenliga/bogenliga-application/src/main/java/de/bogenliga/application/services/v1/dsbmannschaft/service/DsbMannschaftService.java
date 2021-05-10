@@ -45,8 +45,6 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
-
-
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
 
 
@@ -99,11 +97,11 @@ public class DsbMannschaftService implements ServiceFacade {
      *
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAll() {
         final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAll();
+
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -206,16 +204,15 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param principal authenticated user
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
     public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
-
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to create a Team in
         //and if the user has the permission to modify his verein.
         if(this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
                 this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
+
             //if the user has the Specific Permission and the matching VereinId:
             checkPreconditions(dsbMannschaftDTO);
             final Long userId = UserProvider.getCurrentUserId(principal);
@@ -232,9 +229,8 @@ public class DsbMannschaftService implements ServiceFacade {
 
             final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
             return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
+
         } else throw new NoPermissionException();
-
-
     }
 
 
@@ -250,11 +246,9 @@ public class DsbMannschaftService implements ServiceFacade {
      * }
      * }</pre>
      */
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions( perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
     public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
-
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to modify a Team in
         //and if the user has the permission to modify his verein.
@@ -290,6 +284,7 @@ public class DsbMannschaftService implements ServiceFacade {
         return DsbMannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
     }
 
+
     /**
      * I delete an existing dsbMannschaft entry from the database.
      *
@@ -309,6 +304,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }
+
 
     private void checkPreconditions(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO) {
         Preconditions.checkNotNull(dsbMannschaftDTO, PRECONDITION_MSG_DSBMANNSCHAFT);
