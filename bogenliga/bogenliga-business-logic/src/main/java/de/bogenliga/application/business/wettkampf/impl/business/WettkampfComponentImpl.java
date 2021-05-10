@@ -1,6 +1,8 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,8 +15,15 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.setzliste.impl.business.SetzlisteComponentImpl;
 import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -43,7 +52,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
 
     private final WettkampfDAO wettkampfDAO;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
+    private final VeranstaltungDAO veranstaltungDAO;
+    private final DsbMannschaftDAO dsbMannschaftDAO;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
     
     /**
      * Constructor
@@ -53,8 +64,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @param wettkampfDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO) {
+    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO,final DsbMannschaftDAO dsbMannschaftDAO) {
         this.wettkampfDAO = wettkampfDAO;
+        this.veranstaltungDAO = veranstaltungDAO;
+        this.dsbMannschaftDAO = dsbMannschaftDAO;
     }
 
 
@@ -178,6 +191,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         System.out.println(manschaftsid);
         System.out.println(jahr);
         List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
+
         byte[] bResult;
         if (!wettkampflisteBEList.isEmpty()) {
             try (ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -185,7 +199,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                  PdfDocument pdfDocument = new PdfDocument(writer);
                  Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-                //generateDoc(doc, wettkampflisteBEList);
+                generateDoc(doc, wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
                 bResult = result.toByteArray();
                 LOGGER.debug("Einzelstatistik erstellt");
@@ -204,8 +218,19 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     }
 
-    private void generateDoc(Document doc) {
+    private void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long manschaftsid,int jahr) {
 
+        doc.setFontSize(9.2f);
+
+        // description
+        DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
+        doc.add(new Paragraph("Einzelstatistik"));
+        doc.add(new Paragraph(veranstaltungDAO.findById(veranstaltungsid).getVeranstaltung_name()));
+        doc.add(new Paragraph(Integer.toString(jahr)));
+
+        doc.add(new Paragraph(""));
+
+        doc.close();
     }
 
 }
