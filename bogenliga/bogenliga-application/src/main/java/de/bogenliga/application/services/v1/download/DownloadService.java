@@ -320,15 +320,12 @@ public class DownloadService implements ServiceFacade {
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("werte") final String werte) {
+    ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
+    @RequestParam("manschaftsid") final long manschaftsid,
+    @RequestParam("jahr") final int jahr)
+    {
 
-        // spliten der mit "," getrennten werte in veranstalungsid, manschaftsid und jahr
-        String parameter[] = werte.split(",");
-        long veranstalungsid = Long.parseLong(parameter[0]);
-        long manschaftsid = Long.parseLong(parameter[1]);
-        int jahr = Integer.parseInt(parameter[2]);
-
-        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(veranstalungsid,manschaftsid,jahr);
+        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(veranstaltungsid,manschaftsid,jahr);
 
         return generateInputStream(fileBloB);
     }

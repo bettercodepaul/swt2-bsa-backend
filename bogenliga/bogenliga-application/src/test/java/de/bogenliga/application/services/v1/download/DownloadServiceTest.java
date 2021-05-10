@@ -73,7 +73,7 @@ public class DownloadServiceTest {
         when(wettkampfComponent.getEinzelstatistikPDFasByteArray(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR)).thenReturn(test);
 
         //call Method
-        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadEinzelstatistikPdf(WERTE_EINZELSTATISTIK);
+        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadEinzelstatistikPdf(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
 
         //result is nut NULL
         Assertions.assertThat(actual).isNotNull();
