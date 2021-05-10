@@ -20,10 +20,10 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
-import de.bogenliga.application.business.setzliste.impl.business.SetzlisteComponentImpl;
-import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
+import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -54,6 +54,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final WettkampfDAO wettkampfDAO;
     private final VeranstaltungDAO veranstaltungDAO;
     private final DsbMannschaftDAO dsbMannschaftDAO;
+    private final VereinDAO vereinDAO;
     private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
     
     /**
@@ -64,10 +65,11 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @param wettkampfDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO,final DsbMannschaftDAO dsbMannschaftDAO) {
+    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO,final DsbMannschaftDAO dsbMannschaftDAO, final VereinDAO vereinDAO) {
         this.wettkampfDAO = wettkampfDAO;
         this.veranstaltungDAO = veranstaltungDAO;
         this.dsbMannschaftDAO = dsbMannschaftDAO;
+        this.vereinDAO = vereinDAO;
     }
 
 
@@ -187,9 +189,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Override
     public byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr){
         Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        System.out.println(veranstaltungsid);
-        System.out.println(manschaftsid);
-        System.out.println(jahr);
         List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
 
         byte[] bResult;
@@ -221,11 +220,13 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long manschaftsid,int jahr) {
 
         doc.setFontSize(9.2f);
-
+        VereinBE selectedVerein = vereinDAO.findById(dsbMannschaftDAO.findById(manschaftsid).getVereinId());
+        VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
         // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
         doc.add(new Paragraph("Einzelstatistik"));
-        doc.add(new Paragraph(veranstaltungDAO.findById(veranstaltungsid).getVeranstaltung_name()));
+        doc.add(new Paragraph(selectedVeranstaltung.getVeranstaltung_name()));
+        doc.add(new Paragraph(selectedVerein.getVereinName()));
         doc.add(new Paragraph(Integer.toString(jahr)));
 
         doc.add(new Paragraph(""));
