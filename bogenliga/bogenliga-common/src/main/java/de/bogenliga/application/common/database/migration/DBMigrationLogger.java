@@ -19,7 +19,7 @@ public class DBMigrationLogger implements LogCreator {
             @Override
             public void debug(String s) {
                 //To get detailed output enable this:
-                LOG.debug(s);
+                //LOG.debug(s);
             }
 
             @Override
