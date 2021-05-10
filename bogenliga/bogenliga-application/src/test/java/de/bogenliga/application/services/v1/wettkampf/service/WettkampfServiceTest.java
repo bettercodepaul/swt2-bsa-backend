@@ -22,10 +22,13 @@ import java.util.List;
 
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 
 /**
@@ -60,6 +63,10 @@ public class WettkampfServiceTest {
 
     @Mock
     private WettkampfComponent wettkampfComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
+
 
     @Mock
     private Principal principal;
@@ -219,6 +226,33 @@ public class WettkampfServiceTest {
 
 
     @Test
+    public void findAllByVeranstaltungId(){
+        //prepare test data
+        final WettkampfDO wettkampfDO = getWettkampfDO();
+        final List<WettkampfDO> wettkampfDOList = Collections.singletonList(wettkampfDO);
+
+        //configure mocks
+        when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampfDOList);
+
+        //call test method
+        final List<WettkampfDTO> actual = underTest.findAllByVeranstaltungId(wettkampf_Veranstaltung_Id);
+
+        //assert result
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final WettkampfDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getwettkampfVeranstaltungsId()).isEqualTo(wettkampfDO.getWettkampfVeranstaltungsId());
+
+        // verify invocations
+        verify(wettkampfComponent).findAllByVeranstaltungId(wettkampf_Veranstaltung_Id);
+    }
+
+
+    @Test
     public void create() {
         // prepare test data
         final WettkampfDTO input = getWettkampfDTO();
@@ -253,6 +287,8 @@ public class WettkampfServiceTest {
         final WettkampfDO expected = getWettkampfDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(expected);
         when(wettkampfComponent.update(any(), anyLong())).thenReturn(expected);
 
         try {
@@ -274,6 +310,22 @@ public class WettkampfServiceTest {
         } catch (NoPermissionException e) {
         }
     }
+    @Test
+    public void updateNoPermission() {
+        // prepare test data
+        final WettkampfDTO input = getWettkampfDTO();
+
+        final WettkampfDO expected = getWettkampfDO();
+
+        // configure mocks
+        when(wettkampfComponent.findById(anyLong())).thenReturn(expected);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(input, principal));
+
+     }
 
 
     @Test
