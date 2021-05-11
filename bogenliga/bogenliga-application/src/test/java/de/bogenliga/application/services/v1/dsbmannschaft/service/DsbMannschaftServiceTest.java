@@ -152,7 +152,6 @@ public class DsbMannschaftServiceTest {
 
 
     @Test
-
     public void findAllByVeranstaltungsId() {
 
         // prepare test data

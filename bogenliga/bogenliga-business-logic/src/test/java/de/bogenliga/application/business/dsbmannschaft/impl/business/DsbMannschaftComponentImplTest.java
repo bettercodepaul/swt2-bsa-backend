@@ -37,6 +37,7 @@ public class DsbMannschaftComponentImplTest {
     private static final long NUMMER =111L;
     private static final long BENUTZER_ID =12L;
     private static final long VERANSTALTUNG_ID =1L;
+    private static final long CURRENT_VERANSTALTUNG_ID =2L;
     private static final long SORTIERUNG =1L;
 
     private static final long DB_SORTIERUNG =0L;
@@ -765,6 +766,7 @@ public class DsbMannschaftComponentImplTest {
         verify(vereinDAO).findById(anyLong());
     }
 
+
     @Test
     public void getDAO(){
         // assert result
@@ -773,4 +775,24 @@ public class DsbMannschaftComponentImplTest {
         // verify invocations
         verifyZeroInteractions(dsbMannschaftDAO);
     }
+
+
+    @Test
+    public void copyMannschaftFromVeranstaltung(){
+        //prepare data
+        final DsbMannschaftDO lastMannschaftDO = getDsbMannschaftDO();
+        final List<DsbMannschaftDO> lastMannschaftDOList = Collections.singletonList(lastMannschaftDO);
+        final DsbMannschaftDO currentMannschaftDO = getDsbMannschaftDO();
+        final List<DsbMannschaftDO> currentMannschaftDOList = Collections.singletonList(currentMannschaftDO);
+
+        //call test method
+        underTest.copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
+
+        //asserting returns
+
+        //verifying invocations
+        //verify(VeranstaltungComponent).findBySportjahrDestinct(anyLong());
+
+    }
+
 }
