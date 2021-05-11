@@ -168,13 +168,13 @@ public class WettkampfComponentImplTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO()
     {
-        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(0l,"1.Manschaft Muster Hausen",0l,0l,
+        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(1l,"1.Manschaft Muster Hausen",1l,1l,
                 0l,wettkampf_Veranstaltung_Id,0l);
         return neueMannschaft;
     }
     public static VereinDO getVereinDO()
     {
-        VereinDO neuerVerein = new VereinDO(0l, "Bogensport Muster Hausen", "bmh",0l,"example.com",
+        VereinDO neuerVerein = new VereinDO(1l, "Bogensport Muster Hausen", "bmh",0l,"example.com",
                 "Test Verein","Test Icon", OffsetDateTime.now(), 0l, 0l);
         return neuerVerein;
     }
@@ -476,6 +476,14 @@ public class WettkampfComponentImplTest {
     @Test
     public void testGetTeamName()
     {
-
+        //erwartetes ergebnis definieren
+        String expected = "Bogensport Muster Hausen 1";
+        //mocks vorbereiten
+        when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
+        when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
+        //methode aufrufen
+        String actual = underTest.getTeamName(1);
+        //ergebmis prüfen
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 }
