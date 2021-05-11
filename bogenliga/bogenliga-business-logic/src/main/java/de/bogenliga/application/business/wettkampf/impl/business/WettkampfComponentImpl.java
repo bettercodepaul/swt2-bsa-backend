@@ -1,10 +1,27 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.bogenkontrollliste.impl.business.BogenkontrolllisteComponentImpl;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImpl;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -22,6 +39,8 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class WettkampfComponentImpl implements WettkampfComponent {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
+
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "wettkampfID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "wettkampfVeranstaltungsID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "wettkampfDatum must not be null";
@@ -32,6 +51,13 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
 
     private final WettkampfDAO wettkampfDAO;
+
+    private final LigaComponent ligaComponent;
+    private VeranstaltungComponent veranstaltungComponent;
+    private final MatchComponent matchComponent;
+    private final PasseComponent passeComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
     
     /**
      * Constructor
@@ -41,8 +67,24 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @param wettkampfDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO) {
+    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,
+                                  final LigaComponent ligaComponent,
+                                  final MatchComponent matchComponent,
+                                  final PasseComponent passeComponent,
+                                  final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                                  final DsbMitgliedComponent dsbMitgliedComponent) {
         this.wettkampfDAO = wettkampfDAO;
+        this.ligaComponent = ligaComponent;
+        this.matchComponent = matchComponent;
+        this.passeComponent = passeComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
+    }
+
+
+    @Autowired
+    public void setVeranstaltungComponent(final VeranstaltungComponent veranstaltungComponent){
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
 
@@ -154,5 +196,80 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkNotNull(wettkampfDO.getWettkampfTypId(), PRECONDITION_MSG_WETTKAMPF_WETTKAMPFTYP_ID);
         Preconditions.checkArgument(wettkampfDO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
+    }
+
+
+    @Override
+    public List<Long> getAllowedMitglieder(long wettkampfid){
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+        List<Long> allowedList=new ArrayList<>();
+
+        for(int i=1; i <= 8; i++){
+            MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
+            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
+            List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+            List<LigaDO> ligen=ligaComponent.findAll();
+            int count = 0;
+            for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
+                DsbMitgliedDO dsbMitglied=dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
+                long thisLiga=this.veranstaltungComponent.findById(findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+
+                //finde Stufe der aktuellen Liga
+                int thisLigaStufe = 0;
+                int currentLiga=(int)thisLiga;
+                while(currentLiga != 0){
+                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
+                        thisLigaStufe++;
+                    }else{currentLiga=0;}
+                }
+                long thisWettkamptag=findById(matchDO.getWettkampfId()).getWettkampfTag();
+                long thisSportjahr=this.veranstaltungComponent.findById(findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                boolean darfSchiessen=true;
+
+                //find highest Liga and check if mitglied has already shot on this Wettkampftag
+                List<MannschaftsmitgliedDO> mitgliedIn=this.mannschaftsmitgliedComponent.findByMemberId(dsbMitglied.getId());
+                for(MannschaftsmitgliedDO mitglied: mitgliedIn){
+                    List<WettkampfDO> wettkaempfe = findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
+                    for (WettkampfDO wettkampf : wettkaempfe) {
+
+                        //check Sportjahr of Veranstaltung
+                        long wettkampfSportjahr = this.veranstaltungComponent.findById(
+                                wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                        if (thisSportjahr == wettkampfSportjahr) {
+                            long liga=this.veranstaltungComponent.findById(
+                                    wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+
+                            //finde Stufe der Liga dieses Wettkampfes, wenn das Mannschaftsmitglied mindestens 2 mal eingesetzt wurde
+                            if(mitglied.getDsbMitgliedEingesetzt()>=2) {
+                                currentLiga=(int)liga;
+                                int ligaStufe=0;
+                                while(currentLiga != 0){
+                                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
+                                        ligaStufe++;
+                                    }else{currentLiga=0;}
+                                }
+                                darfSchiessen=(thisLigaStufe <= ligaStufe) && darfSchiessen;
+                            }
+                            List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
+                            darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag() && !passen.isEmpty()) && darfSchiessen;
+                        }
+                    }
+                }
+                dsbMitgliedDOList.add(dsbMitglied);
+
+                if(darfSchiessen){
+                    allowedList.add(dsbMitglied.getId());
+                    LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
+                }else{
+                    LOGGER.info("Teammitglied {} {} konnte nicht hinzugefügt werden, da es schon in einer höheren Liga oder am selben Wettkampftag geschossen hat.", dsbMitglied.getNachname(), dsbMitglied.getVorname());
+                }
+                count++;
+            }
+        }
+
+        return allowedList;
     }
 }
