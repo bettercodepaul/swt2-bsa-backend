@@ -141,6 +141,23 @@ public class VeranstaltungService implements ServiceFacade {
 
 
     /**
+     *
+     * @param sportjahr - filterr for sql-abfrage
+     * @return retrun Veranstaltung sorted by exisiting data, in descending order based on the last modification date and "veranslatung_id".
+     */
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            value = "find/by/sorted/{sportjahr}")
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findBySportjahrDestinct(@PathVariable ("sportjahr") final long sportjahr){
+
+        LOG.debug("Received 'findBySportjahrDestinct' request for Veranstaltung in {}", sportjahr);
+        List <VeranstaltungDO> returnList = veranstaltungComponent.findBySportjahrDestinct(sportjahr);
+
+        return returnList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    /**
      * I persist a new veranstaltung and return this veranstaltung entry
      *
      * You are only able to create a Veranstaltung, if you have the explicit permission
@@ -156,15 +173,7 @@ public class VeranstaltungService implements ServiceFacade {
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
 
         checkPreconditions(veranstaltungDTO);
-        LOG.debug(
-                "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypid '{}', sportjahr '{}', meldedeadline '{}', ligaleiteremail '{}', ligaid '{}' ",
-                veranstaltungDTO.getId(),
-                veranstaltungDTO.getName(),
-                veranstaltungDTO.getWettkampfTypId(),
-                veranstaltungDTO.getSportjahr(),
-                veranstaltungDTO.getMeldeDeadline(),
-                veranstaltungDTO.getLigaleiterEmail(),
-                veranstaltungDTO.getLigaId());
+
 
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
@@ -187,16 +196,6 @@ public class VeranstaltungService implements ServiceFacade {
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) throws NoPermissionException {
 
-        LOG.debug(
-                "Receive 'update' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypId '{}', sportjahr '{}', meldedeadline '{}', ligaleiterId '{}', ligaId '{}'",
-                veranstaltungDTO.getId(),
-                veranstaltungDTO.getName(),
-                veranstaltungDTO.getWettkampfTypId(),
-                veranstaltungDTO.getSportjahr(),
-                veranstaltungDTO.getMeldeDeadline(),
-                veranstaltungDTO.getLigaleiterId(),
-                veranstaltungDTO.getLigaId()
-                );
 
         //da die Berechtiung "modify-my-veranstaltung" abhängig ist von den Daten der Veranstaltung,
         //ist hier nochmal zu prüfen, ob die Veranstaltung wirkling über die LigaleiterID dem User zugeordnet ist
