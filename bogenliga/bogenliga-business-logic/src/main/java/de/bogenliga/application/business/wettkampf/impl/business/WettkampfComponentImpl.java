@@ -199,9 +199,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         byte[] bResult;
         if (!wettkampflisteBEList.isEmpty()) {
             try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-                 PdfWriter writer = new PdfWriter(result);
-                 PdfDocument pdfDocument = new PdfDocument(writer);
-                 Document doc = new Document(pdfDocument, PageSize.A4)) {
+                PdfWriter writer = new PdfWriter(result);
+                PdfDocument pdfDocument = new PdfDocument(writer);
+                Document doc = new Document(pdfDocument, PageSize.A4)) {
 
                 pdfDocument.getDocumentInfo().setTitle("Einzelstatistik.pdf");
                 generateDoc(doc, wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
