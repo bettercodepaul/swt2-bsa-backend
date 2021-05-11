@@ -3,8 +3,10 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
@@ -40,6 +43,10 @@ public class WettkampfComponentImplTest {
     private static final long wettkampf_Disziplin_Id = 3;
     private static final long wettkampf_Wettkampftyp_Id = 1;
     private static final long wettkampf_Ausrichter = 8;
+    public static final int PFEIL1 = 10;
+    public static final int PFEIL2 = 9;
+    public static final int PFEIL3 = 9;
+    public static final int PFEIL4 = 6;
 
     private static final long mannschaft_id = 77;
 
@@ -96,7 +103,19 @@ public class WettkampfComponentImplTest {
         );
      }
 
-
+    public static List<PasseDO> getPassenDO()
+    {
+        PasseDO passe1 = new PasseDO(null,null, null, null, null, null,
+                        null, PFEIL1, PFEIL2, null, null, null, null, null,
+                            null, null, null, null);
+        PasseDO passe2 = new PasseDO(null,null, null, null, null, null,
+                        null, PFEIL3, PFEIL4, null, null, null, null, null,
+                            null, null, null, null);
+        List<PasseDO> passen = new LinkedList<>();
+        passen.add(passe1);
+        passen.add(passe2);
+        return passen;
+    }
 
         @Test
     public void findAll() {
@@ -353,5 +372,22 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfDisziplinId()).isEqualTo(expectedDO.getWettkampfDisziplinId());
         assertThat(actual.getWettkampfTypId()).isEqualTo(expectedDO.getWettkampfTypId());
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(expectedDO.getWettkampfAusrichter());
+    }
+
+    @Test
+    public void testCalcAverage()
+    {
+    //daten vorbereiten
+    List<PasseDO> passen = getPassenDO();
+    //Methode aufrufen
+    float actual = underTest.calcAverage(passen);
+    //haben wir das erwartete ergebnis erhalten
+    Assertions.assertThat(actual).isEqualTo(8.5f);
+    }
+
+    @Test
+    public void testGetTeamName()
+    {
+
     }
 }

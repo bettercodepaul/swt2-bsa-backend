@@ -222,7 +222,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     }
 
-    private void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
+    public void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
     {
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
 
@@ -266,7 +266,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         doc.close();
     }
-    private String getTeamName(long teamID) {
+    public String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
         VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
@@ -277,7 +277,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
     }
 
-    float calcAverage( List<PasseDO> passen )
+    public float calcAverage( List<PasseDO> passen )
     {
         float average = 0;
         int count = 0;
