@@ -66,7 +66,6 @@ public class DsbMannschaftServiceTest {
 
 
 
-
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
                 ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
@@ -84,7 +83,6 @@ public class DsbMannschaftServiceTest {
         dsbMannschaftDTO.setSortierung(SORTIERUNG);
 
         return dsbMannschaftDTO;
-
     }
 
 
@@ -98,7 +96,6 @@ public class DsbMannschaftServiceTest {
     public void findAll() {
         // prepare test data
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
-
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
@@ -108,9 +105,7 @@ public class DsbMannschaftServiceTest {
         final List<DsbMannschaftDTO> actual = underTest.findAll();
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
+        assertThat(actual).isNotNull().hasSize(1);
 
         final DsbMannschaftDTO actualDTO = actual.get(0);
 
@@ -123,11 +118,11 @@ public class DsbMannschaftServiceTest {
         verify(dsbMannschaftComponent).findAll();
     }
 
+
     @Test
     public void findAllByVereinsId() {
         // prepare test data
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
-
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
@@ -153,7 +148,6 @@ public class DsbMannschaftServiceTest {
 
     @Test
     public void findAllByVeranstaltungsId() {
-
         // prepare test data
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
@@ -205,7 +199,6 @@ public class DsbMannschaftServiceTest {
     public void create() {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
-
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
@@ -216,13 +209,11 @@ public class DsbMannschaftServiceTest {
         try {
             final DsbMannschaftDTO actual = underTest.create(input, principal);
 
-
             // assert result
             assertThat(actual).isNotNull();
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
-
 
             // verify invocations
             verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
@@ -234,16 +225,14 @@ public class DsbMannschaftServiceTest {
             assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
 
-
-        } catch (NoPermissionException e) {
-        }
+        } catch (NoPermissionException e) { }
     }
+
 
     @Test
     public void createNoPermission() {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
-
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
@@ -253,7 +242,6 @@ public class DsbMannschaftServiceTest {
 
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.create(input, principal));
-
     }
 
 
@@ -261,7 +249,6 @@ public class DsbMannschaftServiceTest {
     public void update() {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
-
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
@@ -288,11 +275,9 @@ public class DsbMannschaftServiceTest {
             assertThat(updatedDsbMannschaft.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(updatedDsbMannschaft.getSortierung()).isEqualTo(input.getSortierung());
 
-
-    } catch (NoPermissionException e) {
+        } catch (NoPermissionException e) { }
     }
 
-    }
 
     @Test
     public void updateNoPermission() {
@@ -307,7 +292,6 @@ public class DsbMannschaftServiceTest {
 
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
-
     }
 
 
@@ -335,12 +319,8 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
-        // configure mocks
-
         // call test method
         underTest.delete(ID, principal);
-
-        // assert result
 
         // verify invocations
         verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
@@ -351,5 +331,4 @@ public class DsbMannschaftServiceTest {
         assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
         assertThat(deletedDsbMannschaft.getVereinId()).isNull();
     }
-
 }

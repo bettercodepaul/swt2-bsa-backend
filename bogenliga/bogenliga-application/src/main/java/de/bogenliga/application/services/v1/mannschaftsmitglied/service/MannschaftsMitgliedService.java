@@ -43,7 +43,6 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      *
      * dependency injection with {@link Autowired}
      */
-
     private final MannschaftsmitgliedComponent mannschaftsMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
@@ -57,12 +56,10 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
-
     }
 
 
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAll() {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAll();
@@ -70,8 +67,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @GetMapping(value = "{teamId}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{teamId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findByTeamId(@PathVariable("teamId") final long mannschaftsId) {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findByTeamId(
@@ -80,8 +76,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @GetMapping(value = "{memberId}/{teamId}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{memberId}/{teamId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public MannschaftsMitgliedDTO findByMemberAndTeamId(@PathVariable("teamId") final long mannschaftsId,
                                                         @PathVariable("memberId") final long mitgliedId) {
@@ -97,8 +92,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @GetMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findAllSchuetzeInTeam(@PathVariable("teamIdInTeam") final long mannschaftsId) {
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findAllSchuetzeInTeamEingesetzt(
@@ -107,9 +101,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-
-    @GetMapping(value = "/byMemberId/{memberId}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/byMemberId/{memberId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findByMemberId(@PathVariable("memberId") final long memberId) {
         Preconditions.checkArgument(memberId > 0, PRECONDITION_MSG_ID_NEGATIVE);
@@ -121,9 +113,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     }
 
 
-    @PutMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
     public MannschaftsMitgliedDTO update(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) throws NoPermissionException {
@@ -135,60 +125,57 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getMannschaftsId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
+
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
+
         if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
                 && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
         }
-        final MannschaftsmitgliedDO newMannschaftsMitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
-                mannschaftsMitgliedDTO);
-        final long userId = UserProvider.getCurrentUserId(principal);
 
+        final MannschaftsmitgliedDO newMannschaftsMitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
+        final long userId = UserProvider.getCurrentUserId(principal);
         final MannschaftsmitgliedDO updatedMannschaftsmitgliedDO = mannschaftsMitgliedComponent.update(
                 newMannschaftsMitgliedDO, userId);
+
         return MannschaftsMitgliedDTOMapper.toDTO.apply(updatedMannschaftsmitgliedDO);
     }
 
 
-
-
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
     public MannschaftsMitgliedDTO create(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO,
                                          final Principal principal) throws NoPermissionException {
-
         checkPreconditions(mannschaftsMitgliedDTO);
 
         LOG.debug("Receive 'create' request with mannschaftsId '{}', dsbMitgliedId '{}', DsbMitgliedEingesetzt '{}',",
-
                 mannschaftsMitgliedDTO.getMannschaftsId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
+
         long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
+
         if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
                 && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
             throw new NoPermissionException();
         }
-        final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(
-                mannschaftsMitgliedDTO);
+
+        final MannschaftsmitgliedDO newMannschaftsmitgliedDO = MannschaftsMitgliedDTOMapper.toDO.apply(mannschaftsMitgliedDTO);
         final long currentMemberId = UserProvider.getCurrentUserId(principal);
-
-
         final MannschaftsmitgliedDO savedMannschaftsmitgliedDO = mannschaftsMitgliedComponent.create(
                 newMannschaftsmitgliedDO, currentMemberId);
+
         return MannschaftsMitgliedDTOMapper.toDTO.apply(savedMannschaftsmitgliedDO);
     }
+
 
     /**
      * You are only able to delete a MannschaftsMitglied, if you have the explicit permission
      * Sportleiter should have a specific right to delete a single member but there is a
      * read-vy-id function missing in MannschaftsMitgliedDAO/ MannschaftsMitgliedComponent
      **/
-
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN})
     public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
@@ -232,13 +219,9 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID);
         Preconditions.checkNotNull(mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID);
-
         Preconditions.checkArgument(mannschaftsMitgliedDTO.getMannschaftsId() >= 0,
                 PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftsMitgliedDTO.getDsbMitgliedId() >= 0,
                 PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE);
     }
-
-
-
 }

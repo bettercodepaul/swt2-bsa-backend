@@ -37,7 +37,6 @@ public class WettkampfService implements ServiceFacade {
     private static final String PRECONDITION_MSG_WETTKAMPF_STRASSE = "WettkampfStraße must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_PLZ = "Wettkampfplz must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_ORTSNAME = "WettkampfNamemust not be null";
-    private static final String PRECONDITION_MSG_WETTKAMPF_ORTSINFO = "WettkampfOrstinfo must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_BEGINN = "Format: HH:MM, Format must be correct, Wettkampfbeginn must not be null";
     private static final String PRECONDITION_MSG_WETTKAMPF_TAG = "Must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "Must not be null and must not be negative";
@@ -246,8 +245,6 @@ public class WettkampfService implements ServiceFacade {
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfStrasse(), PRECONDITION_MSG_WETTKAMPF_STRASSE);
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfPlz(), PRECONDITION_MSG_WETTKAMPF_PLZ);
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrtsname(), PRECONDITION_MSG_WETTKAMPF_ORTSNAME);
-        Preconditions.checkNotNull(wettkampfDTO.getWettkampfOrtsinfo(), PRECONDITION_MSG_WETTKAMPF_ORTSINFO);
-
         Preconditions.checkNotNull(wettkampfDTO.getWettkampfDisziplinId() >= 0,
                 PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID);
         Preconditions.checkNotNull(wettkampfDTO.getwettkampfVeranstaltungsId() >= 0,
@@ -255,6 +252,4 @@ public class WettkampfService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_TYP_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTag() >= 0, PRECONDITION_MSG_WETTKAMPF_TAG);
     }
-
-
  }
