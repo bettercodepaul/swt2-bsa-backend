@@ -15,12 +15,17 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
+import de.bogenliga.application.services.v1.match.model.MatchDTO;
+import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 /**
@@ -38,6 +43,7 @@ public class DsbMannschaftServiceTest {
     private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
     private static final long VERANSTALTUNG_ID = 44444;
+    private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
 
     @Rule
@@ -264,7 +270,6 @@ public class DsbMannschaftServiceTest {
     public void updateNoPermission() {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
-
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
@@ -276,6 +281,26 @@ public class DsbMannschaftServiceTest {
                 .isThrownBy(()-> underTest.update(input, principal));
 
     }
+
+
+    @Test
+    public void update_Null() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.update(null, principal));
+    }
+
+
+    @Test
+    public void copyMannschaftFromVeranstaltung() {
+        // call test method
+        underTest.copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, principal);
+
+        // verify invocations
+        verify(dsbMannschaftComponent).copyMannschaftFromVeranstaltung(anyLong(), anyLong(), anyLong());
+
+        //assertThat(deletedDsbMannschaft).isNotNull();
+    }
+
 
     @Test
     public void delete() {

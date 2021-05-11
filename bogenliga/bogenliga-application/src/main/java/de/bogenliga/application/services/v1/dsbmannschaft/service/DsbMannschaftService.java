@@ -1,5 +1,5 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
-// Datei noch bearbeiten
+
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -243,7 +243,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param id the given Veranstaltungs-Id
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
     public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final long lastVeranstaltungsId,
                                               @PathVariable("currentVeranstaltungsId") final long currentVeranstaltungsId,
@@ -329,7 +329,7 @@ public class DsbMannschaftService implements ServiceFacade {
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }
 
-    private void checkPreconditions(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO) {
+    public static void checkPreconditions(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO) {
         Preconditions.checkNotNull(dsbMannschaftDTO, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkNotNull(dsbMannschaftDTO.getVereinId(), PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkNotNull(dsbMannschaftDTO.getNummer(), PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
