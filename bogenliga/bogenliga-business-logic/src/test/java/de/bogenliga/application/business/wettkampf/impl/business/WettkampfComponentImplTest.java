@@ -168,7 +168,8 @@ public class WettkampfComponentImplTest {
 
     public static DsbMannschaftDO getDsbMannschaftDO()
     {
-        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(0l);
+        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(0l,"1.Manschaft Muster Hausen",0l,0l,
+                0l,wettkampf_Veranstaltung_Id,0l);
         return neueMannschaft;
     }
     public static VereinDO getVereinDO()
