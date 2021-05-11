@@ -97,6 +97,18 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return returnList;
     }
 
+    public List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr){
+        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
+        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahrDestinct(sportjahr);
+
+        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+
+            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
+
+        }
+
+        return returnList;
+    }
 
     @Override
     public VeranstaltungDO findById(final long id) {
@@ -195,7 +207,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return veranstaltungDAO.findAllSportjahreDestinct();
 
     }
-
 
     @Override
     public List<VeranstaltungDO> findByLigaID(long ligaID) {
