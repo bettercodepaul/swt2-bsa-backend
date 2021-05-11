@@ -203,6 +203,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                  PdfDocument pdfDocument = new PdfDocument(writer);
                  Document doc = new Document(pdfDocument, PageSize.A4)) {
 
+                pdfDocument.getDocumentInfo().setTitle("Einzelstatistik.pdf");
                 generateDoc(doc, wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
                 bResult = result.toByteArray();

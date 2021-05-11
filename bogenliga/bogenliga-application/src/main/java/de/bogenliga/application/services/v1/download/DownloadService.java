@@ -308,7 +308,9 @@ public class DownloadService implements ServiceFacade {
     /**
      * return Einzelstatistik einer manschaft an einer veranstaltung in einem jahr
      *
-     * @param werte from Get-request:
+     * @param veranstaltungsid from Get-request:
+     * @param manschaftsid from Get-request:
+     * @param jahr from Get-request:
      * Usage:
      * <pre>{@code Request: GET /v1/download/pdf/Einzelstatistik/?werte=x}</pre>
      *
@@ -329,4 +331,6 @@ public class DownloadService implements ServiceFacade {
 
         return generateInputStream(fileBloB);
     }
+
+
 }
