@@ -173,15 +173,7 @@ public class VeranstaltungService implements ServiceFacade {
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
 
         checkPreconditions(veranstaltungDTO);
-        LOG.debug(
-                "Receive 'create' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypid '{}', sportjahr '{}', meldedeadline '{}', ligaleiteremail '{}', ligaid '{}' ",
-                veranstaltungDTO.getId(),
-                veranstaltungDTO.getName(),
-                veranstaltungDTO.getWettkampfTypId(),
-                veranstaltungDTO.getSportjahr(),
-                veranstaltungDTO.getMeldeDeadline(),
-                veranstaltungDTO.getLigaleiterEmail(),
-                veranstaltungDTO.getLigaId());
+
 
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
@@ -204,16 +196,6 @@ public class VeranstaltungService implements ServiceFacade {
     public VeranstaltungDTO update(@RequestBody final VeranstaltungDTO veranstaltungDTO,
                           final Principal principal) throws NoPermissionException {
 
-        LOG.debug(
-                "Receive 'update' request with veranstaltungId '{}', veranstaltungName '{}', wettkampftypId '{}', sportjahr '{}', meldedeadline '{}', ligaleiterId '{}', ligaId '{}'",
-                veranstaltungDTO.getId(),
-                veranstaltungDTO.getName(),
-                veranstaltungDTO.getWettkampfTypId(),
-                veranstaltungDTO.getSportjahr(),
-                veranstaltungDTO.getMeldeDeadline(),
-                veranstaltungDTO.getLigaleiterId(),
-                veranstaltungDTO.getLigaId()
-                );
 
         //da die Berechtiung "modify-my-veranstaltung" abhängig ist von den Daten der Veranstaltung,
         //ist hier nochmal zu prüfen, ob die Veranstaltung wirkling über die LigaleiterID dem User zugeordnet ist
