@@ -255,7 +255,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     //Todo: methode umbenennen copyMannschaftFromVeranstaltung
     @Override
-    public void copyMannschaftOnVeranstaltung(long lastVeranstaltungsId, long currentVeranstaltungsId,
+    public void copyMannschaftFromVeranstaltung(long lastVeranstaltungsId, long currentVeranstaltungsId,
                                               long userId) {
         //Todo: variablen umbenennen, bezug auf datentyp
         List<DsbMannschaftDO> lastVeranstaltungList = findAllByVeranstaltungsId(lastVeranstaltungsId);
