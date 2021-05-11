@@ -99,8 +99,7 @@ public class DsbMannschaftService implements ServiceFacade {
      *
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAll() {
         final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAll();
