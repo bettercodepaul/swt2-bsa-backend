@@ -92,10 +92,10 @@ public class VeranstaltungDAO implements DataAccessObject{
 
     //query do a lookup inligatabelle if Daten available and order by last modification from match and veranstaltungs-Id
     private static final String FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA =
-            "SELECT veranstaltung_liga_id, veranstaltung_name, veranstaltung_id, match.last_modified_at_utc "
+            "SELECT veranstaltung_liga_id, veranstaltung_name, veranstaltung_id "
                     + "FROM liga, veranstaltung,ligatabelle, match "
                     + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id) "
-                    + "GROUP BY veranstaltung_liga_id, veranstaltung_name, veranstaltung_id, match.last_modified_at_utc "
+                    + "GROUP BY veranstaltung_id "
                     + "ORDER BY max(match.last_modified_at_utc) DESC NULLS LAST, veranstaltung_id ";
 
 
