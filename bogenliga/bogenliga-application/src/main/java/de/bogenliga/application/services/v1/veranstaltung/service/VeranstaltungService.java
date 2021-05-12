@@ -142,8 +142,10 @@ public class VeranstaltungService implements ServiceFacade {
 
     /**
      *
-     * @param sportjahr - filterr for sql-abfrage
+     * @param sportjahr - filter for sql-abfrage
      * @return retrun Veranstaltung sorted by exisiting data, in descending order based on the last modification date and "veranslatung_id".
+     * Returned "VeranstaltungDTO" objects only have the following attributes assigned: name(veranstaltung_name), id(veranstaltung_id) and ligaName(liga_name)
+     * Not assinged attributes are null.
      */
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE,
