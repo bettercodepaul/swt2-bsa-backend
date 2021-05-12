@@ -316,7 +316,6 @@ public class DownloadService implements ServiceFacade {
      *
      * @return pdf as InputStreamRessource
     */
-    @CrossOrigin(maxAge = 0)
     @GetMapping(
             path = "pdf/Einzelstatistik",
             produces = MediaType.APPLICATION_PDF_VALUE)
