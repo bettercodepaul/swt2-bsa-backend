@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ public class DownloadService implements ServiceFacade {
     private final MeldezettelComponent meldezettelComponent;
     private final BogenkontrolllisteComponent bogenkontrolllisteComponent;
     private final RueckennummernComponent rueckennummernComponent;
+    private final WettkampfComponent wettkampfComponent;
 
 
     /**
@@ -71,13 +73,15 @@ public class DownloadService implements ServiceFacade {
                            final SchusszettelComponent schusszettelComponent,
                            final MeldezettelComponent meldezettelComponent,
                            final BogenkontrolllisteComponent bogenkontrolllisteComponent,
-                           final RueckennummernComponent rueckennummernComponent) {
+                           final RueckennummernComponent rueckennummernComponent,
+                           final WettkampfComponent wettkampfComponent) {
         this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
         this.meldezettelComponent = meldezettelComponent;
         this.bogenkontrolllisteComponent = bogenkontrolllisteComponent;
         this.rueckennummernComponent = rueckennummernComponent;
+        this.wettkampfComponent = wettkampfComponent;
     }
   
     /**
@@ -300,4 +304,33 @@ public class DownloadService implements ServiceFacade {
 
         return generateInputStream(fileBloB);
     }
+
+    /**
+     * return Einzelstatistik einer manschaft an einer veranstaltung in einem jahr
+     *
+     * @param veranstaltungsid from Get-request:
+     * @param manschaftsid from Get-request:
+     * @param jahr from Get-request:
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/Einzelstatistik/?werte=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+    */
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(
+            path = "pdf/Einzelstatistik",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
+    @RequestParam("manschaftsid") final long manschaftsid,
+    @RequestParam("jahr") final int jahr)
+    {
+
+        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(veranstaltungsid,manschaftsid,jahr);
+
+        return generateInputStream(fileBloB);
+    }
+
+
 }
