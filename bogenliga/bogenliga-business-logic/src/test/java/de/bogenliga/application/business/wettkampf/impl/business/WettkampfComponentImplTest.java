@@ -67,6 +67,10 @@ public class WettkampfComponentImplTest {
     public static final int PFEIL2 = 9;
     public static final int PFEIL3 = 9;
     public static final int PFEIL4 = 6;
+    public static final int PFEIL5 = 8;
+    public static final int PFEIL6 = 9;
+    public static final int PFEIL7 = 10;
+    public static final int PFEIL8 = 6;
 
     private static final long mannschaft_id = 77;
 
@@ -139,7 +143,7 @@ public class WettkampfComponentImplTest {
                         null, PFEIL1, PFEIL2, null, null, null, null, null,
                             null, null, null, null);
         PasseDO passe2 = new PasseDO(null,null, null, null, null, null,
-                        null, PFEIL3, PFEIL4, null, null, null, null, null,
+                        null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
                             null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
         passen.add(passe1);
@@ -444,7 +448,7 @@ public class WettkampfComponentImplTest {
     //Methode aufrufen
     float actual = underTest.calcAverage(passen);
     //haben wir das erwartete ergebnis erhalten
-    Assertions.assertThat(actual).isEqualTo(8.5f);
+    Assertions.assertThat(actual).isEqualTo(8.375f);
     }
 
     @Test
