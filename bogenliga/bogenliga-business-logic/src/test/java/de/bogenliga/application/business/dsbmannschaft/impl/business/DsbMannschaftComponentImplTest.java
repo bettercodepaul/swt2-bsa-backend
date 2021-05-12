@@ -779,20 +779,12 @@ public class DsbMannschaftComponentImplTest {
 
     @Test
     public void copyMannschaftFromVeranstaltung(){
-        //prepare data
-        final DsbMannschaftDO lastMannschaftDO = getDsbMannschaftDO();
-        final List<DsbMannschaftDO> lastMannschaftDOList = Collections.singletonList(lastMannschaftDO);
-        final DsbMannschaftDO currentMannschaftDO = getDsbMannschaftDO();
-        final List<DsbMannschaftDO> currentMannschaftDOList = Collections.singletonList(currentMannschaftDO);
-
         //call test method
-        underTest.copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
+        final List<DsbMannschaftDO> actual = underTest.
+                copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
 
         //asserting returns
-
-        //verifying invocations
-        //verify(VeranstaltungComponent).findBySportjahrDestinct(anyLong());
-
+        assertThat(actual).isNotNull();
     }
 
 }

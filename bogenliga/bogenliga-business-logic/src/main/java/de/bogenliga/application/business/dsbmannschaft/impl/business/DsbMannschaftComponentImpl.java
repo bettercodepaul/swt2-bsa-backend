@@ -253,25 +253,31 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         return mannschaftDO;
     }
 
-    //Todo: methode umbenennen copyMannschaftFromVeranstaltung
+
+    /**
+     * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
+     * as long as its not already included
+     */
     @Override
-    public void copyMannschaftFromVeranstaltung(long lastVeranstaltungsId, long currentVeranstaltungsId, long userId) {
-        //Todo: variablen umbenennen, bezug auf datentyp
-        List<DsbMannschaftDO> lastVeranstaltungList = findAllByVeranstaltungsId(lastVeranstaltungsId);
-        List<DsbMannschaftDO> currentVeranstaltungList = findAllByVeranstaltungsId(currentVeranstaltungsId);
-        // Kommentar: Erklärung
-        for(DsbMannschaftDO m : lastVeranstaltungList) {
+    public List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(long lastMannschaftId, long currentMannschaftId, long userId) {
+        List<DsbMannschaftDO> lastMannschaftList = findAllByVeranstaltungsId(lastMannschaftId);
+        List<DsbMannschaftDO> currentMannschaftList = findAllByVeranstaltungsId(currentMannschaftId);
+
+        // compares every Mannschaft from last Veranstaltung with the current Mannschaften
+        // sets included = true if Mannschaft already in current Veranstaltung
+        for(DsbMannschaftDO mannschaftToCheck : lastMannschaftList) {
             boolean included = false;
-            for(DsbMannschaftDO c : currentVeranstaltungList){
-                if(m.getVereinId().equals(c.getVereinId())){
+            for(DsbMannschaftDO c : currentMannschaftList){
+                if(mannschaftToCheck.getVereinId().equals(c.getVereinId())){
                     included = true;
                 }
             }
-            // Kommentar: Erklärung
+            // if Mannschaft is not included create new entry in currentMannschaftList
             if(!included){
-                m.setVeranstaltungId(currentVeranstaltungsId);
-                create(m, userId);
+                mannschaftToCheck.setVeranstaltungId(currentMannschaftId);
+                create(mannschaftToCheck, userId);
             }
         }
+        return currentMannschaftList;
     }
 }
