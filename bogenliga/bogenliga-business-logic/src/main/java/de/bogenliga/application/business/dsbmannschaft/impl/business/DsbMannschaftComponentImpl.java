@@ -6,6 +6,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -14,6 +15,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -259,7 +261,45 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      * as long as its not already included
      */
     @Override
-    public List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(long lastMannschaftId, long currentMannschaftId, long userId) {
+    public void copyMannschaftFromVeranstaltung(long lastMannschaftId, long currentMannschaftId, long userId) {
+
+
+        final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastMannschaftId);
+        final List<DsbMannschaftBE> currentMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(currentMannschaftId);
+
+        if(lastMannschaftList == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format(EXCEPTION_NO_RESULTS, lastMannschaftId));
+        }
+
+        List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+        List<DsbMannschaftDO> currentMListDO = fillAllNames(currentMannschaftList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+
+        // compares every Mannschaft from last Veranstaltung with the current Mannschaften
+        // sets included = true if Mannschaft already in current Veranstaltung
+        for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
+            boolean included = false;
+            for (DsbMannschaftDO cur : currentMListDO) {
+                if (mannschaftToCheck.getVereinId().equals(cur.getVereinId())) {
+                    included = true;
+                }
+            }
+            // if Mannschaft is not included create new entry in currentMannschaftList
+            if (!included) {
+                mannschaftToCheck.setVeranstaltungId(currentMannschaftId);
+
+                checkDsbMannschaftDO(mannschaftToCheck, currentMannschaftId);
+
+                final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
+                final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentMannschaftId);
+
+                //mannschaftToCheck.create(mannschaftToCheck, userId);
+            }
+        }
+
+        /*
         List<DsbMannschaftDO> lastMannschaftList = findAllByVeranstaltungsId(lastMannschaftId);
         List<DsbMannschaftDO> currentMannschaftList = findAllByVeranstaltungsId(currentMannschaftId);
 
@@ -277,7 +317,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                 mannschaftToCheck.setVeranstaltungId(currentMannschaftId);
                 create(mannschaftToCheck, userId);
             }
-        }
-        return currentMannschaftList;
+        }*/
+
     }
 }
