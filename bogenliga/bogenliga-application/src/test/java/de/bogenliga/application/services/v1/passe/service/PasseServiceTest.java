@@ -48,22 +48,15 @@ public class PasseServiceTest {
 
     protected static final Long MATCH_ID = 1L;
     protected static final Long MATCH_NR = 1L;
-    protected static final Long MATCH_BEGEGNUNG = 1L;
     protected static final Long MATCH_WETTKAMPF_ID = 1L;
     protected static final Long MATCH_MANNSCHAFT_ID = 1L;
-    protected static final Long MATCH_SCHEIBENNUMMER = 3L;
-    protected static final Long MATCH_MATCHPUNKTE = 6L;
-    protected static final Long MATCH_SATZPUNKTE = 3L;
     protected static final Long CURRENT_USER_ID = 1L;
 
     private static final Long PASSE_ID = 1L;
     private static final Long PASSE_LFDR_NR = 2L;
-    private static final Integer PASSE_SCHUETZE_NR_1 = 1;
-    private static final Integer PASSE_SCHUETZE_NR_2 = 2;
-    private static final Long PASSE_DSB_MITGLIED_ID1 = 1L;
-    private static final Long PASSE_DSB_MITGLIED_ID2 = 2L;
     private static final Integer PASSE_PFEIL_1 = 10;
     private static final Integer PASSE_PFEIL_2 = 8;
+    private static final Long PASSE_DSB_MITGLIED_ID = 123L;
 
 
     private static final Long MM_ID_1 = 1L;
@@ -74,9 +67,9 @@ public class PasseServiceTest {
     private static final Integer MM_dsbMitgliedEingesetzt = 1;
     private static final String MM_dsbMitgliedVorname = "Foo";
     private static final String MM_dsbMitgliedNachname = "Bar";
-    private static final Long MM_rueckennummer_1 = 5L;
-    private static final Long MM_rueckennummer_2 = 6L;
-    private static final Long MM_rueckennummer_3 = 7L;
+    private static final Integer MM_rueckennummer_1 = 5;
+
+
 
 
 
@@ -88,7 +81,7 @@ public class PasseServiceTest {
                 MATCH_NR,
                 MATCH_ID,
                 PASSE_LFDR_NR,
-                123L,
+                PASSE_DSB_MITGLIED_ID,
                 PASSE_PFEIL_1,
                 PASSE_PFEIL_2,
                 null, null, null, null
@@ -256,21 +249,23 @@ public class PasseServiceTest {
     @Test
     public void testCreate() {
         final PasseDO passeDo = getPasseDO();
+        final PasseDTO passeDto = PasseDTOMapper.toDTO.apply(passeDo);
+        passeDto.setRueckennummer(MM_rueckennummer_1);
+
 
         final List<MannschaftsmitgliedDO> manschaftsmitgliederDOList = getMannschaftsMitglieder();
 
         //configure Mocks
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(manschaftsmitgliederDOList);
-        when(matchService.getMemberIdFor(any(PasseDTO.class), any())).thenReturn(17L);
         when(passeComponent.create(any(PasseDO.class), anyLong())).thenReturn(passeDo);
         // call test method
-        final PasseDTO actual = underTest.create(PasseDTOMapper.toDTO.apply(passeDo), principal);
+        final PasseDTO actual = underTest.create(passeDto, principal);
 
 
 
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(passeDo.getId());
-        assertThat(actual.getDsbMitgliedId()).isEqualTo(17L);
+        assertThat(actual.getDsbMitgliedId()).isEqualTo( PASSE_DSB_MITGLIED_ID);
 
         // verify invocations
         verify(passeComponent).create(any(PasseDO.class), anyLong());
