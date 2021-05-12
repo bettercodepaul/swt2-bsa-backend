@@ -34,3 +34,4 @@ Use ```mvnw``` instead of ```mvn``` commands.
 - https://flywaydb.org/documentation/migrations
 - https://flywaydb.org/documentation/maven/
 - https://flywaydb.org/documentation/command/migrate
+-

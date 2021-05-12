@@ -1,10 +1,17 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
+import javax.print.Doc;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,6 +20,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import com.itextpdf.io.source.ByteArrayOutputStream;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
@@ -40,6 +63,14 @@ public class WettkampfComponentImplTest {
     private static final long wettkampf_Disziplin_Id = 3;
     private static final long wettkampf_Wettkampftyp_Id = 1;
     private static final long wettkampf_Ausrichter = 8;
+    public static final int PFEIL1 = 10;
+    public static final int PFEIL2 = 9;
+    public static final int PFEIL3 = 9;
+    public static final int PFEIL4 = 6;
+    public static final int PFEIL5 = 8;
+    public static final int PFEIL6 = 9;
+    public static final int PFEIL7 = 10;
+    public static final int PFEIL8 = 6;
 
     private static final long mannschaft_id = 77;
 
@@ -47,7 +78,17 @@ public class WettkampfComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
+    private VeranstaltungDAO veranstaltungDAO;
+    @Mock
     private WettkampfDAO wettkampfDAO;
+    @Mock
+    private MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+    @Mock
+    private PasseComponent passeComponent;
+    @Mock
+    private DsbMannschaftComponent dsbManschaftComponent;
+    @Mock
+    private VereinComponent vereinComponent;
     @InjectMocks
     private WettkampfComponentImpl underTest;
     @Captor
@@ -96,7 +137,51 @@ public class WettkampfComponentImplTest {
         );
      }
 
+    public static List<PasseDO> getPassenDO()
+    {
+        PasseDO passe1 = new PasseDO(null,null, null, null, null, null,
+                        null, PFEIL1, PFEIL2, null, null, null, null, null,
+                            null, null, null, null);
+        PasseDO passe2 = new PasseDO(null,null, null, null, null, null,
+                        null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
+                            null, null, null, null);
+        List<PasseDO> passen = new LinkedList<>();
+        passen.add(passe1);
+        passen.add(passe2);
+        return passen;
+    }
 
+    public static VeranstaltungBE getVeranstaltungBE()
+    {
+        VeranstaltungBE veranstaltung = new VeranstaltungBE();
+        veranstaltung.setVeranstaltung_id(wettkampf_Veranstaltung_Id);
+        veranstaltung.setVeranstaltung_name("Demo Veranstaltung");
+
+        return veranstaltung;
+    }
+
+    public static MannschaftsmitgliedExtendedBE getMannschaftsmitgliedExtendedBE()
+    {
+        MannschaftsmitgliedExtendedBE newMittglied = new MannschaftsmitgliedExtendedBE();
+        newMittglied.setId(0l);
+        newMittglied.setDsbMitgliedVorname("Sascha");
+        newMittglied.setDsbMitgliedNachname("DeTiris");
+
+        return newMittglied;
+    }
+
+    public static DsbMannschaftDO getDsbMannschaftDO()
+    {
+        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(1l,"1.Manschaft Muster Hausen",1l,1l,
+                0l,wettkampf_Veranstaltung_Id,0l);
+        return neueMannschaft;
+    }
+    public static VereinDO getVereinDO()
+    {
+        VereinDO neuerVerein = new VereinDO(1l, "Bogensport Muster Hausen", "bmh",0l,"example.com",
+                "Test Verein","Test Icon", OffsetDateTime.now(), 0l, 0l);
+        return neuerVerein;
+    }
 
         @Test
     public void findAll() {
@@ -353,5 +438,56 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfDisziplinId()).isEqualTo(expectedDO.getWettkampfDisziplinId());
         assertThat(actual.getWettkampfTypId()).isEqualTo(expectedDO.getWettkampfTypId());
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(expectedDO.getWettkampfAusrichter());
+    }
+
+    @Test
+    public void testCalcAverage()
+    {
+    //daten vorbereiten
+    List<PasseDO> passen = getPassenDO();
+    //Methode aufrufen
+    float actual = underTest.calcAverage(passen);
+    //haben wir das erwartete ergebnis erhalten
+    Assertions.assertThat(actual).isEqualTo(8.375f);
+    }
+
+    @Test
+    public void testGenerateDoc() throws IOException
+    {
+        MannschaftsmitgliedExtendedBE exampleMitglied = getMannschaftsmitgliedExtendedBE();
+        List<PasseDO> passen = getPassenDO();
+
+        List<WettkampfBE> wettkaempfe = new ArrayList<WettkampfBE>();
+        wettkaempfe.add(getWettkampfBE());
+
+        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(wettkaempfe);
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
+        when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(Arrays.asList(exampleMitglied));
+        when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(passen);
+        when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
+
+        byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2033);
+
+        Assertions.assertThat(pdf).isNotNull();
+        Assertions.assertThat(pdf).isNotEmpty();
+
+        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+        PdfReader reader = new PdfReader(serializedPDF);
+        PdfDocument deserialized = new PdfDocument(reader);
+    }
+
+    @Test
+    public void testGetTeamName()
+    {
+        //erwartetes ergebnis definieren
+        String expected = "Bogensport Muster Hausen 1";
+        //mocks vorbereiten
+        when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
+        when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
+        //methode aufrufen
+        String actual = underTest.getTeamName(1);
+        //ergebmis prüfen
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 }
