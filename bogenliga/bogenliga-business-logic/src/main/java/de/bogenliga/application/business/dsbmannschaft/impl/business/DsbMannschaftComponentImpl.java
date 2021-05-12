@@ -6,7 +6,6 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -259,52 +258,31 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     /**
      * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
      * as long as its not already included
+     * @param lastVeranstaltungId
+     * @param currentVeranstaltungId
+     * @param userId
+     * @return
      */
     @Override
-    public List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(long lastMannschaftId, long currentMannschaftId, long userId) {
+    public List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(long lastVeranstaltungId, long currentVeranstaltungId, long userId) {
 
-        final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastMannschaftId);
-        final List<DsbMannschaftBE> currentMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(currentMannschaftId);
+        final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastVeranstaltungId);
+        final List<DsbMannschaftBE> currentMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(currentVeranstaltungId);
 
         List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
                 .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
-        List<DsbMannschaftDO> currentMListDO = fillAllNames(currentMannschaftList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
 
         // compares every Mannschaft from last Veranstaltung with the current Mannschaften
         // sets included = true if Mannschaft already in current Veranstaltung
+        List<DsbMannschaftDO> returnList = new ArrayList<>();
         for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
 
-            mannschaftToCheck.setVeranstaltungId(currentMannschaftId);
-
-            checkDsbMannschaftDO(mannschaftToCheck, currentMannschaftId);
-
+            mannschaftToCheck.setVeranstaltungId(currentVeranstaltungId);
+            checkDsbMannschaftDO(mannschaftToCheck, currentVeranstaltungId);
+            returnList.add(mannschaftToCheck);
             final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
-            final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentMannschaftId);
-
+            dsbMannschaftDAO.create(dsbMannschaftBE, currentVeranstaltungId);
         }
-
-
-
-        /*
-        List<DsbMannschaftDO> lastMannschaftList = findAllByVeranstaltungsId(lastMannschaftId);
-        List<DsbMannschaftDO> currentMannschaftList = findAllByVeranstaltungsId(currentMannschaftId);
-
-        // compares every Mannschaft from last Veranstaltung with the current Mannschaften
-        // sets included = true if Mannschaft already in current Veranstaltung
-        for(DsbMannschaftDO mannschaftToCheck : lastMannschaftList) {
-            boolean included = false;
-            for(DsbMannschaftDO c : currentMannschaftList){
-                if(mannschaftToCheck.getVereinId().equals(c.getVereinId())){
-                    included = true;
-                }
-            }
-            // if Mannschaft is not included create new entry in currentMannschaftList
-            if(!included){
-                mannschaftToCheck.setVeranstaltungId(currentMannschaftId);
-                create(mannschaftToCheck, userId);
-            }
-        }*/
-        return currentMListDO;
+        return returnList;
     }
 }

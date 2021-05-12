@@ -778,88 +778,11 @@ public class DsbMannschaftComponentImplTest {
         verifyZeroInteractions(dsbMannschaftDAO);
     }
 
-/*
-    @Test
-    public void copyMannschaftFromVeranstaltung(){
-        //call test method
-        final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
-                (VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
 
-        //asserting returns
-        assertThat(actual).isNotNull().hasSize(1);
-    }
-*/
-/*
-    @Test
-    public void copyMannschaftFromVeranstaltung_included(){
-        // prepare test data
-        DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
-        mannschaft1.setVereinId(LAST_VEREIN_ID);
-        DsbMannschaftBE mannschaft2 = getDsbMannschaftBE();
-        mannschaft2.setVereinId(LAST_VEREIN_ID);
-        final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
-        lastMannschaftList.add(mannschaft1);
-        lastMannschaftList.add(mannschaft2);
-
-        DsbMannschaftBE mannschaft3 = getDsbMannschaftBE();
-        mannschaft3.setVeranstaltungId(CURRENT_VERANSTALTUNG_ID);
-        final  List<DsbMannschaftBE> currentMannschaftList = new ArrayList<>();
-        lastMannschaftList.add(mannschaft3);
-
-        DsbMannschaftDO mannschaft4 = getDsbMannschaftDO();
-
-        // configure mocks
-        when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
-        when(dsbMannschaftDAO.findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID)).thenReturn(currentMannschaftList);
-        //when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(null);
-
-        //call test method
-        final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
-                (VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
-
-        //asserting returns
-
-        // verify invocations
-        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
-        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID);
-        //verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-    }
-
-
-    @Test
-    public void copyMannschaftFromVeranstaltung__(){
-        // prepare test data
-        DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
-        final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
-        lastMannschaftList.add(mannschaft1);
-
-        DsbMannschaftBE mannschaft2 = getDsbMannschaftBE();
-        mannschaft2.setVeranstaltungId(CURRENT_VERANSTALTUNG_ID);
-        final  List<DsbMannschaftBE> currentMannschaftList = new ArrayList<>();
-        lastMannschaftList.add(mannschaft2);
-
-        // configure mocks
-        when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
-        when(dsbMannschaftDAO.findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID)).thenReturn(currentMannschaftList);
-        //when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(null);
-
-        //call test method
-        underTest.copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
-
-        //asserting returns
-        //assertThat(actual).isNotNull().hasSize(1);
-
-        // verify invocations
-        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
-        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID);
-        //verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
-    }
-*/
     @Test
     public void copyMannschaftFromVeranstaltung_new(){
         // prepare test data
         DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
-        //mannschaft1.setVereinId(LAST_VEREIN_ID);
         final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
         lastMannschaftList.add(mannschaft1);
 
@@ -875,6 +798,10 @@ public class DsbMannschaftComponentImplTest {
                 (VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
 
         //asserting returns
+        assertThat(actual).isNotNull();
+        DsbMannschaftDO actualM = actual.get(0);
+        assertThat(actualM.getVereinId()).isEqualTo(mannschaft1.getVereinId());
+        assertThat(actualM.getId()).isEqualTo(mannschaft1.getId());
 
         // verify invocations
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
