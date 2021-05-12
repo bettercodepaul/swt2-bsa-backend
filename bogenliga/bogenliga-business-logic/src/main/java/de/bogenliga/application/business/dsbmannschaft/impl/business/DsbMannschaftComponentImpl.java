@@ -261,16 +261,10 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      * as long as its not already included
      */
     @Override
-    public void copyMannschaftFromVeranstaltung(long lastMannschaftId, long currentMannschaftId, long userId) {
-
+    public List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(long lastMannschaftId, long currentMannschaftId, long userId) {
 
         final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastMannschaftId);
         final List<DsbMannschaftBE> currentMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(currentMannschaftId);
-
-        if(lastMannschaftList == null){
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format(EXCEPTION_NO_RESULTS, lastMannschaftId));
-        }
 
         List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
                 .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
@@ -295,8 +289,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                 final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
                 final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentMannschaftId);
 
-                //mannschaftToCheck.create(mannschaftToCheck, userId);
             }
+
         }
 
         /*
@@ -318,6 +312,6 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                 create(mannschaftToCheck, userId);
             }
         }*/
-
+        return currentMListDO;
     }
 }

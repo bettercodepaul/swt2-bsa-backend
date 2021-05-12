@@ -782,10 +782,11 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void copyMannschaftFromVeranstaltung(){
         //call test method
-        underTest.copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
+        final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
+                (VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
 
         //asserting returns
-        //assertThat(actual).isNotNull();
+        assertThat(actual).isNotNull().hasSize(1);
     }
 
 
@@ -813,10 +814,10 @@ public class DsbMannschaftComponentImplTest {
         //when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(null);
 
         //call test method
-        underTest.copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
+        final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
+                (VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
 
         //asserting returns
-        //assertThat(actual).isNotNull().hasSize(1);
 
         // verify invocations
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
