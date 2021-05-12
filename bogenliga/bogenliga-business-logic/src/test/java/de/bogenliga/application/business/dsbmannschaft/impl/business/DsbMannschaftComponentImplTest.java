@@ -778,7 +778,7 @@ public class DsbMannschaftComponentImplTest {
         verifyZeroInteractions(dsbMannschaftDAO);
     }
 
-
+/*
     @Test
     public void copyMannschaftFromVeranstaltung(){
         //call test method
@@ -788,8 +788,8 @@ public class DsbMannschaftComponentImplTest {
         //asserting returns
         assertThat(actual).isNotNull().hasSize(1);
     }
-
-
+*/
+/*
     @Test
     public void copyMannschaftFromVeranstaltung_included(){
         // prepare test data
@@ -853,6 +853,35 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID);
         //verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+    }
+*/
+    @Test
+    public void copyMannschaftFromVeranstaltung_new(){
+        // prepare test data
+        DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
+        //mannschaft1.setVereinId(LAST_VEREIN_ID);
+        final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
+        lastMannschaftList.add(mannschaft1);
+
+        final  List<DsbMannschaftBE> currentMannschaftList = new ArrayList<>();
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
+        when(dsbMannschaftDAO.findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID)).thenReturn(currentMannschaftList);
+        when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(null);
+
+        //call test method
+        final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
+                (VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
+
+        //asserting returns
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID);
+        //verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
+        verify(vereinDAO).findById(anyLong());
     }
 
 }
