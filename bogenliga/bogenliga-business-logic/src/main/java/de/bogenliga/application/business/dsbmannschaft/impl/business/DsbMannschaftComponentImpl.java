@@ -274,24 +274,17 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         // compares every Mannschaft from last Veranstaltung with the current Mannschaften
         // sets included = true if Mannschaft already in current Veranstaltung
         for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
-            boolean included = false;
-            for (DsbMannschaftDO cur : currentMListDO) {
-                if (mannschaftToCheck.getVereinId().equals(cur.getVereinId())) {
-                    included = true;
-                }
-            }
-            // if Mannschaft is not included create new entry in currentMannschaftList
-            if (!included) {
-                mannschaftToCheck.setVeranstaltungId(currentMannschaftId);
 
-                checkDsbMannschaftDO(mannschaftToCheck, currentMannschaftId);
+            mannschaftToCheck.setVeranstaltungId(currentMannschaftId);
 
-                final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
-                final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentMannschaftId);
+            checkDsbMannschaftDO(mannschaftToCheck, currentMannschaftId);
 
-            }
+            final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
+            final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentMannschaftId);
 
         }
+
+
 
         /*
         List<DsbMannschaftDO> lastMannschaftList = findAllByVeranstaltungsId(lastMannschaftId);
