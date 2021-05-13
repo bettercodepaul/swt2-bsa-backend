@@ -66,8 +66,8 @@ public class WettkampfComponentImplTest {
     public static final int PFEIL1 = 10;
     public static final int PFEIL2 = 9;
     public static final int PFEIL3 = 9;
-    public static final int PFEIL4 = 6;
-    public static final int PFEIL5 = 8;
+    public static final int PFEIL4 = 7;
+    public static final int PFEIL5 = 10;
     public static final int PFEIL6 = 9;
     public static final int PFEIL7 = 10;
     public static final int PFEIL8 = 6;
@@ -139,10 +139,10 @@ public class WettkampfComponentImplTest {
 
     public static List<PasseDO> getPassenDO()
     {
-        PasseDO passe1 = new PasseDO(null,null, null, null, null, null,
+        PasseDO passe1 = new PasseDO(null,null, null, 2l, null, null,
                         null, PFEIL1, PFEIL2, null, null, null, null, null,
                             null, null, null, null);
-        PasseDO passe2 = new PasseDO(null,null, null, null, null, null,
+        PasseDO passe2 = new PasseDO(null,null, null, 1l, null, null,
                         null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
                             null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
@@ -446,9 +446,9 @@ public class WettkampfComponentImplTest {
     //daten vorbereiten
     List<PasseDO> passen = getPassenDO();
     //Methode aufrufen
-    float actual = underTest.calcAverage(passen);
+    float actual = underTest.calcAverage(passen,1l);
     //haben wir das erwartete ergebnis erhalten
-    Assertions.assertThat(actual).isEqualTo(8.375f);
+    Assertions.assertThat(actual).isEqualTo(8.5f);
     }
 
     @Test
@@ -469,8 +469,7 @@ public class WettkampfComponentImplTest {
 
         byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2033);
 
-        Assertions.assertThat(pdf).isNotNull();
-        Assertions.assertThat(pdf).isNotEmpty();
+        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
         ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
         PdfReader reader = new PdfReader(serializedPDF);
@@ -488,6 +487,21 @@ public class WettkampfComponentImplTest {
         //methode aufrufen
         String actual = underTest.getTeamName(1);
         //ergebmis prüfen
+        Assertions.assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testGetNummern()
+    {
+        //daten vorbereiten
+        List<PasseDO> passen = getPassenDO();
+        //erwartetes ergebnis
+        List<Long> expected = new LinkedList<>();
+        expected.add(2l);
+        expected.add(1l);
+        //Methode aufrufen
+        List<Long> actual = underTest.getNummern(passen);
+        //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(expected);
     }
 }
