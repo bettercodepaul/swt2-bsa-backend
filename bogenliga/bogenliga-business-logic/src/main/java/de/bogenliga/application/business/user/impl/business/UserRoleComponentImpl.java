@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
-import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
+import de.bogenliga.application.business.configuration.impl.dao.ConfigurationDAO;
+import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import de.bogenliga.application.business.role.impl.dao.RoleDAO;
 import de.bogenliga.application.business.role.impl.entity.RoleBE;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -47,7 +47,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
     private final RoleDAO roleDAO;
 
-    private EinstellungenDAO einstellungenDAO;
+    private ConfigurationDAO einstellungenDAO;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRoleComponentImpl.class);
 
@@ -62,7 +62,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
      */
     @Autowired
     public UserRoleComponentImpl(final UserRoleExtDAO userRoleExtDAO, RoleDAO roleDAO,
-                                 EinstellungenDAO einstellungenDAO) {
+                                 ConfigurationDAO einstellungenDAO) {
 
         this.userRoleExtDAO = userRoleExtDAO;
         this.roleDAO = roleDAO;
@@ -202,7 +202,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
             recipients[i] = (result.get(i).getUserEmail());
         }
 
-        List<EinstellungenBE> einstellungen = einstellungenDAO.findAll();
+        List<ConfigurationBE> einstellungen = einstellungenDAO.findAll();
 
         String smtpHost = "";
         String smtpPW = "";
@@ -211,20 +211,22 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         String smtpPort = "";
 
         for (int i = 0; i < einstellungen.size(); i++) {
-            String tempKey = einstellungen.get(i).getEinstellungenKey();
+            String tempKey = einstellungen.get(i).getConfigurationKey();
             if (tempKey.equals("SMTPHost")) {
-                smtpHost = einstellungen.get(i).getEinstellungenValue();
+                smtpHost = einstellungen.get(i).getConfigurationValue();
             } else if (tempKey.equals("SMTPPasswort")) {
-                smtpPW = einstellungen.get(i).getEinstellungenValue();
+                smtpPW = einstellungen.get(i).getConfigurationValue();
             } else if (tempKey.equals("SMTPBenutzer")) {
-                smtpBenutzer = einstellungen.get(i).getEinstellungenValue();
+                smtpBenutzer = einstellungen.get(i).getConfigurationValue();
             } else if (tempKey.equals("SMTPEmail")) {
-                smtpEMail = einstellungen.get(i).getEinstellungenValue();
+                smtpEMail = einstellungen.get(i).getConfigurationValue();
             } else if (tempKey.equals("SMTPPort")) {
-                smtpPort = einstellungen.get(i).getEinstellungenValue();
+                smtpPort = einstellungen.get(i).getConfigurationValue();
             }
 
         }
+
+        LOGGER.debug("Found smtpHost {} and smtpPort {}", smtpHost, smtpPort);
 
         final String username = smtpBenutzer;
         final String password = smtpPW;
