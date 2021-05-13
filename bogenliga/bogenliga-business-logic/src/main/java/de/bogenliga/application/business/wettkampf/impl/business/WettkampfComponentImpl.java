@@ -82,10 +82,16 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
 
+
     @Override
-    public List<WettkampfDO> findAll() {
-        final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+    public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentUserID) {
+        checkParams(wettkampfDO, currentUserID);
+
+        final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
+
+        final WettkampfBE persistedWettkampfBe = wettkampfDAO.create(wettkampfBE, currentUserID);
+
+        return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
     }
 
 
@@ -130,17 +136,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
 
-    @Override
-    public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentUserID) {
-        checkParams(wettkampfDO, currentUserID);
-
-        final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
-
-        final WettkampfBE persistedWettkampfBe = wettkampfDAO.create(wettkampfBE, currentUserID);
-
-        return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
-    }
-
 
     public WettkampfDO createWT0(long veranstaltungID, final long currentUserID) {
         Preconditions.checkNotNull(veranstaltungID, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
@@ -177,6 +172,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         wettkampfDAO.delete(wettkampfBE, currentUserID);
     }
 
+
+    @Override
+    public List<WettkampfDO> findAll() {
+        final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
+        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+    }
 
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
