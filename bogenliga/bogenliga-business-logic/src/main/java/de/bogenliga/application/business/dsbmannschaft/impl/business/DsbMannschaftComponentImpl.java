@@ -14,6 +14,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -251,5 +252,37 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
             mannschaftDO.setSortierung(doFromDatabase.getSortierung());
         }
         return mannschaftDO;
+    }
+
+
+    /**
+     * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
+     * as long as its not already included
+     * @param lastVeranstaltungId
+     * @param currentVeranstaltungId
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(long lastVeranstaltungId, long currentVeranstaltungId, long userId) {
+
+        final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastVeranstaltungId);
+        final List<DsbMannschaftBE> currentMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(currentVeranstaltungId);
+
+        List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+
+        // compares every Mannschaft from last Veranstaltung with the current Mannschaften
+        // sets included = true if Mannschaft already in current Veranstaltung
+        List<DsbMannschaftDO> addedMannschaftenList = new ArrayList<>();
+        for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
+
+            mannschaftToCheck.setVeranstaltungId(currentVeranstaltungId);
+            checkDsbMannschaftDO(mannschaftToCheck, currentVeranstaltungId);
+            addedMannschaftenList.add(mannschaftToCheck);
+            final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
+            dsbMannschaftDAO.create(dsbMannschaftBE, currentVeranstaltungId);
+        }
+        return addedMannschaftenList;
     }
 }
