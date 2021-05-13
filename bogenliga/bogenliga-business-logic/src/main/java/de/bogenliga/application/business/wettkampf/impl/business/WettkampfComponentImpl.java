@@ -210,7 +210,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 bResult = result.toByteArray();
                 LOGGER.debug("Einzelstatistik erstellt");
             } catch(IOException e){
-                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: {}" , e);
+                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: {0}" , e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF Einzelstatistik konnte nicht erstellt werden: " + e);
             }
@@ -249,12 +249,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
             {
                     List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
-                    List<Long> passennummern = new LinkedList<>();
-                    for(PasseDO passe : passen)
-                    {
-                        if(!passennummern.contains(passe.getPasseMatchNr()))
-                            passennummern.add(passe.getPasseMatchNr());
-                    }
+                    List<Long> passennummern = getNummern(passen);
                     for(Long nummer:passennummern)
                     {
                         if (!passen.isEmpty())
@@ -276,6 +271,18 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             }
         }
         doc.close();
+    }
+    public List<Long> getNummern(List<PasseDO> passen)
+    {
+        List<Long> passennummern = new LinkedList<>();
+        for(PasseDO passe : passen)
+        {
+            if(!passennummern.contains(passe.getPasseMatchNr()))
+            {
+                passennummern.add(passe.getPasseMatchNr());
+            }
+        }
+        return passennummern;
     }
     public String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
