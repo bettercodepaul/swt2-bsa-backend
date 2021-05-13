@@ -2,6 +2,7 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -81,10 +82,16 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
 
+
     @Override
-    public List<WettkampfDO> findAll() {
-        final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
-        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+    public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentUserID) {
+        checkParams(wettkampfDO, currentUserID);
+
+        final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
+
+        final WettkampfBE persistedWettkampfBe = wettkampfDAO.create(wettkampfBE, currentUserID);
+
+        return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
     }
 
 
@@ -129,17 +136,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
 
-    @Override
-    public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentUserID) {
-        checkParams(wettkampfDO, currentUserID);
-
-        final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
-
-        final WettkampfBE persistedWettkampfBe = wettkampfDAO.create(wettkampfBE, currentUserID);
-
-        return WettkampfMapper.toWettkampfDO.apply(persistedWettkampfBe);
-    }
-
 
     public WettkampfDO createWT0(long veranstaltungID, final long currentUserID) {
         Preconditions.checkNotNull(veranstaltungID, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
@@ -177,6 +173,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
 
+    @Override
+    public List<WettkampfDO> findAll() {
+        final List<WettkampfBE> wettkampfBEList = wettkampfDAO.findAll();
+        return wettkampfBEList.stream().map(WettkampfMapper.toWettkampfDO).collect(Collectors.toList());
+    }
+
     private void checkParams(final WettkampfDO wettkampfDO, final long currentUserID) {
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkNotNull(wettkampfDO.getWettkampfVeranstaltungsId(), PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
@@ -209,7 +211,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 bResult = result.toByteArray();
                 LOGGER.debug("Einzelstatistik erstellt");
             } catch(IOException e){
-                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: " + e);
+                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: {0}" , e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF Einzelstatistik konnte nicht erstellt werden: " + e);
             }
@@ -248,12 +250,16 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
             {
                     List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
-                    if(!passen.isEmpty())
+                    List<Long> passennummern = getNummern(passen);
+                    for(Long nummer:passennummern)
                     {
-                        table.addCell(new Cell().add(new Paragraph("1")));
-                        table.addCell(new Cell().add(new Paragraph(getTeamName(mannschaftsid))));
-                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen)))));
+                        if (!passen.isEmpty())
+                        {
+                            table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
+                            table.addCell(new Cell().add(new Paragraph(getTeamName(mannschaftsid))));
+                            table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                            table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen,nummer)))));
+                        }
                     }
             }
             if(table.getNumberOfRows() > 1)
@@ -267,6 +273,18 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         doc.close();
     }
+    public List<Long> getNummern(List<PasseDO> passen)
+    {
+        List<Long> passennummern = new LinkedList<>();
+        for(PasseDO passe : passen)
+        {
+            if(!passennummern.contains(passe.getPasseMatchNr()))
+            {
+                passennummern.add(passe.getPasseMatchNr());
+            }
+        }
+        return passennummern;
+    }
     public String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
@@ -278,43 +296,39 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
     }
 
-    public float calcAverage( List<PasseDO> passen )
+    public float calcAverage( List<PasseDO> passen ,long nummer)
     {
         float average = 0;
         int count = 0;
 
         for(PasseDO passe : passen)
         {
-
-            if(passe.getPfeil1() != null)
+            if(passe.getPasseMatchNr()==nummer)
             {
-                average += passe.getPfeil1();
-                count++;
-            }
-            if(passe.getPfeil2() != null)
-            {
-                average += passe.getPfeil2();
-                count++;
-            }
-            if(passe.getPfeil3() != null)
-            {
-                average += passe.getPfeil3();
-                count++;
-            }
-            if(passe.getPfeil4() != null)
-            {
-                average += passe.getPfeil4();
-                count++;
-            }
-            if(passe.getPfeil5() != null)
-            {
-                average += passe.getPfeil5();
-                count++;
-            }
-            if(passe.getPfeil6() != null)
-            {
-                average += passe.getPfeil6();
-                count++;
+                if (passe.getPfeil1() != null) {
+                    average += passe.getPfeil1();
+                    count++;
+                }
+                if (passe.getPfeil2() != null) {
+                    average += passe.getPfeil2();
+                    count++;
+                }
+                if (passe.getPfeil3() != null) {
+                    average += passe.getPfeil3();
+                    count++;
+                }
+                if (passe.getPfeil4() != null) {
+                    average += passe.getPfeil4();
+                    count++;
+                }
+                if (passe.getPfeil5() != null) {
+                    average += passe.getPfeil5();
+                    count++;
+                }
+                if (passe.getPfeil6() != null) {
+                    average += passe.getPfeil6();
+                    count++;
+                }
             }
 
         }
