@@ -139,10 +139,10 @@ public class WettkampfComponentImplTest {
 
     public static List<PasseDO> getPassenDO()
     {
-        PasseDO passe1 = new PasseDO(null,null, null, null, null, null,
+        PasseDO passe1 = new PasseDO(null,null, null, 1l, null, null,
                         null, PFEIL1, PFEIL2, null, null, null, null, null,
                             null, null, null, null);
-        PasseDO passe2 = new PasseDO(null,null, null, null, null, null,
+        PasseDO passe2 = new PasseDO(null,null, null, 1l, null, null,
                         null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
                             null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
@@ -446,7 +446,7 @@ public class WettkampfComponentImplTest {
     //daten vorbereiten
     List<PasseDO> passen = getPassenDO();
     //Methode aufrufen
-    float actual = underTest.calcAverage(passen);
+    float actual = underTest.calcAverage(passen,1l);
     //haben wir das erwartete ergebnis erhalten
     Assertions.assertThat(actual).isEqualTo(8.375f);
     }
@@ -469,8 +469,7 @@ public class WettkampfComponentImplTest {
 
         byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2033);
 
-        Assertions.assertThat(pdf).isNotNull();
-        Assertions.assertThat(pdf).isNotEmpty();
+        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
         ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
         PdfReader reader = new PdfReader(serializedPDF);
