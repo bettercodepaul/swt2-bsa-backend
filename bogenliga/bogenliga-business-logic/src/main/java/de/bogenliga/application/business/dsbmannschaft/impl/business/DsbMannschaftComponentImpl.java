@@ -257,7 +257,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     /**
      * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
-     * as long as its not already included
+     * returns a list of all created database entrys of Mannschaften
      * @param lastVeranstaltungId
      * @param currentVeranstaltungId
      * @param userId
@@ -267,13 +267,11 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(long lastVeranstaltungId, long currentVeranstaltungId, long userId) {
 
         final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastVeranstaltungId);
-        final List<DsbMannschaftBE> currentMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(currentVeranstaltungId);
 
         List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
                 .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
 
-        // compares every Mannschaft from last Veranstaltung with the current Mannschaften
-        // sets included = true if Mannschaft already in current Veranstaltung
+        // creates a new database entry for every Mannschaft with the current VeranstaltungId
         List<DsbMannschaftDO> addedMannschaftenList = new ArrayList<>();
         for(DsbMannschaftDO mannschaftToCheck : lastMListDO) {
 
