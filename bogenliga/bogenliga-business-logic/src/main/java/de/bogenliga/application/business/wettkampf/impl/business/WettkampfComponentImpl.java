@@ -2,6 +2,7 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -209,7 +210,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 bResult = result.toByteArray();
                 LOGGER.debug("Einzelstatistik erstellt");
             } catch(IOException e){
-                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: " + e);
+                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: {}" , e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF Einzelstatistik konnte nicht erstellt werden: " + e);
             }
@@ -248,12 +249,21 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
             {
                     List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
-                    if(!passen.isEmpty())
+                    List<Long> passennummern = new LinkedList<>();
+                    for(PasseDO passe : passen)
                     {
-                        table.addCell(new Cell().add(new Paragraph("1")));
-                        table.addCell(new Cell().add(new Paragraph(getTeamName(mannschaftsid))));
-                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen)))));
+                        if(!passennummern.contains(passe.getPasseMatchNr()))
+                            passennummern.add(passe.getPasseMatchNr());
+                    }
+                    for(Long nummer:passennummern)
+                    {
+                        if (!passen.isEmpty())
+                        {
+                            table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
+                            table.addCell(new Cell().add(new Paragraph(getTeamName(mannschaftsid))));
+                            table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                            table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen,nummer)))));
+                        }
                     }
             }
             if(table.getNumberOfRows() > 1)
@@ -278,43 +288,39 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
     }
 
-    public float calcAverage( List<PasseDO> passen )
+    public float calcAverage( List<PasseDO> passen ,long nummer)
     {
         float average = 0;
         int count = 0;
 
         for(PasseDO passe : passen)
         {
-
-            if(passe.getPfeil1() != null)
+            if(passe.getPasseMatchNr()==nummer)
             {
-                average += passe.getPfeil1();
-                count++;
-            }
-            if(passe.getPfeil2() != null)
-            {
-                average += passe.getPfeil2();
-                count++;
-            }
-            if(passe.getPfeil3() != null)
-            {
-                average += passe.getPfeil3();
-                count++;
-            }
-            if(passe.getPfeil4() != null)
-            {
-                average += passe.getPfeil4();
-                count++;
-            }
-            if(passe.getPfeil5() != null)
-            {
-                average += passe.getPfeil5();
-                count++;
-            }
-            if(passe.getPfeil6() != null)
-            {
-                average += passe.getPfeil6();
-                count++;
+                if (passe.getPfeil1() != null) {
+                    average += passe.getPfeil1();
+                    count++;
+                }
+                if (passe.getPfeil2() != null) {
+                    average += passe.getPfeil2();
+                    count++;
+                }
+                if (passe.getPfeil3() != null) {
+                    average += passe.getPfeil3();
+                    count++;
+                }
+                if (passe.getPfeil4() != null) {
+                    average += passe.getPfeil4();
+                    count++;
+                }
+                if (passe.getPfeil5() != null) {
+                    average += passe.getPfeil5();
+                    count++;
+                }
+                if (passe.getPfeil6() != null) {
+                    average += passe.getPfeil6();
+                    count++;
+                }
             }
 
         }
