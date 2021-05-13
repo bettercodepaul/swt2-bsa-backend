@@ -52,6 +52,16 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
 
     @Override
+    public ConfigurationDO findById(long id) {
+        final ConfigurationBE result = configurationDAO.findById(id);
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "no match found for id ");
+        }
+        return ConfigurationMapper.toDO.apply(result);
+    }
+
+
+    @Override
     public ConfigurationDO findByKey(final String key) {
         Preconditions.checkNotNullOrEmpty(key, PRECONDITION_MSG_CONFIGURATION_KEY);
 

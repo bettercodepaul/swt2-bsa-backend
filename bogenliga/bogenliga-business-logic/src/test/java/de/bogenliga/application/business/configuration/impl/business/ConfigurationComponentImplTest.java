@@ -76,6 +76,52 @@ public class ConfigurationComponentImplTest {
         verify(configurationDAO).findAll();
     }
 
+    @Test
+    public void findById(){
+        // prepare test data
+        long id = 63476;
+        final ConfigurationBE expectedBE = new ConfigurationBE();
+        expectedBE.setConfigurationId(id);
+        expectedBE.setConfigurationKey(KEY);
+        expectedBE.setConfigurationValue(VALUE);
+
+        // configure mocks
+        when(configurationDAO.findById(id)).thenReturn(expectedBE);
+
+        // call test method
+        final ConfigurationDO actual = underTest.findById(id);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getConfigurationId());
+        assertThat(actual.getKey())
+                .isEqualTo(expectedBE.getConfigurationKey());
+        assertThat(actual.getValue())
+                .isEqualTo(expectedBE.getConfigurationValue());
+
+        // verify invocations
+        verify(configurationDAO).findById(id);
+    }
+
+    @Test
+    public void findById_withException(){
+        // prepare test data
+        long id = 63476;
+
+        // configure mocks
+        when(configurationDAO.findById(id)).thenReturn(null);
+
+        // assert result
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findById(id))
+                .withNoCause();
+
+
+        // verify invocations
+        verify(configurationDAO).findById(id);
+    }
 
     @Test
     public void findByKey() {

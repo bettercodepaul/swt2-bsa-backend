@@ -82,5 +82,5 @@ public interface DsbMannschaftComponent extends ComponentFacade {
     void delete(DsbMannschaftDO dsbMannschaftDO, long currentDsbMitgliedId);
 
 
-
+    List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
 }
