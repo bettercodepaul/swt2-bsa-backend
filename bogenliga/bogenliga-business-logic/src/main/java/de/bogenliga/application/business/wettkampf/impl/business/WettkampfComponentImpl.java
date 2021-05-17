@@ -232,35 +232,35 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.setFontSize(20.0f);
         doc.add(new Paragraph("Einzelstatistik").setBold());
         doc.setFontSize(9.2f);
-        doc.add(new Paragraph(selectedVeranstaltung.getVeranstaltung_name()));
-        doc.add(new Paragraph(getTeamName(mannschaftsid)));
-        doc.add(new Paragraph(Integer.toString(jahr)));
+        doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltung_name()));
+        doc.add(new Paragraph("Mannschaft: " + getTeamName(mannschaftsid)));
+        doc.add(new Paragraph("Jahr: " +Integer.toString(jahr)));
         doc.add(new Paragraph(""));
 
         for(WettkampfBE wettkampf : wettkampflisteBEList)
         {
             List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
 
-            Table table = new Table(new float[]{40, 150, 150, 250});
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Mannschaft").setBold()));
+            Table table = new Table(new float[]{100, 150, 100, 250});
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
 
             for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
             {
-                    List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
-                    List<Long> passennummern = getNummern(passen);
-                    for(Long nummer:passennummern)
+                List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
+                List<Long> passennummern = getNummern(passen);
+                for(Long nummer:passennummern)
+                {
+                    if (!passen.isEmpty())
                     {
-                        if (!passen.isEmpty())
-                        {
-                            table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
-                            table.addCell(new Cell().add(new Paragraph(getTeamName(mannschaftsid))));
-                            table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
-                            table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen,nummer)))));
-                        }
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
+                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen,nummer)))));
                     }
+                }
             }
             if(table.getNumberOfRows() > 1)
             {
