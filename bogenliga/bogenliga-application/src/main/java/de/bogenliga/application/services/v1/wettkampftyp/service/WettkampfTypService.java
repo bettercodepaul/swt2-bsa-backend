@@ -66,7 +66,7 @@ public class WettkampfTypService implements ServiceFacade {
      * findByID-Method gives back a specific Wettkampftyp according to a single Wettkampftyp_ID
      *
      * @param id - single id of the Wettkampftyp you want te access
-     * @return
+     * @return WettkampfTypDTO zur ID
      */
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -81,9 +81,9 @@ public class WettkampfTypService implements ServiceFacade {
 
     /**
      * create-Method() writes a new entry of Wettkampftyp into the database
-     * @param wettkampftypDTO
-     * @param principal
-     * @return
+     * @param wettkampftypDTO zum Anlegen auf der DB
+     * @param principal User der speichert
+     * @return WettkampfTypDTO der angelegt wurde
      */
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -93,11 +93,7 @@ public class WettkampfTypService implements ServiceFacade {
 
         checkPreconditions(wettkampftypDTO);
 
-        LOG.debug("Received 'create' request with id '{}', name '{}' ",
-                wettkampftypDTO.getId(),
-                wettkampftypDTO.getName());
-
-        final WettkampfTypDO newDsbMitgliedDO = WettkampfTypDTOMapper.toDO.apply(wettkampftypDTO);
+         final WettkampfTypDO newDsbMitgliedDO = WettkampfTypDTOMapper.toDO.apply(wettkampftypDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfTypDO savedWettkampfTypDO= wettkampftypComponent.create(newDsbMitgliedDO, userId);
@@ -117,11 +113,6 @@ public class WettkampfTypService implements ServiceFacade {
     public WettkampfTypDTO update(@RequestBody final WettkampfTypDTO wettkampftypDTO, final Principal principal) {
         checkPreconditions(wettkampftypDTO);
         Preconditions.checkArgument(wettkampftypDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
-
-                LOG.debug("Received 'update' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampftypDisziplinID'{}', Wettkampftyport'{}'," +
-                                " WettkampftypTag '{}', WettkampftypBeginn'{}', WettkampftypTypID '{}' ",
-                        wettkampftypDTO.getId(),
-                        wettkampftypDTO.getName());
 
         final WettkampfTypDO newWettkampfTypDO = WettkampfTypDTOMapper.toDO.apply(wettkampftypDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
