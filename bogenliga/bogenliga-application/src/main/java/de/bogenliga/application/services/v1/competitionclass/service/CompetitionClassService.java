@@ -34,11 +34,13 @@ public class CompetitionClassService implements ServiceFacade {
     private static final String PRECONDITION_MSG_KLASSE_JAHRGANG_MAX = "Max Age must not be negative";
     private static final String PRECONDITION_MSG_KLASSE_NR = "Something is wrong with the CompetitionClass Number";
     private static final String PRECONDITION_MSG_NAME = "The CompetitionClass must be given a name";
+    private static final  String steuerzeichen = "[\n\r\t]" ;
 
 
-    private final Logger LOGGER = LoggerFactory.getLogger(CompetitionClassService.class);
+    private final Logger logger = LoggerFactory.getLogger(CompetitionClassService.class);
 
     private final CompetitionClassComponent competitionClassComponent;
+
 
 
     /**
@@ -78,7 +80,7 @@ public class CompetitionClassService implements ServiceFacade {
     public CompetitionClassDTO findById(@PathVariable("id") final long id){
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
 
-        LOGGER.debug("Receive 'findById' request with ID '{}'", id);
+        logger.debug("Receive 'findById' request with ID '{}'", id);
 
         final CompetitionClassDO competitionClassDO = competitionClassComponent.findById(id);
 
@@ -89,8 +91,8 @@ public class CompetitionClassService implements ServiceFacade {
     /**
      * I persist a new CompetitionClass and return this CompetitionClass entry
      *
-     * @param competitionClassDTO
-     * @param principal
+     * @param competitionClassDTO COmpetition Data to be stored to DB
+     * @param principal user saving data
      *
      * @return list of {@link CompetitionClassDTO} as JSON
      */
@@ -99,13 +101,13 @@ public class CompetitionClassService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_SYSTEMDATEN)
     public CompetitionClassDTO create(@RequestBody final CompetitionClassDTO competitionClassDTO, final Principal principal) {
-        LOGGER.debug(
+        logger.debug(
                 "Receive 'create' request with klasseId '{}', klasseName '{}', klasseJahrgangMin '{}', klasseJahrgangMax '{}', klasseNr '{}' ",
-                competitionClassDTO.getId().toString().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseName().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseJahrgangMin().toString().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseJahrgangMax().toString().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseNr().toString().replaceAll("[\n\r\t]", "_"));
+                competitionClassDTO.getId().toString().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseName().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseJahrgangMin().toString().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseJahrgangMax().toString().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseNr().toString().replaceAll(steuerzeichen, "_"));
 
         checkPreconditions(competitionClassDTO);
 
@@ -120,6 +122,7 @@ public class CompetitionClassService implements ServiceFacade {
 
     /**
      * I persist a newer version of the CompetitionClass in the database.
+     *
      */
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -128,13 +131,13 @@ public class CompetitionClassService implements ServiceFacade {
     public CompetitionClassDTO update(@RequestBody final CompetitionClassDTO competitionClassDTO,
                                       final Principal principal) {
 
-        LOGGER.debug("Receive 'update' request with  id '{}', name '{}', jahrgang_Min '{}', jahrgang_Max '{}', klasseNr '{}'",
+        logger.debug("Receive 'update' request with  id '{}', name '{}', jahrgang_Min '{}', jahrgang_Max '{}', klasseNr '{}'",
 
-                competitionClassDTO.getId().toString().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseName().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseJahrgangMin().toString().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseJahrgangMax().toString().replaceAll("[\n\r\t]", "_"),
-                competitionClassDTO.getKlasseNr().toString().replaceAll("[\n\r\t]", "_"));
+                competitionClassDTO.getId().toString().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseName().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseJahrgangMin().toString().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseJahrgangMax().toString().replaceAll(steuerzeichen, "_"),
+                competitionClassDTO.getKlasseNr().toString().replaceAll(steuerzeichen, "_"));
 
         checkPreconditions(competitionClassDTO);
 
