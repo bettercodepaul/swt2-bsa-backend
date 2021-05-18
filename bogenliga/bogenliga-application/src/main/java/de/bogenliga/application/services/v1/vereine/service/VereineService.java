@@ -4,8 +4,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +38,6 @@ public class VereineService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION_ID_NOT_NEG = "Verein regio ID must not be negative";
     private static final String PRECONDITION_MSG_REGION_ID = "Verein regio ID can not be null";
 
-    private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
 
     private final VereinComponent vereinComponent;
 
@@ -83,8 +80,6 @@ public class VereineService implements ServiceFacade {
     public VereineDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative");
 
-        LOG.debug("Receive 'findById' with requested ID '{}'", id);
-
         final VereinDO vereinDO = vereinComponent.findById(id);
 
         return VereineDTOMapper.toDTO.apply(vereinDO);
@@ -105,17 +100,6 @@ public class VereineService implements ServiceFacade {
         checkPreconditions(vereineDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        LOG.debug(
-                "Receive 'create' request with name '{}', identifier '{}', region id '{}', website '{}', " +
-                        "description '{}', icon '{}', version '{}', createdBy '{}'",
-                vereineDTO.getName(),
-                vereineDTO.getIdentifier(),
-                vereineDTO.getRegionId(),
-                vereineDTO.getWebsite(),
-                vereineDTO.getDescription(),
-                vereineDTO.getIcon(),
-                vereineDTO.getVersion(),
-                userId);
 
         final VereinDO vereinDO = VereineDTOMapper.toDO.apply(vereineDTO);
         final VereinDO persistedVereinDO = vereinComponent.create(vereinDO, userId);
@@ -137,16 +121,6 @@ public class VereineService implements ServiceFacade {
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
 
-        LOG.debug(
-                "Receive  'update' request with id '{}', name '{}', dsb_identifier '{}'," +
-                "region_id '{}', website '{}', description '{}', icon '{}'",
-                vereineDTO.getId(),
-                vereineDTO.getName(),
-                vereineDTO.getIdentifier(),
-                vereineDTO.getRegionId(),
-                vereineDTO.getWebsite(),
-                vereineDTO.getDescription(),
-                vereineDTO.getIcon());
 
         if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)) {
             //der User hat allgemeine Schreibrechte - wir machen weiter
@@ -173,7 +147,6 @@ public class VereineService implements ServiceFacade {
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'delete' request with id '{}'", id);
 
         final VereinDO vereinDO = new VereinDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
