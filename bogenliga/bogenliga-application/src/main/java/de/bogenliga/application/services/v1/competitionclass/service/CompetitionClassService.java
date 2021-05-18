@@ -101,11 +101,11 @@ public class CompetitionClassService implements ServiceFacade {
     public CompetitionClassDTO create(@RequestBody final CompetitionClassDTO competitionClassDTO, final Principal principal) {
         LOGGER.debug(
                 "Receive 'create' request with klasseId '{}', klasseName '{}', klasseJahrgangMin '{}', klasseJahrgangMax '{}', klasseNr '{}' ",
-                competitionClassDTO.getId(),
-                competitionClassDTO.getKlasseName(),
-                competitionClassDTO.getKlasseJahrgangMin(),
-                competitionClassDTO.getKlasseJahrgangMax(),
-                competitionClassDTO.getKlasseNr());
+                competitionClassDTO.getId().toString().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseName().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseJahrgangMin().toString().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseJahrgangMax().toString().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseNr().toString().replaceAll("[\n\r\t]", "_"));
 
         checkPreconditions(competitionClassDTO);
 
@@ -130,11 +130,11 @@ public class CompetitionClassService implements ServiceFacade {
 
         LOGGER.debug("Receive 'update' request with  id '{}', name '{}', jahrgang_Min '{}', jahrgang_Max '{}', klasseNr '{}'",
 
-                competitionClassDTO.getId(),
-                competitionClassDTO.getKlasseName(),
-                competitionClassDTO.getKlasseJahrgangMin(),
-                competitionClassDTO.getKlasseJahrgangMax(),
-                competitionClassDTO.getKlasseNr());
+                competitionClassDTO.getId().toString().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseName().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseJahrgangMin().toString().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseJahrgangMax().toString().replaceAll("[\n\r\t]", "_"),
+                competitionClassDTO.getKlasseNr().toString().replaceAll("[\n\r\t]", "_"));
 
         checkPreconditions(competitionClassDTO);
 
