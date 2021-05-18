@@ -34,6 +34,8 @@ public class LigaService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID_NEG = "Verantwortlich id can not be negative";
 
+    private static final  String STEUERZEICHEN = "[\n\r\t]" ;
+
     private final Logger logger = LoggerFactory.getLogger(LigaService.class);
 
     private final LigaComponent ligaComponent;
@@ -89,8 +91,8 @@ public class LigaService implements ServiceFacade {
     /**
      * I persist a new liga and return this liga entry
      *
-     * @param ligaDTO
-     * @param principal
+     * @param ligaDTO Data to be stored to DB
+     * @param principal User saving the data
      *
      * @return list of {@link LigaDTO} as JSON
      */
@@ -100,12 +102,11 @@ public class LigaService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public LigaDTO create(@RequestBody final LigaDTO ligaDTO, final Principal principal) {
         logger.debug(
-                "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
-                ligaDTO.getId(),
-                ligaDTO.getName(),
-                ligaDTO.getRegionId(),
-                ligaDTO.getLigaUebergeordnetId(),
-                ligaDTO.getLigaVerantwortlichId());
+                "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}' ",
+                ligaDTO.getId().toString().replaceAll(STEUERZEICHEN, "_"),
+                ligaDTO.getName().replaceAll(STEUERZEICHEN, "_"),
+                ligaDTO.getRegionId().toString().replaceAll(STEUERZEICHEN, "_"),
+                ligaDTO.getLigaUebergeordnetId().toString().replaceAll(STEUERZEICHEN, "_"));
 
         checkPreconditions(ligaDTO);
 
@@ -129,12 +130,11 @@ public class LigaService implements ServiceFacade {
                           final Principal principal) {
 
         logger.debug(
-                "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
-                ligaDTO.getId(),
-                ligaDTO.getName(),
-                ligaDTO.getRegionId(),
-                ligaDTO.getLigaUebergeordnetId(),
-                ligaDTO.getLigaVerantwortlichId());
+                "Receive 'update' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}' ",
+                ligaDTO.getId().toString().replaceAll(STEUERZEICHEN, "_"),
+                ligaDTO.getName().replaceAll(STEUERZEICHEN, "_"),
+                ligaDTO.getRegionId().toString().replaceAll(STEUERZEICHEN, "_"),
+                ligaDTO.getLigaUebergeordnetId().toString().replaceAll(STEUERZEICHEN, "_"));
 
 
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
