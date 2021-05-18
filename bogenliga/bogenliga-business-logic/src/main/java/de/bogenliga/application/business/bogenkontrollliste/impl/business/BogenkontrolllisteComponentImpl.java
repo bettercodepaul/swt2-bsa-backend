@@ -108,7 +108,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
         String eventName = veranstaltungDO.getVeranstaltungName();
 
-        List<Boolean> allowedList=new ArrayList<>();
+        List<Long> allowedList= wettkampfComponent.getAllowedMitglieder(wettkampfid);
 
         for(int i=1; i <= 8; i++){
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
@@ -116,55 +116,12 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             LOGGER.info("Teamname {} wurde gefunden ", teamName);
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
-            List<LigaDO> ligen=this.ligaComponent.findAll();
+
             int count = 0;
             for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
                 DsbMitgliedDO dsbMitglied=dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
-                long thisLiga=this.veranstaltungComponent.findById(this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
 
-                //finde Stufe der aktuellen Liga
-                int thisLigaStufe = 0;
-                int currentLiga=(int)thisLiga;
-                while(currentLiga != 0){
-                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
-                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
-                        thisLigaStufe++;
-                    }else{currentLiga=0;}
-                }
-                long thisWettkamptag=this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfTag();
-                long thisSportjahr=this.veranstaltungComponent.findById(this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
-                boolean darfSchiessen=true;
-
-                //find highest Liga and check if mitglied has already shot on this Wettkampftag
-                List<MannschaftsmitgliedDO> mitgliedIn=this.mannschaftsmitgliedComponent.findByMemberId(dsbMitglied.getId());
-                for(MannschaftsmitgliedDO mitglied: mitgliedIn){
-                    List<WettkampfDO> wettkaempfe = this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
-                    for (WettkampfDO wettkampf : wettkaempfe) {
-
-                        //check Sportjahr of Veranstaltung
-                        long wettkampfSportjahr = this.veranstaltungComponent.findById(
-                                wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
-                        if (thisSportjahr == wettkampfSportjahr) {
-                            long liga=this.veranstaltungComponent.findById(
-                                    wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
-
-                            //finde Stufe der Liga dieses Wettkampfes, wenn das Mannschaftsmitglied mindestens 2 mal eingesetzt wurde
-                            if(mitglied.getDsbMitgliedEingesetzt()>=2) {
-                                currentLiga=(int)liga;
-                                int ligaStufe=0;
-                                while(currentLiga != 0){
-                                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
-                                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
-                                        ligaStufe++;
-                                    }else{currentLiga=0;}
-                                }
-                                darfSchiessen=(thisLigaStufe <= ligaStufe) && darfSchiessen;
-                            }
-                            List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
-                            darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag() && !passen.isEmpty()) && darfSchiessen;
-                        }
-                    }
-                }
+                boolean darfSchiessen = allowedList.contains(dsbMitglied.getId());
                 dsbMitgliedDOList.add(dsbMitglied);
                 allowedMapping.put(dsbMitglied,darfSchiessen);
                 if(darfSchiessen){
