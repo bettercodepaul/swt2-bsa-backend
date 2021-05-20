@@ -115,4 +115,11 @@ public interface MatchComponent {
      *
      */
     String getMannschaftsNameByID(long mannschaftID);
+
+
+    /**
+     * Generiert Matches um diese im Frontend durch Button 'generiere Matches' anzeigen zu lasssen
+     *
+     */
+    List<MatchDO> generateMatches(long WettkampfID);
 }

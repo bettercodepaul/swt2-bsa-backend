@@ -915,6 +915,18 @@ public class MatchService implements ServiceFacade {
         return this.hasSpecificPermissionWettkampf(wettkampfPerm,wettkampfid)|| this.hasSpecificPermissionLiga(ligaPerm,ligaid);
     }
 
-
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(path = "/generate")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_READ_WETTKAMPF, UserPermission.CAN_READ_MY_VERANSTALTUNG})
+    public @ResponseBody
+    List<MatchDTO> generateMatches(@RequestParam("wettkampfid") final long wettkampfid) {
+        Preconditions.checkArgument(wettkampfid > 0, "wettkampfid needs to be higher than 0");
+        List<MatchDO>  matchDOList = this.matchComponent.generateMatches(wettkampfid);
+        ArrayList<MatchDTO> matchDTOList = new ArrayList<>();
+        for (MatchDO matchDO : matchDOList) {
+            matchDTOList.add(MatchDTOMapper.toDTO.apply(matchDO));
+        }
+        return matchDTOList;
+    }
 
 }

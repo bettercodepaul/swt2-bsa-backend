@@ -5,11 +5,16 @@ import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.setzliste.impl.business.SetzlisteComponentImpl;
+import de.bogenliga.application.business.setzliste.impl.dao.SetzlisteDAO;
+import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -27,34 +32,42 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class MatchComponentImpl implements MatchComponent {
 
+
     private static final String PRECONDITION_MSG_TEMPLATE = "Match: %s must not be null and must not be negative";
     public static final String PRECONDITION_MSG_MATCH_DO = String.format(PRECONDITION_MSG_TEMPLATE, "DO");
     public static final String PRECONDITION_MSG_MATCH_NR = String.format(PRECONDITION_MSG_TEMPLATE, "nr");
     public static final String PRECONDITION_MSG_WETTKAMPF_ID = String.format(PRECONDITION_MSG_TEMPLATE, "wettkampfId");
     public static final String PRECONDITION_MSG_CURRENT_USER_ID = String.format(PRECONDITION_MSG_TEMPLATE,
             "currentUserId");
+    private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
     public static final String PRECONDITION_MSG_MANNSCHAFT_ID = String.format(PRECONDITION_MSG_TEMPLATE,
             "mannschaftId");
     public static final String PRECONDITION_MSG_BEGEGNUNG = String.format(PRECONDITION_MSG_TEMPLATE, "begegnung");
     public static final String PRECONDITION_MSG_SCHEIBENNUMMER = String.format(PRECONDITION_MSG_TEMPLATE,
             "scheibennummer");
-
     private static final String PRECONDITION_MSG_WT0_VERANSTALTUNG = "Veranstaltungs-ID must not be Null or negative";
     private static final String PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT = "The number of assigned Mannschaften to the Veranstaltung must be exactly 8";
     private static final String PRECONDITION_MSG_WT0_MANNSCHAFT = "The Mannschaft-ID must not be null or negative";
-
 
     /**
      * (Kay Scheerer) this method would make the preconditions way easier to check before each SQL
      */
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Passe: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
-
     private final MatchDAO matchDAO;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfDAO wettkampfDAO;
-
+    private final SetzlisteDAO setzlisteDAO;
+    private final int[][] SETZLISTE_STRUCTURE = {
+            {5, 4, 2, 7, 1, 8, 3, 6},
+            {3, 5, 8, 4, 7, 1, 6, 2},
+            {4, 7, 1, 6, 2, 5, 8, 3},
+            {8, 2, 7, 3, 6, 4, 1, 5},
+            {7, 6, 5, 8, 3, 2, 4, 1},
+            {1, 3, 4, 2, 8, 6, 5, 7},
+            {2, 1, 6, 5, 4, 3, 7, 8}};
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
 
     /**
      * Constructor
@@ -67,13 +80,15 @@ public class MatchComponentImpl implements MatchComponent {
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
                               final VereinComponent vereinComponent,
-                              final WettkampfDAO wettkampfDAO
+                              final WettkampfDAO wettkampfDAO,
+                              final SetzlisteDAO setzlisteDAO
                               ) {
 
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfDAO = wettkampfDAO;
+        this.setzlisteDAO = setzlisteDAO;
     }
 
 
@@ -284,4 +299,40 @@ public class MatchComponentImpl implements MatchComponent {
         return mannschaftName;
     }
 
+    private long getTeamIDByTablePos(int tablepos, List<SetzlisteBE> setzlisteBEList) {
+        for (SetzlisteBE setzlisteBE : setzlisteBEList) {
+            if (setzlisteBE.getLigatabelleTabellenplatz() == tablepos) {
+                return setzlisteBE.getMannschaftid();
+            }
+        }
+        return -1;
+    }
+
+    // generate matches by button on click "generiere Matches"
+    public List<MatchDO> generateMatches(long wettkampfid) {
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+        List<MatchDO> matchDOList = this.findByWettkampfId(wettkampfid);
+        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
+        if (!setzlisteBEList.isEmpty()){
+            if (matchDOList.isEmpty()){
+                //itarate thorugh matches
+                for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++){
+                    //iterate through target boards
+                    for (int j = 0; j < SETZLISTE_STRUCTURE[i].length; j++) {
+                        long begegnung = Math.round((float) (j + 1) / 2);
+                        long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
+                        MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
+                        matchDOList.add(this.create(newMatchDO, (long) 0));
+                    }
+                }
+            }
+            else{
+                LOGGER.debug("Matches existieren bereits");
+            }
+        }
+        else{
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
+        return matchDOList;
+    }
 }
