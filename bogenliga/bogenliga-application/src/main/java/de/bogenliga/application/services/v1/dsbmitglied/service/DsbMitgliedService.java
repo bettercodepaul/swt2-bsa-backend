@@ -201,8 +201,9 @@ public class DsbMitgliedService implements ServiceFacade {
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
         checkPreconditions(dsbMitgliedDTO);
 
-        LOG.debug("Receive 'create' request with mitgliedsnummer '{}'", dsbMitgliedDTO.getMitgliedsnummer());
-
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("Receive 'create' request with mitgliedsnummer '{}'", dsbMitgliedDTO.getMitgliedsnummer().replaceAll("[\n\r\t]", "_"));
+        }
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
         final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
