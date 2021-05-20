@@ -100,6 +100,14 @@ public class UserService implements ServiceFacade {
         this.veranstaltungComponent = veranstaltungComponent;
     }
 
+    /**
+     * Login...
+     *
+     * @param </UserCredentialsDTO> User zum Anmelden
+     *
+     * @return ResponseEntity mit der Rückmeldung nzur Anmeldung
+     */
+
 
     @PostMapping(
             value = "/signin",
@@ -116,7 +124,6 @@ public class UserService implements ServiceFacade {
                     credentials.getUsername(),
                     credentials.getPassword());
             authenticationToken.setDetails(credentials.getCode());
-                    //credentials.getCode());
             final Authentication authentication = webSecurityConfiguration.authenticationManagerBean()
                     .authenticate(authenticationToken);
 
@@ -138,8 +145,8 @@ public class UserService implements ServiceFacade {
                             temp.add(veranstaltungDO.getVeranstaltungID().intValue());
                         }
                         userSignInDTO.setVeranstaltungenIds(temp);
-                        ArrayList<Integer> wetkampftemp = new ArrayList<Integer>();
-                        userSignInDTO.setWettkampfIds(wetkampftemp);
+                        ArrayList<Integer> wettkampftemp = new ArrayList<Integer>();
+                        userSignInDTO.setWettkampfIds(wettkampftemp);
                     } catch (Exception ignore) {
                        LOG.warn("Failed to define additional user information", ignore);
                     }
@@ -230,9 +237,7 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNullOrEmpty(uptCredentials.getPassword(), "Password must not be null or empty");
         Preconditions.checkNotNullOrEmpty(uptCredentials.getNewPassword(), "New password must not be null or empty");
 
-        ErrorDTO errorDetails = null;
-
-        //update password is limited to own password,
+         //update password is limited to own password,
         // therefore we get the current user id based on system utils
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
@@ -246,8 +251,7 @@ public class UserService implements ServiceFacade {
                 uptCredentials.getNewPassword(), userId);
 
         //prepare return DTO
-        final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
-        return userUpdatedDTO;
+         return UserDTOMapper.toUserDTO.apply(userUpdatedDO);
     }
 
     /**
@@ -324,8 +328,6 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(updatedUserRoles, "UserRole-Definition must not be null");
         Preconditions.checkNotNull(updatedUserRoles.get(0).getId(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(updatedUserRoles.get(0).getRoleId(), PRECONDITION_MSG_ROLE_ID);
-
-        ErrorDTO errorDetails = null;
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
@@ -439,11 +441,6 @@ public class UserService implements ServiceFacade {
         // Check if password is valid by running it against the regular expression for the password
         Preconditions.checkArgument(userCredentialsDTO.getPassword().matches(PW_VALIDATION_REGEX), PRECONDITION_MSG_USER_PW);
 
-        LOG.debug("Receive 'create' request with username '{}', password '{}', using2FA {}",
-                userCredentialsDTO.getUsername(),
-                userCredentialsDTO.getPassword(),
-                userCredentialsDTO.getDsb_mitglied_id(),
-                userCredentialsDTO.isUsing2FA());
 
         userCredentialsDTO.getCode();
 
@@ -455,7 +452,7 @@ public class UserService implements ServiceFacade {
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(),
                 userCredentialsDTO.getPassword(), userCredentialsDTO.getDsb_mitglied_id(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
-        final UserRoleDO userRoleCreatedDO = userRoleComponent.create(userCreatedDO.getId(), userId);
+        userRoleComponent.create(userCreatedDO.getId(), userId);
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
 
