@@ -259,7 +259,7 @@ public class WettkampfService implements ServiceFacade {
      * @param id Id of a contest
      * @return List of Miglied id's allowed to participate
      */
-    @GetMapping("allowedContestants/{id}")
+    @GetMapping(value = "{id}/allowedContestants", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = UserPermission.CAN_READ_DEFAULT)
     public List<Long> getAllowedMitgliedForWettkampf(@PathVariable long id){
         return wettkampfComponent.getAllowedMitglieder(id);
