@@ -221,6 +221,37 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     }
 
 
+    /**
+     * returns the last Veranstaltung by using the current Veranstaltung ID
+     * @param veranstaltungId ID of the current veranstaltung to query the last Veranstaltung.
+     *
+     * @return last Veranstaltung based on current one
+     */
+    @Override
+    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId){
+        Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+
+        VeranstaltungDO currentVeranstaltung = this.findById(veranstaltungId);
+        Long targetSportjahr = currentVeranstaltung.getVeranstaltungSportJahr();
+        Long targetLiga = currentVeranstaltung.getVeranstaltungLigaID();
+        Long targetWettkampf = currentVeranstaltung.getVeranstaltungWettkampftypID();
+
+        List<VeranstaltungDO> targetVeranstaltungen = this.findBySportjahr(targetSportjahr - 1);
+        VeranstaltungDO lastVeranstaltung = new VeranstaltungDO();
+        for(VeranstaltungDO t : targetVeranstaltungen){
+            if(t.getVeranstaltungLigaID().equals(targetLiga)){
+                if(t.getVeranstaltungWettkampftypID().equals(targetWettkampf)){
+                    lastVeranstaltung = t;
+                }
+            }
+        }
+        if(lastVeranstaltung.getVeranstaltungID().equals(null)){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No last Veranstaltung found for ID '%s'", veranstaltungId));
+        }
+        return lastVeranstaltung;
+    }
+
     private void checkVeranstaltungDO(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(veranstaltungDO, PRECONDITION_MSG_VERANSTALTUNG);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_DSBMITGLIED);
@@ -279,5 +310,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO);
     }
+
+
 }
 

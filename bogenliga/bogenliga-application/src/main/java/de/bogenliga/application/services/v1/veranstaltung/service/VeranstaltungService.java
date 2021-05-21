@@ -213,6 +213,21 @@ public class VeranstaltungService implements ServiceFacade {
         return VeranstaltungDTOMapper.toDTO.apply(updatedVeranstaltungDO);
     }
 
+    /**
+     * I return the last veranstaltung Entry of the database with a current veranstaltung id
+     *
+     * @return list of {@link VeranstaltungDTO} as JSON
+     */
+    @GetMapping(value = "findLastVeranstaltungBy/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public VeranstaltungDTO findLastVeranstaltungById(@PathVariable ("id") final long id){
+        Preconditions.checkArgument(id >= 0 , "ID must not be negative");
+
+        LOG.debug("Receive 'findLastVeranstaltungById' with requested ID '{}'", id);
+
+        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findLastVeranstaltungById(id);
+        return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
+    }
 
     /**
      * I delete an existing Veranstaltung entry from the DB.
