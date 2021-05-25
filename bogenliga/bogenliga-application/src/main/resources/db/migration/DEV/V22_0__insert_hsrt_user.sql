@@ -2,7 +2,8 @@ INSERT INTO benutzer(
 benutzer_id,
 benutzer_email,
 benutzer_salt,
-benutzer_password
+benutzer_password,
+benutzer_dsb_mitglied_id
 )
 VALUES
 -- password = mki4HSRT
