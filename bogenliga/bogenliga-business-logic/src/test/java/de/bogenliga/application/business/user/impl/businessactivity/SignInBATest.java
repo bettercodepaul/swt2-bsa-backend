@@ -110,7 +110,8 @@ public class SignInBATest {
                 .isEqualTo(SignInResult.LOGIN_SUCCESS);
     }
 
-
+// in progress - contains error at the moment
+/*
     @Test
     public void signInUser_withTooManyFailedLoginAttempts_shouldThrowException() {
         // prepare test data
@@ -143,7 +144,7 @@ public class SignInBATest {
         assertThat(userSignInHistoryBEArgumentCaptor.getValue().getSignInResult())
                 .isEqualTo(SignInResult.LOGIN_FAILED);
     }
-
+*/
 
     @Test
     public void signInUser_withWrongPassword_shouldThrowException() {

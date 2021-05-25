@@ -786,11 +786,8 @@ public class DsbMannschaftComponentImplTest {
         final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
         lastMannschaftList.add(mannschaft1);
 
-        final  List<DsbMannschaftBE> currentMannschaftList = new ArrayList<>();
-
         // configure mocks
         when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
-        when(dsbMannschaftDAO.findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID)).thenReturn(currentMannschaftList);
         when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(null);
 
         //call test method
@@ -805,8 +802,6 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
-        verify(dsbMannschaftDAO).findAllByVeranstaltungsId(CURRENT_VERANSTALTUNG_ID);
-        //verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(vereinDAO).findById(anyLong());
     }
