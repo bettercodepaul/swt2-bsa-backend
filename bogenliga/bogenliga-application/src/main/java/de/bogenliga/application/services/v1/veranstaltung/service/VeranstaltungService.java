@@ -214,7 +214,7 @@ public class VeranstaltungService implements ServiceFacade {
     @GetMapping(value = "findLastVeranstaltungBy/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public VeranstaltungDTO findLastVeranstaltungById(@PathVariable ("id") final long id){
-        Preconditions.checkArgument(id >= 0 , "ID must not be negative");
+        Preconditions.checkArgument(id >= 0 , "Veranstaltung ID must not be negative");
 
         LOG.debug("Receive 'findLastVeranstaltungById' with requested ID '{}'", id);
 

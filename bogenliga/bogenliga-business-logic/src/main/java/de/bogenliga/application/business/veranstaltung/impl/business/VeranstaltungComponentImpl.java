@@ -239,13 +239,11 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         List<VeranstaltungDO> targetVeranstaltungen = this.findBySportjahr(targetSportjahr - 1);
         VeranstaltungDO lastVeranstaltung = new VeranstaltungDO();
         for(VeranstaltungDO t : targetVeranstaltungen){
-            if(t.getVeranstaltungLigaID().equals(targetLiga)){
-                if(t.getVeranstaltungWettkampftypID().equals(targetWettkampf)){
-                    lastVeranstaltung = t;
-                }
+            if(t.getVeranstaltungLigaID().equals(targetLiga) && t.getVeranstaltungWettkampftypID().equals(targetWettkampf)){
+                lastVeranstaltung = t;
             }
         }
-        if(lastVeranstaltung.getVeranstaltungID().equals(null)){
+        if(lastVeranstaltung.getVeranstaltungID() == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No last Veranstaltung found for ID '%s'", veranstaltungId));
         }
