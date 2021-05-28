@@ -16,7 +16,8 @@ values
 (15, null, "Bezirksliga B Oberschwaben", 14, 1, null, 0, null, null, 0),
 (16, null, "Württembergliga Compound", 1, 1, null, 0, null, null, 0),
 (17, null, "Landesliga A Compound", 16, 1, null, 0, null, null, 0),
-(18, null, "Landesliga B Compound", 17, 1, null, 0, null, null, 0);
+(18, null, "Landesliga B Compound", 17, 1, null, 0, null, null, 0),
+(19, null, "Württembergliga Compound Finale", 1, 1, null, 0, null, null, 0);
 
 
 
