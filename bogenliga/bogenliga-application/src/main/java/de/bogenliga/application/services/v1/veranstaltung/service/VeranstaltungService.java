@@ -35,7 +35,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @CrossOrigin
 @RequestMapping("v1/veranstaltung")
 public class VeranstaltungService implements ServiceFacade {
-    private static final Logger LOG = LoggerFactory.getLogger(VeranstaltungService.class);
 
     private final VeranstaltungComponent veranstaltungComponent;
 
@@ -70,7 +69,6 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAll(){
 
-        LOG.debug("Received 'findAll' request for Veranstaltung");
 
         return veranstaltungComponent.findAll().stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -86,7 +84,6 @@ public class VeranstaltungService implements ServiceFacade {
     public VeranstaltungDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
-        LOG.debug("Receive 'findById' with requested ID '{}'", id);
 
         final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(id);
         return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
@@ -103,7 +100,6 @@ public class VeranstaltungService implements ServiceFacade {
     public List<VeranstaltungDTO> findByLigaId(@PathVariable ("ligaID") final long ligaID){
         Preconditions.checkArgument(ligaID >= 0 , "ID must not be negative");
 
-        LOG.debug("Receive 'findByLigaID' with requested ID '{}'", ligaID);
         final List<VeranstaltungDO> veranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
 
         return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
@@ -118,7 +114,6 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<SportjahrDTO> findAllSportjahrDestinct(){
 
-        LOG.debug("Received 'findBySportyear' request for Sportjahre in Veranstaltung  ");
         List<SportjahrDO> returnList= veranstaltungComponent.findAllSportjahreDestinct();
 
         return returnList.stream().map(SportjahrDTOMapper.toDTO).collect(Collectors.toList());
@@ -134,7 +129,6 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahr(@PathVariable ("sportjahr") final long sportjahr){
 
-        LOG.debug("Received 'findBySportyear' request for Veranstaltung in {}", sportjahr);
 
         return veranstaltungComponent.findBySportjahr(sportjahr).stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -153,7 +147,6 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahrDestinct(@PathVariable ("sportjahr") final long sportjahr){
 
-        LOG.debug("Received 'findBySportjahrDestinct' request for Veranstaltung in {}", sportjahr);
         List <VeranstaltungDO> returnList = veranstaltungComponent.findBySportjahrDestinct(sportjahr);
 
         return returnList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
@@ -237,7 +230,6 @@ public class VeranstaltungService implements ServiceFacade {
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'delete' request with id '{}'", id);
 
         final VeranstaltungDO veranstaltungDO = new VeranstaltungDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
