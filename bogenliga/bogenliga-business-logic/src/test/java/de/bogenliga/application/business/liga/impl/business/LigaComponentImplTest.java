@@ -58,6 +58,8 @@ public class LigaComponentImplTest {
     @Mock
     private UserComponentImpl userComponentImpl;
 
+
+
     @InjectMocks
     private LigaComponentImpl underTest;
 
@@ -145,7 +147,6 @@ public class LigaComponentImplTest {
         verify(userComponentImpl).findById(expectedLigaBE.getLigaVerantwortlichId());
     }
 
-    /*  TODO: @Max fix this shit
         @Test
         public void findAll_whenAttributesAreNull() {
             // prepare test data
@@ -159,7 +160,6 @@ public class LigaComponentImplTest {
             // configure mocks
             when(ligaDao.findAll()).thenReturn(expectedBEList);
 
-
             // call test method
             final List<LigaDO> actual = underTest.findAll();
 
@@ -169,11 +169,9 @@ public class LigaComponentImplTest {
                     .isNotEmpty()
                     .hasSize(1);
 
-            assertThat(actual).isNotNull();
-
             assertThat(actual.get(0).getId()).isEqualTo(expectedLigaBE.getLigaId());
             assertThat(actual.get(0).getName()).isEqualTo(expectedLigaBE.getLigaName());
-            assertThat(actual.get(0).getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
+            assertThat(actual.get(0).getRegionId()).isEqualTo(0L);
             assertThat(actual.get(0).getRegionName()).isEqualTo(null);
             assertThat(actual.get(0).getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaUebergeordnetId());
             assertThat(actual.get(0).getLigaUebergeordnetName()).isEqualTo(null);
@@ -184,7 +182,6 @@ public class LigaComponentImplTest {
             verify(ligaDao).findAll();
         }
 
-    */
     @Test
     public void findById__whenEverythingIsSet() {
         // prepare test data
@@ -230,7 +227,7 @@ public class LigaComponentImplTest {
         verify(ligaDao).findById(anyLong());
     }
 
-/* @Max fix it
+/* TODO: @Max fix it */
     @Test
     public void findById_whenAttributesAreNull() {
         // prepare test data
@@ -254,7 +251,7 @@ public class LigaComponentImplTest {
 
         assertThat(actual.getId()).isEqualTo(expectedLigaBE.getLigaId());
         assertThat(actual.getName()).isEqualTo(expectedLigaBE.getLigaName());
-        assertThat(actual.getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
+        assertThat(actual.getRegionId()).isEqualTo(0L);
         assertThat(actual.getRegionName()).isEqualTo(null);
         assertThat(actual.getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaUebergeordnetId());
         assertThat(actual.getLigaUebergeordnetName()).isEqualTo(null);
@@ -264,7 +261,6 @@ public class LigaComponentImplTest {
         // verify invocation
         verify(ligaDao).findById(LIGAID);
     }
-*/
 
     @Test
     public void create__whenEverythingIsSet() {
