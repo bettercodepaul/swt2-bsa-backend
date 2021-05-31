@@ -10,10 +10,8 @@ import de.bogenliga.application.business.liga.impl.entity.LigaBE;
 import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
-import de.bogenliga.application.business.regionen.impl.business.RegionenComponentImpl;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.user.impl.business.UserComponentImpl;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -140,7 +138,6 @@ public class LigaComponentImpl implements LigaComponent {
         if(ligaBE.getLigaVerantwortlichId() != null) {
             tempUserDO = userComp.findById(ligaBE.getLigaVerantwortlichId());
         }
-
 
         return LigaMapper.toLigaDO(ligaBE, tempLigaBE, tempRegionenDO, tempUserDO);
 
