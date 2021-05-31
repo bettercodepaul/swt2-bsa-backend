@@ -39,7 +39,9 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -454,6 +456,8 @@ public class WettkampfComponentImplTest {
     @Test
     public void testEinzelstatistik() throws IOException
     {
+        assertThatThrownBy(() -> underTest.getGesamtstatistikPDFasByteArray(-1,0,2034)).isInstanceOf(BusinessException.class);
+
         prepareMocksForPDFTest();
 
         for(int i = 0; i < 2; i++) {
@@ -473,8 +477,10 @@ public class WettkampfComponentImplTest {
     @Test
     public void testGesamtstatistik() throws IOException
     {
+        assertThatThrownBy(() -> underTest.getGesamtstatistikPDFasByteArray(-1,0,2034)).isInstanceOf(BusinessException.class);
+
         prepareMocksForPDFTest();
-        
+
         //Run the Test 2 times
         for(int i = 0; i < 2; i++) {
             byte[] pdf = underTest.getGesamtstatistikPDFasByteArray(wettkampf_Veranstaltung_Id, mannschaft_id, 2034);
@@ -487,6 +493,9 @@ public class WettkampfComponentImplTest {
 
             prepare2ndMocksForPDFTest();
         }
+
+        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(new ArrayList());
+        assertThatThrownBy(() -> underTest.getGesamtstatistikPDFasByteArray(wettkampf_Veranstaltung_Id, mannschaft_id, 2034)).isInstanceOf(BusinessException.class);
     }
 
     private void prepareMocksForPDFTest()
