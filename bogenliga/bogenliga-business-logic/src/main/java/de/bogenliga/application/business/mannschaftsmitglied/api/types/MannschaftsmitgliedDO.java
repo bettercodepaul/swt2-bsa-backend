@@ -26,15 +26,15 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor with optional parameters
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
-     * @param dsbMitgliedEingesetzt
-     * @param createdAtUtc
-     * @param createdByUserId
-     * @param lastModifiedAtUtc
-     * @param lastModifiedByUserId
-     * @param version
-     * @param rueckennummer
+     * @param mannschaftId id der Mannschaft
+     * @param dsbMitgliedId id des DSB Mitglieds
+     * @param dsbMitgliedEingesetzt hat er geschossen
+     * @param createdAtUtc created Time
+     * @param createdByUserId create user
+     * @param lastModifiedAtUtc modified time
+     * @param lastModifiedByUserId modified user
+     * @param version version
+     * @param rueckennummer nummer des Schützen in der Mannschaft
      */
 
     public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId,
@@ -62,11 +62,11 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor with mandatory parameters
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
-     * @param createdAtUtc
-     * @param createdByUserId
-     * @param version
+     * @param mannschaftId manschafts ID
+     * @param dsbMitgliedId dsb mitlgieds ID
+     * @param createdAtUtc create time
+     * @param createdByUserId create user
+     * @param version version des Datensatzes
      */
 
 
@@ -85,9 +85,9 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor without technical parameters
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
-     * @param dsbMitgliedEingesetzt
+     * @param mannschaftId Manschafts ID
+     * @param dsbMitgliedId DSB MitgliedsID
+     * @param dsbMitgliedEingesetzt hat er geschossen
      */
 
     public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId,
@@ -107,8 +107,8 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor with id for deleting existing entries
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
+     * @param mannschaftId mannschafts ID
+     * @param dsbMitgliedId dsb mitglieds ID
      */
     public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId) {
         this.mannschaftId = mannschaftId;
@@ -164,7 +164,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     }
 
 
-    public void setDsbMitgliedNachname() {
+    public void setDsbMitgliedNachname(String dsbMitgliedNachname) {
         this.dsbMitgliedNachname = dsbMitgliedNachname;
     }
 
