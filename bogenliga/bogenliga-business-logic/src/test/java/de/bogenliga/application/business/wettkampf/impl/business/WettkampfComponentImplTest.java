@@ -456,26 +456,37 @@ public class WettkampfComponentImplTest {
     {
         prepareMocksForPDFTest();
 
-        byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2033);
+        for(int i = 0; i < 2; i++) {
+            byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id, mannschaft_id, 2033);
 
-        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
+            Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
-        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
-        PdfReader reader = new PdfReader(serializedPDF);
-        PdfDocument deserialized = new PdfDocument(reader);
+            ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+            PdfReader reader = new PdfReader(serializedPDF);
+            PdfDocument deserialized = new PdfDocument(reader);
+
+            prepare2ndMocksForPDFTest();
+        }
+
+
     }
     @Test
     public void testGesamtstatistik() throws IOException
     {
         prepareMocksForPDFTest();
+        
+        //Run the Test 2 times
+        for(int i = 0; i < 2; i++) {
+            byte[] pdf = underTest.getGesamtstatistikPDFasByteArray(wettkampf_Veranstaltung_Id, mannschaft_id, 2034);
 
-        byte[] pdf = underTest.getGesamtstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2034);
+            Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
-        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
+            ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+            PdfReader reader = new PdfReader(serializedPDF);
+            PdfDocument deserialized = new PdfDocument(reader);
 
-        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
-        PdfReader reader = new PdfReader(serializedPDF);
-        PdfDocument deserialized = new PdfDocument(reader);
+            prepare2ndMocksForPDFTest();
+        }
     }
 
     private void prepareMocksForPDFTest()
@@ -492,6 +503,10 @@ public class WettkampfComponentImplTest {
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(passen);
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
+    }
+    private void prepare2ndMocksForPDFTest()
+    {
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(new ArrayList());
     }
 
     @Test
