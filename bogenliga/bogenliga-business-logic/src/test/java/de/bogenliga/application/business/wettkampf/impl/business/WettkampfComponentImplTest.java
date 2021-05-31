@@ -452,7 +452,33 @@ public class WettkampfComponentImplTest {
     }
 
     @Test
-    public void testGenerateDoc() throws IOException
+    public void testEinzelstatistik() throws IOException
+    {
+        prepareMocksForPDFTest();
+
+        byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2033);
+
+        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
+
+        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+        PdfReader reader = new PdfReader(serializedPDF);
+        PdfDocument deserialized = new PdfDocument(reader);
+    }
+    @Test
+    public void testGesamtstatistik() throws IOException
+    {
+        prepareMocksForPDFTest();
+
+        byte[] pdf = underTest.getGesamtstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2034);
+
+        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
+
+        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+        PdfReader reader = new PdfReader(serializedPDF);
+        PdfDocument deserialized = new PdfDocument(reader);
+    }
+
+    private void prepareMocksForPDFTest()
     {
         MannschaftsmitgliedExtendedBE exampleMitglied = getMannschaftsmitgliedExtendedBE();
         List<PasseDO> passen = getPassenDO();
@@ -466,14 +492,6 @@ public class WettkampfComponentImplTest {
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(passen);
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
-
-        byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2033);
-
-        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
-
-        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
-        PdfReader reader = new PdfReader(serializedPDF);
-        PdfDocument deserialized = new PdfDocument(reader);
     }
 
     @Test
