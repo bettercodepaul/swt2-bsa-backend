@@ -71,17 +71,20 @@ WHERE veranstaltung_id = 21;
 UPDATE veranstaltung
 SET veranstaltung_liga_id = 3,
     veranstaltung_wettkampftyp_id = 0,
-    veranstaltung_sportjahr = 2016
+    veranstaltung_sportjahr = 2016,
+    veranstaltung_meldedeadline = '2015-10-31'
 WHERE veranstaltung_id = 22;
 
 -- Landesliga B Compound
 UPDATE veranstaltung
 SET veranstaltung_liga_id = 4,
     veranstaltung_wettkampftyp_id = 0,
-    veranstaltung_sportjahr = 2016
+    veranstaltung_sportjahr = 2016,
+    veranstaltung_meldedeadline = '2015-10-31'
 WHERE veranstaltung_id = 23;
 
 -- SWT2_Veranstaltung
 UPDATE veranstaltung
-SET veranstaltung_sportjahr = 2021
+SET veranstaltung_sportjahr = 2021,
+    veranstaltung_meldedeadline = '2020-10-31'
 WHERE veranstaltung_id = 1001;
