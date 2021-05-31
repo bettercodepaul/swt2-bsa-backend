@@ -501,7 +501,6 @@ public class WettkampfComponentImplTest {
     private void prepareMocksForPDFTest()
     {
         MannschaftsmitgliedExtendedBE exampleMitglied = getMannschaftsmitgliedExtendedBE();
-        List<PasseDO> passen = getPassenDO();
 
         List<WettkampfBE> wettkaempfe = new ArrayList<WettkampfBE>();
         wettkaempfe.add(getWettkampfBE());
@@ -510,7 +509,7 @@ public class WettkampfComponentImplTest {
         when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
         when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(Arrays.asList(exampleMitglied));
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
-        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(passen);
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(getPassenDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
     }
     private void prepare2ndMocksForPDFTest()
