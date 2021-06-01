@@ -163,7 +163,7 @@ public class WettkampfComponentImplTest {
     public static MannschaftsmitgliedExtendedBE getMannschaftsmitgliedExtendedBE()
     {
         MannschaftsmitgliedExtendedBE newMittglied = new MannschaftsmitgliedExtendedBE();
-        newMittglied.setId(0l);
+        newMittglied.setId(1l);
         newMittglied.setDsbMitgliedVorname("Sascha");
         newMittglied.setDsbMitgliedNachname("DeTiris");
 
@@ -458,6 +458,7 @@ public class WettkampfComponentImplTest {
         List<PasseDO> passen = getPassenDO();
 
         List<WettkampfBE> wettkaempfe = new ArrayList<WettkampfBE>();
+        wettkaempfe.add(getWettkampfBE());
         wettkaempfe.add(getWettkampfBE());
 
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(wettkaempfe);
