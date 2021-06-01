@@ -49,8 +49,8 @@ public class VeranstaltungService implements ServiceFacade {
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
-    private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
-    
+    private static final Logger LOG = LoggerFactory.getLogger(VeranstaltungService.class);
+
     /**
      * Constructor with dependency injection
      *
