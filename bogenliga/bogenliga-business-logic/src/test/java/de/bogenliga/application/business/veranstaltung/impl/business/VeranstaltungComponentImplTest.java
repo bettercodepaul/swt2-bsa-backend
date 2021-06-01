@@ -2,8 +2,10 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.sql.Date;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.naming.NoPermissionException;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
@@ -13,6 +15,9 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.assertj.core.api.ThrowableTypeAssert;
+import org.assertj.core.util.CheckReturnValue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +29,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -35,9 +41,11 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long VERANSTALTUNG_ID = 0L;
+    private static final Long LAST_VERANSTALTUNG_ID = 1L;
     private static final Long VERANSTALTUNG_WETTKAMPFTYP_ID = 1L;
     private static final String VERANSTALTUNG_NAME = "";
     private static final Long VERANSTALTUNG_SPORTJAHR = 2018L;
+    private static final Long LAST_VERANSTALTUNG_SPORTJAHR = 2017L;
     private static final Date VERANSTALTUNG_DSB_IDENTIFIER = new Date(1L);
     private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
     private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
@@ -81,6 +89,10 @@ public class VeranstaltungComponentImplTest {
     private VeranstaltungComponentImpl underTest;
     @Captor
     private ArgumentCaptor<VeranstaltungBE> veranstaltungBEArgumentCaptor;
+    @CheckReturnValue
+    public static <T extends Throwable> ThrowableTypeAssert<T> assertThatExceptionOfType(Class<? extends T> exceptionType) {
+        return AssertionsForClassTypes.assertThatExceptionOfType(exceptionType);
+    }
 
     private static VeranstaltungBE getVeranstaltungBE() {
         VeranstaltungBE expectedBE = new VeranstaltungBE();
@@ -578,5 +590,63 @@ public class VeranstaltungComponentImplTest {
         verify(veranstaltungDAO).findBySportjahrDestinct(VERANSTALTUNG_SPORTJAHR);
     }
 
+    @Test
+    public void testFindLastVeranstaltungById() {
+        // prepare test data
+        VeranstaltungBE currentVeranstaltungBE = getVeranstaltungBE();
+
+        List<VeranstaltungBE> veranstaltungBEList = new LinkedList<>();
+        VeranstaltungBE lastVeranstaltungBE = getVeranstaltungBE();
+        lastVeranstaltungBE.setVeranstaltung_sportjahr(LAST_VERANSTALTUNG_SPORTJAHR);
+        lastVeranstaltungBE.setVeranstaltung_id(LAST_VERANSTALTUNG_ID);
+        veranstaltungBEList.add(lastVeranstaltungBE);
+
+        //UserDO user = getUserDO();
+
+        // configure mocks
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(currentVeranstaltungBE);
+        when(veranstaltungDAO.findBySportjahr(anyLong())).thenReturn(veranstaltungBEList);
+        when(userComponent.findById(anyLong())).thenReturn(getUserDO());
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(getWettkampfTypDO());
+        when(ligaComponent.findById(anyLong())).thenReturn(getLigaDO());
+
+        // call test method
+        final VeranstaltungDO actual = underTest.findLastVeranstaltungById(VERANSTALTUNG_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getVeranstaltungID()).isEqualTo(LAST_VERANSTALTUNG_ID);
+        assertThat(actual.getVeranstaltungSportJahr()).isEqualTo(LAST_VERANSTALTUNG_SPORTJAHR);
+        assertThat(actual.getVeranstaltungLigaID()).isEqualTo(VERANSTALTUNG_LIGA_ID);
+        assertThat(actual.getVeranstaltungWettkampftypID()).isEqualTo(VERANSTALTUNG_WETTKAMPFTYP_ID);
+
+        // verify invocations
+        verify(veranstaltungDAO).findById(anyLong());
+        verify(veranstaltungDAO).findBySportjahr(anyLong());
+    }
+
+
+    @Test
+    public void testFindLastVeranstaltungById_NoLastVeranstaltung() {
+        // prepare test data
+        VeranstaltungBE currentVeranstaltungBE = getVeranstaltungBE();
+
+        List<VeranstaltungBE> veranstaltungBEList = new LinkedList<>();
+
+        // configure mocks
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(currentVeranstaltungBE);
+        when(veranstaltungDAO.findBySportjahr(anyLong())).thenReturn(veranstaltungBEList);
+        when(userComponent.findById(anyLong())).thenReturn(getUserDO());
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(getWettkampfTypDO());
+        when(ligaComponent.findById(anyLong())).thenReturn(getLigaDO());
+
+        // assert exception
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findLastVeranstaltungById(VERANSTALTUNG_ID));
+
+        // verify invocations
+        verify(veranstaltungDAO).findById(anyLong());
+        verify(veranstaltungDAO).findBySportjahr(anyLong());
+    }
 
 }
