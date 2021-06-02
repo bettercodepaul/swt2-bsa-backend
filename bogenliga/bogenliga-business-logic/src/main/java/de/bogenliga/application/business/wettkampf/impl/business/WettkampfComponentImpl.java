@@ -245,7 +245,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Mannschaft").setBold()));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Durchschnittlicher Pfeilwert pro Match").setBold()));
 
             for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
             {
