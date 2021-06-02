@@ -287,6 +287,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
             final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
             DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, currentVeranstaltungId);
             // Copy Mannschaftsmitglieder for every Mannschaft
+            // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
             MannschaftsmitgliedDO addedMitglied;
             List<MannschaftsmitgliedDO> mitglieder = mannschaftsmitgliedComponent.findByTeamId(mannschaftToCheck.getId());
             for(MannschaftsmitgliedDO mitglied : mitglieder){
@@ -295,7 +296,6 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
                 mannschaftsmitgliedComponent.create(addedMitglied, userId);
             }
         }
-
         return addedMannschaftenList;
     }
 }
