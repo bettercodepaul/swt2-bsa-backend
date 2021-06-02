@@ -153,6 +153,20 @@ public class WettkampfComponentImplTest {
         return passen;
     }
 
+    public static List<PasseDO> getEmptyPassenDO()
+    {
+        PasseDO passe1 = new PasseDO(null,null, null, 2l, null, null,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null);
+        PasseDO passe2 = new PasseDO(null,null, null, 1l, null, null,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null);
+        List<PasseDO> passen = new LinkedList<>();
+        passen.add(passe1);
+        passen.add(passe2);
+        return passen;
+    }
+
     public static VeranstaltungBE getVeranstaltungBE()
     {
         VeranstaltungBE veranstaltung = new VeranstaltungBE();
@@ -445,12 +459,22 @@ public class WettkampfComponentImplTest {
     @Test
     public void testCalcAverage()
     {
-    //daten vorbereiten
-    List<PasseDO> passen = getPassenDO();
-    //Methode aufrufen
-    float actual = underTest.calcAverage(passen,1l);
-    //haben wir das erwartete ergebnis erhalten
-    Assertions.assertThat(actual).isEqualTo(8.5f);
+        //daten vorbereiten
+        List<PasseDO> passen = getPassenDO();
+        //Methode aufrufen
+        float actual = underTest.calcAverage(passen,1l);
+        //haben wir das erwartete ergebnis erhalten
+        Assertions.assertThat(actual).isEqualTo(8.5f);
+
+        //Testabdeckung: im Falle dass der Pfeil == null
+        passen = getEmptyPassenDO();
+        for(PasseDO passe : passen)
+        {
+            //erwartetes Ergebnis definieren
+            Assertions.assertThat(passe.getPfeil1()).isNull();
+        }
+
+
     }
 
     @Test
