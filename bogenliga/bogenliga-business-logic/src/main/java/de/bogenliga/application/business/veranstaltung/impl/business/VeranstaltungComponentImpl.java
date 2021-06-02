@@ -236,6 +236,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         Long targetLiga = currentVeranstaltung.getVeranstaltungLigaID();
         Long targetWettkampf = currentVeranstaltung.getVeranstaltungWettkampftypID();
 
+        // targeting last year's Veranstaltung with last sportjahr, liga id and wettkampftyp id
         List<VeranstaltungDO> targetVeranstaltungen = this.findBySportjahr(targetSportjahr - 1);
         VeranstaltungDO lastVeranstaltung = new VeranstaltungDO();
         for(VeranstaltungDO t : targetVeranstaltungen){
