@@ -191,7 +191,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
 
 
     @DeleteMapping(value = "{mannschaftsId}/{mitgliedId}")
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
     public void deleteByTeamIdAndMemberId(@PathVariable("mannschaftsId") final long mannschaftsId,
                                           @PathVariable("mitgliedId") final long mitgliedId,
                                           final Principal principal) throws NoPermissionException {
