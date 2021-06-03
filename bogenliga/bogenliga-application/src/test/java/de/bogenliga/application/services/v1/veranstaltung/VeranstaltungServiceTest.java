@@ -366,4 +366,26 @@ public class VeranstaltungServiceTest {
         verify(VeranstaltungComponent).findBySportjahrDestinct(anyLong());
 
     }
+
+    @Test
+    public void findLastVeranstaltungById(){
+        // prepare test data
+        VeranstaltungDO expectedVeranstaltung = getVeranstaltungDO();
+
+        // configure mocks
+        when(VeranstaltungComponent.findLastVeranstaltungById(anyLong())).thenReturn(expectedVeranstaltung);
+
+        // call test method
+        final VeranstaltungDTO actual = underTest.findLastVeranstaltungById(VERANSTALTUNG_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(expectedVeranstaltung.getVeranstaltungID());
+        assertThat(actual.getLigaId()).isEqualTo(expectedVeranstaltung.getVeranstaltungLigaID());
+        assertThat(actual.getSportjahr()).isEqualTo(expectedVeranstaltung.getVeranstaltungSportJahr());
+
+        // verify invocations
+        verify(VeranstaltungComponent).findLastVeranstaltungById(anyLong());
+
+    }
 }

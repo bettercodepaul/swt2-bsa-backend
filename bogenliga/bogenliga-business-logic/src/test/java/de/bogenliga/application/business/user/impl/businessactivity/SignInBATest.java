@@ -116,7 +116,7 @@ public class SignInBATest {
         // prepare test data
         final UserBE userBE = createUserBE();
         final UserFailedSignInAttemptsBE userFailedSignInAttemptsBE = createUserFailedSignInAttemptsBE(
-                userBE.getUserId(), 10);
+                userBE.getUserId(), 16);
         final List<UserPermissionBE> userPermissionBEList = Collections.singletonList(
                 createUserPermissionBE(userBE.getUserId(), PERMISSION_1));
 
