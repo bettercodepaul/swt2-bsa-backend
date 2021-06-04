@@ -20,7 +20,7 @@ public class LigaMapper implements ValueObjectMapper {
      * Converts a {@link LigaBE} to a {@link LigaDO}
      *
      */
-    public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenDO regionenBE, UserDO userBE){
+    public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenDO regionenDO, UserDO userDO){
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
@@ -28,12 +28,12 @@ public class LigaMapper implements ValueObjectMapper {
         LigaDO ligaDO = new LigaDO(
                 ligaBE.getLigaId(),
                 ligaBE.getLigaName(),
-                regionenBE.getId(),
-                regionenBE.getRegionName(),
+                regionenDO.getId(),
+                regionenDO.getRegionName(),
                 ligaBE.getLigaUebergeordnetId(),
                 uebergeordnetLiga.getLigaName(),
-                userBE.getId(),
-                userBE.getEmail()
+                userDO.getId(),
+                userDO.getEmail()
 
         );
         ligaDO.setCreatedAtUtc(createdAtUtc);
