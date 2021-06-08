@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.user.impl.mapper;
 
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
-import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
@@ -10,8 +8,6 @@ import de.bogenliga.application.common.time.DateProvider;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @see <a href="http://www.vogella.com/tutorials/Mockito/article.html">Using Mockito with JUnit 4</a>
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
-public class DsbMitgliedBETest {
+public class MitgliedBETest {
 
     private static final long USER = 0;
 
@@ -32,7 +32,7 @@ public class DsbMitgliedBETest {
 
     @Test
     public void assertToString() {
-        final DsbMitgliedBE underTest = getDsbMitgliedBE();
+        final MitgliedBE underTest = getDsbMitgliedBE();
         underTest.setDsbMitgliedId(ID);
         underTest.setDsbMitgliedVorname(VORNAME);
 
@@ -47,7 +47,7 @@ public class DsbMitgliedBETest {
 
     @Test
     public void assertToString_withoutVorname() {
-        final DsbMitgliedBE underTest = new DsbMitgliedBE();
+        final MitgliedBE underTest = new MitgliedBE();
         underTest.setDsbMitgliedId(ID);
         underTest.setDsbMitgliedVorname(null);
 
