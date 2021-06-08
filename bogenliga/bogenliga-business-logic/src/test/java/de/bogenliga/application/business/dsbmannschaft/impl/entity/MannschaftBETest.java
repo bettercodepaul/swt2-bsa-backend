@@ -2,7 +2,7 @@ package de.bogenliga.application.business.dsbmannschaft.impl.entity;
 
 import org.junit.Test;
 
-import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftBE;
+import static de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest.getDsbMannschaftBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MannschaftBETest {

@@ -3,11 +3,10 @@ package de.bogenliga.application.business.match.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class MatchComponentImpl implements MatchComponent {
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
     private final MatchDAO matchDAO;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfDAO wettkampfDAO;
 
@@ -65,13 +64,13 @@ public class MatchComponentImpl implements MatchComponent {
      */
     @Autowired
     public MatchComponentImpl(final MatchDAO matchDAO,
-                              final DsbMannschaftComponent dsbMannschaftComponent,
+                              final MannschaftComponent mannschaftComponent,
                               final VereinComponent vereinComponent,
                               final WettkampfDAO wettkampfDAO
                               ) {
 
         this.matchDAO = matchDAO;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.mannschaftComponent = mannschaftComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfDAO = wettkampfDAO;
     }
@@ -198,7 +197,7 @@ public class MatchComponentImpl implements MatchComponent {
         Preconditions.checkNotNull(veranstaltungsId, PRECONDITION_MSG_WT0_VERANSTALTUNG);
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_WT0_VERANSTALTUNG);
 
-        List<DsbMannschaftDO> mannschaften = this.dsbMannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
+        List<DsbMannschaftDO> mannschaften = this.mannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
 
         WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
 
@@ -273,7 +272,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     public String getMannschaftsNameByID(long mannschaftID){
         String mannschaftName;
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftID);
+        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(mannschaftID);
         VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
 
         if (dsbMannschaftDO.getNummer() > 1) {

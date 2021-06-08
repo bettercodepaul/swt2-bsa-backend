@@ -13,19 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
-import de.bogenliga.application.services.v1.match.model.MatchDTO;
-import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 /**
@@ -50,7 +45,7 @@ public class DsbMannschaftServiceTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private DsbMannschaftComponent dsbMannschaftComponent;
+    private MannschaftComponent mannschaftComponent;
 
     @Mock
     private RequiresOnePermissionAspect requiresOnePermissionAspect;
@@ -99,7 +94,7 @@ public class DsbMannschaftServiceTest {
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
-        when(dsbMannschaftComponent.findAll()).thenReturn(dsbMannschaftDOList);
+        when(mannschaftComponent.findAll()).thenReturn(dsbMannschaftDOList);
 
         // call test method
         final List<DsbMannschaftDTO> actual = underTest.findAll();
@@ -115,7 +110,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
 
         // verify invocations
-        verify(dsbMannschaftComponent).findAll();
+        verify(mannschaftComponent).findAll();
     }
 
 
@@ -126,7 +121,7 @@ public class DsbMannschaftServiceTest {
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
-        when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
+        when(mannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
 
         //call test method
         final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID);
@@ -142,7 +137,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
 
         //verify invocations
-        verify(dsbMannschaftComponent).findAllByVereinsId(VEREIN_ID);
+        verify(mannschaftComponent).findAllByVereinsId(VEREIN_ID);
     }
 
 
@@ -153,7 +148,7 @@ public class DsbMannschaftServiceTest {
         final List<DsbMannschaftDO> dsbMannschaftDOList = Collections.singletonList(dsbMannschaftDO);
 
         // configure mocks
-        when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(dsbMannschaftDOList);
+        when(mannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(dsbMannschaftDOList);
 
         //call test method
         final List<DsbMannschaftDTO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
@@ -169,7 +164,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actualDTO.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
 
         //verify invocations
-        verify(dsbMannschaftComponent).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+        verify(mannschaftComponent).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
     }
 
 
@@ -179,7 +174,7 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
 
         // call test method
         final DsbMannschaftDTO actual = underTest.findById(ID);
@@ -191,7 +186,7 @@ public class DsbMannschaftServiceTest {
         assertThat(actual.getSortierung()).isEqualTo(dsbMannschaftDO.getSortierung());
 
         // verify invocations
-        verify(dsbMannschaftComponent).findById(ID);
+        verify(mannschaftComponent).findById(ID);
     }
 
 
@@ -202,7 +197,7 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
+        when(mannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
 
         // call test method
@@ -216,7 +211,7 @@ public class DsbMannschaftServiceTest {
             assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
 
             // verify invocations
-            verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+            verify(mannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
 
             final DsbMannschaftDO createdDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
 
@@ -236,7 +231,7 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
+        when(mannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
@@ -252,7 +247,7 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.update(any(), anyLong())).thenReturn(expected);
+        when(mannschaftComponent.update(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
 
         // call test method
@@ -266,7 +261,7 @@ public class DsbMannschaftServiceTest {
             assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
 
             // verify invocations
-            verify(dsbMannschaftComponent).update(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+            verify(mannschaftComponent).update(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
 
             final DsbMannschaftDO updatedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
 
@@ -286,7 +281,7 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
+        when(mannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
@@ -308,7 +303,7 @@ public class DsbMannschaftServiceTest {
         underTest.copyMannschaftFromVeranstaltung(VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, principal);
 
         // verify invocations
-        verify(dsbMannschaftComponent).copyMannschaftFromVeranstaltung(anyLong(), anyLong(), anyLong());
+        verify(mannschaftComponent).copyMannschaftFromVeranstaltung(anyLong(), anyLong(), anyLong());
 
         //assertThat(deletedDsbMannschaft).isNotNull();
     }
@@ -323,7 +318,7 @@ public class DsbMannschaftServiceTest {
         underTest.delete(ID, principal);
 
         // verify invocations
-        verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+        verify(mannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
 
         final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
 

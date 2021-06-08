@@ -3,8 +3,8 @@ package de.bogenliga.application.business.dsbmannschaft.impl.mapper;
 import org.junit.Test;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
-import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftBE;
-import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftDO;
+import static de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest.getDsbMannschaftBE;
+import static de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest.getDsbMannschaftDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MannschaftMapperTest {

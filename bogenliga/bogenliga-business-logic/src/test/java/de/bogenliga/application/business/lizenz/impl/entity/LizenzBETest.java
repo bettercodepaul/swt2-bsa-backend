@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.lizenz.impl.entity;
 
 import org.junit.Test;
-import de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest;
+import de.bogenliga.application.business.dsbmitglied.impl.business.DsbDsbMitgliedComponentImplTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -23,7 +23,7 @@ public class LizenzBETest {
     private long LIZENZDSBMITGLIEDID = 71;
     private String LIZENZTYP = "Liga";
     private long LIZENZDISZIPLINID = 0;
-    private MitgliedComponentImplTest dsbMitgliedComponentImplTest = new MitgliedComponentImplTest();
+    private DsbDsbMitgliedComponentImplTest dsbMitgliedComponentImplTest = new DsbDsbMitgliedComponentImplTest();
 
     @Test
     public void assertToLong() {

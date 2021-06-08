@@ -8,7 +8,7 @@ import java.util.List;
  * Responsible for the dsbMannschaft database requests.
  */
 
-public interface DsbMannschaftComponent extends ComponentFacade {
+public interface MannschaftComponent extends ComponentFacade {
 
 
     /**

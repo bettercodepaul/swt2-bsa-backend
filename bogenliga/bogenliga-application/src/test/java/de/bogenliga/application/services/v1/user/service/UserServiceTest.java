@@ -1,6 +1,6 @@
 package de.bogenliga.application.services.v1.user.service;
 
-import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
@@ -93,7 +93,7 @@ public class UserServiceTest {
     @Mock
     private UserRoleComponent userRoleComponent;
     @Mock
-    private MitgliedComponent mitgliedComponent;
+    private DsbMitgliedComponent dsbMitgliedComponent;
     @Mock
     private VeranstaltungComponent veranstaltungComponent;
 
@@ -141,7 +141,7 @@ public class UserServiceTest {
         when(jwtTokenProvider.createToken(any(Authentication.class))).thenReturn(JWT);
 
         when(userComponent.findById(anyLong())).thenReturn(userDO);
-        when(mitgliedComponent.findById(userDO.getDsb_mitglied_id())).thenReturn(dsbMitgliedDO);
+        when(dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id())).thenReturn(dsbMitgliedDO);
 
         // call test method
         final ResponseEntity<UserSignInDTO> actual = underTest.login(userCredentials);

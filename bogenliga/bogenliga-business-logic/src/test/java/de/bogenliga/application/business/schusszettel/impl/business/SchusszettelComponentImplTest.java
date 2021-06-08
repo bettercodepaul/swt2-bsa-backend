@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -12,13 +10,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
+import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
@@ -57,7 +54,7 @@ public class SchusszettelComponentImplTest {
     @Mock
     private WettkampfComponent wettkampfComponent;
     @Mock
-    private DsbMannschaftComponent dsbMannschaftComponent;
+    private MannschaftComponent mannschaftComponent;
     @Mock
     private MannschaftsmitgliedComponent MannschaftsmitgliedComponent;
     @Mock
@@ -72,13 +69,13 @@ public class SchusszettelComponentImplTest {
         final List<MatchDO> matchDOList = getMatchesForWettkampf();
 
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        DsbMannschaftDO dsbMannschaftDO = MannschaftComponentImplTest.getDsbMannschaftDO();
         VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
 
         //configure Mocks
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
 
 
@@ -99,11 +96,11 @@ public class SchusszettelComponentImplTest {
         final List<MatchDO> matchDOList = getMatchesForWettkampf();
 
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        DsbMannschaftDO dsbMannschaftDO = MannschaftComponentImplTest.getDsbMannschaftDO();
         VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
 
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
 
         thrown.expect(BusinessException.class);
@@ -214,7 +211,7 @@ public class SchusszettelComponentImplTest {
         final MannschaftsmitgliedDO inputMsMDo = new MannschaftsmitgliedDO(
             1L, 1L, 1L, 1, "Max", "Mustermann", 42L);
 
-        final DsbMannschaftDO inputDsbDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        final DsbMannschaftDO inputDsbDO = MannschaftComponentImplTest.getDsbMannschaftDO();
         final VereinDO inputVereinDO = VereinComponentImplTest.getVereinDO();
         final List<MatchDO> matchDOList = getMatchesForSchusszettel();
         final List<PasseDO> passeDOList1 = getPasseForSchusszettel();
@@ -224,7 +221,7 @@ public class SchusszettelComponentImplTest {
         // configure mocks
         when(matchComponent.findById(anyLong())).thenReturn(element1);
         when(passeComponent.findByMatchId(anyLong())).thenReturn(passeDOList1);
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(inputDsbDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(inputDsbDO);
         when(vereinComponent.findById(anyLong())).thenReturn(inputVereinDO);
         when(MannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(inputMsMDo);
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);

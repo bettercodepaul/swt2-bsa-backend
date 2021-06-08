@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.business;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.MannschaftDAO;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
-public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMannschaftSortierungComponent {
+public class MannschaftComponentImpl implements MannschaftComponent, DsbMannschaftSortierungComponent {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT= "DsbMannschaftDO must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be negative";
@@ -52,9 +52,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      */
 
     @Autowired
-    public DsbMannschaftComponentImpl(final MannschaftDAO mannschaftDAO,
-                                      final VereinDAO vereinDAO,
-                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
+    public MannschaftComponentImpl(final MannschaftDAO mannschaftDAO,
+                                   final VereinDAO vereinDAO,
+                                   final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
 
         this.mannschaftDAO = mannschaftDAO;
         this.vereinDAO = vereinDAO;

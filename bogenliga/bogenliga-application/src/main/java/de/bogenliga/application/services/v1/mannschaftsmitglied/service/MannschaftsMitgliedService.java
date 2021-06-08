@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -44,17 +44,17 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final MannschaftsmitgliedComponent mannschaftsMitgliedComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftComponent mannschaftComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
     @Autowired
     public MannschaftsMitgliedService(MannschaftsmitgliedComponent mannschaftsMitgliedComponent,
-                                      DsbMannschaftComponent dsbMannschaftComponent,
+                                      MannschaftComponent mannschaftComponent,
                                       final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.mannschaftsMitgliedComponent = mannschaftsMitgliedComponent;
 
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.mannschaftComponent = mannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
@@ -126,7 +126,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
 
-        long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
+        long tempId = mannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
 
         if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
                 && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
@@ -154,7 +154,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
                 mannschaftsMitgliedDTO.getDsbMitgliedId(),
                 mannschaftsMitgliedDTO.getDsbMitgliedEingesetzt());
 
-        long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
+        long tempId = mannschaftComponent.findById(mannschaftsMitgliedDTO.getMannschaftsId()).getVereinId();
 
         if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
                 && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
@@ -203,7 +203,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         // allow value == null, the value will be ignored
         final MannschaftsmitgliedDO mannschaftsMitgliedDO = new MannschaftsmitgliedDO(mannschaftsId, mitgliedId);
         final long currentUserId = UserProvider.getCurrentUserId(principal);
-        long tempId = dsbMannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
+        long tempId = mannschaftComponent.findById(mannschaftsMitgliedDO.getMannschaftId()).getVereinId();
         if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
                 && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
                 UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {

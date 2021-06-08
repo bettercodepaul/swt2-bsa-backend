@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,7 +46,7 @@ public class MannschaftsmitgliedServiceTest {
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     @Mock
-    private DsbMannschaftComponent dsbMannschaftComponent;
+    private MannschaftComponent mannschaftComponent;
 
     @Mock
     private RequiresOnePermissionAspect requiresOnePermissionAspect;
@@ -205,7 +205,7 @@ public class MannschaftsmitgliedServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
@@ -237,7 +237,7 @@ public class MannschaftsmitgliedServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
@@ -270,7 +270,7 @@ public class MannschaftsmitgliedServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
@@ -288,7 +288,7 @@ public class MannschaftsmitgliedServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
@@ -323,7 +323,7 @@ public class MannschaftsmitgliedServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
@@ -358,7 +358,7 @@ public class MannschaftsmitgliedServiceTest {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);

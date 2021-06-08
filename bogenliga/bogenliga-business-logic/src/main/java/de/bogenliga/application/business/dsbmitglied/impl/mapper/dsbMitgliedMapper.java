@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -18,10 +18,10 @@ import de.bogenliga.application.common.time.DateProvider;
 public class dsbMitgliedMapper implements ValueObjectMapper {
 
     /**
-     * Converts a {@link MitgliedBE} to a {@link DsbMitgliedDO}
+     * Converts a {@link DsbMitgliedBE} to a {@link DsbMitgliedDO}
      *
      */
-    public static final Function<MitgliedBE, DsbMitgliedDO> toDsbMitgliedDO = be -> {
+    public static final Function<DsbMitgliedBE, DsbMitgliedDO> toDsbMitgliedDO = be -> {
 
         final Long id = be.getDsbMitgliedId();
         final String vorname = be.getDsbMitgliedVorname();
@@ -47,30 +47,30 @@ public class dsbMitgliedMapper implements ValueObjectMapper {
     };
 
     /**
-     * Converts a {@link DsbMitgliedDO} to a {@link MitgliedBE}
+     * Converts a {@link DsbMitgliedDO} to a {@link DsbMitgliedBE}
      */
-    public static final Function<DsbMitgliedDO, MitgliedBE> toDsbMitgliedBE = dsbMitgliedDO -> {
+    public static final Function<DsbMitgliedDO, DsbMitgliedBE> toDsbMitgliedBE = dsbMitgliedDO -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMitgliedDO.getLastModifiedAtUtc());
 
-        MitgliedBE mitgliedBE = new MitgliedBE();
-        mitgliedBE.setDsbMitgliedId(dsbMitgliedDO.getId());
-        mitgliedBE.setDsbMitgliedVorname(dsbMitgliedDO.getVorname());
-        mitgliedBE.setDsbMitgliedNachname(dsbMitgliedDO.getNachname());
-        mitgliedBE.setDsbMitgliedGeburtsdatum(dsbMitgliedDO.getGeburtsdatum());
-        mitgliedBE.setDsbMitgliedNationalitaet(dsbMitgliedDO.getNationalitaet());
-        mitgliedBE.setDsbMitgliedMitgliedsnummer(dsbMitgliedDO.getMitgliedsnummer());
-        mitgliedBE.setDsbMitgliedVereinsId(dsbMitgliedDO.getVereinsId());
-        mitgliedBE.setDsbMitgliedUserId(dsbMitgliedDO.getUserId());
+        DsbMitgliedBE dsbMitgliedBE = new DsbMitgliedBE();
+        dsbMitgliedBE.setDsbMitgliedId(dsbMitgliedDO.getId());
+        dsbMitgliedBE.setDsbMitgliedVorname(dsbMitgliedDO.getVorname());
+        dsbMitgliedBE.setDsbMitgliedNachname(dsbMitgliedDO.getNachname());
+        dsbMitgliedBE.setDsbMitgliedGeburtsdatum(dsbMitgliedDO.getGeburtsdatum());
+        dsbMitgliedBE.setDsbMitgliedNationalitaet(dsbMitgliedDO.getNationalitaet());
+        dsbMitgliedBE.setDsbMitgliedMitgliedsnummer(dsbMitgliedDO.getMitgliedsnummer());
+        dsbMitgliedBE.setDsbMitgliedVereinsId(dsbMitgliedDO.getVereinsId());
+        dsbMitgliedBE.setDsbMitgliedUserId(dsbMitgliedDO.getUserId());
 
-        mitgliedBE.setCreatedAtUtc(createdAtUtcTimestamp);
-        mitgliedBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());
-        mitgliedBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
-        mitgliedBE.setLastModifiedByUserId(dsbMitgliedDO.getLastModifiedByUserId());
-        mitgliedBE.setVersion(dsbMitgliedDO.getVersion());
+        dsbMitgliedBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        dsbMitgliedBE.setCreatedByUserId(dsbMitgliedDO.getCreatedByUserId());
+        dsbMitgliedBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+        dsbMitgliedBE.setLastModifiedByUserId(dsbMitgliedDO.getLastModifiedByUserId());
+        dsbMitgliedBE.setVersion(dsbMitgliedDO.getVersion());
 
-        return mitgliedBE;
+        return dsbMitgliedBE;
     };
 
 

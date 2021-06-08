@@ -14,10 +14,10 @@ import org.mockito.stubbing.Answer;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
 import de.bogenliga.application.business.disziplin.impl.business.DisziplinComponentImplTest;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImpl;
-import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
-import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest;
+import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImpl;
+import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.impl.business.DsbDsbMitgliedComponentImplTest;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest;
@@ -53,11 +53,11 @@ public class MeldezettelComponentImplTest {
     @Mock
     private VereinComponent vereinComponent;
     @Mock
-    private DsbMannschaftComponentImpl dsbMannschaftComponent;
+    private MannschaftComponentImpl dsbMannschaftComponent;
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
-    private MitgliedComponent mitgliedComponent;
+    private DsbMitgliedComponent dsbMitgliedComponent;
 
     @InjectMocks
     private MeldezettelComponentImpl underTest;
@@ -82,12 +82,12 @@ public class MeldezettelComponentImplTest {
         when(veranstaltungComponent.findById(anyLong())).thenReturn(VeranstaltungComponentImplTest.getVeranstaltungDO());
         when(disziplinComponent.findById(any())).thenReturn(DisziplinComponentImplTest.getDisziplinDO());
         when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
-            DsbMannschaftDO ret = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+            DsbMannschaftDO ret = MannschaftComponentImplTest.getDsbMannschaftDO();
             ret.setNummer((long)(Math.random() * 2 + 1));
             return ret;
         });
 
-        when(mitgliedComponent.findById(anyLong())).thenReturn(MitgliedComponentImplTest.getDsbMitgliedDO());
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbDsbMitgliedComponentImplTest.getDsbMitgliedDO());
 
 
         //call test method

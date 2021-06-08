@@ -20,9 +20,9 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -47,22 +47,22 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final VereinComponent vereinComponent;
-    private final MitgliedComponent mitgliedComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final MannschaftComponent mannschaftComponent;
     private final VeranstaltungComponent veranstaltungComponent;
 
 
     @Autowired
     public RueckennummernComponentImpl(MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                        VereinComponent vereinComponent,
-                                       MitgliedComponent mitgliedComponent,
-                                       DsbMannschaftComponent dsbMannschaftComponent,
+                                       DsbMitgliedComponent dsbMitgliedComponent,
+                                       MannschaftComponent mannschaftComponent,
                                        VeranstaltungComponent veranstaltungComponent) {
 
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.vereinComponent = vereinComponent;
-        this.mitgliedComponent = mitgliedComponent;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.mannschaftComponent = mannschaftComponent;
         this.veranstaltungComponent = veranstaltungComponent;
     }
 
@@ -74,10 +74,10 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         //Collect information
         MannschaftsmitgliedDO mannschaftsmitgliedDO = this.mannschaftsmitgliedComponent.findByMemberAndTeamId(dsbMannschaftsId, dsbMitgliedId);
 
-        DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftsId);
+        DsbMannschaftDO dsbMannschaftDO = this.mannschaftComponent.findById(dsbMannschaftsId);
         VeranstaltungDO veranstaltungDO = this.veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
 
-        DsbMitgliedDO dsbMitgliedDO = this.mitgliedComponent.findById(dsbMitgliedId);
+        DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(dsbMitgliedId);
         VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
         HashMap<String, List<String>> RueckennummerMapping = new HashMap<>();
@@ -112,7 +112,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
     public byte[] getMannschaftsRueckennummernPDFasByteArray(long dsbMannschaftsId) {
 
         //Collect information
-        DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftsId);
+        DsbMannschaftDO dsbMannschaftDO = this.mannschaftComponent.findById(dsbMannschaftsId);
         VeranstaltungDO veranstaltungDO = this.veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
 
 
@@ -123,7 +123,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         String Liganame = veranstaltungDO.getVeranstaltungName();
 
         for(MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
-            DsbMitgliedDO dsbMitgliedDO = this.mitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
+            DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
             VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
             String Verein = vereinDO.getName();

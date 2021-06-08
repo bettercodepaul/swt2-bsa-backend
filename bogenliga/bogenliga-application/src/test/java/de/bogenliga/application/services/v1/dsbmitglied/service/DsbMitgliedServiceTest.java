@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +53,7 @@ public class DsbMitgliedServiceTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private MitgliedComponent mitgliedComponent;
+    private DsbMitgliedComponent dsbMitgliedComponent;
 
     @Mock
     private Principal principal;
@@ -111,7 +111,7 @@ public class DsbMitgliedServiceTest {
         final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
 
         // configure mocks
-        when(mitgliedComponent.findAll()).thenReturn(dsbMitgliedDOList);
+        when(dsbMitgliedComponent.findAll()).thenReturn(dsbMitgliedDOList);
 
         // call test method
         final List<DsbMitgliedDTO> actual = underTest.findAll();
@@ -126,7 +126,7 @@ public class DsbMitgliedServiceTest {
         assertThat(actualDTO.getVorname()).isEqualTo(dsbMitgliedDO.getVorname());
 
         // verify invocations
-        verify(mitgliedComponent).findAll();
+        verify(dsbMitgliedComponent).findAll();
     }
 
 
@@ -137,7 +137,7 @@ public class DsbMitgliedServiceTest {
         final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
 
         // configure mocks
-        when(mitgliedComponent.findAllByTeamId(anyLong())).thenReturn(dsbMitgliedDOList);
+        when(dsbMitgliedComponent.findAllByTeamId(anyLong())).thenReturn(dsbMitgliedDOList);
 
         // call test method
         final List<DsbMitgliedDTO> actual = underTest.findAllByTeamId(ID);
@@ -152,7 +152,7 @@ public class DsbMitgliedServiceTest {
         assertThat(actualDTO.getVorname()).isEqualTo(dsbMitgliedDO.getVorname());
 
         // verify invocations
-        verify(mitgliedComponent).findAllByTeamId(ID);
+        verify(dsbMitgliedComponent).findAllByTeamId(ID);
     }
 
 
@@ -162,7 +162,7 @@ public class DsbMitgliedServiceTest {
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
         // configure mocks
-        when(mitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO);
 
         // call test method
         final DsbMitgliedDTO actual = underTest.findById(ID);
@@ -173,7 +173,7 @@ public class DsbMitgliedServiceTest {
         assertThat(actual.getVorname()).isEqualTo(dsbMitgliedDO.getVorname());
 
         // verify invocations
-        verify(mitgliedComponent).findById(ID);
+        verify(dsbMitgliedComponent).findById(ID);
     }
 
 
@@ -186,8 +186,8 @@ public class DsbMitgliedServiceTest {
         expectedupdate.setUserId(USERIDUPDATE);
 
         // configure mocks
-        when(mitgliedComponent.findById(anyLong())).thenReturn(expected);
-        when(mitgliedComponent.update(any(), anyLong())).thenReturn(expected);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expected);
+        when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
         final DsbMitgliedDTO actual = underTest.insertUserId(ID, USERIDUPDATE, principal);
@@ -197,8 +197,8 @@ public class DsbMitgliedServiceTest {
         assertThat(actual.getUserId()).isEqualTo(USERIDUPDATE);
 
         // verify invocations
-        verify(mitgliedComponent).findById(anyLong());
-        verify(mitgliedComponent).update(any(), anyLong());
+        verify(dsbMitgliedComponent).findById(anyLong());
+        verify(dsbMitgliedComponent).update(any(), anyLong());
     }
     
 
@@ -209,7 +209,7 @@ public class DsbMitgliedServiceTest {
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
         // configure mocks
-        when(mitgliedComponent.create(any(), anyLong())).thenReturn(expected);
+        when(dsbMitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
         // call test method
         final DsbMitgliedDTO actual = underTest.create(input, principal);
@@ -220,7 +220,7 @@ public class DsbMitgliedServiceTest {
         assertThat(actual.getVorname()).isEqualTo(input.getVorname());
 
         // verify invocations
-        verify(mitgliedComponent).create(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
+        verify(dsbMitgliedComponent).create(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
 
         final DsbMitgliedDO createdDsbMitglied = dsbMitgliedVOArgumentCaptor.getValue();
 
@@ -238,7 +238,7 @@ public class DsbMitgliedServiceTest {
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
-        when(mitgliedComponent.update(any(), anyLong())).thenReturn(expected);
+        when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
 
         // call test method
         try {
@@ -250,7 +250,7 @@ public class DsbMitgliedServiceTest {
             assertThat(actual.getVorname()).isEqualTo(input.getVorname());
 
             // verify invocations
-            verify(mitgliedComponent).update(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
+            verify(dsbMitgliedComponent).update(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
 
             final DsbMitgliedDO updatedDsbMitglied = dsbMitgliedVOArgumentCaptor.getValue();
 
@@ -269,7 +269,7 @@ public class DsbMitgliedServiceTest {
         final DsbMitgliedDO expected = getDsbMitgliedDO();
 
         // configure mocks
-        when(mitgliedComponent.update(any(), anyLong())).thenReturn(expected);
+        when(dsbMitgliedComponent.update(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
@@ -287,7 +287,7 @@ public class DsbMitgliedServiceTest {
         underTest.delete(ID, principal);
 
         // verify invocations
-        verify(mitgliedComponent).delete(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
+        verify(dsbMitgliedComponent).delete(dsbMitgliedVOArgumentCaptor.capture(), anyLong());
 
         final DsbMitgliedDO deletedDsbMitglied = dsbMitgliedVOArgumentCaptor.getValue();
 

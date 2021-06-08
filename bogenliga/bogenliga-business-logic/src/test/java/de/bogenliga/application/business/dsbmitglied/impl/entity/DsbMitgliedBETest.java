@@ -2,7 +2,7 @@ package de.bogenliga.application.business.dsbmitglied.impl.entity;
 
 import org.junit.Test;
 
-import static de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest.getDsbMitgliedBE;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbDsbMitgliedComponentImplTest.getDsbMitgliedBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @see <a href="http://www.vogella.com/tutorials/Mockito/article.html">Using Mockito with JUnit 4</a>
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
-public class MitgliedBETest {
+public class DsbMitgliedBETest {
 
     private static final long USER = 0;
 
@@ -32,7 +32,7 @@ public class MitgliedBETest {
 
     @Test
     public void assertToString() {
-        final MitgliedBE underTest = getDsbMitgliedBE();
+        final DsbMitgliedBE underTest = getDsbMitgliedBE();
         underTest.setDsbMitgliedId(ID);
         underTest.setDsbMitgliedVorname(VORNAME);
 
@@ -47,7 +47,7 @@ public class MitgliedBETest {
 
     @Test
     public void assertToString_withoutVorname() {
-        final MitgliedBE underTest = new MitgliedBE();
+        final DsbMitgliedBE underTest = new DsbMitgliedBE();
         underTest.setDsbMitgliedId(ID);
         underTest.setDsbMitgliedVorname(null);
 

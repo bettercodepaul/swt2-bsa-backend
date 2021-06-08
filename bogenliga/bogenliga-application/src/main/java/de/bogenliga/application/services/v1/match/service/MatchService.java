@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -105,7 +105,7 @@ public class MatchService implements ServiceFacade {
     private final WettkampfComponent wettkampfComponent;
     private final WettkampfTypComponent wettkampfTypComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final DsbMannschaftComponent mannschaftComponent;
+    private final MannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
@@ -119,7 +119,7 @@ public class MatchService implements ServiceFacade {
                         final PasseComponent passeComponent,
                         final VereinComponent vereinComponent,
                         final WettkampfComponent wettkampfComponent,
-                        final DsbMannschaftComponent mannschaftComponent,
+                        final MannschaftComponent mannschaftComponent,
                         final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                         final WettkampfTypComponent wettkampftypComponent,
                         RequiresOnePermissionAspect requiresOnePermissionAspect) {

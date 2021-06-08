@@ -3,7 +3,7 @@ package de.bogenliga.application.business.match.impl.business;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     @Mock
     private BasicDAO basicDAO;
     @Mock
-    private DsbMannschaftComponent dsbMannschaftComponent;
+    private MannschaftComponent mannschaftComponent;
     @Mock
     private VereinComponent vereinComponent;
     @Mock
@@ -55,7 +55,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        underTest = new MatchComponentImpl(matchDAO,dsbMannschaftComponent, vereinComponent,wettkampfDAO );
+        underTest = new MatchComponentImpl(matchDAO, mannschaftComponent, vereinComponent,wettkampfDAO );
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
     }

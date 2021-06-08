@@ -22,10 +22,10 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
-import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
@@ -62,31 +62,31 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private static final String MELDEZETTEL_UNTERSCHRIFT ="Unterschrift des Mannschaftsführers";
 
     private final MatchComponent matchComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final DisziplinComponent disziplinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final MitgliedComponent mitgliedComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
 
     @Autowired
     public MeldezettelComponentImpl(final MatchComponent matchComponent,
-                                    final DsbMannschaftComponent dsbMannschaftComponent,
+                                    final MannschaftComponent mannschaftComponent,
                                     final VereinComponent vereinComponent,
                                     final WettkampfComponent wettkampfComponent,
                                     final VeranstaltungComponent veranstaltungComponent,
                                     final DisziplinComponent disziplinComponent,
                                     final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                    final MitgliedComponent mitgliedComponent) {
+                                    final DsbMitgliedComponent dsbMitgliedComponent) {
         this.matchComponent = matchComponent;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.mannschaftComponent = mannschaftComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.disziplinComponent = disziplinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.mitgliedComponent = mitgliedComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
     @Override
     public byte[] getMeldezettelPDFasByteArray(long wettkampfid) {
@@ -110,7 +110,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
 
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
-                dsbMitgliedDOList.add(mitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
+                dsbMitgliedDOList.add(dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
             }
 
             teamMemberMapping.put(teamName, dsbMitgliedDOList);
@@ -781,7 +781,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
      */
     private String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
+        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(teamID);
         VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
         if (dsbMannschaftDO.getNummer() > 1) {
             return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();

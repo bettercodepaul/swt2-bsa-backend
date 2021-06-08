@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import de.bogenliga.application.business.dsbmitglied.impl.dao.MitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
@@ -22,7 +22,7 @@ public class UserProfileComponentImpl implements UserProfileComponent {
 
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private final UserDAO userDAO;
-    private final MitgliedDAO mitgliedDAO;
+    private final DsbMitgliedDAO dsbMitgliedDAO;
 
 
     /**
@@ -31,13 +31,13 @@ public class UserProfileComponentImpl implements UserProfileComponent {
      * dependency injection with {@link Autowired}
      *
      * @param userDAO         to access the database and return user representations
-     * @param mitgliedDAO  to access the database and return DSB Mitglied representations
+     * @param dsbMitgliedDAO  to access the database and return DSB Mitglied representations
      */
     @Autowired
     public UserProfileComponentImpl(final UserDAO userDAO,
-                                    final MitgliedDAO mitgliedDAO) {
+                                    final DsbMitgliedDAO dsbMitgliedDAO) {
         this.userDAO = userDAO;
-        this.mitgliedDAO = mitgliedDAO;
+        this.dsbMitgliedDAO = dsbMitgliedDAO;
     }
 
 
@@ -52,11 +52,11 @@ public class UserProfileComponentImpl implements UserProfileComponent {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
-        final MitgliedBE mitgliedBE = mitgliedDAO.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
-        if (mitgliedBE == null) {
+        final DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
+        if (dsbMitgliedBE == null) {
             userProfileDO.setEmail(userBE.getUserEmail());
         } else {
-            userProfileDO = UserMapper.toUserProfileDO.apply(userBE, mitgliedBE);
+            userProfileDO = UserMapper.toUserProfileDO.apply(userBE, dsbMitgliedBE);
         }
 
 

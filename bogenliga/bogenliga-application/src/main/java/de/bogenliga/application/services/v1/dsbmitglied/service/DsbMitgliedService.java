@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
@@ -59,19 +59,19 @@ public class DsbMitgliedService implements ServiceFacade {
      *
      * dependency injection with {@link Autowired}
      */
-    private final MitgliedComponent mitgliedComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
     /**
      * Constructor with dependency injection
      *
-     * @param mitgliedComponent to handle the database CRUD requests
+     * @param dsbMitgliedComponent to handle the database CRUD requests
      */
     @Autowired
-    public DsbMitgliedService(final MitgliedComponent mitgliedComponent,
+    public DsbMitgliedService(final DsbMitgliedComponent dsbMitgliedComponent,
                               final RequiresOnePermissionAspect requiresOnePermissionAspect) {
-        this.mitgliedComponent = mitgliedComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
@@ -100,7 +100,7 @@ public class DsbMitgliedService implements ServiceFacade {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
     public List<DsbMitgliedDTO> findAll() {
-        final List<DsbMitgliedDO> dsbMitgliedDOList = mitgliedComponent.findAll();
+        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAll();
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -110,7 +110,7 @@ public class DsbMitgliedService implements ServiceFacade {
     public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
         LOG.debug("Receive 'findAllByTeamid' request with ID '{}'", id );
-        final List<DsbMitgliedDO> dsbMitgliedDOList = mitgliedComponent.findAllByTeamId(id);
+        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAllByTeamId(id);
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -137,7 +137,7 @@ public class DsbMitgliedService implements ServiceFacade {
 
         LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 
-        final DsbMitgliedDO dsbMitgliedDO = mitgliedComponent.findById(id);
+        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         return DsbMitgliedDTOMapper.toDTO.apply(dsbMitgliedDO);
     }
 
@@ -165,9 +165,9 @@ public class DsbMitgliedService implements ServiceFacade {
 
         LOG.debug("Receive 'findByDsbMitgliedId' request with ID '{}'", id);
 
-        final DsbMitgliedDO dsbMitgliedDO = mitgliedComponent.findById(id);
+        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(id);
         dsbMitgliedDO.setUserId(dsbuserid);
-        final DsbMitgliedDO updatedDsbMitgliedDO = mitgliedComponent.update(dsbMitgliedDO, userId);
+        final DsbMitgliedDO updatedDsbMitgliedDO = dsbMitgliedComponent.update(dsbMitgliedDO, userId);
         return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
     }
 
@@ -206,7 +206,7 @@ public class DsbMitgliedService implements ServiceFacade {
         }
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
-        final DsbMitgliedDO savedDsbMitgliedDO = mitgliedComponent.create(newDsbMitgliedDO, userId);
+        final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
 
         return DsbMitgliedDTOMapper.toDTO.apply(savedDsbMitgliedDO);
     }
@@ -245,7 +245,7 @@ public class DsbMitgliedService implements ServiceFacade {
 
             final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
             final long userId = UserProvider.getCurrentUserId(principal);
-            final DsbMitgliedDO updatedDsbMitgliedDO = mitgliedComponent.update(newDsbMitgliedDO, userId);
+            final DsbMitgliedDO updatedDsbMitgliedDO = dsbMitgliedComponent.update(newDsbMitgliedDO, userId);
 
             return DsbMitgliedDTOMapper.toDTO.apply(updatedDsbMitgliedDO);
 
@@ -270,7 +270,7 @@ public class DsbMitgliedService implements ServiceFacade {
         final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        mitgliedComponent.delete(dsbMitgliedDO, userId);
+        dsbMitgliedComponent.delete(dsbMitgliedDO, userId);
     }
 
 

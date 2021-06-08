@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class DsbMannschaftComponentImplTest {
+public class MannschaftComponentImplTest {
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
 
@@ -58,7 +58,7 @@ public class DsbMannschaftComponentImplTest {
     @Mock
     private MannschaftsmitgliedComponentImpl mannschaftsmitgliedComponent;
     @InjectMocks
-    private DsbMannschaftComponentImpl underTest;
+    private MannschaftComponentImpl underTest;
     @Captor
     private ArgumentCaptor<MannschaftBE> dsbMannschaftBEArgumentCaptor;
 

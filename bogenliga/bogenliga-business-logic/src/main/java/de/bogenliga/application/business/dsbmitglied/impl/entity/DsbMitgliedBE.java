@@ -14,7 +14,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *
  * @see CommonBusinessEntity
  */
-public class MitgliedBE extends CommonBusinessEntity implements BusinessEntity {
+public class DsbMitgliedBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
     private Long dsbMitgliedId;
     private String dsbMitgliedVorname;
@@ -26,7 +26,7 @@ public class MitgliedBE extends CommonBusinessEntity implements BusinessEntity {
     private Long dsbMitgliedUserId;
 
 
-    public MitgliedBE(){
+    public DsbMitgliedBE(){
         // empty constructor
     }
 

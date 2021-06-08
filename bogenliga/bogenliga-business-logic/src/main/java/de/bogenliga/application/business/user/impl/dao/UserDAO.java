@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.MitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -162,11 +162,11 @@ public class UserDAO implements DataAccessObject {
         UserBE persistedUser = basicDao.insertEntity(USER, userBE);
 
         // Save UserId in the column dsb_mitglied_benutzer_id of entity dsb_mitglied
-        MitgliedDAO MitgliedDAO = new MitgliedDAO(basicDao);
-        MitgliedBE MitgliedBE = MitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
-        if(MitgliedBE != null) {
-            MitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
-            MitgliedDAO.update(MitgliedBE, MitgliedBE.getDsbMitgliedId());
+        DsbMitgliedDAO DsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
+        DsbMitgliedBE DsbMitgliedBE = DsbMitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
+        if(DsbMitgliedBE != null) {
+            DsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
+            DsbMitgliedDAO.update(DsbMitgliedBE, DsbMitgliedBE.getDsbMitgliedId());
         }
 
         return persistedUser;

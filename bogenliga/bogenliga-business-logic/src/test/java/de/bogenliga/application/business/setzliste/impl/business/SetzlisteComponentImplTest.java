@@ -13,9 +13,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
+import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
@@ -52,7 +52,7 @@ public class SetzlisteComponentImplTest {
     @Mock
     private VeranstaltungComponent veranstaltungComponent;
     @Mock
-    private DsbMannschaftComponent dsbMannschaftComponent;
+    private MannschaftComponent mannschaftComponent;
     @Mock
     private VereinComponent vereinComponent;
 
@@ -70,14 +70,14 @@ public class SetzlisteComponentImplTest {
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
-        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        DsbMannschaftDO dsbMannschaftDO = MannschaftComponentImplTest.getDsbMannschaftDO();
         VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
 
         //configure Mocks
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
         when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid())).thenReturn(wettkampfDO);
         when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
-        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
 
         //call test method

@@ -7,7 +7,6 @@ import java.util.*;
 import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
@@ -67,7 +66,7 @@ public class MatchServiceTest {
     private WettkampfTypComponent wettkampfTypComponent;
 
     @Mock
-    private DsbMannschaftComponent mannschaftComponent;
+    private MannschaftComponent mannschaftComponent;
 
     @Mock
     private RequiresOnePermissionAspect requiresOnePermissionAspect;

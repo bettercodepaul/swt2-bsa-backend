@@ -18,7 +18,7 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
@@ -59,7 +59,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final VeranstaltungDAO veranstaltungDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
     private final PasseComponent passeComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
     private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
     
@@ -71,12 +71,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @param wettkampfDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO, final MannschaftsmitgliedDAO mannschaftsmitgliedDAO
-                                    ,final DsbMannschaftComponent dsbMannschaftComponent, final VereinComponent vereinComponent, final PasseComponent passeComponent) {
+    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO, final VeranstaltungDAO veranstaltungDAO, final MannschaftsmitgliedDAO mannschaftsmitgliedDAO
+                                    , final MannschaftComponent mannschaftComponent, final VereinComponent vereinComponent, final PasseComponent passeComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.veranstaltungDAO = veranstaltungDAO;
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.mannschaftComponent = mannschaftComponent;
         this.vereinComponent = vereinComponent;
         this.passeComponent = passeComponent;
     }
@@ -287,7 +287,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
     public String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
+        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(teamID);
         VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
         if (dsbMannschaftDO.getNummer() >= 1) {
             return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
@@ -54,19 +54,19 @@ public class DsbMannschaftService implements ServiceFacade {
      *
      * dependency injection with {@link Autowired}
      */
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftComponent mannschaftComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
 
     /**
      * Constructor with dependency injection
      *
-     * @param dsbMannschaftComponent to handle the database CRUD requests
+     * @param mannschaftComponent to handle the database CRUD requests
      */
     @Autowired
-    public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent,
+    public DsbMannschaftService(final MannschaftComponent mannschaftComponent,
                                 final RequiresOnePermissionAspect requiresOnePermissionAspect) {
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.mannschaftComponent = mannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
     /**
@@ -100,7 +100,7 @@ public class DsbMannschaftService implements ServiceFacade {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAll() {
-        final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAll();
+        final List<DsbMannschaftDO> dsbMannschaftDOList = mannschaftComponent.findAll();
 
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -133,7 +133,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
-        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVereinsId(id);
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = mannschaftComponent.findAllByVereinsId(id);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -151,7 +151,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID '{}'", id);
 
-        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVeranstaltungsId(id);
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = mannschaftComponent.findAllByVeranstaltungsId(id);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -177,7 +177,7 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
-        final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
+        final DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(id);
 
         return DsbMannschaftDTOMapper.toDTO.apply(dsbMannschaftDO);
     }
@@ -227,7 +227,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
             final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
 
-            final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
+            final DsbMannschaftDO savedDsbMannschaftDO = mannschaftComponent.create(newDsbMannschaftDO, userId);
             return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
 
         } else throw new NoPermissionException();
@@ -251,7 +251,7 @@ public class DsbMannschaftService implements ServiceFacade {
         final Long userId = UserProvider.getCurrentUserId(principal);
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", lastVeranstaltungsId);
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", currentVeranstaltungsId);
-        dsbMannschaftComponent.copyMannschaftFromVeranstaltung(lastVeranstaltungsId, currentVeranstaltungsId, userId);
+        mannschaftComponent.copyMannschaftFromVeranstaltung(lastVeranstaltungsId, currentVeranstaltungsId, userId);
 
     }
 
@@ -281,7 +281,7 @@ public class DsbMannschaftService implements ServiceFacade {
             //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
         if(this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) &&
                 !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
-            DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
+            DsbMannschaftDO dsbMannschaftDO = this.mannschaftComponent.findById(dsbMannschaftDTO.getId());
             if(!dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
                 throw new NoPermissionException();
             }
@@ -301,7 +301,7 @@ public class DsbMannschaftService implements ServiceFacade {
         final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final DsbMannschaftDO updatedDsbMannschaftDO = dsbMannschaftComponent.update(newDsbMannschaftDO, userId);
+        final DsbMannschaftDO updatedDsbMannschaftDO = mannschaftComponent.update(newDsbMannschaftDO, userId);
         return DsbMannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
     }
 
@@ -323,7 +323,7 @@ public class DsbMannschaftService implements ServiceFacade {
         final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
+        mannschaftComponent.delete(dsbMannschaftDO, userId);
     }
 
     public static void checkPreconditions(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO) {

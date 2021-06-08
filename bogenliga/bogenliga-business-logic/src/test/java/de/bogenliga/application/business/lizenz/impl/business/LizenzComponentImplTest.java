@@ -24,9 +24,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import com.itextpdf.layout.Document;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
@@ -59,9 +59,9 @@ public class LizenzComponentImplTest {
     @Mock
     private LizenzDAO lizenzDAO;
     @Mock
-    private MitgliedComponent mitgliedComponent;
+    private DsbMitgliedComponent dsbMitgliedComponent;
     @Mock
-    private DsbMannschaftComponent mannschaftComponent;
+    private MannschaftComponent mannschaftComponent;
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
@@ -307,7 +307,7 @@ public class LizenzComponentImplTest {
         LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
 
         // configure mocks
-        when(mitgliedComponent.findById(mitgliedId)).thenReturn(expectedMitglied);
+        when(dsbMitgliedComponent.findById(mitgliedId)).thenReturn(expectedMitglied);
         when(mannschaftComponent.findById(teamId)).thenReturn(expectedMannschaft);
         when(veranstaltungComponent.findById(expectedMannschaft.getVeranstaltungId())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
@@ -411,7 +411,7 @@ public class LizenzComponentImplTest {
         when(mannschaftComponent.findById(anyLong())).thenReturn(expectedMannschaft);
         when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
-        when(mitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
         when(vereinComponent.findById(anyLong())).thenReturn(expectedvereinDO);
         when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
                 expectedMitglied.getId(),
