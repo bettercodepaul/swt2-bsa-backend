@@ -10,9 +10,6 @@ import java.util.List;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
@@ -38,8 +35,6 @@ import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class LizenzComponentImplTest {
@@ -53,7 +48,6 @@ public class LizenzComponentImplTest {
     private static final OffsetDateTime offsetDateTime = null;
     private static final long USER = 1;
     private static final long VERSION = 2;
-    private static final long RUECKENNUMMER = 7;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -64,8 +58,6 @@ public class LizenzComponentImplTest {
     private DsbMitgliedComponent dsbMitgliedComponent;
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
-    @Mock
-    private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
     private VeranstaltungComponent veranstaltungComponent;
     @Mock
@@ -107,24 +99,6 @@ public class LizenzComponentImplTest {
         vereinDo.setName("Testverein");
         return vereinDo;
     }
-
-    public static DsbMannschaftDO getDsbMannschaftDO(Long mannschaftID, Long vereinID) {
-        DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(
-                mannschaftID, vereinID);
-
-        return dsbMannschaftDO;
-    }
-
-
-    public static MannschaftsmitgliedDO getMannschaftsmitgliedDO(Long mannschaftID, Long dsbMitgliedID) {
-         MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(
-                mannschaftID, dsbMitgliedID);
-        mannschaftsmitgliedDO.setDsbMitgliedNachname("Musterfrau"+ mannschaftID.toString());
-        mannschaftsmitgliedDO.setDsbMitgliedVorname("Maxime"+dsbMitgliedID.toString());
-        mannschaftsmitgliedDO.setRueckennummer(RUECKENNUMMER);
-        return mannschaftsmitgliedDO;
-    }
-
 
 
     @Test
@@ -358,74 +332,6 @@ public class LizenzComponentImplTest {
         Assertions.assertThat(doc).isNotNull();
 
         // verify invocations
-
-    }
-
-    @Test
-    public void delete() {
-        // prepare test data
-        final LizenzDO input = getLizenzDO();
-        final LizenzBE expectedBE = getLizenzBE();
-
-        // call test method
-        underTest.delete(input, USER);
-
-        // verify invocations
-        verify(lizenzDAO).delete(lizenzBEArgumentCaptor.capture(), anyLong());
-        final LizenzBE persistedLizenzBE = lizenzBEArgumentCaptor.getValue();
-
-        assertThat(persistedLizenzBE).isNotNull();
-
-        assertThat(persistedLizenzBE.getLizenzId()).isEqualTo(input.getLizenzId());
-    }
-
-    @Test
-    public void testGetMannschaftsLizenzenPDFasByteArray() {
-        // prepare test data
-        final long mitgliedId = 123L;
-        final long teamId = 321L;
-        final long veranstaltungId = 456L;
-
-        DsbMitgliedDO expectedMitglied = Mockito.mock(DsbMitgliedDO.class);
-        expectedMitglied.setId(mitgliedId);
-        expectedMitglied.setNachname("Musterfrau");
-        expectedMitglied.setVorname("Maxime");
-        DsbMannschaftDO expectedMannschaft = Mockito.mock(DsbMannschaftDO.class);
-        expectedMannschaft.setId(teamId);
-        expectedMannschaft.setVeranstaltungId(veranstaltungId);
-        VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(veranstaltungId);
-        expectedVeranstaltung.setVeranstaltungName("TestVeranstaltung");
-        expectedVeranstaltung.setVeranstaltungSportJahr(2021L);
-        List<WettkampfDO> expectedWettkampfList = new ArrayList<>();
-        WettkampfDO wettkampfDO = Mockito.mock(WettkampfDO.class);
-        wettkampfDO.setId(654L);
-        wettkampfDO.setWettkampfDisziplinId(546L);
-        expectedWettkampfList.add(wettkampfDO);
-        VereinDO expectedvereinDO = getVereinDO();
-
-        final List<MannschaftsmitgliedDO> mannschaftsmitglieder = Collections.singletonList(getMannschaftsmitgliedDO(teamId, mitgliedId));
-
-
-        LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
-
-        // configure mocks
-        when(mannschaftsmitgliedComponent.findByTeamId(anyLong())).thenReturn(mannschaftsmitglieder);
-        when(mannschaftComponent.findById(anyLong())).thenReturn(expectedMannschaft);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltung);
-        when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
-        when(vereinComponent.findById(anyLong())).thenReturn(expectedvereinDO);
-        when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
-                expectedMitglied.getId(),
-                expectedWettkampfList.get(0).getWettkampfDisziplinId())).thenReturn(getLizenzBE());
-
-        // call test method
-        byte[] result = underTest.getMannschaftsLizenzenPDFasByteArray(teamId);
-
-
-        // assert result
-        Assertions.assertThat(result).isNotEmpty();
-
 
     }
 }
