@@ -227,7 +227,6 @@ public class LigaComponentImplTest {
         verify(ligaDao).findById(anyLong());
     }
 
-/* TODO: @Max fix it */
     @Test
     public void findById_whenAttributesAreNull() {
         // prepare test data
