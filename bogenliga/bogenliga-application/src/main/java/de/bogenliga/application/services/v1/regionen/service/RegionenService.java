@@ -38,9 +38,6 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
     private static final String PRECONDITION_MSG_REGION_KUERZEL = "Region Contraction must not be null";
 
-
-    private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
-
     private final RegionenComponent regionenComponent;
 
 
@@ -59,7 +56,7 @@ public class RegionenService implements ServiceFacade {
     /**
      * I return all regions of the database.
      *
-     * @return
+     * @return List>RegionenDTO> Liste aller Regionen
      */
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,7 +72,6 @@ public class RegionenService implements ServiceFacade {
     public RegionenDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
-        LOG.debug("Receive 'findById' with requested ID '{}'", id);
 
         final RegionenDO regionenDO = regionenComponent.findById(id);
 
@@ -91,12 +87,6 @@ public class RegionenService implements ServiceFacade {
         checkPreconditions(regionenDTO);
         Preconditions.checkArgument(regionenDTO.getId() >= 0, PRECONDITION_MSG_REGION_ID);
 
-        LOG.debug("Receive  'update' request with id '{}', name '{}'; kuerzel '{}',typ '{}'; uebergeordnete_region '{}' ",
-                regionenDTO.getId(),
-                regionenDTO.getRegionName(),
-                regionenDTO.getRegionKuerzel(),
-                regionenDTO.getRegionTyp(),
-                regionenDTO.getRegionUebergeordnet());
 
         final RegionenDO newRegionenDo = RegionenDTOMapper.toDO.apply(regionenDTO);
         final long userID = UserProvider.getCurrentUserId(principal);
@@ -111,7 +101,6 @@ public class RegionenService implements ServiceFacade {
     public void delete (@PathVariable("id") final long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'delete' request with id '{}'", id);
 
         final RegionenDO regionenDO = new RegionenDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -133,14 +122,6 @@ public class RegionenService implements ServiceFacade {
         checkPreconditions(regionenDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        //debug
-        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}', user '{}'",
-                regionenDTO.getRegionName(),
-                regionenDTO.getId(),
-                regionenDTO.getRegionKuerzel(),
-                regionenDTO.getRegionTyp(),
-                regionenDTO.getRegionUebergeordnet(),
-                userId);
 
         final RegionenDO regionenDO = RegionenDTOMapper.toDO.apply(regionenDTO);
         final RegionenDO persistedRegionenDO = regionenComponent.create(regionenDO, userId);
@@ -153,7 +134,7 @@ public class RegionenService implements ServiceFacade {
     /**
      * I return all regions of a specific type from the database
      * @param type of the regions
-     * @return list of {@RegionenDTO}
+     * @return List</RegionenDTO> Liste aller Region dieses Typs
      */
     @GetMapping(
             value = "{type}",
@@ -172,7 +153,7 @@ public class RegionenService implements ServiceFacade {
 
 
     /**
-     * Checks if given type is a member of {@RegionTypes}
+     * Checks if given type is a member of </RegionTypes>
      * @param type to be checked
      */
     private void checkRegionType(final String type) {

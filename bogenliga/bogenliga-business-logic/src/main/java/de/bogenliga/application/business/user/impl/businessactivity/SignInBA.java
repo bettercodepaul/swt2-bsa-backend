@@ -29,8 +29,11 @@ public class SignInBA {
 
     private static final String ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid sign in credentials.";
     private static final String ERROR_MESSAGE_BLOCKED_USER = "User is blocked for %s seconds.";
-    private static final int MAX_ALLOWED_LOGIN_ATTEMPTS = 5;
-    private static final int LOGIN_ATTEMPTS_TIME_RANGE = 5 * 60; // seconds
+
+    // 5 allowed attempts, multiplied by 3 (= 15) because 3 POST-requests are sent per login attempt.
+    private static final int MAX_ALLOWED_LOGIN_ATTEMPTS = 15;
+    private static final int LOGIN_ATTEMPTS_TIME_RANGE = 5 * 60; // 5 minutes in seconds
+
     private final UserDAO userDAO;
     private final UserPermissionDAO userPermissionDAO;
     private final UserLoginHistoryDAO userLoginHistoryDAO;
@@ -78,6 +81,7 @@ public class SignInBA {
         if (hashedPassword.equals(existingUser.getUserPassword())) {
             // existing user with correct password
             return authorizeUser(existingUser);
+
         } else {
             // wrong password
             persistSignInAttempt(existingUser, SignInResult.LOGIN_FAILED);
@@ -119,7 +123,7 @@ public class SignInBA {
 
         if (failedLoginsBE.getFailedLoginAttempts() > MAX_ALLOWED_LOGIN_ATTEMPTS) {
             // do not allow a login
-            // the sign in is blocked for a defined time range
+            // the sign in is blocked for a defined time range (LOGIN_ATTEMPTS_TIME_RANGE)
             persistSignInAttempt(existingUser, SignInResult.LOGIN_FAILED);
             throw new BusinessException(ErrorCode.TOO_MANY_INCORRECT_LOGIN_ATTEMPTS,
                     String.format(ERROR_MESSAGE_BLOCKED_USER, LOGIN_ATTEMPTS_TIME_RANGE),

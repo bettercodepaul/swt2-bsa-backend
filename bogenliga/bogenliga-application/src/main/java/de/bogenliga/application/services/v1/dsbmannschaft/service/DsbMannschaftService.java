@@ -234,17 +234,19 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
     /**
-     * I return the dsbMannschaft entries of the database with the given Veranstaltungs-Id.
-     *
-     * @param id the given Veranstaltungs-Id
-     * @return list of {@link DsbMannschaftDTO} as JSON
+     * I copy the dsbMannschaft entries in the database with the given Veranstaltungs-Ids.
+     * @param lastVeranstaltungsId
+     * @param currentVeranstaltungsId
+     * @param principal
      */
-    @GetMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
     public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final long lastVeranstaltungsId,
                                               @PathVariable("currentVeranstaltungsId") final long currentVeranstaltungsId,
                                               final Principal principal) {
         Preconditions.checkArgument(lastVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(currentVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         final Long userId = UserProvider.getCurrentUserId(principal);
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", lastVeranstaltungsId);

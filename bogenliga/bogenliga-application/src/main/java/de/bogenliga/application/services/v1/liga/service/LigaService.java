@@ -3,8 +3,6 @@ package de.bogenliga.application.services.v1.liga.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +31,6 @@ public class LigaService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIGA_REGION_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID_NEG = "Verantwortlich id can not be negative";
-
-    private final Logger logger = LoggerFactory.getLogger(LigaService.class);
 
     private final LigaComponent ligaComponent;
 
@@ -78,7 +74,6 @@ public class LigaService implements ServiceFacade {
     public LigaDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 
-        logger.debug("Receive 'findById' request with ID '{}'", id);
 
         final LigaDO ligaDO = ligaComponent.findById(id);
 
@@ -89,8 +84,8 @@ public class LigaService implements ServiceFacade {
     /**
      * I persist a new liga and return this liga entry
      *
-     * @param ligaDTO
-     * @param principal
+     * @param ligaDTO Data to be stored to DB
+     * @param principal User saving the data
      *
      * @return list of {@link LigaDTO} as JSON
      */
@@ -99,13 +94,6 @@ public class LigaService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public LigaDTO create(@RequestBody final LigaDTO ligaDTO, final Principal principal) {
-        logger.debug(
-                "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
-                ligaDTO.getId(),
-                ligaDTO.getName(),
-                ligaDTO.getRegionId(),
-                ligaDTO.getLigaUebergeordnetId(),
-                ligaDTO.getLigaVerantwortlichId());
 
         checkPreconditions(ligaDTO);
 
@@ -128,13 +116,6 @@ public class LigaService implements ServiceFacade {
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
 
-        logger.debug(
-                "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
-                ligaDTO.getId(),
-                ligaDTO.getName(),
-                ligaDTO.getRegionId(),
-                ligaDTO.getLigaUebergeordnetId(),
-                ligaDTO.getLigaVerantwortlichId());
 
 
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
@@ -154,7 +135,6 @@ public class LigaService implements ServiceFacade {
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-        logger.debug("Receive 'delete' request with id '{}'", id);
 
         final LigaDO ligaDO = new LigaDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
