@@ -1,0 +1,2 @@
+ALTER table veranstaltung
+ADD CONSTRAINT veranstaltung_name UNIQUE (veranstaltung_sportjahr, veranstaltung_wettkampftyp_id, veranstaltung_liga_id);

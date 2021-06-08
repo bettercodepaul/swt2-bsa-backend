@@ -110,14 +110,13 @@ public class SignInBATest {
                 .isEqualTo(SignInResult.LOGIN_SUCCESS);
     }
 
-// in progress - contains error at the moment
-/*
+
     @Test
     public void signInUser_withTooManyFailedLoginAttempts_shouldThrowException() {
         // prepare test data
         final UserBE userBE = createUserBE();
         final UserFailedSignInAttemptsBE userFailedSignInAttemptsBE = createUserFailedSignInAttemptsBE(
-                userBE.getUserId(), 10);
+                userBE.getUserId(), 16);
         final List<UserPermissionBE> userPermissionBEList = Collections.singletonList(
                 createUserPermissionBE(userBE.getUserId(), PERMISSION_1));
 
@@ -144,7 +143,7 @@ public class SignInBATest {
         assertThat(userSignInHistoryBEArgumentCaptor.getValue().getSignInResult())
                 .isEqualTo(SignInResult.LOGIN_FAILED);
     }
-*/
+
 
     @Test
     public void signInUser_withWrongPassword_shouldThrowException() {
