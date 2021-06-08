@@ -53,7 +53,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final MatchDAO matchDAO;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
-    private final WettkampfDAO wettkampfDAO;
+    private final WettkampfComponent wettkampfComponent;
 
 
     /**
@@ -67,13 +67,16 @@ public class MatchComponentImpl implements MatchComponent {
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
                               final VereinComponent vereinComponent,
-                              final WettkampfDAO wettkampfDAO
+                              //final WettkampfDAO wettkampfDAO
+                              final WettkampfComponent wettkampfComponent
                               ) {
 
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
-        this.wettkampfDAO = wettkampfDAO;
+        this.wettkampfComponent = wettkampfComponent;
+
+
     }
 
 
@@ -200,7 +203,7 @@ public class MatchComponentImpl implements MatchComponent {
 
         List<DsbMannschaftDO> mannschaften = this.dsbMannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
 
-        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
+        WettkampfBE wettkampfBE = (WettkampfBE) wettkampfComponent.findAllByVeranstaltungId(veranstaltungsId);
 
         if(mannschaften == null || mannschaften.size() != 8 || wettkampfBE == null
                 || wettkampfBE.getId() == null || wettkampfBE.getId() < 0){
