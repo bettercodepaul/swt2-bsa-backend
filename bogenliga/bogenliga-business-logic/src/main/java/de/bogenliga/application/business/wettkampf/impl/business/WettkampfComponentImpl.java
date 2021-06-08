@@ -206,7 +206,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 Document doc = new Document(pdfDocument, PageSize.A4)) {
 
                 pdfDocument.getDocumentInfo().setTitle("Einzelstatistik.pdf");
-                generateDoc(doc, wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
+                generateDoc(doc, "Einzelstatistik" , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
                 bResult = result.toByteArray();
                 LOGGER.debug("Einzelstatistik erstellt");
@@ -225,12 +225,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     }
 
-    public void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
+    public void generateDoc(Document doc, String header, List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
     {
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
 
         doc.setFontSize(20.0f);
-        doc.add(new Paragraph("Einzelstatistik").setBold());
+        doc.add(new Paragraph(header).setBold());
         doc.setFontSize(9.2f);
         doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltung_name()));
         doc.add(new Paragraph("Mannschaft: " + getTeamName(mannschaftsid)));
@@ -273,6 +273,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         doc.close();
     }
+
     public List<Long> getNummern(List<PasseDO> passen)
     {
         List<Long> passennummern = new LinkedList<>();
@@ -334,5 +335,42 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         average = average / count;
         return average;
+    }
+
+
+    @Override
+    public byte[] getGesamtstatistikPDFasByteArray(long veranstaltungsid, long manschaftsid, int jahr) {
+        Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
+
+        byte[] bResult;
+        if (!wettkampflisteBEList.isEmpty()) {
+            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 PdfWriter writer = new PdfWriter(result);
+                 PdfDocument pdfDocument = new PdfDocument(writer);
+                 Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+                pdfDocument.getDocumentInfo().setTitle("Gesamtstatistik.pdf");
+                generateDocGesamtstatistik(doc,  wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
+
+                bResult = result.toByteArray();
+                LOGGER.debug("Gesamtstatistik erstellt");
+            } catch(IOException e){
+                LOGGER.error("PDF Gesamtstatistik konnte nicht erstellt werden: {0}" , e);
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF Gesamtstatistik konnte nicht erstellt werden: " + e);
+            }
+        }
+        else
+        {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + manschaftsid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
+        return bResult;
+    }
+
+    //ruft generateDoc() auf und ändert die Überschrift der PDF, weil generateDoc() die vorhandene Logik beinhaltet.
+    public void generateDocGesamtstatistik(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
+    {
+        generateDoc(doc,"Gesamtstatistik", wettkampflisteBEList, veranstaltungsid, mannschaftsid, jahr);
     }
 }
