@@ -201,16 +201,9 @@ public class DsbMitgliedService implements ServiceFacade {
     public DsbMitgliedDTO create(@RequestBody final DsbMitgliedDTO dsbMitgliedDTO, final Principal principal) {
         checkPreconditions(dsbMitgliedDTO);
 
-        LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                " mitgliedsnummer '{}', vereinsid '{}'",
-                dsbMitgliedDTO.getId(),
-                dsbMitgliedDTO.getVorname(),
-                dsbMitgliedDTO.getNachname(),
-                dsbMitgliedDTO.getGeburtsdatum(),
-                dsbMitgliedDTO.getNationalitaet(),
-                dsbMitgliedDTO.getMitgliedsnummer(),
-                dsbMitgliedDTO.getVereinsId());
-
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("Receive 'create' request with mitgliedsnummer '{}'", dsbMitgliedDTO.getMitgliedsnummer().replaceAll("[\n\r\t]", "_"));
+        }
         final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
         final DsbMitgliedDO savedDsbMitgliedDO = dsbMitgliedComponent.create(newDsbMitgliedDO, userId);
@@ -248,16 +241,7 @@ public class DsbMitgliedService implements ServiceFacade {
             checkPreconditions(dsbMitgliedDTO);
             Preconditions.checkArgument(dsbMitgliedDTO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
-            LOG.debug("Receive 'create' request with id '{}', vorname '{}', nachname '{}', geburtsdatum '{}', nationalitaet '{}'," +
-                            " mitgliedsnummer '{}', vereinsid '{}'",
-                    dsbMitgliedDTO.getId(),
-                    dsbMitgliedDTO.getVorname(),
-                    dsbMitgliedDTO.getNachname(),
-                    dsbMitgliedDTO.getGeburtsdatum(),
-                    dsbMitgliedDTO.getNationalitaet(),
-                    dsbMitgliedDTO.getMitgliedsnummer(),
-                    dsbMitgliedDTO.getVereinsId()
-            );
+            LOG.debug("Receive 'update' request with id '{}'", dsbMitgliedDTO.getId());
 
             final DsbMitgliedDO newDsbMitgliedDO = DsbMitgliedDTOMapper.toDO.apply(dsbMitgliedDTO);
             final long userId = UserProvider.getCurrentUserId(principal);

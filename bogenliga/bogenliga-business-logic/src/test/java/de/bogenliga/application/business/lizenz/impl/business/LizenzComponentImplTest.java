@@ -1,10 +1,19 @@
 package de.bogenliga.application.business.lizenz.impl.business;
 
+import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +38,8 @@ import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class LizenzComponentImplTest {
@@ -42,6 +53,7 @@ public class LizenzComponentImplTest {
     private static final OffsetDateTime offsetDateTime = null;
     private static final long USER = 1;
     private static final long VERSION = 2;
+    private static final long RUECKENNUMMER = 7;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -53,9 +65,13 @@ public class LizenzComponentImplTest {
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
     @Mock
+    private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    @Mock
     private VeranstaltungComponent veranstaltungComponent;
     @Mock
     private WettkampfComponent wettkampfComponent;
+    @Mock
+    private VereinComponent vereinComponent;
 
     @InjectMocks
     private LizenzComponentImpl underTest;
@@ -83,6 +99,30 @@ public class LizenzComponentImplTest {
                 lizenzDsbMitgliedId,
                 lizenztyp,
                 lizenzDisziplinId);
+    }
+
+
+    public static VereinDO getVereinDO() {
+        VereinDO vereinDo = new VereinDO(1L);
+        vereinDo.setName("Testverein");
+        return vereinDo;
+    }
+
+    public static DsbMannschaftDO getDsbMannschaftDO(Long mannschaftID, Long vereinID) {
+        DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(
+                mannschaftID, vereinID);
+
+        return dsbMannschaftDO;
+    }
+
+
+    public static MannschaftsmitgliedDO getMannschaftsmitgliedDO(Long mannschaftID, Long dsbMitgliedID) {
+         MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(
+                mannschaftID, dsbMitgliedID);
+        mannschaftsmitgliedDO.setDsbMitgliedNachname("Musterfrau"+ mannschaftID.toString());
+        mannschaftsmitgliedDO.setDsbMitgliedVorname("Maxime"+dsbMitgliedID.toString());
+        mannschaftsmitgliedDO.setRueckennummer(RUECKENNUMMER);
+        return mannschaftsmitgliedDO;
     }
 
 
@@ -250,15 +290,20 @@ public class LizenzComponentImplTest {
 
         DsbMitgliedDO expectedMitglied = Mockito.mock(DsbMitgliedDO.class);
         expectedMitglied.setId(mitgliedId);
+        expectedMitglied.setNachname("Musterfrau");
+        expectedMitglied.setVorname("Maxime");
         DsbMannschaftDO expectedMannschaft = Mockito.mock(DsbMannschaftDO.class);
         expectedMannschaft.setId(teamId);
         expectedMannschaft.setVeranstaltungId(veranstaltungId);
         VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(veranstaltungId);
+        expectedVeranstaltung.setVeranstaltungName("TestVeranstaltung");
+        expectedVeranstaltung.setVeranstaltungSportJahr(2021L);
         List<WettkampfDO> expectedWettkampfList = new ArrayList<>();
         WettkampfDO wettkampfDO = Mockito.mock(WettkampfDO.class);
         wettkampfDO.setId(654L);
         wettkampfDO.setWettkampfDisziplinId(546L);
         expectedWettkampfList.add(wettkampfDO);
+        VereinDO expectedvereinDO = getVereinDO();
 
 
         LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
@@ -268,24 +313,21 @@ public class LizenzComponentImplTest {
         when(mannschaftComponent.findById(teamId)).thenReturn(expectedMannschaft);
         when(veranstaltungComponent.findById(expectedMannschaft.getVeranstaltungId())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
+        when(vereinComponent.findById(anyLong())).thenReturn(expectedvereinDO);
         when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
                 expectedMitglied.getId(),
                 expectedWettkampfList.get(0).getWettkampfDisziplinId())).thenReturn(getLizenzBE());
 
-        doNothing().when(testClass).generateLizenzenDoc(any(), any());
+ //       doNothing().when(testClass).generateLizenzenDoc(any(), any());
 
 
         // call test method
-        byte[] result = testClass.getLizenzPDFasByteArray(mitgliedId, teamId);
+        byte[] result = underTest.getLizenzPDFasByteArray(mitgliedId, teamId);
 
 
         // assert result
-        Assertions.assertThat(result).isNull();
+        Assertions.assertThat(result).isNotEmpty();
 
-        // verify invocations
-        verify(expectedMitglied).getId();
-        verify(expectedMannschaft).getVeranstaltungId();
-        verify(wettkampfDO).getWettkampfDisziplinId();
     }
 
     @Test
@@ -301,18 +343,16 @@ public class LizenzComponentImplTest {
         list.add("1234");
         mapping.put("456", list);
 
-        Document doc = Mockito.mock(Document.class);
+        final ByteArrayOutputStream result = new ByteArrayOutputStream();
+        final PdfWriter writer = new PdfWriter(result);
+        final PdfDocument pdfDocument = new PdfDocument(writer);
+        final Document doc = new Document(pdfDocument, PageSize.A4);
+
         LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
 
-        // configure mocks
-        doNothing().when(testClass).generateLizenzPage(
-                any(Document.class),
-                anyString(), anyString(),
-                anyString(), anyString(),
-                anyString(), anyString());
 
         // call test method
-        testClass.generateLizenzenDoc(doc, mapping);
+        underTest.generateLizenzenDoc(doc, mapping);
 
         // assert result
         Assertions.assertThat(doc).isNotNull();
@@ -321,140 +361,71 @@ public class LizenzComponentImplTest {
 
     }
 
+    @Test
+    public void delete() {
+        // prepare test data
+        final LizenzDO input = getLizenzDO();
+        final LizenzBE expectedBE = getLizenzBE();
 
-//
-//
-//
-//    @Test
-//    public void create__whenEverythingIsSet() {
-//        // prepare test data
-//        final RegionenDO input = getRegionenDO();
-//        final RegionenBE expectedBE = getRegionenBE();
-//
-//        // configure mocks
-//        when(regionenDAO.create(any(RegionenBE.class), anyLong())).thenReturn(expectedBE);
-//
-//        // call test method
-//        final RegionenDO actual = underTest.create(input, USER);
-//
-//        // assert result
-//        assertThat(actual).isNotNull();
-//        assertThat(actual.getId()).isEqualTo(input.getId());
-//        assertThat(actual.getRegionName()).isEqualTo(input.getRegionName());
-//        assertThat(actual.getRegionKuerzel()).isEqualTo(input.getRegionKuerzel());
-//        assertThat(actual.getRegionTyp()).isEqualTo(input.getRegionTyp());
-//        assertThat(actual.getRegionUebergeordnet()).isEqualTo(input.getRegionUebergeordnet());
-//
-//        // verify invocations
-//        verify(regionenDAO).create(regionBEArgumentCaptor.capture(), anyLong());
-//        final RegionenBE persistedBE = regionBEArgumentCaptor.getValue();
-//
-//        assertThat(persistedBE).isNotNull();
-//
-//        assertThat(persistedBE.getRegionId()).isEqualTo(input.getId());
-//        assertThat(persistedBE.getRegionName()).isEqualTo(expectedBE.getRegionName());
-//        assertThat(persistedBE.getRegionKuerzel()).isEqualTo(expectedBE.getRegionKuerzel());
-//        assertThat(persistedBE.getRegionTyp()).isEqualTo(expectedBE.getRegionTyp());
-//        assertThat(persistedBE.getRegionUebergeordnet()).isEqualTo(expectedBE.getRegionUebergeordnet());
-//
-//        // test mapping of do
-//        assertThat(actual.getRegionName()).isEqualTo(expectedBE.getRegionName());
-//        assertThat(actual.getRegionKuerzel()).isEqualTo(expectedBE.getRegionKuerzel());
-//        assertThat(actual.getRegionTyp()).isEqualTo(expectedBE.getRegionTyp());
-//    }
-//
-//
-//    @Test
-//    public void create_whenArgumentsAreNull() {
-//        // prepare test data
-//        final RegionenDO input = getRegionenDO();
-//        final RegionenBE expectedBE = getRegionenBE();
-//
-//        expectedBE.setRegionKuerzel(null);
-//        input.setRegionKuerzel(null);
-//
-//        // configure mocks
-//        when(regionenDAO.create(any(RegionenBE.class), anyLong())).thenReturn(expectedBE);
-//
-//        // call test method
-//        final RegionenDO actual = underTest.create(input, USER);
-//
-//        // assert result
-//        assertThat(actual).isNotNull();
-//        assertThat(actual.getId()).isEqualTo(input.getId());
-//        assertThat(actual.getRegionName()).isEqualTo(input.getRegionName());
-//        assertThat(actual.getRegionKuerzel()).isEqualTo(input.getRegionKuerzel());
-//
-//        // verify invocations
-//        verify(regionenDAO).create(regionBEArgumentCaptor.capture(), anyLong());
-//        final RegionenBE persistedBE = regionBEArgumentCaptor.getValue();
-//
-//        assertThat(persistedBE).isNotNull();
-//
-//        assertThat(persistedBE.getRegionId()).isEqualTo(input.getId());
-//        assertThat(persistedBE.getRegionName()).isEqualTo(expectedBE.getRegionName());
-//        assertThat(persistedBE.getRegionKuerzel()).isEqualTo(null);
-//    }
-//
-//
-//    @Test
-//    public void create_withoutRegionname_shouldThrowException() {
-//        // prepare test data
-//        final RegionenDO input = getRegionenDO();
-//        input.setId(REGION_ID);
-//        input.setRegionName(null);
-//
-//        // configure mocks
-//
-//        // call test method
-//        assertThatExceptionOfType(BusinessException.class)
-//                .isThrownBy(() -> underTest.create(input, USER))
-//                .withMessageContaining("must not be null")
-//                .withNoCause();
-//
-//        // assert result
-//
-//        // verify invocations
-//        verifyZeroInteractions(regionenDAO);
-//    }
-//
-//
-//    @Test
-//    public void create_withoutInput_shouldThrowException() {
-//        // prepare test data
-//
-//        // configure mocks
-//
-//        // call test method
-//        assertThatExceptionOfType(BusinessException.class)
-//                .isThrownBy(() -> underTest.create(null, USER))
-//                .withMessageContaining("must not be null")
-//                .withNoCause();
-//
-//        // assert result
-//
-//        // verify invocations
-//        verifyZeroInteractions(regionenDAO);
-//    }
-//
-//
-//
-//    @Test
-//    public void delete_withoutInput_shouldThrowException() {
-//        // prepare test data
-//
-//        // configure mocks
-//
-//        // call test method
-//        assertThatExceptionOfType(BusinessException.class)
-//                .isThrownBy(() -> underTest.delete(null, USER))
-//                .withMessageContaining("must not be null")
-//                .withNoCause();
-//
-//        // assert result
-//
-//        // verify invocations
-//        verifyZeroInteractions(regionenDAO);
-//    }
+        // call test method
+        underTest.delete(input, USER);
 
+        // verify invocations
+        verify(lizenzDAO).delete(lizenzBEArgumentCaptor.capture(), anyLong());
+        final LizenzBE persistedLizenzBE = lizenzBEArgumentCaptor.getValue();
+
+        assertThat(persistedLizenzBE).isNotNull();
+
+        assertThat(persistedLizenzBE.getLizenzId()).isEqualTo(input.getLizenzId());
+    }
+
+    @Test
+    public void testGetMannschaftsLizenzenPDFasByteArray() {
+        // prepare test data
+        final long mitgliedId = 123L;
+        final long teamId = 321L;
+        final long veranstaltungId = 456L;
+
+        DsbMitgliedDO expectedMitglied = Mockito.mock(DsbMitgliedDO.class);
+        expectedMitglied.setId(mitgliedId);
+        expectedMitglied.setNachname("Musterfrau");
+        expectedMitglied.setVorname("Maxime");
+        DsbMannschaftDO expectedMannschaft = Mockito.mock(DsbMannschaftDO.class);
+        expectedMannschaft.setId(teamId);
+        expectedMannschaft.setVeranstaltungId(veranstaltungId);
+        VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(veranstaltungId);
+        expectedVeranstaltung.setVeranstaltungName("TestVeranstaltung");
+        expectedVeranstaltung.setVeranstaltungSportJahr(2021L);
+        List<WettkampfDO> expectedWettkampfList = new ArrayList<>();
+        WettkampfDO wettkampfDO = Mockito.mock(WettkampfDO.class);
+        wettkampfDO.setId(654L);
+        wettkampfDO.setWettkampfDisziplinId(546L);
+        expectedWettkampfList.add(wettkampfDO);
+        VereinDO expectedvereinDO = getVereinDO();
+
+        final List<MannschaftsmitgliedDO> mannschaftsmitglieder = Collections.singletonList(getMannschaftsmitgliedDO(teamId, mitgliedId));
+
+
+        LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
+
+        // configure mocks
+        when(mannschaftsmitgliedComponent.findByTeamId(anyLong())).thenReturn(mannschaftsmitglieder);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(expectedMannschaft);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltung);
+        when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
+        when(vereinComponent.findById(anyLong())).thenReturn(expectedvereinDO);
+        when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
+                expectedMitglied.getId(),
+                expectedWettkampfList.get(0).getWettkampfDisziplinId())).thenReturn(getLizenzBE());
+
+        // call test method
+        byte[] result = underTest.getMannschaftsLizenzenPDFasByteArray(teamId);
+
+
+        // assert result
+        Assertions.assertThat(result).isNotEmpty();
+
+
+    }
 }
