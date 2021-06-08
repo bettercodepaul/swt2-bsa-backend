@@ -310,6 +310,7 @@ public class MatchComponentImpl implements MatchComponent {
 
     // generate matches by button on click "generiere Matches"
     public List<MatchDO> generateMatches(long wettkampfid) {
+        LOGGER.info("sind am Endpunkt generateMatches");
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
         List<MatchDO> matchDOList = this.findByWettkampfId(wettkampfid);
         List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
