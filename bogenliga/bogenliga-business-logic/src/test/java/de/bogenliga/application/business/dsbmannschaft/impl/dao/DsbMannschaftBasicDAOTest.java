@@ -35,7 +35,7 @@ public class DsbMannschaftBasicDAOTest {
     @Mock
     private BasicDAO basicDao;
     @InjectMocks
-    private DsbMannschaftDAO underTest;
+    private MannschaftDAO underTest;
 
     @Test
     public void findAll() {

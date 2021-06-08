@@ -13,10 +13,10 @@ import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration
 import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 @Repository
-public class DsbMannschaftDAO implements DataAccessObject {
+public class MannschaftDAO implements DataAccessObject {
 
     // define the logger context
-    private static final Logger LOGGER = LoggerFactory.getLogger(DsbMannschaftDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MannschaftDAO.class);
 
     // table name in the database
     private static final String TABLE = "mannschaft";
@@ -76,7 +76,7 @@ public class DsbMannschaftDAO implements DataAccessObject {
      * @param basicDao to handle the commonly used database operations
      */
     @Autowired
-    public DsbMannschaftDAO(final BasicDAO basicDao) {
+    public MannschaftDAO(final BasicDAO basicDao) {
         this.basicDao = basicDao;
     }
 
