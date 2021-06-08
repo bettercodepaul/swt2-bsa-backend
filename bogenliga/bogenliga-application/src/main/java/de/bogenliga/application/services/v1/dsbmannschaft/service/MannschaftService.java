@@ -30,7 +30,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RestController
 @CrossOrigin
 @RequestMapping("v1/dsbmannschaft")
-public class DsbMannschaftService implements ServiceFacade {
+public class MannschaftService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT = "DsbMannschaftDO must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be null";
@@ -45,7 +45,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
-    private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MannschaftService.class);
 
 
 
@@ -64,8 +64,8 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param mannschaftComponent to handle the database CRUD requests
      */
     @Autowired
-    public DsbMannschaftService(final MannschaftComponent mannschaftComponent,
-                                final RequiresOnePermissionAspect requiresOnePermissionAspect) {
+    public MannschaftService(final MannschaftComponent mannschaftComponent,
+                             final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.mannschaftComponent = mannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }

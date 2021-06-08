@@ -54,7 +54,7 @@ public class MannschaftServiceTest {
     private Principal principal;
 
     @InjectMocks
-    private DsbMannschaftService underTest;
+    private MannschaftService underTest;
 
     @Captor
     private ArgumentCaptor<DsbMannschaftDO> dsbMannschaftVOArgumentCaptor;
