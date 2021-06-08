@@ -4,9 +4,6 @@ DECLARE
     max_act_val BIGINT;
 
 BEGIN
-    -- Alter Benutzer Sequence
-    max_act_val := (SELECT benutzer_id FROM benutzer WHERE benutzer_id = (select max(benutzer_id) FROM benutzer));
-    PERFORM setval('sq_benutzer_id', max_act_val);
 
     -- Alter Mannschaftsmitglied Sequence
     max_act_val := (SELECT mannschaftsmitglied_id FROM mannschaftsmitglied WHERE mannschaftsmitglied_id = (select max(mannschaftsmitglied_id) FROM mannschaftsmitglied));
