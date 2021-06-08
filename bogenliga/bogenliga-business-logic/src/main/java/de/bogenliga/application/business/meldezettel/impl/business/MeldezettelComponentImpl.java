@@ -22,11 +22,11 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -68,7 +68,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private final VeranstaltungComponent veranstaltungComponent;
     private final DisziplinComponent disziplinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final MitgliedComponent mitgliedComponent;
 
     @Autowired
     public MeldezettelComponentImpl(final MatchComponent matchComponent,
@@ -78,7 +78,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                                     final VeranstaltungComponent veranstaltungComponent,
                                     final DisziplinComponent disziplinComponent,
                                     final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                    final DsbMitgliedComponent dsbMitgliedComponent) {
+                                    final MitgliedComponent mitgliedComponent) {
         this.matchComponent = matchComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
@@ -86,7 +86,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         this.veranstaltungComponent = veranstaltungComponent;
         this.disziplinComponent = disziplinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.mitgliedComponent = mitgliedComponent;
     }
     @Override
     public byte[] getMeldezettelPDFasByteArray(long wettkampfid) {
@@ -110,7 +110,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
 
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
-                dsbMitgliedDOList.add(dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
+                dsbMitgliedDOList.add(mitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId()));
             }
 
             teamMemberMapping.put(teamName, dsbMitgliedDOList);

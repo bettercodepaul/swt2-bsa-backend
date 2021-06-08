@@ -4,7 +4,6 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.Assert;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -24,14 +23,13 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 
 
 import java.sql.Date;
@@ -59,7 +57,7 @@ public class RequiresOnePermissionAspectTest {
     private VeranstaltungComponent veranstaltungComponent;
 
     @Mock
-    private DsbMitgliedComponent dsbMitgliedComponent;
+    private MitgliedComponent mitgliedComponent;
 
     @Mock
     private UserComponent userComponent;
@@ -201,7 +199,7 @@ public class RequiresOnePermissionAspectTest {
         UserDO userDO = getUserDO(55L, 1055L);
         when(userComponent.findById(anyLong())).thenReturn(userDO);
         DsbMitgliedDO dsbmigliedDO = getDsbMitgliedDO(1055L, V_id);
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbmigliedDO);
+        when(mitgliedComponent.findById(anyLong())).thenReturn(dsbmigliedDO);
 
         assertTrue(underTest.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN,V_id));
         assertFalse(underTest.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN,1L));

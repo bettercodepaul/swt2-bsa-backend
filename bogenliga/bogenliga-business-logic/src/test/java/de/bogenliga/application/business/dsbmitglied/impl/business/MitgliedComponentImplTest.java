@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
  * @see <a href="http://www.vogella.com/tutorials/Mockito/article.html">Using Mockito with JUnit 4</a>
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
-public class DsbMitgliedComponentImplTest {
+public class MitgliedComponentImplTest {
 
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
@@ -57,7 +57,7 @@ public class DsbMitgliedComponentImplTest {
     @Mock
     private LizenzDAO lizenzDAO;
     @InjectMocks
-    private DsbMitgliedComponentImpl underTest;
+    private MitgliedComponentImpl underTest;
     @Captor
     private ArgumentCaptor<DsbMitgliedBE> dsbMitgliedBEArgumentCaptor;
 

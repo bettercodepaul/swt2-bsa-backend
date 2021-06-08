@@ -14,8 +14,8 @@ import org.mockito.stubbing.Answer;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.business.LigaComponentImplTest;
@@ -60,7 +60,7 @@ public class BogenkontrolllisteComponentImplTest {
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
-    private DsbMitgliedComponent dsbMitgliedComponent;
+    private MitgliedComponent mitgliedComponent;
     @Mock
     private LigaComponent ligaComponent;
 
@@ -93,7 +93,7 @@ public class BogenkontrolllisteComponentImplTest {
         ligen.add(LigaComponentImplTest.getLigaDO());
         when(ligaComponent.findAll()).thenReturn(ligen);
 
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
+        when(mitgliedComponent.findById(anyLong())).thenReturn(MitgliedComponentImplTest.getDsbMitgliedDO());
 
 
         //call test method

@@ -4,8 +4,8 @@ import java.sql.Date;
 import org.junit.Test;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedBE;
-import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedDO;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest.getDsbMitgliedBE;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest.getDsbMitgliedDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

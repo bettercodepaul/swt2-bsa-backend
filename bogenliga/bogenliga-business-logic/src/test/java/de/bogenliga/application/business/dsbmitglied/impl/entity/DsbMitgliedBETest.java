@@ -2,7 +2,7 @@ package de.bogenliga.application.business.dsbmitglied.impl.entity;
 
 import org.junit.Test;
 
-import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedBE;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest.getDsbMitgliedBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

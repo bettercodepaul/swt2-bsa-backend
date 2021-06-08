@@ -12,7 +12,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
@@ -22,13 +21,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import com.itextpdf.layout.Document;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
@@ -61,7 +59,7 @@ public class LizenzComponentImplTest {
     @Mock
     private LizenzDAO lizenzDAO;
     @Mock
-    private DsbMitgliedComponent dsbMitgliedComponent;
+    private MitgliedComponent mitgliedComponent;
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
     @Mock
@@ -309,7 +307,7 @@ public class LizenzComponentImplTest {
         LizenzComponentImpl testClass = Mockito.mock(LizenzComponentImpl.class);
 
         // configure mocks
-        when(dsbMitgliedComponent.findById(mitgliedId)).thenReturn(expectedMitglied);
+        when(mitgliedComponent.findById(mitgliedId)).thenReturn(expectedMitglied);
         when(mannschaftComponent.findById(teamId)).thenReturn(expectedMannschaft);
         when(veranstaltungComponent.findById(expectedMannschaft.getVeranstaltungId())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
@@ -413,7 +411,7 @@ public class LizenzComponentImplTest {
         when(mannschaftComponent.findById(anyLong())).thenReturn(expectedMannschaft);
         when(veranstaltungComponent.findById(anyLong())).thenReturn(expectedVeranstaltung);
         when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(expectedWettkampfList);
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
+        when(mitgliedComponent.findById(anyLong())).thenReturn(expectedMitglied);
         when(vereinComponent.findById(anyLong())).thenReturn(expectedvereinDO);
         when(lizenzDAO.findByDsbMitgliedIdAndDisziplinId(
                 expectedMitglied.getId(),

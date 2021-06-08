@@ -26,7 +26,7 @@ import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
@@ -65,7 +65,7 @@ public class LizenzComponentImpl implements LizenzComponent {
 
     private final LizenzDAO lizenzDAO;
     private final VereinComponent vereinComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final MitgliedComponent mitgliedComponent;
     private final DsbMannschaftComponent mannschaftComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final WettkampfComponent wettkampfComponent;
@@ -101,13 +101,13 @@ public class LizenzComponentImpl implements LizenzComponent {
      */
     @Autowired
     public LizenzComponentImpl(final LizenzDAO lizenzDAO, final VereinComponent vereinComponent,
-                               final DsbMitgliedComponent dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
+                               final MitgliedComponent dsbMitglied, final DsbMannschaftComponent mannschaftComponent,
                                final VeranstaltungComponent veranstaltungComponent,
                                final WettkampfComponent wettkampfComponent,
                                MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
         this.lizenzDAO = lizenzDAO;
         this.vereinComponent = vereinComponent;
-        this.dsbMitgliedComponent = dsbMitglied;
+        this.mitgliedComponent = dsbMitglied;
         this.mannschaftComponent = mannschaftComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.wettkampfComponent = wettkampfComponent;
@@ -167,7 +167,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     @Override
     public byte[] getLizenzPDFasByteArray(long dsbMitgliedID, long teamID) {
         byte[] result;
-        DsbMitgliedDO mitgliedDO = dsbMitgliedComponent.findById(dsbMitgliedID);
+        DsbMitgliedDO mitgliedDO = mitgliedComponent.findById(dsbMitgliedID);
         DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(mannschaftDO.getVeranstaltungId());
         List<WettkampfDO> wettkampfDOList = wettkampfComponent.findAllByVeranstaltungId(
@@ -200,7 +200,7 @@ public class LizenzComponentImpl implements LizenzComponent {
         String liganame = veranstaltungDO.getVeranstaltungName();
 
         for (MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
-            DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
+            DsbMitgliedDO dsbMitgliedDO = this.mitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
             VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
             String verein = vereinDO.getName();

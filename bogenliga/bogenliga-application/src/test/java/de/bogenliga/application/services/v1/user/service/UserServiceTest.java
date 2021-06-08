@@ -1,6 +1,6 @@
 package de.bogenliga.application.services.v1.user.service;
 
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
@@ -9,7 +9,6 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -31,7 +30,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -95,7 +93,7 @@ public class UserServiceTest {
     @Mock
     private UserRoleComponent userRoleComponent;
     @Mock
-    private DsbMitgliedComponent dsbMitgliedComponent;
+    private MitgliedComponent mitgliedComponent;
     @Mock
     private VeranstaltungComponent veranstaltungComponent;
 
@@ -143,7 +141,7 @@ public class UserServiceTest {
         when(jwtTokenProvider.createToken(any(Authentication.class))).thenReturn(JWT);
 
         when(userComponent.findById(anyLong())).thenReturn(userDO);
-        when(dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id())).thenReturn(dsbMitgliedDO);
+        when(mitgliedComponent.findById(userDO.getDsb_mitglied_id())).thenReturn(dsbMitgliedDO);
 
         // call test method
         final ResponseEntity<UserSignInDTO> actual = underTest.login(userCredentials);

@@ -16,8 +16,8 @@ import de.bogenliga.application.business.disziplin.impl.business.DisziplinCompon
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImplTest;
@@ -57,7 +57,7 @@ public class MeldezettelComponentImplTest {
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
-    private DsbMitgliedComponent dsbMitgliedComponent;
+    private MitgliedComponent mitgliedComponent;
 
     @InjectMocks
     private MeldezettelComponentImpl underTest;
@@ -87,7 +87,7 @@ public class MeldezettelComponentImplTest {
             return ret;
         });
 
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
+        when(mitgliedComponent.findById(anyLong())).thenReturn(MitgliedComponentImplTest.getDsbMitgliedDO());
 
 
         //call test method

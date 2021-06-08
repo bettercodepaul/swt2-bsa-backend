@@ -4,7 +4,7 @@ import org.junit.Test;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
-import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedDO;
+import static de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest.getDsbMitgliedDO;
 import static de.bogenliga.application.business.lizenz.impl.business.LizenzComponentImplTest.getLizenzBE;
 import static de.bogenliga.application.business.lizenz.impl.business.LizenzComponentImplTest.getLizenzDO;
 import static org.assertj.core.api.Assertions.assertThat;

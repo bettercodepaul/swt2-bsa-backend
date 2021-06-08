@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Responsible for the dsbmitglied database requests.
  */
-public interface DsbMitgliedComponent extends ComponentFacade {
+public interface MitgliedComponent extends ComponentFacade {
 
 
     /**

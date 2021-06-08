@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
+import de.bogenliga.application.business.dsbmitglied.impl.business.MitgliedComponentImplTest;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static de.bogenliga.application.business.lizenz.impl.business.LizenzComponentImplTest.getLizenzBE;
@@ -35,7 +35,7 @@ public class LizenzBasicDAOTest {
     private long LIZENZDSBMITGLIEDID = 71;
     private String LIZENZTYP = "Liga";
     private long LIZENZDISZIPLINID = 0;
-    private DsbMitgliedComponentImplTest dsbMitgliedComponentImplTest = new DsbMitgliedComponentImplTest();
+    private MitgliedComponentImplTest dsbMitgliedComponentImplTest = new MitgliedComponentImplTest();
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

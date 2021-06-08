@@ -1,12 +1,11 @@
 package de.bogenliga.application.springconfiguration.security.permissions;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
@@ -41,7 +40,7 @@ public class RequiresOnePermissionAspect {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final VeranstaltungComponent veranstaltungComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final MitgliedComponent mitgliedComponent;
     private final UserComponent userComponent;
     private final WettkampfComponent wettkampfComponent;
 
@@ -49,13 +48,13 @@ public class RequiresOnePermissionAspect {
     public RequiresOnePermissionAspect(
             final JwtTokenProvider jwtTokenProvider,
             final WettkampfComponent wettkampfComponent,
-            final DsbMitgliedComponent dsbMitgliedComponent,
+            final MitgliedComponent mitgliedComponent,
             final UserComponent userComponent,
             final VeranstaltungComponent veranstaltungComponent
             ) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.veranstaltungComponent = veranstaltungComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.mitgliedComponent = mitgliedComponent;
         this.userComponent = userComponent;
         this.wettkampfComponent = wettkampfComponent;
     }
@@ -236,7 +235,7 @@ public class RequiresOnePermissionAspect {
                 if (userPermissions.contains(toTest)) {
                     Long userId = jwtTokenProvider.getUserId(jwt);
                     UserDO userDO = this.userComponent.findById(userId);
-                    DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
+                    DsbMitgliedDO dsbMitgliedDO = this.mitgliedComponent.findById(userDO.getDsb_mitglied_id());
                     if (dsbMitgliedDO.getVereinsId().equals(vereinsId)) {
                         return true;
                     }

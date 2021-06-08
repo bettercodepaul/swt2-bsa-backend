@@ -24,7 +24,7 @@ import com.itextpdf.layout.property.UnitValue;
 import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.MitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
@@ -69,7 +69,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final MitgliedComponent mitgliedComponent;
 
 
     @Autowired
@@ -81,7 +81,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                            final MatchComponent matchComponent,
                                            final PasseComponent passeComponent,
                                            final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                           final DsbMitgliedComponent dsbMitgliedComponent) {
+                                           final MitgliedComponent mitgliedComponent) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
         this.ligaComponent = ligaComponent;
@@ -90,7 +90,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.mitgliedComponent = mitgliedComponent;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             List<LigaDO> ligen=this.ligaComponent.findAll();
             int count = 0;
             for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
-                DsbMitgliedDO dsbMitglied=dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
+                DsbMitgliedDO dsbMitglied= mitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
                 long thisLiga=this.veranstaltungComponent.findById(this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
 
                 //finde Stufe der aktuellen Liga
