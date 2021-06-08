@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.MitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
@@ -53,7 +53,7 @@ public class MitgliedComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private DsbMitgliedDAO dsbMitgliedDAO;
+    private MitgliedDAO mitgliedDAO;
     @Mock
     private LizenzDAO lizenzDAO;
     @InjectMocks
@@ -110,7 +110,7 @@ public class MitgliedComponentImplTest {
         final List<DsbMitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
-        when(dsbMitgliedDAO.findAll()).thenReturn(expectedBEList);
+        when(mitgliedDAO.findAll()).thenReturn(expectedBEList);
 
 
         // call test method
@@ -143,7 +143,7 @@ public class MitgliedComponentImplTest {
                 .isEqualTo(expectedBE.getDsbMitgliedUserId());
 
         // verify invocations
-        verify(dsbMitgliedDAO).findAll();
+        verify(mitgliedDAO).findAll();
     }
 
 
@@ -153,7 +153,7 @@ public class MitgliedComponentImplTest {
         final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
 
         // configure mocks
-        when(dsbMitgliedDAO.findById(ID)).thenReturn(expectedBE);
+        when(mitgliedDAO.findById(ID)).thenReturn(expectedBE);
 
         // call test method
         final DsbMitgliedDO actual = underTest.findById(ID);
@@ -165,7 +165,7 @@ public class MitgliedComponentImplTest {
                 .isEqualTo(expectedBE.getDsbMitgliedId());
 
         // verify invocations
-        verify(dsbMitgliedDAO).findById(ID);
+        verify(mitgliedDAO).findById(ID);
     }
 
 
@@ -177,7 +177,7 @@ public class MitgliedComponentImplTest {
         final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
 
         // configure mocks
-        when(dsbMitgliedDAO.create(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        when(mitgliedDAO.create(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
         final DsbMitgliedDO actual = underTest.create(input, USER);
@@ -189,7 +189,7 @@ public class MitgliedComponentImplTest {
                 .isEqualTo(input.getId());
 
         // verify invocations
-        verify(dsbMitgliedDAO).create(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+        verify(mitgliedDAO).create(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
 
         final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
 
@@ -232,7 +232,7 @@ public class MitgliedComponentImplTest {
 
 
         // configure mocks
-        when(dsbMitgliedDAO.create(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        when(mitgliedDAO.create(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
         final DsbMitgliedDO actual = underTest.create(input, USER);
@@ -244,7 +244,7 @@ public class MitgliedComponentImplTest {
                 .isEqualTo(input.getId());
 
         // verify invocations
-        verify(dsbMitgliedDAO).create(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+        verify(mitgliedDAO).create(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
 
         final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
 
@@ -270,7 +270,7 @@ public class MitgliedComponentImplTest {
         // assert result
 
         // verify invocations
-        verifyZeroInteractions(dsbMitgliedDAO);
+        verifyZeroInteractions(mitgliedDAO);
     }
 
 
@@ -292,7 +292,7 @@ public class MitgliedComponentImplTest {
         // assert result
 
         // verify invocations
-        verifyZeroInteractions(dsbMitgliedDAO);
+        verifyZeroInteractions(mitgliedDAO);
     }
 
 
@@ -304,7 +304,7 @@ public class MitgliedComponentImplTest {
         final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
 
         // configure mocks
-        when(dsbMitgliedDAO.update(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        when(mitgliedDAO.update(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
         final DsbMitgliedDO actual = underTest.update(input, USER);
@@ -318,7 +318,7 @@ public class MitgliedComponentImplTest {
                 .isEqualTo(input.getNachname());
 
         // verify invocations
-        verify(dsbMitgliedDAO).update(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+        verify(mitgliedDAO).update(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
 
         final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
 
@@ -346,7 +346,7 @@ public class MitgliedComponentImplTest {
         // assert result
 
         // verify invocations
-        verifyZeroInteractions(dsbMitgliedDAO);
+        verifyZeroInteractions(mitgliedDAO);
     }
 
 
@@ -367,7 +367,7 @@ public class MitgliedComponentImplTest {
         // assert result
 
         // verify invocations
-        verifyZeroInteractions(dsbMitgliedDAO);
+        verifyZeroInteractions(mitgliedDAO);
     }
 
 
@@ -386,7 +386,7 @@ public class MitgliedComponentImplTest {
         // assert result
 
         // verify invocations
-        verify(dsbMitgliedDAO).delete(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+        verify(mitgliedDAO).delete(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
 
         final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
 
@@ -412,6 +412,6 @@ public class MitgliedComponentImplTest {
         // assert result
 
         // verify invocations
-        verifyZeroInteractions(dsbMitgliedDAO);
+        verifyZeroInteractions(mitgliedDAO);
     }
 }

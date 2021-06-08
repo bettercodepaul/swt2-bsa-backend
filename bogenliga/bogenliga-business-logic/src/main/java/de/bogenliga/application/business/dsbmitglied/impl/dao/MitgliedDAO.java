@@ -23,10 +23,10 @@ import java.util.Map;
  * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
  */
 @Repository
-public class DsbMitgliedDAO implements DataAccessObject {
+public class MitgliedDAO implements DataAccessObject {
 
     // define the logger context
-    private static final Logger LOGGER = LoggerFactory.getLogger(DsbMitgliedDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MitgliedDAO.class);
 
     // table name in the database
     private static final String TABLE = "dsb_mitglied";
@@ -99,7 +99,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
      * @param basicDao to handle the commonly used database operations
      */
     @Autowired
-    public DsbMitgliedDAO(final BasicDAO basicDao) {
+    public MitgliedDAO(final BasicDAO basicDao) {
         this.basicDao = basicDao;
     }
 
