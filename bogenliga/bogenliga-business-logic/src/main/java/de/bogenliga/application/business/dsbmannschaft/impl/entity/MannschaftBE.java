@@ -3,7 +3,7 @@ package de.bogenliga.application.business.dsbmannschaft.impl.entity;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
-public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEntity {
+public class MannschaftBE extends CommonBusinessEntity implements BusinessEntity {
 
     private static final long serialVersionUID = -6431886856322437597L;
     private Long id;
@@ -14,7 +14,7 @@ public class DsbMannschaftBE extends CommonBusinessEntity implements BusinessEnt
     private Long sortierung;
 
 
-    public DsbMannschaftBE() {/*empty constructor*/}
+    public MannschaftBE() {/*empty constructor*/}
 
 
     public Long getId() {

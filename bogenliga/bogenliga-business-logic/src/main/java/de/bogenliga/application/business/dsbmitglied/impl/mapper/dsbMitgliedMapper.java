@@ -15,7 +15,7 @@ import de.bogenliga.application.common.time.DateProvider;
  * I convert the dsbmitglied DataObjects and BusinessEntities.
  *
  */
-public class DsbMitgliedMapper implements ValueObjectMapper {
+public class dsbMitgliedMapper implements ValueObjectMapper {
 
     /**
      * Converts a {@link MitgliedBE} to a {@link DsbMitgliedDO}
@@ -77,7 +77,7 @@ public class DsbMitgliedMapper implements ValueObjectMapper {
     /**
      * Private constructor
      */
-    private DsbMitgliedMapper() {
+    private dsbMitgliedMapper() {
         // empty private constructor
     }
 }

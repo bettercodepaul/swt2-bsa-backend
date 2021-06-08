@@ -5,8 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -19,10 +18,10 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
 
 
     /**
-     * Converts a {@link DsbMannschaftBE} to a {@link DsbMannschaftDO}
+     * Converts a {@link MannschaftBE} to a {@link DsbMannschaftDO}
      *
      */
-    public static final Function<DsbMannschaftBE, DsbMannschaftDO> toDsbMannschaftDO = be -> {
+    public static final Function<MannschaftBE, DsbMannschaftDO> toDsbMannschaftDO = be -> {
 
         final Long id = be.getId();
         final Long vereinId = be.getVereinId();
@@ -48,30 +47,30 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
 
 
     /**
-     * Converts a {@link DsbMannschaftDO} to a {@link DsbMannschaftBE}
+     * Converts a {@link DsbMannschaftDO} to a {@link MannschaftBE}
      */
 
-    public static final Function<DsbMannschaftDO, DsbMannschaftBE> toDsbMannschaftBE = dsbMannschaftDO -> {
+    public static final Function<DsbMannschaftDO, MannschaftBE> toDsbMannschaftBE = dsbMannschaftDO -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getLastModifiedAtUtc());
 
-        DsbMannschaftBE dsbMannschaftBE = new DsbMannschaftBE();
-        dsbMannschaftBE.setId(dsbMannschaftDO.getId());
-        dsbMannschaftBE.setVereinId(dsbMannschaftDO.getVereinId());
-        dsbMannschaftBE.setNummer(dsbMannschaftDO.getNummer());
-        dsbMannschaftBE.setBenutzerId(dsbMannschaftDO.getBenutzerId());
-        dsbMannschaftBE.setVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
-        dsbMannschaftBE.setSortierung(dsbMannschaftDO.getSortierung());
+        MannschaftBE mannschaftBE = new MannschaftBE();
+        mannschaftBE.setId(dsbMannschaftDO.getId());
+        mannschaftBE.setVereinId(dsbMannschaftDO.getVereinId());
+        mannschaftBE.setNummer(dsbMannschaftDO.getNummer());
+        mannschaftBE.setBenutzerId(dsbMannschaftDO.getBenutzerId());
+        mannschaftBE.setVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
+        mannschaftBE.setSortierung(dsbMannschaftDO.getSortierung());
 
 
-        dsbMannschaftBE.setCreatedAtUtc(createdAtUtcTimestamp);
-        dsbMannschaftBE.setCreatedByUserId(dsbMannschaftDO.getCreatedByUserId());
-        dsbMannschaftBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
-        dsbMannschaftBE.setLastModifiedByUserId(dsbMannschaftDO.getLastModifiedByUserId());
-        dsbMannschaftBE.setVersion(dsbMannschaftDO.getVersion());
+        mannschaftBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        mannschaftBE.setCreatedByUserId(dsbMannschaftDO.getCreatedByUserId());
+        mannschaftBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+        mannschaftBE.setLastModifiedByUserId(dsbMannschaftDO.getLastModifiedByUserId());
+        mannschaftBE.setVersion(dsbMannschaftDO.getVersion());
 
-        return dsbMannschaftBE;
+        return mannschaftBE;
     };
 
 

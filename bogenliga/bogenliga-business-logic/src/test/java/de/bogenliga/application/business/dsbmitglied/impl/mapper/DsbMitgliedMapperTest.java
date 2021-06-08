@@ -35,7 +35,7 @@ public class DsbMitgliedMapperTest {
     public void toDO() throws Exception {
         final MitgliedBE mitgliedBE = getDsbMitgliedBE();
 
-        final DsbMitgliedDO actual = DsbMitgliedMapper.toDsbMitgliedDO.apply(mitgliedBE);
+        final DsbMitgliedDO actual = dsbMitgliedMapper.toDsbMitgliedDO.apply(mitgliedBE);
 
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getVorname()).isEqualTo(VORNAME);
@@ -50,7 +50,7 @@ public class DsbMitgliedMapperTest {
     public void toBE() throws Exception {
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
-        final MitgliedBE actual = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
+        final MitgliedBE actual = dsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
 
         assertThat(actual.getDsbMitgliedId()).isEqualTo(ID);
         assertThat(actual.getDsbMitgliedVorname()).isEqualTo(VORNAME);

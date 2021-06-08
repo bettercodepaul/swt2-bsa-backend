@@ -5,7 +5,7 @@ import org.junit.Test;
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DsbMannschaftBETest {
+public class MannschaftBETest {
 
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
@@ -18,7 +18,7 @@ public class DsbMannschaftBETest {
 
     @Test
     public void assertToString() {
-        final DsbMannschaftBE underTest = getDsbMannschaftBE();
+        final MannschaftBE underTest = getDsbMannschaftBE();
         underTest.setId(id);
         underTest.setVereinId(vereinId);
 

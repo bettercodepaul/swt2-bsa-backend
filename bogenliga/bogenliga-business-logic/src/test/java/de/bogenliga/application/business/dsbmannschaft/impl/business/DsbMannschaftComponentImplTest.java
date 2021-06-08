@@ -2,7 +2,7 @@ package de.bogenliga.application.business.dsbmannschaft.impl.business;
 
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
-import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImpl;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
@@ -60,7 +60,7 @@ public class DsbMannschaftComponentImplTest {
     @InjectMocks
     private DsbMannschaftComponentImpl underTest;
     @Captor
-    private ArgumentCaptor<DsbMannschaftBE> dsbMannschaftBEArgumentCaptor;
+    private ArgumentCaptor<MannschaftBE> dsbMannschaftBEArgumentCaptor;
 
 
 
@@ -68,8 +68,8 @@ public class DsbMannschaftComponentImplTest {
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
      */
-    public static DsbMannschaftBE getDsbMannschaftBE() {
-        final DsbMannschaftBE expectedBE = new DsbMannschaftBE();
+    public static MannschaftBE getDsbMannschaftBE() {
+        final MannschaftBE expectedBE = new MannschaftBE();
 
         expectedBE.setId(ID);
         expectedBE.setVereinId(VEREIN_ID);
@@ -116,8 +116,8 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findAll() {
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
-        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<MannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(dsbMannschaftDAO.findAll()).thenReturn(expectedBEList);
@@ -155,8 +155,8 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findAllByVereinsId() {
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
-        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<MannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(dsbMannschaftDAO.findAllByVereinsId(VEREIN_ID)).thenReturn(expectedBEList);
@@ -205,8 +205,8 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findAllByVeranstaltungsId() {
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
-        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<MannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(expectedBEList);
@@ -255,7 +255,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void findById() {
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
 
         // configure mocks
         when(dsbMannschaftDAO.findById(ID)).thenReturn(expectedBE);
@@ -289,10 +289,10 @@ public class DsbMannschaftComponentImplTest {
         // prepare test data
         final DsbMannschaftDO input = getDsbMannschaftDO();
 
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
 
         // configure mocks
-        when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
+        when(dsbMannschaftDAO.create(any(MannschaftBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
         final DsbMannschaftDO actual = underTest.create(input, USER);
@@ -307,7 +307,7 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(vereinDAO).findById(anyLong());
 
-        final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
+        final MannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
@@ -332,7 +332,7 @@ public class DsbMannschaftComponentImplTest {
                 USER,
                 VERSION);
 
-        final DsbMannschaftBE expectedBE = new DsbMannschaftBE();
+        final MannschaftBE expectedBE = new MannschaftBE();
         expectedBE.setId(ID);
         expectedBE.setBenutzerId(BENUTZER_ID);
         expectedBE.setNummer(NUMMER);
@@ -345,7 +345,7 @@ public class DsbMannschaftComponentImplTest {
 
 
         // configure mocks
-        when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
+        when(dsbMannschaftDAO.create(any(MannschaftBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
         final DsbMannschaftDO actual = underTest.create(input, USER);
@@ -360,7 +360,7 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).create(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(vereinDAO).findById(anyLong());
 
-        final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
+        final MannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
@@ -453,10 +453,10 @@ public class DsbMannschaftComponentImplTest {
         // prepare test data
         final DsbMannschaftDO input = getDsbMannschaftDO();
 
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
 
         // configure mocks
-        when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
+        when(dsbMannschaftDAO.update(any(MannschaftBE.class), anyLong())).thenReturn(expectedBE);
         when(dsbMannschaftDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
@@ -474,7 +474,7 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).update(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(vereinDAO).findById(anyLong());
 
-        final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
+        final MannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
@@ -525,10 +525,10 @@ public class DsbMannschaftComponentImplTest {
         final long wrongValue = 0L;
         input.setSortierung(wrongValue);
 
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
 
         // configure mocks
-        when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
+        when(dsbMannschaftDAO.update(any(MannschaftBE.class), anyLong())).thenReturn(expectedBE);
         when(dsbMannschaftDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
@@ -551,7 +551,7 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).update(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(vereinDAO).findById(anyLong());
 
-        final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
+        final MannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
@@ -568,7 +568,7 @@ public class DsbMannschaftComponentImplTest {
         // prepare test data
         final DsbMannschaftDO input = getDsbMannschaftDO();
 
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
 
         // configure mocks
 
@@ -581,7 +581,7 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).delete(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verifyZeroInteractions(vereinDAO);
 
-        final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
+        final MannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
@@ -625,12 +625,12 @@ public class DsbMannschaftComponentImplTest {
         // prepare test data
         final DsbMannschaftDO input = getSortierungsDO();
 
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
-        final DsbMannschaftBE expectedDatabaseBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedDatabaseBE = getDsbMannschaftBE();
         expectedDatabaseBE.setSortierung(DB_SORTIERUNG);
 
         // configure mocks
-        when(dsbMannschaftDAO.update(any(DsbMannschaftBE.class), anyLong())).thenReturn(expectedBE);
+        when(dsbMannschaftDAO.update(any(MannschaftBE.class), anyLong())).thenReturn(expectedBE);
         when(dsbMannschaftDAO.findById(anyLong())).thenReturn(expectedDatabaseBE);
 
         // call test method
@@ -661,7 +661,7 @@ public class DsbMannschaftComponentImplTest {
         verify(dsbMannschaftDAO).update(dsbMannschaftBEArgumentCaptor.capture(), anyLong());
         verify(dsbMannschaftDAO).findById(anyLong());
 
-        final DsbMannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
+        final MannschaftBE persistedBE = dsbMannschaftBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
@@ -707,9 +707,9 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void fillAllNames(){
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
         final VereinBE expectedVerein = getVereinBE();
-        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+        final List<MannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(dsbMannschaftDAO.findAll()).thenReturn(expectedBEList);
@@ -750,7 +750,7 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void fillName_VereinNull(){
         // prepare test data
-        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final MannschaftBE expectedBE = getDsbMannschaftBE();
 
         // configure mocks
         when(dsbMannschaftDAO.findById(ID)).thenReturn(expectedBE);
@@ -786,8 +786,8 @@ public class DsbMannschaftComponentImplTest {
     @Test
     public void copyMannschaftFromVeranstaltung_new(){
         // prepare test data
-        DsbMannschaftBE mannschaft1 = getDsbMannschaftBE();
-        final  List<DsbMannschaftBE> lastMannschaftList = new ArrayList<>();
+        MannschaftBE mannschaft1 = getDsbMannschaftBE();
+        final  List<MannschaftBE> lastMannschaftList = new ArrayList<>();
         lastMannschaftList.add(mannschaft1);
 
         MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(1L);
@@ -796,7 +796,7 @@ public class DsbMannschaftComponentImplTest {
 
         // configure mocks
         when(dsbMannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID)).thenReturn(lastMannschaftList);
-        when(dsbMannschaftDAO.create(any(DsbMannschaftBE.class), anyLong())).thenReturn(mannschaft1);
+        when(dsbMannschaftDAO.create(any(MannschaftBE.class), anyLong())).thenReturn(mannschaft1);
         when(mannschaftsmitgliedComponent.findByTeamId(anyLong())).thenReturn(mitglieder);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(null);
 
