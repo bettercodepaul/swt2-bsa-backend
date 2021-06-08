@@ -28,7 +28,7 @@ import de.bogenliga.application.springconfiguration.security.permissions.Require
  *
  * @author Philip dengler
  */
-public class DsbMannschaftServiceTest {
+public class MannschaftServiceTest {
 
     private static final long USER = 0;
     private static final long ID = 1893;
