@@ -1,6 +1,6 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftSortierungDTO;
@@ -41,7 +41,7 @@ public class MannschaftSortierungServiceTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private DsbMannschaftSortierungComponent mannschaftSortierungComponent;
+    private MannschaftSortierungComponent mannschaftSortierungComponent;
 
     @Mock
     private Principal principal;

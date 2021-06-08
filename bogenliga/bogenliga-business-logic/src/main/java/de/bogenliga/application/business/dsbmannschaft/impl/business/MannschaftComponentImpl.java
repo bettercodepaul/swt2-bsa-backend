@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.business;
 
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.MannschaftSortierungComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.MannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
-public class MannschaftComponentImpl implements MannschaftComponent, DsbMannschaftSortierungComponent {
+public class MannschaftComponentImpl implements MannschaftComponent, MannschaftSortierungComponent {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT= "DsbMannschaftDO must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be negative";

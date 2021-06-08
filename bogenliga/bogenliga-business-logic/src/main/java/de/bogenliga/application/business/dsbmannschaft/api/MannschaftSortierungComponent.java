@@ -3,7 +3,7 @@ package de.bogenliga.application.business.dsbmannschaft.api;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
-public interface DsbMannschaftSortierungComponent extends ComponentFacade {
+public interface MannschaftSortierungComponent extends ComponentFacade {
 
     /**
      * Updates the sorting attribute of a Mannschaft.
