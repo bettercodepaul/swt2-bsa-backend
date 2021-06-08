@@ -237,6 +237,75 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.add(new Paragraph("Jahr: " +Integer.toString(jahr)));
         doc.add(new Paragraph(""));
 
+        if(header.equals("Einzelstatistik"))
+        {
+            generateEinzel(doc, wettkampflisteBEList, mannschaftsid);
+        }
+        else if(header.equals( "Gesamtstatistik"))
+        {
+            generateGesammt(doc, wettkampflisteBEList, mannschaftsid);
+        }
+
+        doc.close();
+    }
+
+    public List<Long> getNummern(List<PasseDO> passen)
+    {
+        List<Long> passennummern = new LinkedList<>();
+        for(PasseDO passe : passen)
+        {
+            if(!passennummern.contains(passe.getPasseMatchNr()))
+            {
+                passennummern.add(passe.getPasseMatchNr());
+            }
+        }
+        return passennummern;
+    }
+
+    public String getTeamName(long teamID) {
+        Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
+        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
+        if (dsbMannschaftDO.getNummer() >= 1) {
+            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        } else {
+            return vereinDO.getName();
+        }
+    }
+
+    @Override
+    public byte[] getGesamtstatistikPDFasByteArray(long veranstaltungsid, long manschaftsid, int jahr) {
+        Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
+
+        byte[] bResult;
+        if (!wettkampflisteBEList.isEmpty()) {
+            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 PdfWriter writer = new PdfWriter(result);
+                 PdfDocument pdfDocument = new PdfDocument(writer);
+                 Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+                pdfDocument.getDocumentInfo().setTitle("Gesamtstatistik.pdf");
+                generateDoc(doc, "Gesamtstatistik" , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
+
+                bResult = result.toByteArray();
+                LOGGER.debug("Gesamtstatistik erstellt");
+            } catch(IOException e){
+                LOGGER.error("PDF Gesamtstatistik konnte nicht erstellt werden: {0}" , e);
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF Gesamtstatistik konnte nicht erstellt werden: " + e);
+            }
+        }
+        else
+        {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + manschaftsid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
+        return bResult;
+    }
+
+
+    public void generateEinzel(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
+    {
         for(WettkampfBE wettkampf : wettkampflisteBEList)
         {
             List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
@@ -258,7 +327,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                         table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
                         table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
                         table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen,nummer)))));
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverageEinzel(passen,nummer)))));
                     }
                 }
             }
@@ -271,106 +340,93 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 doc.add(new Paragraph(""));
             }
         }
-        doc.close();
     }
 
-    public List<Long> getNummern(List<PasseDO> passen)
+    void generateGesammt(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
-        List<Long> passennummern = new LinkedList<>();
-        for(PasseDO passe : passen)
+        List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
+
+        Table table = new Table(new float[]{100, 150, 250});
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
+
+        for(MannschaftsmitgliedExtendedBE schuetze : mitglied)
         {
-            if(!passennummern.contains(passe.getPasseMatchNr()))
+            float average = -1;
+            for(WettkampfBE wettkampf : wettkampflisteBEList)
             {
-                passennummern.add(passe.getPasseMatchNr());
+                List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(), schuetze.getDsbMitgliedId());
+                if(!passen.isEmpty())
+                {
+                    if(average == -1)
+                        average = 0;
+
+                    average += calcAverage(passen);
+                }
+            }
+            if (average != -1)
+            {
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
+                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(average))));
             }
         }
-        return passennummern;
-    }
-    public String getTeamName(long teamID) {
-        Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-        if (dsbMannschaftDO.getNummer() >= 1) {
-            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
-        } else {
-            return vereinDO.getName();
+        if(table.getNumberOfRows() > 1)
+        {
+            doc.setFontSize(9.2f);
+            doc.add(table);
+            doc.add(new Paragraph(""));
         }
     }
 
-    public float calcAverage( List<PasseDO> passen ,long nummer)
+    float calcAverageEinzel(List<PasseDO> passen ,long nummer)
+    {
+        List<PasseDO> neu = new ArrayList<>();
+        for(PasseDO passe : passen)
+        {
+            if(passe.getPasseMatchNr() == nummer)
+            {
+                neu.add(passe);
+            }
+        }
+        return calcAverage(neu);
+    }
+
+    public float calcAverage( List<PasseDO> passen)
     {
         float average = 0;
         int count = 0;
 
         for(PasseDO passe : passen)
         {
-            if(passe.getPasseMatchNr()==nummer)
-            {
-                if (passe.getPfeil1() != null) {
-                    average += passe.getPfeil1();
-                    count++;
-                }
-                if (passe.getPfeil2() != null) {
-                    average += passe.getPfeil2();
-                    count++;
-                }
-                if (passe.getPfeil3() != null) {
-                    average += passe.getPfeil3();
-                    count++;
-                }
-                if (passe.getPfeil4() != null) {
-                    average += passe.getPfeil4();
-                    count++;
-                }
-                if (passe.getPfeil5() != null) {
-                    average += passe.getPfeil5();
-                    count++;
-                }
-                if (passe.getPfeil6() != null) {
-                    average += passe.getPfeil6();
-                    count++;
-                }
+            if (passe.getPfeil1() != null) {
+                average += passe.getPfeil1();
+                count++;
             }
-
+            if (passe.getPfeil2() != null) {
+                average += passe.getPfeil2();
+                count++;
+            }
+            if (passe.getPfeil3() != null) {
+                average += passe.getPfeil3();
+                count++;
+                }
+            if (passe.getPfeil4() != null) {
+                average += passe.getPfeil4();
+                count++;
+            }
+            if (passe.getPfeil5() != null) {
+                average += passe.getPfeil5();
+                count++;
+            }
+            if (passe.getPfeil6() != null) {
+                average += passe.getPfeil6();
+                count++;
+            }
         }
         average = average / count;
         return average;
     }
 
-
-    @Override
-    public byte[] getGesamtstatistikPDFasByteArray(long veranstaltungsid, long manschaftsid, int jahr) {
-        Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
-
-        byte[] bResult;
-        if (!wettkampflisteBEList.isEmpty()) {
-            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-                 PdfWriter writer = new PdfWriter(result);
-                 PdfDocument pdfDocument = new PdfDocument(writer);
-                 Document doc = new Document(pdfDocument, PageSize.A4)) {
-
-                pdfDocument.getDocumentInfo().setTitle("Gesamtstatistik.pdf");
-                generateDocGesamtstatistik(doc,  wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
-
-                bResult = result.toByteArray();
-                LOGGER.debug("Gesamtstatistik erstellt");
-            } catch(IOException e){
-                LOGGER.error("PDF Gesamtstatistik konnte nicht erstellt werden: {0}" , e);
-                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                        "PDF Gesamtstatistik konnte nicht erstellt werden: " + e);
-            }
-        }
-        else
-        {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + manschaftsid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
-        }
-        return bResult;
-    }
-
-    //ruft generateDoc() auf und ändert die Überschrift der PDF, weil generateDoc() die vorhandene Logik beinhaltet.
-    public void generateDocGesamtstatistik(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
-    {
-        generateDoc(doc,"Gesamtstatistik", wettkampflisteBEList, veranstaltungsid, mannschaftsid, jahr);
-    }
 }

@@ -462,9 +462,9 @@ public class WettkampfComponentImplTest {
         //daten vorbereiten
         List<PasseDO> passen = getPassenDO();
         //Methode aufrufen
-        float actual = underTest.calcAverage(passen,1l);
+        float actual = underTest.calcAverage(passen);
         //haben wir das erwartete ergebnis erhalten
-        Assertions.assertThat(actual).isEqualTo(8.5f);
+        Assertions.assertThat(actual).isEqualTo(8.75f);
 
         //Testabdeckung: im Falle dass der Pfeil == null
         passen = getEmptyPassenDO();
@@ -473,8 +473,17 @@ public class WettkampfComponentImplTest {
             //erwartetes Ergebnis definieren
             Assertions.assertThat(passe.getPfeil1()).isNull();
         }
+    }
 
-
+    @Test
+    public void testCalcAverageEinzel()
+    {
+        //daten vorbereiten
+        List<PasseDO> passen = getPassenDO();
+        //Methode aufrufen
+        float actual = underTest.calcAverageEinzel(passen,1l);
+        //haben wir das erwartete ergebnis erhalten
+        Assertions.assertThat(actual).isEqualTo(8.5f);
     }
 
     @Test
@@ -495,9 +504,8 @@ public class WettkampfComponentImplTest {
 
             prepare2ndMocksForPDFTest();
         }
-
-
     }
+
     @Test
     public void testGesamtstatistik() throws IOException
     {
