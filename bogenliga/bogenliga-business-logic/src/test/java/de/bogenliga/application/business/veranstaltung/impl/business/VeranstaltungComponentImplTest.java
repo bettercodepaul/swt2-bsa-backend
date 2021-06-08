@@ -649,4 +649,6 @@ public class VeranstaltungComponentImplTest {
         verify(veranstaltungDAO).findBySportjahr(anyLong());
     }
 
+
+
 }
