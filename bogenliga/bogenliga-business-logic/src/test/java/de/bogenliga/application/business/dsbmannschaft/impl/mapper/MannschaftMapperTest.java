@@ -7,7 +7,7 @@ import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbM
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.DsbMannschaftComponentImplTest.getDsbMannschaftDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DsbMannschaftMapperTest {
+public class MannschaftMapperTest {
 
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
@@ -23,7 +23,7 @@ public class DsbMannschaftMapperTest {
     public void toVO() throws Exception {
         final MannschaftBE mannschaftBE =  getDsbMannschaftBE();
 
-        final DsbMannschaftDO actual = DsbMannschaftMapper.toDsbMannschaftDO.apply(mannschaftBE);
+        final DsbMannschaftDO actual = MannschaftMapper.toDsbMannschaftDO.apply(mannschaftBE);
 
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getVereinId()).isEqualTo(VEREINID);
@@ -33,7 +33,7 @@ public class DsbMannschaftMapperTest {
     public void toBE() throws Exception {
         final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
 
-        final MannschaftBE actual = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
+        final MannschaftBE actual = MannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
 
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getVereinId()).isEqualTo(VEREINID);

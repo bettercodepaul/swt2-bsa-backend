@@ -5,7 +5,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortieru
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
-import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
+import de.bogenliga.application.business.dsbmannschaft.impl.mapper.MannschaftMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
@@ -70,7 +70,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public List<DsbMannschaftDO> findAll() {
         final List<MannschaftBE> mannschaftBeList = dsbMannschaftDAO.findAll();
         return this.fillAllNames(mannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(MannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(mannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(MannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(mannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(MannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
     }
 
 
@@ -110,7 +110,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, id));
         }
-        return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(result));
+        return fillName(MannschaftMapper.toDsbMannschaftDO.apply(result));
     }
 
 
@@ -119,10 +119,10 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
         checkDsbMannschaftDO(dsbMannschaftDO, currentDsbMannschaftId);
 
-        final MannschaftBE mannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
+        final MannschaftBE mannschaftBE = MannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
         final MannschaftBE persistedMannschaftBE = dsbMannschaftDAO.create(mannschaftBE, currentDsbMannschaftId);
 
-        return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedMannschaftBE));
+        return fillName(MannschaftMapper.toDsbMannschaftDO.apply(persistedMannschaftBE));
     }
 
 
@@ -133,10 +133,10 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         checkSortierung(dsbMannschaftDO); //To avoid corruption of the Sortierung
 
-        final MannschaftBE mannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
+        final MannschaftBE mannschaftBE = MannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
         final MannschaftBE persistedMannschaftBE = dsbMannschaftDAO.update(mannschaftBE, currentDsbMannschaftId);
 
-        return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedMannschaftBE));
+        return fillName(MannschaftMapper.toDsbMannschaftDO.apply(persistedMannschaftBE));
     }
 
 
@@ -146,7 +146,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         Preconditions.checkArgument(currentDsbMannschaftId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
 
-        final MannschaftBE mannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
+        final MannschaftBE mannschaftBE = MannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
 
         dsbMannschaftDAO.delete(mannschaftBE, currentDsbMannschaftId);
 
@@ -202,10 +202,10 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
         fillDO(mannschaftDO);
 
-        final MannschaftBE mannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftDO);
+        final MannschaftBE mannschaftBE = MannschaftMapper.toDsbMannschaftBE.apply(mannschaftDO);
         final MannschaftBE persistedMannschaftBE = dsbMannschaftDAO.update(mannschaftBE, currentDsbMitgliedID);
 
-        return DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedMannschaftBE);
+        return MannschaftMapper.toDsbMannschaftDO.apply(persistedMannschaftBE);
     }
 
     /**
@@ -215,7 +215,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      */
     private void fillDO(DsbMannschaftDO mannschaftDO){
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
-        DsbMannschaftDO doFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
+        DsbMannschaftDO doFromDatabase = MannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
 
         if(doFromDatabase != null) {
             checkSortierung(mannschaftDO, doFromDatabase);
@@ -249,7 +249,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkNotNull(mannschaftDO,PRECONDITION_MSG_DSBMANNSCHAFT);
 
         if(doFromDatabase == null) {
-            doFromDatabase = DsbMannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
+            doFromDatabase = MannschaftMapper.toDsbMannschaftDO.apply(dsbMannschaftDAO.findById(mannschaftDO.getId()));
         }
         if( (mannschaftDO.getSortierung() == null && doFromDatabase != null) ||
                 (mannschaftDO.getSortierung() != null && mannschaftDO.getSortierung().equals(0L) &&
@@ -274,7 +274,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         final List<MannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastVeranstaltungId);
 
         List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(MannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
 
         // creates a new database entry for every Mannschaft with the current VeranstaltungId
         List<DsbMannschaftDO> addedMannschaftenList = new ArrayList<>();
@@ -284,7 +284,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
             checkDsbMannschaftDO(mannschaftToCheck, currentVeranstaltungId);
 
             addedMannschaftenList.add(mannschaftToCheck);
-            final MannschaftBE mannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
+            final MannschaftBE mannschaftBE = MannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
             MannschaftBE addedMannschaft = dsbMannschaftDAO.create(mannschaftBE, currentVeranstaltungId);
             // Copy Mannschaftsmitglieder for every Mannschaft
             // following lines of code are not outsourced because we currently assume that they are not needed anywhere else

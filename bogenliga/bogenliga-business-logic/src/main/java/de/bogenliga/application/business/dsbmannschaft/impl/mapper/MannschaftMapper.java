@@ -14,7 +14,7 @@ import de.bogenliga.application.common.time.DateProvider;
  */
 
 
-public class DsbMannschaftMapper implements ValueObjectMapper {
+public class MannschaftMapper implements ValueObjectMapper {
 
 
     /**
@@ -77,7 +77,7 @@ public class DsbMannschaftMapper implements ValueObjectMapper {
     /**
      * Private constructor
      */
-    private DsbMannschaftMapper() {
+    private MannschaftMapper() {
         // empty private constructor
     }
 
