@@ -63,15 +63,6 @@ public interface VeranstaltungComponent extends ComponentFacade {
     VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
     /**
-     * Returns the last "Veranstaltung" of the given current Veranstaltung id
-     *
-     * @param veranstaltungId ID of the current veranstaltung to query the last Veranstaltung.
-     *
-     * @return returns the queried Veranstaltung
-     */
-    VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId);
-
-    /**
      * Deletes a database entry depending on the id of the VeranstaltungDO property
      *
      * @param veranstaltungDO    Veranstaltung DataObject containing atleast an id

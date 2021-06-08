@@ -246,7 +246,6 @@ public class DsbMannschaftService implements ServiceFacade {
                                               @PathVariable("currentVeranstaltungsId") final long currentVeranstaltungsId,
                                               final Principal principal) {
         Preconditions.checkArgument(lastVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
-        Preconditions.checkArgument(currentVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         final Long userId = UserProvider.getCurrentUserId(principal);
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", lastVeranstaltungsId);

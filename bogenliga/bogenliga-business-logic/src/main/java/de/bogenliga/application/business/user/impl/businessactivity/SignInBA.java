@@ -30,8 +30,8 @@ public class SignInBA {
     private static final String ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid sign in credentials.";
     private static final String ERROR_MESSAGE_BLOCKED_USER = "User is blocked for %s seconds.";
 
-    // 5 allowed attempts, multiplied by 3 (= 15) because 3 POST-requests are sent per login attempt.
-    private static final int MAX_ALLOWED_LOGIN_ATTEMPTS = 15;
+    // 5 allowed attempts, multiplied by 3 because 3 POST-requests are sent per login attempt.
+    private static final int MAX_ALLOWED_LOGIN_ATTEMPTS = 5 * 3;
     private static final int LOGIN_ATTEMPTS_TIME_RANGE = 5 * 60; // 5 minutes in seconds
 
     private final UserDAO userDAO;
