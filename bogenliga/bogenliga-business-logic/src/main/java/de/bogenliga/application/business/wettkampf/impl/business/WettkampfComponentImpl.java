@@ -193,37 +193,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
     }
 
-    @Override
-    public byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr){
-        Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
-
-        byte[] bResult;
-        if (!wettkampflisteBEList.isEmpty()) {
-            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-                PdfWriter writer = new PdfWriter(result);
-                PdfDocument pdfDocument = new PdfDocument(writer);
-                Document doc = new Document(pdfDocument, PageSize.A4)) {
-
-                pdfDocument.getDocumentInfo().setTitle("Einzelstatistik.pdf");
-                generateDoc(doc, "Einzelstatistik" , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
-
-                bResult = result.toByteArray();
-                LOGGER.debug("Einzelstatistik erstellt");
-            } catch(IOException e){
-                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: {0}" , e);
-                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                        "PDF Einzelstatistik konnte nicht erstellt werden: " + e);
-            }
-        }
-        else
-        {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + manschaftsid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
-        }
-
-        return bResult;
-
-    }
 
     //Erstellt die grundstruktur der pdf und ruft dann passend entweder generateEinzel zur erstellung der einzelstatistik oder generateGesammt zur erstellung der Gesammtstatistik auf
     public void generateDoc(Document doc, String header, List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
@@ -277,7 +246,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     @Override
-    public byte[] getGesamtstatistikPDFasByteArray(long veranstaltungsid, long manschaftsid, int jahr) {
+    public byte[] getPDFasByteArray(String name, long veranstaltungsid, long manschaftsid, int jahr) {
         Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
 
@@ -288,15 +257,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                  PdfDocument pdfDocument = new PdfDocument(writer);
                  Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-                pdfDocument.getDocumentInfo().setTitle("Gesamtstatistik.pdf");
-                generateDoc(doc, "Gesamtstatistik" , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
+                pdfDocument.getDocumentInfo().setTitle(name+".pdf");
+                generateDoc(doc, name , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
                 bResult = result.toByteArray();
-                LOGGER.debug("Gesamtstatistik erstellt");
+                LOGGER.debug("{0} erstellt",name);
             } catch(IOException e){
-                LOGGER.error("PDF Gesamtstatistik konnte nicht erstellt werden: {0}" , e);
+                LOGGER.error("PDF {0} konnte nicht erstellt werden: {1}",name , e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                        "PDF Gesamtstatistik konnte nicht erstellt werden: " + e);
+                        "PDF"+ name +"konnte nicht erstellt werden: " + e);
             }
         }
         else
