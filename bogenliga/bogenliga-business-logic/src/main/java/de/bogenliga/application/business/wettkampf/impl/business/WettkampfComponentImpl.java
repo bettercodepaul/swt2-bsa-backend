@@ -364,6 +364,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         return calcAverage(neu);
     }
+    public WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId){
+        WettkampfBE wettkampfBE= wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
+        return  WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
+    }
 
     //berechnet den durchscnittlichen pfeilwert aller übergebenen passen
     public float calcAverage( List<PasseDO> passen)

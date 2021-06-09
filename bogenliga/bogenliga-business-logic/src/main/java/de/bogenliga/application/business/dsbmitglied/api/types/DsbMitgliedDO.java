@@ -27,6 +27,12 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     private Long userId;
     private Boolean kampfrichter;
 
+    /**
+     * NoArgs constructor
+     */
+    public DsbMitgliedDO(){
+
+    }
 
     /**
      * Constructor with optional parameters

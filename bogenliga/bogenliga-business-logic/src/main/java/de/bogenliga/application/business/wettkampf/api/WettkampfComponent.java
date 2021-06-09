@@ -88,4 +88,13 @@ public interface WettkampfComponent extends ComponentFacade {
      * @return document
      */
     byte[] getPDFasByteArray(String name, long veranstaltungsid,long manschaftsid,int jahr);
+
+
+    /**
+     * return Wettkampf  (Wettkampftag 0) from given VeranstaltungsID
+     * @param veranstaltungsId for the competition
+     * @return WettkampfDO
+     */
+    WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId);
+
 }

@@ -602,5 +602,30 @@ public class WettkampfComponentImplTest {
         //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(expected);
     }
+    @Test
+    public void testFindWT0byVeranstaltungsId(){
+        WettkampfBE expectedBE = getWettkampfBE();
+        final WettkampfDO expectedDO = getWettkampfDO();
 
+        when(wettkampfDAO.findWT0byVeranstaltungsId(wettkampf_Veranstaltung_Id)).thenReturn(expectedBE);
+        // call test method
+        WettkampfDO actual= underTest.findWT0byVeranstaltungsId(wettkampf_Veranstaltung_Id);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(expectedDO.getId());
+        assertThat(actual.getWettkampfDatum()).isEqualTo(expectedDO.getWettkampfDatum());
+        assertThat(actual.getWettkampfStrasse()).isEqualTo(expectedDO.getWettkampfStrasse());
+        assertThat(actual.getWettkampfPlz()).isEqualTo(expectedDO.getWettkampfPlz());
+        assertThat(actual.getWettkampfOrtsname()).isEqualTo(expectedDO.getWettkampfOrtsname());
+        assertThat(actual.getWettkampfOrtsinfo()).isEqualTo(expectedDO.getWettkampfOrtsinfo());
+        assertThat(actual.getWettkampfBeginn()).isEqualTo(expectedDO.getWettkampfBeginn());
+        assertThat(actual.getWettkampfTag()).isEqualTo(expectedDO.getWettkampfTag());
+        assertThat(actual.getWettkampfDisziplinId()).isEqualTo(expectedDO.getWettkampfDisziplinId());
+        assertThat(actual.getWettkampfTypId()).isEqualTo(expectedDO.getWettkampfTypId());
+        assertThat(actual.getWettkampfAusrichter()).isEqualTo(expectedDO.getWettkampfAusrichter());
+
+    }
 }
