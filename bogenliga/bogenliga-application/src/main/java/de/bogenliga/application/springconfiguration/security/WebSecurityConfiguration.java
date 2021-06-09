@@ -78,7 +78,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/v1/vereine")
                 .and()
                 .ignoring()
-                .antMatchers(HttpMethod.GET, "/v1/dsbmannschaft/byVereinsID/{id}")
+                .antMatchers(HttpMethod.GET, "/v1/mannschaft/byVereinsID/{id}")
                 .and()
                 .ignoring()
                 .antMatchers(HttpMethod.GET, "/v1/wettkampf/byMannschaftsId/{id}")

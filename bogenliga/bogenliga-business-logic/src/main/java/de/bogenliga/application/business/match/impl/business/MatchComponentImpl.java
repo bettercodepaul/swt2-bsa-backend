@@ -3,8 +3,8 @@ package de.bogenliga.application.business.match.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
+import de.bogenliga.application.business.mannschaft.api.MannschaftComponent;
+import de.bogenliga.application.business.mannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;

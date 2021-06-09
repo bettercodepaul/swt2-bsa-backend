@@ -30,8 +30,8 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.types.Mannschaf
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
+import de.bogenliga.application.business.mannschaft.api.MannschaftComponent;
+import de.bogenliga.application.business.mannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;

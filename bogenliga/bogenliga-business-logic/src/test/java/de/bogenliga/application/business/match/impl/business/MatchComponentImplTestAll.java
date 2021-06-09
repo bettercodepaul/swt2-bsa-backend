@@ -3,7 +3,7 @@ package de.bogenliga.application.business.match.impl.business;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 
-import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
+import de.bogenliga.application.business.mannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import org.junit.Before;

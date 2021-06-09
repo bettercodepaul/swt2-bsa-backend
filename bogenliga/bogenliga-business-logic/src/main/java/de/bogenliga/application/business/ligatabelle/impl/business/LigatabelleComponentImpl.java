@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.ligatabelle.impl.business;
 
-import de.bogenliga.application.business.dsbmannschaft.api.MannschaftSortierungComponent;
+import de.bogenliga.application.business.mannschaft.api.MannschaftSortierungComponent;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.ligatabelle.impl.dao.LigatabelleDAO;

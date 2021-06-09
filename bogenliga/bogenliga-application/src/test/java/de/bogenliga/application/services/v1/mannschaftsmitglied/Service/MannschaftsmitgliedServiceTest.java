@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
 
-import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
+import de.bogenliga.application.business.mannschaft.api.MannschaftComponent;
+import de.bogenliga.application.business.mannschaft.api.types.MannschaftDO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
