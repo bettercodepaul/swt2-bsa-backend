@@ -19,7 +19,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -287,10 +287,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
     public String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(teamID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-        if (dsbMannschaftDO.getNummer() >= 1) {
-            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        MannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
+        VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+        if (mannschaftDO.getNummer() >= 1) {
+            return vereinDO.getName() + " " + mannschaftDO.getNummer();
         } else {
             return vereinDO.getName();
         }

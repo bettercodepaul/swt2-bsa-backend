@@ -1,7 +1,7 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftSortierungComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftSortierungDTO;
 import org.junit.Before;
@@ -50,13 +50,13 @@ public class MannschaftSortierungServiceTest {
     private MannschaftSortierungService underTest;
 
     @Captor
-    private ArgumentCaptor<DsbMannschaftDO> dsbMannschaftVOArgumentCaptor;
+    private ArgumentCaptor<MannschaftDO> dsbMannschaftVOArgumentCaptor;
 
 
 
 
-    private static DsbMannschaftDO getDsbMannschaftDO() {
-        return new DsbMannschaftDO(
+    private static MannschaftDO getDsbMannschaftDO() {
+        return new MannschaftDO(
                 ID, DB_NAME, DB_VEREIN_ID, DB_NUMMER, DB_BENUTZER_ID, DB_VERANSTALTUNG_ID, SORTIERUNG
         );
     }
@@ -83,7 +83,7 @@ public class MannschaftSortierungServiceTest {
     public void update() {
         // prepare test data
         final MannschaftSortierungDTO inputDTO = getMannschaftSortierungDTO();
-        final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final MannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
         when(mannschaftSortierungComponent.updateSortierung(any(), anyLong())).thenReturn(expected);
@@ -99,7 +99,7 @@ public class MannschaftSortierungServiceTest {
         // verify invocations
         verify(mannschaftSortierungComponent).updateSortierung(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
 
-        final DsbMannschaftDO updatedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+        final MannschaftDO updatedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
 
         assertThat(updatedDsbMannschaft).isNotNull();
         assertThat(updatedDsbMannschaft.getId()).isEqualTo(inputDTO.getId());
@@ -111,7 +111,7 @@ public class MannschaftSortierungServiceTest {
         // prepare test data
         final MannschaftSortierungDTO inputDTO = getMannschaftSortierungDTO();
         inputDTO.setSortierung(-1L);
-        final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final MannschaftDO expected = getDsbMannschaftDO();
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.update(inputDTO, principal))

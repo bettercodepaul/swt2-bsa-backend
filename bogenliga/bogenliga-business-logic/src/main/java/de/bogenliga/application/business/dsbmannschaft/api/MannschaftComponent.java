@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.dsbmannschaft.api;
 
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface MannschaftComponent extends ComponentFacade {
      * @return list of all dsbmannschaft dsbmannschaft in the database;
      * empty list, if no dsbmannschaft is found
      */
-    List<DsbMannschaftDO> findAll();
+    List<MannschaftDO> findAll();
 
 
     /**
@@ -28,7 +28,7 @@ public interface MannschaftComponent extends ComponentFacade {
      * null, if no dsbmannschaft is found.
      */
 
-    List<DsbMannschaftDO> findAllByVereinsId(long id);
+    List<MannschaftDO> findAllByVereinsId(long id);
 
 
     /**
@@ -39,7 +39,7 @@ public interface MannschaftComponent extends ComponentFacade {
      * null, if no dsbmannschaft is found.
      */
 
-    List<DsbMannschaftDO> findAllByVeranstaltungsId(long id);
+    List<MannschaftDO> findAllByVeranstaltungsId(long id);
 
 
     /**
@@ -50,17 +50,17 @@ public interface MannschaftComponent extends ComponentFacade {
      * null, if no dsbmannschaft is found
      */
 
-    DsbMannschaftDO findById(long id);
+    MannschaftDO findById(long id);
 
 
     /**
      * Create a new dsbmannschaft in the database.
      *
-     * @param dsbMannschaftDO new dsbmannschaft
+     * @param mannschaftDO new dsbmannschaft
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long currentDsbMannschaftId);
+    MannschaftDO create(MannschaftDO mannschaftDO, long currentDsbMannschaftId);
 
 
     /**
@@ -70,16 +70,16 @@ public interface MannschaftComponent extends ComponentFacade {
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO update(DsbMannschaftDO dsbMannschaftdDO, long currentDsbMannschaftId);
+    MannschaftDO update(MannschaftDO dsbMannschaftdDO, long currentDsbMannschaftId);
 
 
     /**
      * Delete an existing dsbmannschaft. The dsbmannschaft is identified by the id.
      *
-     * @param dsbMannschaftDO dsbmannschaft to delete
+     * @param mannschaftDO dsbmannschaft to delete
      */
 
-    void delete(DsbMannschaftDO dsbMannschaftDO, long currentDsbMitgliedId);
+    void delete(MannschaftDO mannschaftDO, long currentDsbMitgliedId);
 
     /**
      * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
@@ -89,5 +89,5 @@ public interface MannschaftComponent extends ComponentFacade {
      * @param userId
      * @return
      */
-    List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
+    List<MannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
 }

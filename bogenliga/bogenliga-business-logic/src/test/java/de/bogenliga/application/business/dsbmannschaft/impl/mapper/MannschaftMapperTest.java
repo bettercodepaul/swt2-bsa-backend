@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.mapper;
 
 import org.junit.Test;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest.getDsbMannschaftBE;
 import static de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest.getDsbMannschaftDO;
@@ -23,7 +23,7 @@ public class MannschaftMapperTest {
     public void toVO() throws Exception {
         final MannschaftBE mannschaftBE =  getDsbMannschaftBE();
 
-        final DsbMannschaftDO actual = MannschaftMapper.toDsbMannschaftDO.apply(mannschaftBE);
+        final MannschaftDO actual = MannschaftMapper.toDsbMannschaftDO.apply(mannschaftBE);
 
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getVereinId()).isEqualTo(VEREINID);
@@ -31,9 +31,9 @@ public class MannschaftMapperTest {
 
     @Test
     public void toBE() throws Exception {
-        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final MannschaftDO mannschaftDO = getDsbMannschaftDO();
 
-        final MannschaftBE actual = MannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
+        final MannschaftBE actual = MannschaftMapper.toDsbMannschaftBE.apply(mannschaftDO);
 
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getVereinId()).isEqualTo(VEREINID);

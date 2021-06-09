@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -181,7 +181,7 @@ public class MatchService implements ServiceFacade {
 
         for( MatchDO einmatch: wettkampfMatches) {
             MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
-            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
+            MannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
             VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
             matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
             matchDTOs.add(matchDTO);
@@ -711,7 +711,7 @@ public class MatchService implements ServiceFacade {
 
         // the match is shown on the Schusszettel, add passen and mannschaft name
         if (addPassen) {
-            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
+            MannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
             VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
             matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
 

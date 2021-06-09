@@ -22,7 +22,7 @@ import org.mockito.junit.MockitoRule;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -165,9 +165,9 @@ public class WettkampfComponentImplTest {
         return newMittglied;
     }
 
-    public static DsbMannschaftDO getDsbMannschaftDO()
+    public static MannschaftDO getDsbMannschaftDO()
     {
-        DsbMannschaftDO neueMannschaft = new DsbMannschaftDO(1l,"1.Manschaft Muster Hausen",1l,1l,
+        MannschaftDO neueMannschaft = new MannschaftDO(1l,"1.Manschaft Muster Hausen",1l,1l,
                 0l,wettkampf_Veranstaltung_Id,0l);
         return neueMannschaft;
     }

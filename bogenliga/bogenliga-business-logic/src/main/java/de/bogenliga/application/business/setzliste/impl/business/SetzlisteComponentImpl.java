@@ -21,7 +21,7 @@ import de.bogenliga.application.business.setzliste.api.SetzlisteComponent;
 import de.bogenliga.application.business.setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -259,10 +259,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             LOGGER.error("Cannot find team for tablepos");
             return "ERROR";
         } else {
-            DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(teamID);
-            VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-            if (dsbMannschaftDO.getNummer() > 1) {
-                return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+            MannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
+            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+            if (mannschaftDO.getNummer() > 1) {
+                return vereinDO.getName() + " " + mannschaftDO.getNummer();
             } else {
                 return vereinDO.getName();
             }

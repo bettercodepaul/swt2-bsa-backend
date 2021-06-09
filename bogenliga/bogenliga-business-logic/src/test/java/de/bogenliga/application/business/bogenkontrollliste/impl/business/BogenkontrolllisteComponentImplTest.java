@@ -12,7 +12,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mockito.stubbing.Answer;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbDsbMitgliedComponentImplTest;
@@ -84,8 +84,8 @@ public class BogenkontrolllisteComponentImplTest {
         when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(MatchComponentImplTest.getMatchDO());
         when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
         when(veranstaltungComponent.findById(anyLong())).thenReturn(VeranstaltungComponentImplTest.getVeranstaltungDO());
-        when(mannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
-            DsbMannschaftDO ret = MannschaftComponentImplTest.getDsbMannschaftDO();
+        when(mannschaftComponent.findById(anyLong())).thenAnswer((Answer<MannschaftDO>) invocation -> {
+            MannschaftDO ret = MannschaftComponentImplTest.getDsbMannschaftDO();
             ret.setNummer((long)(Math.random() * 2 + 1));
             return ret;
         });

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -100,9 +100,9 @@ public class MannschaftService implements ServiceFacade {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftDTO> findAll() {
-        final List<DsbMannschaftDO> dsbMannschaftDOList = mannschaftComponent.findAll();
+        final List<MannschaftDO> mannschaftDOList = mannschaftComponent.findAll();
 
-        return dsbMannschaftDOList.stream().map(MannschaftDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftDOList.stream().map(MannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -133,8 +133,8 @@ public class MannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
-        final List<DsbMannschaftDO> dsbMannschaftDOList  = mannschaftComponent.findAllByVereinsId(id);
-        return dsbMannschaftDOList.stream().map(MannschaftDTOMapper.toDTO).collect(Collectors.toList());
+        final List<MannschaftDO> mannschaftDOList = mannschaftComponent.findAllByVereinsId(id);
+        return mannschaftDOList.stream().map(MannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -151,8 +151,8 @@ public class MannschaftService implements ServiceFacade {
 
         LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID '{}'", id);
 
-        final List<DsbMannschaftDO> dsbMannschaftDOList  = mannschaftComponent.findAllByVeranstaltungsId(id);
-        return dsbMannschaftDOList.stream().map(MannschaftDTOMapper.toDTO).collect(Collectors.toList());
+        final List<MannschaftDO> mannschaftDOList = mannschaftComponent.findAllByVeranstaltungsId(id);
+        return mannschaftDOList.stream().map(MannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -177,9 +177,9 @@ public class MannschaftService implements ServiceFacade {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
-        final DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(id);
+        final MannschaftDO mannschaftDO = mannschaftComponent.findById(id);
 
-        return MannschaftDTOMapper.toDTO.apply(dsbMannschaftDO);
+        return MannschaftDTOMapper.toDTO.apply(mannschaftDO);
     }
 
 
@@ -225,10 +225,10 @@ public class MannschaftService implements ServiceFacade {
                     userId,
                     mannschaftDTO.getVeranstaltungId());
 
-            final DsbMannschaftDO newDsbMannschaftDO = MannschaftDTOMapper.toDO.apply(mannschaftDTO);
+            final MannschaftDO newMannschaftDO = MannschaftDTOMapper.toDO.apply(mannschaftDTO);
 
-            final DsbMannschaftDO savedDsbMannschaftDO = mannschaftComponent.create(newDsbMannschaftDO, userId);
-            return MannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
+            final MannschaftDO savedMannschaftDO = mannschaftComponent.create(newMannschaftDO, userId);
+            return MannschaftDTOMapper.toDTO.apply(savedMannschaftDO);
 
         } else throw new NoPermissionException();
     }
@@ -281,8 +281,8 @@ public class MannschaftService implements ServiceFacade {
             //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
         if(this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, mannschaftDTO.getVereinId()) &&
                 !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
-            DsbMannschaftDO dsbMannschaftDO = this.mannschaftComponent.findById(mannschaftDTO.getId());
-            if(!dsbMannschaftDO.getVeranstaltungId().equals(mannschaftDTO.getVeranstaltungId())) {
+            MannschaftDO mannschaftDO = this.mannschaftComponent.findById(mannschaftDTO.getId());
+            if(!mannschaftDO.getVeranstaltungId().equals(mannschaftDTO.getVeranstaltungId())) {
                 throw new NoPermissionException();
             }
         }
@@ -298,11 +298,11 @@ public class MannschaftService implements ServiceFacade {
                 mannschaftDTO.getBenutzerId(),
                 mannschaftDTO.getVeranstaltungId());
 
-        final DsbMannschaftDO newDsbMannschaftDO = MannschaftDTOMapper.toDO.apply(mannschaftDTO);
+        final MannschaftDO newMannschaftDO = MannschaftDTOMapper.toDO.apply(mannschaftDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final DsbMannschaftDO updatedDsbMannschaftDO = mannschaftComponent.update(newDsbMannschaftDO, userId);
-        return MannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
+        final MannschaftDO updatedMannschaftDO = mannschaftComponent.update(newMannschaftDO, userId);
+        return MannschaftDTOMapper.toDTO.apply(updatedMannschaftDO);
     }
 
 
@@ -320,10 +320,10 @@ public class MannschaftService implements ServiceFacade {
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
         // allow value == null, the value will be ignored
-        final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
+        final MannschaftDO mannschaftDO = new MannschaftDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        mannschaftComponent.delete(dsbMannschaftDO, userId);
+        mannschaftComponent.delete(mannschaftDO, userId);
     }
 
     public static void checkPreconditions(@RequestBody final MannschaftDTO mannschaftDTO) {

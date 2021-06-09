@@ -3,11 +3,10 @@ package de.bogenliga.application.business.dsbmannschaft.api.types;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
-import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class DsbMannschaftDO extends CommonDataObject implements DataObject {
+public class MannschaftDO extends CommonDataObject implements DataObject {
 
     /**
      * business parameter
@@ -38,9 +37,9 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param version
      */
 
-    public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId,
-                           final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId,
-                           final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId, final Long version) {
+    public MannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId, final long veranstaltungId,
+                        final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId,
+                        final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.name = name;
         this.vereinId=vereinId;
@@ -71,8 +70,8 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param createdByUserId
      * @param version
      */
-    public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId,final long veranstaltungId,
-                           final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId,final Long version) {
+    public MannschaftDO(final Long id, final String name, final long vereinId, final long nummer, final long benutzerId, final long veranstaltungId,
+                        final Long sortierung, final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
         this.id = id;
         this.name = name;
         this.vereinId=vereinId;
@@ -94,8 +93,8 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param veranstaltungId
 
      */
-    public DsbMannschaftDO(final Long id, final String name, final long vereinId, final long nummer,
-                           final long benutzerId,final long veranstaltungId, final Long sortierung) {
+    public MannschaftDO(final Long id, final String name, final long vereinId, final long nummer,
+                        final long benutzerId, final long veranstaltungId, final Long sortierung) {
         this.id = id;
         this.name = name;
         this.vereinId=vereinId;
@@ -111,7 +110,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * @param id
      * @param vereinId
      */
-    public DsbMannschaftDO(final Long id, final long vereinId) {
+    public MannschaftDO(final Long id, final long vereinId) {
         this.id = id;
         this.vereinId = vereinId;
     }
@@ -120,7 +119,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
      * Constructor with id for deleting existing entries
      * @param id
      */
-    public DsbMannschaftDO(final Long id) {
+    public MannschaftDO(final Long id) {
         this.id = id;
     }
 
@@ -176,7 +175,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final DsbMannschaftDO that = (DsbMannschaftDO) o;
+        final MannschaftDO that = (MannschaftDO) o;
         return id == that.id &&
                 vereinId == that.vereinId &&
                 benutzerId == that.benutzerId &&

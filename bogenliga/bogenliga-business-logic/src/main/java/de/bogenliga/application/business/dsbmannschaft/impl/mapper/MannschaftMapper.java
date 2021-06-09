@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
 
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
@@ -18,10 +18,10 @@ public class MannschaftMapper implements ValueObjectMapper {
 
 
     /**
-     * Converts a {@link MannschaftBE} to a {@link DsbMannschaftDO}
+     * Converts a {@link MannschaftBE} to a {@link MannschaftDO}
      *
      */
-    public static final Function<MannschaftBE, DsbMannschaftDO> toDsbMannschaftDO = be -> {
+    public static final Function<MannschaftBE, MannschaftDO> toDsbMannschaftDO = be -> {
 
         final Long id = be.getId();
         final Long vereinId = be.getVereinId();
@@ -40,17 +40,17 @@ public class MannschaftMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new DsbMannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung,
+        return new MannschaftDO(id, name, vereinId, nummer, benutzerId, veranstaltungId, sortierung,
                 createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
 
 
     /**
-     * Converts a {@link DsbMannschaftDO} to a {@link MannschaftBE}
+     * Converts a {@link MannschaftDO} to a {@link MannschaftBE}
      */
 
-    public static final Function<DsbMannschaftDO, MannschaftBE> toDsbMannschaftBE = dsbMannschaftDO -> {
+    public static final Function<MannschaftDO, MannschaftBE> toDsbMannschaftBE = dsbMannschaftDO -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(dsbMannschaftDO.getLastModifiedAtUtc());

@@ -23,7 +23,7 @@ import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
@@ -452,10 +452,10 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
      */
     private String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(teamID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-        if (dsbMannschaftDO.getNummer() > 1) {
-            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        MannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
+        VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+        if (mannschaftDO.getNummer() > 1) {
+            return vereinDO.getName() + " " + mannschaftDO.getNummer();
         } else {
             return vereinDO.getName();
         }

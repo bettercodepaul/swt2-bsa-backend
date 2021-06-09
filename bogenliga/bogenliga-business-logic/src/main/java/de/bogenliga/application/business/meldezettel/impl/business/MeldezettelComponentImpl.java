@@ -26,7 +26,7 @@ import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -781,10 +781,10 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
      */
     private String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
-        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(teamID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
-        if (dsbMannschaftDO.getNummer() > 1) {
-            return vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        MannschaftDO mannschaftDO = mannschaftComponent.findById(teamID);
+        VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+        if (mannschaftDO.getNummer() > 1) {
+            return vereinDO.getName() + " " + mannschaftDO.getNummer();
         } else {
             return vereinDO.getName();
         }

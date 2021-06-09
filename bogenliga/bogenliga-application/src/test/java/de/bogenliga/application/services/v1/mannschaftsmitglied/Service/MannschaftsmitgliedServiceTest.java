@@ -6,7 +6,7 @@ import java.util.List;
 import javax.naming.NoPermissionException;
 
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,8 +61,8 @@ public class MannschaftsmitgliedServiceTest {
     private ArgumentCaptor<MannschaftsmitgliedDO> mannschaftsmitgliedVOArgumentCaptor;
 
 
-    public static DsbMannschaftDO getDsbMannschaftDO() {
-        return new DsbMannschaftDO(
+    public static MannschaftDO getDsbMannschaftDO() {
+        return new MannschaftDO(
                 mannschaftsId, "die Mannschaft", id, 23,
                 id, id, 2L
         );
@@ -202,10 +202,10 @@ public class MannschaftsmitgliedServiceTest {
     public void update() {
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
-        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final MannschaftDO mannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
 
@@ -234,10 +234,10 @@ public class MannschaftsmitgliedServiceTest {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
-        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final MannschaftDO mannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
@@ -267,10 +267,10 @@ public class MannschaftsmitgliedServiceTest {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expectedDO = getMannschaftsmitgliedDO();
-        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final MannschaftDO mannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(mannschaftsmitgliedComponent.update(any(MannschaftsmitgliedDO.class), anyLong())).thenReturn(expectedDO);
@@ -285,10 +285,10 @@ public class MannschaftsmitgliedServiceTest {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
-        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final MannschaftDO mannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
 
@@ -320,10 +320,10 @@ public class MannschaftsmitgliedServiceTest {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
-        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final MannschaftDO mannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(true);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);
@@ -355,10 +355,10 @@ public class MannschaftsmitgliedServiceTest {
         // prepare test data
         final MannschaftsMitgliedDTO input = getMannschaftsmitgliedDTO();
         final MannschaftsmitgliedDO expected = getMannschaftsmitgliedDO();
-        final DsbMannschaftDO dsbMannschaftDO = getDsbMannschaftDO();
+        final MannschaftDO mannschaftDO = getDsbMannschaftDO();
 
         // configure mocks
-        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(expected);

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
@@ -197,7 +197,7 @@ public class MatchComponentImpl implements MatchComponent {
         Preconditions.checkNotNull(veranstaltungsId, PRECONDITION_MSG_WT0_VERANSTALTUNG);
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_WT0_VERANSTALTUNG);
 
-        List<DsbMannschaftDO> mannschaften = this.mannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
+        List<MannschaftDO> mannschaften = this.mannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
 
         WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
 
@@ -272,11 +272,11 @@ public class MatchComponentImpl implements MatchComponent {
 
     public String getMannschaftsNameByID(long mannschaftID){
         String mannschaftName;
-        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(mannschaftID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
+        MannschaftDO mannschaftDO = mannschaftComponent.findById(mannschaftID);
+        VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
 
-        if (dsbMannschaftDO.getNummer() > 1) {
-            mannschaftName = vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        if (mannschaftDO.getNummer() > 1) {
+            mannschaftName = vereinDO.getName() + " " + mannschaftDO.getNummer();
         } else {
             mannschaftName = vereinDO.getName();
         }

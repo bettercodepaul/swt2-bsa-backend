@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.dsbmannschaft.impl.business;
 
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.MannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.MannschaftBE;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -83,8 +83,8 @@ public class MannschaftComponentImplTest {
         return expectedBE;
     }
 
-    public static DsbMannschaftDO getDsbMannschaftDO() {
-        return new DsbMannschaftDO(
+    public static MannschaftDO getDsbMannschaftDO() {
+        return new MannschaftDO(
                 ID,
                 MA_NAME,
                 VEREIN_ID,
@@ -94,8 +94,8 @@ public class MannschaftComponentImplTest {
                 SORTIERUNG);
     }
 
-    public static DsbMannschaftDO getSortierungsDO(){
-        return new DsbMannschaftDO(
+    public static MannschaftDO getSortierungsDO(){
+        return new MannschaftDO(
                 ID,
                 null,
                 0L,
@@ -123,7 +123,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.findAll()).thenReturn(expectedBEList);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findAll();
+        final List<MannschaftDO> actual = underTest.findAll();
 
         // assert result
         assertThat(actual)
@@ -163,7 +163,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.findAllByVereinsId(VEREIN_ID+1)).thenReturn(null);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findAllByVereinsId(VEREIN_ID);
+        final List<MannschaftDO> actual = underTest.findAllByVereinsId(VEREIN_ID);
 
         // check if expected exception is thrown if id isn't contained
         assertThatThrownBy(()-> underTest.findAllByVereinsId(VEREIN_ID+1))
@@ -213,7 +213,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.findAllByVeranstaltungsId(VERANSTALTUNG_ID+1)).thenReturn(null);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+        final List<MannschaftDO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
 
         // check if expected exception is thrown if id isn't contained
         assertThatThrownBy(()-> underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID+1))
@@ -261,7 +261,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.findById(ID)).thenReturn(expectedBE);
 
         // call test method
-        final DsbMannschaftDO actual = underTest.findById(ID);
+        final MannschaftDO actual = underTest.findById(ID);
 
         // check if expected exception is thrown if id isn't contained
         assertThatThrownBy(()-> underTest.findById(ID+1))
@@ -287,7 +287,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void create() {
         // prepare test data
-        final DsbMannschaftDO input = getDsbMannschaftDO();
+        final MannschaftDO input = getDsbMannschaftDO();
 
         final MannschaftBE expectedBE = getDsbMannschaftBE();
 
@@ -295,7 +295,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.create(any(MannschaftBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final DsbMannschaftDO actual = underTest.create(input, USER);
+        final MannschaftDO actual = underTest.create(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -320,7 +320,7 @@ public class MannschaftComponentImplTest {
         // prepare test data
         final OffsetDateTime dateTime = OffsetDateTime.now();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        final DsbMannschaftDO input = new DsbMannschaftDO(
+        final MannschaftDO input = new MannschaftDO(
                 ID,
                 MA_NAME,
                 BENUTZER_ID,
@@ -348,7 +348,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.create(any(MannschaftBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final DsbMannschaftDO actual = underTest.create(input, USER);
+        final MannschaftDO actual = underTest.create(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -371,7 +371,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void create_withoutInput_shouldThrowException() {
         // prepare test data
-        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1);
+        MannschaftDO tmpMannschaft = new MannschaftDO(ID,-1);
 
         // configure mocks
 
@@ -451,7 +451,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void update() {
         // prepare test data
-        final DsbMannschaftDO input = getDsbMannschaftDO();
+        final MannschaftDO input = getDsbMannschaftDO();
 
         final MannschaftBE expectedBE = getDsbMannschaftBE();
 
@@ -460,7 +460,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final DsbMannschaftDO actual = underTest.update(input, USER);
+        final MannschaftDO actual = underTest.update(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -489,7 +489,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void update_withoutInput_shouldThrowException() {
         // prepare test data
-        DsbMannschaftDO tmpMannschaft = new DsbMannschaftDO(ID,-1);
+        MannschaftDO tmpMannschaft = new MannschaftDO(ID,-1);
 
         // configure mocks
 
@@ -521,7 +521,7 @@ public class MannschaftComponentImplTest {
     public void update_checkSortierung() {
         // prepare test data
         //valid input but wrong output in case the sortierung has been set before
-        final DsbMannschaftDO input = getDsbMannschaftDO();
+        final MannschaftDO input = getDsbMannschaftDO();
         final long wrongValue = 0L;
         input.setSortierung(wrongValue);
 
@@ -532,7 +532,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final DsbMannschaftDO actual = underTest.update(input, USER);
+        final MannschaftDO actual = underTest.update(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -566,7 +566,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void delete() {
         // prepare test data
-        final DsbMannschaftDO input = getDsbMannschaftDO();
+        final MannschaftDO input = getDsbMannschaftDO();
 
         final MannschaftBE expectedBE = getDsbMannschaftBE();
 
@@ -592,7 +592,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void delete_withoutInput_shouldThrowException() {
         // prepare test data
-        final DsbMannschaftDO input = getDsbMannschaftDO();
+        final MannschaftDO input = getDsbMannschaftDO();
 
         // configure mocks
 
@@ -623,7 +623,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void updateSortierung(){
         // prepare test data
-        final DsbMannschaftDO input = getSortierungsDO();
+        final MannschaftDO input = getSortierungsDO();
 
         final MannschaftBE expectedBE = getDsbMannschaftBE();
         final MannschaftBE expectedDatabaseBE = getDsbMannschaftBE();
@@ -634,7 +634,7 @@ public class MannschaftComponentImplTest {
         when(mannschaftDAO.findById(anyLong())).thenReturn(expectedDatabaseBE);
 
         // call test method
-        final DsbMannschaftDO actual = underTest.updateSortierung(input, USER);
+        final MannschaftDO actual = underTest.updateSortierung(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -680,7 +680,7 @@ public class MannschaftComponentImplTest {
     @Test
     public void updateSortierung_withWrongInput_shouldThrowException() {
         // prepare test data
-        final DsbMannschaftDO input = getSortierungsDO();
+        final MannschaftDO input = getSortierungsDO();
         input.setSortierung(-1L);
 
         // configure mocks
@@ -716,7 +716,7 @@ public class MannschaftComponentImplTest {
         when(vereinDAO.findById(VEREIN_ID)).thenReturn(expectedVerein);
 
         // call test method
-        final List<DsbMannschaftDO> actual = underTest.findAll();
+        final List<MannschaftDO> actual = underTest.findAll();
 
         // assert result
         assertThat(actual)
@@ -757,7 +757,7 @@ public class MannschaftComponentImplTest {
         when(vereinDAO.findById(anyLong())).thenReturn(null);
 
         // call test method
-        final DsbMannschaftDO actual = underTest.findById(ID);
+        final MannschaftDO actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -801,12 +801,12 @@ public class MannschaftComponentImplTest {
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(null);
 
         //call test method
-        final List<DsbMannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
+        final List<MannschaftDO> actual = underTest.copyMannschaftFromVeranstaltung
                 (VERANSTALTUNG_ID, CURRENT_VERANSTALTUNG_ID, ID);
 
         //asserting returns
         assertThat(actual).isNotNull();
-        DsbMannschaftDO actualM = actual.get(0);
+        MannschaftDO actualM = actual.get(0);
         assertThat(actualM.getVereinId()).isEqualTo(mannschaft1.getVereinId());
         assertThat(actualM.getId()).isEqualTo(mannschaft1.getId());
 

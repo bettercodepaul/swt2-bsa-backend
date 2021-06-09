@@ -31,7 +31,7 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -970,11 +970,11 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
     private String getMannschaftsNameByID(long mannschaftID){
         String mannschaftName;
-        DsbMannschaftDO dsbMannschaftDO = mannschaftComponent.findById(mannschaftID);
-        VereinDO vereinDO = vereinComponent.findById(dsbMannschaftDO.getVereinId());
+        MannschaftDO mannschaftDO = mannschaftComponent.findById(mannschaftID);
+        VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
 
-        if (dsbMannschaftDO.getNummer() > 1) {
-            mannschaftName = vereinDO.getName() + " " + dsbMannschaftDO.getNummer();
+        if (mannschaftDO.getNummer() > 1) {
+            mannschaftName = vereinDO.getName() + " " + mannschaftDO.getNummer();
         } else {
             mannschaftName = vereinDO.getName();
         }

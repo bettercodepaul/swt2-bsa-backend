@@ -1,6 +1,6 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.mapper;
 
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftSortierungDTO;
 
@@ -9,9 +9,9 @@ import java.util.function.Function;
 public class MannschaftSortierungDTOMapper implements DataTransferObjectMapper {
 
     /**
-     * I map the {@link MannschaftSortierungDTO} object to the {@link DsbMannschaftDO} object
+     * I map the {@link MannschaftSortierungDTO} object to the {@link MannschaftDO} object
      */
-    public static final Function<MannschaftSortierungDTO, DsbMannschaftDO> toDO = dto -> {
+    public static final Function<MannschaftSortierungDTO, MannschaftDO> toDO = dto -> {
 
 
         final Long dsbMannschaftId = dto.getId();
@@ -26,7 +26,7 @@ public class MannschaftSortierungDTOMapper implements DataTransferObjectMapper {
         final Long dsbMannschaftBenutzerId = 0L;
         final Long dsbMannschaftVeranstalungId = 0L;
 
-        return new DsbMannschaftDO(dsbMannschaftId,
+        return new MannschaftDO(dsbMannschaftId,
                 dsbMannschaftsName,
                 dsbMannschaftVereinId,
                 dsbMannschaftNummer,
@@ -37,9 +37,9 @@ public class MannschaftSortierungDTOMapper implements DataTransferObjectMapper {
     };
 
     /**
-     * I map the {@link DsbMannschaftDO} object to the {@link MannschaftSortierungDTO} object
+     * I map the {@link MannschaftDO} object to the {@link MannschaftSortierungDTO} object
      */
-    public static final Function<DsbMannschaftDO, MannschaftSortierungDTO> toDTO = dsbMannschaftDO -> {
+    public static final Function<MannschaftDO, MannschaftSortierungDTO> toDTO = dsbMannschaftDO -> {
 
         final Long dsbMannschaftId = dsbMannschaftDO.getId();
         final Long dsbMannschaftSortierung = dsbMannschaftDO.getSortierung();

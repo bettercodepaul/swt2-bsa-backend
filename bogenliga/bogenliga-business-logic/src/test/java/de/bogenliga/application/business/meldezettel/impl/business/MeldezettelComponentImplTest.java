@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoRule;
 import org.mockito.stubbing.Answer;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
 import de.bogenliga.application.business.disziplin.impl.business.DisziplinComponentImplTest;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImpl;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
@@ -81,8 +81,8 @@ public class MeldezettelComponentImplTest {
         when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
         when(veranstaltungComponent.findById(anyLong())).thenReturn(VeranstaltungComponentImplTest.getVeranstaltungDO());
         when(disziplinComponent.findById(any())).thenReturn(DisziplinComponentImplTest.getDisziplinDO());
-        when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
-            DsbMannschaftDO ret = MannschaftComponentImplTest.getDsbMannschaftDO();
+        when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<MannschaftDO>) invocation -> {
+            MannschaftDO ret = MannschaftComponentImplTest.getDsbMannschaftDO();
             ret.setNummer((long)(Math.random() * 2 + 1));
             return ret;
         });

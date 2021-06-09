@@ -25,7 +25,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import com.itextpdf.layout.Document;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
@@ -106,11 +106,11 @@ public class LizenzComponentImplTest {
         return vereinDo;
     }
 
-    public static DsbMannschaftDO getDsbMannschaftDO(Long mannschaftID, Long vereinID) {
-        DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(
+    public static MannschaftDO getDsbMannschaftDO(Long mannschaftID, Long vereinID) {
+        MannschaftDO mannschaftDO = new MannschaftDO(
                 mannschaftID, vereinID);
 
-        return dsbMannschaftDO;
+        return mannschaftDO;
     }
 
 
@@ -290,7 +290,7 @@ public class LizenzComponentImplTest {
         expectedMitglied.setId(mitgliedId);
         expectedMitglied.setNachname("Musterfrau");
         expectedMitglied.setVorname("Maxime");
-        DsbMannschaftDO expectedMannschaft = Mockito.mock(DsbMannschaftDO.class);
+        MannschaftDO expectedMannschaft = Mockito.mock(MannschaftDO.class);
         expectedMannschaft.setId(teamId);
         expectedMannschaft.setVeranstaltungId(veranstaltungId);
         VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(veranstaltungId);
@@ -388,7 +388,7 @@ public class LizenzComponentImplTest {
         expectedMitglied.setId(mitgliedId);
         expectedMitglied.setNachname("Musterfrau");
         expectedMitglied.setVorname("Maxime");
-        DsbMannschaftDO expectedMannschaft = Mockito.mock(DsbMannschaftDO.class);
+        MannschaftDO expectedMannschaft = Mockito.mock(MannschaftDO.class);
         expectedMannschaft.setId(teamId);
         expectedMannschaft.setVeranstaltungId(veranstaltungId);
         VeranstaltungDO expectedVeranstaltung = new VeranstaltungDO(veranstaltungId);

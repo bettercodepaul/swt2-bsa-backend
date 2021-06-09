@@ -1,7 +1,7 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftSortierungComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -61,10 +61,10 @@ public class MannschaftSortierungService implements ServiceFacade {
         LOG.debug("Receive 'update' request with Mannschafts-ID '{}' and Mannschafts-Sortierung '{}'.",
                 maSortierungDTO.getId(), maSortierungDTO.getSortierung());
 
-        final DsbMannschaftDO newDsbMannschaftDO = MannschaftSortierungDTOMapper.toDO.apply(maSortierungDTO);
+        final MannschaftDO newMannschaftDO = MannschaftSortierungDTOMapper.toDO.apply(maSortierungDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        final DsbMannschaftDO updatedDsbMannschaftDO = maSortierungComponent.updateSortierung(newDsbMannschaftDO, userId);
-        return MannschaftSortierungDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
+        final MannschaftDO updatedMannschaftDO = maSortierungComponent.updateSortierung(newMannschaftDO, userId);
+        return MannschaftSortierungDTOMapper.toDTO.apply(updatedMannschaftDO);
     }
 }

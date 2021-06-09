@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.setzliste.impl.dao.SetzlisteDAO;
 import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.types.MannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.business.MannschaftComponentImplTest;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
@@ -70,14 +70,14 @@ public class SetzlisteComponentImplTest {
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
-        DsbMannschaftDO dsbMannschaftDO = MannschaftComponentImplTest.getDsbMannschaftDO();
+        MannschaftDO mannschaftDO = MannschaftComponentImplTest.getDsbMannschaftDO();
         VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
 
         //configure Mocks
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
         when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid())).thenReturn(wettkampfDO);
         when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
-        when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
 
         //call test method
