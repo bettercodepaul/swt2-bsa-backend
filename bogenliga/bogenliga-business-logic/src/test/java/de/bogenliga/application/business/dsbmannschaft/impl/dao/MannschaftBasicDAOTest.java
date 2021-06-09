@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DsbMannschaftBasicDAOTest {
+public class MannschaftBasicDAOTest {
 
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
