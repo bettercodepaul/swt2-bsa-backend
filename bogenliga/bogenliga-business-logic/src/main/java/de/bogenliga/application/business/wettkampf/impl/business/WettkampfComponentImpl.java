@@ -193,86 +193,34 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         Preconditions.checkArgument(currentUserID >= 0, PRECONDITION_MSG_WETTKAMPF_USER_ID);
     }
 
-    @Override
-    public byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr){
-        Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
 
-        byte[] bResult;
-        if (!wettkampflisteBEList.isEmpty()) {
-            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-                PdfWriter writer = new PdfWriter(result);
-                PdfDocument pdfDocument = new PdfDocument(writer);
-                Document doc = new Document(pdfDocument, PageSize.A4)) {
-
-                pdfDocument.getDocumentInfo().setTitle("Einzelstatistik.pdf");
-                generateDoc(doc, wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
-
-                bResult = result.toByteArray();
-                LOGGER.debug("Einzelstatistik erstellt");
-            } catch(IOException e){
-                LOGGER.error("PDF Einzelstatistik konnte nicht erstellt werden: {0}" , e);
-                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
-                        "PDF Einzelstatistik konnte nicht erstellt werden: " + e);
-            }
-        }
-        else
-        {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + manschaftsid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
-        }
-
-        return bResult;
-
-    }
-
-    public void generateDoc(Document doc,List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
+    //Erstellt die grundstruktur der pdf und ruft dann passend entweder generateEinzel zur erstellung der einzelstatistik oder generateGesammt zur erstellung der Gesammtstatistik auf
+    public void generateDoc(Document doc, String header, List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
     {
+        Preconditions.checkArgument(header.equals("Einzelstatistik") || header.equals("Gesamtstatistik"),"Invalid Header!");
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
 
         doc.setFontSize(20.0f);
-        doc.add(new Paragraph("Einzelstatistik").setBold());
+        doc.add(new Paragraph(header).setBold());
         doc.setFontSize(9.2f);
-        doc.add(new Paragraph(selectedVeranstaltung.getVeranstaltung_name()));
-        doc.add(new Paragraph(getTeamName(mannschaftsid)));
-        doc.add(new Paragraph(Integer.toString(jahr)));
+        doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltung_name()));
+        doc.add(new Paragraph("Mannschaft: " + getTeamName(mannschaftsid)));
+        doc.add(new Paragraph("Jahr: " +Integer.toString(jahr)));
         doc.add(new Paragraph(""));
 
-        for(WettkampfBE wettkampf : wettkampflisteBEList)
+        if(header.equals("Einzelstatistik"))
         {
-            List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
-
-            Table table = new Table(new float[]{40, 150, 150, 250});
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Mannschaft").setBold()));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
-            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
-
-            for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
-            {
-                    List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
-                    List<Long> passennummern = getNummern(passen);
-                    for(Long nummer:passennummern)
-                    {
-                        if (!passen.isEmpty())
-                        {
-                            table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
-                            table.addCell(new Cell().add(new Paragraph(getTeamName(mannschaftsid))));
-                            table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
-                            table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverage(passen,nummer)))));
-                        }
-                    }
-            }
-            if(table.getNumberOfRows() > 1)
-            {
-                doc.setFontSize(12.0f);
-                doc.add(new Paragraph("Wettkampftag " + wettkampf.getWettkampfTag()).setBold());
-                doc.setFontSize(9.2f);
-                doc.add(table);
-                doc.add(new Paragraph(""));
-            }
+            generateEinzel(doc, wettkampflisteBEList, mannschaftsid);
         }
+        else if(header.equals( "Gesamtstatistik"))
+        {
+            generateGesammt(doc, wettkampflisteBEList, mannschaftsid);
+        }
+
         doc.close();
     }
+
+    //liefert eine liste mit den matchnummern der passen die übergeben wurden
     public List<Long> getNummern(List<PasseDO> passen)
     {
         List<Long> passennummern = new LinkedList<>();
@@ -285,6 +233,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         return passennummern;
     }
+
+    //ermitelt team name anhand id
     public String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
@@ -295,48 +245,165 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             return vereinDO.getName();
         }
     }
+
+    @Override
+    public byte[] getPDFasByteArray(String name, long veranstaltungsid, long manschaftsid, int jahr) {
+        Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
+
+        byte[] bResult;
+        if (!wettkampflisteBEList.isEmpty()) {
+            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 PdfWriter writer = new PdfWriter(result);
+                 PdfDocument pdfDocument = new PdfDocument(writer);
+                 Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+                pdfDocument.getDocumentInfo().setTitle(name+".pdf");
+                generateDoc(doc, name , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
+
+                bResult = result.toByteArray();
+                LOGGER.debug("{0} erstellt",name);
+            } catch(IOException e){
+                LOGGER.error("PDF {0} konnte nicht erstellt werden: {1}",name , e);
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF"+ name +"konnte nicht erstellt werden: " + e);
+            }
+        }
+        else
+        {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + manschaftsid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
+        return bResult;
+    }
+
+    //Generiert Tabelle für Einzelstatistik
+    public void generateEinzel(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
+    {
+        for(WettkampfBE wettkampf : wettkampflisteBEList)
+        {
+            List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
+
+            Table table = new Table(new float[]{100, 150, 100, 250});
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
+
+            for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
+            {
+                List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
+                List<Long> passennummern = getNummern(passen);
+                for(Long nummer:passennummern)
+                {
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
+                    table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverageEinzel(passen,nummer)))));
+                }
+            }
+            if(table.getNumberOfRows() > 1)
+            {
+                doc.setFontSize(12.0f);
+                doc.add(new Paragraph("Wettkampftag " + wettkampf.getWettkampfTag()).setBold());
+                doc.setFontSize(9.2f);
+                doc.add(table);
+                doc.add(new Paragraph(""));
+            }
+        }
+    }
+
+    //Generiert Tabelle für Gesammtstatistik
+    void generateGesammt(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
+    {
+        List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
+
+        Table table = new Table(new float[]{100, 150, 250});
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
+
+        for(MannschaftsmitgliedExtendedBE schuetze : mitglied)
+        {
+            float average = -1;
+            for(WettkampfBE wettkampf : wettkampflisteBEList)
+            {
+                List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(), schuetze.getDsbMitgliedId());
+                if(!passen.isEmpty())
+                {
+                    if(average == -1)
+                        average = 0;
+
+                    average += calcAverage(passen);
+                }
+            }
+            if (average != -1)
+            {
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
+                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                        table.addCell(new Cell().add(new Paragraph(String.valueOf(average))));
+            }
+        }
+        if(table.getNumberOfRows() > 1)
+        {
+            doc.setFontSize(9.2f);
+            doc.add(table);
+            doc.add(new Paragraph(""));
+        }
+    }
+
+    //berechnet den durchscnittlichen pfeilwert der passen die zur übergebenen matchnr gehören
+    float calcAverageEinzel(List<PasseDO> passen ,long nummer)
+    {
+        List<PasseDO> neu = new ArrayList<>();
+        for(PasseDO passe : passen)
+        {
+            if(passe.getPasseMatchNr() == nummer)
+            {
+                neu.add(passe);
+            }
+        }
+        return calcAverage(neu);
+    }
     public WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId){
         WettkampfBE wettkampfBE= wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
         return  WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
     }
 
-    public float calcAverage( List<PasseDO> passen ,long nummer)
+    //berechnet den durchscnittlichen pfeilwert aller übergebenen passen
+    public float calcAverage( List<PasseDO> passen)
     {
         float average = 0;
         int count = 0;
 
         for(PasseDO passe : passen)
         {
-            if(passe.getPasseMatchNr()==nummer)
-            {
-                if (passe.getPfeil1() != null) {
-                    average += passe.getPfeil1();
-                    count++;
-                }
-                if (passe.getPfeil2() != null) {
-                    average += passe.getPfeil2();
-                    count++;
-                }
-                if (passe.getPfeil3() != null) {
-                    average += passe.getPfeil3();
-                    count++;
-                }
-                if (passe.getPfeil4() != null) {
-                    average += passe.getPfeil4();
-                    count++;
-                }
-                if (passe.getPfeil5() != null) {
-                    average += passe.getPfeil5();
-                    count++;
-                }
-                if (passe.getPfeil6() != null) {
-                    average += passe.getPfeil6();
-                    count++;
-                }
+            if (passe.getPfeil1() != null) {
+                average += passe.getPfeil1();
+                count++;
             }
-
+            if (passe.getPfeil2() != null) {
+                average += passe.getPfeil2();
+                count++;
+            }
+            if (passe.getPfeil3() != null) {
+                average += passe.getPfeil3();
+                count++;
+                }
+            if (passe.getPfeil4() != null) {
+                average += passe.getPfeil4();
+                count++;
+            }
+            if (passe.getPfeil5() != null) {
+                average += passe.getPfeil5();
+                count++;
+            }
+            if (passe.getPfeil6() != null) {
+                average += passe.getPfeil6();
+                count++;
+            }
         }
         average = average / count;
         return average;
     }
+
 }
