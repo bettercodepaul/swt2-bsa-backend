@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
-import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,19 +46,19 @@ public class DsbMitgliedBasicDAOTest {
     @Mock
     private BasicDAO basicDao;
     @InjectMocks
-    private MitgliedDAO underTest;
+    private DsbMitgliedDAO underTest;
 
 
     @Test
     public void findAll() {
         // prepare test data
-        final MitgliedBE expectedBE = getDsbMitgliedBE();
+        final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<MitgliedBE> actual = underTest.findAll();
+        final List<DsbMitgliedBE> actual = underTest.findAll();
 
         // assert result
         assertThat(actual)
@@ -83,7 +83,7 @@ public class DsbMitgliedBasicDAOTest {
     @Test
     public void findById() {
         // prepare test data
-        final MitgliedBE expectedBE = new MitgliedBE();
+        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
         expectedBE.setDsbMitgliedId(ID);
         expectedBE.setDsbMitgliedVorname(VORNAME);
 
@@ -91,7 +91,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
 
         // call test method
-        final MitgliedBE actual = underTest.findById(ID);
+        final DsbMitgliedBE actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -109,7 +109,7 @@ public class DsbMitgliedBasicDAOTest {
     @Test
     public void create() {
         // prepare test data
-        final MitgliedBE input = new MitgliedBE();
+        final DsbMitgliedBE input = new DsbMitgliedBE();
         input.setDsbMitgliedId(ID);
         input.setDsbMitgliedVorname(VORNAME);
 
@@ -117,7 +117,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final MitgliedBE actual = underTest.create(input, USER);
+        final DsbMitgliedBE actual = underTest.create(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -135,7 +135,7 @@ public class DsbMitgliedBasicDAOTest {
     @Test
     public void update() {
         // prepare test data
-        final MitgliedBE input = new MitgliedBE();
+        final DsbMitgliedBE input = new DsbMitgliedBE();
         input.setDsbMitgliedId(ID);
         input.setDsbMitgliedVorname(VORNAME);
         input.setDsbMitgliedUserId(USERID);
@@ -144,7 +144,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final MitgliedBE actual = underTest.update(input, USER);
+        final DsbMitgliedBE actual = underTest.update(input, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -162,7 +162,7 @@ public class DsbMitgliedBasicDAOTest {
     @Test
     public void delete() {
         // prepare test data
-        final MitgliedBE input = new MitgliedBE();
+        final DsbMitgliedBE input = new DsbMitgliedBE();
         input.setDsbMitgliedId(ID);
         input.setDsbMitgliedVorname(VORNAME);
 

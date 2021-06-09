@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import de.bogenliga.application.business.dsbmitglied.impl.dao.MitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
@@ -36,20 +36,20 @@ public class UserProfileComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private MitgliedDAO mitgliedDAO;
+    private DsbMitgliedDAO dsbMitgliedDAO;
     @Mock
     private UserDAO userDAO;
     @InjectMocks
     private UserProfileComponentImpl underTest;
     @Captor
-    private ArgumentCaptor<MitgliedBE> dsbMitgliedBEArgumentCaptor;
+    private ArgumentCaptor<DsbMitgliedBE> dsbMitgliedBEArgumentCaptor;
 
     /***
      * Utility methods for creating business entities/data objects.
      * Also used by other test classes.
      */
-    public static MitgliedBE getDsbMitgliedBE() {
-        final MitgliedBE expectedBE = new MitgliedBE();
+    public static DsbMitgliedBE getDsbMitgliedBE() {
+        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
         expectedBE.setDsbMitgliedId(ID);
         expectedBE.setDsbMitgliedVorname(VORNAME);
         expectedBE.setDsbMitgliedNachname(NACHNAME);
@@ -73,11 +73,11 @@ public class UserProfileComponentImplTest {
     @Test
     public void findById() {
         // prepare test data
-        final MitgliedBE expectedMitgliedBE = getDsbMitgliedBE();
+        final DsbMitgliedBE expectedDsbMitgliedBE = getDsbMitgliedBE();
         final UserBE expectedUserBE = getUserBE();
 
         // configure mocks
-        when(mitgliedDAO.findById(ID)).thenReturn(expectedMitgliedBE);
+        when(dsbMitgliedDAO.findById(ID)).thenReturn(expectedDsbMitgliedBE);
         when(userDAO.findById(USERID)).thenReturn(expectedUserBE);
 
         // call test method

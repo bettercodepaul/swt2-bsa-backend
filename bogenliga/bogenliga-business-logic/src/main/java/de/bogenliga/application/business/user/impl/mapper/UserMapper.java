@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.user.impl.mapper;
 
-import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
@@ -80,9 +80,9 @@ public class UserMapper implements ValueObjectMapper {
 
 
     /**
-     * Converts a {@link UserBE} and a corresponding {@link MitgliedBE}to a {@link UserProfileDO}
+     * Converts a {@link UserBE} and a corresponding {@link DsbMitgliedBE}to a {@link UserProfileDO}
      */
-    public static final BiFunction<UserBE, MitgliedBE, UserProfileDO> toUserProfileDO = (userBE, dsbMitgliedBE) -> {
+    public static final BiFunction<UserBE, DsbMitgliedBE, UserProfileDO> toUserProfileDO = (userBE, dsbMitgliedBE) -> {
         UserProfileDO userProfileDO = new UserProfileDO();
         userProfileDO.setId(userBE.getUserId());
         userProfileDO.setEmail(userBE.getUserEmail());

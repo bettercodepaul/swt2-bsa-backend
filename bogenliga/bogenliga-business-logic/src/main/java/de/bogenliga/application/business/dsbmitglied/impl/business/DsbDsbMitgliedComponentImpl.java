@@ -10,9 +10,9 @@ import de.bogenliga.application.business.lizenz.impl.mapper.KampfrichterlizenzMa
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.MitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
-import de.bogenliga.application.business.dsbmitglied.impl.mapper.MitgliedMapper;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.mapper.DsbMitgliedMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -35,7 +35,7 @@ public class DsbDsbMitgliedComponentImpl implements DsbMitgliedComponent {
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
     private static final String PRECONDITION_MSG_DSBMITGLIED_MANNSCHAFT_ID = "Team id must not be negative";
 
-    private final MitgliedDAO mitgliedDAO;
+    private final DsbMitgliedDAO dsbMitgliedDAO;
     private final LizenzDAO lizenzDAO;
 
 
@@ -43,26 +43,26 @@ public class DsbDsbMitgliedComponentImpl implements DsbMitgliedComponent {
      * Constructor
      *
      * dependency injection with {@link Autowired}
-     * @param mitgliedDAO to access the database and return dsbmitglied representations
+     * @param dsbMitgliedDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public DsbDsbMitgliedComponentImpl(final MitgliedDAO mitgliedDAO, final LizenzDAO lizenzDAO) {
-        this.mitgliedDAO = mitgliedDAO;
+    public DsbDsbMitgliedComponentImpl(final DsbMitgliedDAO dsbMitgliedDAO, final LizenzDAO lizenzDAO) {
+        this.dsbMitgliedDAO = dsbMitgliedDAO;
         this.lizenzDAO = lizenzDAO;
     }
 
 
     @Override
     public List<DsbMitgliedDO> findAll() {
-        final List<MitgliedBE> mitgliedBEList = mitgliedDAO.findAll();
-        return mitgliedBEList.stream().map(MitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
+        final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findAll();
+        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
     }
 
     @Override
     public List<DsbMitgliedDO> findAllByTeamId(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_MANNSCHAFT_ID);
-        final List<MitgliedBE> mitgliedBEList = mitgliedDAO.findAllByTeamId(id);
-        return mitgliedBEList.stream().map(MitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
+        final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findAllByTeamId(id);
+        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
     }
 
 
@@ -70,14 +70,14 @@ public class DsbDsbMitgliedComponentImpl implements DsbMitgliedComponent {
     public DsbMitgliedDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
-        final MitgliedBE result = mitgliedDAO.findById(id);
+        final DsbMitgliedBE result = dsbMitgliedDAO.findById(id);
 
         if (result == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
-        DsbMitgliedDO dsbMitgliedDO = MitgliedMapper.toDsbMitgliedDO.apply(result);
-        dsbMitgliedDO.setKampfrichter(mitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId()));
+        DsbMitgliedDO dsbMitgliedDO = DsbMitgliedMapper.toDsbMitgliedDO.apply(result);
+        dsbMitgliedDO.setKampfrichter(dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId()));
         return dsbMitgliedDO;
     }
 
@@ -86,10 +86,10 @@ public class DsbDsbMitgliedComponentImpl implements DsbMitgliedComponent {
     public DsbMitgliedDO create(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
         checkDsbMitgliedDO(dsbMitgliedDO, currentDsbMitgliedId);
 
-        final MitgliedBE mitgliedBE = MitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
-        final MitgliedBE persistedMitgliedBE = mitgliedDAO.create(mitgliedBE, currentDsbMitgliedId);
+        final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
+        final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.create(dsbMitgliedBE, currentDsbMitgliedId);
 
-        DsbMitgliedDO dsbMitgliedDOResponse = MitgliedMapper.toDsbMitgliedDO.apply(persistedMitgliedBE);
+        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
 
         if(dsbMitgliedDO.isKampfrichter()){
             final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
@@ -105,15 +105,15 @@ public class DsbDsbMitgliedComponentImpl implements DsbMitgliedComponent {
         checkDsbMitgliedDO(dsbMitgliedDO, currentDsbMitgliedId);
         Preconditions.checkArgument(dsbMitgliedDO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
 
-        final MitgliedBE mitgliedBE = MitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
+        final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
 
-        final MitgliedBE persistedMitgliedBE = mitgliedDAO.update(mitgliedBE, currentDsbMitgliedId);
-        DsbMitgliedDO dsbMitgliedDOResponse = MitgliedMapper.toDsbMitgliedDO.apply(persistedMitgliedBE);
+        final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
+        DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
 
-        if(dsbMitgliedDO.isKampfrichter() && !mitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId())){
+        if(dsbMitgliedDO.isKampfrichter() && !dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId())){
             final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
             lizenzDAO.create(lizenzBE, currentDsbMitgliedId);
-        }else if(!dsbMitgliedDO.isKampfrichter() && mitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId())){
+        }else if(!dsbMitgliedDO.isKampfrichter() && dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId())){
             lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDOResponse.getId()),currentDsbMitgliedId);
         }
         return dsbMitgliedDOResponse;
@@ -125,11 +125,11 @@ public class DsbDsbMitgliedComponentImpl implements DsbMitgliedComponent {
         Preconditions.checkNotNull(dsbMitgliedDO, PRECONDITION_MSG_DSBMITGLIED);
         Preconditions.checkArgument(dsbMitgliedDO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_DSBMITGLIED);
-        if(mitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId())){
+        if(dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId())){
             lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDO.getId()),currentDsbMitgliedId);
         }
-        final MitgliedBE mitgliedBE = MitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
-        mitgliedDAO.delete(mitgliedBE, currentDsbMitgliedId);
+        final DsbMitgliedBE dsbMitgliedBE = DsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
+        dsbMitgliedDAO.delete(dsbMitgliedBE, currentDsbMitgliedId);
 
     }
 

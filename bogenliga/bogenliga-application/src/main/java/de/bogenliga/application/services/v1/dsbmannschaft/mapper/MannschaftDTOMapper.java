@@ -11,7 +11,7 @@ import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO
  *
  * @author Philip Dengler
  */
-public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
+public class MannschaftDTOMapper implements DataTransferObjectMapper {
 
     public static final Function<DsbMannschaftDO, DsbMannschaftDTO> toDTO = dsbMannschaftDO -> {
 
@@ -68,7 +68,7 @@ public class DsbMannschaftDTOMapper implements DataTransferObjectMapper {
      * Constructor
      */
 
-    private DsbMannschaftDTOMapper() {
+    private MannschaftDTOMapper() {
         // empty private constructor
     }
 
