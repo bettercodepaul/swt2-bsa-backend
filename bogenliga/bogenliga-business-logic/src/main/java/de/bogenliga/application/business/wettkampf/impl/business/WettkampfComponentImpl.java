@@ -69,18 +69,18 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
 
     private final WettkampfDAO wettkampfDAO;
-  
-    private final LigaComponent ligaComponent;
-    private VeranstaltungComponent veranstaltungComponent;
-    private final MatchComponent matchComponent;
-    private final PasseComponent passeComponent;
-    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
     private final VeranstaltungDAO veranstaltungDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+  
+    private final LigaComponent ligaComponent;
+    private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
+    private VeranstaltungComponent veranstaltungComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
     
     /**
