@@ -39,7 +39,9 @@ import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -139,12 +141,26 @@ public class WettkampfComponentImplTest {
 
     public static List<PasseDO> getPassenDO()
     {
-        PasseDO passe1 = new PasseDO(null,null, null, 2l, null, null,
+        PasseDO passe1 = new PasseDO(null,77l, null, 2l, null, null,
                         null, PFEIL1, PFEIL2, null, null, null, null, null,
                             null, null, null, null);
-        PasseDO passe2 = new PasseDO(null,null, null, 1l, null, null,
+        PasseDO passe2 = new PasseDO(null,77l, null, 1l, null, null,
                         null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
                             null, null, null, null);
+        List<PasseDO> passen = new LinkedList<>();
+        passen.add(passe1);
+        passen.add(passe2);
+        return passen;
+    }
+
+    public static List<PasseDO> getEmptyPassenDO()
+    {
+        PasseDO passe1 = new PasseDO(null,null, null, 2l, null, null,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null);
+        PasseDO passe2 = new PasseDO(null,null, null, 1l, null, null,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
         passen.add(passe1);
         passen.add(passe2);
@@ -163,9 +179,10 @@ public class WettkampfComponentImplTest {
     public static MannschaftsmitgliedExtendedBE getMannschaftsmitgliedExtendedBE()
     {
         MannschaftsmitgliedExtendedBE newMittglied = new MannschaftsmitgliedExtendedBE();
-        newMittglied.setId(0l);
+        newMittglied.setId(1l);
         newMittglied.setDsbMitgliedVorname("Sascha");
         newMittglied.setDsbMitgliedNachname("DeTiris");
+        newMittglied.setDsbMitgliedId(2l);
 
         return newMittglied;
     }
@@ -218,6 +235,10 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void findById() {
+
+        wettkampfDAO.findById(-1);
+        assertThatThrownBy(() -> underTest.findById(-1)).isInstanceOf(BusinessException.class);
+
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final WettkampfDO expectedDO = getWettkampfDO();
@@ -341,13 +362,27 @@ public class WettkampfComponentImplTest {
         assertThat(persistedBE.getId()).isEqualTo(input.getId());
     }
 
+    @Test
+    public void testFindByAusrichter(){
+        assertThat(underTest.findByAusrichter(0)).isNotNull();
+    }
+
+    @Test
+    public void testFindById(){
+        assertThatThrownBy(() -> underTest.findById(-1)).isInstanceOf(BusinessException.class);
+
+        when(wettkampfDAO.findById(anyLong())).thenReturn(null);
+        assertThatThrownBy(() -> underTest.findById(42)).isInstanceOf(BusinessException.class);
+    }
 
     @Test
     public void testFindAllWettkaempfeByMannschaftsId() {
+        assertThatThrownBy(() -> underTest.findAllWettkaempfeByMannschaftsId(-1)).isInstanceOf(BusinessException.class);
+        
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
-
+        
         // configure mocks
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
 
@@ -377,6 +412,8 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void testFindAllByVeranstaltungId() {
+        assertThatThrownBy(() -> underTest.findAllByVeranstaltungId(-1)).isInstanceOf(BusinessException.class);
+
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
@@ -443,42 +480,101 @@ public class WettkampfComponentImplTest {
     @Test
     public void testCalcAverage()
     {
-    //daten vorbereiten
-    List<PasseDO> passen = getPassenDO();
-    //Methode aufrufen
-    float actual = underTest.calcAverage(passen,1l);
-    //haben wir das erwartete ergebnis erhalten
-    Assertions.assertThat(actual).isEqualTo(8.5f);
+        //daten vorbereiten
+        List<PasseDO> passen = getPassenDO();
+        //Methode aufrufen
+        float actual = underTest.calcAverage(passen);
+        //haben wir das erwartete ergebnis erhalten
+        Assertions.assertThat(actual).isEqualTo(8.75f);
+
+        //Testabdeckung: im Falle dass der Pfeil == null
+        passen = getEmptyPassenDO();
+        for(PasseDO passe : passen)
+        {
+            //erwartetes Ergebnis definieren
+            Assertions.assertThat(passe.getPfeil1()).isNull();
+        }
     }
 
     @Test
-    public void testGenerateDoc() throws IOException
+    public void testCalcAverageEinzel()
+    {
+        //daten vorbereiten
+        List<PasseDO> passen = getPassenDO();
+        //Methode aufrufen
+        float actual = underTest.calcAverageEinzel(passen,1l);
+        //haben wir das erwartete ergebnis erhalten
+        Assertions.assertThat(actual).isEqualTo(8.5f);
+    }
+
+    @Test
+    public void testEinzelstatistik() throws IOException
+    {
+        assertThatThrownBy(() -> underTest.getPDFasByteArray("Einzelstatistik",-1,0,2034)).isInstanceOf(BusinessException.class);
+
+        prepareMocksForPDFTest();
+
+        for(int i = 0; i < 2; i++) {
+            byte[] pdf = underTest.getPDFasByteArray("Einzelstatistik",wettkampf_Veranstaltung_Id, mannschaft_id, 2033);
+
+            Assertions.assertThat(pdf).isNotNull().isNotEmpty();
+
+            ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+            PdfReader reader = new PdfReader(serializedPDF);
+            PdfDocument deserialized = new PdfDocument(reader);
+
+            prepare2ndMocksForPDFTest();
+        }
+    }
+
+    @Test
+    public void testGesamtstatistik() throws IOException
+    {
+        assertThatThrownBy(() -> underTest.getPDFasByteArray("Gesamtstatistik",-1,0,2034)).isInstanceOf(BusinessException.class);
+
+        prepareMocksForPDFTest();
+
+        //Run the Test 2 times
+        for(int i = 0; i < 2; i++) {
+            byte[] pdf = underTest.getPDFasByteArray("Gesamtstatistik", wettkampf_Veranstaltung_Id, mannschaft_id, 2034);
+
+            Assertions.assertThat(pdf).isNotNull().isNotEmpty();
+
+            ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+            PdfReader reader = new PdfReader(serializedPDF);
+            PdfDocument deserialized = new PdfDocument(reader);
+
+            prepare2ndMocksForPDFTest();
+        }
+
+        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(new ArrayList());
+        assertThatThrownBy(() -> underTest.getPDFasByteArray("Gesamtstatistik", wettkampf_Veranstaltung_Id, mannschaft_id, 2034)).isInstanceOf(BusinessException.class);
+    }
+
+    private void prepareMocksForPDFTest()
     {
         MannschaftsmitgliedExtendedBE exampleMitglied = getMannschaftsmitgliedExtendedBE();
-        List<PasseDO> passen = getPassenDO();
 
         List<WettkampfBE> wettkaempfe = new ArrayList<WettkampfBE>();
+        wettkaempfe.add(getWettkampfBE());
         wettkaempfe.add(getWettkampfBE());
 
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(wettkaempfe);
         when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
         when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(Arrays.asList(exampleMitglied));
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
-        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(passen);
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(getPassenDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
-
-        byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id,mannschaft_id,2033);
-
-        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
-
-        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
-        PdfReader reader = new PdfReader(serializedPDF);
-        PdfDocument deserialized = new PdfDocument(reader);
+    }
+    private void prepare2ndMocksForPDFTest()
+    {
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(new ArrayList());
     }
 
     @Test
     public void testGetTeamName()
     {
+        assertThatThrownBy(() -> underTest.getTeamName(-1)).isInstanceOf(BusinessException.class);
         //erwartetes ergebnis definieren
         String expected = "Bogensport Muster Hausen 1";
         //mocks vorbereiten
@@ -499,8 +595,10 @@ public class WettkampfComponentImplTest {
         List<Long> expected = new LinkedList<>();
         expected.add(2l);
         expected.add(1l);
+        expected.add(1l);
         //Methode aufrufen
         List<Long> actual = underTest.getNummern(passen);
+        expected.remove(2);
         //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(expected);
     }
