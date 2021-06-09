@@ -7,7 +7,6 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,23 +129,23 @@ public class MatchComponentImpl implements MatchComponent {
      * Return a single match by combined attributes
      *
      * @param wettkampfId ID from Wettkampf
-     * @param MatchNr Number of the match
+     * @param matchNr Number of the match
      * @param scheibenNummer number of the target board
      *
      * @return singleMatchDO
      */
     @Override
-    public MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer) {
+    public MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long matchNr, Long scheibenNummer) {
         checkPreconditions(wettkampfId, "wettkampf_Id");
-        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(matchNr, "matchNr");
         checkPreconditions(scheibenNummer, "scheibenNummer");
 
-        final MatchBE matchBE = matchDAO.findByWettkampfIDMatchNrScheibenNr(wettkampfId,MatchNr,scheibenNummer);
+        final MatchBE matchBE = matchDAO.findByWettkampfIDMatchNrScheibenNr(wettkampfId,matchNr,scheibenNummer);
 
         if (matchBE == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No match found with attributes wettkampfId: '%d', MatchNr: %d, scheibenNummer: %d",
-                             wettkampfId, MatchNr, scheibenNummer)
+                    String.format("No match found with attributes wettkampfId: '%d', matchNr: %d, scheibenNummer: %d",
+                             wettkampfId, matchNr, scheibenNummer)
             );
         }
         return MatchMapper.toMatchDO.apply(matchBE);
@@ -160,19 +159,6 @@ public class MatchComponentImpl implements MatchComponent {
         final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
         return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
     }
-
-
-
-    /*    @Override
-    public List<MatchBegegnungDO> findBegegnungByWettkampfId (Long wettkampfId) {
-        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
-
-        final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
-
-
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
-    }
-*/
 
     @Override
     public List<MatchDO> findByMannschaftId(Long mannschaftId) {
@@ -212,7 +198,7 @@ public class MatchComponentImpl implements MatchComponent {
                 if(i%2 == 0){
                     begegnung++;
                 }
-                this.createWT0Match(wettkampfId, begegnung, mannschaften.get(i).getId(), new Long(i) ,currentUserId);
+                this.createWT0Match(wettkampfId, begegnung, mannschaften.get(i).getId(), (long) i,currentUserId);
             }
         }
     }
