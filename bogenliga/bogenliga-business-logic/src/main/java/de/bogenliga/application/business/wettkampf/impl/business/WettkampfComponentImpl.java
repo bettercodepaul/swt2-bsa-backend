@@ -295,13 +295,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 List<Long> passennummern = getNummern(passen);
                 for(Long nummer:passennummern)
                 {
-                    if (!passen.isEmpty())
-                    {
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
-                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverageEinzel(passen,nummer)))));
-                    }
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
+                    table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(nummer))));
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(calcAverageEinzel(passen,nummer)))));
                 }
             }
             if(table.getNumberOfRows() > 1)

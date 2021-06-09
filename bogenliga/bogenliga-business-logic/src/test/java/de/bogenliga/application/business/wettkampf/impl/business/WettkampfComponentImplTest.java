@@ -234,6 +234,10 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void findById() {
+
+        wettkampfDAO.findById(-1);
+        assertThatThrownBy(() -> underTest.findById(-1)).isInstanceOf(BusinessException.class);
+
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final WettkampfDO expectedDO = getWettkampfDO();
@@ -377,7 +381,7 @@ public class WettkampfComponentImplTest {
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
-
+        
         // configure mocks
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
 
@@ -558,7 +562,17 @@ public class WettkampfComponentImplTest {
         when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
         when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(Arrays.asList(exampleMitglied));
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
-        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(getPassenDO());
+
+        PasseDO passe1 = new PasseDO(null,77l, null, 2l, null, null,
+                null, PFEIL1, PFEIL2, null, null, null, null, null,
+                null, null, null, null);
+        PasseDO passe2 = new PasseDO(null,77l, null, 1l, null, null,
+                null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
+                null, null, null, null);
+        List<PasseDO> passen = new LinkedList<>();
+        passen.add(passe1);
+        passen.add(passe2);
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(passen);
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
     }
     private void prepare2ndMocksForPDFTest()
@@ -569,6 +583,7 @@ public class WettkampfComponentImplTest {
     @Test
     public void testGetTeamName()
     {
+        assertThatThrownBy(() -> underTest.getTeamName(-1)).isInstanceOf(BusinessException.class);
         //erwartetes ergebnis definieren
         String expected = "Bogensport Muster Hausen 1";
         //mocks vorbereiten
@@ -589,8 +604,10 @@ public class WettkampfComponentImplTest {
         List<Long> expected = new LinkedList<>();
         expected.add(2l);
         expected.add(1l);
+        expected.add(1l);
         //Methode aufrufen
         List<Long> actual = underTest.getNummern(passen);
+        expected.remove(2);
         //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(expected);
     }
