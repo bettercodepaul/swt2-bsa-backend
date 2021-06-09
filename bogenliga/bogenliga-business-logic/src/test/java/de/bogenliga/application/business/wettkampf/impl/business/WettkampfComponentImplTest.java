@@ -504,6 +504,17 @@ public class WettkampfComponentImplTest {
 
             prepare2ndMocksForPDFTest();
         }
+
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(result);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document doc = new Document(pdfDocument, PageSize.A4);
+        Document expected = doc;
+        List<WettkampfBE> wettkaempfe = new ArrayList<WettkampfBE>();
+        wettkaempfe.add(getWettkampfBE());
+        wettkaempfe.add(getWettkampfBE());
+        underTest.generateEinzel(doc, wettkaempfe , mannschaft_id);
+        assertThat(doc).isSameAs(expected);
     }
 
     @Test
@@ -528,6 +539,17 @@ public class WettkampfComponentImplTest {
 
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(new ArrayList());
         assertThatThrownBy(() -> underTest.getPDFasByteArray("Gesamtstatistik", wettkampf_Veranstaltung_Id, mannschaft_id, 2034)).isInstanceOf(BusinessException.class);
+
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(result);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document doc = new Document(pdfDocument, PageSize.A4);
+        Document expected = doc;
+        List<WettkampfBE> wettkaempfe = new ArrayList<WettkampfBE>();
+        wettkaempfe.add(getWettkampfBE());
+        wettkaempfe.add(getWettkampfBE());
+        underTest.generateGesammt(doc, wettkaempfe , mannschaft_id);
+        assertThat(doc).isSameAs(expected);
     }
 
     private void prepareMocksForPDFTest()
@@ -578,4 +600,5 @@ public class WettkampfComponentImplTest {
         //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(expected);
     }
+
 }
