@@ -520,6 +520,8 @@ public class WettkampfComponentImplTest {
 
             prepare2ndMocksForPDFTest();
         }
+
+
     }
 
     @Test
@@ -589,8 +591,10 @@ public class WettkampfComponentImplTest {
         List<Long> expected = new LinkedList<>();
         expected.add(2l);
         expected.add(1l);
+        expected.add(1l);
         //Methode aufrufen
         List<Long> actual = underTest.getNummern(passen);
+        expected.remove(2);
         //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(expected);
     }
