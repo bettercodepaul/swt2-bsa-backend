@@ -155,6 +155,21 @@ public class MannschaftsmitgliedServiceTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
     }
 
+    @Test
+    public void findByTeamIdAndRueckennummer() {
+        // prepare test data
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+
+        // configure mocks
+        when(mannschaftsmitgliedComponent.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId)).thenReturn(
+                mannschaftsmitgliedDO);
+
+        final MannschaftsMitgliedDTO actual = underTest.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
+        assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
+    }
 
     @Test
     public void findAllSchuetzeInTeam() {
