@@ -61,9 +61,11 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
+    private final LigaComponent ligaComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final MatchComponent matchComponent;
+    private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final DsbMitgliedComponent dsbMitgliedComponent;
 
