@@ -81,8 +81,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
-    
     /**
      * Constructor
      * <p>
