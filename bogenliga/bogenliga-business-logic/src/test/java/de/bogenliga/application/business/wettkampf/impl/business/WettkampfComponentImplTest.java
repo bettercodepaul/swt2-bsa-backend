@@ -234,6 +234,10 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void findById() {
+
+        wettkampfDAO.findById(-1);
+        assertThatThrownBy(() -> underTest.findById(-1)).isInstanceOf(BusinessException.class);
+
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final WettkampfDO expectedDO = getWettkampfDO();
@@ -377,7 +381,7 @@ public class WettkampfComponentImplTest {
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
-
+        
         // configure mocks
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
 
@@ -520,8 +524,6 @@ public class WettkampfComponentImplTest {
 
             prepare2ndMocksForPDFTest();
         }
-
-
     }
 
     @Test
