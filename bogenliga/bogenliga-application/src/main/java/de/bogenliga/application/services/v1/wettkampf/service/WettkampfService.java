@@ -138,6 +138,8 @@ public class WettkampfService implements ServiceFacade {
 
         checkPreconditions(wettkampfDTO);
 
+        LOG.debug("Received 'create' request with id '{}' ", wettkampfDTO.getId());
+
         final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
@@ -184,6 +186,9 @@ public class WettkampfService implements ServiceFacade {
                                final Principal principal) throws NoPermissionException {
         checkPreconditions(wettkampfDTO);
 
+        LOG.debug(
+                "Received 'update' request with id '{}'", wettkampfDTO.getId());
+      
         //sowohl der Liagleiter als auch der Ausrichter dürfen hier updaten - wenn
         //es sich um ihre zugewiesenen Wettkämpfe /Ligen handelt...
         //daher eine datenspezische Berechtigungsprüfung zusätzlich..
