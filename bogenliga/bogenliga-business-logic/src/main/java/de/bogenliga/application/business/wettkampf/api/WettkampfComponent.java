@@ -84,9 +84,8 @@ public interface WettkampfComponent extends ComponentFacade {
 
     /**
      * Generates a pdf as binary document
-     * @param wettkampfid ID for the competition
+     * @param veranstaltungsid ID for the competition
      * @return document
      */
-    byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr);
-
+    byte[] getPDFasByteArray(String name, long veranstaltungsid,long manschaftsid,int jahr);
 }
