@@ -1,14 +1,6 @@
 -- ckeck and improve test table "veranstaltung" with the correct "veranstaltung_liga_id"
 
 UPDATE veranstaltung
-SET veranstaltung_liga_id = 3
-where veranstaltung_id = 1;
-
-UPDATE veranstaltung
-SET veranstaltung_liga_id = 4
-where veranstaltung_id = 2;
-
-UPDATE veranstaltung
 SET veranstaltung_liga_id = 9
 where veranstaltung_id = 3;
 

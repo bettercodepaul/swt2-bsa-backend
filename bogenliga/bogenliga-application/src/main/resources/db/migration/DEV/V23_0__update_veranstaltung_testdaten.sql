@@ -82,3 +82,14 @@ SET veranstaltung_liga_id = 4,
     veranstaltung_sportjahr = 2016,
     veranstaltung_meldedeadline = '2015-10-31'
 WHERE veranstaltung_id = 23;
+
+INSERT INTO veranstaltung (
+                           veranstaltung_wettkampftyp_id,
+                           veranstaltung_name,
+                           veranstaltung_sportjahr,
+                           veranstaltung_ligaleiter_id,
+                           veranstaltung_meldedeadline,
+                           version,
+                           veranstaltung_liga_id)
+VALUES
+(1, 'Würtembergliga', 2019, 2, '2018-10-31', 1, 2);
