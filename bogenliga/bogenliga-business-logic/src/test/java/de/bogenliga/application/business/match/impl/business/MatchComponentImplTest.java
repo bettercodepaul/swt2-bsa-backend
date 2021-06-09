@@ -1,15 +1,20 @@
 package de.bogenliga.application.business.match.impl.business;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -23,6 +28,10 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
     @Mock
     private MatchDAO matchDAO;
+    @Mock
+    private DsbMannschaftComponent mannschaftComponent;
+    @Mock
+    private WettkampfComponent wettkampfComponent;
 
     @InjectMocks
     private MatchComponentImpl underTest;
@@ -449,4 +458,40 @@ public class MatchComponentImplTest extends BaseMatchTest {
                 .withNoCause();
     }
 
+
+    @Test
+    public void createInitialMatchesWT0(){
+
+
+        DsbMannschaftDO mannschaft1 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft2 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft3 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft4 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft5 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft6 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft7 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft8 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+
+        List<DsbMannschaftDO> mannschaften = new ArrayList<>();
+
+        mannschaften.add(mannschaft1);
+        mannschaften.add(mannschaft2);
+        mannschaften.add(mannschaft3);
+        mannschaften.add(mannschaft4);
+        mannschaften.add(mannschaft5);
+        mannschaften.add(mannschaft6);
+        mannschaften.add(mannschaft7);
+        mannschaften.add(mannschaft8);
+
+        when(mannschaftComponent.findAllByVeranstaltungsId(1L)).thenReturn(mannschaften);
+
+        WettkampfDO wettkampf = new WettkampfDO(1L);
+
+        when(wettkampfComponent.findWT0byVeranstaltungsId(1L)).thenReturn(wettkampf);
+
+        underTest.createInitialMatchesWT0(1L,1L);
+
+        verify(wettkampfComponent).findWT0byVeranstaltungsId(1L);
+        verify(mannschaftComponent).findAllByVeranstaltungsId(1L);
+    }
 }
