@@ -357,9 +357,23 @@ public class WettkampfComponentImplTest {
         assertThat(persistedBE.getId()).isEqualTo(input.getId());
     }
 
+    @Test
+    public void testFindByAusrichter(){
+        assertThat(underTest.findByAusrichter(0)).isNotNull();
+    }
+
+    @Test
+    public void testFindById(){
+        assertThatThrownBy(() -> underTest.findById(-1)).isInstanceOf(BusinessException.class);
+
+        when(wettkampfDAO.findById(anyLong())).thenReturn(null);
+        assertThatThrownBy(() -> underTest.findById(42)).isInstanceOf(BusinessException.class);
+    }
 
     @Test
     public void testFindAllWettkaempfeByMannschaftsId() {
+        assertThatThrownBy(() -> underTest.findAllWettkaempfeByMannschaftsId(-1)).isInstanceOf(BusinessException.class);
+        
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
@@ -393,6 +407,8 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void testFindAllByVeranstaltungId() {
+        assertThatThrownBy(() -> underTest.findAllByVeranstaltungId(-1)).isInstanceOf(BusinessException.class);
+
         // prepare test data
         final WettkampfBE expectedBE = getWettkampfBE();
         final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
