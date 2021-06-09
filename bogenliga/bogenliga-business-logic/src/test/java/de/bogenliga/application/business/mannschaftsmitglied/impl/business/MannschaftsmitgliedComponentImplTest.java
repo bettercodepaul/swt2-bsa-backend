@@ -148,6 +148,18 @@ public class MannschaftsmitgliedComponentImplTest {
 
     }
 
+    @Test
+    public void findByTeamIdAndRueckennummer() {
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findByTeamIdAndRueckennummer(MANNSCHAFTSID, RUECKENNUMMER)).thenReturn(expectedBE);
+        final MannschaftsmitgliedDO actual = underTest.findByTeamIdAndRueckennummer(MANNSCHAFTSID, RUECKENNUMMER);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
+        assertThat(actual.getRueckennummer()).isEqualTo(expectedBE.getRueckennummer());
+    }
 
     @Test
     public void findByTeamId() {
