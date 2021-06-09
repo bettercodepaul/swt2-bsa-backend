@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
 import de.bogenliga.application.business.dsbmitglied.impl.dao.MitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
@@ -52,11 +52,11 @@ public class UserProfileComponentImpl implements UserProfileComponent {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
-        final DsbMitgliedBE dsbMitgliedBE = mitgliedDAO.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
-        if (dsbMitgliedBE == null) {
+        final MitgliedBE mitgliedBE = mitgliedDAO.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
+        if (mitgliedBE == null) {
             userProfileDO.setEmail(userBE.getUserEmail());
         } else {
-            userProfileDO = UserMapper.toUserProfileDO.apply(userBE, dsbMitgliedBE);
+            userProfileDO = UserMapper.toUserProfileDO.apply(userBE, mitgliedBE);
         }
 
 

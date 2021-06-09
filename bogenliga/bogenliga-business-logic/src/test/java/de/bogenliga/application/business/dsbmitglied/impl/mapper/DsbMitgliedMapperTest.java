@@ -3,7 +3,7 @@ package de.bogenliga.application.business.dsbmitglied.impl.mapper;
 import java.sql.Date;
 import org.junit.Test;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
 import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbDsbMitgliedComponentImplTest.getDsbMitgliedBE;
 import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbDsbMitgliedComponentImplTest.getDsbMitgliedDO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,9 +33,9 @@ public class DsbMitgliedMapperTest {
 
     @Test
     public void toDO() throws Exception {
-        final DsbMitgliedBE dsbMitgliedBE = getDsbMitgliedBE();
+        final MitgliedBE mitgliedBE = getDsbMitgliedBE();
 
-        final DsbMitgliedDO actual = dsbMitgliedMapper.toDsbMitgliedDO.apply(dsbMitgliedBE);
+        final DsbMitgliedDO actual = MitgliedMapper.toDsbMitgliedDO.apply(mitgliedBE);
 
         assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getVorname()).isEqualTo(VORNAME);
@@ -50,7 +50,7 @@ public class DsbMitgliedMapperTest {
     public void toBE() throws Exception {
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
-        final DsbMitgliedBE actual = dsbMitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
+        final MitgliedBE actual = MitgliedMapper.toDsbMitgliedBE.apply(dsbMitgliedDO);
 
         assertThat(actual.getDsbMitgliedId()).isEqualTo(ID);
         assertThat(actual.getDsbMitgliedVorname()).isEqualTo(VORNAME);

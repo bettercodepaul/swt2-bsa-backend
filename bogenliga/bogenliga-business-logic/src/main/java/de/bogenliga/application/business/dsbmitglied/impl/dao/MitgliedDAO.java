@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.MitgliedBE;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -51,8 +51,8 @@ public class MitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_TABLE_USER_ID = "dsb_mitglied_benutzer_id";
 
     // wrap all specific config parameters
-    private static final BusinessEntityConfiguration<DsbMitgliedBE> DSBMITGLIED = new BusinessEntityConfiguration<>(
-            DsbMitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+    private static final BusinessEntityConfiguration<MitgliedBE> DSBMITGLIED = new BusinessEntityConfiguration<>(
+            MitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
     /*
      * SQL queries
@@ -137,7 +137,7 @@ public class MitgliedDAO implements DataAccessObject {
     /**
      * Return all dsbmitglied entries
      */
-    public List<DsbMitgliedBE> findAll() {
+    public List<MitgliedBE> findAll() {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL);
     }
 
@@ -147,7 +147,7 @@ public class MitgliedDAO implements DataAccessObject {
      * @param id id of the team, in which the dsmitglied entries are used
      * @return list of all dsbmitglied entries with the given id
      */
-    public List<DsbMitgliedBE> findAllByTeamId(final long id) {
+    public List<MitgliedBE> findAllByTeamId(final long id) {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_BY_TEAM_ID, id);
     }
 
@@ -156,7 +156,7 @@ public class MitgliedDAO implements DataAccessObject {
      *
      * @param id
      */
-    public DsbMitgliedBE findById(final long id) {
+    public MitgliedBE findById(final long id) {
         return basicDao.selectSingleEntity(DSBMITGLIED, FIND_BY_ID, id);
     }
 
@@ -165,7 +165,7 @@ public class MitgliedDAO implements DataAccessObject {
      *
      * @param id
      */
-    public DsbMitgliedBE findByUserId(final long id) {
+    public MitgliedBE findByUserId(final long id) {
         return basicDao.selectSingleEntity(DSBMITGLIED, FIND_BY_USER_ID, id);
     }
 
@@ -173,49 +173,49 @@ public class MitgliedDAO implements DataAccessObject {
     /**
      * Create a new dsbmitglied entry
      *
-     * @param dsbMitgliedBE
+     * @param mitgliedBE
      * @param currentDsbMitgliedId
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
-    public DsbMitgliedBE create(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
-        basicDao.setCreationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
+    public MitgliedBE create(final MitgliedBE mitgliedBE, final long currentDsbMitgliedId) {
+        basicDao.setCreationAttributes(mitgliedBE, currentDsbMitgliedId);
 
-        return basicDao.insertEntity(DSBMITGLIED, dsbMitgliedBE);
+        return basicDao.insertEntity(DSBMITGLIED, mitgliedBE);
     }
 
 
     /**
      * Update an existing dsbmitglied entry
      *
-     * @param dsbMitgliedBE
+     * @param mitgliedBE
      * @param currentDsbMitgliedId
      * @return Business Entity corresponding to the updated dsbmitglied entry
      */
-    public DsbMitgliedBE update(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
-        basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
+    public MitgliedBE update(final MitgliedBE mitgliedBE, final long currentDsbMitgliedId) {
+        basicDao.setModificationAttributes(mitgliedBE, currentDsbMitgliedId);
 
-        DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        MitgliedBE updatedMitgliedBE = basicDao.updateEntity(DSBMITGLIED, mitgliedBE, DSBMITGLIED_BE_ID);
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
-        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
+        if(updatedMitgliedBE.getDsbMitgliedUserId() == null) {
             UserDAO UserDAO = new UserDAO(basicDao);
-            UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
-            updatedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
-            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
+            UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedMitgliedBE.getDsbMitgliedId());
+            updatedMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
+            updatedMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedMitgliedBE, DSBMITGLIED_BE_ID);
         }
 
-        return updatedDsbMitgliedBE;
+        return updatedMitgliedBE;
     }
 
 
     /**
      * Delete existing dsbmitglied entrycreated_at_utc
      *
-     * @param dsbMitgliedBE
+     * @param mitgliedBE
      * @param currentDsbMitgliedId
      */
-    public void delete(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
-        basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
+    public void delete(final MitgliedBE mitgliedBE, final long currentDsbMitgliedId) {
+        basicDao.setModificationAttributes(mitgliedBE, currentDsbMitgliedId);
 
-        basicDao.deleteEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        basicDao.deleteEntity(DSBMITGLIED, mitgliedBE, DSBMITGLIED_BE_ID);
     }
 }
