@@ -905,7 +905,6 @@ public class MatchService implements ServiceFacade {
                         result = true;
                     }
                 }
-
             }
         }
         return result;

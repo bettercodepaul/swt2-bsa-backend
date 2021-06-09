@@ -91,6 +91,7 @@ public class RequiresOnePermissionAspect {
             return joinPoint.proceed();
     }
 
+
     boolean hasPermission(UserPermission toTest){
         // get current http request from thread
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
