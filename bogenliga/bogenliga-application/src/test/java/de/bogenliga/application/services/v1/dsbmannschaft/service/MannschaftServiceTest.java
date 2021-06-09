@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.MannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
+import de.bogenliga.application.services.v1.dsbmannschaft.model.MannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,16 +68,16 @@ public class MannschaftServiceTest {
     }
 
 
-    private static DsbMannschaftDTO getDsbMannschaftDTO() {
-        final DsbMannschaftDTO dsbMannschaftDTO = new DsbMannschaftDTO();
-        dsbMannschaftDTO.setId(ID);
-        dsbMannschaftDTO.setVereinId(VEREIN_ID);
-        dsbMannschaftDTO.setNummer(NUMMER);
-        dsbMannschaftDTO.setBenutzerId(BENUTZER_ID);
-        dsbMannschaftDTO.setVeranstaltungId(VERANSTALTUNG_ID);
-        dsbMannschaftDTO.setSortierung(SORTIERUNG);
+    private static MannschaftDTO getDsbMannschaftDTO() {
+        final MannschaftDTO mannschaftDTO = new MannschaftDTO();
+        mannschaftDTO.setId(ID);
+        mannschaftDTO.setVereinId(VEREIN_ID);
+        mannschaftDTO.setNummer(NUMMER);
+        mannschaftDTO.setBenutzerId(BENUTZER_ID);
+        mannschaftDTO.setVeranstaltungId(VERANSTALTUNG_ID);
+        mannschaftDTO.setSortierung(SORTIERUNG);
 
-        return dsbMannschaftDTO;
+        return mannschaftDTO;
     }
 
 
@@ -97,12 +97,12 @@ public class MannschaftServiceTest {
         when(mannschaftComponent.findAll()).thenReturn(dsbMannschaftDOList);
 
         // call test method
-        final List<DsbMannschaftDTO> actual = underTest.findAll();
+        final List<MannschaftDTO> actual = underTest.findAll();
 
         // assert result
         assertThat(actual).isNotNull().hasSize(1);
 
-        final DsbMannschaftDTO actualDTO = actual.get(0);
+        final MannschaftDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
@@ -124,12 +124,12 @@ public class MannschaftServiceTest {
         when(mannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(dsbMannschaftDOList);
 
         //call test method
-        final List<DsbMannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID);
+        final List<MannschaftDTO> actual = underTest.findAllByVereinsId(VEREIN_ID);
 
         //assert result
         assertThat(actual).isNotNull().hasSize(1);
 
-        final DsbMannschaftDTO actualDTO = actual.get(0);
+        final MannschaftDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
@@ -151,12 +151,12 @@ public class MannschaftServiceTest {
         when(mannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(dsbMannschaftDOList);
 
         //call test method
-        final List<DsbMannschaftDTO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+        final List<MannschaftDTO> actual = underTest.findAllByVeranstaltungsId(VERANSTALTUNG_ID);
 
         //assert result
         assertThat(actual).isNotNull().hasSize(1);
 
-        final DsbMannschaftDTO actualDTO = actual.get(0);
+        final MannschaftDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(dsbMannschaftDO.getId());
@@ -177,7 +177,7 @@ public class MannschaftServiceTest {
         when(mannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
 
         // call test method
-        final DsbMannschaftDTO actual = underTest.findById(ID);
+        final MannschaftDTO actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -193,7 +193,7 @@ public class MannschaftServiceTest {
     @Test
     public void create() {
         // prepare test data
-        final DsbMannschaftDTO input = getDsbMannschaftDTO();
+        final MannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
@@ -202,7 +202,7 @@ public class MannschaftServiceTest {
 
         // call test method
         try {
-            final DsbMannschaftDTO actual = underTest.create(input, principal);
+            final MannschaftDTO actual = underTest.create(input, principal);
 
             // assert result
             assertThat(actual).isNotNull();
@@ -227,7 +227,7 @@ public class MannschaftServiceTest {
     @Test
     public void createNoPermission() {
         // prepare test data
-        final DsbMannschaftDTO input = getDsbMannschaftDTO();
+        final MannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
@@ -243,7 +243,7 @@ public class MannschaftServiceTest {
     @Test
     public void update() {
         // prepare test data
-        final DsbMannschaftDTO input = getDsbMannschaftDTO();
+        final MannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks
@@ -252,7 +252,7 @@ public class MannschaftServiceTest {
 
         // call test method
         try {
-            final DsbMannschaftDTO actual = underTest.update(input, principal);
+            final MannschaftDTO actual = underTest.update(input, principal);
 
             // assert result
             assertThat(actual).isNotNull();
@@ -277,7 +277,7 @@ public class MannschaftServiceTest {
     @Test
     public void updateNoPermission() {
         // prepare test data
-        final DsbMannschaftDTO input = getDsbMannschaftDTO();
+        final MannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
         // configure mocks

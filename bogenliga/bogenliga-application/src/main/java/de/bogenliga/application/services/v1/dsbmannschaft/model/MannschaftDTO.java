@@ -10,7 +10,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * @author Kaywan Barzani
  * @see DataTransferObject
  */
-public class DsbMannschaftDTO implements DataTransferObject {
+public class MannschaftDTO implements DataTransferObject {
     private static final long serialVersionUID = 8559563978424033907L;
 
     private Long id;
@@ -25,13 +25,13 @@ public class DsbMannschaftDTO implements DataTransferObject {
     /**
      * Constructors
      */
-    public DsbMannschaftDTO() {
+    public MannschaftDTO() {
         // empty constructor
     }
 
 
-    public DsbMannschaftDTO(Long id, String name, Long vereinId, Long nummer,
-                            Long benutzerId, Long veranstaltungId, Long sortierung) {
+    public MannschaftDTO(Long id, String name, Long vereinId, Long nummer,
+                         Long benutzerId, Long veranstaltungId, Long sortierung) {
         this.id = id;
         this.name = name;
         this.vereinId = vereinId;
