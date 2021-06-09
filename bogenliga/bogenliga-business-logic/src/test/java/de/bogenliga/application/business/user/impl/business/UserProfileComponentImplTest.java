@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.MitgliedDAO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
@@ -36,7 +36,7 @@ public class UserProfileComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private DsbMitgliedDAO dsbMitgliedDAO;
+    private MitgliedDAO mitgliedDAO;
     @Mock
     private UserDAO userDAO;
     @InjectMocks
@@ -77,7 +77,7 @@ public class UserProfileComponentImplTest {
         final UserBE expectedUserBE = getUserBE();
 
         // configure mocks
-        when(dsbMitgliedDAO.findById(ID)).thenReturn(expectedDsbMitgliedBE);
+        when(mitgliedDAO.findById(ID)).thenReturn(expectedDsbMitgliedBE);
         when(userDAO.findById(USERID)).thenReturn(expectedUserBE);
 
         // call test method

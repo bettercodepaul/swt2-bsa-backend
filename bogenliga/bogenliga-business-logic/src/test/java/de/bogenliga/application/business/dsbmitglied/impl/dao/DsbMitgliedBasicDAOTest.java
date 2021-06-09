@@ -46,7 +46,7 @@ public class DsbMitgliedBasicDAOTest {
     @Mock
     private BasicDAO basicDao;
     @InjectMocks
-    private DsbMitgliedDAO underTest;
+    private MitgliedDAO underTest;
 
 
     @Test
