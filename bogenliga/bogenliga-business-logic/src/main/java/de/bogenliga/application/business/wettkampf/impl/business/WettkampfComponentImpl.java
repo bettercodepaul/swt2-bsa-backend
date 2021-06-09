@@ -197,6 +197,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     //Erstellt die grundstruktur der pdf und ruft dann passend entweder generateEinzel zur erstellung der einzelstatistik oder generateGesammt zur erstellung der Gesammtstatistik auf
     public void generateDoc(Document doc, String header, List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
     {
+        Preconditions.checkArgument(header == "Einzelstatistik" || header == "Gesamtstatistik","Invalid Header!");
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
 
         doc.setFontSize(20.0f);
