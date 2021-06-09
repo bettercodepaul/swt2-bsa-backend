@@ -225,6 +225,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     }
 
+    //Erstellt die grundstruktur der pdf und ruft dann passend entweder generateEinzel zur erstellung der einzelstatistik oder generateGesammt zur erstellung der Gesammtstatistik auf
     public void generateDoc(Document doc, String header, List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
     {
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
@@ -249,6 +250,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.close();
     }
 
+    //liefert eine liste mit den matchnummern der passen die übergeben wurden
     public List<Long> getNummern(List<PasseDO> passen)
     {
         List<Long> passennummern = new LinkedList<>();
@@ -262,6 +264,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return passennummern;
     }
 
+    //ermitelt team name anhand id
     public String getTeamName(long teamID) {
         Preconditions.checkArgument(teamID >= 0,"TeamID cannot be Negative");
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(teamID);
@@ -303,7 +306,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return bResult;
     }
 
-
+    //Generiert Tabelle für Einzelstatistik
     public void generateEinzel(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
         for(WettkampfBE wettkampf : wettkampflisteBEList)
@@ -342,6 +345,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
     }
 
+    //Generiert Tabelle für Gesammtstatistik
     void generateGesammt(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
         List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
@@ -380,6 +384,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
     }
 
+    //berechnet den durchscnittlichen pfeilwert der passen die zur übergebenen matchnr gehören
     float calcAverageEinzel(List<PasseDO> passen ,long nummer)
     {
         List<PasseDO> neu = new ArrayList<>();
@@ -393,6 +398,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return calcAverage(neu);
     }
 
+    //berechnet den durchscnittlichen pfeilwert aller übergebenen passen
     public float calcAverage( List<PasseDO> passen)
     {
         float average = 0;
