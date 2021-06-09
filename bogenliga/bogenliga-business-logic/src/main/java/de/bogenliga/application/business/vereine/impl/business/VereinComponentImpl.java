@@ -1,27 +1,21 @@
 package de.bogenliga.application.business.vereine.impl.business;
 
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
-import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
+import de.bogenliga.application.business.regionen.api.RegionenComponent;
+import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.mapper.VereinMapper;
 import de.bogenliga.application.common.validation.Preconditions;
-import java.io.File;
+
 
 /**
  * Implementation of {@link VereinComponent}
@@ -40,12 +34,12 @@ public class VereinComponentImpl implements VereinComponent {
     private static final String PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG = "DsbMitglied id must not be negative";
 
     private final VereinDAO vereinDAO;
-    private final RegionenDAO regionenDAO;
+    private final RegionenComponent regionenComponent;
 
     @Autowired
-    public VereinComponentImpl(VereinDAO vereinDAO, RegionenDAO regionenDao) {
+    public VereinComponentImpl(VereinDAO vereinDAO, @Lazy RegionenComponent regionenComponent) {
         this.vereinDAO = vereinDAO;
-        this.regionenDAO = regionenDao;
+        this.regionenComponent = regionenComponent;
     }
 
     @Override
@@ -70,7 +64,7 @@ public class VereinComponentImpl implements VereinComponent {
     public VereinDO findById(long vereinId) {
         final VereinBE vereinBE = vereinDAO.findById(vereinId);
         final VereinDO vereinDO = VereinMapper.toVereinDO.apply(vereinBE);
-        vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
+        vereinDO.setRegionName(this.regionenComponent.findById(vereinBE.getVereinRegionId()).getRegionName());
 
         return vereinDO;
     }
@@ -114,15 +108,15 @@ public class VereinComponentImpl implements VereinComponent {
      * @return List of {@VereinDO} elements altered with a regionName
      */
     private List<VereinDO> alterDoByRegionName(List<VereinDO> vereinDOList) {
-        final List<RegionenBE> regionenBEList = regionenDAO.findAll();
+        final List<RegionenDO> regionenDOList = regionenComponent.findAll();
         for (int i = 0; i < vereinDOList.size(); i++) {
             VereinDO tmpVerein = vereinDOList.get(i);
 
-            Optional<RegionenBE> regionenBEOptional = regionenBEList.stream()
-                    .filter(region -> region.getRegionId().equals(tmpVerein.getRegionId())).findFirst();
+            Optional<RegionenDO> regionenDOOptional = regionenDOList.stream()
+                    .filter(region -> region.getId().equals(tmpVerein.getRegionId())).findFirst();
 
-            if(regionenBEOptional.isPresent()) {
-                tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
+            if(regionenDOOptional.isPresent()) {
+                tmpVerein.setRegionName(regionenDOOptional.get().getRegionName());
                 vereinDOList.set(i, tmpVerein);
             }
         }
