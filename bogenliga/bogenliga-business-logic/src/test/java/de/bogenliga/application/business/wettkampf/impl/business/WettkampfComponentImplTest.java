@@ -524,8 +524,6 @@ public class WettkampfComponentImplTest {
 
             prepare2ndMocksForPDFTest();
         }
-
-
     }
 
     @Test
