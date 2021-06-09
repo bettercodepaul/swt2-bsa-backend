@@ -141,10 +141,10 @@ public class WettkampfComponentImplTest {
 
     public static List<PasseDO> getPassenDO()
     {
-        PasseDO passe1 = new PasseDO(null,null, null, 2l, null, null,
+        PasseDO passe1 = new PasseDO(null,77l, null, 2l, null, null,
                         null, PFEIL1, PFEIL2, null, null, null, null, null,
                             null, null, null, null);
-        PasseDO passe2 = new PasseDO(null,null, null, 1l, null, null,
+        PasseDO passe2 = new PasseDO(null,77l, null, 1l, null, null,
                         null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
                             null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
@@ -505,6 +505,7 @@ public class WettkampfComponentImplTest {
             prepare2ndMocksForPDFTest();
         }
 
+        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(new ArrayList());
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(result);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -514,7 +515,7 @@ public class WettkampfComponentImplTest {
         wettkaempfe.add(getWettkampfBE());
         wettkaempfe.add(getWettkampfBE());
         underTest.generateEinzel(doc, wettkaempfe , mannschaft_id);
-        assertThat(doc).isSameAs(expected);
+        assertThat(doc).isEqualTo(expected);
     }
 
     @Test
@@ -549,7 +550,7 @@ public class WettkampfComponentImplTest {
         wettkaempfe.add(getWettkampfBE());
         wettkaempfe.add(getWettkampfBE());
         underTest.generateGesammt(doc, wettkaempfe , mannschaft_id);
-        assertThat(doc).isSameAs(expected);
+        assertThat(doc).isEqualTo(expected);
     }
 
     private void prepareMocksForPDFTest()
