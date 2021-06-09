@@ -327,7 +327,7 @@ public class DownloadService implements ServiceFacade {
     @RequestParam("jahr") final int jahr)
     {
 
-        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(veranstaltungsid,manschaftsid,jahr);
+        final byte[] fileBloB = wettkampfComponent.getPDFasByteArray("Einzelstatistik",veranstaltungsid,manschaftsid,jahr);
 
         return generateInputStream(fileBloB);
     }
@@ -355,7 +355,7 @@ public class DownloadService implements ServiceFacade {
                                                                    @RequestParam("jahr") final int jahr)
     {
 
-        final byte[] fileBloB = wettkampfComponent.getGesamtstatistikPDFasByteArray(veranstaltungsid,manschaftsid,jahr);
+        final byte[] fileBloB = wettkampfComponent.getPDFasByteArray("Gesamtstatistik" ,veranstaltungsid,manschaftsid,jahr);
 
         return generateInputStream(fileBloB);
     }

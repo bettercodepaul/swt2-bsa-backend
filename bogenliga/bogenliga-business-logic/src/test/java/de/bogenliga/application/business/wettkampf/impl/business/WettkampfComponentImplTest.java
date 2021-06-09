@@ -489,12 +489,12 @@ public class WettkampfComponentImplTest {
     @Test
     public void testEinzelstatistik() throws IOException
     {
-        assertThatThrownBy(() -> underTest.getGesamtstatistikPDFasByteArray(-1,0,2034)).isInstanceOf(BusinessException.class);
+        assertThatThrownBy(() -> underTest.getPDFasByteArray("Einzelstatistik",-1,0,2034)).isInstanceOf(BusinessException.class);
 
         prepareMocksForPDFTest();
 
         for(int i = 0; i < 2; i++) {
-            byte[] pdf = underTest.getEinzelstatistikPDFasByteArray(wettkampf_Veranstaltung_Id, mannschaft_id, 2033);
+            byte[] pdf = underTest.getPDFasByteArray("Einzelstatistik",wettkampf_Veranstaltung_Id, mannschaft_id, 2033);
 
             Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
@@ -509,13 +509,13 @@ public class WettkampfComponentImplTest {
     @Test
     public void testGesamtstatistik() throws IOException
     {
-        assertThatThrownBy(() -> underTest.getGesamtstatistikPDFasByteArray(-1,0,2034)).isInstanceOf(BusinessException.class);
+        assertThatThrownBy(() -> underTest.getPDFasByteArray("Gesamtstatistik",-1,0,2034)).isInstanceOf(BusinessException.class);
 
         prepareMocksForPDFTest();
 
         //Run the Test 2 times
         for(int i = 0; i < 2; i++) {
-            byte[] pdf = underTest.getGesamtstatistikPDFasByteArray(wettkampf_Veranstaltung_Id, mannschaft_id, 2034);
+            byte[] pdf = underTest.getPDFasByteArray("Gesamtstatistik", wettkampf_Veranstaltung_Id, mannschaft_id, 2034);
 
             Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
@@ -527,7 +527,7 @@ public class WettkampfComponentImplTest {
         }
 
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(new ArrayList());
-        assertThatThrownBy(() -> underTest.getGesamtstatistikPDFasByteArray(wettkampf_Veranstaltung_Id, mannschaft_id, 2034)).isInstanceOf(BusinessException.class);
+        assertThatThrownBy(() -> underTest.getPDFasByteArray("Gesamtstatistik", wettkampf_Veranstaltung_Id, mannschaft_id, 2034)).isInstanceOf(BusinessException.class);
     }
 
     private void prepareMocksForPDFTest()
