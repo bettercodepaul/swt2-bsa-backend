@@ -295,6 +295,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             return vereinDO.getName();
         }
     }
+    public WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId){
+        WettkampfBE wettkampfBE= wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
+        return  WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
+    }
 
     public float calcAverage( List<PasseDO> passen ,long nummer)
     {
