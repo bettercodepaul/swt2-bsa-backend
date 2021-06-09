@@ -52,7 +52,7 @@ public class UserProfileComponentImpl implements UserProfileComponent {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
-        final DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
+        final DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(userBE.getDsbMitgliedId());    // required for remaining profile data
         if (dsbMitgliedBE == null) {
             userProfileDO.setEmail(userBE.getUserEmail());
         } else {
