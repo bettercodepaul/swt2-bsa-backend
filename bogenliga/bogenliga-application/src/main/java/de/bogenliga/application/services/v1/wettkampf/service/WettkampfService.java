@@ -138,21 +138,6 @@ public class WettkampfService implements ServiceFacade {
 
         checkPreconditions(wettkampfDTO);
 
-        LOG.debug(
-                "Received 'create' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampfDisziplinID'{}', Wettkampfstrasse'{}', Wettkampfplz'{}', Wettkampfortsname'{}', Wettkampfortsinfo'{}'," +
-                        " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
-                wettkampfDTO.getId(),
-                wettkampfDTO.getDatum(),
-                wettkampfDTO.getwettkampfVeranstaltungsId(),
-                wettkampfDTO.getWettkampfDisziplinId(),
-                wettkampfDTO.getWettkampfStrasse(),
-                wettkampfDTO.getWettkampfPlz(),
-                wettkampfDTO.getWettkampfOrtsname(),
-                wettkampfDTO.getWettkampfOrtsinfo(),
-                wettkampfDTO.getWettkampfTag(),
-                wettkampfDTO.getWettkampfBeginn(),
-                wettkampfDTO.getWettkampfTypId());
-
         final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
@@ -199,18 +184,6 @@ public class WettkampfService implements ServiceFacade {
                                final Principal principal) throws NoPermissionException {
         checkPreconditions(wettkampfDTO);
 
-        LOG.debug(
-                "Received 'update' request with id '{}', Datum '{}', " +
-                        "VeranstaltungsID'{}', WettkampfDisziplinID'{}'," +
-                        " Wettkampfort'{}'," + " WettkampfTag '{}', WettkampfBeginn'{}', WettkampfTypID '{}' ",
-                wettkampfDTO.getId(),
-                wettkampfDTO.getDatum(),
-                wettkampfDTO.getwettkampfVeranstaltungsId(),
-                wettkampfDTO.getWettkampfDisziplinId(),
-                wettkampfDTO.getWettkampfOrtsname(),
-                wettkampfDTO.getWettkampfTag(),
-                wettkampfDTO.getWettkampfBeginn(),
-                wettkampfDTO.getWettkampfTypId());
         //sowohl der Liagleiter als auch der Ausrichter dürfen hier updaten - wenn
         //es sich um ihre zugewiesenen Wettkämpfe /Ligen handelt...
         //daher eine datenspezische Berechtigungsprüfung zusätzlich..
