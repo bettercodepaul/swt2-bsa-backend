@@ -76,7 +76,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final VereinComponent vereinComponent;
-    private VeranstaltungComponent veranstaltungComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
@@ -94,13 +94,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final MatchComponent matchComponent,
                                   final PasseComponent passeComponent,
                                   final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
-                                  final DsbMitgliedComponent dsbMitgliedComponent) {
+                                  final DsbMitgliedComponent dsbMitgliedComponent,
+                                  final VeranstaltungComponent veranstaltungComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
 
