@@ -70,7 +70,7 @@ public class DownloadServiceTest {
         final byte[] test = new byte[0];
 
         //configure Mocks
-        when(wettkampfComponent.getEinzelstatistikPDFasByteArray(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR)).thenReturn(test);
+        when(wettkampfComponent.getPDFasByteArray("Einzelstatistik",VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR)).thenReturn(test);
 
         //call Method
         final ResponseEntity<InputStreamResource> actual = DownloadService.downloadEinzelstatistikPdf(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
@@ -79,6 +79,25 @@ public class DownloadServiceTest {
         Assertions.assertThat(actual).isNotNull();
 
         //verify invocations
-        verify(wettkampfComponent).getEinzelstatistikPDFasByteArray(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
+        verify(wettkampfComponent).getPDFasByteArray("Einzelstatistik",VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
     }
+
+    @Test
+    public void downloadgesamtstatistikPdf()
+    {
+        final byte[] test = new byte[0];
+
+        //configure Mocks
+        when(wettkampfComponent.getPDFasByteArray("Gesamtstatistik",VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR)).thenReturn(test);
+
+        //call Method
+        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadGesamtstatistikPdf(VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
+
+        //result is nut NULL
+        Assertions.assertThat(actual).isNotNull();
+
+        //verify invocations
+        verify(wettkampfComponent).getPDFasByteArray("Gesamtstatistik",VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
+    }
+
 }
