@@ -81,6 +81,13 @@ public interface DsbMannschaftComponent extends ComponentFacade {
 
     void delete(DsbMannschaftDO dsbMannschaftDO, long currentDsbMitgliedId);
 
-
-
+    /**
+     * Copys the Mannschaften of an old Veranstaltung into a new Veranstaltung
+     *
+     * @param lastVeranstaltungsId
+     * @param currentVeranstaltungsId
+     * @param userId
+     * @return
+     */
+    List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
 }

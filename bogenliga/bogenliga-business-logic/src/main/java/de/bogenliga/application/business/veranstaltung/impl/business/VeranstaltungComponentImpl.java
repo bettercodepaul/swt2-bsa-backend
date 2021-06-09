@@ -97,6 +97,18 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return returnList;
     }
 
+    public List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr){
+        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
+        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahrDestinct(sportjahr);
+
+        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+
+            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
+
+        }
+
+        return returnList;
+    }
 
     @Override
     public VeranstaltungDO findById(final long id) {
@@ -147,7 +159,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
 //        Preconditions.checkArgument(
-//               validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()),
+//              validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()),
 //               PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
@@ -196,7 +208,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     }
 
-
     @Override
     public List<VeranstaltungDO> findByLigaID(long ligaID) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
@@ -209,6 +220,36 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return returnList;
     }
 
+
+    /**
+     * returns the last Veranstaltung by using the current Veranstaltung ID
+     * @param veranstaltungId ID of the current veranstaltung to query the last Veranstaltung.
+     *
+     * @return last Veranstaltung based on current one
+     */
+    @Override
+    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId){
+        Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+
+        VeranstaltungDO currentVeranstaltung = this.findById(veranstaltungId);
+        Long targetSportjahr = currentVeranstaltung.getVeranstaltungSportJahr();
+        Long targetLiga = currentVeranstaltung.getVeranstaltungLigaID();
+        Long targetWettkampf = currentVeranstaltung.getVeranstaltungWettkampftypID();
+
+        // targeting last year's Veranstaltung with last sportjahr, liga id and wettkampftyp id
+        List<VeranstaltungDO> targetVeranstaltungen = this.findBySportjahr(targetSportjahr - 1);
+        VeranstaltungDO lastVeranstaltung = new VeranstaltungDO();
+        for(VeranstaltungDO t : targetVeranstaltungen){
+            if(t.getVeranstaltungLigaID().equals(targetLiga) && t.getVeranstaltungWettkampftypID().equals(targetWettkampf)){
+                lastVeranstaltung = t;
+            }
+        }
+        if(lastVeranstaltung.getVeranstaltungID() == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No last Veranstaltung found for ID '%s'", veranstaltungId));
+        }
+        return lastVeranstaltung;
+    }
 
     private void checkVeranstaltungDO(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(veranstaltungDO, PRECONDITION_MSG_VERANSTALTUNG);
@@ -268,5 +309,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO);
     }
+
+
 }
 

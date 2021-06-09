@@ -33,9 +33,11 @@ abstract class CoreException extends RuntimeException implements
         this.errorCode = errorCode;
         this.parameters = new String[0];
 
-        logger.debug("{}: {}", errorCode.getValue(), message);
-    }
+        if (logger.isDebugEnabled()) {
+            logger.debug("{}: {}", errorCode.getValue(), message.replaceAll("[\n\r\t]", "_"));
 
+        }
+    }
 
     /**
      * CoreException
