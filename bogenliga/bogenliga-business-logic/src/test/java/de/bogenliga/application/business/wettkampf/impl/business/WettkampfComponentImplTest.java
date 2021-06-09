@@ -560,7 +560,17 @@ public class WettkampfComponentImplTest {
         when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
         when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(Arrays.asList(exampleMitglied));
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
-        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(getPassenDO());
+
+        PasseDO passe1 = new PasseDO(null,77l, null, 2l, null, null,
+                null, PFEIL1, PFEIL2, null, null, null, null, null,
+                null, null, null, null);
+        PasseDO passe2 = new PasseDO(null,77l, null, 1l, null, null,
+                null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
+                null, null, null, null);
+        List<PasseDO> passen = new LinkedList<>();
+        passen.add(passe1);
+        passen.add(passe2);
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(passen);
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
     }
     private void prepare2ndMocksForPDFTest()
