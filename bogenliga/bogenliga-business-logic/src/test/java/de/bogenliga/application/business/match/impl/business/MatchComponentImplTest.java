@@ -1,7 +1,9 @@
 package de.bogenliga.application.business.match.impl.business;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -10,6 +12,8 @@ import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.business.setzliste.impl.dao.SetzlisteDAO;
+import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
@@ -20,8 +24,12 @@ import static org.mockito.Mockito.*;
  */
 public class MatchComponentImplTest extends BaseMatchTest {
 
+    private static final long WETTKAMPFID = 30;
+
     @Mock
     private MatchDAO matchDAO;
+    @Mock
+    private SetzlisteDAO SetzlisteDAO;
 
     @InjectMocks
     private MatchComponentImpl underTest;
@@ -228,5 +236,24 @@ public class MatchComponentImplTest extends BaseMatchTest {
         MatchBE expectedMatchBE = getMatchBE();
         MatchDO matchDO = MatchMapper.toMatchDO.apply(expectedMatchBE);
         underTest.delete(matchDO, CURRENT_USER_ID);
+    }
+
+    @Test(expected = BusinessException.class)
+    public void generateMatches() {
+        final List<SetzlisteBE> setzlisteBEList = new ArrayList<>();
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatches(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isEmpty();
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
     }
 }
