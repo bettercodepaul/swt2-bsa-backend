@@ -545,6 +545,7 @@ public class WettkampfComponentImplTest {
     @Test
     public void testGetTeamName()
     {
+        assertThatThrownBy(() -> underTest.getTeamName(-1)).isInstanceOf(BusinessException.class);
         //erwartetes ergebnis definieren
         String expected = "Bogensport Muster Hausen 1";
         //mocks vorbereiten
