@@ -39,8 +39,6 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_BE_STRAFPUNKTE_SATZ_3 = "strafPunkteSatz3";
     private static final String MATCH_BE_STRAFPUNKTE_SATZ_4 = "strafPunkteSatz4";
     private static final String MATCH_BE_STRAFPUNKTE_SATZ_5 = "strafPunkteSatz5";
-    private static final String MATCH_BE_MANNSCHAFTNAME = "mannschaftName";
-    private static final String MATCH_BE_VEREINNAME = " vereinName";
 
     // table columns
     private static final String MATCH_TABLE_ID = "match_id";
@@ -148,12 +146,6 @@ public class MatchDAO implements DataAccessObject {
             .orderBy(MATCH_TABLE_SCHEIBENNUMMER)
             .compose().toString();
 
-//    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
-//            .selectAll()
-//            .from(TABLE)
-//            .whereEquals(MATCH_TABLE_MANNSCHAFT_ID)
-//            .compose().toString();
-
     private static final String FIND_BY_WETTKAMPF_ID =
             "SELECT m.match_wettkampf_id, m.match_id, m.match_nr, m.match_mannschaft_id, m.match_scheibennummer, " +
             "m.match_begegnung, m.match_matchpunkte, m.match_satzpunkte, m.match_strafpunkte_satz_1," +
@@ -193,8 +185,8 @@ public class MatchDAO implements DataAccessObject {
      *
      * @return match with given combined attributes
      */
-    public MatchBE findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer){
-        return basicDao.selectSingleEntity(MATCH, FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR, wettkampfId, MatchNr, scheibenNummer);
+    public MatchBE findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long matchNr, Long scheibenNummer){
+        return basicDao.selectSingleEntity(MATCH, FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR, wettkampfId, matchNr, scheibenNummer);
     }
 
 
