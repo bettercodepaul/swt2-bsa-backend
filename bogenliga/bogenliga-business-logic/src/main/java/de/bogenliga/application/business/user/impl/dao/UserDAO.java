@@ -93,26 +93,6 @@ public class UserDAO implements DataAccessObject {
     }
 
 
-    // table column label mapping to the business entity parameter names
-    private static Map<String, String> getColumnsToFieldsMap() {
-        final Map<String, String> columnsToFieldsMap = new HashMap<>();
-
-        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
-        columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
-        columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
-        columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
-        columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
-        columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
-        columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
-        columnsToFieldsMap.put(USER_TABLE_DSB_MITGLIED_ID, USER_BE_DSB_MITGLIED_ID);
-
-        // add technical columns
-        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
-
-        return columnsToFieldsMap;
-    }
-
-
     /**
      * Return all user entries
      */
@@ -148,6 +128,27 @@ public class UserDAO implements DataAccessObject {
     public UserBE findByDsbMitgliedId(final long dsbMitgliedId) {
         return basicDao.selectSingleEntity(USER, FIND_BY_DSBMITGLIED_ID, dsbMitgliedId);
     }
+
+
+    // table column label mapping to the business entity parameter names
+    private static Map<String, String> getColumnsToFieldsMap() {
+        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+
+        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
+        columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
+        columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
+        columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
+        columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
+        columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
+        columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
+        columnsToFieldsMap.put(USER_TABLE_DSB_MITGLIED_ID, USER_BE_DSB_MITGLIED_ID);
+
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
+        return columnsToFieldsMap;
+    }
+
 
     /**
      * Create a new user entry
