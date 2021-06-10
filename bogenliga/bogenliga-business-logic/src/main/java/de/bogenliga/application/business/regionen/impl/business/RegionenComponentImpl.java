@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.liga.api.LigaComponent;
-import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
+import de.bogenliga.application.business.lizenz.api.LizenzComponent;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
@@ -38,7 +38,7 @@ public class RegionenComponentImpl implements RegionenComponent {
 
     private final LigaComponent ligaComponent;
     private final VereinComponent vereinComponent;
-    private final LizenzDAO lizenzDAO;
+    private final LizenzComponent lizenzComponent;
 
 
     /**
@@ -47,11 +47,11 @@ public class RegionenComponentImpl implements RegionenComponent {
      * @param regionenDAO
      */
     public RegionenComponentImpl(RegionenDAO regionenDAO, LigaComponent ligaComponent, VereinComponent vereinComponent,
-                                 LizenzDAO lizenzDAO) {
+                                 LizenzComponent lizenzComponent) {
         this.regionenDAO = regionenDAO;
         this.ligaComponent = ligaComponent;
         this.vereinComponent = vereinComponent;
-        this.lizenzDAO = lizenzDAO;
+        this.lizenzComponent = lizenzComponent;
     }
 
 
@@ -122,7 +122,7 @@ public class RegionenComponentImpl implements RegionenComponent {
         Preconditions.checkArgument(!vereinExists, PRECONDITION_MSG_VEREIN_EXISTS);
         boolean ligaExists = this.ligaComponent.findAll().stream().anyMatch(liga->regionenDO.getId().equals(liga.getRegionId()));
         Preconditions.checkArgument(!ligaExists, PRECONDITION_MSG_LIGA_EXISTS);
-        boolean lizenzExists = this.lizenzDAO.findAll().stream().anyMatch(lizenz->regionenDO.getId().equals(lizenz.getLizenzRegionId()));
+        boolean lizenzExists = this.lizenzComponent.findAll().stream().anyMatch(lizenz->regionenDO.getId().equals(lizenz.getLizenzRegionId()));
         Preconditions.checkArgument(!lizenzExists, PRECONDITION_MSG_LIZENZ_EXISTS);
 
     }

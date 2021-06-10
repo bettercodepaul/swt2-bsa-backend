@@ -9,6 +9,8 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -52,7 +54,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final MatchDAO matchDAO;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
-    private final WettkampfDAO wettkampfDAO;
+    private final WettkampfComponent wettkampfComponent;
 
 
     /**
@@ -66,13 +68,15 @@ public class MatchComponentImpl implements MatchComponent {
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
                               final VereinComponent vereinComponent,
-                              final WettkampfDAO wettkampfDAO
+                              final WettkampfComponent wettkampfComponent
                               ) {
 
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
-        this.wettkampfDAO = wettkampfDAO;
+        this.wettkampfComponent = wettkampfComponent;
+
+
     }
 
 
@@ -186,13 +190,13 @@ public class MatchComponentImpl implements MatchComponent {
 
         List<DsbMannschaftDO> mannschaften = this.dsbMannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
 
-        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
+        WettkampfDO wettkampfDO = wettkampfComponent.findWT0byVeranstaltungsId(veranstaltungsId);
 
-        if(mannschaften == null || mannschaften.size() != 8 || wettkampfBE == null
-                || wettkampfBE.getId() == null || wettkampfBE.getId() < 0){
+        if(mannschaften == null || mannschaften.size() != 8 || wettkampfDO == null
+                || wettkampfDO.getId() == null || wettkampfDO.getId() < 0){
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT);
         }else{
-            Long wettkampfId = wettkampfBE.getId();
+            Long wettkampfId = wettkampfDO.getId();
             Long begegnung = 0L;
             for(int i = 0; i< 8; i++){
                 if(i%2 == 0){

@@ -9,15 +9,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.MannschaftsmitgliedBaseDAOTest;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.MannschaftsmitgliedBaseDAOTest;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.mockito.ArgumentMatchers.any;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
  * TODO [AL] class documentation
@@ -47,6 +45,15 @@ public class MannschaftmitgliedDAOTest extends MannschaftsmitgliedBaseDAOTest {
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+    }
+
+    public static MannschaftsmitgliedExtendedBE getMannschatfsmitgliedExtendedBE() {
+        final MannschaftsmitgliedExtendedBE expectedBE = new MannschaftsmitgliedExtendedBE();
+        expectedBE.setMannschaftId(101L);
+        expectedBE.setDsbMitgliedId(70L);
+        expectedBE.setDsbMitgliedEingesetzt(3);
+
+        return expectedBE;
     }
 
 
@@ -79,6 +86,16 @@ public void findAll() throws InvocationTargetException, IllegalAccessException {
         }
     }
 
+    @Test
+    public void findByTeamIdAndRueckennummer() {
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+
+        when(basicDao.selectSingleEntity(any(),any(),any(),any())).thenReturn(expectedBE);
+
+        MannschaftsmitgliedExtendedBE actual = underTest.findByTeamIdAndRueckennummer(101L, 4);
+
+        assertThat(actual).isEqualTo(expectedBE);
+    }
 
     @Test
     public void findAllSchuetzeInTeam() {
