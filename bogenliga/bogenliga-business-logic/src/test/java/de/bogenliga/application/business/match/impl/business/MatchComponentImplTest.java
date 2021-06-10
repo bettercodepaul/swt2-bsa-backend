@@ -158,6 +158,40 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
 
     @Test
+    public void findByWettkampfIDMatchNrScheibenNr() {
+        MatchBE expectedMatchBE = getMatchBE();
+
+        // configure mocks
+        when(matchDAO.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(expectedMatchBE);
+
+        // call test method
+        final MatchDO actual = underTest.findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+
+        // assert result
+        assertValid(expectedMatchBE, actual);
+        verify(matchDAO).findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_ThrowsException() {
+        MatchBE expectedMatchBE = null;
+
+        // configure mocks
+        when(matchDAO.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(expectedMatchBE);
+
+        // call test method
+        assertThatThrownBy(()->{
+            underTest.findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+        })
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("No match");
+
+        // assert result
+        verify(matchDAO).findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+    }
+
+
+    @Test
     public void findByWettkampfId() {
         MatchBE expectedMatchBE = getMatchBE();
 
