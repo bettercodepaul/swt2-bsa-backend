@@ -440,7 +440,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -457,7 +457,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -474,7 +474,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -516,7 +516,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         // configure mocks
@@ -563,7 +563,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         // configure mocks

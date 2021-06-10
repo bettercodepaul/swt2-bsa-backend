@@ -66,18 +66,6 @@ public class UserRoleDAO implements DataAccessObject {
     }
 
 
-    // table column label mapping to the business entity parameter names
-    private static Map<String, String> getColumnsToFieldsMap() {
-        final Map<String, String> columnsToFieldsMap = new HashMap<>();
-
-        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
-        columnsToFieldsMap.put(ROLE_TABLE_ID, ROLE_BE_ID);
-
-        // add technical columns
-        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
-
-        return columnsToFieldsMap;
-    }
 
 
     /**
@@ -112,7 +100,7 @@ public class UserRoleDAO implements DataAccessObject {
         for (UserRoleBE userRoleBE : userRoleBEList) {
             if (!userRoleBES.contains(userRoleBE)) {
                 basicDao.setModificationAttributes(userRoleBE, currentUserId);
-                basicDao.deleteEntity(USERROLE, userRoleBE, new String[]{ROLE_BE_ID, USER_BE_ID});
+                basicDao.deleteEntity(USERROLE, userRoleBE, ROLE_BE_ID, USER_BE_ID);
             }
         }
         for (UserRoleBE userRoleBE : userRoleBES) {
@@ -124,7 +112,6 @@ public class UserRoleDAO implements DataAccessObject {
 
         return userRoleBEUpdatedList;
     }
-
 
     /**
      * Delete all existing user entry
@@ -138,6 +125,19 @@ public class UserRoleDAO implements DataAccessObject {
             basicDao.setModificationAttributes(userRoleBEDelete, currentUserId);
             basicDao.deleteEntity(USERROLE, userRoleBE, ROLE_BE_ID, USER_BE_ID);
         }
+    }
+
+    // table column label mapping to the business entity parameter names
+    private static Map<String, String> getColumnsToFieldsMap() {
+        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+
+        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
+        columnsToFieldsMap.put(ROLE_TABLE_ID, ROLE_BE_ID);
+
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
+        return columnsToFieldsMap;
     }
 
 

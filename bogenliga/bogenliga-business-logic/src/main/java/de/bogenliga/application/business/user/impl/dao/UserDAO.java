@@ -93,26 +93,6 @@ public class UserDAO implements DataAccessObject {
     }
 
 
-    // table column label mapping to the business entity parameter names
-    private static Map<String, String> getColumnsToFieldsMap() {
-        final Map<String, String> columnsToFieldsMap = new HashMap<>();
-
-        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
-        columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
-        columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
-        columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
-        columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
-        columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
-        columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
-        columnsToFieldsMap.put(USER_TABLE_DSB_MITGLIED_ID, USER_BE_DSB_MITGLIED_ID);
-
-        // add technical columns
-        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
-
-        return columnsToFieldsMap;
-    }
-
-
     /**
      * Return all user entries
      */
@@ -149,6 +129,27 @@ public class UserDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(USER, FIND_BY_DSBMITGLIED_ID, dsbMitgliedId);
     }
 
+
+    // table column label mapping to the business entity parameter names
+    private static Map<String, String> getColumnsToFieldsMap() {
+        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+
+        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
+        columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
+        columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
+        columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
+        columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
+        columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
+        columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
+        columnsToFieldsMap.put(USER_TABLE_DSB_MITGLIED_ID, USER_BE_DSB_MITGLIED_ID);
+
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
+        return columnsToFieldsMap;
+    }
+
+
     /**
      * Create a new user entry
      *
@@ -162,11 +163,11 @@ public class UserDAO implements DataAccessObject {
         UserBE persistedUser = basicDao.insertEntity(USER, userBE);
 
         // Save UserId in the column dsb_mitglied_benutzer_id of entity dsb_mitglied
-        DsbMitgliedDAO DsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
-        DsbMitgliedBE DsbMitgliedBE = DsbMitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
-        if(DsbMitgliedBE != null) {
-            DsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
-            DsbMitgliedDAO.update(DsbMitgliedBE, DsbMitgliedBE.getDsbMitgliedId());
+        DsbMitgliedDAO dsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
+        DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(persistedUser.getDsbMitgliedId());
+        if(dsbMitgliedBE != null) {
+            dsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
+            dsbMitgliedDAO.update(dsbMitgliedBE, dsbMitgliedBE.getDsbMitgliedId());
         }
 
         return persistedUser;

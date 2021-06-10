@@ -73,7 +73,7 @@ public class UserProfileComponentImplTest {
         UserBE userBE = new UserBE();
         userBE.setUserId(USERID);
         userBE.setUserEmail(EMAIL);
-        userBE.setDsb_mitglied_id(ID);
+        userBE.setDsbMitgliedId(ID);
         return userBE;
     }
 
