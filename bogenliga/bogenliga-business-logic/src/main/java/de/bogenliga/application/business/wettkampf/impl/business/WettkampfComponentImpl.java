@@ -76,7 +76,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final VereinComponent vereinComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
+    private VeranstaltungComponent veranstaltungComponent;
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
@@ -95,17 +95,26 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final PasseComponent passeComponent,
                                   final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                   final DsbMitgliedComponent dsbMitgliedComponent,
-                                  final VeranstaltungComponent veranstaltungComponent) {
+                                  final DsbMannschaftComponent dsbMannschaftComponent,
+                                  final VereinComponent vereinComponent,
+                                  final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
+                                  final VeranstaltungDAO veranstaltungDAO) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.vereinComponent = vereinComponent;
+        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+        this.veranstaltungDAO = veranstaltungDAO;
     }
 
-
+    @Autowired
+    public void setVeranstaltungComponent(final VeranstaltungComponent veranstaltungComponent){
+        this.veranstaltungComponent = veranstaltungComponent;
+    }
 
     @Override
     public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentUserID) {
