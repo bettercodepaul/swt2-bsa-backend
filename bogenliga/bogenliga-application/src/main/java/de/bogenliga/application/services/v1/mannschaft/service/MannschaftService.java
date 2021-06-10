@@ -29,7 +29,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/dsbmannschaft")
+@RequestMapping("v1/mannschaft")
 public class MannschaftService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT = "DsbMannschaftDO must not be null";

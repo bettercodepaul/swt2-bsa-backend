@@ -19,7 +19,7 @@ import java.security.Principal;
 
 @RestController
 @CrossOrigin
-@RequestMapping("v1/dsbmannschaft/sortierung")
+@RequestMapping("v1/mannschaft/sortierung")
 public class MannschaftSortierungService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_DO = "DsbMannschaftDO must not be null";
