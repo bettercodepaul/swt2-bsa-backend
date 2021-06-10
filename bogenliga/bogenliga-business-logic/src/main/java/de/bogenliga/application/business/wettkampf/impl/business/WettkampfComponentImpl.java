@@ -9,17 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.liga.api.LigaComponent;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
-import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
-import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.match.api.MatchComponent;
-import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.passe.api.PasseComponent;
-import de.bogenliga.application.business.passe.api.types.PasseDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -31,10 +20,19 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -354,7 +352,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     @Override
-    public byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr){
+    public byte[] getPDFasByteArray(String name, long veranstaltungsid,long manschaftsid,int jahr){
         Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
 
@@ -369,9 +367,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 generateDoc(doc, name , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
                 bResult = result.toByteArray();
-                LOGGER.debug("{0} erstellt",name);
+                LOGGER.debug("{} erstellt",name);
             } catch(IOException e){
-                LOGGER.error("PDF {0} konnte nicht erstellt werden: {1}",name , e);
+                LOGGER.error("PDF {} konnte nicht erstellt werden: {}",name , e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF"+ name +"konnte nicht erstellt werden: " + e);
             }
