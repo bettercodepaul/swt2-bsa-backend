@@ -59,7 +59,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private final WettkampfDAO wettkampfDAO;
     private final SetzlisteDAO setzlisteDAO;
-    private final int[][] SETZLISTE_STRUCTURE_FOR_MATCHES = {
+    private final long[][] SETZLISTE_STRUCTURE_FOR_MATCHES = {
             {5, 4, 2, 7, 1, 8, 3, 6},
             {3, 5, 8, 4, 7, 1, 6, 2},
             {4, 7, 1, 6, 2, 5, 8, 3},
@@ -313,15 +313,13 @@ public class MatchComponentImpl implements MatchComponent {
         LOGGER.info("sind am Endpunkt generateMatches");
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
         List<MatchDO> matchDOList = this.findByWettkampfId(wettkampfid);
-        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
-        if (!setzlisteBEList.isEmpty()){
             if (matchDOList.isEmpty()){
                 //itarate thorugh matches
                 for (int i = 0; i < SETZLISTE_STRUCTURE_FOR_MATCHES.length; i++){
                     //iterate through target boards
                     for (int j = 0; j < SETZLISTE_STRUCTURE_FOR_MATCHES[i].length; j++) {
                         long begegnung = Math.round((float) (j + 1) / 2);
-                        long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_FOR_MATCHES[i][j], setzlisteBEList);
+                        long currentTeamID = SETZLISTE_STRUCTURE_FOR_MATCHES[i][j];
                         MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
                         matchDOList.add(this.create(newMatchDO, (long) 0));
                     }
@@ -330,10 +328,7 @@ public class MatchComponentImpl implements MatchComponent {
             else{
                 LOGGER.debug("Matches existieren bereits");
             }
-        }
-        else{
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
-        }
+
         return matchDOList;
     }
 }
