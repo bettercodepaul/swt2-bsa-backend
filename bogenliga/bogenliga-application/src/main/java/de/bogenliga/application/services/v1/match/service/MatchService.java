@@ -505,7 +505,7 @@ public class MatchService implements ServiceFacade {
         Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
         return wettkampfMatches
                 .stream()
-                .filter(mDO -> mDO.getNr() == matchDO.getNr())
+                .filter(mDO -> mDO.getNr().equals( matchDO.getNr()))
                 .filter(mDO -> (
                         scheibeNr.equals(mDO.getScheibenNummer())
                                 || otherScheibeNr.equals(mDO.getScheibenNummer())
@@ -560,7 +560,7 @@ public class MatchService implements ServiceFacade {
         final Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
         return wettkampfMatches
                 .stream()
-                .filter(mDO -> mDO.getNr() == matchDO.getNr())
+                .filter(mDO -> mDO.getNr().equals(matchDO.getNr()))
                 .filter(mDO -> (
                         ersteScheibe.equals(mDO.getScheibenNummer())
                                 || otherScheibeNr.equals(mDO.getScheibenNummer())
@@ -872,7 +872,7 @@ public class MatchService implements ServiceFacade {
                 UserDO userDO = this.userComponent.findById(UserId);
                 ArrayList<Integer> temp = new ArrayList<>();
                 for(WettkampfDO wettkampfDO :this.wettkampfComponent.findByAusrichter(UserId)){
-                    if(wettkampfDO.getId() ==wettkampfid){
+                    if(wettkampfDO.getId().equals(wettkampfid)){
                         result = true;
                     }
                 }
@@ -901,7 +901,7 @@ public class MatchService implements ServiceFacade {
                 UserDO userDO = this.userComponent.findById(UserId);
                 ArrayList<Integer> temp = new ArrayList<>();
                 for(VeranstaltungDO veranstaltungDO :this.veranstaltungsComponent.findByLigaleiterId(UserId)){
-                    if(veranstaltungDO.getVeranstaltungID() == wettkampfid){
+                    if(veranstaltungDO.getVeranstaltungID().equals(wettkampfid)){
                         result = true;
                     }
                 }
