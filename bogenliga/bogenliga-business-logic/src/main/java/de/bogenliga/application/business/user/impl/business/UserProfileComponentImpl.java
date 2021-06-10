@@ -1,9 +1,9 @@
 package de.bogenliga.application.business.user.impl.business;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
@@ -13,8 +13,6 @@ import de.bogenliga.application.business.user.impl.mapper.UserMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Implementation of {@link UserComponent}
