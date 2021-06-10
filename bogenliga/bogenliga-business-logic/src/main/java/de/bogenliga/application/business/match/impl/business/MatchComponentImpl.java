@@ -59,7 +59,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private final WettkampfDAO wettkampfDAO;
     private final SetzlisteDAO setzlisteDAO;
-    private final int[][] SETZLISTE_STRUCTURE = {
+    private final int[][] SETZLISTE_STRUCTURE_FOR_MATCHES = {
             {5, 4, 2, 7, 1, 8, 3, 6},
             {3, 5, 8, 4, 7, 1, 6, 2},
             {4, 7, 1, 6, 2, 5, 8, 3},
@@ -317,11 +317,11 @@ public class MatchComponentImpl implements MatchComponent {
         if (!setzlisteBEList.isEmpty()){
             if (matchDOList.isEmpty()){
                 //itarate thorugh matches
-                for (int i = 0; i < SETZLISTE_STRUCTURE.length; i++){
+                for (int i = 0; i < SETZLISTE_STRUCTURE_FOR_MATCHES.length; i++){
                     //iterate through target boards
-                    for (int j = 0; j < SETZLISTE_STRUCTURE[i].length; j++) {
+                    for (int j = 0; j < SETZLISTE_STRUCTURE_FOR_MATCHES[i].length; j++) {
                         long begegnung = Math.round((float) (j + 1) / 2);
-                        long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
+                        long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_FOR_MATCHES[i][j], setzlisteBEList);
                         MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
                         matchDOList.add(this.create(newMatchDO, (long) 0));
                     }
