@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.Mannschaftsmitg
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.setzliste.impl.entity.SetzlisteBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -520,5 +522,24 @@ public class MatchServiceTest {
         assertThatThrownBy(() -> {
             underTest.update(null, principal);
         }).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    public void generateMatches(){
+
+
+        final long wettkampfId  = 2;
+
+        // assert result
+        assertThat(wettkampfId).isNotNull();
+
+        final List<MatchDO> matchDOList = new ArrayList<>();
+
+
+
+        //assert
+        Assertions.assertThat(matchDOList).isEmpty();
+
+
     }
 }
