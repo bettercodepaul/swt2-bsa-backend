@@ -2,22 +2,19 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
-import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;

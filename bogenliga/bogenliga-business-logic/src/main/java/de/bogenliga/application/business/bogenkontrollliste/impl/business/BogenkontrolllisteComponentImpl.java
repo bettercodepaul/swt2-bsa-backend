@@ -61,11 +61,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
-    private final LigaComponent ligaComponent;
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final MatchComponent matchComponent;
-    private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final DsbMitgliedComponent dsbMitgliedComponent;
 
@@ -73,20 +71,16 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     @Autowired
     public BogenkontrolllisteComponentImpl(final DsbMannschaftComponent dsbMannschaftComponent,
                                            final VereinComponent vereinComponent,
-                                           final LigaComponent ligaComponent,
                                            final WettkampfComponent wettkampfComponent,
                                            final VeranstaltungComponent veranstaltungComponent,
                                            final MatchComponent matchComponent,
-                                           final PasseComponent passeComponent,
                                            final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                            final DsbMitgliedComponent dsbMitgliedComponent) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
-        this.ligaComponent = ligaComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.matchComponent = matchComponent;
-        this.passeComponent = passeComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
