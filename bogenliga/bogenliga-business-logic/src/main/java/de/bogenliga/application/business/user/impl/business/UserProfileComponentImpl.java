@@ -2,6 +2,8 @@ package de.bogenliga.application.business.user.impl.business;
 
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
@@ -33,11 +35,11 @@ public class UserProfileComponentImpl implements UserProfileComponent {
      * @param dsbMitgliedComponent  to access the database and return DSB Mitglied representations
      */
     @Autowired
-    public UserProfileComponentImpl(UserDAO userDAO,
+    public UserProfileComponentImpl(final UserDAO userDAO,
                                     DsbMitgliedComponent dsbMitgliedComponent) {
-        this.userDAO = userDAO;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
-    }
+            this.userDAO = userDAO;
+            this.dsbMitgliedComponent = dsbMitgliedComponent;
+        }
 
 
     @Override
@@ -51,7 +53,7 @@ public class UserProfileComponentImpl implements UserProfileComponent {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
-        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
+        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(userBE.getDsbMitgliedId());    // required for remaining profile data
 
         if (dsbMitgliedDO == null) {
             userProfileDO.setEmail(userBE.getUserEmail());
