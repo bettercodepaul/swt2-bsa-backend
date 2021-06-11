@@ -25,7 +25,7 @@ public class UserDO extends CommonDataObject implements DataObject {
      */
     private Long id;
     private String email;
-    private Long dsb_mitglied_id;
+    private Long dsbMitgliedId;
     private boolean using2FA;
     private boolean active;
     private String secret;
@@ -42,13 +42,13 @@ public class UserDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with all parameters
      */
-    public UserDO(final Long id, final String email, final Long dsb_mitglied_id, boolean using2FA,
+    public UserDO(final Long id, final String email, final Long dsbMitgliedId, boolean using2FA,
                   boolean active, String secret, final OffsetDateTime createdAtUtc,
                   final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                   final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.email = email;
-        this.dsb_mitglied_id = dsb_mitglied_id;
+        this.dsbMitgliedId = dsbMitgliedId;
         this.using2FA = using2FA;
         this.active = active;
         this.secret = secret;
@@ -70,7 +70,7 @@ public class UserDO extends CommonDataObject implements DataObject {
                   final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.email = email;
-        this.dsb_mitglied_id = 0L;
+        this.dsbMitgliedId = 0L;
         this.using2FA = using2FA;
         this.active = active;
         this.secret = secret;
@@ -122,19 +122,19 @@ public class UserDO extends CommonDataObject implements DataObject {
         return getId().equals(userDO.getId()) &&
                 getVersion() == userDO.getVersion() &&
                 Objects.equals(getEmail(), userDO.getEmail()) &&
-                getDsb_mitglied_id().equals(userDO.getDsb_mitglied_id()) &&
+                getDsbMitgliedId().equals(userDO.getDsbMitgliedId()) &&
                 Objects.equals(getCreatedAtUtc(), userDO.getCreatedAtUtc()) &&
                 Objects.equals(getCreatedByUserId(), userDO.getCreatedByUserId()) &&
                 Objects.equals(getLastModifiedAtUtc(), userDO.getLastModifiedAtUtc()) &&
                 Objects.equals(getLastModifiedByUserId(), userDO.getLastModifiedByUserId());
     }
 
-    public Long getDsb_mitglied_id() {
-        return dsb_mitglied_id;
+    public Long getDsbMitgliedId() {
+        return dsbMitgliedId;
     }
 
-    public void setDsb_mitglied_id(final long dsb_mitglied_id) {
-        this.dsb_mitglied_id = dsb_mitglied_id;
+    public void setDsbMitgliedId(final long dsbMitgliedId) {
+        this.dsbMitgliedId = dsbMitgliedId;
     }
 
     public boolean isUsing2FA() {

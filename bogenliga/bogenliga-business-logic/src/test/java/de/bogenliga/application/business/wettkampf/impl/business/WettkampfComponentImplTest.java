@@ -444,7 +444,6 @@ public class WettkampfComponentImplTest {
         verify(wettkampfDAO).findAllByVeranstaltungId(anyLong());
     }
 
-
     @Test
     public void testCreateWT0() {
         // prepare test data
@@ -629,3 +628,4 @@ public class WettkampfComponentImplTest {
 
     }
 }
+

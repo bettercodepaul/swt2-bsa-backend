@@ -18,10 +18,12 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
 import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -155,6 +157,47 @@ public class MannschaftsmitgliedServiceTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
     }
 
+    @Test
+    public void findByTeamIdAndRueckennummer() {
+        // prepare test data
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+
+        // configure mocks
+        when(mannschaftsmitgliedComponent.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId)).thenReturn(
+                mannschaftsmitgliedDO);
+
+        final MannschaftsMitgliedDTO actual = underTest.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftsId()).isEqualTo(actual.getMannschaftsId());
+        assertThat(actual.getDsbMitgliedId()).isEqualTo(actual.getDsbMitgliedId());
+    }
+
+    @Test
+    public void findByTeamIdAndRueckennummerThrowsException() {
+        // prepare test data
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+
+        // configure mocks
+        when(mannschaftsmitgliedComponent.findByTeamIdAndRueckennummer(mannschaftsId, dsbMitgliedId)).thenReturn(
+                mannschaftsmitgliedDO);
+
+        assertThatThrownBy(()->{
+            underTest.findByTeamIdAndRueckennummer(0, dsbMitgliedId);
+        }).isInstanceOf(BusinessException.class);
+
+        assertThatThrownBy(()->{
+            underTest.findByTeamIdAndRueckennummer(-1, dsbMitgliedId);
+        }).isInstanceOf(BusinessException.class);
+
+        assertThatThrownBy(()->{
+            underTest.findByTeamIdAndRueckennummer(mannschaftsId, 0);
+        }).isInstanceOf(BusinessException.class);
+
+        assertThatThrownBy(()->{
+            underTest.findByTeamIdAndRueckennummer(mannschaftsId, 0);
+        }).isInstanceOf(BusinessException.class);
+    }
 
     @Test
     public void findAllSchuetzeInTeam() {
