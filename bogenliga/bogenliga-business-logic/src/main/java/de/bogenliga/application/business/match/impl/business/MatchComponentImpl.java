@@ -51,7 +51,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final MatchDAO matchDAO;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
-    private final WettkampfComponent wettkampfComponent;
+    private WettkampfComponent wettkampfComponent;
 
 
     /**
@@ -64,16 +64,15 @@ public class MatchComponentImpl implements MatchComponent {
     @Autowired
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
-                              final VereinComponent vereinComponent,
-                              final WettkampfComponent wettkampfComponent
-                              ) {
-
+                              final VereinComponent vereinComponent) {
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
+    }
+
+    @Autowired
+    public void setWettkampfComponent(final WettkampfComponent wettkampfComponent){
         this.wettkampfComponent = wettkampfComponent;
-
-
     }
 
 
