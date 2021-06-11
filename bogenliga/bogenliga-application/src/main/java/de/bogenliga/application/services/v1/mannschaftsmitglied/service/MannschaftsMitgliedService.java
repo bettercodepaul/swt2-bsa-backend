@@ -91,6 +91,21 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
     }
 
+    @GetMapping(value = "{teamId}/byRueckennummer/{rueckennummer}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public MannschaftsMitgliedDTO findByTeamIdAndRueckennummer(@PathVariable("teamId") final long mannschaftsId,
+                                                            @PathVariable("rueckennummer") final long rueckennummer) {
+        Preconditions.checkArgument(mannschaftsId > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(rueckennummer > 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        LOG.debug("Receive 'findByTeamIdAndRueckennummer' request with rueckennummer '{}' and teamID '{}'", rueckennummer,
+                mannschaftsId);
+
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = mannschaftsMitgliedComponent.findByTeamIdAndRueckennummer(
+                mannschaftsId, rueckennummer);
+        return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
+    }
+
 
     @GetMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)

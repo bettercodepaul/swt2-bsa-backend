@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoRule;
 import java.security.Principal;
 import java.sql.Date;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -348,5 +349,22 @@ public class WettkampfServiceTest {
         assertThat(deletedWettkampf).isNotNull();
         assertThat(deletedWettkampf.getId()).isEqualTo(expected.getId());
 
+    }
+
+    @Test
+    public void getAllowedMitgliedForWettkampf() {
+        // prepare test data
+        List<Long> expected = new ArrayList<>();
+        expected.add(70L);
+        expected.add(120L);
+
+        // configure mocks
+        when(wettkampfComponent.getAllowedMitglieder(anyLong())).thenReturn(expected);
+
+        // call test method
+        List<Long> actual = underTest.getAllowedMitgliedForWettkampf(30L);
+
+        // assert result
+        assertThat(actual).isEqualTo(expected);
     }
 }

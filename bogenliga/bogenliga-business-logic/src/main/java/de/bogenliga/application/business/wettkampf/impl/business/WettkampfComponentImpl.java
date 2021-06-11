@@ -20,10 +20,19 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -46,6 +55,8 @@ import de.bogenliga.application.common.validation.Preconditions;
 @Component
 public class WettkampfComponentImpl implements WettkampfComponent {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
+
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "wettkampfID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID = "wettkampfVeranstaltungsID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_DATUM = "wettkampfDatum must not be null";
@@ -58,10 +69,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final WettkampfDAO wettkampfDAO;
     private final VeranstaltungDAO veranstaltungDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+  
+    private final LigaComponent ligaComponent;
+    private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
-    private static final Logger LOGGER = LoggerFactory.getLogger(WettkampfComponentImpl.class);
+    private VeranstaltungComponent veranstaltungComponent;
+    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     
     /**
      * Constructor
@@ -71,17 +87,32 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * @param wettkampfDAO to access the database and return dsbmitglied representations
      */
     @Autowired
-    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,final VeranstaltungDAO veranstaltungDAO, final MannschaftsmitgliedDAO mannschaftsmitgliedDAO
-                                    ,final DsbMannschaftComponent dsbMannschaftComponent, final VereinComponent vereinComponent, final PasseComponent passeComponent) {
+    public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,
+                                  final LigaComponent ligaComponent,
+                                  final MatchComponent matchComponent,
+                                  final PasseComponent passeComponent,
+                                  final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                                  final DsbMitgliedComponent dsbMitgliedComponent,
+                                  final DsbMannschaftComponent dsbMannschaftComponent,
+                                  final VereinComponent vereinComponent,
+                                  final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
+                                  final VeranstaltungDAO veranstaltungDAO) {
         this.wettkampfDAO = wettkampfDAO;
-        this.veranstaltungDAO = veranstaltungDAO;
-        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+        this.ligaComponent = ligaComponent;
+        this.matchComponent = matchComponent;
+        this.passeComponent = passeComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
-        this.passeComponent = passeComponent;
+        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+        this.veranstaltungDAO = veranstaltungDAO;
     }
 
-
+    @Autowired
+    public void setVeranstaltungComponent(final VeranstaltungComponent veranstaltungComponent){
+        this.veranstaltungComponent = veranstaltungComponent;
+    }
 
     @Override
     public WettkampfDO create(final WettkampfDO wettkampfDO, final long currentUserID) {
@@ -247,7 +278,81 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     @Override
-    public byte[] getPDFasByteArray(String name, long veranstaltungsid, long manschaftsid, int jahr) {
+    public List<Long> getAllowedMitglieder(long wettkampfid){
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+        List<Long> allowedList=new ArrayList<>();
+
+        for(int i=1; i <= 8; i++){
+            MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
+            List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
+            List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+            List<LigaDO> ligen=ligaComponent.findAll();
+            int count = 0;
+            for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
+                DsbMitgliedDO dsbMitglied=dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
+                long thisLiga=this.veranstaltungComponent.findById(findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+
+                //finde Stufe der aktuellen Liga
+                int thisLigaStufe = 0;
+                int currentLiga=(int)thisLiga;
+                while(currentLiga != 0){
+                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
+                        thisLigaStufe++;
+                    }else{currentLiga=0;}
+                }
+                long thisWettkamptag=findById(matchDO.getWettkampfId()).getWettkampfTag();
+                long thisSportjahr=this.veranstaltungComponent.findById(findById(matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                boolean darfSchiessen=true;
+
+                //find highest Liga and check if mitglied has already shot on this Wettkampftag
+                List<MannschaftsmitgliedDO> mitgliedIn=this.mannschaftsmitgliedComponent.findByMemberId(dsbMitglied.getId());
+                for(MannschaftsmitgliedDO mitglied: mitgliedIn){
+                    List<WettkampfDO> wettkaempfe = findAllWettkaempfeByMannschaftsId(mitglied.getMannschaftId());
+                    for (WettkampfDO wettkampf : wettkaempfe) {
+
+                        //check Sportjahr of Veranstaltung
+                        long wettkampfSportjahr = this.veranstaltungComponent.findById(
+                                wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+                        if (thisSportjahr == wettkampfSportjahr) {
+                            long liga=this.veranstaltungComponent.findById(
+                                    wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
+
+                            //finde Stufe der Liga dieses Wettkampfes, wenn das Mannschaftsmitglied mindestens 2 mal eingesetzt wurde
+                            if(mitglied.getDsbMitgliedEingesetzt()>=2) {
+                                currentLiga=(int)liga;
+                                int ligaStufe=0;
+                                while(currentLiga != 0){
+                                    if(ligen.get(currentLiga-1).getLigaUebergeordnetId()!=null) {
+                                        currentLiga = ligen.get(currentLiga-1).getLigaUebergeordnetId().intValue();
+                                        ligaStufe++;
+                                    }else{currentLiga=0;}
+                                }
+                                darfSchiessen=(thisLigaStufe <= ligaStufe) && darfSchiessen;
+                            }
+                            List<PasseDO> passen=passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),dsbMitglied.getId());
+                            darfSchiessen = !(thisWettkamptag == wettkampf.getWettkampfTag() && !passen.isEmpty()) && darfSchiessen;
+                        }
+                    }
+                }
+                dsbMitgliedDOList.add(dsbMitglied);
+
+                if(darfSchiessen){
+                    allowedList.add(dsbMitglied.getId());
+                    LOGGER.info("Teammitglied {} {} wurde gefunden", dsbMitgliedDOList.get(count).getNachname(), dsbMitgliedDOList.get(count).getVorname());
+                }else{
+                    LOGGER.info("Teammitglied {} {} konnte nicht hinzugefügt werden, da es schon in einer höheren Liga oder am selben Wettkampftag geschossen hat.", dsbMitglied.getNachname(), dsbMitglied.getVorname());
+                }
+                count++;
+            }
+        }
+
+        return allowedList;
+    }
+
+    @Override
+    public byte[] getPDFasByteArray(String name, long veranstaltungsid,long manschaftsid,int jahr){
         Preconditions.checkArgument(manschaftsid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllWettkaempfeByMannschaftsId(manschaftsid);
 
@@ -262,9 +367,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 generateDoc(doc, name , wettkampflisteBEList,veranstaltungsid, manschaftsid, jahr);
 
                 bResult = result.toByteArray();
-                LOGGER.debug("{0} erstellt",name);
+                LOGGER.debug("{} erstellt",name);
             } catch(IOException e){
-                LOGGER.error("PDF {0} konnte nicht erstellt werden: {1}",name , e);
+                LOGGER.error("PDF {} konnte nicht erstellt werden: {}",name , e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF"+ name +"konnte nicht erstellt werden: " + e);
             }

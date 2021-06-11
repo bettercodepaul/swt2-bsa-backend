@@ -188,6 +188,7 @@ public class WettkampfService implements ServiceFacade {
 
         LOG.debug(
                 "Received 'update' request with id '{}'", wettkampfDTO.getId());
+      
         //sowohl der Liagleiter als auch der Ausrichter dürfen hier updaten - wenn
         //es sich um ihre zugewiesenen Wettkämpfe /Ligen handelt...
         //daher eine datenspezische Berechtigungsprüfung zusätzlich..
@@ -228,5 +229,17 @@ public class WettkampfService implements ServiceFacade {
                 PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_TYP_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTag() >= 0, PRECONDITION_MSG_WETTKAMPF_TAG);
+    }
+
+
+    /**
+     * Generates a list of id's of allowed contestants for the given contest
+     * @param id Id of a contest
+     * @return List of Miglied id's allowed to participate
+     */
+    @GetMapping(value = "{id}/allowedContestants", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = UserPermission.CAN_READ_DEFAULT)
+    public List<Long> getAllowedMitgliedForWettkampf(@PathVariable long id){
+        return wettkampfComponent.getAllowedMitglieder(id);
     }
  }

@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -11,8 +13,6 @@ import de.bogenliga.application.business.user.impl.mapper.UserMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Implementation of {@link UserComponent}
@@ -33,11 +33,11 @@ public class UserProfileComponentImpl implements UserProfileComponent {
      * @param dsbMitgliedComponent  to access the database and return DSB Mitglied representations
      */
     @Autowired
-    public UserProfileComponentImpl(UserDAO userDAO,
+    public UserProfileComponentImpl(final UserDAO userDAO,
                                     DsbMitgliedComponent dsbMitgliedComponent) {
-        this.userDAO = userDAO;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
-    }
+            this.userDAO = userDAO;
+            this.dsbMitgliedComponent = dsbMitgliedComponent;
+        }
 
 
     @Override
@@ -51,7 +51,7 @@ public class UserProfileComponentImpl implements UserProfileComponent {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
-        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
+        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(userBE.getDsbMitgliedId());    // required for remaining profile data
 
         if (dsbMitgliedDO == null) {
             userProfileDO.setEmail(userBE.getUserEmail());
