@@ -1,6 +1,7 @@
 package de.bogenliga.application.springconfiguration.security.permissions;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -235,7 +236,7 @@ public class RequiresOnePermissionAspect {
                 if (userPermissions.contains(toTest)) {
                     Long userId = jwtTokenProvider.getUserId(jwt);
                     UserDO userDO = this.userComponent.findById(userId);
-                    DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsbMitgliedId());
+                    DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
                     if (dsbMitgliedDO.getVereinsId().equals(vereinsId)) {
                         return true;
                     }
