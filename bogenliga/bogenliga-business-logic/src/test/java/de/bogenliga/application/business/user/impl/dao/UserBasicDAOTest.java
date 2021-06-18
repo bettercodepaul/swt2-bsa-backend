@@ -133,7 +133,7 @@ public class UserBasicDAOTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
-        expectedBE.setDsbMitgliedId(DSBID);
+        expectedBE.setDsb_mitglied_id(DSBID);
 
 
         // configure mocks
