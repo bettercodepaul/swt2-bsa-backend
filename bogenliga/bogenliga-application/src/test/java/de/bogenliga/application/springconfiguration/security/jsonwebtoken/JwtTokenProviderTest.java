@@ -1,5 +1,6 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -222,7 +223,7 @@ public class JwtTokenProviderTest {
                 PERMISSIONS.stream().map(UserPermission::name).collect(Collectors.toList()));
 
         final UserDO userDO = new UserDO();
-        userDO.setDsbMitgliedId(1L);
+        userDO.setDsb_mitglied_id(1L);
 
         final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(1L);
         dsbMitgliedDO.setVereinsId(1L);
