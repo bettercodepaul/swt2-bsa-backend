@@ -4,6 +4,7 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Assert;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -30,6 +31,7 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 
 
 import java.sql.Date;
@@ -95,7 +97,7 @@ public class RequiresOnePermissionAspectTest {
         UserDO userDO = new UserDO();
         userDO.setId(id);
         userDO.setEmail(U_email);
-        userDO.setDsbMitgliedId(dsb_id);
+        userDO.setDsb_mitglied_id(dsb_id);
         return userDO;
     }
 

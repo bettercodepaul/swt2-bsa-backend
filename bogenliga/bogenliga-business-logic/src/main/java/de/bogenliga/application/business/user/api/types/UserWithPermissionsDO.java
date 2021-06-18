@@ -88,7 +88,7 @@ public class UserWithPermissionsDO extends UserDO implements DataObject {
         return getId() == userDO.getId() &&
                 getVersion() == userDO.getVersion() &&
                 Objects.equals(getEmail(), userDO.getEmail()) &&
-                Objects.equals(getDsbMitgliedId(), userDO.getDsbMitgliedId()) &&
+                Objects.equals(getDsb_mitglied_id(), userDO.getDsb_mitglied_id()) &&
                 Objects.equals(getPermissions(), userDO.getPermissions()) &&
                 Objects.equals(getCreatedAtUtc(), userDO.getCreatedAtUtc()) &&
                 Objects.equals(getCreatedByUserId(), userDO.getCreatedByUserId()) &&
