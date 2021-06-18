@@ -35,9 +35,9 @@ public class UserProfileComponentImpl implements UserProfileComponent {
     @Autowired
     public UserProfileComponentImpl(final UserDAO userDAO,
                                     DsbMitgliedComponent dsbMitgliedComponent) {
-            this.userDAO = userDAO;
-            this.dsbMitgliedComponent = dsbMitgliedComponent;
-        }
+        this.userDAO = userDAO;
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
+    }
 
 
     @Override
@@ -51,7 +51,7 @@ public class UserProfileComponentImpl implements UserProfileComponent {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for ID '%s'", id));
         }
-        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(userBE.getDsbMitgliedId());    // required for remaining profile data
+        final DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(userBE.getDsb_mitglied_id());    // required for remaining profile data
 
         if (dsbMitgliedDO == null) {
             userProfileDO.setEmail(userBE.getUserEmail());

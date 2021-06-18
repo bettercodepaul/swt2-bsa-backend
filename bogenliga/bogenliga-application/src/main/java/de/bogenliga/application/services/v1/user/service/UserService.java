@@ -139,7 +139,7 @@ public class UserService implements ServiceFacade {
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
                     try {
                         //Get the Verein ID and teh Veranstaltungs ID's
-                        userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsbMitgliedId()).getVereinsId());
+                        userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
                         ArrayList<Integer> temp = new ArrayList<>();
                         for (VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
                             temp.add(veranstaltungDO.getVeranstaltungID().intValue());
