@@ -384,6 +384,44 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return bResult;
     }
 
+    @Override
+    public byte[] getUebersichtPDFasByteArray(long veranstaltungsid,long wettkampftag)
+    {
+        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllByVeranstaltungId(veranstaltungsid);
+        List<WettkampfBE> wettkaempfeAmTag = new ArrayList<>();
+        for(WettkampfBE wettkampf : wettkampflisteBEList)
+        {
+           if( wettkampf.getWettkampfTag() == wettkampftag)
+           {
+               wettkaempfeAmTag.add(wettkampf);
+           }
+        }
+
+        byte[] bResult;
+        if (!wettkaempfeAmTag.isEmpty()) {
+            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 PdfWriter writer = new PdfWriter(result);
+                 PdfDocument pdfDocument = new PdfDocument(writer);
+                 Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+                pdfDocument.getDocumentInfo().setTitle("Übersicht.pdf");
+                generateUebersicht(doc,wettkaempfeAmTag ,veranstaltungsid ,wettkampftag);
+
+                bResult = result.toByteArray();
+                LOGGER.debug("Uebersicht erstellt");
+            } catch(IOException e){
+                LOGGER.error("PDF Uebersicht konnte nicht erstellt werden: {}", e);
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF Uebersicht konnte nicht erstellt werden: " + e);
+            }
+        }
+        else
+        {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Für den Wettkampftag " + wettkampftag +" giebt es keine Wettkämpfe");
+        }
+        return bResult;
+    }
+
     //Generiert Tabelle für Einzelstatistik
     public void generateEinzel(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
