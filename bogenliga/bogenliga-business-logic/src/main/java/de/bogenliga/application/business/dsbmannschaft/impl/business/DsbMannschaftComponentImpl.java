@@ -8,6 +8,8 @@ import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaft
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -40,7 +42,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private static final String EXCEPTION_NO_RESULTS = "No result for ID '%s'";
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
-    private final VereinDAO vereinDAO;
+    private final VereinComponent vereinComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
 
@@ -53,11 +55,11 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     @Autowired
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
-                                      final VereinDAO vereinDAO,
+                                      final VereinComponent vereinComponent,
                                       final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
-        this.vereinDAO = vereinDAO;
+        this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
@@ -174,9 +176,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkNotNull(mannschaft, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkArgument(mannschaft.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
 
-        VereinBE vereinBE = this.vereinDAO.findById(mannschaft.getVereinId());
-        if (vereinBE != null && vereinBE.getVereinName() != null) {
-            mannschaft.setName(vereinBE.getVereinName() + " " + mannschaft.getNummer());
+        VereinDO vereinDO = this.vereinComponent.findById(mannschaft.getVereinId());
+        if (vereinDO != null && vereinDO.getName() != null) {
+            mannschaft.setName(vereinDO.getName() + " " + mannschaft.getNummer());
         }
         return mannschaft;
     }
