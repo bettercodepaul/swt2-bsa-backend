@@ -83,9 +83,23 @@ public interface WettkampfComponent extends ComponentFacade {
 
 
     /**
+     * Generates a list of id's of allowed contestants for the given contest
+     * @param wettkampfid Id of a contest
+     * @return List of Miglied id's allowed to participate
+     */
+    List<Long> getAllowedMitglieder(long wettkampfid);
+
+    /**
      * Generates a pdf as binary document
      * @param veranstaltungsid ID for the competition
      * @return document
      */
     byte[] getPDFasByteArray(String name, long veranstaltungsid,long manschaftsid,int jahr);
+
+    /**
+     * return Wettkampf  (Wettkampftag 0) from given VeranstaltungsID
+     * @param veranstaltungsId for the competition
+     * @return WettkampfDO
+     */
+    WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId);
 }

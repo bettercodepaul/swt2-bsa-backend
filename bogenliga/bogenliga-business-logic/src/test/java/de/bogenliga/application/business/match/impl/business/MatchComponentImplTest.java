@@ -1,16 +1,22 @@
 package de.bogenliga.application.business.match.impl.business;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -22,6 +28,10 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
     @Mock
     private MatchDAO matchDAO;
+    @Mock
+    private DsbMannschaftComponent mannschaftComponent;
+    @Mock
+    private WettkampfComponent wettkampfComponent;
 
     @InjectMocks
     private MatchComponentImpl underTest;
@@ -158,6 +168,40 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
 
     @Test
+    public void findByWettkampfIDMatchNrScheibenNr() {
+        MatchBE expectedMatchBE = getMatchBE();
+
+        // configure mocks
+        when(matchDAO.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(expectedMatchBE);
+
+        // call test method
+        final MatchDO actual = underTest.findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+
+        // assert result
+        assertValid(expectedMatchBE, actual);
+        verify(matchDAO).findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_ThrowsException() {
+        MatchBE expectedMatchBE = null;
+
+        // configure mocks
+        when(matchDAO.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(expectedMatchBE);
+
+        // call test method
+        assertThatThrownBy(()->{
+            underTest.findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+        })
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("No match");
+
+        // assert result
+        verify(matchDAO).findByWettkampfIDMatchNrScheibenNr(1L,1L,1L);
+    }
+
+
+    @Test
     public void findByWettkampfId() {
         MatchBE expectedMatchBE = getMatchBE();
 
@@ -223,10 +267,265 @@ public class MatchComponentImplTest extends BaseMatchTest {
     }
 
 
+    /*
     @Test
     public void delete() {
         MatchBE expectedMatchBE = getMatchBE();
         MatchDO matchDO = MatchMapper.toMatchDO.apply(expectedMatchBE);
         underTest.delete(matchDO, CURRENT_USER_ID);
+    }
+
+     */
+
+    @Test
+    public void createInitialMatchesWT0_NegativeVeranstalungsID(){
+
+        //final Long veranstaltungsId, final Long currentUserId
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.createInitialMatchesWT0(-1L,10L))
+                        .withMessageContaining("Veranstaltungs-ID must not be Null or negative")
+                        .withNoCause();
+    }
+
+    @Test
+    public void createInitialMatchesWT0_NullVeranstalungsID(){
+
+        //final Long veranstaltungsId, final Long currentUserId
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.createInitialMatchesWT0(null,10L))
+                .withMessageContaining("Veranstaltungs-ID must not be Null or negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_wettkampfIDisNull(){
+        /*
+
+        Passe: %s must not be null
+
+        Passe: %s must not be negative
+
+        checkPreconditions(wettkampfId, "wettkampf_Id"); null + negative
+        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(scheibenNummer, "scheibenNummer");
+         */
+
+        //Long wettkampfId, Long MatchNr, Long scheibenNummer
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findByWettkampfIDMatchNrScheibenNr(null,10L,10L))
+                .withMessageContaining("Passe: wettkampf_Id must not be null")
+                .withNoCause();
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_wettkampfIDisNegative(){
+        /*
+
+        Passe: %s must not be null
+
+        Passe: %s must not be negative
+
+        checkPreconditions(wettkampfId, "wettkampf_Id"); null + negative
+        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(scheibenNummer, "scheibenNummer");
+         */
+
+        //Long wettkampfId, Long MatchNr, Long scheibenNummer
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findByWettkampfIDMatchNrScheibenNr(-1L,10L,10L))
+                .withMessageContaining("Passe: wettkampf_Id must not be negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_MatchNrisNull(){
+        /*
+
+        Passe: %s must not be null
+
+        Passe: %s must not be negative
+
+        checkPreconditions(wettkampfId, "wettkampf_Id"); null + negative
+        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(scheibenNummer, "scheibenNummer");
+         */
+
+        //Long wettkampfId, Long MatchNr, Long scheibenNummer
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findByWettkampfIDMatchNrScheibenNr(1L,null,10L))
+                .withMessageContaining("Passe: matchNr must not be null")
+                .withNoCause();
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_MatchNrisNegative(){
+        /*
+
+        Passe: %s must not be null
+
+        Passe: %s must not be negative
+
+        checkPreconditions(wettkampfId, "wettkampf_Id"); null + negative
+        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(scheibenNummer, "scheibenNummer");
+         */
+
+        //Long wettkampfId, Long MatchNr, Long scheibenNummer
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findByWettkampfIDMatchNrScheibenNr(1L,-1L,10L))
+                .withMessageContaining("Passe: matchNr must not be negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_ScheibenNummerisNull(){
+        /*
+
+        Passe: %s must not be null
+
+        Passe: %s must not be negative
+
+        checkPreconditions(wettkampfId, "wettkampf_Id"); null + negative
+        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(scheibenNummer, "scheibenNummer");
+         */
+
+        //Long wettkampfId, Long MatchNr, Long scheibenNummer
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findByWettkampfIDMatchNrScheibenNr(1L,1L,null))
+                .withMessageContaining("Passe: scheibenNummer must not be null")
+                .withNoCause();
+    }
+
+    @Test
+    public void findByWettkampfIDMatchNrScheibenNr_ScheibenNummerisNegative(){
+        /*
+
+        Passe: %s must not be null
+
+        Passe: %s must not be negative
+
+        checkPreconditions(wettkampfId, "wettkampf_Id"); null + negative
+        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(scheibenNummer, "scheibenNummer");
+         */
+
+        //Long wettkampfId, Long MatchNr, Long scheibenNummer
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findByWettkampfIDMatchNrScheibenNr(1L,1L,-1L))
+                .withMessageContaining("Passe: scheibenNummer must not be negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void checkMatch_MatchDOWettkampfIDlessThanZero(){
+
+        //Match: currentUserId must not be null and must not be negative
+        //Preconditions.checkArgument(matchDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getMannschaftId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+
+        MatchDO MatchDOWettkampfIDlessThanZero = new MatchDO(0L, 0L, 0L, 0L, 0L,0L,0L,0L,0L,0L,0L,0L,0L);
+
+        MatchDOWettkampfIDlessThanZero.setWettkampfId(-5L);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.update(MatchDOWettkampfIDlessThanZero, -1L))
+                .withMessageContaining("Passe: Match: currentUserId must not be null and must not be negative")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void checkMatch_MatchDOMannschaftIDlessThanZero(){
+
+        //Match: currentUserId must not be null and must not be negative
+        //Preconditions.checkArgument(matchDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getMannschaftId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+
+        MatchDO MatchDOMannschaftIDlessThanZero = new MatchDO(0L, 0L, 0L, 0L, 0L,0L,0L,0L,0L,0L,0L,0L,0L);
+
+        MatchDOMannschaftIDlessThanZero.setMannschaftId(-5L);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.update(MatchDOMannschaftIDlessThanZero, -1L))
+                .withMessageContaining("Passe: Match: currentUserId must not be null and must not be negative")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void checkMatch_MatchDOScheibeNummerlessThanZero(){
+
+        //Match: currentUserId must not be null and must not be negative
+        //Preconditions.checkArgument(matchDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getMannschaftId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+
+        MatchDO MatchDOOScheibeNummerlessThanZero = new MatchDO(0L, 0L, 0L, 0L, 0L,0L,0L,0L,0L,0L,0L,0L,0L);
+
+        MatchDOOScheibeNummerlessThanZero.setScheibenNummer(-5L);
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.update(MatchDOOScheibeNummerlessThanZero, -1L))
+                .withMessageContaining("Passe: Match: currentUserId must not be null and must not be negative")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void checkPreconditionsIDlessThanZero(){
+        //Preconditions.checkArgument(id >= 0, String.format(PRECONDITION_MSG_TEMPLATE_NEGATIVE, iDIdentifier));
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.checkPreconditions(-1L, "TEST"))
+                .withMessageContaining("Passe: TEST must not be negative")
+                .withNoCause();
+    }
+
+
+    @Test
+    public void createInitialMatchesWT0(){
+
+
+        DsbMannschaftDO mannschaft1 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft2 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft3 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft4 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft5 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft6 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft7 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+        DsbMannschaftDO mannschaft8 = new DsbMannschaftDO(1L,"TEST",1L,1L,1L,1L,1L);
+
+        List<DsbMannschaftDO> mannschaften = new ArrayList<>();
+
+        mannschaften.add(mannschaft1);
+        mannschaften.add(mannschaft2);
+        mannschaften.add(mannschaft3);
+        mannschaften.add(mannschaft4);
+        mannschaften.add(mannschaft5);
+        mannschaften.add(mannschaft6);
+        mannschaften.add(mannschaft7);
+        mannschaften.add(mannschaft8);
+
+        when(mannschaftComponent.findAllByVeranstaltungsId(1L)).thenReturn(mannschaften);
+
+        WettkampfDO wettkampf = new WettkampfDO(1L);
+
+        when(wettkampfComponent.findWT0byVeranstaltungsId(1L)).thenReturn(wettkampf);
+
+        underTest.createInitialMatchesWT0(1L,1L);
+
+        verify(wettkampfComponent).findWT0byVeranstaltungsId(1L);
+        verify(mannschaftComponent).findAllByVeranstaltungsId(1L);
     }
 }
