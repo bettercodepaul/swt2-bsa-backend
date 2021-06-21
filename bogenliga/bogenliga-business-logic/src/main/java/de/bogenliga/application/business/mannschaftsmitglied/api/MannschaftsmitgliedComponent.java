@@ -62,6 +62,14 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      */
     MannschaftsmitgliedDO findByMemberAndTeamId(Long mannschaftsmitgliedMannschaftId, Long mannschaftsmitgliedMitgliedId);
 
+    /**
+     * Returns a mannschaftsmitglied entry with the given rueckennummer.
+     * @param mannschaftId of the mannschaftsmitglied
+     * @param rueckennummer of the mannschaftsmitglied
+     * @return single mannschaftsmitglied entry with the given rueckennummer;
+     * null, if no mannschaftsmitglied is found
+     */
+    MannschaftsmitgliedDO findByTeamIdAndRueckennummer(Long mannschaftId, Long rueckennummer);
 
     /**
      * return all mannschaftsmitglied entries from one dsbmitglied

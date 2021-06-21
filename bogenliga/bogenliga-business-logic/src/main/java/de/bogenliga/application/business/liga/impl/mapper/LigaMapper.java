@@ -2,8 +2,8 @@ package de.bogenliga.application.business.liga.impl.mapper;
 
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
-import de.bogenliga.application.business.user.impl.entity.UserBE;
+import de.bogenliga.application.business.regionen.api.types.RegionenDO;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -16,29 +16,30 @@ import java.util.function.Function;
  *
  */
 public class LigaMapper implements ValueObjectMapper {
-        /**
-         * Converts a {@link LigaBE} to a {@link LigaDO}
-         *
-         */
-        public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenBE regionenBE, UserBE userBE){
+    /**
+     * Converts a {@link LigaBE} to a {@link LigaDO}
+     *
+     */
+    public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenDO regionenDO, UserDO userDO){
 
-            OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
-            OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
+        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
+        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
 
-           LigaDO ligaDO = new LigaDO(
-                   ligaBE.getLigaId(),
-                   ligaBE.getLigaName(),
-                   regionenBE.getRegionId(),
-                   regionenBE.getRegionName(),
-                   ligaBE.getLigaUebergeordnetId(),
-                   uebergeordnetLiga.getLigaName(),
-                   userBE.getUserId(),
-                   userBE.getUserEmail()
-           );
-            ligaDO.setCreatedAtUtc(createdAtUtc);
-            ligaDO.setLastModifiedAtUtc(lastModifiedAtUtc);
-            return ligaDO;
-        }
+        LigaDO ligaDO = new LigaDO(
+                ligaBE.getLigaId(),
+                ligaBE.getLigaName(),
+                regionenDO.getId(),
+                regionenDO.getRegionName(),
+                ligaBE.getLigaUebergeordnetId(),
+                uebergeordnetLiga.getLigaName(),
+                userDO.getId(),
+                userDO.getEmail()
+
+        );
+        ligaDO.setCreatedAtUtc(createdAtUtc);
+        ligaDO.setLastModifiedAtUtc(lastModifiedAtUtc);
+        return ligaDO;
+    }
 
     /**
      * Converts a {@link LigaDO} to a {@link LigaBE}
