@@ -499,7 +499,29 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
     {
-        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstatungsId);
+        VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstatungsId);
+
+        doc.setFontSize(20.0f);
+        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltung_name()).setBold());
+        doc.setFontSize(9.2f);
+        doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
+        doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfOrtsinfo() + " " + wettkaempfe.get(0).getWettkampfBeginn()));
+        Table table = new Table(new float[]{80, 20, 20, 20, 20, 20, 80, 20, 20, 20, 20, 20, 50, 50});
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+        satzToTable(table);
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+        satzToTable(table);
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Satzpunkte")));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Matchpunkte")));
+
+    }
+
+    void satzToTable(Table table)
+    {
+        for(int i = 1; i<=5; i++)
+        {
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("S"+i)));
+        }
     }
 
     //berechnet den durchscnittlichen pfeilwert der passen die zur übergebenen matchnr gehören
