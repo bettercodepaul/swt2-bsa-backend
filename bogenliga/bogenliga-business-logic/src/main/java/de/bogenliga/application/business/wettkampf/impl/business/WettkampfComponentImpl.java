@@ -446,9 +446,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             }
             if (average != -1)
             {
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
-                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(average))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
+                table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(average))));
             }
         }
         if(table.getNumberOfRows() > 1)
@@ -457,6 +457,11 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             doc.add(table);
             doc.add(new Paragraph(""));
         }
+    }
+
+    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, int wettkampftag)
+    {
+        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
     }
 
     //berechnet den durchscnittlichen pfeilwert der passen die zur übergebenen matchnr gehören
@@ -474,7 +479,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
     public WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId){
         WettkampfBE wettkampfBE= wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
-        return  WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
+        return WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
     }
 
     //berechnet den durchscnittlichen pfeilwert aller übergebenen passen
