@@ -456,6 +456,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 doc.add(new Paragraph(""));
             }
         }
+        doc.close();
     }
 
     //Generiert Tabelle für Gesammtstatistik
@@ -495,6 +496,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             doc.add(table);
             doc.add(new Paragraph(""));
         }
+
+        doc.close();
     }
 
     void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
@@ -513,7 +516,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         satzToTable(table);
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Satzpunkte")));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Matchpunkte")));
-
+        doc.close();
     }
 
     void satzToTable(Table table)
