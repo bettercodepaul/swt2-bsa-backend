@@ -497,9 +497,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
     }
 
-    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, int wettkampftag)
+    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
     {
-        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
+        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstatungsId);
     }
 
     //berechnet den durchscnittlichen pfeilwert der passen die zur übergebenen matchnr gehören
