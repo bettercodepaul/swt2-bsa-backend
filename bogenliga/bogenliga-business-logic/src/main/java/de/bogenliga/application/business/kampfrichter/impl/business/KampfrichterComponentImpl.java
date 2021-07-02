@@ -57,6 +57,7 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidInWettkampftag(wettkampfId);
         return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
     }
+
     @Override
     public KampfrichterDO findById(final long userId) {
         Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
