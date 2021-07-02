@@ -46,8 +46,15 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         return kampfrichterBEList.stream().map(KampfrichterMapper.toKampfrichterDO).collect(Collectors.toList());
     }
 
+    @Override
     public List<KampfrichterDO> findByWettkampfidNotInWettkampftag(final long wettkampfId){
         final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidNotInWettkampftag(wettkampfId);
+        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<KampfrichterDO> findByWettkampfidInWettkampftag(final long wettkampfId){
+        final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidInWettkampftag(wettkampfId);
         return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
     }
     @Override

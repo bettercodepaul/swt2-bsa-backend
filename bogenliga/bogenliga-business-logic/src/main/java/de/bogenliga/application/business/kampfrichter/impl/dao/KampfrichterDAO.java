@@ -20,7 +20,7 @@ import de.bogenliga.application.common.database.SQL;
  * DataAccessObject for the kampfrichter entity in the database.
  * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
- *
+ * Functionality to find all Kampfrichter who are not in a Wettkampftag (wettkampfid) but have the Kampfrichter-Lizenz is implemented here
  * @author Rahul Pöse
  */
 @Repository
@@ -42,12 +42,12 @@ public class KampfrichterDAO implements DataAccessObject {
     private static final String KAMPFRICHTER_TABLE_LEADING = "kampfrichter_leitend";
 
     //For KampfrichterExtendedBE
-    private static final String KAMPFRICHTER_BE_WETTKAMPFID = "KampfrichterExtendedWettkampfID";
-    private static final String KAMPFRICHTER_BE_LEITEND = "KampfrichterExtendedLeitend";
-    private static final String KAMPFRICHTER_BE_USERID = "KampfrichterExtendedUserID";
-    private static final String KAMPFRICHTER_BE_VORNAME = "KampfrichterExtendedVorname";
-    private static final String KAMPFRICHTER_BE_NACHNAME = "KampfrichterExtendedNachname";
-    private static final String KAMPFRICHTER_BE_EMAIL = "KampfrichterExtendedEmail";
+    private static final String KAMPFRICHTER_BE_WETTKAMPFID = "kampfrichterExtendedWettkampfID";
+    private static final String KAMPFRICHTER_BE_LEITEND = "kampfrichterExtendedLeitend";
+    private static final String KAMPFRICHTER_BE_USERID = "kampfrichterExtendedUserID";
+    private static final String KAMPFRICHTER_BE_VORNAME = "kampfrichterExtendedVorname";
+    private static final String KAMPFRICHTER_BE_NACHNAME = "kampfrichterExtendedNachname";
+    private static final String KAMPFRICHTER_BE_EMAIL = "kampfrichterExtendedEmail";
 
     private static final String KAMPFRICHTER_TABLE_USERID = "benutzer_id";
     private static final String KAMPFRICHTER_TABLE_VORNAME = "dsb_mitglied_vorname";
@@ -90,6 +90,15 @@ public class KampfrichterDAO implements DataAccessObject {
                     "select kampfrichter.kampfrichter_benutzer_id from kampfrichter, wettkampf " +
                     "where wettkampf.wettkampf_id= kampfrichter.kampfrichter_wettkampf_id " +
                     "and wettkampf.wettkampf_id=?)";
+
+    private static final String FIND_KAMPFRICHTER_WETTKAMPID =
+            "Select benutzer.benutzer_id, kampfrichter.kampfrichter_wettkampf_id, kampfrichter.kampfrichter_leitend, dsb_mitglied.dsb_mitglied_vorname, " +
+                    "dsb_mitglied.dsb_mitglied_nachname, benutzer.benutzer_email " +
+                    "from benutzer, dsb_mitglied, kampfrichter, wettkampf " +
+                    "where kampfrichter.kampfrichter_wettkampf_id=wettkampf.wettkampf_id " +
+                    "and kampfrichter.kampfrichter_wettkampf_id=? " +
+                    "and kampfrichter.kampfrichter_benutzer_id= benutzer.benutzer_id " +
+                    "and benutzer.benutzer_dsb_mitglied_id = dsb_mitglied.dsb_mitglied_id";
 
     private final BasicDAO basicDao;
 
@@ -154,9 +163,25 @@ public class KampfrichterDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(KAMPFRICHTER, FIND_BY_ID, userId);
     }
 
+
+    /**
+     * Return kampfrichterExtended not in wettkampfid
+     *
+     * @param wettkampfId
+     */
     public List<KampfrichterExtendedBE> findByWettkampfidNotInWettkampftag(final long wettkampfId){
 
         return basicDao.selectEntityList(KAMPFRICHTEREXTENDED, FIND_KAMPFRICHTER_NOT_WETTKAMPID, wettkampfId);
+    }
+
+    /**
+     * Return kampfrichterExtended in wettkampfid
+     *
+     * @param wettkampfId
+     */
+    public List<KampfrichterExtendedBE> findByWettkampfidInWettkampftag(final long wettkampfId){
+
+        return basicDao.selectEntityList(KAMPFRICHTEREXTENDED, FIND_KAMPFRICHTER_WETTKAMPID, wettkampfId);
     }
 
 
