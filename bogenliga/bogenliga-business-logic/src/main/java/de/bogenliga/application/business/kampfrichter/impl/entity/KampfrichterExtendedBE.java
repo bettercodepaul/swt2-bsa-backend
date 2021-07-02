@@ -15,12 +15,12 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class KampfrichterExtendedBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
-    private Long KampfrichterExtendedUserID;
-    private Long KampfrichterExtendedWettkampfID;
-    private Boolean KampfrichterExtendedLeitend;
-    private String KampfrichterExtendedVorname;
-    private String KampfrichterExtendedNachname;
-    private String KampfrichterExtendedEmail;
+    private Long kampfrichterExtendedUserID;
+    private Long kampfrichterExtendedWettkampfID;
+    private Boolean kampfrichterExtendedLeitend;
+    private String kampfrichterExtendedVorname;
+    private String kampfrichterExtendedNachname;
+    private String kampfrichterExtendedEmail;
 
 
     public KampfrichterExtendedBE() {
@@ -29,12 +29,14 @@ public class KampfrichterExtendedBE extends CommonBusinessEntity implements Busi
     public KampfrichterExtendedBE(Long kampfrichterExtendedUserID, Long kampfrichterExtendedWettkampfID,
                                   Boolean kampfrichterExtendedLeitend, String kampfrichterExtendedVorname,
                                   String kampfrichterExtendedNachname, String kampfrichterExtendedEmail) {
-        KampfrichterExtendedUserID = kampfrichterExtendedUserID;
-        KampfrichterExtendedWettkampfID = kampfrichterExtendedWettkampfID;
-        KampfrichterExtendedLeitend = kampfrichterExtendedLeitend;
-        KampfrichterExtendedVorname = kampfrichterExtendedVorname;
-        KampfrichterExtendedNachname = kampfrichterExtendedNachname;
-        KampfrichterExtendedEmail = kampfrichterExtendedEmail;
+
+
+        this.kampfrichterExtendedUserID = kampfrichterExtendedUserID;
+        this.kampfrichterExtendedWettkampfID = kampfrichterExtendedWettkampfID;
+        this.kampfrichterExtendedLeitend = kampfrichterExtendedLeitend;
+        this.kampfrichterExtendedVorname = kampfrichterExtendedVorname;
+        this.kampfrichterExtendedNachname = kampfrichterExtendedNachname;
+        this.kampfrichterExtendedEmail = kampfrichterExtendedEmail;
     }
 
 
@@ -44,74 +46,74 @@ public class KampfrichterExtendedBE extends CommonBusinessEntity implements Busi
 
 
     public Long getKampfrichterExtendedUserID() {
-        return KampfrichterExtendedUserID;
+        return kampfrichterExtendedUserID;
     }
 
 
     public void setKampfrichterExtendedUserID(Long kampfrichterExtendedUserID) {
-        KampfrichterExtendedUserID = kampfrichterExtendedUserID;
+        this.kampfrichterExtendedUserID = kampfrichterExtendedUserID;
     }
 
 
     public Long getKampfrichterExtendedWettkampfID() {
-        return KampfrichterExtendedWettkampfID;
+        return kampfrichterExtendedWettkampfID;
     }
 
 
     public void setKampfrichterExtendedWettkampfID(Long kampfrichterExtendedWettkampfID) {
-        KampfrichterExtendedWettkampfID = kampfrichterExtendedWettkampfID;
+        this.kampfrichterExtendedWettkampfID = kampfrichterExtendedWettkampfID;
     }
 
 
     public Boolean getKampfrichterExtendedLeitend() {
-        return KampfrichterExtendedLeitend;
+        return kampfrichterExtendedLeitend;
     }
 
 
     public void setKampfrichterExtendedLeitend(Boolean kampfrichterExtendedLeitend) {
-        KampfrichterExtendedLeitend = kampfrichterExtendedLeitend;
+        this.kampfrichterExtendedLeitend = kampfrichterExtendedLeitend;
     }
 
 
     public String getKampfrichterExtendedVorname() {
-        return KampfrichterExtendedVorname;
+        return kampfrichterExtendedVorname;
     }
 
 
     public void setKampfrichterExtendedVorname(String kampfrichterExtendedVorname) {
-        KampfrichterExtendedVorname = kampfrichterExtendedVorname;
+        this.kampfrichterExtendedVorname = kampfrichterExtendedVorname;
     }
 
 
     public String getKampfrichterExtendedNachname() {
-        return KampfrichterExtendedNachname;
+        return kampfrichterExtendedNachname;
     }
 
 
     public void setKampfrichterExtendedNachname(String kampfrichterExtendedNachname) {
-        KampfrichterExtendedNachname = kampfrichterExtendedNachname;
+        this.kampfrichterExtendedNachname = kampfrichterExtendedNachname;
     }
 
 
     public String getKampfrichterExtendedEmail() {
-        return KampfrichterExtendedEmail;
+        return kampfrichterExtendedEmail;
     }
 
 
     public void setKampfrichterExtendedEmail(String kampfrichterExtendedEmail) {
-        KampfrichterExtendedEmail = kampfrichterExtendedEmail;
+        this.kampfrichterExtendedEmail = kampfrichterExtendedEmail;
     }
 
 
     @Override
     public String toString() {
         return "KampfrichterExtendedBE{" +
-                "KampfrichterExtendedUserID=" + KampfrichterExtendedUserID +
-                ", KampfrichterExtendedWettkampfID=" + KampfrichterExtendedWettkampfID +
-                ", KampfrichterExtendedLeitend=" + KampfrichterExtendedLeitend +
-                ", KampfrichterExtendedVorname='" + KampfrichterExtendedVorname + '\'' +
-                ", KampfrichterExtendedNachname='" + KampfrichterExtendedNachname + '\'' +
-                ", KampfrichterExtendedEmail='" + KampfrichterExtendedEmail + '\'' +
+                "KampfrichterExtendedUserID=" + kampfrichterExtendedUserID +
+                ", KampfrichterExtendedWettkampfID=" + kampfrichterExtendedWettkampfID +
+                ", KampfrichterExtendedLeitend=" + kampfrichterExtendedLeitend +
+                ", KampfrichterExtendedVorname='" + kampfrichterExtendedVorname + '\'' +
+                ", KampfrichterExtendedNachname='" + kampfrichterExtendedNachname + '\'' +
+                ", KampfrichterExtendedEmail='" + kampfrichterExtendedEmail + '\'' +
                 '}';
     }
 }
