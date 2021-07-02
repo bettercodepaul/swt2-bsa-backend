@@ -3,8 +3,9 @@ package de.bogenliga.application.services.v1.kampfrichter.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- * Erweitert KampfrichterDTO zu KampfrichterExtendedDTO. Der Unteschied snd Vorname,Nachname und E-MAIL.
  *
+ * Extended KampfrichterDTO class to KampfrichterExtendedDTO. The difference are the Attributes: "kampfrichterVorname", "kampfrichterNachname"
+ * and email.
  *
  */
 public class KampfrichterExtendedDTO implements DataTransferObject {

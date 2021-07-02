@@ -84,11 +84,22 @@ public class KampfrichterService implements ServiceFacade {
         return KampfrichterDTOMapper.toDTO.apply(savedKampfrichterDO);
     }
 
+    //Returns a List with KampfrichterExtended who are not assinged to the Wettkampftag
     @GetMapping(value= "/NotAssignedKampfrichter/{wettkampfId}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<KampfrichterExtendedDTO> findByWettkampfidNotInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
         Preconditions.checkArgument(wettkampfId >= 0, "Wettkampf-ID must not be negative.");
         List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidNotInWettkampftag(wettkampfId);
+
+        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
+    }
+
+    //Returns a List with KampfrichterExtended who are assinged to the Wettkampftag
+    @GetMapping(value= "/AssignedKampfrichter/{wettkampfId}")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public List<KampfrichterExtendedDTO> findByWettkampfidInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
+        Preconditions.checkArgument(wettkampfId >= 0, "Wettkampf-ID must not be negative.");
+        List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidInWettkampftag(wettkampfId);
 
         return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
     }
