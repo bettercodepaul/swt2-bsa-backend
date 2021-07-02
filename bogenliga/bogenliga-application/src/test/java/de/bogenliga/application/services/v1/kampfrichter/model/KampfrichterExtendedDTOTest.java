@@ -148,4 +148,19 @@ public class KampfrichterExtendedDTOTest extends TestCase {
 
         assertEquals(nEMAIL, actualEmail);
     }
+
+
+    @Test
+    public void testToString() {
+        KampfrichterExtendedDTO actual = getExpectedDTO();
+
+        String s = actual.toString();
+        assertTrue(s.length() > 0);
+        assertTrue(s.contains(actual.getUserID().toString()));
+        assertTrue(s.contains(actual.getWettkampfID().toString()));
+        assertTrue(s.contains(actual.getKampfrichterVorname()));
+        assertTrue(s.contains(actual.getKampfrichterNachname()));
+        assertTrue(s.contains(actual.getEmail()));
+        assertTrue(s.contains(String.valueOf(actual.getLeitend())));
+    }
 }
