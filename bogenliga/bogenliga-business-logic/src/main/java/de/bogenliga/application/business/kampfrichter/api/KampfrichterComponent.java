@@ -54,4 +54,12 @@ public interface KampfrichterComponent extends ComponentFacade {
      * @param kampfrichterDO kampfrichter to delete
      */
     void delete(KampfrichterDO kampfrichterDO, long currentKampfrichterUserId);
+
+
+    /**
+     * Returns a kampfrichter with Vorname and Nachname which does not exist in WettkampfId (Wettkampftag)
+     *
+     * @param wettkampfId to get kampfrichter
+     */
+    List<KampfrichterDO> findByWettkampfidNotInWettkampftag(final long wettkampfId);
 }

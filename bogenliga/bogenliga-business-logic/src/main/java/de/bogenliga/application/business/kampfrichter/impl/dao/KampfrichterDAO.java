@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -36,13 +37,27 @@ public class KampfrichterDAO implements DataAccessObject {
     private static final String KAMPFRICHTER_BE_COMPETITION_ID = "kampfrichterWettkampfId";
     private static final String KAMPFRICHTER_BE_LEADING = "kampfrichterLeitend";
 
+    private static final String KAMPFRICHTER_BE_WETTKAMPFID = "KampfrichterExtendedWettkampfID";
+    private static final String KAMPFRICHTER_BE_LEITEND = "KampfrichterExtendedLeitend";
+    private static final String KAMPFRICHTER_BE_USERID = "KampfrichterExtendedUserID";
+    private static final String KAMPFRICHTER_BE_VORNAME = "KampfrichterExtendedVorname";
+    private static final String KAMPFRICHTER_BE_NACHNAME = "KampfrichterExtendedNachname";
+    private static final String KAMPFRICHTER_BE_EMAIL = "KampfrichterExtendedEmail";
+
     private static final String KAMPFRICHTER_TABLE_ID = "kampfrichter_benutzer_id";
     private static final String KAMPFRICHTER_TABLE_COMPETITION_ID = "kampfrichter_wettkampf_id";
     private static final String KAMPFRICHTER_TABLE_LEADING = "kampfrichter_leitend";
 
+    private static final String KAMPFRICHTER_TABLE_USERID = "benutzer_id";
+    private static final String KAMPFRICHTER_TABLE_VORNAME = "dsb_mitglied_vorname";
+    private static final String KAMPFRICHTER_TABLE_NACHNAME = "dsb_mitglied_nachname";
+    private static final String KAMPFRICHTER_TABLE_EMAIL = "benutzer_email";
+
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<KampfrichterBE> KAMPFRICHTER = new BusinessEntityConfiguration<>(
             KampfrichterBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+    private static final BusinessEntityConfiguration<KampfrichterExtendedBE> KAMPFRICHTEREXTENDED = new BusinessEntityConfiguration<>(
+            KampfrichterExtendedBE.class, TABLE, getColumnsToFieldsMap2(), LOGGER);
 
     /*
      * SQL queries
@@ -61,6 +76,16 @@ public class KampfrichterDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM lizenz "
                     + " WHERE lizenz_typ = Kampfrichter AND lizenz_dsb_mitglied_id = ?";
+    private static final String FIND_KAMPFRICHTER_NOT_WETTKAMPID =
+            "Select benutzer.benutzer_id, dsb_mitglied.dsb_mitglied_vorname, dsb_mitglied.dsb_mitglied_nachname, benutzer.benutzer_email " +
+                    "from lizenz, benutzer, dsb_mitglied " +
+                    "where lizenz.lizenz_typ = 'Kampfrichter' " +
+                    "and lizenz.lizenz_dsb_mitglied_id = benutzer.benutzer_dsb_mitglied_id " +
+                    "and dsb_mitglied.dsb_mitglied_id = lizenz.lizenz_dsb_mitglied_id " +
+                    "and benutzer.benutzer_id not in (" +
+                    "select kampfrichter.kampfrichter_benutzer_id from kampfrichter, wettkampf " +
+                    "where wettkampf.wettkampf_id= kampfrichter.kampfrichter_wettkampf_id " +
+                    "and wettkampf.wettkampf_id=?)";
 
     private final BasicDAO basicDao;
 
@@ -91,6 +116,22 @@ public class KampfrichterDAO implements DataAccessObject {
     }
 
 
+    private static Map<String, String> getColumnsToFieldsMap2() {
+        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+
+        columnsToFieldsMap.put(KAMPFRICHTER_TABLE_USERID, KAMPFRICHTER_BE_USERID);
+        columnsToFieldsMap.put(KAMPFRICHTER_TABLE_EMAIL, KAMPFRICHTER_BE_EMAIL);
+        columnsToFieldsMap.put(KAMPFRICHTER_TABLE_COMPETITION_ID, KAMPFRICHTER_BE_WETTKAMPFID);
+        columnsToFieldsMap.put(KAMPFRICHTER_TABLE_LEADING, KAMPFRICHTER_BE_LEITEND);
+        columnsToFieldsMap.put(KAMPFRICHTER_TABLE_VORNAME, KAMPFRICHTER_BE_VORNAME);
+        columnsToFieldsMap.put(KAMPFRICHTER_TABLE_NACHNAME, KAMPFRICHTER_BE_NACHNAME);
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
+        return columnsToFieldsMap;
+    }
+
+
     /**
      * Return all kampfrichter entries
      */
@@ -106,6 +147,13 @@ public class KampfrichterDAO implements DataAccessObject {
      */
     public KampfrichterBE findById(final long userId) {
         return basicDao.selectSingleEntity(KAMPFRICHTER, FIND_BY_ID, userId);
+    }
+
+    public List<KampfrichterExtendedBE> findByWettkampfidNotInWettkampftag(final long wettkampfId){
+
+        List<KampfrichterExtendedBE> test= basicDao.selectEntityList(KAMPFRICHTEREXTENDED, FIND_KAMPFRICHTER_NOT_WETTKAMPID, wettkampfId);
+
+        return test;
     }
 
 
