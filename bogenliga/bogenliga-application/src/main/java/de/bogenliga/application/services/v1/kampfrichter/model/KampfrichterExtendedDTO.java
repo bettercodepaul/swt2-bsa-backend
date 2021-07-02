@@ -3,9 +3,9 @@ package de.bogenliga.application.services.v1.kampfrichter.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- * TODO [AL] class documentation
+ * Erweitert KampfrichterDTO zu KampfrichterExtendedDTO. Der Unteschied snd Vorname,Nachname und E-MAIL.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ *
  */
 public class KampfrichterExtendedDTO implements DataTransferObject {
     private static final Long serialVersionUID = 8559563978424033907L;
@@ -55,11 +55,6 @@ public class KampfrichterExtendedDTO implements DataTransferObject {
 
     public void setLeitend(final boolean leitend) {
         this.leitend = leitend;
-    }
-
-
-    public void setWettkampfID(Long wettkampfID) {
-        this.wettkampfID = wettkampfID;
     }
 
 

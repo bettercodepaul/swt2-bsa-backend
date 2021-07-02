@@ -95,6 +95,7 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * @param leitend
      * @param kampfrichterVorname
      * @param kampfrichterNachname
+     * @param email
      */
     public KampfrichterDO(final Long userId, String kampfrichterVorname, String kampfrichterNachname, String email, final Long wettkampfId, final boolean leitend){
         this.userId = userId;
@@ -118,7 +119,9 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
         return wettkampfId;
     }
 
-    public void setWettkampfId(Long wettkampfId) { this.wettkampfId = wettkampfId; }
+    public void setWettkampfId(Long wettkampfId) {
+        this.wettkampfId = wettkampfId;
+    }
 
     public boolean isLeitend() {
         return leitend;

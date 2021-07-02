@@ -37,6 +37,11 @@ public class KampfrichterDAO implements DataAccessObject {
     private static final String KAMPFRICHTER_BE_COMPETITION_ID = "kampfrichterWettkampfId";
     private static final String KAMPFRICHTER_BE_LEADING = "kampfrichterLeitend";
 
+    private static final String KAMPFRICHTER_TABLE_ID = "kampfrichter_benutzer_id";
+    private static final String KAMPFRICHTER_TABLE_COMPETITION_ID = "kampfrichter_wettkampf_id";
+    private static final String KAMPFRICHTER_TABLE_LEADING = "kampfrichter_leitend";
+
+    //For KampfrichterExtendedBE
     private static final String KAMPFRICHTER_BE_WETTKAMPFID = "KampfrichterExtendedWettkampfID";
     private static final String KAMPFRICHTER_BE_LEITEND = "KampfrichterExtendedLeitend";
     private static final String KAMPFRICHTER_BE_USERID = "KampfrichterExtendedUserID";
@@ -44,20 +49,18 @@ public class KampfrichterDAO implements DataAccessObject {
     private static final String KAMPFRICHTER_BE_NACHNAME = "KampfrichterExtendedNachname";
     private static final String KAMPFRICHTER_BE_EMAIL = "KampfrichterExtendedEmail";
 
-    private static final String KAMPFRICHTER_TABLE_ID = "kampfrichter_benutzer_id";
-    private static final String KAMPFRICHTER_TABLE_COMPETITION_ID = "kampfrichter_wettkampf_id";
-    private static final String KAMPFRICHTER_TABLE_LEADING = "kampfrichter_leitend";
-
     private static final String KAMPFRICHTER_TABLE_USERID = "benutzer_id";
     private static final String KAMPFRICHTER_TABLE_VORNAME = "dsb_mitglied_vorname";
     private static final String KAMPFRICHTER_TABLE_NACHNAME = "dsb_mitglied_nachname";
     private static final String KAMPFRICHTER_TABLE_EMAIL = "benutzer_email";
 
+
+
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<KampfrichterBE> KAMPFRICHTER = new BusinessEntityConfiguration<>(
             KampfrichterBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
     private static final BusinessEntityConfiguration<KampfrichterExtendedBE> KAMPFRICHTEREXTENDED = new BusinessEntityConfiguration<>(
-            KampfrichterExtendedBE.class, TABLE, getColumnsToFieldsMap2(), LOGGER);
+            KampfrichterExtendedBE.class, TABLE, getColumnsToFieldsMapExtended(), LOGGER);
 
     /*
      * SQL queries
@@ -76,6 +79,7 @@ public class KampfrichterDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM lizenz "
                     + " WHERE lizenz_typ = Kampfrichter AND lizenz_dsb_mitglied_id = ?";
+
     private static final String FIND_KAMPFRICHTER_NOT_WETTKAMPID =
             "Select benutzer.benutzer_id, dsb_mitglied.dsb_mitglied_vorname, dsb_mitglied.dsb_mitglied_nachname, benutzer.benutzer_email " +
                     "from lizenz, benutzer, dsb_mitglied " +
@@ -116,7 +120,7 @@ public class KampfrichterDAO implements DataAccessObject {
     }
 
 
-    private static Map<String, String> getColumnsToFieldsMap2() {
+    private static Map<String, String> getColumnsToFieldsMapExtended() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(KAMPFRICHTER_TABLE_USERID, KAMPFRICHTER_BE_USERID);
@@ -125,6 +129,7 @@ public class KampfrichterDAO implements DataAccessObject {
         columnsToFieldsMap.put(KAMPFRICHTER_TABLE_LEADING, KAMPFRICHTER_BE_LEITEND);
         columnsToFieldsMap.put(KAMPFRICHTER_TABLE_VORNAME, KAMPFRICHTER_BE_VORNAME);
         columnsToFieldsMap.put(KAMPFRICHTER_TABLE_NACHNAME, KAMPFRICHTER_BE_NACHNAME);
+
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
@@ -151,9 +156,7 @@ public class KampfrichterDAO implements DataAccessObject {
 
     public List<KampfrichterExtendedBE> findByWettkampfidNotInWettkampftag(final long wettkampfId){
 
-        List<KampfrichterExtendedBE> test= basicDao.selectEntityList(KAMPFRICHTEREXTENDED, FIND_KAMPFRICHTER_NOT_WETTKAMPID, wettkampfId);
-
-        return test;
+        return basicDao.selectEntityList(KAMPFRICHTEREXTENDED, FIND_KAMPFRICHTER_NOT_WETTKAMPID, wettkampfId);
     }
 
 

@@ -85,12 +85,10 @@ public class KampfrichterService implements ServiceFacade {
     }
 
     @GetMapping(value= "/NotAssignedKampfrichter/{wettkampfId}")
-    //@RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<KampfrichterExtendedDTO> findByWettkampfidNotInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
         Preconditions.checkArgument(wettkampfId >= 0, "Wettkampf-ID must not be negative.");
         List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidNotInWettkampftag(wettkampfId);
-        LOG.debug("Im Service Kampfichter"+ kampfrichterDOList.size());
 
         return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
     }
