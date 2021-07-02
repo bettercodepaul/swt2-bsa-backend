@@ -15,6 +15,9 @@ public class KampfrichterDTO implements DataTransferObject {
     private Long wettkampfID;
     private boolean leitend;
 
+    // No args constructor
+    public KampfrichterDTO() {}
+
     // The parameter names have to be the exact same as the attribute names in kampfrichter-do.class.ts
     public KampfrichterDTO(final Long id, final Long wettkampfID, final boolean leitend) {
         this.userID = id;
