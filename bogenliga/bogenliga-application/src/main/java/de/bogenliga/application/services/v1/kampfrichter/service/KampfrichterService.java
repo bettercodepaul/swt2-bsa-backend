@@ -16,6 +16,8 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterDTO;
 import de.bogenliga.application.services.v1.kampfrichter.mapper.KampfrichterDTOMapper;
+import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterExtendedDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -82,7 +84,16 @@ public class KampfrichterService implements ServiceFacade {
         return KampfrichterDTOMapper.toDTO.apply(savedKampfrichterDO);
     }
 
+    @GetMapping(value= "/NotAssignedKampfrichter/{wettkampfId}")
+    //@RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<KampfrichterExtendedDTO> findByWettkampfidNotInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
+        Preconditions.checkArgument(wettkampfId >= 0, "Wettkampf-ID must not be negative.");
+        List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidNotInWettkampftag(wettkampfId);
+        LOG.debug("Im Service Kampfichter"+ kampfrichterDOList.size());
 
+        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
+    }
 
     @DeleteMapping(value = "{userID}/{wettkampfID}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)

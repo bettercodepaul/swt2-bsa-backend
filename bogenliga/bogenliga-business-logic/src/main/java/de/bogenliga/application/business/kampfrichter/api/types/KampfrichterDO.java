@@ -17,6 +17,9 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * business parameter
      */
     private Long userId;
+    private String kampfrichterVorname;
+    private String kampfrichterNachname;
+    private String email;
     private Long wettkampfId;
     private boolean leitend;
 
@@ -55,8 +58,8 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * @param version
      */
     public KampfrichterDO(final Long userId, final Long wettkampfId, final boolean leitend,
-                         final OffsetDateTime createdAtUtc,
-                         final Long createdByUserId, final Long version) {
+                          final OffsetDateTime createdAtUtc,
+                          final Long createdByUserId, final Long version) {
         this.userId = userId;
         this.wettkampfId = wettkampfId;
         this.leitend = leitend;
@@ -85,6 +88,22 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
         this.userId = userId;
         this.leitend = false;
     }
+    /**
+     * Constructor with optional parameters
+     * @param userId
+     * @param wettkampfId
+     * @param leitend
+     * @param kampfrichterVorname
+     * @param kampfrichterNachname
+     */
+    public KampfrichterDO(final Long userId, String kampfrichterVorname, String kampfrichterNachname, String email, final Long wettkampfId, final boolean leitend){
+        this.userId = userId;
+        this.kampfrichterVorname=kampfrichterVorname;
+        this.kampfrichterNachname=kampfrichterNachname;
+        this.email=email;
+        this.wettkampfId = wettkampfId;
+        this.leitend = leitend;
+    }
 
 
     public Long getUserId() {
@@ -110,28 +129,57 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
     }
 
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, wettkampfId, leitend,
-                createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
+    public String getKampfrichterVorname() {
+        return kampfrichterVorname;
+    }
+
+
+    public void setKampfrichterVorname(String kampfrichterVorname) {
+        this.kampfrichterVorname = kampfrichterVorname;
+    }
+
+
+    public String getKampfrichterNachname() {
+        return kampfrichterNachname;
+    }
+
+
+    public void setKampfrichterNachname(String kampfrichterNachname) {
+        this.kampfrichterNachname = kampfrichterNachname;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof KampfrichterDO)) {
             return false;
         }
-        final de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO that = (de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO) o;
-        return userId == that.userId &&
-                wettkampfId == that.wettkampfId &&
-                leitend == that.leitend &&
-                Objects.equals(userId, that.userId) &&
-                Objects.equals(wettkampfId, that.wettkampfId) &&
-                Objects.equals(leitend, that.leitend);
+        KampfrichterDO that = (KampfrichterDO) o;
+        return isLeitend() == that.isLeitend() && Objects.equals(getUserId(),
+                that.getUserId()) && Objects.equals(getKampfrichterVorname(),
+                that.getKampfrichterVorname()) && Objects.equals(getKampfrichterNachname(),
+                that.getKampfrichterNachname()) && Objects.equals(getEmail(),
+                that.getEmail()) && Objects.equals(getWettkampfId(), that.getWettkampfId());
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId(), getKampfrichterVorname(), getKampfrichterNachname(), getEmail(),
+                getWettkampfId(),
+                isLeitend());
     }
 }
