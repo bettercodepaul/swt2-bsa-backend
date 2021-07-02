@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
 import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -41,6 +42,11 @@ public class KampfrichterComponentImplTest {
     private static final long WETTKAMPFID = 9999;
     private static final boolean LEITEND = true;
 
+    private static final String VORNAME = "Sorscha";
+    private static final String NACHNAME = "Kratikoff";
+    private static final String EMAIL = "Sorscha.Kratikoff@test.de";
+
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
@@ -64,6 +70,25 @@ public class KampfrichterComponentImplTest {
         return expectedBE;
     }
 
+
+    /***
+     * Utility methods for creating business entities/data objects.
+     * If this method is needed in other test classes change
+     * its visibility to "public"
+     *
+     * Author: Max Weise
+     */
+    private KampfrichterExtendedBE getKampfrichterExtendedBE() {
+        final KampfrichterExtendedBE expectedBE = new KampfrichterExtendedBE();
+        expectedBE.setKampfrichterExtendedUserID(USERID);
+        expectedBE.setKampfrichterExtendedWettkampfID(WETTKAMPFID);
+        expectedBE.setKampfrichterExtendedLeitend(LEITEND);
+        expectedBE.setKampfrichterExtendedVorname(VORNAME);
+        expectedBE.setKampfrichterExtendedNachname(NACHNAME);
+        expectedBE.setKampfrichterExtendedEmail(EMAIL);
+
+        return expectedBE;
+    }
 
     public static KampfrichterDO getKampfrichterDO() {
         return new KampfrichterDO(
@@ -104,6 +129,37 @@ public class KampfrichterComponentImplTest {
         verify(kampfrichterDAO).findAll();
     }
 
+
+    @Test
+    public void findByWettkampfidNotInWettkampftag() {
+        // prepare test data
+        final KampfrichterExtendedBE expectedBE = getKampfrichterExtendedBE();
+        final List<KampfrichterExtendedBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(kampfrichterDAO.findByWettkampfidNotInWettkampftag(WETTKAMPFID)).thenReturn(expectedBEList);
+
+        // call test method
+        final List<KampfrichterDO> actual = underTest.findByWettkampfidNotInWettkampftag(WETTKAMPFID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getUserId())
+                .isEqualTo(expectedBE.getKampfrichterExtendedUserID());
+        assertThat(actual.get(0).getWettkampfId())
+                .isEqualTo(expectedBE.getKampfrichterExtendedWettkampfID());
+        assertThat(actual.get(0).isLeitend())
+                .isEqualTo(expectedBE.getKampfrichterExtendedLeitend());
+
+        // verify invocations
+        verify(kampfrichterDAO).findByWettkampfidNotInWettkampftag(WETTKAMPFID);
+    }
 
     @Test
     public void findById() {
