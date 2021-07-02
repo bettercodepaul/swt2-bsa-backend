@@ -6,6 +6,7 @@ import java.util.function.Function;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -60,6 +61,47 @@ public class KampfrichterMapper implements ValueObjectMapper {
 
         return kampfrichterBE;
     };
+
+    public static final Function<KampfrichterExtendedBE, KampfrichterDO> toKampfrichterDOExtended = be -> {
+
+        final Long userId = be.getKampfrichterExtendedUserID();
+        final String kampfrichterVorname= be.getKampfrichterExtendedVorname();
+        final String kampfrichterNachname= be.getKampfrichterExtendedNachname();
+        final String email = be.getKampfrichterExtendedEmail();
+        final Long wettkampfId = be.getKampfrichterExtendedWettkampfID();
+        boolean leitend=false;
+        if(be.getKampfrichterExtendedLeitend()!=null){
+            leitend = be.getKampfrichterExtendedLeitend();
+        }
+
+
+        return new KampfrichterDO(userId,kampfrichterVorname, kampfrichterNachname,email,wettkampfId, leitend);
+    };
+    public static final Function<KampfrichterDO, KampfrichterExtendedBE> toKampfrichterExtendedBE = kampfrichterDO -> {
+
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(kampfrichterDO.getCreatedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(
+                kampfrichterDO.getLastModifiedAtUtc());
+
+        KampfrichterExtendedBE kampfrichterExtendedBE= new KampfrichterExtendedBE();
+        kampfrichterExtendedBE.setKampfrichterExtendedUserID(kampfrichterDO.getUserId());
+        kampfrichterExtendedBE.setKampfrichterExtendedVorname(kampfrichterDO.getKampfrichterVorname());
+        kampfrichterExtendedBE.setKampfrichterExtendedNachname(kampfrichterDO.getKampfrichterNachname());
+        kampfrichterExtendedBE.setKampfrichterExtendedEmail(kampfrichterDO.getEmail());
+        kampfrichterExtendedBE.setKampfrichterExtendedWettkampfID(kampfrichterDO.getWettkampfId());
+
+        kampfrichterExtendedBE.setKampfrichterExtendedLeitend(kampfrichterDO.isLeitend());
+
+        kampfrichterExtendedBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        kampfrichterExtendedBE.setCreatedByUserId(kampfrichterDO.getCreatedByUserId());
+        kampfrichterExtendedBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+        kampfrichterExtendedBE.setLastModifiedByUserId(kampfrichterDO.getLastModifiedByUserId());
+        kampfrichterExtendedBE.setVersion(kampfrichterDO.getVersion());
+
+        return kampfrichterExtendedBE;
+    };
+
+
 
 
     /**
