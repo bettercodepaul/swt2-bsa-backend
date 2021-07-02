@@ -16,7 +16,6 @@ import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
-import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
