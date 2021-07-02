@@ -8,7 +8,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * and email.
  *
  */
-public class KampfrichterExtendedDTO implements DataTransferObject {
+public class KampfrichterExtendedDTO extends KampfrichterDTO implements DataTransferObject {
     private static final Long serialVersionUID = 8559563978424033907L;
     private Long userID;
     private Long wettkampfID;
@@ -19,19 +19,20 @@ public class KampfrichterExtendedDTO implements DataTransferObject {
 
 
     // The parameter names have to be the exact same as the attribute names in kampfrichter-do.class.ts
-    public KampfrichterExtendedDTO(final Long id, final String kampfrichterVorname, final String kampfrichterNachname, final String email, final Long wettkampfID, final boolean leitend) {
-        this.userID = id;
+    public KampfrichterExtendedDTO(final Long id, final String kampfrichterVorname, final String kampfrichterNachname,
+                                   final String email, final Long wettkampfID, final boolean leitend) {
         this.kampfrichterVorname = kampfrichterVorname;
         this.kampfrichterNachname = kampfrichterNachname;
         this.email= email;
+        this.userID = id;
         this.wettkampfID = wettkampfID;
         this.leitend = leitend;
     }
 
 
-    public Long getUserID() {
-        return userID;
-    }
+//    public Long getUserID() {
+//        return this.userID;
+//    }
 
 
     public void setUserId(final Long userId) {

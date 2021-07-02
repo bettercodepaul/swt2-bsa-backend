@@ -33,4 +33,8 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class KampfrichterServiceTest {
 
+    @Test
+    public void test_findByWettkampfidNotInWettkampftag() {
+
+    }
 }
