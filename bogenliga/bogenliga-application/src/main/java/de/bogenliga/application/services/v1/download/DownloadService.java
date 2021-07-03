@@ -369,8 +369,7 @@ public class DownloadService implements ServiceFacade {
     ResponseEntity<InputStreamResource> downloadUebersichtPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
                                                                 @RequestParam("wettkampftag") final long wettkampftag)
     {
-        System.out.println("Test");
-        System.out.println(veranstaltungsid+ " " +wettkampftag);
+
         final byte[] fileBloB = wettkampfComponent.getUebersichtPDFasByteArray(veranstaltungsid,wettkampftag);
 
         return generateInputStream(fileBloB);
