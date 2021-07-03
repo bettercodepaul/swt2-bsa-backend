@@ -42,6 +42,7 @@ public class KampfrichterService implements ServiceFacade {
     private static final String PRECONDITION_MSG_KAMPFRICHTER = "KampfrichterDO must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID = "KampfrichterBenutzerID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID = "KampfrichterWettkampfID must not be negative and must not be null";
+    private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF__ID_NEGATIVE = "Wettkampf-ID must not be negative.";
 
     private static final Logger LOG = LoggerFactory.getLogger(KampfrichterService.class);
 
@@ -88,7 +89,7 @@ public class KampfrichterService implements ServiceFacade {
     @GetMapping(value= "/NotAssignedKampfrichter/{wettkampfId}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<KampfrichterExtendedDTO> findByWettkampfidNotInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
-        Preconditions.checkArgument(wettkampfId >= 0, "Wettkampf-ID must not be negative.");
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF__ID_NEGATIVE);
         List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidNotInWettkampftag(wettkampfId);
 
         return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
@@ -98,7 +99,7 @@ public class KampfrichterService implements ServiceFacade {
     @GetMapping(value= "/AssignedKampfrichter/{wettkampfId}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<KampfrichterExtendedDTO> findByWettkampfidInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
-        Preconditions.checkArgument(wettkampfId >= 0, "Wettkampf-ID must not be negative.");
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF__ID_NEGATIVE);
         List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidInWettkampftag(wettkampfId);
 
         return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
@@ -109,7 +110,7 @@ public class KampfrichterService implements ServiceFacade {
     public void delete(@PathVariable("userID") final long userID, @PathVariable("wettkampfID") final long wettkampfID,
                        final Principal principal) {
         Preconditions.checkArgument(userID >= 0, "User-ID must not be negative.");
-        Preconditions.checkArgument(wettkampfID >= 0, "Wettkampf-ID must not be negative.");
+        Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF__ID_NEGATIVE);
 
         final long changeUserID = UserProvider.getCurrentUserId(principal);
         LOG.debug("Receive 'delete' request with user-ID '{}' and wettkampf-ID '{}'", userID, wettkampfID);
