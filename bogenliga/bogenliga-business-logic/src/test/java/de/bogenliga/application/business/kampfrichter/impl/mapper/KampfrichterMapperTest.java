@@ -5,7 +5,6 @@ import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
 import static de.bogenliga.application.business.kampfrichter.impl.business.KampfrichterComponentImplTest.getKampfrichterBE;
-import static de.bogenliga.application.business.kampfrichter.impl.business.KampfrichterComponentImplTest.getKampfrichterDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
