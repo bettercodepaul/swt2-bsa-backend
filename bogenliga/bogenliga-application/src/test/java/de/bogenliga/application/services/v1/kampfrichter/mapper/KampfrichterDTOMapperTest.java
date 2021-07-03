@@ -31,8 +31,8 @@ public class KampfrichterDTOMapperTest{
 
     @Test
     public void toDOExtendedTest(){
-        KampfrichterExtendedDTO kampfrichterDO = getKampfrichterDTO();
-        final KampfrichterDO actual = KampfrichterDTOMapper.toDOExtended.apply(kampfrichterDO);
+        KampfrichterExtendedDTO kampfrichterDTO = getKampfrichterDTO();
+        final KampfrichterDO actual = KampfrichterDTOMapper.toDOExtended.apply(kampfrichterDTO);
         assertThat(actual.getUserId()).isEqualTo(USERID);
         assertThat(actual.getEmail()).isEqualTo(EMAIL);
         assertThat(actual.getKampfrichterVorname()).isEqualTo(VORNAME);
