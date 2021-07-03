@@ -217,13 +217,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFTNUMMER_TABLE, MANNSCHAFTNUMMER_BE);
         columnsToFieldsMap.put(VEREINID_TABLE, VEREINID_BE);
         columnsToFieldsMap.put(VEREINNAME_TABLE, VEREINNAME_BE);
-        columnsToFieldsMap.put(MATCHPKT_TABLE, MATCHPKT_BE);
-        columnsToFieldsMap.put(MATCHPKTGEGEN_TABLE, MATCHPKTGEGEN_BE);
-        columnsToFieldsMap.put(SATZPKT_TABLE, SATZPKT_BE);
-        columnsToFieldsMap.put(SATZPKTGEGEN_TABLE, SATZPKTGEGEN_BE);
-        columnsToFieldsMap.put(SATZPKTDIFFERENZ_TABLE, SATZPKTDIFFERENZ_BE);
-        columnsToFieldsMap.put(SORTIERUNG_TABLE, SORTIERUNG_BE);
-        columnsToFieldsMap.put(TABELLENPLATZ_TABLE, TABELLENPLATZ_BE);
+
 
         return columnsToFieldsMap;
     }
