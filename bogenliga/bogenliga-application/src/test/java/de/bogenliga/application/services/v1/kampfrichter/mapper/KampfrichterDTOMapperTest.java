@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.kampfrichter.mapper;
 import org.junit.Test;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterExtendedDTO;
-import junit.framework.TestCase;
 import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Test for KampfrichterDTOMapper
