@@ -17,6 +17,9 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * business parameter
      */
     private Long userId;
+    private String vorname;
+    private String nachname;
+    private String kampfrichterEmail;
     private Long wettkampfId;
     private boolean leitend;
 
@@ -55,8 +58,8 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * @param version
      */
     public KampfrichterDO(final Long userId, final Long wettkampfId, final boolean leitend,
-                         final OffsetDateTime createdAtUtc,
-                         final Long createdByUserId, final Long version) {
+                          final OffsetDateTime createdAtUtc,
+                          final Long createdByUserId, final Long version) {
         this.userId = userId;
         this.wettkampfId = wettkampfId;
         this.leitend = leitend;
@@ -85,6 +88,23 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
         this.userId = userId;
         this.leitend = false;
     }
+    /**
+     * Constructor with optional parameters
+     * @param userId
+     * @param wettkampfId
+     * @param leitend
+     * @param kampfrichterVorname
+     * @param nachname
+     * @param kampfrichterEmail
+     */
+    public KampfrichterDO(final Long userId, String kampfrichterVorname, String nachname, String kampfrichterEmail, final Long wettkampfId, final boolean leitend){
+        this.userId = userId;
+        this.vorname =kampfrichterVorname;
+        this.nachname = nachname;
+        this.kampfrichterEmail = kampfrichterEmail;
+        this.wettkampfId = wettkampfId;
+        this.leitend = leitend;
+    }
 
 
     public Long getUserId() {
@@ -99,7 +119,9 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
         return wettkampfId;
     }
 
-    public void setWettkampfId(Long wettkampfId) { this.wettkampfId = wettkampfId; }
+    public void setWettkampfId(Long wettkampfId) {
+        this.wettkampfId = wettkampfId;
+    }
 
     public boolean isLeitend() {
         return leitend;
@@ -110,28 +132,57 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
     }
 
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, wettkampfId, leitend,
-                createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
+    public String getVorname() {
+        return vorname;
+    }
+
+
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
+    }
+
+
+    public String getNachname() {
+        return nachname;
+    }
+
+
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
+    }
+
+
+    public String getKampfrichterEmail() {
+        return kampfrichterEmail;
+    }
+
+
+    public void setKampfrichterEmail(String kampfrichterEmail) {
+        this.kampfrichterEmail = kampfrichterEmail;
     }
 
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof KampfrichterDO)) {
             return false;
         }
-        final de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO that = (de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO) o;
-        return userId == that.userId &&
-                wettkampfId == that.wettkampfId &&
-                leitend == that.leitend &&
-                Objects.equals(userId, that.userId) &&
-                Objects.equals(wettkampfId, that.wettkampfId) &&
-                Objects.equals(leitend, that.leitend);
+        KampfrichterDO that = (KampfrichterDO) o;
+        return isLeitend() == that.isLeitend() && Objects.equals(getUserId(),
+                that.getUserId()) && Objects.equals(getVorname(),
+                that.getVorname()) && Objects.equals(getNachname(),
+                that.getNachname()) && Objects.equals(getKampfrichterEmail(),
+                that.getKampfrichterEmail()) && Objects.equals(getWettkampfId(), that.getWettkampfId());
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId(), getVorname(), getNachname(), getKampfrichterEmail(),
+                getWettkampfId(),
+                isLeitend());
     }
 }
