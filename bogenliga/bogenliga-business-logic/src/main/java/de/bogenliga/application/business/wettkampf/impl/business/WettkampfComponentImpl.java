@@ -509,13 +509,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
     {
         VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstatungsId);
+        long wettkampfid = wettkaempfe.get(0).getId();
 
         doc.setFontSize(20.0f);
         doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltung_name()).setBold());
         doc.setFontSize(9.2f);
         doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
-        doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfOrtsinfo() + " " + wettkaempfe.get(0).getWettkampfBeginn()));
-        Table table = new Table(new float[]{80, 20, 20, 20, 20, 20, 80, 20, 20, 20, 20, 20, 50, 50});
+        doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfPlz() + ", " +  wettkaempfe.get(0).getWettkampfOrtsname()
+                    + ", " +  wettkaempfe.get(0).getWettkampfOrtsinfo() + ", " + wettkaempfe.get(0).getWettkampfBeginn() + " Uhr"));
+        Table table = new Table(new float[]{100, 20, 20, 20, 20, 20, 100, 20, 20, 20, 20, 20, 50, 50});
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
         satzToTable(table);
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
@@ -523,9 +525,35 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Satzpunkte")));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Matchpunkte")));
 
-        for(int i=0 ; i<8 ; i++)
+        for(int i=0 ; i<14 ; i++)
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
 
+        for(WettkampfBE wetkampf : wettkaempfe)
+        {
+            List<MatchDO> matches = sortForDisplay(matchComponent.findByWettkampfId(wettkampfid));
+
+            MatchDO alt = null;
+            int count = 1;
+            for(MatchDO match : matches)
+            {
+                System.out.println("matches");
+                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(match.getMannschaftId()))));
+                for(long i = 1 ; i<=5 ; i++)
+                {
+                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle((long) addPassenVonSatz(passeComponent.findByMatchId(match.getId()),i)))));
+                }
+                if(count%2  == 0)
+                {
+                    System.out.println("matches satz");
+                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle(alt.getSatzpunkte()) + " : " + ausgabeTabelle(match.getSatzpunkte()))));
+                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle(alt.getMatchpunkte()) + " : " + ausgabeTabelle(match.getMatchpunkte()))));
+                }
+
+                alt = match;
+                count ++;
+            }
+
+        }
 
         doc.add(table);
 
@@ -533,10 +561,85 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.add(new Paragraph(""));
         doc.add(new Paragraph("Tabelle").setFontSize(20.0f).setBold());
         doc.add(new Paragraph(""));
-
-        doc.add(getLigatabelleAsTable(wettkaempfe.get(0).getId()));
+        //ligatabelle hinzufügen
+        doc.add(getLigatabelleAsTable(wettkampfid));
 
         doc.close();
+    }
+    public String ausgabeTabelle(Long wert)
+    {
+        System.out.println("Tabellenausgabe");
+        if(wert == null || wert == -1 )
+            return "-";
+        else
+            return Long.toString(wert);
+    }
+
+    public List<MatchDO> sortForDisplay(List<MatchDO> matches)
+    {
+        System.out.println("sortieren gestartet");
+        List<MatchDO> matches2 = new ArrayList<>();
+
+        for(MatchDO match : matches)
+        {
+            if(!matches2.contains(match)) {
+                matches2.add(match);
+            }
+            for(MatchDO match2 : matches)
+            {
+                if(match.getBegegnung() == match2.getId())
+                {
+                    matches2.add(match2);
+                }
+            }
+        }
+        if(matches.size() == matches2.size()) {
+            System.out.println("sortieren abgeschlossen");
+            return matches2;
+        }
+        else {
+            System.out.println("Fehler beim sortieren");
+            return null;
+        }
+    }
+
+    public int addPassenVonSatz(List<PasseDO> passen, long nr)
+    {
+        int gesammt = -1;
+        boolean geschossen =  false;
+
+        for(PasseDO passe : passen)
+        {
+            if (passe.getPfeil1() != null && passe.getPasseLfdnr() == nr) {
+                gesammt += passe.getPfeil1();
+                geschossen = true;
+            }
+            if (passe.getPfeil2() != null && passe.getPasseLfdnr() == nr) {
+                gesammt += passe.getPfeil2();
+                geschossen = true;
+            }
+            if (passe.getPfeil3() != null && passe.getPasseLfdnr() == nr) {
+                gesammt += passe.getPfeil3();
+                geschossen = true;
+            }
+            if (passe.getPfeil4() != null && passe.getPasseLfdnr() == nr) {
+                gesammt += passe.getPfeil4();
+                geschossen = true;
+            }
+            if (passe.getPfeil5() != null && passe.getPasseLfdnr() == nr) {
+                gesammt += passe.getPfeil5();
+                geschossen = true;
+            }
+            if (passe.getPfeil6() != null && passe.getPasseLfdnr() == nr) {
+                gesammt += passe.getPfeil6();
+                geschossen = true;
+            }
+        }
+
+        if(geschossen)
+           gesammt += 1;
+
+        return gesammt;
     }
 
     public Table getLigatabelleAsTable(long wettkampfid)
