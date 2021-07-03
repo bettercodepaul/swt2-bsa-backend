@@ -601,6 +601,7 @@ public class WettkampfComponentImplTest {
         //haben wir das erwartete ergebnis erhalten
         Assertions.assertThat(actual).isEqualTo(expected);
     }
+
     @Test
     public void testFindWT0byVeranstaltungsId(){
         WettkampfBE expectedBE = getWettkampfBE();
