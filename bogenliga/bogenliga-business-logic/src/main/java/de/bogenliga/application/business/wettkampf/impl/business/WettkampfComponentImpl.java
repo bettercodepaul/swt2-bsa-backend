@@ -24,6 +24,8 @@ import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
+import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
@@ -78,13 +80,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    
+    private final LigatabelleComponent ligatabelleComponent;
+
     /**
      * Constructor
      * <p>
      * dependency injection with {@link Autowired}
      *
      * @param wettkampfDAO to access the database and return dsbmitglied representations
+     * @param ligatabelleComponent
      */
     @Autowired
     public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,
@@ -95,7 +99,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final DsbMannschaftComponent dsbMannschaftComponent,
                                   final VereinComponent vereinComponent,
                                   final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
-                                  final VeranstaltungDAO veranstaltungDAO) {
+                                  final VeranstaltungDAO veranstaltungDAO,
+                                  final LigatabelleComponent ligatabelleComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.passeComponent = passeComponent;
@@ -105,6 +110,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
         this.veranstaltungDAO = veranstaltungDAO;
+        this.ligatabelleComponent = ligatabelleComponent;
     }
 
     @Autowired
@@ -521,9 +527,44 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
 
 
-
         doc.add(table);
+
+        //Ligatabelle vorbereiten
+        doc.add(new Paragraph(""));
+        doc.add(new Paragraph("Tabelle").setFontSize(20.0f).setBold());
+        doc.add(new Paragraph(""));
+
+        doc.add(getLigatabelleAsTable(wettkaempfe.get(0).getId()));
+
         doc.close();
+    }
+
+    public Table getLigatabelleAsTable(long wettkampfid)
+    {
+        System.out.println("Tabelle als liste hohlen");
+        List<LigatabelleDO> tabelle = ligatabelleComponent.getLigatabelleWettkampf(wettkampfid);
+        System.out.println("Tabelle vorbereiten");
+        Table table2 = new Table(new float[]{20, 120, 40, 40, 40});
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Manschaft")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Sätze")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Differenz")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Punkte")));
+
+        for(int i=0 ; i<5 ; i++)
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+
+        System.out.println("header fertig starte tabelle");
+        for(LigatabelleDO team : tabelle)
+        {
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.gettabellenplatz()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(team.getmannschaftId()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getsatzpkt() + " : " + team.getsatzpktGegen())));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.getsatzpktDifferenz()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getmatchpkt() + " : " + team.getmatchpktGegen())));
+        }
+        System.out.println("fertig");
+        return table2;
     }
 
     void satzToTable(Table table)
