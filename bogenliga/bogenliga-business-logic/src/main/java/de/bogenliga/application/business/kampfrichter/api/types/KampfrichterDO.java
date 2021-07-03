@@ -17,9 +17,9 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * business parameter
      */
     private Long userId;
-    private String kampfrichterVorname;
-    private String kampfrichterNachname;
-    private String email;
+    private String vorname;
+    private String nachname;
+    private String kampfrichterEmail;
     private Long wettkampfId;
     private boolean leitend;
 
@@ -94,14 +94,14 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
      * @param wettkampfId
      * @param leitend
      * @param kampfrichterVorname
-     * @param kampfrichterNachname
-     * @param email
+     * @param nachname
+     * @param kampfrichterEmail
      */
-    public KampfrichterDO(final Long userId, String kampfrichterVorname, String kampfrichterNachname, String email, final Long wettkampfId, final boolean leitend){
+    public KampfrichterDO(final Long userId, String kampfrichterVorname, String nachname, String kampfrichterEmail, final Long wettkampfId, final boolean leitend){
         this.userId = userId;
-        this.kampfrichterVorname=kampfrichterVorname;
-        this.kampfrichterNachname=kampfrichterNachname;
-        this.email=email;
+        this.vorname =kampfrichterVorname;
+        this.nachname = nachname;
+        this.kampfrichterEmail = kampfrichterEmail;
         this.wettkampfId = wettkampfId;
         this.leitend = leitend;
     }
@@ -132,33 +132,33 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
     }
 
 
-    public String getKampfrichterVorname() {
-        return kampfrichterVorname;
+    public String getVorname() {
+        return vorname;
     }
 
 
-    public void setKampfrichterVorname(String kampfrichterVorname) {
-        this.kampfrichterVorname = kampfrichterVorname;
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
     }
 
 
-    public String getKampfrichterNachname() {
-        return kampfrichterNachname;
+    public String getNachname() {
+        return nachname;
     }
 
 
-    public void setKampfrichterNachname(String kampfrichterNachname) {
-        this.kampfrichterNachname = kampfrichterNachname;
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
     }
 
 
-    public String getEmail() {
-        return email;
+    public String getKampfrichterEmail() {
+        return kampfrichterEmail;
     }
 
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setKampfrichterEmail(String kampfrichterEmail) {
+        this.kampfrichterEmail = kampfrichterEmail;
     }
 
 
@@ -172,16 +172,16 @@ public class KampfrichterDO extends CommonDataObject implements DataObject {
         }
         KampfrichterDO that = (KampfrichterDO) o;
         return isLeitend() == that.isLeitend() && Objects.equals(getUserId(),
-                that.getUserId()) && Objects.equals(getKampfrichterVorname(),
-                that.getKampfrichterVorname()) && Objects.equals(getKampfrichterNachname(),
-                that.getKampfrichterNachname()) && Objects.equals(getEmail(),
-                that.getEmail()) && Objects.equals(getWettkampfId(), that.getWettkampfId());
+                that.getUserId()) && Objects.equals(getVorname(),
+                that.getVorname()) && Objects.equals(getNachname(),
+                that.getNachname()) && Objects.equals(getKampfrichterEmail(),
+                that.getKampfrichterEmail()) && Objects.equals(getWettkampfId(), that.getWettkampfId());
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getKampfrichterVorname(), getKampfrichterNachname(), getEmail(),
+        return Objects.hash(getUserId(), getVorname(), getNachname(), getKampfrichterEmail(),
                 getWettkampfId(),
                 isLeitend());
     }

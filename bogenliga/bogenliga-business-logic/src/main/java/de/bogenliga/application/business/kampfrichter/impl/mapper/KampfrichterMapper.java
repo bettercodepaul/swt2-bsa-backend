@@ -3,7 +3,6 @@ package de.bogenliga.application.business.kampfrichter.impl.mapper;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
@@ -85,9 +84,9 @@ public class KampfrichterMapper implements ValueObjectMapper {
 
         KampfrichterExtendedBE kampfrichterExtendedBE= new KampfrichterExtendedBE();
         kampfrichterExtendedBE.setKampfrichterExtendedUserID(kampfrichterDO.getUserId());
-        kampfrichterExtendedBE.setKampfrichterExtendedVorname(kampfrichterDO.getKampfrichterVorname());
-        kampfrichterExtendedBE.setKampfrichterExtendedNachname(kampfrichterDO.getKampfrichterNachname());
-        kampfrichterExtendedBE.setKampfrichterExtendedEmail(kampfrichterDO.getEmail());
+        kampfrichterExtendedBE.setKampfrichterExtendedVorname(kampfrichterDO.getVorname());
+        kampfrichterExtendedBE.setKampfrichterExtendedNachname(kampfrichterDO.getNachname());
+        kampfrichterExtendedBE.setKampfrichterExtendedEmail(kampfrichterDO.getKampfrichterEmail());
         kampfrichterExtendedBE.setKampfrichterExtendedWettkampfID(kampfrichterDO.getWettkampfId());
 
         kampfrichterExtendedBE.setKampfrichterExtendedLeitend(kampfrichterDO.isLeitend());

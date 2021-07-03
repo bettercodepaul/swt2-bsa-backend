@@ -73,9 +73,9 @@ public class KampfrichterServiceTest {
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getUserID()).isEqualTo(kampfrichterDO.getUserId());
-        assertThat(actualDTO.getKampfrichterVorname()).isEqualTo(kampfrichterDO.getKampfrichterVorname());
-        assertThat(actualDTO.getKampfrichterNachname()).isEqualTo(kampfrichterDO.getKampfrichterNachname());
-        assertThat(actualDTO.getEmail()).isEqualTo(kampfrichterDO.getEmail());
+        assertThat(actualDTO.getKampfrichterVorname()).isEqualTo(kampfrichterDO.getVorname());
+        assertThat(actualDTO.getKampfrichterNachname()).isEqualTo(kampfrichterDO.getNachname());
+        assertThat(actualDTO.getEmail()).isEqualTo(kampfrichterDO.getKampfrichterEmail());
         assertThat(actualDTO.getWettkampfID()).isEqualTo(kampfrichterDO.getWettkampfId());
         assertThat(actualDTO.getLeitend()).isEqualTo(kampfrichterDO.isLeitend());
 
@@ -104,9 +104,9 @@ public class KampfrichterServiceTest {
 
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getUserID()).isEqualTo(kampfrichterDO.getUserId());
-        assertThat(actualDTO.getKampfrichterVorname()).isEqualTo(kampfrichterDO.getKampfrichterVorname());
-        assertThat(actualDTO.getKampfrichterNachname()).isEqualTo(kampfrichterDO.getKampfrichterNachname());
-        assertThat(actualDTO.getEmail()).isEqualTo(kampfrichterDO.getEmail());
+        assertThat(actualDTO.getKampfrichterVorname()).isEqualTo(kampfrichterDO.getVorname());
+        assertThat(actualDTO.getKampfrichterNachname()).isEqualTo(kampfrichterDO.getNachname());
+        assertThat(actualDTO.getEmail()).isEqualTo(kampfrichterDO.getKampfrichterEmail());
         assertThat(actualDTO.getWettkampfID()).isEqualTo(kampfrichterDO.getWettkampfId());
         assertThat(actualDTO.getLeitend()).isEqualTo(kampfrichterDO.isLeitend());
 
