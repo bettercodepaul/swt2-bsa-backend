@@ -106,6 +106,7 @@ public class UserServiceTest {
     private ArgumentCaptor<UsernamePasswordAuthenticationToken> authenticationTokenArgumentCaptor;
 
 
+
     @Test
     public void login() throws Exception {
         // prepare test data
@@ -252,6 +253,7 @@ public class UserServiceTest {
         verify(requestWithHeader).getHeader(AUTHORIZATION_HEADER);
     }
 
+
     @Test
     public void getUserProfileById() {
 
@@ -270,6 +272,30 @@ public class UserServiceTest {
         assertThat(actual.getVorname()).isEqualTo(userProfileDO.getVorname());
 
     }
+
+
+    @Test
+    public void getAllUsersByRoleId() {
+        // prepare test data
+        final UserRoleDO userRole1 = new UserRoleDO();
+        userRole1.setRoleId(1L);
+        final UserRoleDO userRole2 = new UserRoleDO();
+        userRole1.setRoleId(2L);
+
+        final List<UserRoleDO> userRoleList = new ArrayList<>();
+        userRoleList.add(userRole1);
+        userRoleList.add(userRole2);
+
+        // configure mocks
+        when(userRoleComponent.findByRoleId(anyLong())).thenReturn(userRoleList);
+
+        // call test method
+        final List<UserRoleDTO> actual = underTest.getAllUsersByRoleId(ROLE_ID);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+    }
+
 
     // tests for update (password)
     @Test
@@ -309,6 +335,7 @@ public class UserServiceTest {
 
     }
 
+
     @Test
     public void update_withoutCredentials_shouldThrowException() {
         // prepare test data
@@ -330,6 +357,7 @@ public class UserServiceTest {
 
 
     }
+
 
     @Test
     public void update_withoutPassword_shouldThrowException() {
@@ -359,6 +387,7 @@ public class UserServiceTest {
 
     }
 
+
     @Test
     public void update_withoutNewPassword_shouldThrowException() {
         // prepare test data
@@ -387,8 +416,9 @@ public class UserServiceTest {
 
     }
 
+
     // tests for reset (password)
-   /* @Test
+    /*@Test
     public void reset_success() {
 
         // configure mocks
@@ -420,10 +450,8 @@ public class UserServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNotEqualTo(loggedInUser.getId());
         assertThat(actual.getEmail()).isNotEqualTo(loggedInUser.getEmail());
+    }*/
 
-    }
-
-    */
 
     @Test
     public void reset_withoutCredentials_shouldThrowException() {
@@ -446,6 +474,7 @@ public class UserServiceTest {
 
 
     }
+
 
     @Test
     public void reset_withoutNewPassword_shouldThrowException() {
@@ -473,6 +502,7 @@ public class UserServiceTest {
 
 
     }
+
 
     // tests for updateRole
     @Test
@@ -519,6 +549,8 @@ public class UserServiceTest {
         assertThat(actual.get(0).getRoleId()).isEqualTo(expectedUserRoleDO.getRoleId());
 
     }
+
+
     @Test
     public void update_withoutUserRoleDTO_shouldThrowException() {
         // prepare test data
@@ -539,6 +571,7 @@ public class UserServiceTest {
 
 
     }
+
 
     @Test
     public void updateRole_withoutUserID_shouldThrowException() {
@@ -575,6 +608,7 @@ public class UserServiceTest {
 
     }
 
+
     @Test
     public void updateRole_withoutRoleId_shouldThrowException() {
         // prepare test data
@@ -609,7 +643,7 @@ public class UserServiceTest {
     }
 
 
-     @Test
+    @Test
     public void findAll() {
         // prepare test data
         final UserRoleDO expectedURDO = new UserRoleDO();
@@ -649,6 +683,8 @@ public class UserServiceTest {
 
 
     }
+
+
     @Test
     public void findById() {
         // prepare test data
@@ -684,6 +720,7 @@ public class UserServiceTest {
         // verify invocations
         verify(userRoleComponent).findById(ID);
     }
+
 
     // tests for createUser
     @Test
@@ -737,6 +774,7 @@ public class UserServiceTest {
         assertThat(actual.getEmail()).isEqualTo(expecteduserDTO.getEmail());
 
     }
+
 
     @Test
     public void create_whithoutCredentials_shouldThrowException() {
@@ -797,6 +835,7 @@ public class UserServiceTest {
 
     }
 
+
     @Test
     public void create_whithoutPassword_shouldThrowException() {
 
@@ -825,6 +864,7 @@ public class UserServiceTest {
 
 
     }
+
 
     @Test
     public void create_withInvalidPassword_shouldThrowException() {
