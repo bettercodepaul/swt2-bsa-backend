@@ -516,6 +516,13 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         satzToTable(table);
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Satzpunkte")));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Matchpunkte")));
+
+        for(int i=0 ; i<8 ; i++)
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+
+
+
+        doc.add(table);
         doc.close();
     }
 
