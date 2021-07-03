@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.schuetzenstatistik.impl.mapper;
 
 import de.bogenliga.application.business.schuetzenstatistik.api.types.LigatabelleDO;
+import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
 import de.bogenliga.application.business.schuetzenstatistik.impl.entity.LigatabelleBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
@@ -17,12 +18,12 @@ import java.util.function.Function;
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
  */
-public class LigatabelleMapper implements ValueObjectMapper {
+public class SchuetzenstatistikMapper implements ValueObjectMapper {
 
     /**
-     * Converts a {@link LigatabelleBE} to a {@link LigatabelleDO}
+     * Converts a {@link SchuetzenstatistikBE} to a {@link SchuetzenstatistikDO}
      */
-    public static final Function<LigatabelleBE, LigatabelleDO> toLigatabelleDO = be -> {
+    public static final Function<SchuetzenstatistikBE, SchuetzenstatistikDO> toSchuetzenstatistikDO = be -> {
 
         final Long veranstaltungId= be.getVeranstaltungId();
         final String veranstaltungName= be.getVeranstaltungName();
@@ -48,40 +49,40 @@ public class LigatabelleMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new LigatabelleDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
+        return new SchuetzenstatistikDO ( veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt, satzpkt_gegen,
                 satzpkt_differenz, sortierung,tabellenplatz);
 
     };
 
      /**
-     * Converts a {@link LigatabelleDO} to a {@link LigatabelleBE}
+     * Converts a {@link SchuetzenstatistikDO} to a {@link SchuetzenstatistikBE}
      */
-    public static final Function<LigatabelleDO, LigatabelleBE> toLigatabelleBE = vo -> {
+    public static final Function<SchuetzenstatistikDO, SchuetzenstatistikBE> toSchuetzenstatistikBE = vo -> {
 
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getLastModifiedAtUtc());
 
-        LigatabelleBE ligatabelleBE = new LigatabelleBE();
+         SchuetzenstatistikBE schuetzenstatistik = new SchuetzenstatistikBE();
 
-        ligatabelleBE.setVeranstaltungId(vo.getveranstaltungId());
-        ligatabelleBE.setVeranstaltungName(vo.getveranstaltungName());
-        ligatabelleBE.setWettkampfId(vo.getwettkampfId());
-        ligatabelleBE.setWettkampfTag(vo.getwettkampfTag());
-        ligatabelleBE.setMannschaftId(vo.getmannschaftId());
-        ligatabelleBE.setMannschaftNummer(vo.getmannschaftNummer());
-        ligatabelleBE.setVereinId(vo.getvereinId());
-        ligatabelleBE.setVereinName(vo.getvereinName());
-        ligatabelleBE.setMatchpkt(vo.getmatchpkt());
-        ligatabelleBE.setMatchpkt_gegen(vo.getmatchpktGegen());
-        ligatabelleBE.setSatzpkt(vo.getsatzpkt());
-        ligatabelleBE.setSatzpkt_gegen(vo.getsatzpktGegen());
-        ligatabelleBE.setSatzpkt_differenz(vo.getsatzpktDifferenz());
-        ligatabelleBE.setSortierung(vo.getsortierung());
-        ligatabelleBE.setTabellenplatz(vo.gettabellenplatz());
+        schuetzenstatistik.setVeranstaltungId(vo.getveranstaltungId());
+        schuetzenstatistik.setVeranstaltungName(vo.getveranstaltungName());
+        schuetzenstatistik.setWettkampfId(vo.getwettkampfId());
+        schuetzenstatistik.setWettkampfTag(vo.getwettkampfTag());
+        schuetzenstatistik.setMannschaftId(vo.getmannschaftId());
+        schuetzenstatistik.setMannschaftNummer(vo.getmannschaftNummer());
+        schuetzenstatistik.setVereinId(vo.getvereinId());
+        schuetzenstatistik.setVereinName(vo.getvereinName());
+        schuetzenstatistik.setMatchpkt(vo.getmatchpkt());
+        schuetzenstatistik.setMatchpkt_gegen(vo.getmatchpktGegen());
+        schuetzenstatistik.setSatzpkt(vo.getsatzpkt());
+        schuetzenstatistik.setSatzpkt_gegen(vo.getsatzpktGegen());
+        schuetzenstatistik.setSatzpkt_differenz(vo.getsatzpktDifferenz());
+        schuetzenstatistik.setSortierung(vo.getsortierung());
+        schuetzenstatistik.setTabellenplatz(vo.gettabellenplatz());
 
 
-        return ligatabelleBE;
+        return schuetzenstatistik;
     };
 
 
@@ -89,7 +90,7 @@ public class LigatabelleMapper implements ValueObjectMapper {
     /**
      * Private constructor
      */
-    private LigatabelleMapper() {
+    private SchuetzenstatistikMapper() {
         // empty private constructor
     }
 }
