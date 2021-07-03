@@ -30,7 +30,7 @@ public class KampfrichterServiceTest {
     private static final Long WETTKAMPFID = 42L;
     private static final boolean LEITEND = false;
     private static final Long NEGATIVE_WETTKAMPFID = -42L;
-    private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF__ID_NEGATIVE = "Wettkampf-ID must not be negative.";
+    private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE = "Wettkampf-ID must not be negative.";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -119,7 +119,7 @@ public class KampfrichterServiceTest {
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.findByWettkampfidNotInWettkampftag(NEGATIVE_WETTKAMPFID))
-                .withMessageContaining(PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF__ID_NEGATIVE)
+                .withMessageContaining(PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE)
                 .withNoCause();
 
     }
@@ -129,7 +129,7 @@ public class KampfrichterServiceTest {
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.findByWettkampfidInWettkampftag(NEGATIVE_WETTKAMPFID))
-                .withMessageContaining(PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF__ID_NEGATIVE)
+                .withMessageContaining(PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE)
                 .withNoCause();
     }
 }
