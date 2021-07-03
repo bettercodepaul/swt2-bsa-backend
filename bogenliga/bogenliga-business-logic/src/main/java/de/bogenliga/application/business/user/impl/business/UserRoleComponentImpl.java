@@ -97,6 +97,20 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
 
+    // returns all users with role roleId
+    @Override
+    public List<UserRoleDO> findByRoleId(final Long roleId) {
+        List<UserRoleDO> allUsersOfRole = new ArrayList<>();
+        List<UserRoleDO> allUsers = findAll();
+        for (UserRoleDO i: allUsers) {
+            if( i.getRoleId() == roleId){
+                allUsersOfRole.add(i);
+            }
+        }
+        return allUsersOfRole;
+    }
+
+
     @Override
     public UserRoleDO findByEmail(final String email) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
