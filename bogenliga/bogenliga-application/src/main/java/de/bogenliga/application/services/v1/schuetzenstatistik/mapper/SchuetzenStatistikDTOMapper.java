@@ -1,21 +1,21 @@
 package de.bogenliga.application.services.v1.schuetzenstatistik.mapper;
 
-import de.bogenliga.application.business.schuetzenstatistik.api.types.SchützenstatistikDO;
+import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
-import de.bogenliga.application.services.v1.schuetzenstatistik.model.SchützenstatistikDTO;
+import de.bogenliga.application.services.v1.schuetzenstatistik.model.SchuetzenstatistikDTO;
 
 import java.util.function.Function;
 
 /**
- * I map the {@link SchützenstatistikDO} and {@link SchützenstatistikDTO} objects
+ * I map the {@link SchuetzenstatistikDO} and {@link SchuetzenstatistikDTO} objects
  *
  * @author Giuseppe Ferrera, giuseppe.ferrera@student.reutlingen-university.de
  */
-public class SchützenstatistikDTOMapper implements DataTransferObjectMapper {
+public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
     /**
-     * I map the {@link SchützenstatistikDO} object to the {@link SchützenstatistikDTO} object
+     * I map the {@link SchuetzenstatistikDO} object to the {@link SchuetzenstatistikDTO} object
      */
-    public static final Function<SchützenstatistikDO, SchützenstatistikDTO> toDTO = schuetzenstatistikDO -> {
+    public static final Function<SchuetzenstatistikDO, SchuetzenstatistikDTO> toDTO = schuetzenstatistikDO -> {
 
         final Long veranstaltungId = schuetzenstatistikDO.getveranstaltungId();
         final String veranstaltungName = schuetzenstatistikDO.getveranstaltungName();
@@ -35,16 +35,16 @@ public class SchützenstatistikDTOMapper implements DataTransferObjectMapper {
 
 
 
-        return new SchützenstatistikDTO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
+        return new SchuetzenstatistikDTO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt,
                 satzpkt_gegen, satzpkt_differenz, sortierung, tabellenplatz);
     };
     /**
-     * I map the {@link SchützenstatistikDTO} object to the {@link SchützenstatistikDO} object
+     * I map the {@link SchuetzenstatistikDTO} object to the {@link SchuetzenstatistikDO} object
      */
-    public static final Function<SchützenstatistikDTO, SchützenstatistikDO> toDO = dto -> {
+    public static final Function<SchuetzenstatistikDTO, SchuetzenstatistikDO> toDO = dto -> {
 
-        SchützenstatistikDO schuetzenstatistikDO = new SchützenstatistikDO();
+        SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO();
 
         schuetzenstatistikDO.setveranstaltungId(dto.getVeranstaltungId());
         schuetzenstatistikDO.setveranstaltungName(dto.getVeranstaltungName());
@@ -70,7 +70,7 @@ public class SchützenstatistikDTOMapper implements DataTransferObjectMapper {
     /**
      * Constructor
      */
-    private SchützenstatistikDTOMapper() {
+    private Schuetzenstatistik() {
         // empty private constructor
     }
 }
