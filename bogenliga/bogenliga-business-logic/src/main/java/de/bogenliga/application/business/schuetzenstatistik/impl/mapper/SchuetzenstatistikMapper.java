@@ -1,8 +1,7 @@
 package de.bogenliga.application.business.schuetzenstatistik.impl.mapper;
 
-import de.bogenliga.application.business.schuetzenstatistik.api.types.LigatabelleDO;
 import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
-import de.bogenliga.application.business.schuetzenstatistik.impl.entity.LigatabelleBE;
+import de.bogenliga.application.business.schuetzenstatistik.impl.entity.SchuetzenstatistikBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -33,13 +32,6 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         final int mannschaftNummer=be.getMannschaftNummer();
         final Long vereinId=be.getVereinId();
         final String vereinName=be.getVereinName();
-        final int matchpkt=be.getMatchpkt();
-        final int matchpkt_gegen=be.getMatchpkt_gegen();
-        final int satzpkt=be.getSatzpkt();
-        final int satzpkt_gegen=be.getSatzpkt_gegen();
-        final int satzpkt_differenz=be.getSatzpkt_differenz();
-        final int sortierung=be.getSortierung();
-        final int tabellenplatz=be.getTabellenplatz();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -50,8 +42,7 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new SchuetzenstatistikDO ( veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt, satzpkt_gegen,
-                satzpkt_differenz, sortierung,tabellenplatz);
+                mannschaftNummer, vereinId, vereinName);
 
     };
 
@@ -73,14 +64,6 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         schuetzenstatistik.setMannschaftNummer(vo.getmannschaftNummer());
         schuetzenstatistik.setVereinId(vo.getvereinId());
         schuetzenstatistik.setVereinName(vo.getvereinName());
-        schuetzenstatistik.setMatchpkt(vo.getmatchpkt());
-        schuetzenstatistik.setMatchpkt_gegen(vo.getmatchpktGegen());
-        schuetzenstatistik.setSatzpkt(vo.getsatzpkt());
-        schuetzenstatistik.setSatzpkt_gegen(vo.getsatzpktGegen());
-        schuetzenstatistik.setSatzpkt_differenz(vo.getsatzpktDifferenz());
-        schuetzenstatistik.setSortierung(vo.getsortierung());
-        schuetzenstatistik.setTabellenplatz(vo.gettabellenplatz());
-
 
         return schuetzenstatistik;
     };

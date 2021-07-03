@@ -26,13 +26,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     private int mannschaftNummer;
     private Long vereinId;
     private String vereinName;
-    private int matchpkt;
-    private int matchpkt_gegen;
-    private int satzpkt;
-    private int satzpkt_gegen;
-    private int satzpkt_differenz;
-    private int sortierung;
-    private int tabellenplatz;
 
     /**
      * Constructor with optional parameters
@@ -45,13 +38,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
      * @param mannschaftNummer;
      * @param vereinId;
      * @param vereinName;
-     * @param matchpkt;
-     * @param matchpkt_gegen;
-     * @param satzpkt;
-     * @param satzpkt_gegen;
-     * @param satzpkt_differenz;
-     * @param sortierung;
-     * @param tabellenplatz;
 
      */
     public SchuetzenstatistikDTO(
@@ -62,14 +48,7 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
             Long mannschaftId,
             int mannschaftNummer,
             Long vereinId,
-            String vereinName,
-            int matchpkt,
-            int matchpkt_gegen,
-            int satzpkt,
-            int satzpkt_gegen,
-            int satzpkt_differenz,
-            int sortierung,
-            int tabellenplatz
+            String vereinName
     ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
@@ -79,13 +58,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.mannschaftNummer = mannschaftNummer;
         this.vereinId = vereinId;
         this.vereinName = vereinName;
-        this.matchpkt = matchpkt;
-        this.matchpkt_gegen = matchpkt_gegen;
-        this.satzpkt = satzpkt;
-        this.satzpkt_gegen = satzpkt_gegen;
-        this.satzpkt_differenz = satzpkt_differenz;
-        this.sortierung = sortierung;
-        this.tabellenplatz = tabellenplatz;
     }
 
 
@@ -157,62 +129,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.vereinName = vereinName;
     }
 
-    public int getMatchpkt() {
-        return matchpkt;
-    }
-
-    public void setMatchpkt(int matchpkt) {
-        this.matchpkt = matchpkt;
-    }
-
-    public int getMatchpkt_gegen() {
-        return matchpkt_gegen;
-    }
-
-    public void setMatchpkt_gegen(int matchpkt_gegen) {
-        this.matchpkt_gegen = matchpkt_gegen;
-    }
-
-    public int getSatzpkt() {
-        return satzpkt;
-    }
-
-    public void setSatzpkt(int satzpkt) {
-        this.satzpkt = satzpkt;
-    }
-
-    public int getSatzpkt_gegen() {
-        return satzpkt_gegen;
-    }
-
-    public void setSatzpkt_gegen(int satzpkt_gegen) {
-        this.satzpkt_gegen = satzpkt_gegen;
-    }
-
-    public int getSatzpkt_differenz() {
-        return satzpkt_differenz;
-    }
-
-    public void setSatzpkt_differenz(int satzpkt_differenz) {
-        this.satzpkt_differenz = satzpkt_differenz;
-    }
-
-    public int getSortierung() {
-        return sortierung;
-    }
-
-    public void setSortierung(int sortierung) {
-        this.sortierung = sortierung;
-    }
-
-    public int getTabellenplatz() {
-        return tabellenplatz;
-    }
-
-    public void setTabellenplatz(int tabellenplatz) {
-        this.tabellenplatz = tabellenplatz;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -220,13 +136,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         SchuetzenstatistikDTO that = (SchuetzenstatistikDTO) o;
         return wettkampfTag == that.wettkampfTag &&
                 mannschaftNummer == that.mannschaftNummer &&
-                matchpkt == that.matchpkt &&
-                matchpkt_gegen == that.matchpkt_gegen &&
-                satzpkt == that.satzpkt &&
-                satzpkt_gegen == that.satzpkt_gegen &&
-                satzpkt_differenz == that.satzpkt_differenz &&
-                sortierung == that.sortierung &&
-                tabellenplatz == that.tabellenplatz &&
                 veranstaltungId.equals(that.veranstaltungId) &&
                 Objects.equals(veranstaltungName, that.veranstaltungName) &&
                 wettkampfId.equals(that.wettkampfId) &&
@@ -238,7 +147,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag,
-                mannschaftId, mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen,
-                satzpkt, satzpkt_gegen, satzpkt_differenz, sortierung, tabellenplatz);
+                mannschaftId, mannschaftNummer, vereinId, vereinName);
     }
 }
