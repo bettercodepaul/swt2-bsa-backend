@@ -25,19 +25,11 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         final int mannschaftNummer = schuetzenstatistikDO.getmannschaftNummer();
         final Long vereinId = schuetzenstatistikDO.getvereinId();
         final String vereinName = schuetzenstatistikDO.getvereinName();
-        final int matchpkt = schuetzenstatistikDO.getmatchpkt();
-        final int matchpkt_gegen = schuetzenstatistikDO.getmatchpktGegen();
-        final int satzpkt = schuetzenstatistikDO.getsatzpkt();
-        final int satzpkt_gegen = schuetzenstatistikDO.getsatzpktGegen();
-        final int satzpkt_differenz = schuetzenstatistikDO.getsatzpktDifferenz();
-        final int sortierung = schuetzenstatistikDO.getsortierung();
-        final int tabellenplatz = schuetzenstatistikDO.gettabellenplatz();
 
 
 
         return new SchuetzenstatistikDTO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt,
-                satzpkt_gegen, satzpkt_differenz, sortierung, tabellenplatz);
+                mannschaftNummer, vereinId, vereinName);
     };
     /**
      * I map the {@link SchuetzenstatistikDTO} object to the {@link SchuetzenstatistikDO} object
@@ -54,13 +46,6 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         schuetzenstatistikDO.setmannschaftNummer(dto.getMannschaftNummer());
         schuetzenstatistikDO.setvereinId(dto.getVereinId());
         schuetzenstatistikDO.setvereinName(dto.getVereinName());
-        schuetzenstatistikDO.setmatchpkt(dto.getMatchpkt());
-        schuetzenstatistikDO.setmatchpktGegen(dto.getMatchpkt_gegen());
-        schuetzenstatistikDO.setsatzpkt(dto.getSatzpkt());
-        schuetzenstatistikDO.setsatzpktGegen(dto.getSatzpkt_gegen());
-        schuetzenstatistikDO.setsatzpktDifferenz(dto.getSatzpkt_differenz());
-        schuetzenstatistikDO.setsortierung(dto.getSortierung());
-        schuetzenstatistikDO.settabellenplatz(dto.getTabellenplatz());
 
 
         return schuetzenstatistikDO;
@@ -70,7 +55,7 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
     /**
      * Constructor
      */
-    private Schuetzenstatistik() {
+    private SchuetzenstatistikDTOMapper() {
         // empty private constructor
     }
 }
