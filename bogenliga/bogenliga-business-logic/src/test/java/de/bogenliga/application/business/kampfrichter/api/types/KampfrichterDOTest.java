@@ -1,14 +1,15 @@
 package de.bogenliga.application.business.kampfrichter.api.types;
 
-import de.bogenliga.application.common.time.DateProvider;
+
 import junit.framework.TestCase;
 import java.time.OffsetDateTime;
-import org.junit.Before;
+import de.bogenliga.application.common.time.DateProvider;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.mockito.junit.MockitoJUnit;
 
 /**
  * This is a test class for the KampfrichterDO class
@@ -32,8 +33,6 @@ public class KampfrichterDOTest extends TestCase {
     public static final String KAMPFRICHTERNACHNAME = "Mustermann";
     public static final String EMAIL = "max.mustermann@test.de";
 
-
-
     // Dates get set to timestamp at execution
     // This is just a quick way of supplying dates. Feel free to change if needed
     public static final OffsetDateTime CREATEDATUTC = DateProvider.currentDateTimeUtc();
@@ -43,9 +42,6 @@ public class KampfrichterDOTest extends TestCase {
     public static final Long nUSERID = 2L;
     public static final Long nWETTKAMPFID = 3L;
     public static final boolean nLEITEND = false;
-//    public static final Long nCREATEDBYUSERID = 4L;
-//    public static final Long nLASTMODIFIEDBYUSERID = 6L;
-//    public static final Long nVERSION = 888L;
     public static final String nKAMPFRICHTERVORNAME = "Moritz";
     public static final String nKAMPFRICHTERNACHNAME = "Musterfrau";
     public static final String nEMAIL = "moritz.musterfrau@test.de";
@@ -54,7 +50,6 @@ public class KampfrichterDOTest extends TestCase {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private KampfrichterDO underTest;
-
 
     /**
      * This is a utility method to generate an object of KampftichterDO
@@ -87,7 +82,6 @@ public class KampfrichterDOTest extends TestCase {
         assertEquals(expected, actual);
     }
 
-
     @Test
     public void testSetUserId() {
         underTest.setUserId(nUSERID);
@@ -115,6 +109,7 @@ public class KampfrichterDOTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+
     @Test
     public void testIsLeitend() {
         boolean actual = underTest.isLeitend();
@@ -141,7 +136,6 @@ public class KampfrichterDOTest extends TestCase {
         assertEquals(expected, actual);
     }
 
-
     @Test
     public void testSetKampfrichterVorname() {
         underTest.setKampfrichterVorname(nKAMPFRICHTERVORNAME);
@@ -159,7 +153,6 @@ public class KampfrichterDOTest extends TestCase {
 
         assertEquals(expected, actual);
     }
-
 
     @Test
     public void testSetKampfrichterNachname() {
@@ -179,7 +172,6 @@ public class KampfrichterDOTest extends TestCase {
         assertEquals(expected, actual);
     }
 
-
     @Test
     public void testSetEmail() {
         underTest.setEmail(nEMAIL);
@@ -196,18 +188,23 @@ public class KampfrichterDOTest extends TestCase {
      *      2. Object is null       -> false
      *      3. values are not equal -> false
      */
+    @Test
     public void testEqualsSameValues() {
         KampfrichterDO testObject = getKampfrichterDO();
-        assertEquals(true,underTest.equals(testObject));
+        assertEquals(true, underTest.equals(testObject));
     }
+
+    @Test
     public void testEqualsObjectIsNull() {
-        assertEquals(false,underTest.equals(null));
+        assertEquals(false, underTest.equals(null));
     }
+
+    @Test
     public void testEqualsDifferentValues() {
         KampfrichterDO testObject = getKampfrichterDO();
         testObject.setKampfrichterVorname("Tom");
 
         // Objects should be different in Vorname
-        assertEquals(false,underTest.equals(testObject));
+        assertEquals(false, underTest.equals(testObject));
     }
 }
