@@ -10,7 +10,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntity {
+public class SchuetzenstatistikBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -7930719922483666804L;
 
     private Long veranstaltungId;
@@ -21,20 +21,13 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
     private int mannschaftNummer;
     private Long vereinId;
     private String vereinName;
-    private int matchpkt;
-    private int matchpkt_gegen;
-    private int satzpkt;
-    private int satzpkt_gegen;
-    private int satzpkt_differenz;
-    private int sortierung;
-    private int tabellenplatz;
 
 
 
     /**
      * Constructor
      */
-    public LigatabelleBE() {
+    public SchuetzenstatistikBE() {
         // empty
     }
 
@@ -72,13 +65,6 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
                 ", mannschaftNummer='" + mannschaftNummer +
                 ", vereinId='" + vereinId +
                 ", vereinName='" + vereinName +
-                ", matchpkt='" + matchpkt + '\'' +
-                ", matchpkt_gegen='" + matchpkt_gegen +
-                ", satzpkt='" + satzpkt +
-                ", satzpkt_gegen='" + satzpkt_gegen +
-                ", satzpkt_differenz='" + satzpkt_differenz +
-                ", sortierung='" + sortierung +
-                ", tabellenplatz='" + tabellenplatz +
                 '}';
     }
 
@@ -137,55 +123,6 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
     }
     public void setVereinName(final String vereinName) {
         this.vereinName = vereinName;
-    }
-
-    public int getMatchpkt() {
-        return matchpkt;
-    }
-    public void setMatchpkt(final int matchpkt) {
-        this.matchpkt = matchpkt;
-    }
-
-    public int getMatchpkt_gegen() {
-        return matchpkt_gegen;
-    }
-    public void setMatchpkt_gegen(final int matchpkt_gegen) {
-        this.matchpkt_gegen = matchpkt_gegen;
-    }
-
-    public int getSatzpkt() {
-        return satzpkt;
-    }
-    public void setSatzpkt(final int satzpkt) {
-        this.satzpkt = satzpkt;
-    }
-
-    public int getSatzpkt_gegen() {
-        return satzpkt_gegen;
-    }
-    public void setSatzpkt_gegen(final int satzpkt_gegen) {
-        this.satzpkt_gegen = satzpkt_gegen;
-    }
-
-    public int getSatzpkt_differenz() {
-        return satzpkt_differenz;
-    }
-    public void setSatzpkt_differenz(final int satzpkt_differenz) {
-        this.satzpkt_differenz = satzpkt_differenz;
-    }
-
-    public int getSortierung() {
-        return sortierung;
-    }
-    public void setSortierung(final int sortierung) {
-        this.sortierung = sortierung;
-    }
-
-    public int getTabellenplatz() {
-        return tabellenplatz;
-    }
-    public void setTabellenplatz(final int tabellenplatz) {
-        this.tabellenplatz = tabellenplatz;
     }
 
 

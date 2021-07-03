@@ -1,9 +1,8 @@
 package de.bogenliga.application.business.schuetzenstatistik.impl.business;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftSortierungComponent;
 import de.bogenliga.application.business.schuetzenstatistik.api.SchuetzenstatistikComponent;
 import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
-import de.bogenliga.application.business.schuetzenstatistik.impl.dao.LigatabelleDAO;
+import de.bogenliga.application.business.schuetzenstatistik.impl.dao.SchuetzenstatistikDAO;
 import de.bogenliga.application.business.schuetzenstatistik.impl.entity.LigatabelleBE;
 import de.bogenliga.application.business.schuetzenstatistik.impl.mapper.LigatabelleMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -35,12 +34,11 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
      * Constructor
      *
      * dependency injection with {@link Autowired}
-     * @param ligatabelleDAO to access the database and return user representations
+     * @param schuetzenstatistikDAO to access the database and return user representations
      */
     @Autowired
-    public LigatabelleComponentImpl(final LigatabelleDAO ligatabelleDAO, final DsbMannschaftSortierungComponent maSortierungComp) {
-        this.ligatabelleDAO = ligatabelleDAO;
-        this.mannschaftSortierungComp = maSortierungComp;
+    public SchuetzenstatistikComponentImpl(final SchuetzenstatistikDAO schuetzenstatistikDAO) {
+        this.schuetzenstatistikDAO = schuetzenstatistikDAO;
     }
 
 
@@ -49,7 +47,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_VERANSTALTUNGID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
-        final List<LigatabelleBE> ligatabelleBEList = ligatabelleDAO.getLigatabelleVeranstaltung(veranstaltungId);
+        final List<LigatabelleBE> ligatabelleBEList = schuetzenstatistikDAO.getSchuetzenstatistikVeranstaltung(veranstaltungId);
 
         if (ligatabelleBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
@@ -67,7 +65,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_WETTKAMPFID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
-        final List<LigatabelleBE> ligatabelleBEList = ligatabelleDAO.getLigatabelleWettkampf(wettkampfId);
+        final List<LigatabelleBE> ligatabelleBEList = schuetzenstatistikDAO.getSchuetzenstatistikWettkampf(wettkampfId);
 
         if (ligatabelleBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
