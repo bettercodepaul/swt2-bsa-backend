@@ -97,16 +97,23 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
 
-    // returns all users with role roleId
+    /**
+     * gets all users from findAll() and checks if they have the
+     * special role with the given "roleId"
+     * @param roleId
+     * @return List of all users with this role
+     */
     @Override
     public List<UserRoleDO> findByRoleId(final Long roleId) {
         List<UserRoleDO> allUsersOfRole = new ArrayList<>();
         List<UserRoleDO> allUsers = findAll();
+
         for (UserRoleDO i: allUsers) {
-            if( i.getRoleId() == roleId){
+            if( i.getRoleId().equals(roleId)){
                 allUsersOfRole.add(i);
             }
         }
+
         return allUsersOfRole;
     }
 
