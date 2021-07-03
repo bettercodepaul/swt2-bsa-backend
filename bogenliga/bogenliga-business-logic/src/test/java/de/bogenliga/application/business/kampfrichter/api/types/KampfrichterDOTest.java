@@ -61,9 +61,9 @@ public class KampfrichterDOTest extends TestCase {
     private KampfrichterDO getKampfrichterDO() {
         KampfrichterDO dataObject = new KampfrichterDO(USERID, WETTKAMPFID, LEITEND, CREATEDATUTC, CREATEDBYUSERID,
                                                         LASTMODIFIEDATUTC, LASTMODIFIEDBYUSERID, VERSION);
-        dataObject.setKampfrichterVorname(KAMPFRICHTERVORNAME);
-        dataObject.setKampfrichterNachname(KAMPFRICHTERNACHNAME);
-        dataObject.setEmail(EMAIL);
+        dataObject.setVorname(KAMPFRICHTERVORNAME);
+        dataObject.setNachname(KAMPFRICHTERNACHNAME);
+        dataObject.setKampfrichterEmail(EMAIL);
 
         return dataObject;
     }
@@ -130,7 +130,7 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testGetKampfrichterVorname() {
-        String actual = underTest.getKampfrichterVorname();
+        String actual = underTest.getVorname();
         String expected = KAMPFRICHTERVORNAME;
 
         assertEquals(expected, actual);
@@ -138,8 +138,8 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetKampfrichterVorname() {
-        underTest.setKampfrichterVorname(nKAMPFRICHTERVORNAME);
-        String actual = underTest.getKampfrichterVorname();
+        underTest.setVorname(nKAMPFRICHTERVORNAME);
+        String actual = underTest.getVorname();
         String expected = nKAMPFRICHTERVORNAME;
 
         assertEquals(expected, actual);
@@ -148,7 +148,7 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testGetKampfrichterNachname() {
-        String actual = underTest.getKampfrichterNachname();
+        String actual = underTest.getNachname();
         String expected = KAMPFRICHTERNACHNAME;
 
         assertEquals(expected, actual);
@@ -156,8 +156,8 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetKampfrichterNachname() {
-        underTest.setKampfrichterNachname(nKAMPFRICHTERNACHNAME);
-        String actual = underTest.getKampfrichterNachname();
+        underTest.setNachname(nKAMPFRICHTERNACHNAME);
+        String actual = underTest.getNachname();
         String expected = nKAMPFRICHTERNACHNAME;
 
         assertEquals(expected, actual);
@@ -166,7 +166,7 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testGetEmail() {
-        String actual = underTest.getEmail();
+        String actual = underTest.getKampfrichterEmail();
         String expected = EMAIL;
 
         assertEquals(expected, actual);
@@ -174,8 +174,8 @@ public class KampfrichterDOTest extends TestCase {
 
     @Test
     public void testSetEmail() {
-        underTest.setEmail(nEMAIL);
-        String actual = underTest.getEmail();
+        underTest.setKampfrichterEmail(nEMAIL);
+        String actual = underTest.getKampfrichterEmail();
         String expected = nEMAIL;
 
         assertEquals(expected, actual);
@@ -202,7 +202,7 @@ public class KampfrichterDOTest extends TestCase {
     @Test
     public void testEqualsDifferentValues() {
         KampfrichterDO testObject = getKampfrichterDO();
-        testObject.setKampfrichterVorname("Tom");
+        testObject.setVorname("Tom");
 
         // Objects should be different in Vorname
         assertEquals(false, underTest.equals(testObject));

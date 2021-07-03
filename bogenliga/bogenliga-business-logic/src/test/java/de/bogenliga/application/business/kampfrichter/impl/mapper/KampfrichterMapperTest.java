@@ -43,9 +43,9 @@ public class KampfrichterMapperTest {
         KampfrichterExtendedBE kampfrichterExtendedBE= getKampfrichterExtendedBE();
         final KampfrichterDO actual = KampfrichterMapper.toKampfrichterDOExtended.apply(kampfrichterExtendedBE);
         assertThat(actual.getUserId()).isEqualTo(USERID);
-        assertThat(actual.getEmail()).isEqualTo(EMAIL);
-        assertThat(actual.getKampfrichterVorname()).isEqualTo(VORNAME);
-        assertThat(actual.getKampfrichterNachname()).isEqualTo(NACHNAME);
+        assertThat(actual.getKampfrichterEmail()).isEqualTo(EMAIL);
+        assertThat(actual.getVorname()).isEqualTo(VORNAME);
+        assertThat(actual.getNachname()).isEqualTo(NACHNAME);
         assertThat(actual.getWettkampfId()).isEqualTo(WETTKAMPFID);
         assertThat(actual.isLeitend()).isEqualTo(LEITEND);
     }

@@ -50,9 +50,9 @@ public final class KampfrichterDTOMapper implements DataTransferObjectMapper {
     public static final Function<KampfrichterDO, KampfrichterExtendedDTO> toDTOExtended = kampfrichterDO -> {
 
         final Long kampfrichterUserId = kampfrichterDO.getUserId();
-        final String kampfrichterVorname = kampfrichterDO.getKampfrichterVorname();
-        final String kampfritcherNachname= kampfrichterDO.getKampfrichterNachname();
-        final String kampfrichterEmail= kampfrichterDO.getEmail();
+        final String kampfrichterVorname = kampfrichterDO.getVorname();
+        final String kampfritcherNachname= kampfrichterDO.getNachname();
+        final String kampfrichterEmail= kampfrichterDO.getKampfrichterEmail();
         long kampfrichterWettkampfId = 0;
         if(kampfrichterDO.getWettkampfId() != null){
             kampfrichterWettkampfId = kampfrichterDO.getWettkampfId();
