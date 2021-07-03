@@ -1,17 +1,12 @@
 package de.bogenliga.application.business.kampfrichter.impl.entity;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
-import de.bogenliga.application.business.match.impl.entity.MatchBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
+import org.mockito.junit.MockitoJUnit;
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 /**
  * Test class for KampfrichterExtendedBE
@@ -62,7 +57,7 @@ public class KampfrichterExtendedBETest extends TestCase {
         assertEquals(expected, actual);
     }
 
-
+    @Test
     public void testGetKampfrichterExtendedUserID() {
         Long expected = USERID;
         Long actual = underTest.getKampfrichterExtendedUserID();
@@ -70,6 +65,7 @@ public class KampfrichterExtendedBETest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testSetKampfrichterExtendedUserID() {
         Long expected = nUSERID;
         underTest.setKampfrichterExtendedUserID(nUSERID);
@@ -79,6 +75,7 @@ public class KampfrichterExtendedBETest extends TestCase {
     }
 
 
+    @Test
     public void testGetKampfrichterExtendedWettkampfID() {
         Long expected = WETTKAMPFID;
         Long actual = underTest.getKampfrichterExtendedWettkampfID();
@@ -86,6 +83,7 @@ public class KampfrichterExtendedBETest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testSetKampfrichterExtendedWettkampfID() {
         Long expected = nWETTKAMPFID;
         underTest.setKampfrichterExtendedWettkampfID(nWETTKAMPFID);
@@ -95,6 +93,7 @@ public class KampfrichterExtendedBETest extends TestCase {
     }
 
 
+    @Test
     public void testGetKampfrichterExtendedLeitend() {
         boolean expected = LEITEND;
         boolean actual = underTest.getKampfrichterExtendedLeitend();
@@ -102,6 +101,7 @@ public class KampfrichterExtendedBETest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testSetKampfrichterExtendedLeitend() {
         boolean expected = nLEITEND;
         underTest.setKampfrichterExtendedLeitend(nLEITEND);
@@ -111,6 +111,7 @@ public class KampfrichterExtendedBETest extends TestCase {
     }
 
 
+    @Test
     public void testGetKampfrichterExtendedVorname() {
         String expected = VORNAME;
         String actual = underTest.getKampfrichterExtendedVorname();
@@ -118,6 +119,7 @@ public class KampfrichterExtendedBETest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testSetKampfrichterExtendedVorname() {
         String expected = nVORNAME;
         underTest.setKampfrichterExtendedVorname(nVORNAME);
@@ -127,6 +129,7 @@ public class KampfrichterExtendedBETest extends TestCase {
     }
 
 
+    @Test
     public void testGetKampfrichterExtendedNachname() {
         String expected = NACHNAME;
         String actual = underTest.getKampfrichterExtendedNachname();
@@ -134,6 +137,7 @@ public class KampfrichterExtendedBETest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testSetKampfrichterExtendedNachname() {
         String expected = nNACHNAME;
         underTest.setKampfrichterExtendedNachname(nNACHNAME);
@@ -143,6 +147,7 @@ public class KampfrichterExtendedBETest extends TestCase {
     }
 
 
+    @Test
     public void testGetKampfrichterExtendedEmail() {
         String expected = EMAIL;
         String actual = underTest.getKampfrichterExtendedEmail();
@@ -150,6 +155,7 @@ public class KampfrichterExtendedBETest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testSetKampfrichterExtendedEmail() {
         String expected = nEMAIL;
         underTest.setKampfrichterExtendedEmail(nEMAIL);
