@@ -403,6 +403,30 @@ public class UserService implements ServiceFacade {
 
 
     /**
+     * I return a List of all Users that have the given role id
+     *
+     * @param roleId
+     * @return
+     */
+    @GetMapping(
+            value = "/allusersbyrole/{roleId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<UserRoleDTO> getAllUsersByRoleId(@PathVariable("roleId") final long roleId) {
+        Preconditions.checkArgument(roleId >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'getAllUsersByRoleId' request with ID '{}'", roleId);
+
+        final List<UserRoleDO> userRoleDOlist = userRoleComponent.findByRoleId(roleId);
+        List<UserRoleDTO> userRoleDTOS = new ArrayList<>();
+        for(UserRoleDO userRoleDO : userRoleDOlist){
+            userRoleDTOS.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
+        }
+        return userRoleDTOS;
+    }
+
+
+    /**
      * I persist a new user and return this user entry.
      * <p>
      * Usage:
