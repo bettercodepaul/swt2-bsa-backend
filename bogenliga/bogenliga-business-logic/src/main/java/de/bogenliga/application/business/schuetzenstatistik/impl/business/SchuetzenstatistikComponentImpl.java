@@ -4,7 +4,7 @@ import de.bogenliga.application.business.schuetzenstatistik.api.Schuetzenstatist
 import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
 import de.bogenliga.application.business.schuetzenstatistik.impl.dao.SchuetzenstatistikDAO;
 import de.bogenliga.application.business.schuetzenstatistik.impl.entity.LigatabelleBE;
-import de.bogenliga.application.business.schuetzenstatistik.impl.mapper.LigatabelleMapper;
+import de.bogenliga.application.business.schuetzenstatistik.impl.mapper.SchuetzenstatistikMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -55,7 +55,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
         }
 
         for (int i = 0; i < ligatabelleBEList.size(); i++) {
-            returnList.add(i, LigatabelleMapper.toSchuetzenstatistikDO.apply(ligatabelleBEList.get(i)));
+            returnList.add(i, SchuetzenstatistikMapper.toSchuetzenstatistikDO.apply(ligatabelleBEList.get(i)));
         }
         return returnList;
     }
@@ -73,7 +73,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
         }
 
         for (int i = 0; i < ligatabelleBEList.size(); i++) {
-            returnList.add(i, LigatabelleMapper.toSchuetzenstatistikDO.apply(ligatabelleBEList.get(i)));
+            returnList.add(i, SchuetzenstatistikMapper.toSchuetzenstatistikDO.apply(ligatabelleBEList.get(i)));
         }
         return returnList;
     }
