@@ -14,15 +14,13 @@ public interface SchuetzenstatistikComponent extends ComponentFacade {
      * gibt die aktuelle Schuetzenstatistik der Veranstaltung zurück
      * Liste ist leer - wenn keine Mannschaften gefunden werden
      */
-    List<SchuetzenstatistikDO> getLigatabelleVeranstaltung(Long veranstaltungId);
+    List<SchuetzenstatistikDO> getSchuetzenstatistikVeranstaltung(Long veranstaltungId);
 
 
     /**
      * gibt die Schuetzenstatistik zu einer WettkampfId zurück
      * Liste ist leer - wenn keine Mannschaften gefunden werden
      */
-    List<SchuetzenstatistikDO> getLigatabelleWettkampf(Long wettkampfId);
-
-
+    List<SchuetzenstatistikDO> getSchuetzenstatistikWettkampf(Long wettkampfId);
 
 }

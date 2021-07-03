@@ -43,7 +43,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
 
 
     @Override
-    public List<SchuetzenstatistikDO> getLigatabelleVeranstaltung(Long veranstaltungId) {
+    public List<SchuetzenstatistikDO> getSchuetzenstatistikVeranstaltung(Long veranstaltungId) {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_VERANSTALTUNGID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
     }
 
     @Override
-    public List<SchuetzenstatistikDO> getLigatabelleWettkampf(Long wettkampfId) {
+    public List<SchuetzenstatistikDO> getSchuetzenstatistikWettkampf(Long wettkampfId) {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_WETTKAMPFID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
