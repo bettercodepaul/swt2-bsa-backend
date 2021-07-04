@@ -537,17 +537,17 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
             MatchDO alt = null;
             int count = 1;
+            List<PasseDO> passen = passeComponent.findByWettkampfId(wetkampf.getId());
+
             for(MatchDO match : matches)
             {
-                System.out.println("matches");
                 table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(match.getMannschaftId()))));
                 for(long i = 1 ; i<=5 ; i++)
                 {
-                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle((long) addPassenVonSatz(passeComponent.findByMatchId(match.getId()),i)))));
+                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle((long) addPassenVonSatz(passen ,i ,match.getNr() ,match.getMannschaftId())))));
                 }
                 if(count%2  == 0)
                 {
-                    System.out.println("matches satz");
                     table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle(alt.getSatzpunkte()) + " : " + ausgabeTabelle(match.getSatzpunkte()))));
                     table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle(alt.getMatchpunkte()) + " : " + ausgabeTabelle(match.getMatchpunkte()))));
                 }
@@ -571,8 +571,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
     public String ausgabeTabelle(Long wert)
     {
-        System.out.println("Tabellenausgabe");
-        if(wert == null || wert == -1 )
+        if(wert == null || wert == -1)
             return "-";
         else
             return Long.toString(wert);
@@ -580,7 +579,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     public List<MatchDO> sortForDisplay(List<MatchDO> matches)
     {
-        System.out.println("sortieren gestartet");
         List<MatchDO> matches2 = new ArrayList<>();
 
         for(MatchDO match : matches)
@@ -597,45 +595,46 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             }
         }
         if(matches.size() == matches2.size()) {
-            System.out.println("sortieren abgeschlossen");
             return matches2;
         }
         else {
-            System.out.println("Fehler beim sortieren");
             return null;
         }
     }
 
-    public int addPassenVonSatz(List<PasseDO> passen, long nr)
+    public int addPassenVonSatz(List<PasseDO> passen, long nr, long matchnr,long manschaftsid)
     {
         int gesammt = -1;
         boolean geschossen =  false;
 
         for(PasseDO passe : passen)
         {
-            if (passe.getPfeil1() != null && passe.getPasseLfdnr() == nr) {
-                gesammt += passe.getPfeil1();
-                geschossen = true;
-            }
-            if (passe.getPfeil2() != null && passe.getPasseLfdnr() == nr) {
-                gesammt += passe.getPfeil2();
-                geschossen = true;
-            }
-            if (passe.getPfeil3() != null && passe.getPasseLfdnr() == nr) {
-                gesammt += passe.getPfeil3();
-                geschossen = true;
-            }
-            if (passe.getPfeil4() != null && passe.getPasseLfdnr() == nr) {
-                gesammt += passe.getPfeil4();
-                geschossen = true;
-            }
-            if (passe.getPfeil5() != null && passe.getPasseLfdnr() == nr) {
-                gesammt += passe.getPfeil5();
-                geschossen = true;
-            }
-            if (passe.getPfeil6() != null && passe.getPasseLfdnr() == nr) {
-                gesammt += passe.getPfeil6();
-                geschossen = true;
+            if(passe.getPasseMatchNr() == matchnr && passe.getPasseMannschaftId() == manschaftsid) {
+
+                if (passe.getPfeil1() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil1();
+                    geschossen = true;
+                }
+                if (passe.getPfeil2() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil2();
+                    geschossen = true;
+                }
+                if (passe.getPfeil3() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil3();
+                    geschossen = true;
+                }
+                if (passe.getPfeil4() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil4();
+                    geschossen = true;
+                }
+                if (passe.getPfeil5() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil5();
+                    geschossen = true;
+                }
+                if (passe.getPfeil6() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil6();
+                    geschossen = true;
+                }
             }
         }
 
@@ -647,9 +646,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     public Table getLigatabelleAsTable(long wettkampfid)
     {
-        System.out.println("Tabelle als liste hohlen");
         List<LigatabelleDO> tabelle = ligatabelleComponent.getLigatabelleWettkampf(wettkampfid);
-        System.out.println("Tabelle vorbereiten");
+
         Table table2 = new Table(new float[]{20, 120, 40, 40, 40});
         table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
         table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Manschaft")));
@@ -660,7 +658,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         for(int i=0 ; i<5 ; i++)
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
 
-        System.out.println("header fertig starte tabelle");
         for(LigatabelleDO team : tabelle)
         {
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.gettabellenplatz()))));
@@ -669,7 +666,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.getsatzpktDifferenz()))));
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getmatchpkt() + " : " + team.getmatchpktGegen())));
         }
-        System.out.println("fertig");
         return table2;
     }
 
