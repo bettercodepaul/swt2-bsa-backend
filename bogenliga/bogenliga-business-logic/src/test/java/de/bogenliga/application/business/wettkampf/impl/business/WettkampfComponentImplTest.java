@@ -639,15 +639,18 @@ public class WettkampfComponentImplTest {
         List<WettkampfBE> wettkampflisteBEList = new ArrayList<WettkampfBE>();
         wettkampflisteBEList.add(getWettkampfBE());
         wettkampflisteBEList.add(getWettkampfBE());
-        List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
 
-        long expectedWettkampfTag = 7;
+        List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
+        wettkaempfeAmTag.add(getWettkampfBE());
+
+        long expectedWettkampfTag = 4;
+        long veranstaltungsID = 1;
 
         assertThat(wettkampflisteBEList.get(anyInt()).getWettkampfTag() == expectedWettkampfTag);
 
 
 
-        underTest.getUebersichtPDFasByteArray(0, expectedWettkampfTag);
+        underTest.getUebersichtPDFasByteArray(veranstaltungsID, expectedWettkampfTag);
 
 
 
