@@ -115,6 +115,7 @@ public class ConfigurationService implements ServiceFacade {
     }
 
 
+    //Endpoint not in use
     /**
      * I persist a new configuration and return this configuration entry.
      *
@@ -145,24 +146,6 @@ public class ConfigurationService implements ServiceFacade {
         Preconditions.checkArgument(configurationDTO.getId() >= 0, "ConfigurationDTO id must not be negative");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
-
-        String regex = null;
-        switch (configurationDTO.getKey()) {
-            case "SMTPEmail":
-                regex = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
-                break;
-            case "SMTPPort":
-                regex = "^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$";
-                break;
-            case "SMTPHost":
-                regex = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\\-]*[A-Za-z0-9])$";
-                break;
-        }
-
-        if(regex != null){
-            LOG.debug("Checking value using RegExp");
-            Preconditions.checkArgument((configurationDTO.getValue().matches(regex)), "Value has to match RegEx");
-        }
 
         final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toDO.apply(configurationDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
