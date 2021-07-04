@@ -628,16 +628,14 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(expectedDO.getWettkampfAusrichter());
     }
 
-    public void testGenerateUebersicht()
-    {
-        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
-        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
-    }
-
+    
 
     @Test
     public void testGetgetUebersichtPDFasByteArray()
     {
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
+
         List<WettkampfBE> wettkampflisteBEList = new ArrayList<WettkampfBE>();
         wettkampflisteBEList.add(getWettkampfBE());
         wettkampflisteBEList.add(getWettkampfBE());
