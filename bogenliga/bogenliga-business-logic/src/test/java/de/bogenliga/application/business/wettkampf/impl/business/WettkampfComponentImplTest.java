@@ -28,6 +28,8 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
+import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -97,6 +99,8 @@ public class WettkampfComponentImplTest {
     private VereinComponent vereinComponent;
     @Mock
     private MatchComponent matchComponent;
+    @Mock
+    private LigatabelleComponent ligatabelleComponent;
     @InjectMocks
     private WettkampfComponentImpl underTest;
     @Captor
@@ -227,6 +231,13 @@ public class WettkampfComponentImplTest {
         VereinDO neuerVerein = new VereinDO(1l, "Bogensport Muster Hausen", "bmh",0l,"example.com",
                 "Test Verein","Test Icon", OffsetDateTime.now(), 0l, 0l);
         return neuerVerein;
+    }
+    public static LigatabelleDO getLigatabelleDO()
+    {
+        LigatabelleDO ligaTabelle = new LigatabelleDO(wettkampf_Veranstaltung_Id,"Test Veranstaltung",1l,
+                (int)wettkampf_Tag,mannschaft_id,42,42l,"Bogensport Muster Hausen",1,2,
+                3,4,5,1,1);
+        return ligaTabelle;
     }
 
         @Test
@@ -671,9 +682,14 @@ public class WettkampfComponentImplTest {
         long expectedWettkampfTag = 7;
         int veranstaltungsid = 1;
 
+        underTest.setMatchComponent(matchComponent);
+
         when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampflisteBEList);
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(Collections.singletonList(getMatchDO()));
         when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
+        when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
+        when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
+        when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(Collections.singletonList(getLigatabelleDO()));
         
         assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag() == expectedWettkampfTag);
 
