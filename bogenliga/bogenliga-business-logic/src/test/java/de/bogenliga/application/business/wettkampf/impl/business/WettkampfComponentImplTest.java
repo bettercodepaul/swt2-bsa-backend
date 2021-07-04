@@ -645,12 +645,7 @@ public class WettkampfComponentImplTest {
 
         assertThat(wettkampflisteBEList.get(anyInt()).getWettkampfTag() == expectedWettkampfTag);
 
-
-
-        underTest.getUebersichtPDFasByteArray(0, expectedWettkampfTag);
-
-
-
+        byte[] pdf = underTest.getUebersichtPDFasByteArray(0, expectedWettkampfTag);
     }
 }
 
