@@ -67,7 +67,7 @@ public class KampfrichterService implements ServiceFacade {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public KampfrichterDTO create(@RequestBody final KampfrichterDTO kampfrichterDTO, final Principal principal) {
 
         checkPreconditions(kampfrichterDTO);
@@ -106,7 +106,7 @@ public class KampfrichterService implements ServiceFacade {
     }
 
     @DeleteMapping(value = "{userID}/{wettkampfID}")
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public void delete(@PathVariable("userID") final long userID, @PathVariable("wettkampfID") final long wettkampfID,
                        final Principal principal) {
         Preconditions.checkArgument(userID >= 0, "User-ID must not be negative.");
