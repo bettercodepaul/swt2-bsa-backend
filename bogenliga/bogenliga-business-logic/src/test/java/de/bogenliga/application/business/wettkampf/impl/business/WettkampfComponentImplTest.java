@@ -633,5 +633,24 @@ public class WettkampfComponentImplTest {
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
     }
+
+
+    @Test
+    public void testGetgetUebersichtPDFasByteArray()
+    {
+        List<WettkampfBE> wettkampflisteBEList = new ArrayList<WettkampfBE>();
+        wettkampflisteBEList.add(getWettkampfBE());
+        wettkampflisteBEList.add(getWettkampfBE());
+        List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
+
+        long expectedWettkampfTag = 1;
+        when(wettkampflisteBEList.get(0).getWettkampfTag()).thenReturn(expectedWettkampfTag);
+        when(wettkampflisteBEList.get(1).getWettkampfTag()).thenReturn(expectedWettkampfTag);
+
+        
+
+
+
+    }
 }
 
