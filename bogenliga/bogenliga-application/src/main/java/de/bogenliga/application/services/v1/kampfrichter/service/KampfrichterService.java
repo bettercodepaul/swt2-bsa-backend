@@ -16,6 +16,8 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterDTO;
 import de.bogenliga.application.services.v1.kampfrichter.mapper.KampfrichterDTOMapper;
+import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterExtendedDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -40,6 +42,7 @@ public class KampfrichterService implements ServiceFacade {
     private static final String PRECONDITION_MSG_KAMPFRICHTER = "KampfrichterDO must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_BENUTZER_ID = "KampfrichterBenutzerID must not be negative and must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID = "KampfrichterWettkampfID must not be negative and must not be null";
+    private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE = "Wettkampf-ID must not be negative.";
 
     private static final Logger LOG = LoggerFactory.getLogger(KampfrichterService.class);
 
@@ -64,7 +67,7 @@ public class KampfrichterService implements ServiceFacade {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public KampfrichterDTO create(@RequestBody final KampfrichterDTO kampfrichterDTO, final Principal principal) {
 
         checkPreconditions(kampfrichterDTO);
@@ -82,14 +85,32 @@ public class KampfrichterService implements ServiceFacade {
         return KampfrichterDTOMapper.toDTO.apply(savedKampfrichterDO);
     }
 
+    //Returns a List with KampfrichterExtended who are not assinged to the Wettkampftag
+    @GetMapping(value= "/NotAssignedKampfrichter/{wettkampfId}")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public List<KampfrichterExtendedDTO> findByWettkampfidNotInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE);
+        List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidNotInWettkampftag(wettkampfId);
 
+        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
+    }
+
+    //Returns a List with KampfrichterExtended who are assinged to the Wettkampftag
+    @GetMapping(value= "/AssignedKampfrichter/{wettkampfId}")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public List<KampfrichterExtendedDTO> findByWettkampfidInWettkampftag(@PathVariable("wettkampfId") final long wettkampfId){
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE);
+        List<KampfrichterDO> kampfrichterDOList = kampfrichterComponent.findByWettkampfidInWettkampftag(wettkampfId);
+
+        return kampfrichterDOList.stream().map(KampfrichterDTOMapper.toDTOExtended).collect(Collectors.toList());
+    }
 
     @DeleteMapping(value = "{userID}/{wettkampfID}")
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public void delete(@PathVariable("userID") final long userID, @PathVariable("wettkampfID") final long wettkampfID,
                        final Principal principal) {
         Preconditions.checkArgument(userID >= 0, "User-ID must not be negative.");
-        Preconditions.checkArgument(wettkampfID >= 0, "Wettkampf-ID must not be negative.");
+        Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPF_ID_NEGATIVE);
 
         final long changeUserID = UserProvider.getCurrentUserId(principal);
         LOG.debug("Receive 'delete' request with user-ID '{}' and wettkampf-ID '{}'", userID, wettkampfID);

@@ -11,10 +11,11 @@ public class ConfigurationDOTest {
     long id = 12345;
     String key = "Key";
     String value = "Value";
+    String regex = null;
 
 
     ConfigurationDO getConfigurationDO() {
-        return new ConfigurationDO(id, key, value);
+        return new ConfigurationDO(id, key, value, null);
     }
 
 
