@@ -226,7 +226,7 @@ public class UserRoleComponentImplTest {
 
     // tests for findByRoleId
     @Test
-    public void findByRoleId() {
+    public void findByRoleId_IfSuccess() {
         // prepare test data
         final UserRoleExtBE userRole = new UserRoleExtBE();
         userRole.setRoleId(ROLE_ID);
@@ -248,6 +248,29 @@ public class UserRoleComponentImplTest {
                 .isEqualTo(userRole.getUserEmail());
         assertThat(actual.get(0).getRoleId())
                 .isEqualTo(userRole.getRoleId());
+
+        // verify invocations
+        verify(userRoleExtDAO).findAll();
+    }
+
+    @Test
+    public void findByRoleId_IfFail() {
+        // prepare test data
+        final UserRoleExtBE userRole = new UserRoleExtBE();
+        userRole.setRoleId(1L);
+        userRole.setUserEmail(EMAIL);
+
+        List<UserRoleExtBE> userRoleList = new ArrayList<>();
+        userRoleList.add(userRole);
+
+        // configure mocks
+        when(userRoleExtDAO.findAll()).thenReturn(userRoleList);
+
+        // call test method
+        final List<UserRoleDO> actual = underTest.findByRoleId(2L);
+
+        // assert result
+        assertThat(actual).isNotNull().isEmpty();
 
         // verify invocations
         verify(userRoleExtDAO).findAll();
