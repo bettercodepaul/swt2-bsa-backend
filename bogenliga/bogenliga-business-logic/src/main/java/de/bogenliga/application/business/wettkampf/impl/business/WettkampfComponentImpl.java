@@ -647,7 +647,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public Table getLigatabelleAsTable(long wettkampfid)
     {
         List<LigatabelleDO> tabelle = ligatabelleComponent.getLigatabelleWettkampf(wettkampfid);
-
         Table table2 = new Table(new float[]{20, 120, 40, 40, 40});
         table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
         table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Manschaft")));
