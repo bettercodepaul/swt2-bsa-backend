@@ -631,29 +631,28 @@ public class WettkampfComponentImplTest {
 
 
     @Test
-    public void testGetgetUebersichtPDFasByteArray()
-    {
+    public void testGetgetUebersichtPDFasByteArray() throws IOException {
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
 
         List<WettkampfBE> wettkampflisteBEList = new ArrayList<WettkampfBE>();
         wettkampflisteBEList.add(getWettkampfBE());
         wettkampflisteBEList.add(getWettkampfBE());
-
         List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
-        wettkaempfeAmTag.add(getWettkampfBE());
 
-        long expectedWettkampfTag = 4;
-        long veranstaltungsID = 1;
+        when(wettkampfDAO.findAllByVeranstaltungId(anyInt())).thenReturn(wettkampflisteBEList);
+
+        long expectedWettkampfTag = 7;
 
         assertThat(wettkampflisteBEList.get(anyInt()).getWettkampfTag() == expectedWettkampfTag);
 
+        byte[] pdf = underTest.getUebersichtPDFasByteArray(0, expectedWettkampfTag);
 
+        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
-        underTest.getUebersichtPDFasByteArray(veranstaltungsID, expectedWettkampfTag);
-
-
-
+        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+        PdfReader reader = new PdfReader(serializedPDF);
+        PdfDocument deserialized = new PdfDocument(reader);
     }
 }
 
