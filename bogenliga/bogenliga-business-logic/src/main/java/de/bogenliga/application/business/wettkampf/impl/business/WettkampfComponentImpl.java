@@ -535,7 +535,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         {
             List<MatchDO> matches = sortForDisplay(matchComponent.findByWettkampfId(wettkampfid));
 
-            MatchDO alt = null;
+            MatchDO alt = new MatchDO(null,null,null,null,null,null,null,null,null,null,null,null,null);
             int count = 1;
             List<PasseDO> passen = passeComponent.findByWettkampfId(wetkampf.getId());
 
@@ -588,7 +588,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             }
             for(MatchDO match2 : matches)
             {
-                if(match.getBegegnung() == match2.getId())
+                if(match.getBegegnung().equals(match2.getId()))
                 {
                     matches2.add(match2);
                 }
