@@ -626,7 +626,12 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfDisziplinId()).isEqualTo(expectedDO.getWettkampfDisziplinId());
         assertThat(actual.getWettkampfTypId()).isEqualTo(expectedDO.getWettkampfTypId());
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(expectedDO.getWettkampfAusrichter());
+    }
 
+    public void testGenerateUebersicht()
+    {
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
     }
 }
 

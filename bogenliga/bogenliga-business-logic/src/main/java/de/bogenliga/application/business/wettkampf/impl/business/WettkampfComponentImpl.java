@@ -393,6 +393,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Override
     public byte[] getUebersichtPDFasByteArray(long veranstaltungsid,long wettkampftag)
     {
+        Preconditions.checkArgument(veranstaltungsid >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkArgument(wettkampftag >= 0 && wettkampftag <= 4, PRECONDITION_MSG_WETTKAMPF_TAG + " or larger than 4");
+
         List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllByVeranstaltungId(veranstaltungsid);
         List<WettkampfBE> wettkaempfeAmTag = new ArrayList<>();
         for(WettkampfBE wettkampf : wettkampflisteBEList)
