@@ -174,10 +174,10 @@ public class WettkampfComponentImplTest {
 
     public static List<PasseDO> getPassenDO()
     {
-        PasseDO passe1 = new PasseDO(null,77l, null, 2l, null, null,
+        PasseDO passe1 = new PasseDO(null,77l, null, 2l, null, 1l,
                         null, PFEIL1, PFEIL2, null, null, null, null, null,
                             null, null, null, null);
-        PasseDO passe2 = new PasseDO(null,77l, null, 1l, null, null,
+        PasseDO passe2 = new PasseDO(null,77l, null, 1l, null, 2l,
                         null, PFEIL3, PFEIL4, PFEIL5, PFEIL6, PFEIL7, PFEIL8, null,
                             null, null, null, null);
         List<PasseDO> passen = new LinkedList<>();
@@ -691,7 +691,7 @@ public class WettkampfComponentImplTest {
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
         when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(Collections.singletonList(getLigatabelleDO()));
         
-        assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag() == expectedWettkampfTag);
+        assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag()).isEqualTo(expectedWettkampfTag);
 
         byte[] pdf = underTest.getUebersichtPDFasByteArray(veranstaltungsid, expectedWettkampfTag);
 
@@ -700,6 +700,20 @@ public class WettkampfComponentImplTest {
         ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
         PdfReader reader = new PdfReader(serializedPDF);
         PdfDocument deserialized = new PdfDocument(reader);
+
+        when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(Collections.EMPTY_LIST);
+
+        assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(veranstaltungsid, expectedWettkampfTag)).isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    public void addPassenVonSatz()
+    {
+        assertThat(underTest.addPassenVonSatz(Collections.EMPTY_LIST,-1,-1,-1)).isEqualTo(-1);
+        List<PasseDO> passenList = getPassenDO();
+        assertThat(underTest.addPassenVonSatz(passenList,0,0,0)).isEqualTo(-1);
+        assertThat(underTest.addPassenVonSatz(passenList,1l,2l,77)).isEqualTo(19);
+        assertThat(underTest.addPassenVonSatz(passenList,2l,1l,77)).isEqualTo(51);
     }
 
 
@@ -710,8 +724,9 @@ public class WettkampfComponentImplTest {
         matches.add(getMatchDO());
         matches.add(getMatchDO());
         matches.add(getMatchDO());
-
-        underTest.sortForDisplay(matches);
+        List<MatchDO> result = underTest.sortForDisplay(matches);
+        
+        assertThat(result).isNotNull();
     }
 }
 
