@@ -426,7 +426,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         else
         {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Für den Wettkampftag " + wettkampftag +" giebt es keine Wettkämpfe");
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Für den Wettkampftag " + wettkampftag +" gibt es keine Wettkämpfe");
         }
         return bResult;
     }
