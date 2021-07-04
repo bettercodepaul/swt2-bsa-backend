@@ -70,6 +70,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
 
+
     @Override
     public List<UserRoleDO> findAll() {
         final List<UserRoleExtBE> userRoleExtBEList = userRoleExtDAO.findAll();
@@ -292,6 +293,5 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
     }
-
 
 }
