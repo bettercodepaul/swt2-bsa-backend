@@ -82,11 +82,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
             MATCHID_TABLE,
             DSBMITGLIEDID_TABLE,
             DSBMITGLIEDNAME_TABLE,
-            "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+            "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+") as "+PFEILPUNKTESCHNITT_BE
     )
             .from(TABLE)
-            .whereEquals(VEREINID_TABLE)
-            .andEquals(VERANSTALTUNGID_TABLE)
+            .whereEquals(VERANSTALTUNGID_TABLE)
+            .andEquals(VEREINID_TABLE)
             .groupBy(
                     VERANSTALTUNGID_TABLE,
                     VERANSTALTUNGNAME_TABLE,
@@ -99,10 +99,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     MATCHID_TABLE,
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
-                    "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+                    PFEILPUNKTESCHNITT_TABLE
             )
-            .orderBy("SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt")
+            .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .compose().toString();
+
 
     /* der Select liefert die aktuelle Schuetzenstatistik zur Wettkampf-ID
      */
@@ -118,11 +119,11 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                 MATCHID_TABLE,
                 DSBMITGLIEDID_TABLE,
                 DSBMITGLIEDNAME_TABLE,
-                "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+                "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+") as "+PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
-            .whereEquals(VEREINID_TABLE)
-            .andEquals(WETTKAMPFID_TABLE)
+            .whereEquals(WETTKAMPFID_TABLE)
+            .andEquals(VEREINID_TABLE)
             .groupBy(
                     VERANSTALTUNGID_TABLE,
                     VERANSTALTUNGNAME_TABLE,
@@ -135,9 +136,9 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     MATCHID_TABLE,
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
-                    "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+                    "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")"
             )
-            .orderBy("SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt")
+            .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .compose().toString();
 
 
@@ -186,15 +187,15 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     /**
      * Lesen der aktuellen Liga-Tabelle zur Veranstaltung
      */
-    public List<SchuetzenstatistikBE> getSchuetzenstatistikVeranstaltung(final long id) {
-        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK, id);
+    public List<SchuetzenstatistikBE> getSchuetzenstatistikVeranstaltung(final long veranstaltungId, final long vereinId) {
+        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK, veranstaltungId, vereinId);
     }
 
     /**
      * Lesen der aktuellen Schuetzenstatistik zum Wettkampf (ID)
      */
-    public List<SchuetzenstatistikBE> getSchuetzenstatistikWettkampf(final long id) {
-        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK_WETTKAMPF, id);
+    public List<SchuetzenstatistikBE> getSchuetzenstatistikWettkampf(final long wettkampfId, final long vereinId) {
+        return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK_WETTKAMPF, wettkampfId, vereinId);
     }
     
 }

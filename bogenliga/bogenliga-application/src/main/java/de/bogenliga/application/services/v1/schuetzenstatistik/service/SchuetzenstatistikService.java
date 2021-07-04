@@ -50,15 +50,15 @@ public class SchuetzenstatistikService implements ServiceFacade {
      * @return lost of {@link SchuetzenstatistikDTO} as JSON
      */
     @GetMapping(
-            value = "veranstaltung={id}",
+            value = "byVeranstaltungAndVerein/{veranstaltungId}/{vereinId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<SchuetzenstatistikDTO> getSchuetzenstatistikVeranstaltung(@PathVariable("id") final long id) {
+    public List<SchuetzenstatistikDTO> getSchuetzenstatistikVeranstaltung(@PathVariable("veranstaltungId") final long veranstaltungId, @PathVariable("vereinId") final long vereinId) {
 
-        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
-        logger.debug("Receive 'Schuetzenstatistik für Veranstaltung' request with ID '{}'", id);
+        Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+        logger.debug("Receive 'Schuetzenstatistik für Veranstaltung' request with ID '{}'", veranstaltungId);
 
-        final List<SchuetzenstatistikDO> schuetzenstatistikDOList = schuetzenstatistikComponent.getSchuetzenstatistikVeranstaltung(id);
+        final List<SchuetzenstatistikDO> schuetzenstatistikDOList = schuetzenstatistikComponent.getSchuetzenstatistikVeranstaltung(veranstaltungId, vereinId);
 
         return schuetzenstatistikDOList.stream().map(SchuetzenstatistikDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -69,15 +69,15 @@ public class SchuetzenstatistikService implements ServiceFacade {
      * @return lost of {@link SchuetzenstatistikDTO} as JSON
      */
     @GetMapping(
-            value = "wettkampf={id}",
+            value = "byWettkampfAndVerein/{wettkampfId}/{vereinId}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<SchuetzenstatistikDTO> getSchuetzenstatistikWettkampf(@PathVariable("id") final long id) {
+    public List<SchuetzenstatistikDTO> getSchuetzenstatistikWettkampf(@PathVariable("wettkampfId") final long wettkampfId, @PathVariable("vereinId") final long vereinId) {
 
-        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        logger.debug("Receive 'Schuetzenstatistik für Wettkampf' request with ID '{}'", id);
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        logger.debug("Receive 'Schuetzenstatistik für Wettkampf' request with Wettkampf-ID '{}' and Verein-ID '{}'", wettkampfId, vereinId);
 
-        final List<SchuetzenstatistikDO> schuetzenstatistikDOList = schuetzenstatistikComponent.getSchuetzenstatistikWettkampf(id);
+        final List<SchuetzenstatistikDO> schuetzenstatistikDOList = schuetzenstatistikComponent.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
 
         return schuetzenstatistikDOList.stream().map(SchuetzenstatistikDTOMapper.toDTO).collect(Collectors.toList());
     }

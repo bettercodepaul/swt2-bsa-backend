@@ -43,15 +43,14 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
 
 
     @Override
-    public List<SchuetzenstatistikDO> getSchuetzenstatistikVeranstaltung(Long veranstaltungId) {
+    public List<SchuetzenstatistikDO> getSchuetzenstatistikVeranstaltung(Long veranstaltungId, Long vereinId) {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_VERANSTALTUNGID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
-        final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikVeranstaltung(veranstaltungId);
+        final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikVeranstaltung(veranstaltungId, vereinId);
 
         if (schuetzenstatistikBEList == null) {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for Veranstaltungs-ID '%s'", veranstaltungId));
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, ("No result found for Veranstaltungs-ID '%s'"+ veranstaltungId+ "and Verein-ID"+ vereinId));
         }
 
         for (int i = 0; i < schuetzenstatistikBEList.size(); i++) {
@@ -61,11 +60,11 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
     }
 
     @Override
-    public List<SchuetzenstatistikDO> getSchuetzenstatistikWettkampf(Long wettkampfId) {
+    public List<SchuetzenstatistikDO> getSchuetzenstatistikWettkampf(Long wettkampfId, Long vereinId) {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_WETTKAMPFID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
-        final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikWettkampf(wettkampfId);
+        final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
 
         if (schuetzenstatistikBEList == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
