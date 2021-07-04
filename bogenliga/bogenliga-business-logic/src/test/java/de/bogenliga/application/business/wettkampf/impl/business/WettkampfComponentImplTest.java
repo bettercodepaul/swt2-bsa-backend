@@ -30,6 +30,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
@@ -66,6 +67,7 @@ public class WettkampfComponentImplTest {
     private static final long wettkampf_Disziplin_Id = 3;
     private static final long wettkampf_Wettkampftyp_Id = 1;
     private static final long wettkampf_Ausrichter = 8;
+    private static final long match_Begegnung = 1;
     public static final int PFEIL1 = 10;
     public static final int PFEIL2 = 9;
     public static final int PFEIL3 = 9;
@@ -120,6 +122,27 @@ public class WettkampfComponentImplTest {
         return expectedBE;
     }
 
+    public static MatchDO getMatchDO()
+    {
+        final MatchDO expectedDO = new MatchDO(0l,0l,
+                wettkampf_Id,
+                mannschaft_id,
+                match_Begegnung,
+                1l,
+                8l,
+                0l,
+                0l,
+                0l,
+                1l,
+                0l,
+                0l,
+                null,
+                0l,
+                null,
+                0l,
+                1l);
+        return expectedDO;
+    }
 
     public static WettkampfDO getWettkampfDO() {
         return new WettkampfDO(wettkampf_Id,
@@ -632,19 +655,18 @@ public class WettkampfComponentImplTest {
 
 
     @Test
-    public void testGetgetUebersichtPDFasByteArray() throws IOException {
+    public void testGetUebersichtPDFasByteArray() throws IOException {
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
 
         List<WettkampfBE> wettkampflisteBEList = new ArrayList<WettkampfBE>();
         wettkampflisteBEList.add(getWettkampfBE());
         wettkampflisteBEList.add(getWettkampfBE());
-        List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
 
         long expectedWettkampfTag = 7;
         int veranstaltungsid = 1;
 
-        when(wettkampfDAO.findAllByVeranstaltungId(anyInt())).thenReturn(wettkampflisteBEList);
+        when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampflisteBEList);
         
         assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag() == expectedWettkampfTag);
 
