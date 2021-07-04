@@ -101,6 +101,8 @@ public class WettkampfComponentImplTest {
     private WettkampfComponentImpl underTest;
     @Captor
     private ArgumentCaptor<WettkampfBE> wettkampfBEArgumentCaptor;
+    @Mock
+    private MatchDO matchDO;
 
 
     /***
@@ -682,6 +684,18 @@ public class WettkampfComponentImplTest {
         ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
         PdfReader reader = new PdfReader(serializedPDF);
         PdfDocument deserialized = new PdfDocument(reader);
+    }
+
+
+    @Test
+    public void sortForDisplay()
+    {
+        List<MatchDO> matches = new ArrayList<>();
+        matches.add(getMatchDO());
+        matches.add(getMatchDO());
+        matches.add(getMatchDO());
+
+        underTest.sortForDisplay(matches);
     }
 }
 
