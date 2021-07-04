@@ -631,8 +631,7 @@ public class WettkampfComponentImplTest {
 
 
     @Test
-    public void testGetgetUebersichtPDFasByteArray()
-    {
+    public void testGetgetUebersichtPDFasByteArray() throws IOException {
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(-1,1)).isInstanceOf(BusinessException.class);
         assertThatThrownBy(() -> underTest.getUebersichtPDFasByteArray(1,-1)).isInstanceOf(BusinessException.class);
 
@@ -646,6 +645,12 @@ public class WettkampfComponentImplTest {
         assertThat(wettkampflisteBEList.get(anyInt()).getWettkampfTag() == expectedWettkampfTag);
 
         byte[] pdf = underTest.getUebersichtPDFasByteArray(0, expectedWettkampfTag);
+
+        Assertions.assertThat(pdf).isNotNull().isNotEmpty();
+
+        ByteArrayInputStream serializedPDF = new ByteArrayInputStream(pdf);
+        PdfReader reader = new PdfReader(serializedPDF);
+        PdfDocument deserialized = new PdfDocument(reader);
     }
 }
 
