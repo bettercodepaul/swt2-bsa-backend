@@ -14,6 +14,7 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
     private Long configurationId;
     private String configurationKey;
     private String configurationValue;
+    private String configurationRegex;
     /**
      * Constructor
      */
@@ -31,6 +32,7 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
                 ", id=" + configurationId + '\'' +
                 ", key=" + configurationKey + '\'' +
                 ", value=" + configurationValue + '\'' +
+                ", regex=" + configurationRegex + '\'' +
                 "}";
     }
 
@@ -58,4 +60,13 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
         this.configurationValue = configurationValue;
     }
 
+
+    public String getConfigurationRegex() {
+        return configurationRegex;
+    }
+
+
+    public void setConfigurationRegex(String configurationRegex) {
+        this.configurationRegex = configurationRegex;
+    }
 }
