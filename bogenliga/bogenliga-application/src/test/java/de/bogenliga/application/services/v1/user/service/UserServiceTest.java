@@ -273,17 +273,16 @@ public class UserServiceTest {
     }
 
 
+    // tests for getAllUsersByRoleId
     @Test
     public void getAllUsersByRoleId() {
         // prepare test data
-        final UserRoleDO userRole1 = new UserRoleDO();
-        userRole1.setRoleId(1L);
-        final UserRoleDO userRole2 = new UserRoleDO();
-        userRole1.setRoleId(2L);
+        final UserRoleDO userRole = new UserRoleDO();
+        userRole.setRoleId(ROLE_ID);
+        userRole.setEmail(EMAIL);
 
         final List<UserRoleDO> userRoleList = new ArrayList<>();
-        userRoleList.add(userRole1);
-        userRoleList.add(userRole2);
+        userRoleList.add(userRole);
 
         // configure mocks
         when(userRoleComponent.findByRoleId(anyLong())).thenReturn(userRoleList);
@@ -292,14 +291,19 @@ public class UserServiceTest {
         final List<UserRoleDTO> actual = underTest.getAllUsersByRoleId(ROLE_ID);
 
         // assert result
-        assertThat(actual).isNotNull().hasSize(2);
+        assertThat(actual).isNotNull().hasSize(1);
+
+        assertThat(actual.get(0).getEmail())
+                .isEqualTo(userRole.getEmail());
+        assertThat(actual.get(0).getRoleId())
+                .isEqualTo(userRole.getRoleId());
 
         // verify invocations
         verify(userRoleComponent).findByRoleId(ROLE_ID);
     }
 
     @Test
-    public void getAllUsersByRoleId_withoutUser_shouldThrowException() {
+    public void getAllUsersByRoleId_withInvalidRoleId_shouldThrowException() {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.getAllUsersByRoleId(-1L))
@@ -307,7 +311,7 @@ public class UserServiceTest {
                 .withNoCause();
 
         // verify invocations
-        verify(userRoleComponent, never()).findByRoleId(anyLong());
+        verify(userRoleComponent, never()).findByRoleId(ROLE_ID);
     }
 
 

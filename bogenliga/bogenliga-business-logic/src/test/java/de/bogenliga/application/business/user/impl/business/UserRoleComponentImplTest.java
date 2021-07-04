@@ -88,6 +88,7 @@ public class UserRoleComponentImplTest {
     private ArgumentCaptor<UserRoleBE> userRoleBEArgumentCaptor;
 
 
+
     @Test
     public void findAll() {
         // prepare test data
@@ -166,7 +167,6 @@ public class UserRoleComponentImplTest {
         verify(userRoleExtDAO).findById(ID);
     }
 
-
     @Test
     public void findById_withoutId_shouldThrowException() {
         // prepare test data
@@ -184,7 +184,6 @@ public class UserRoleComponentImplTest {
         // verify invocations
         verify(userRoleExtDAO, never()).findById(anyLong());
     }
-
 
     @Test
     public void findById_withInvalidId_shouldThrowException() {
@@ -204,7 +203,6 @@ public class UserRoleComponentImplTest {
         verify(userRoleExtDAO, never()).findById(anyLong());
     }
 
-
     @Test
     public void findById_notResult() {
         // prepare test data
@@ -223,6 +221,75 @@ public class UserRoleComponentImplTest {
 
         // verify invocations
         verify(userRoleExtDAO).findById(ID);
+    }
+
+
+    // tests for findByRoleId
+    @Test
+    public void findByRoleId() {
+        // prepare test data
+        final UserRoleExtBE userRole = new UserRoleExtBE();
+        userRole.setRoleId(ROLE_ID);
+        userRole.setUserEmail(EMAIL);
+
+        List<UserRoleExtBE> userRoleList = new ArrayList<>();
+        userRoleList.add(userRole);
+
+        // configure mocks
+        when(userRoleExtDAO.findAll()).thenReturn(userRoleList);
+
+        // call test method
+        final List<UserRoleDO> actual = underTest.findByRoleId(ROLE_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.get(0).getEmail())
+                .isEqualTo(userRole.getUserEmail());
+        assertThat(actual.get(0).getRoleId())
+                .isEqualTo(userRole.getRoleId());
+
+        // verify invocations
+        verify(userRoleExtDAO).findAll();
+    }
+
+    @Test
+    public void findByRoleId_withoutRoleId_shouldThrowException() {
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByRoleId(null))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleExtDAO, never()).findAll();
+    }
+
+    @Test
+    public void findByRoleId_withInvalidRoleId_shouldThrowException() {
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByRoleId(-1L))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleExtDAO, never()).findAll();
+    }
+
+    @Test
+    public void findByRoleId_notResult() {
+        // configure mocks
+        when(userRoleExtDAO.findAll()).thenReturn(null);
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByRoleId(ROLE_ID))
+                .withMessageContaining("No result found")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleExtDAO).findAll();
     }
 
 
@@ -261,7 +328,6 @@ public class UserRoleComponentImplTest {
         verify(userRoleExtDAO).findByEmail(EMAIL);
     }
 
-
     @Test
     public void findByEmail_withoutEmail_shouldThrowException() {
         // prepare test data
@@ -279,7 +345,6 @@ public class UserRoleComponentImplTest {
         // verify invocations
         verify(userRoleExtDAO, never()).findById(anyLong());
     }
-
 
     @Test
     public void findByEmail_notResult() {
@@ -327,7 +392,6 @@ public class UserRoleComponentImplTest {
 
     }
 
-
     @Test
     public void create_CurrentUserIdnotNull(){
 
@@ -337,7 +401,6 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
-
 
     @Test
     public void create_RoleDefault_sucessful(){
@@ -380,7 +443,6 @@ public class UserRoleComponentImplTest {
 
     }
 
-
     @Test
     public void create_Role_UserIdnotNull(){
 
@@ -390,7 +452,6 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
-
 
     @Test
     public void create_Role_RoleIdnotNull(){
@@ -402,7 +463,6 @@ public class UserRoleComponentImplTest {
 
     }
 
-
     @Test
     public void create_Role_CurrentUserIdnotNull(){
 
@@ -412,7 +472,6 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
-
 
     @Test
     public void create_Role_sucessful(){
@@ -461,7 +520,6 @@ public class UserRoleComponentImplTest {
 
     }
 
-
     @Test
     public void update_UserDO_ID_notneagtive(){
 
@@ -480,7 +538,6 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
-
 
     @Test
     public void update_UserDO_RoleID_notneagtive(){
