@@ -8,8 +8,6 @@ import java.util.function.Function;
 
 /**
  * I map the {@link SchuetzenstatistikDO} and {@link SchuetzenstatistikDTO} objects
- *
- * @author Giuseppe Ferrera, giuseppe.ferrera@student.reutlingen-university.de
  */
 public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
     /**
@@ -25,11 +23,14 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         final int mannschaftNummer = schuetzenstatistikDO.getmannschaftNummer();
         final Long vereinId = schuetzenstatistikDO.getvereinId();
         final String vereinName = schuetzenstatistikDO.getvereinName();
-
+        final Long matchId = schuetzenstatistikDO.getMatchId();
+        final Long dsbMitgliedId = schuetzenstatistikDO.getDsbMitgliedId();
+        final String dsbMitgliedName = schuetzenstatistikDO.getDsbMitgliedName();
+        final float pfeilPunkteSchnitt = schuetzenstatistikDO.getPfeilpunkteSchnitt();
 
 
         return new SchuetzenstatistikDTO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName);
+                mannschaftNummer, vereinId, vereinName, matchId, dsbMitgliedId, dsbMitgliedName, pfeilPunkteSchnitt);
     };
     /**
      * I map the {@link SchuetzenstatistikDTO} object to the {@link SchuetzenstatistikDO} object
@@ -46,7 +47,10 @@ public class SchuetzenstatistikDTOMapper implements DataTransferObjectMapper {
         schuetzenstatistikDO.setmannschaftNummer(dto.getMannschaftNummer());
         schuetzenstatistikDO.setvereinId(dto.getVereinId());
         schuetzenstatistikDO.setvereinName(dto.getVereinName());
-
+        schuetzenstatistikDO.setMatchId(dto.getMatchId());
+        schuetzenstatistikDO.setDsbMitgliedId(dto.getDsbMitgliedId());
+        schuetzenstatistikDO.setDsbMitgliedName(dto.getDsbMitgliedName());
+        schuetzenstatistikDO.setPfeilpunkteSchnitt(dto.getPfeilpunkteSchnitt());
 
         return schuetzenstatistikDO;
     };

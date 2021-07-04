@@ -5,11 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 import java.util.Objects;
 
 /**
- * I'm the data transfer object of the liga.
- * <p>
- * I define the payload for the external REST interface of the liga business entity.
- *
- * @author Giuseppe Ferrera, giuseppe.ferrera@student.reutlingen-university.de
+ * I'm the data transfer object of the schuetzenstatistik.
  */
 public class SchuetzenstatistikDTO implements DataTransferObject {
 
@@ -26,6 +22,10 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     private int mannschaftNummer;
     private Long vereinId;
     private String vereinName;
+    private Long matchId;
+    private Long dsbMitgliedId;
+    private String dsbMitgliedName;
+    private float pfeilpunkteSchnitt;
 
     /**
      * Constructor with optional parameters
@@ -38,6 +38,10 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
      * @param mannschaftNummer;
      * @param vereinId;
      * @param vereinName;
+     * @param matchId;
+     * @param dsbMitgliedId;
+     * @param dsbMitgliedName;
+     * @param pfeilpunkteSchnitt;
 
      */
     public SchuetzenstatistikDTO(
@@ -48,7 +52,11 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
             Long mannschaftId,
             int mannschaftNummer,
             Long vereinId,
-            String vereinName
+            String vereinName,
+            Long matchId,
+            Long dsbMitgliedId,
+            String dsbMitgliedName,
+            float pfeilpunkteSchnitt
     ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
@@ -58,6 +66,10 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.mannschaftNummer = mannschaftNummer;
         this.vereinId = vereinId;
         this.vereinName = vereinName;
+        this.matchId = matchId;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.dsbMitgliedName = dsbMitgliedName;
+        this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
 
@@ -68,7 +80,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public Long getVeranstaltungId() {
         return veranstaltungId;
     }
-
     public void setVeranstaltungId(Long veranstaltungId) {
         this.veranstaltungId = veranstaltungId;
     }
@@ -76,7 +87,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public String getVeranstaltungName() {
         return veranstaltungName;
     }
-
     public void setVeranstaltungName(String veranstaltungName) {
         this.veranstaltungName = veranstaltungName;
     }
@@ -84,7 +94,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public Long getWettkampfId() {
         return wettkampfId;
     }
-
     public void setWettkampfId(Long wettkampfId) {
         this.wettkampfId = wettkampfId;
     }
@@ -92,7 +101,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public int getWettkampfTag() {
         return wettkampfTag;
     }
-
     public void setWettkampfTag(int wettkampfTag) {
         this.wettkampfTag = wettkampfTag;
     }
@@ -100,7 +108,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public Long getMannschaftId() {
         return mannschaftId;
     }
-
     public void setMannschaftId(Long mannschaftId) {
         this.mannschaftId = mannschaftId;
     }
@@ -108,7 +115,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public int getMannschaftNummer() {
         return mannschaftNummer;
     }
-
     public void setMannschaftNummer(int mannschaftNummer) {
         this.mannschaftNummer = mannschaftNummer;
     }
@@ -116,7 +122,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public Long getVereinId() {
         return vereinId;
     }
-
     public void setVereinId(Long vereinId) {
         this.vereinId = vereinId;
     }
@@ -124,9 +129,36 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     public String getVereinName() {
         return vereinName;
     }
-
     public void setVereinName(String vereinName) {
         this.vereinName = vereinName;
+    }
+
+    public Long getMatchId() {
+        return matchId;
+    }
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
+    }
+
+    public Long getDsbMitgliedId() {
+        return dsbMitgliedId;
+    }
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
+        this.dsbMitgliedId = dsbMitgliedId;
+    }
+
+    public String getDsbMitgliedName() {
+        return dsbMitgliedName;
+    }
+    public void setDsbMitgliedName(String dsbMitgliedName) {
+        this.dsbMitgliedName = dsbMitgliedName;
+    }
+
+    public float getPfeilpunkteSchnitt() {
+        return pfeilpunkteSchnitt;
+    }
+    public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
+        this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
     @Override
@@ -141,12 +173,16 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
                 wettkampfId.equals(that.wettkampfId) &&
                 mannschaftId.equals(that.mannschaftId) &&
                 vereinId.equals(that.vereinId) &&
-                Objects.equals(vereinName, that.vereinName);
+                Objects.equals(vereinName, that.vereinName) &&
+                matchId.equals(that.matchId) &&
+                dsbMitgliedId.equals(that.dsbMitgliedId) &&
+                Objects.equals(dsbMitgliedName, that.dsbMitgliedName) &&
+                pfeilpunkteSchnitt == that.pfeilpunkteSchnitt;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag,
-                mannschaftId, mannschaftNummer, vereinId, vereinName);
+                mannschaftId, mannschaftNummer, vereinId, vereinName, matchId, dsbMitgliedId, dsbMitgliedName, pfeilpunkteSchnitt);
     }
 }

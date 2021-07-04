@@ -7,11 +7,9 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * I´m a composed business entity of the user and the permission business entity.
  *
  * The user permissions are resolved with a JOIN via the user roles, roles, role permissions and permissions.
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class SchuetzenstatistikBE extends CommonBusinessEntity implements BusinessEntity {
-    private static final long serialVersionUID = -7930719922483666804L;
+    //private static final long serialVersionUID = -7930719922483666804L;
 
     private Long veranstaltungId;
     private String veranstaltungName;
@@ -21,6 +19,10 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     private int mannschaftNummer;
     private Long vereinId;
     private String vereinName;
+    private Long matchId;
+    private Long dsbMitgliedId;
+    private String dsbMitgliedName;
+    private float pfeilpunkteSchnitt;
 
 
 
@@ -31,32 +33,10 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
         // empty
     }
 
-    /** hier der select um alle übergeordneten Ligen zu einer Liga zu finden:
-     * with recursive cte AS (
-     * 	select liga_id, liga_uebergeordnet, 1 as level
-     * 	from liga
-     *
-     * 	union all
-     * 	select t.liga_id, c.liga_uebergeordnet, c.level +1
-     * 	from cte  c
-     * 	join liga t on t.liga_uebergeordnet = c.liga_id
-     * 	)select * from cte where liga_uebergeordnet notnull;
-     *
-     * 	beim select am Ende noch einschränken auf die gesuchte liga_id
-     *
-     *
-     */
-
-    /*
-     *
-     *
-     * @return
-     */
-
 
     @Override
     public String toString() {
-        return "LigatabelleBE{" +
+        return "SchuetzenstatistikBE{" +
                 "veranstaltungId=" + veranstaltungId +
                 ", veranstaltungName=" + veranstaltungId +
                 ", wettkampfId='" + wettkampfId +
@@ -65,6 +45,10 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
                 ", mannschaftNummer='" + mannschaftNummer +
                 ", vereinId='" + vereinId +
                 ", vereinName='" + vereinName +
+                ", matchId='" + matchId +
+                ", dsbMitgliedId='" + dsbMitgliedId +
+                ", dsbMitgliedName='" + dsbMitgliedName +
+                ", pfeilpunkteSchnitt='" + pfeilpunkteSchnitt +
                 '}';
     }
 
@@ -125,10 +109,31 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
         this.vereinName = vereinName;
     }
 
+    public Long getMatchId() {
+        return matchId;
+    }
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
+    }
 
+    public Long getDsbMitgliedId() {
+        return dsbMitgliedId;
+    }
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
+        this.dsbMitgliedId = dsbMitgliedId;
+    }
 
+    public String getDsbMitgliedName() {
+        return dsbMitgliedName;
+    }
+    public void setDsbMitgliedName(String dsbMitgliedName) {
+        this.dsbMitgliedName = dsbMitgliedName;
+    }
 
-
-
-
+    public float getPfeilpunkteSchnitt() {
+        return pfeilpunkteSchnitt;
+    }
+    public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
+        this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
+    }
 }

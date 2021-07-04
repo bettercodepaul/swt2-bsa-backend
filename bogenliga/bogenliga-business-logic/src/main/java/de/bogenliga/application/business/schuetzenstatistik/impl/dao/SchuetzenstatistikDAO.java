@@ -4,6 +4,7 @@ import de.bogenliga.application.business.schuetzenstatistik.impl.entity.Schuetze
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
+import de.bogenliga.application.common.database.queries.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     private static final String MANNSCHAFTNUMMER_BE = "mannschaftNummer";
     private static final String VEREINID_BE = "vereinId";
     private static final String VEREINNAME_BE = "vereinName";
+    private static final String MATCHID_BE = "matchId";
+    private static final String DSBMITGLIEDID_BE = "dsbMitgliedId";
+    private static final String DSBMITGLIEDNAME_BE = "dsbMitgliedName";
+    private static final String PFEILPUNKTESCHNITT_BE = "pfeilpunkteSchnitt";
 
 
     private static final String VERANSTALTUNGID_TABLE = "schuetzenstatistik_veranstaltung_id";
@@ -49,6 +54,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     private static final String MANNSCHAFTNUMMER_TABLE = "schuetzenstatistik_mannschaft_nummer";
     private static final String VEREINID_TABLE = "schuetzenstatistik_verein_id";
     private static final String VEREINNAME_TABLE = "schuetzenstatistik_verein_name";
+    private static final String MATCHID_TABLE = "schuetzenstatistik_match_id";
+    private static final String DSBMITGLIEDID_TABLE = "schuetzenstatistik_dsb_mitglied_id";
+    private static final String DSBMITGLIEDNAME_TABLE = "schuetzenstatistik_dsb_mitglied_name";
+    private static final String PFEILPUNKTESCHNITT_TABLE = "schuetzenstatistik_pfeilpunkte_schnitt";
 
     /*
      * SQL queries
@@ -61,127 +70,75 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     * hier jetzt erst mal der Select für Match-Punkte vor Satzpunkt-Differenz
     * sollte für Liga-Satzsystem passen
      */
-    private static final String GET_SCHUETZENSTATISTIK =
-        "SELECT lt.schuetzenstatistik" +
-                "_veranstaltung_id, lt.schuetzenstatistik" +
-                "_veranstaltung_name," +
-           "lt.schuetzenstatistik" +
-                "_wettkampf_id, lt.schuetzenstatistik" +
-                "_wettkampf_tag, lt.schuetzenstatistik" +
-                "_mannschaft_id, lt.schuetzenstatistik" +
-                "_mannschaft_nummer," +
-                "lt.schuetzenstatistik" +
-                "_verein_id, lt.schuetzenstatistik" +
-                "_verein_name, lt.schuetzenstatistik" +
-                "_matchpkt, lt.schuetzenstatistik" +
-                "_matchpkt_gegen," +
-           "lt.schuetzenstatistik" +
-                "_satzpkt, lt.schuetzenstatistik" +
-                "_satzpkt_gegen, lt.schuetzenstatistik" +
-                "_satzpkt_differenz, lt.schuetzenstatistik" +
-                "_sortierung," +
-           "row_number()  over (" +
-             "order by lt.schuetzenstatistik" +
-                "_matchpkt desc, lt.schuetzenstatistik" +
-                "_matchpkt_gegen," +
-               "lt.schuetzenstatistik" +
-                "_satzpkt_differenz desc, lt.schuetzenstatistik" +
-                "_satzpkt desc," +
-               "lt.schuetzenstatistik" +
-                "_satzpkt_gegen, lt.schuetzenstatistik" +
-                "_sortierung," +
-               "lt.schuetzenstatistik" +
-                "_veranstaltung_id, lt.schuetzenstatistik" +
-                "_veranstaltung_name," +
-               "lt.schuetzenstatistik" +
-                "_wettkampf_id, lt.schuetzenstatistik" +
-                "_wettkampf_tag," +
-               "lt.schuetzenstatistik" +
-                "_mannschaft_id, lt.schuetzenstatistik" +
-                "_mannschaft_nummer," +
-               "lt.schuetzenstatistik" +
-                "_verein_id, lt.schuetzenstatistik" +
-                "_verein_name" +
-             ")as tabellenplatz from schuetzenstatistik" +
-                " as lt where lt.schuetzenstatistik" +
-                "_veranstaltung_id = ?" +
-        "and lt.schuetzenstatistik" +
-                "_wettkampf_tag = (" +
-            "select max(ligat.schuetzenstatistik" +
-                "_wettkampf_tag) " +
-            "from schuetzenstatistik" +
-                " as ligat where ligat.schuetzenstatistik" +
-                "_veranstaltung_id = lt.schuetzenstatistik" +
-                "_veranstaltung_id)";
+    private static final String GET_SCHUETZENSTATISTIK = new QueryBuilder().selectFields(
+            VERANSTALTUNGID_TABLE,
+            VERANSTALTUNGNAME_TABLE,
+            WETTKAMPFID_TABLE,
+            WETTKAMPFTAG_TABLE,
+            MANNSCHAFTID_TABLE,
+            MANNSCHAFTNUMMER_TABLE,
+            VEREINID_TABLE,
+            VEREINNAME_TABLE,
+            MATCHID_TABLE,
+            DSBMITGLIEDID_TABLE,
+            DSBMITGLIEDNAME_TABLE,
+            "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+    )
+            .from(TABLE)
+            .whereEquals(VEREINID_TABLE)
+            .andEquals(VERANSTALTUNGID_TABLE)
+            .groupBy(
+                    VERANSTALTUNGID_TABLE,
+                    VERANSTALTUNGNAME_TABLE,
+                    WETTKAMPFID_TABLE,
+                    WETTKAMPFTAG_TABLE,
+                    MANNSCHAFTID_TABLE,
+                    MANNSCHAFTNUMMER_TABLE,
+                    VEREINID_TABLE,
+                    VEREINNAME_TABLE,
+                    MATCHID_TABLE,
+                    DSBMITGLIEDID_TABLE,
+                    DSBMITGLIEDNAME_TABLE,
+                    "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+            )
+            .orderBy("SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt")
+            .compose().toString();
 
     /* der Select liefert die aktuelle Schuetzenstatistik zur Wettkampf-ID
-     * ggf. mpüssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
-     * hier jetzt erst mal der Select für Match-Punkte vor Satzpunkt-Differenz
-     * sollte für Liga-Satzsystem passen
      */
-    private static final String GET_SCHUETZENSTATISTIK_WETTKAMPF =
-            "SELECT schuetzenstatistik" +
-                    "_veranstaltung_id, "+
-                    "schuetzenstatistik" +
-                    "_veranstaltung_name," +
-                    "schuetzenstatistik" +
-                    "_wettkampf_id," +
-                    "schuetzenstatistik" +
-                    "_wettkampf_tag," +
-                    "schuetzenstatistik" +
-                    "_mannschaft_id," +
-                    "schuetzenstatistik" +
-                    "_mannschaft_nummer," +
-                    "schuetzenstatistik" +
-                    "_verein_id," +
-                    "schuetzenstatistik" +
-                    "_verein_name," +
-                    "schuetzenstatistik" +
-                    "_matchpkt," +
-                    "schuetzenstatistik" +
-                    "_matchpkt_gegen," +
-                    "schuetzenstatistik" +
-                    "_satzpkt," +
-                    "schuetzenstatistik" +
-                    "_satzpkt_gegen," +
-                    "schuetzenstatistik" +
-                    "_satzpkt_differenz," +
-                    "schuetzenstatistik" +
-                    "_sortierung," +
-                    "row_number()  over (" +
-                        "order by schuetzenstatistik" +
-                    "_matchpkt desc ," +
-                        "schuetzenstatistik" +
-                    "_matchpkt_gegen," +
-                        "schuetzenstatistik" +
-                    "_satzpkt_differenz desc," +
-                        "schuetzenstatistik" +
-                    "_satzpkt desc," +
-                        "schuetzenstatistik" +
-                    "_satzpkt_gegen," +
-                        "schuetzenstatistik" +
-                    "_sortierung," +
-                        "schuetzenstatistik" +
-                    "_veranstaltung_id," +
-                        "schuetzenstatistik" +
-                    "_veranstaltung_name," +
-                        "schuetzenstatistik" +
-                    "_wettkampf_id," +
-                        "schuetzenstatistik" +
-                    "_wettkampf_tag," +
-                        "schuetzenstatistik" +
-                    "_mannschaft_id," +
-                        "schuetzenstatistik" +
-                    "_mannschaft_nummer," +
-                        "schuetzenstatistik" +
-                    "_verein_id," +
-                        "schuetzenstatistik" +
-                    "_verein_name" +
-                        ")as tabellenplatz" +
-                    "from schuetzenstatistik" +
-                    "" +
-                    "where schuetzenstatistik" +
-                    "_wettkampf_id = ?" ;
+    private static final String GET_SCHUETZENSTATISTIK_WETTKAMPF = new QueryBuilder().selectFields(
+                VERANSTALTUNGID_TABLE,
+                VERANSTALTUNGNAME_TABLE,
+                WETTKAMPFID_TABLE,
+                WETTKAMPFTAG_TABLE,
+                MANNSCHAFTID_TABLE,
+                MANNSCHAFTNUMMER_TABLE,
+                VEREINID_TABLE,
+                VEREINNAME_TABLE,
+                MATCHID_TABLE,
+                DSBMITGLIEDID_TABLE,
+                DSBMITGLIEDNAME_TABLE,
+                "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+            )
+            .from(TABLE)
+            .whereEquals(VEREINID_TABLE)
+            .andEquals(WETTKAMPFID_TABLE)
+            .groupBy(
+                    VERANSTALTUNGID_TABLE,
+                    VERANSTALTUNGNAME_TABLE,
+                    WETTKAMPFID_TABLE,
+                    WETTKAMPFTAG_TABLE,
+                    MANNSCHAFTID_TABLE,
+                    MANNSCHAFTNUMMER_TABLE,
+                    VEREINID_TABLE,
+                    VEREINNAME_TABLE,
+                    MATCHID_TABLE,
+                    DSBMITGLIEDID_TABLE,
+                    DSBMITGLIEDNAME_TABLE,
+                    "SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt"
+            )
+            .orderBy("SUM(schuetzenstatistik_pfeilpunkte_schnitt)/COUNT(schuetzenstatistik_pfeilpunkte_schnitt) as pfeilpunkte_schnitt")
+            .compose().toString();
 
 
     // wrap all specific config parameters
@@ -217,6 +174,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
         columnsToFieldsMap.put(MANNSCHAFTNUMMER_TABLE, MANNSCHAFTNUMMER_BE);
         columnsToFieldsMap.put(VEREINID_TABLE, VEREINID_BE);
         columnsToFieldsMap.put(VEREINNAME_TABLE, VEREINNAME_BE);
+        columnsToFieldsMap.put(MATCHID_TABLE, MATCHID_BE);
+        columnsToFieldsMap.put(DSBMITGLIEDID_TABLE, DSBMITGLIEDID_BE);
+        columnsToFieldsMap.put(DSBMITGLIEDNAME_TABLE, DSBMITGLIEDNAME_BE);
+        columnsToFieldsMap.put(PFEILPUNKTESCHNITT_TABLE, PFEILPUNKTESCHNITT_BE);
 
 
         return columnsToFieldsMap;
@@ -235,8 +196,5 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     public List<SchuetzenstatistikBE> getSchuetzenstatistikWettkampf(final long id) {
         return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK_WETTKAMPF, id);
     }
-
-
-
-
+    
 }
