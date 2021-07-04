@@ -19,13 +19,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
- *
- * @author Giuseppe Ferrera, giuseppe.ferrera@student.reutlingen-university.de
+ * I'm a REST resource and handle schuetzenstatistik CRUD requests over the HTTP protocol
  */
 @RestController
 @CrossOrigin
-@RequestMapping("v1/mannschaft")
+@RequestMapping("v1/schuetzenstatistik")
 public class SchuetzenstatistikService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";

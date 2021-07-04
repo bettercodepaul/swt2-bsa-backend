@@ -32,6 +32,10 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         final int mannschaftNummer=be.getMannschaftNummer();
         final Long vereinId=be.getVereinId();
         final String vereinName=be.getVereinName();
+        final Long matchId = be.getMatchId();
+        final Long dsbMitgliedId = be.getDsbMitgliedId();
+        final String dsbMitgliedName = be.getDsbMitgliedName();
+        final float pfeilPunkteSchnitt = be.getPfeilpunkteSchnitt();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -41,9 +45,8 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new SchuetzenstatistikDO ( veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName);
-
+        return new SchuetzenstatistikDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
+                mannschaftNummer, vereinId, vereinName, matchId, dsbMitgliedId, dsbMitgliedName, pfeilPunkteSchnitt);
     };
 
      /**
@@ -54,7 +57,7 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getLastModifiedAtUtc());
 
-         SchuetzenstatistikBE schuetzenstatistik = new SchuetzenstatistikBE();
+        SchuetzenstatistikBE schuetzenstatistik = new SchuetzenstatistikBE();
 
         schuetzenstatistik.setVeranstaltungId(vo.getveranstaltungId());
         schuetzenstatistik.setVeranstaltungName(vo.getveranstaltungName());
@@ -64,6 +67,10 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         schuetzenstatistik.setMannschaftNummer(vo.getmannschaftNummer());
         schuetzenstatistik.setVereinId(vo.getvereinId());
         schuetzenstatistik.setVereinName(vo.getvereinName());
+        schuetzenstatistik.setMatchId(vo.getMatchId());
+        schuetzenstatistik.setDsbMitgliedId(vo.getDsbMitgliedId());
+        schuetzenstatistik.setDsbMitgliedName(vo.getDsbMitgliedName());
+        schuetzenstatistik.setPfeilpunkteSchnitt(vo.getPfeilpunkteSchnitt());
 
         return schuetzenstatistik;
     };
