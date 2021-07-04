@@ -628,7 +628,7 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(expectedDO.getWettkampfAusrichter());
     }
 
-    
+
 
     @Test
     public void testGetgetUebersichtPDFasByteArray()
@@ -641,11 +641,13 @@ public class WettkampfComponentImplTest {
         wettkampflisteBEList.add(getWettkampfBE());
         List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
 
-        long expectedWettkampfTag = 1;
-        when(wettkampflisteBEList.get(0).getWettkampfTag()).thenReturn(expectedWettkampfTag);
-        when(wettkampflisteBEList.get(1).getWettkampfTag()).thenReturn(expectedWettkampfTag);
+        long expectedWettkampfTag = 7;
 
-        
+        assertThat(wettkampflisteBEList.get(anyInt()).getWettkampfTag() == expectedWettkampfTag);
+
+
+
+        underTest.getUebersichtPDFasByteArray(0, expectedWettkampfTag);
 
 
 
