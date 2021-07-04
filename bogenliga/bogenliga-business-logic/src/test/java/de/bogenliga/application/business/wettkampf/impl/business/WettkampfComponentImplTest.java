@@ -40,6 +40,7 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
+import static org.assertj.core.api.Java6Assertions.anyOf;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -640,13 +641,14 @@ public class WettkampfComponentImplTest {
         wettkampflisteBEList.add(getWettkampfBE());
         List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
 
-        when(wettkampfDAO.findAllByVeranstaltungId(anyInt())).thenReturn(wettkampflisteBEList);
-
         long expectedWettkampfTag = 7;
+        int veranstaltungsid = 1;
 
-        assertThat(wettkampflisteBEList.get(anyInt()).getWettkampfTag() == expectedWettkampfTag);
+        when(wettkampfDAO.findAllByVeranstaltungId(anyInt())).thenReturn(wettkampflisteBEList);
+        
+        assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag() == expectedWettkampfTag);
 
-        byte[] pdf = underTest.getUebersichtPDFasByteArray(0, expectedWettkampfTag);
+        byte[] pdf = underTest.getUebersichtPDFasByteArray(veranstaltungsid, expectedWettkampfTag);
 
         Assertions.assertThat(pdf).isNotNull().isNotEmpty();
 
