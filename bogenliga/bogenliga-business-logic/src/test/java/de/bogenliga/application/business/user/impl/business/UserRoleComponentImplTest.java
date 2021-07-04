@@ -130,6 +130,7 @@ public class UserRoleComponentImplTest {
     }
 
 
+    // tests for findById
     @Test
     public void findById() {
         // prepare test data
@@ -224,6 +225,8 @@ public class UserRoleComponentImplTest {
         verify(userRoleExtDAO).findById(ID);
     }
 
+
+    // tests for findByEmail
     @Test
     public void findByEmail() {
         // prepare test data
@@ -258,6 +261,7 @@ public class UserRoleComponentImplTest {
         verify(userRoleExtDAO).findByEmail(EMAIL);
     }
 
+
     @Test
     public void findByEmail_withoutEmail_shouldThrowException() {
         // prepare test data
@@ -275,6 +279,7 @@ public class UserRoleComponentImplTest {
         // verify invocations
         verify(userRoleExtDAO, never()).findById(anyLong());
     }
+
 
     @Test
     public void findByEmail_notResult() {
@@ -297,7 +302,6 @@ public class UserRoleComponentImplTest {
     }
 
 
-
     @Test
     public void signIn() {
         // prepare test data
@@ -312,6 +316,7 @@ public class UserRoleComponentImplTest {
     }
 
 
+    // tests for create
     @Test
     public void create_UserIdnotNull(){
 
@@ -322,6 +327,7 @@ public class UserRoleComponentImplTest {
 
     }
 
+
     @Test
     public void create_CurrentUserIdnotNull(){
 
@@ -331,6 +337,7 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
+
 
     @Test
     public void create_RoleDefault_sucessful(){
@@ -406,6 +413,7 @@ public class UserRoleComponentImplTest {
 
     }
 
+
     @Test
     public void create_Role_sucessful(){
 
@@ -442,10 +450,7 @@ public class UserRoleComponentImplTest {
     }
 
 
-
-
-
-
+    // tests for update
     @Test
     public void update_UserRoleDO_notNull(){
 
@@ -455,6 +460,7 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
+
 
     @Test
     public void update_UserDO_ID_notneagtive(){
@@ -475,6 +481,7 @@ public class UserRoleComponentImplTest {
 
     }
 
+
     @Test
     public void update_UserDO_RoleID_notneagtive(){
 
@@ -493,6 +500,7 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
+
 
     @Test
     public void sendFeedback() {
@@ -543,10 +551,5 @@ public class UserRoleComponentImplTest {
 
 
     }
-
-
-
-
-
 
 }

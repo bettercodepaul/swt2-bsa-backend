@@ -178,7 +178,6 @@ public class UserServiceTest {
 
     }
 
-
     @Test
     public void login_not_authorized() throws Exception {
         // prepare test data
@@ -293,7 +292,22 @@ public class UserServiceTest {
         final List<UserRoleDTO> actual = underTest.getAllUsersByRoleId(ROLE_ID);
 
         // assert result
-        assertThat(actual).isNotNull().hasSize(1);
+        assertThat(actual).isNotNull().hasSize(2);
+
+        // verify invocations
+        verify(userRoleComponent).findByRoleId(ROLE_ID);
+    }
+
+    @Test
+    public void getAllUsersByRoleId_withoutUser_shouldThrowException() {
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.getAllUsersByRoleId(-1L))
+                .withMessageContaining("RoleID must not be negative.")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleComponent, never()).findByRoleId(anyLong());
     }
 
 
@@ -335,7 +349,6 @@ public class UserServiceTest {
 
     }
 
-
     @Test
     public void update_withoutCredentials_shouldThrowException() {
         // prepare test data
@@ -357,7 +370,6 @@ public class UserServiceTest {
 
 
     }
-
 
     @Test
     public void update_withoutPassword_shouldThrowException() {
@@ -386,7 +398,6 @@ public class UserServiceTest {
 
 
     }
-
 
     @Test
     public void update_withoutNewPassword_shouldThrowException() {
@@ -452,7 +463,6 @@ public class UserServiceTest {
         assertThat(actual.getEmail()).isNotEqualTo(loggedInUser.getEmail());
     }*/
 
-
     @Test
     public void reset_withoutCredentials_shouldThrowException() {
         // prepare test data
@@ -474,7 +484,6 @@ public class UserServiceTest {
 
 
     }
-
 
     @Test
     public void reset_withoutNewPassword_shouldThrowException() {
@@ -550,7 +559,6 @@ public class UserServiceTest {
 
     }
 
-
     @Test
     public void update_withoutUserRoleDTO_shouldThrowException() {
         // prepare test data
@@ -571,7 +579,6 @@ public class UserServiceTest {
 
 
     }
-
 
     @Test
     public void updateRole_withoutUserID_shouldThrowException() {
@@ -607,7 +614,6 @@ public class UserServiceTest {
                 .withNoCause();
 
     }
-
 
     @Test
     public void updateRole_withoutRoleId_shouldThrowException() {
@@ -775,7 +781,6 @@ public class UserServiceTest {
 
     }
 
-
     @Test
     public void create_whithoutCredentials_shouldThrowException() {
 
@@ -804,7 +809,6 @@ public class UserServiceTest {
 
 
     }
-
 
     @Test
     public void create_whithoutUsername_shouldThrowException() {
@@ -835,7 +839,6 @@ public class UserServiceTest {
 
     }
 
-
     @Test
     public void create_whithoutPassword_shouldThrowException() {
 
@@ -864,7 +867,6 @@ public class UserServiceTest {
 
 
     }
-
 
     @Test
     public void create_withInvalidPassword_shouldThrowException() {
