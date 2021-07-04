@@ -640,6 +640,8 @@ public class WettkampfComponentImplTest {
         wettkampflisteBEList.add(getWettkampfBE());
         List<WettkampfBE> wettkaempfeAmTag = new ArrayList<WettkampfBE>();
 
+        when(wettkampfDAO.findAllByVeranstaltungId(anyInt())).thenReturn(wettkampflisteBEList);
+
         long expectedWettkampfTag = 7;
 
         assertThat(wettkampflisteBEList.get(anyInt()).getWettkampfTag() == expectedWettkampfTag);
