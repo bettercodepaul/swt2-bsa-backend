@@ -8,6 +8,7 @@ import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
 import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -45,6 +46,17 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         return kampfrichterBEList.stream().map(KampfrichterMapper.toKampfrichterDO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<KampfrichterDO> findByWettkampfidNotInWettkampftag(final long wettkampfId){
+        final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidNotInWettkampftag(wettkampfId);
+        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<KampfrichterDO> findByWettkampfidInWettkampftag(final long wettkampfId){
+        final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidInWettkampftag(wettkampfId);
+        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
+    }
 
     @Override
     public KampfrichterDO findById(final long userId) {
