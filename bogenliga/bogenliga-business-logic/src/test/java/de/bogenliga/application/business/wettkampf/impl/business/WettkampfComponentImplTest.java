@@ -671,6 +671,7 @@ public class WettkampfComponentImplTest {
 
         when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampflisteBEList);
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(Collections.singletonList(getMatchDO()));
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
         
         assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag() == expectedWettkampfTag);
 
