@@ -30,6 +30,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
@@ -94,6 +95,8 @@ public class WettkampfComponentImplTest {
     private DsbMannschaftComponent dsbManschaftComponent;
     @Mock
     private VereinComponent vereinComponent;
+    @Mock
+    private MatchComponent matchComponent;
     @InjectMocks
     private WettkampfComponentImpl underTest;
     @Captor
@@ -667,6 +670,7 @@ public class WettkampfComponentImplTest {
         int veranstaltungsid = 1;
 
         when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampflisteBEList);
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(Collections.singletonList(getMatchDO()));
         
         assertThat(wettkampflisteBEList.get(veranstaltungsid).getWettkampfTag() == expectedWettkampfTag);
 
