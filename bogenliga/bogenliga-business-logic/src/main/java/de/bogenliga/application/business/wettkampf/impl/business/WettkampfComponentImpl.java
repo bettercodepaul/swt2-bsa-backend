@@ -239,16 +239,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.setFontSize(9.2f);
         doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltung_name()));
         doc.add(new Paragraph("Mannschaft: " + getTeamName(mannschaftsid)));
-        doc.add(new Paragraph("Jahr: " +Integer.toString(jahr)));
+        doc.add(new Paragraph("Jahr: " + jahr));
         doc.add(new Paragraph(""));
 
         if(header.equals("Einzelstatistik"))
         {
             generateEinzel(doc, wettkampflisteBEList, mannschaftsid);
         }
-        else if(header.equals( "Gesamtstatistik"))
-        {
-            generateGesammt(doc, wettkampflisteBEList, mannschaftsid);
+        else {
+            generateGesamt(doc, wettkampflisteBEList, mannschaftsid);
         }
 
         doc.close();
@@ -421,7 +420,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     //Generiert Tabelle für Gesammtstatistik
-    void generateGesammt(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
+    void generateGesamt(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
         List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
 
