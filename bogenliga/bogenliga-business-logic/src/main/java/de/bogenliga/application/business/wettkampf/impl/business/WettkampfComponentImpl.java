@@ -81,7 +81,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final LigatabelleComponent ligatabelleComponent;
+    private LigatabelleComponent ligatabelleComponent;
 
     /**
      * Constructor
@@ -89,7 +89,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * dependency injection with {@link Autowired}
      *
      * @param wettkampfDAO to access the database and return dsbmitglied representations
-     * @param ligatabelleComponent
      */
     @Autowired
     public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,
@@ -100,8 +99,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final DsbMannschaftComponent dsbMannschaftComponent,
                                   final VereinComponent vereinComponent,
                                   final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
-                                  final VeranstaltungDAO veranstaltungDAO,
-                                  final LigatabelleComponent ligatabelleComponent) {
+                                  final VeranstaltungDAO veranstaltungDAO) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.passeComponent = passeComponent;
@@ -111,7 +109,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
         this.veranstaltungDAO = veranstaltungDAO;
-        this.ligatabelleComponent = ligatabelleComponent;
     }
 
     @Autowired
@@ -122,6 +119,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Autowired
     public void setVeranstaltungComponent(final VeranstaltungComponent veranstaltungComponent){
         this.veranstaltungComponent = veranstaltungComponent;
+    }
+
+    @Autowired
+    public void setLigatabelleComponent(final LigatabelleComponent ligatabelleComponent)
+    {
+        this.ligatabelleComponent = ligatabelleComponent;
     }
 
     @Override
