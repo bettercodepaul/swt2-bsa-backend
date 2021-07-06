@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.user.api.types.UserRoleDO;
+import de.bogenliga.application.business.user.impl.business.UserRoleComponentImpl;
+import de.bogenliga.application.business.user.impl.business.UserComponentImpl;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -46,21 +50,27 @@ public class WettkampfService implements ServiceFacade {
 
     private final WettkampfComponent wettkampfComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-
+    private final UserRoleComponentImpl userroleComponent;
+    private final UserComponentImpl userComponent;
 
 
     /**
      * Constructor with dependency injection
-     *
      * @param wettkampfComponent to handle the database CRUD requests
      * @param requiresOnePermissionAspect Zugang zur datenspezifischen Berechtigungsprüfung
+     * @param userroleComponent Zugang zu den Nutzerrollen
+     * @param userComponent Zugang zu Benutzern
      */
 
     @Autowired
     public WettkampfService(final WettkampfComponent wettkampfComponent,
-                            RequiresOnePermissionAspect requiresOnePermissionAspect) {
+                            RequiresOnePermissionAspect requiresOnePermissionAspect,
+                            UserRoleComponentImpl userroleComponent,
+                            UserComponentImpl userComponent) {
         this.wettkampfComponent = wettkampfComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+        this.userroleComponent = userroleComponent;
+        this.userComponent = userComponent;
     }
 
 
@@ -144,6 +154,26 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfDO savedWettkampfDO = wettkampfComponent.create(newWettkampfDO, userId);
+        // Rechte an Ausrichter weitergeben
+        List<UserRoleDO> roles = userroleComponent.findById(savedWettkampfDO.getWettkampfAusrichter());
+        UserDO user = userComponent.findById(savedWettkampfDO.getWettkampfAusrichter());
+
+        UserRoleDO ausrichterRole = new UserRoleDO(user.getId(),user.getEmail(),user.isActive(),4L,"AUSRICHTER");
+
+        //prüfen, ob bereits Ausrichter
+        boolean hasAusrichterRole = false;
+        for (UserRoleDO role: roles){
+            if (role.getRoleId().equals(ausrichterRole.getRoleId())) {
+                hasAusrichterRole = true;
+                break;
+            }
+        }
+        if(!hasAusrichterRole){
+            // neue Rolle hinzufügen
+            roles.add(ausrichterRole);
+            // Rollen für User übernehmen
+            userroleComponent.update(roles, savedWettkampfDO.getWettkampfAusrichter());
+        }
         return WettkampfDTOMapper.toDTO.apply(savedWettkampfDO);
     }
 
@@ -206,7 +236,29 @@ public class WettkampfService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
+
+        // Rechte an Ausrichter weitergeben
+        List<UserRoleDO> roles = userroleComponent.findById(updatedWettkampfDO.getWettkampfAusrichter());
+        UserDO user = userComponent.findById(updatedWettkampfDO.getWettkampfAusrichter());
+
+        UserRoleDO ausrichterRole = new UserRoleDO(user.getId(),user.getEmail(),user.isActive(),4L,"AUSRICHTER");
+
+        //prüfen, ob bereits Ausrichter
+        boolean hasAusrichterRole = false;
+        for (UserRoleDO role: roles){
+            if (role.getRoleId().equals(ausrichterRole.getRoleId())) {
+                hasAusrichterRole = true;
+                break;
+            }
+        }
+        if(!hasAusrichterRole){
+            // neue Rolle hinzufügen
+            roles.add(ausrichterRole);
+            // Rollen für User übernehmen
+            userroleComponent.update(roles, updatedWettkampfDO.getWettkampfAusrichter());
+        }
         return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
+
     }
 
 
