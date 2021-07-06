@@ -91,6 +91,13 @@ public class VereinDO extends CommonDataObject implements DataObject {
         this.version = version;
     }
 
+    /**
+     * NoArgs constructor
+     */
+    public VereinDO(){
+
+    }
+
 
     /**
      * Constuctor with id to delete existing verein entries
