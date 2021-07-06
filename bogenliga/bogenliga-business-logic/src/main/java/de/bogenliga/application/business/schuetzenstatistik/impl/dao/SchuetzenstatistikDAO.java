@@ -136,7 +136,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     MATCHID_TABLE,
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
-                    "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")"
+                    PFEILPUNKTESCHNITT_TABLE
             )
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .compose().toString();
