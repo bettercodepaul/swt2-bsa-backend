@@ -2,6 +2,7 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -598,7 +599,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             return matches2;
         }
         else {
-            return null;
+            return Collections.emptyList();
         }
     }
 
