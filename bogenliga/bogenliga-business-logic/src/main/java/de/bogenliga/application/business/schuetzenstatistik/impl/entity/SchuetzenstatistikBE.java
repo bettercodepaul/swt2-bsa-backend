@@ -9,7 +9,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * The user permissions are resolved with a JOIN via the user roles, roles, role permissions and permissions.
  */
 public class SchuetzenstatistikBE extends CommonBusinessEntity implements BusinessEntity {
-    //private static final long serialVersionUID = -7930719922483666804L;
+    private static final long serialVersionUID = 5734330182051890903L;
 
     private Long veranstaltungId;
     private String veranstaltungName;
