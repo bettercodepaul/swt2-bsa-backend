@@ -70,6 +70,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     }
 
 
+
     @Override
     public List<UserRoleDO> findAll() {
         final List<UserRoleExtBE> userRoleExtBEList = userRoleExtDAO.findAll();
@@ -94,6 +95,35 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
         return userRoleDOList;
+    }
+
+
+    /**
+     * gets all users from findAll() and checks if they have the
+     * special role with the given "roleId"
+     * @param roleId
+     * @return List of all users with this role
+     */
+    @Override
+    public List<UserRoleDO> findByRoleId(final Long roleId) {
+        Preconditions.checkNotNull(roleId, PRECONDITION_MSG_USERROLE);
+        Preconditions.checkArgument(roleId >= 0, PRECONDITION_MSG_ROLE_ID);
+
+        List<UserRoleDO> allUsersOfRole = new ArrayList<>();
+        List<UserRoleExtBE> allUsers = userRoleExtDAO.findAll();
+        if (allUsers == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for roleID '%s'", roleId));
+        }
+
+
+        for (UserRoleExtBE i: allUsers) {
+            if( i.getRoleId().equals(roleId)){
+                allUsersOfRole.add(UserRoleMapper.extToUserRoleDO.apply(i));
+            }
+        }
+
+        return allUsersOfRole;
     }
 
 
@@ -271,6 +301,5 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
     }
-
 
 }
