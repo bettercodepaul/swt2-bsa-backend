@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.schuetzenstatistik.impl.dao;
 
-import de.bogenliga.application.business.ligatabelle.impl.dao.LigatabelleDAO;
-import de.bogenliga.application.business.ligatabelle.impl.entity.LigatabelleBE;
+import de.bogenliga.application.business.schuetzenstatistik.impl.entity.SchuetzenstatistikBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,7 +12,7 @@ import org.mockito.junit.MockitoRule;
 import java.util.Collections;
 import java.util.List;
 
-import static de.bogenliga.application.business.ligatabelle.impl.business.LigatabelleComponentImplTest.getLigatabelleBE;
+import static de.bogenliga.application.business.schuetzenstatistik.impl.business.SchuetzenstatistikComponentImplTest.getSchuetzenstatistikBE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -31,18 +30,18 @@ public class SchuetzenstatistikDAOTest {
     @Mock
     private BasicDAO basicDao;
     @InjectMocks
-    private LigatabelleDAO underTest;
+    private SchuetzenstatistikDAO underTest;
 
 
     @Test
-    public void getLigatabelleVeranstaltung_oktest() {
-        final LigatabelleBE expectedBE = getLigatabelleBE();
+    public void getSchuetzenstatistikVeranstaltung_oktest() {
+        final SchuetzenstatistikBE expectedBE = getSchuetzenstatistikBE();
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<LigatabelleBE> actual = underTest.getLigatabelleVeranstaltung(expectedBE.getVeranstaltungId());
+        final List<SchuetzenstatistikBE> actual = underTest.getSchuetzenstatistikVeranstaltung(expectedBE.getVeranstaltungId(), expectedBE.getVereinId());
 
         // assert result
         assertThat(actual)
@@ -60,27 +59,23 @@ public class SchuetzenstatistikDAOTest {
         assertThat(actual.get(0).getMannschaftNummer()).isEqualTo(expectedBE.getMannschaftNummer());
         assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getVereinName()).isEqualTo(expectedBE.getVereinName());
-        assertThat(actual.get(0).getMatchpkt()).isEqualTo(expectedBE.getMatchpkt());
-        assertThat(actual.get(0).getMatchpkt_gegen()).isEqualTo(expectedBE.getMatchpkt_gegen());
-        assertThat(actual.get(0).getSatzpkt()).isEqualTo(expectedBE.getSatzpkt());
-        assertThat(actual.get(0).getSatzpkt_gegen()).isEqualTo(expectedBE.getSatzpkt_gegen());
-        assertThat(actual.get(0).getSatzpkt_differenz()).isEqualTo(expectedBE.getSatzpkt_differenz());
-        assertThat(actual.get(0).getSortierung()).isEqualTo(expectedBE.getSortierung());
-        assertThat(actual.get(0).getTabellenplatz()).isEqualTo(expectedBE.getTabellenplatz());
-
+        assertThat(actual.get(0).getMatchId()).isEqualTo(expectedBE.getMatchId());
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
+        assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedBE.getPfeilpunkteSchnitt());
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
 
     @Test
-    public void getLigatabelleWettkampf_oktest() {
-        final LigatabelleBE expectedBE = getLigatabelleBE();
+    public void getSchuetzenstatistikWettkampf_oktest() {
+        final SchuetzenstatistikBE expectedBE = getSchuetzenstatistikBE();
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<LigatabelleBE> actual = underTest.getLigatabelleWettkampf(expectedBE.getWettkampfId());
+        final List<SchuetzenstatistikBE> actual = underTest.getSchuetzenstatistikWettkampf(expectedBE.getWettkampfId(), expectedBE.getVereinId());
 
         // assert result
         assertThat(actual)
@@ -98,13 +93,10 @@ public class SchuetzenstatistikDAOTest {
         assertThat(actual.get(0).getMannschaftNummer()).isEqualTo(expectedBE.getMannschaftNummer());
         assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getVereinName()).isEqualTo(expectedBE.getVereinName());
-        assertThat(actual.get(0).getMatchpkt()).isEqualTo(expectedBE.getMatchpkt());
-        assertThat(actual.get(0).getMatchpkt_gegen()).isEqualTo(expectedBE.getMatchpkt_gegen());
-        assertThat(actual.get(0).getSatzpkt()).isEqualTo(expectedBE.getSatzpkt());
-        assertThat(actual.get(0).getSatzpkt_gegen()).isEqualTo(expectedBE.getSatzpkt_gegen());
-        assertThat(actual.get(0).getSatzpkt_differenz()).isEqualTo(expectedBE.getSatzpkt_differenz());
-        assertThat(actual.get(0).getSortierung()).isEqualTo(expectedBE.getSortierung());
-        assertThat(actual.get(0).getTabellenplatz()).isEqualTo(expectedBE.getTabellenplatz());
+        assertThat(actual.get(0).getMatchId()).isEqualTo(expectedBE.getMatchId());
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
+        assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedBE.getPfeilpunkteSchnitt());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
