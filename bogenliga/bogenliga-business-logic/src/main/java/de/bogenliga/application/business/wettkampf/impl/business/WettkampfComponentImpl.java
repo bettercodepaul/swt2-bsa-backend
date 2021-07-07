@@ -24,6 +24,8 @@ import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
+import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
@@ -78,7 +80,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    
+    private LigatabelleComponent ligatabelleComponent;
+
     /**
      * Constructor
      * <p>
@@ -115,6 +118,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Autowired
     public void setVeranstaltungComponent(final VeranstaltungComponent veranstaltungComponent){
         this.veranstaltungComponent = veranstaltungComponent;
+    }
+
+    @Autowired
+    public void setLigatabelleComponent(final LigatabelleComponent ligatabelleComponent)
+    {
+        this.ligatabelleComponent = ligatabelleComponent;
     }
 
     @Override
@@ -384,6 +393,47 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return bResult;
     }
 
+    @Override
+    public byte[] getUebersichtPDFasByteArray(long veranstaltungsid,long wettkampftag)
+    {
+        Preconditions.checkArgument(veranstaltungsid >= 0, PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
+        Preconditions.checkArgument(wettkampftag >= 0, PRECONDITION_MSG_WETTKAMPF_TAG);
+
+        List<WettkampfBE> wettkampflisteBEList = wettkampfDAO.findAllByVeranstaltungId(veranstaltungsid);
+        List<WettkampfBE> wettkaempfeAmTag = new ArrayList<>();
+        for(WettkampfBE wettkampf : wettkampflisteBEList)
+        {
+           if( wettkampf.getWettkampfTag() == wettkampftag)
+           {
+               wettkaempfeAmTag.add(wettkampf);
+           }
+        }
+
+        byte[] bResult;
+        if (!wettkaempfeAmTag.isEmpty()) {
+            try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+                 PdfWriter writer = new PdfWriter(result);
+                 PdfDocument pdfDocument = new PdfDocument(writer);
+                 Document doc = new Document(pdfDocument, PageSize.A4)) {
+
+                pdfDocument.getDocumentInfo().setTitle("Übersicht.pdf");
+                generateUebersicht(doc,wettkaempfeAmTag ,veranstaltungsid ,wettkampftag);
+
+                bResult = result.toByteArray();
+                LOGGER.debug("Uebersicht erstellt");
+            } catch(IOException e){
+                LOGGER.error("PDF Uebersicht konnte nicht erstellt werden: {}", e);
+                throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
+                        "PDF Uebersicht konnte nicht erstellt werden: " + e);
+            }
+        }
+        else
+        {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Für den Wettkampftag " + wettkampftag +" gibt es keine Wettkämpfe");
+        }
+        return bResult;
+    }
+
     //Generiert Tabelle für Einzelstatistik
     public void generateEinzel(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
@@ -418,6 +468,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 doc.add(new Paragraph(""));
             }
         }
+        doc.close();
     }
 
     //Generiert Tabelle für Gesammtstatistik
@@ -446,9 +497,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             }
             if (average != -1)
             {
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
-                        table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
-                        table.addCell(new Cell().add(new Paragraph(String.valueOf(average))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(schuetze.getRueckennummer()))));
+                table.addCell(new Cell().add(new Paragraph(schuetze.getDsbMitgliedVorname() + " " + schuetze.getDsbMitgliedNachname())));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(average))));
             }
         }
         if(table.getNumberOfRows() > 1)
@@ -456,6 +507,175 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             doc.setFontSize(9.2f);
             doc.add(table);
             doc.add(new Paragraph(""));
+        }
+
+        doc.close();
+    }
+
+    void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
+    {
+        VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstatungsId);
+        long wettkampfid = wettkaempfe.get(0).getId();
+
+        doc.setFontSize(20.0f);
+        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltung_name()).setBold());
+        doc.setFontSize(9.2f);
+        doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
+        doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfPlz() + ", " +  wettkaempfe.get(0).getWettkampfOrtsname()
+                    + ", " +  wettkaempfe.get(0).getWettkampfOrtsinfo() + ", " + wettkaempfe.get(0).getWettkampfBeginn() + " Uhr"));
+        Table table = new Table(new float[]{100, 20, 20, 20, 20, 20, 100, 20, 20, 20, 20, 20, 50, 50});
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+        satzToTable(table);
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+        satzToTable(table);
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Satzpunkte")));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Matchpunkte")));
+
+        for(int i=0 ; i<14 ; i++)
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+
+        for(WettkampfBE wetkampf : wettkaempfe)
+        {
+            List<MatchDO> matches = sortForDisplay(matchComponent.findByWettkampfId(wettkampfid));
+
+            MatchDO alt = new MatchDO(null,null,null,null,null,null,null,null,null,null,null,null,null);
+            int count = 1;
+            List<PasseDO> passen = passeComponent.findByWettkampfId(wetkampf.getId());
+
+            for(MatchDO match : matches)
+            {
+                table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(match.getMannschaftId()))));
+                for(long i = 1 ; i<=5 ; i++)
+                {
+                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle((long) addPassenVonSatz(passen ,i ,match.getNr() ,match.getMannschaftId())))));
+                }
+                if(count%2  == 0)
+                {
+                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle(alt.getSatzpunkte()) + " : " + ausgabeTabelle(match.getSatzpunkte()))));
+                    table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(ausgabeTabelle(alt.getMatchpunkte()) + " : " + ausgabeTabelle(match.getMatchpunkte()))));
+                }
+
+                alt = match;
+                count ++;
+            }
+
+        }
+
+        doc.add(table);
+
+        //Ligatabelle vorbereiten
+        doc.add(new Paragraph(""));
+        doc.add(new Paragraph("Tabelle").setFontSize(20.0f).setBold());
+        doc.add(new Paragraph(""));
+        //ligatabelle hinzufügen
+        doc.add(getLigatabelleAsTable(wettkampfid));
+
+        doc.close();
+    }
+    public String ausgabeTabelle(Long wert)
+    {
+        if(wert == null || wert == -1)
+            return "-";
+        else
+            return Long.toString(wert);
+    }
+
+    public List<MatchDO> sortForDisplay(List<MatchDO> matches)
+    {
+        List<MatchDO> matches2 = new ArrayList<>();
+
+        for(MatchDO match : matches)
+        {
+            if(!matches2.contains(match)) {
+                matches2.add(match);
+            }
+            for(MatchDO match2 : matches)
+            {
+                if(match.getBegegnung().equals(match2.getId()))
+                {
+                    matches2.add(match2);
+                }
+            }
+        }
+        if(matches.size() == matches2.size()) {
+            return matches2;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public int addPassenVonSatz(List<PasseDO> passen, long nr, long matchnr,long manschaftsid)
+    {
+        int gesammt = -1;
+        boolean geschossen =  false;
+
+        for(PasseDO passe : passen)
+        {
+            if(passe.getPasseMatchNr() == matchnr && passe.getPasseMannschaftId() == manschaftsid) {
+
+                if (passe.getPfeil1() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil1();
+                    geschossen = true;
+                }
+                if (passe.getPfeil2() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil2();
+                    geschossen = true;
+                }
+                if (passe.getPfeil3() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil3();
+                    geschossen = true;
+                }
+                if (passe.getPfeil4() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil4();
+                    geschossen = true;
+                }
+                if (passe.getPfeil5() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil5();
+                    geschossen = true;
+                }
+                if (passe.getPfeil6() != null && passe.getPasseLfdnr() == nr) {
+                    gesammt += passe.getPfeil6();
+                    geschossen = true;
+                }
+            }
+        }
+
+        if(geschossen)
+           gesammt += 1;
+
+        return gesammt;
+    }
+
+    public Table getLigatabelleAsTable(long wettkampfid)
+    {
+        List<LigatabelleDO> tabelle = ligatabelleComponent.getLigatabelleWettkampf(wettkampfid);
+        Table table2 = new Table(new float[]{20, 120, 40, 40, 40});
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Manschaft")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Sätze")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Differenz")));
+        table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Punkte")));
+
+        for(int i=0 ; i<5 ; i++)
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
+
+        for(LigatabelleDO team : tabelle)
+        {
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.gettabellenplatz()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(team.getmannschaftId()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getsatzpkt() + " : " + team.getsatzpktGegen())));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.getsatzpktDifferenz()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getmatchpkt() + " : " + team.getmatchpktGegen())));
+        }
+        return table2;
+    }
+
+    void satzToTable(Table table)
+    {
+        for(int i = 1; i<=5; i++)
+        {
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("S"+i)));
         }
     }
 
@@ -474,7 +694,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
     public WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId){
         WettkampfBE wettkampfBE= wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
-        return  WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
+        return WettkampfMapper.toWettkampfDO.apply(wettkampfBE);
     }
 
     //berechnet den durchscnittlichen pfeilwert aller übergebenen passen
