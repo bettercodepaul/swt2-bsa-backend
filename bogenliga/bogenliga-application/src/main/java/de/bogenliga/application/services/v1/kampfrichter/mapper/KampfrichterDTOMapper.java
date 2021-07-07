@@ -4,6 +4,7 @@ import java.util.function.Function;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterDTO;
+import de.bogenliga.application.services.v1.kampfrichter.model.KampfrichterExtendedDTO;
 
 /**
  * I map the {@link KampfrichterDO} and {@link KampfrichterDTO} objects
@@ -39,6 +40,45 @@ public final class KampfrichterDTOMapper implements DataTransferObjectMapper {
 
         return new KampfrichterDO(
                 kampfrichterUserId,
+                kampfrichterWettkampfId,
+                kampfrichterLeitend);
+    };
+
+    /**
+     * I map the {@link KampfrichterDO} object to the {@link KampfrichterExtendedDTO} object
+     */
+    public static final Function<KampfrichterDO, KampfrichterExtendedDTO> toDTOExtended = kampfrichterDO -> {
+
+        final Long kampfrichterUserId = kampfrichterDO.getUserId();
+        final String kampfrichterVorname = kampfrichterDO.getVorname();
+        final String kampfritcherNachname= kampfrichterDO.getNachname();
+        final String kampfrichterEmail= kampfrichterDO.getKampfrichterEmail();
+        long kampfrichterWettkampfId = 0;
+        if(kampfrichterDO.getWettkampfId() != null){
+            kampfrichterWettkampfId = kampfrichterDO.getWettkampfId();
+        }
+        final boolean kampfrichterLeitend = kampfrichterDO.isLeitend();
+
+        return new KampfrichterExtendedDTO(kampfrichterUserId, kampfrichterVorname, kampfritcherNachname, kampfrichterEmail, kampfrichterWettkampfId, kampfrichterLeitend);
+    };
+
+    /**
+     * I map the {@link KampfrichterExtendedDTO} object to the {@link KampfrichterDO} object
+     */
+    public static final Function<KampfrichterExtendedDTO, KampfrichterDO> toDOExtended = dto -> {
+
+        final Long kampfrichterUserId = dto.getUserID();
+        final String kampfrichterVorname = dto.getKampfrichterVorname();
+        final String kampfritcherNachname= dto.getKampfrichterNachname();
+        final String kampfrichterEmail= dto.getEmail();
+        final Long kampfrichterWettkampfId = dto.getWettkampfID();
+        final boolean kampfrichterLeitend = dto.getLeitend();
+
+        return new KampfrichterDO(
+                kampfrichterUserId,
+                kampfrichterVorname,
+                kampfritcherNachname,
+                kampfrichterEmail,
                 kampfrichterWettkampfId,
                 kampfrichterLeitend);
     };

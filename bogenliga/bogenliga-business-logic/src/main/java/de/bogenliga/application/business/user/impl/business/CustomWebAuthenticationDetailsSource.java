@@ -12,6 +12,6 @@ public class CustomWebAuthenticationDetailsSource implements
 
     @Override
     public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
-        return null;
+        return null;// new CustomWebAuthenticationDetails(context);
     }
 }
