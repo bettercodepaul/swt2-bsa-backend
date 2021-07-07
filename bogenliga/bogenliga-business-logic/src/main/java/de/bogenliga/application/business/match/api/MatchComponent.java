@@ -58,13 +58,6 @@ public interface MatchComponent {
      * @return list of all match from one mannschaft in the database; empty list, if no match are found
      */
 
-
-    /**
-     * Return all matches entries from one mannschaft.
-     *
-     * @return list of all match from one mannschaft in the database; empty list, if no match are found
-     */
-
     List<MatchDO> findByMannschaftId(Long mannschaftId);
 
     /**
