@@ -1,8 +1,9 @@
 package de.bogenliga.application.services.v1.schuetzenstatistik.service;
 
-import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
-import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
-import de.bogenliga.application.services.v1.ligatabelle.model.LigatabelleDTO;
+import de.bogenliga.application.business.schuetzenstatistik.api.SchuetzenstatistikComponent;
+import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
+import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
+import de.bogenliga.application.services.v1.schuetzenstatistik.model.SchuetzenstatistikDTO;
 import de.bogenliga.application.services.v1.ligatabelle.service.LigatabelleService;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,37 +35,31 @@ public class SchuetzenstatistikServiceTest {
         private static final int mannschaftNummer = 9;
         private static final Long vereinId = 7L;
         private static final String vereinName = "Name_Verein";
-        private static final int matchpkt = 6;
-        private static final int matchpkt_gegen = 2;
-        private static final int satzpkt = 18;
-        private static final int satzpkt_gegen = 3;
-        private static final int satzpkt_differenz = 15;
-        private static final int sortierung = 0;
-        private static final int tabellenplatz = 8;
+        private static final Long matchId = 6L;
+        private static final Long dsbMitgliedId = 2L;
+        private static final String dsbMitgliedName = "Mitglied_Name";
+        private static final int pfeilpunkteSchnitt = 3;
 
-        public static LigatabelleDO getLigatabelleDO() {
-            final LigatabelleDO expectedLigatabelleDO = new LigatabelleDO();
-            expectedLigatabelleDO.setveranstaltungId(veranstaltungId);
-            expectedLigatabelleDO.setveranstaltungName(veranstaltungName);
-            expectedLigatabelleDO.setwettkampfId(wettkampfId);
-            expectedLigatabelleDO.setwettkampfTag(wettkampfTag);
-            expectedLigatabelleDO.setmannschaftId(mannschaftId);
-            expectedLigatabelleDO.setmannschaftNummer(mannschaftNummer);
-            expectedLigatabelleDO.setvereinId(vereinId);
-            expectedLigatabelleDO.setvereinName(vereinName);
-            expectedLigatabelleDO.setmatchpkt(matchpkt);
-            expectedLigatabelleDO.setmatchpktGegen(matchpkt_gegen);
-            expectedLigatabelleDO.setsatzpkt(satzpkt);
-            expectedLigatabelleDO.setsatzpktGegen(satzpkt_gegen);
-            expectedLigatabelleDO.setsatzpktDifferenz(satzpkt_differenz);
-            expectedLigatabelleDO.setsortierung(sortierung);
-            expectedLigatabelleDO.settabellenplatz(tabellenplatz);
+        public static SchuetzenstatistikDO getSchuetzenstatistikDO() {
+            final SchuetzenstatistikDO expectedSchuetzenstatistikDO = new SchuetzenstatistikDO();
+            expectedSchuetzenstatistikDO.setveranstaltungId(veranstaltungId);
+            expectedSchuetzenstatistikDO.setveranstaltungName(veranstaltungName);
+            expectedSchuetzenstatistikDO.setwettkampfId(wettkampfId);
+            expectedSchuetzenstatistikDO.setwettkampfTag(wettkampfTag);
+            expectedSchuetzenstatistikDO.setmannschaftId(mannschaftId);
+            expectedSchuetzenstatistikDO.setmannschaftNummer(mannschaftNummer);
+            expectedSchuetzenstatistikDO.setvereinId(vereinId);
+            expectedSchuetzenstatistikDO.setvereinName(vereinName);
+            expectedSchuetzenstatistikDO.setMatchId(matchId);
+            expectedSchuetzenstatistikDO.setDsbMitgliedId(dsbMitgliedId);
+            expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
+            expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
 
-
-            return expectedLigatabelleDO;
+            return expectedSchuetzenstatistikDO;
         }
-        public static LigatabelleDTO getLigatabelleDTO() {
-            return new LigatabelleDTO(
+
+        public static SchuetzenstatistikDTO getSchuetzenstatistikDTO() {
+            return new SchuetzenstatistikDTO(
                     veranstaltungId,
                     veranstaltungName,
                     wettkampfId,
@@ -73,13 +68,10 @@ public class SchuetzenstatistikServiceTest {
                     mannschaftNummer,
                     vereinId,
                     vereinName,
-                    matchpkt,
-                    matchpkt_gegen,
-                    satzpkt,
-                    satzpkt_gegen,
-                    satzpkt_differenz,
-                    sortierung,
-                    tabellenplatz
+                    matchId,
+                    dsbMitgliedId,
+                    dsbMitgliedName,
+                    pfeilpunkteSchnitt
             );
         }
 
@@ -88,13 +80,13 @@ public class SchuetzenstatistikServiceTest {
         public MockitoRule mockitoRule = MockitoJUnit.rule();
 
         @Mock
-        private LigatabelleComponent ligatabelleComponent;
+        private SchuetzenstatistikComponent schuetzenstatistikComponent;
 
         @Mock
         private Principal principal;
 
         @InjectMocks
-        private LigatabelleService underTest;
+        private SchuetzenstatistikService underTest;
 
         @Before
         public void initMocks() {
@@ -102,86 +94,80 @@ public class SchuetzenstatistikServiceTest {
         }
 
         @Test
-        public void getLigatabelleVeranstaltung_ok() {
+        public void getSchuetzenstatistikVeranstaltung_ok() {
             // prepare test data
-            final LigatabelleDO ligatabelleDO = getLigatabelleDO();
+            final SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO();
 
-            final List<LigatabelleDO> ligatabelleDOList = Collections.singletonList(ligatabelleDO);
+            final List<SchuetzenstatistikDO> schuetzenstatistikDOList = Collections.singletonList(schuetzenstatistikDO);
 
             // configure mocks
-            when(ligatabelleComponent.getLigatabelleVeranstaltung(anyLong())).thenReturn(ligatabelleDOList);
+            when(schuetzenstatistikComponent.getSchuetzenstatistikVeranstaltung(anyLong(),anyLong())).thenReturn(schuetzenstatistikDOList);
 
             // call test method
-            final List<LigatabelleDTO> actual = underTest.getLigatabelleVeranstaltung(veranstaltungId);
+            final List<SchuetzenstatistikDTO> actual = underTest.getSchuetzenstatistikVeranstaltung(veranstaltungId,vereinId);
 
             // assert result
             assertThat(actual)
                     .isNotNull()
                     .hasSize(1);
 
-            final LigatabelleDTO actualDTO = actual.get(0);
+            final SchuetzenstatistikDTO actualDTO = actual.get(0);
 
             assertThat(actualDTO).isNotNull();
-            assertThat(actualDTO.getVeranstaltungId()).isEqualTo(ligatabelleDO.getveranstaltungId());
-            assertThat(actualDTO.getVeranstaltungName()).isEqualTo(ligatabelleDO.getveranstaltungName());
-            assertThat(actualDTO.getWettkampfId()).isEqualTo(ligatabelleDO.getwettkampfId());
-            assertThat(actualDTO.getWettkampfTag()).isEqualTo(ligatabelleDO.getwettkampfTag());
-            assertThat(actualDTO.getMannschaftId()).isEqualTo(ligatabelleDO.getmannschaftId());
-            assertThat(actualDTO.getMannschaftNummer()).isEqualTo(ligatabelleDO.getmannschaftNummer());
-            assertThat(actualDTO.getVereinId()).isEqualTo(ligatabelleDO.getvereinId());
-            assertThat(actualDTO.getVereinName()).isEqualTo(ligatabelleDO.getvereinName());
-            assertThat(actualDTO.getMatchpkt()).isEqualTo(ligatabelleDO.getmatchpkt());
-            assertThat(actualDTO.getMatchpkt_gegen()).isEqualTo(ligatabelleDO.getmatchpktGegen());
-            assertThat(actualDTO.getSatzpkt()).isEqualTo(ligatabelleDO.getsatzpkt());
-            assertThat(actualDTO.getSatzpkt_gegen()).isEqualTo(ligatabelleDO.getsatzpktGegen());
-            assertThat(actualDTO.getSatzpkt_differenz()).isEqualTo(ligatabelleDO.getsatzpktDifferenz());
-            assertThat(actualDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
-            assertThat(actualDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
+            assertThat(actualDTO.getVeranstaltungId()).isEqualTo(schuetzenstatistikDO.getveranstaltungId());
+            assertThat(actualDTO.getVeranstaltungName()).isEqualTo(schuetzenstatistikDO.getveranstaltungName());
+            assertThat(actualDTO.getWettkampfId()).isEqualTo(schuetzenstatistikDO.getwettkampfId());
+            assertThat(actualDTO.getWettkampfTag()).isEqualTo(schuetzenstatistikDO.getwettkampfTag());
+            assertThat(actualDTO.getMannschaftId()).isEqualTo(schuetzenstatistikDO.getmannschaftId());
+            assertThat(actualDTO.getMannschaftNummer()).isEqualTo(schuetzenstatistikDO.getmannschaftNummer());
+            assertThat(actualDTO.getVereinId()).isEqualTo(schuetzenstatistikDO.getvereinId());
+            assertThat(actualDTO.getVereinName()).isEqualTo(schuetzenstatistikDO.getvereinName());
+            assertThat(actualDTO.getMatchId()).isEqualTo(schuetzenstatistikDO.getMatchId());
+            assertThat(actualDTO.getDsbMitgliedId()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedId());
+            assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
+            assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
 
             // verify invocations
-            verify(ligatabelleComponent).getLigatabelleVeranstaltung(veranstaltungId);
+            verify(schuetzenstatistikComponent).getSchuetzenstatistikVeranstaltung(veranstaltungId,vereinId);
         }
 
         @Test
-        public void getLigatabelleWettkampf() {
+        public void getSchuetzenstatistikWettkampf() {
             // prepare test data
-            final LigatabelleDO ligatabelleDO = getLigatabelleDO();
+            final SchuetzenstatistikDO schuetzenstatistikDO = new SchuetzenstatistikDO();
 
-            final List<LigatabelleDO> ligatabelleDOList = Collections.singletonList(ligatabelleDO);
+            final List<SchuetzenstatistikDO> schuetzenstatistikDOList = Collections.singletonList(schuetzenstatistikDO);
 
             // configure mocks
-            when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(ligatabelleDOList);
+            when(schuetzenstatistikComponent.getSchuetzenstatistikWettkampf(anyLong(),anyLong())).thenReturn(schuetzenstatistikDOList);
 
             // call test method
-            final List<LigatabelleDTO> actual = underTest.getLigatabelleWettkampf(wettkampfId);
+            final List<SchuetzenstatistikDTO> actual = underTest.getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
 
             // assert result
             assertThat(actual)
                     .isNotNull()
                     .hasSize(1);
 
-            final LigatabelleDTO actualDTO = actual.get(0);
+            final SchuetzenstatistikDTO actualDTO = actual.get(0);
 
             assertThat(actualDTO).isNotNull();
-            assertThat(actualDTO.getVeranstaltungId()).isEqualTo(ligatabelleDO.getveranstaltungId());
-            assertThat(actualDTO.getVeranstaltungName()).isEqualTo(ligatabelleDO.getveranstaltungName());
-            assertThat(actualDTO.getWettkampfId()).isEqualTo(ligatabelleDO.getwettkampfId());
-            assertThat(actualDTO.getWettkampfTag()).isEqualTo(ligatabelleDO.getwettkampfTag());
-            assertThat(actualDTO.getMannschaftId()).isEqualTo(ligatabelleDO.getmannschaftId());
-            assertThat(actualDTO.getMannschaftNummer()).isEqualTo(ligatabelleDO.getmannschaftNummer());
-            assertThat(actualDTO.getVereinId()).isEqualTo(ligatabelleDO.getvereinId());
-            assertThat(actualDTO.getVereinName()).isEqualTo(ligatabelleDO.getvereinName());
-            assertThat(actualDTO.getMatchpkt()).isEqualTo(ligatabelleDO.getmatchpkt());
-            assertThat(actualDTO.getMatchpkt_gegen()).isEqualTo(ligatabelleDO.getmatchpktGegen());
-            assertThat(actualDTO.getSatzpkt()).isEqualTo(ligatabelleDO.getsatzpkt());
-            assertThat(actualDTO.getSatzpkt_gegen()).isEqualTo(ligatabelleDO.getsatzpktGegen());
-            assertThat(actualDTO.getSatzpkt_differenz()).isEqualTo(ligatabelleDO.getsatzpktDifferenz());
-            assertThat(actualDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
-            assertThat(actualDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
+            assertThat(actualDTO.getVeranstaltungId()).isEqualTo(schuetzenstatistikDO.getveranstaltungId());
+            assertThat(actualDTO.getVeranstaltungName()).isEqualTo(schuetzenstatistikDO.getveranstaltungName());
+            assertThat(actualDTO.getWettkampfId()).isEqualTo(schuetzenstatistikDO.getwettkampfId());
+            assertThat(actualDTO.getWettkampfTag()).isEqualTo(schuetzenstatistikDO.getwettkampfTag());
+            assertThat(actualDTO.getMannschaftId()).isEqualTo(schuetzenstatistikDO.getmannschaftId());
+            assertThat(actualDTO.getMannschaftNummer()).isEqualTo(schuetzenstatistikDO.getmannschaftNummer());
+            assertThat(actualDTO.getVereinId()).isEqualTo(schuetzenstatistikDO.getvereinId());
+            assertThat(actualDTO.getVereinName()).isEqualTo(schuetzenstatistikDO.getvereinName());
+            assertThat(actualDTO.getMatchId()).isEqualTo(schuetzenstatistikDO.getMatchId());
+            assertThat(actualDTO.getDsbMitgliedId()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedId());
+            assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
+            assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
 
             // verify invocations
-            verify(ligatabelleComponent).getLigatabelleWettkampf(wettkampfId);
+            verify(schuetzenstatistikComponent).getSchuetzenstatistikWettkampf(wettkampfId,vereinId);
 
         }
-    }
 }
+
