@@ -28,6 +28,15 @@ public interface UserRoleComponent extends ComponentFacade {
      */
     List<UserRoleDO> findById(Long id);
 
+
+    /**
+     * Return all users with the given role
+     * @param roleId
+     * @return
+     */
+    List<UserRoleDO> findByRoleId(Long roleId);
+
+
     /**
      * Return a user entry with the given id.
      *
