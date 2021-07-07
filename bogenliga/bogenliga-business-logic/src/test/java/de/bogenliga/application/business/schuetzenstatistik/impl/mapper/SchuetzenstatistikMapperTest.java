@@ -1,12 +1,12 @@
-package de.bogenliga.application.business.ligatabelle.impl.mapper;
+package de.bogenliga.application.business.schuetzenstatistik.impl.mapper;
 
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.ligatabelle.impl.entity.LigatabelleBE;
-import static de.bogenliga.application.business.ligatabelle.impl.business.LigatabelleComponentImplTest.getLigatabelleBE;
-import static de.bogenliga.application.business.ligatabelle.impl.business.LigatabelleComponentImplTest.getLigatabelleDO;
-
+import de.bogenliga.application.business.ligatabelle.impl.mapper.LigatabelleMapper;
 import org.junit.Test;
 
+import static de.bogenliga.application.business.ligatabelle.impl.business.LigatabelleComponentImplTest.getLigatabelleBE;
+import static de.bogenliga.application.business.ligatabelle.impl.business.LigatabelleComponentImplTest.getLigatabelleDO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SchuetzenstatistikMapperTest {
@@ -77,5 +77,4 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actual.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
     }
-
 }
