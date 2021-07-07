@@ -10,7 +10,7 @@ import java.util.Objects;
 public class SchuetzenstatistikDTO implements DataTransferObject {
 
     /**
-     * business parameter
+     * attributes of DTO
      */
 
 
@@ -28,7 +28,7 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     private float pfeilpunkteSchnitt;
 
     /**
-     * Constructor with optional parameters
+     * The Constructor with optional parameters
      *
      * @param veranstaltungId;
      * @param veranstaltungName;
@@ -74,8 +74,9 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
 
 
     public SchuetzenstatistikDTO() {
-        // empty constructor
     }
+
+    // Getters and Setters
 
     public Long getVeranstaltungId() {
         return veranstaltungId;
