@@ -167,8 +167,8 @@ public class VeranstaltungDAO implements DataAccessObject{
         List<VeranstaltungBE> veranstaltungen = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_SPORTJAHR_DESTINCT);
         ArrayList<SportjahrDO> sportjahre = new ArrayList<SportjahrDO>();
         for(int i = 0; i < veranstaltungen.size(); i++){
-            sportjahre.add(new SportjahrDO(veranstaltungen.get(i).getVeranstaltung_id(),
-                    veranstaltungen.get(i).getVeranstaltung_sportjahr(),
+            sportjahre.add(new SportjahrDO(veranstaltungen.get(i).getVeranstaltungId(),
+                    veranstaltungen.get(i).getVeranstaltungSportjahr(),
                     veranstaltungen.get(i).getVersion()));
         }
         return sportjahre;

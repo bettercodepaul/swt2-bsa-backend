@@ -170,7 +170,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         // als ID für den Ligaleiter genutzt werden - wir benötigen für die Fremdschlüsselbeziehung aber existierende
         // User-id - daher wird hier die Ligaleiter-Id als User-id übergeben
         // fehler: ind er DB wird ein Eintrag unter diesem User angelegt, obwohl das nicht der aktuelle User ist.
-        final WettkampfDO wettkampfTag0 = wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltung_id(), persistedVeranstaltungBE.getVeranstaltung_ligaleiter_id());
+        final WettkampfDO wettkampfTag0 = wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltungId(), persistedVeranstaltungBE.getVeranstaltungLigaleiterId());
 
         return completeNames(persistedVeranstaltungBE);
     }
@@ -297,14 +297,14 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         WettkampfTypDO tempWettkampfTypDO = new WettkampfTypDO(0L);
         UserDO tempUserDO = new UserDO();
 
-        if (veranstaltungBE.getVeranstaltung_liga_id() != null) {
-              tempLigaDO = ligaComponent.findById(veranstaltungBE.getVeranstaltung_liga_id());
+        if (veranstaltungBE.getVeranstaltungLigaId() != null) {
+              tempLigaDO = ligaComponent.findById(veranstaltungBE.getVeranstaltungLigaId());
         }
-        if (veranstaltungBE.getVeranstaltung_wettkampftyp_id() != null) {
-             tempWettkampfTypDO = wettkampfTypComponent.findById(veranstaltungBE.getVeranstaltung_wettkampftyp_id());
+        if (veranstaltungBE.getVeranstaltungWettkampftypId() != null) {
+             tempWettkampfTypDO = wettkampfTypComponent.findById(veranstaltungBE.getVeranstaltungWettkampftypId());
         }
-        if (veranstaltungBE.getVeranstaltung_ligaleiter_id() != null) {
-             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltung_ligaleiter_id());
+        if (veranstaltungBE.getVeranstaltungLigaleiterId() != null) {
+             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
         }
 
         return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO);
