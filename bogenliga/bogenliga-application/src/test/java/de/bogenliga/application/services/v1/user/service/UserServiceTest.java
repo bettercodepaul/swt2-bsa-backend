@@ -9,6 +9,7 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
+import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -30,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -104,6 +106,7 @@ public class UserServiceTest {
     private ArgumentCaptor<UsernamePasswordAuthenticationToken> authenticationTokenArgumentCaptor;
 
 
+
     @Test
     public void login() throws Exception {
         // prepare test data
@@ -128,7 +131,7 @@ public class UserServiceTest {
         dsbMitgliedDO.setVereinsId(VEREINID);
 
         final UserDO userDO = new UserDO();
-        userDO.setDsbMitgliedId(DSBMITGLIEDID);
+        userDO.setDsb_mitglied_id(DSBMITGLIEDID);
         userDO.setId(ID);
 
 
@@ -141,7 +144,7 @@ public class UserServiceTest {
         when(jwtTokenProvider.createToken(any(Authentication.class))).thenReturn(JWT);
 
         when(userComponent.findById(anyLong())).thenReturn(userDO);
-        when(dsbMitgliedComponent.findById(userDO.getDsbMitgliedId())).thenReturn(dsbMitgliedDO);
+        when(dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id())).thenReturn(dsbMitgliedDO);
 
         // call test method
         final ResponseEntity<UserSignInDTO> actual = underTest.login(userCredentials);
@@ -174,7 +177,6 @@ public class UserServiceTest {
         verify(jwtTokenProvider).createToken(authentication);
 
     }
-
 
     @Test
     public void login_not_authorized() throws Exception {
@@ -250,6 +252,7 @@ public class UserServiceTest {
         verify(requestWithHeader).getHeader(AUTHORIZATION_HEADER);
     }
 
+
     @Test
     public void getUserProfileById() {
 
@@ -268,6 +271,49 @@ public class UserServiceTest {
         assertThat(actual.getVorname()).isEqualTo(userProfileDO.getVorname());
 
     }
+
+
+    // tests for getAllUsersByRoleId
+    @Test
+    public void getAllUsersByRoleId() {
+        // prepare test data
+        final UserRoleDO userRole = new UserRoleDO();
+        userRole.setRoleId(ROLE_ID);
+        userRole.setEmail(EMAIL);
+
+        final List<UserRoleDO> userRoleList = new ArrayList<>();
+        userRoleList.add(userRole);
+
+        // configure mocks
+        when(userRoleComponent.findByRoleId(anyLong())).thenReturn(userRoleList);
+
+        // call test method
+        final List<UserRoleDTO> actual = underTest.getAllUsersByRoleId(ROLE_ID);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        assertThat(actual.get(0).getEmail())
+                .isEqualTo(userRole.getEmail());
+        assertThat(actual.get(0).getRoleId())
+                .isEqualTo(userRole.getRoleId());
+
+        // verify invocations
+        verify(userRoleComponent).findByRoleId(ROLE_ID);
+    }
+
+    @Test
+    public void getAllUsersByRoleId_withInvalidRoleId_shouldThrowException() {
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.getAllUsersByRoleId(-1L))
+                .withMessageContaining("RoleID must not be negative.")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleComponent, never()).findByRoleId(ROLE_ID);
+    }
+
 
     // tests for update (password)
     @Test
@@ -385,8 +431,9 @@ public class UserServiceTest {
 
     }
 
+
     // tests for reset (password)
-   /* @Test
+    /*@Test
     public void reset_success() {
 
         // configure mocks
@@ -418,10 +465,7 @@ public class UserServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNotEqualTo(loggedInUser.getId());
         assertThat(actual.getEmail()).isNotEqualTo(loggedInUser.getEmail());
-
-    }
-
-    */
+    }*/
 
     @Test
     public void reset_withoutCredentials_shouldThrowException() {
@@ -472,6 +516,7 @@ public class UserServiceTest {
 
     }
 
+
     // tests for updateRole
     @Test
     public void updateRole_success() {
@@ -517,6 +562,7 @@ public class UserServiceTest {
         assertThat(actual.get(0).getRoleId()).isEqualTo(expectedUserRoleDO.getRoleId());
 
     }
+
     @Test
     public void update_withoutUserRoleDTO_shouldThrowException() {
         // prepare test data
@@ -607,7 +653,7 @@ public class UserServiceTest {
     }
 
 
-     @Test
+    @Test
     public void findAll() {
         // prepare test data
         final UserRoleDO expectedURDO = new UserRoleDO();
@@ -647,6 +693,8 @@ public class UserServiceTest {
 
 
     }
+
+
     @Test
     public void findById() {
         // prepare test data
@@ -683,6 +731,7 @@ public class UserServiceTest {
         verify(userRoleComponent).findById(ID);
     }
 
+
     // tests for createUser
     @Test
     public void create_success() {
@@ -714,7 +763,7 @@ public class UserServiceTest {
         final UserDO userCreatedDO = new UserDO();
         userCreatedDO.setEmail(USERNAME);
         userCreatedDO.setId(ID);
-        userCreatedDO.setDsbMitgliedId(DSBMITGLIEDID);
+        userCreatedDO.setDsb_mitglied_id(DSBMITGLIEDID);
         userCreatedDO.setVersion(VERSION);
 
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
@@ -764,7 +813,6 @@ public class UserServiceTest {
 
 
     }
-
 
     @Test
     public void create_whithoutUsername_shouldThrowException() {

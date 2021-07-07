@@ -100,6 +100,8 @@ public class UserService implements ServiceFacade {
         this.veranstaltungComponent = veranstaltungComponent;
     }
 
+
+
     /**
      * Login...
      *
@@ -107,8 +109,6 @@ public class UserService implements ServiceFacade {
      *
      * @return ResponseEntity mit der Rückmeldung nzur Anmeldung
      */
-
-
     @PostMapping(
             value = "/signin",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -139,7 +139,7 @@ public class UserService implements ServiceFacade {
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
                     try {
                         //Get the Verein ID and teh Veranstaltungs ID's
-                        userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsbMitgliedId()).getVereinsId());
+                        userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
                         ArrayList<Integer> temp = new ArrayList<>();
                         for (VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
                             temp.add(veranstaltungDO.getVeranstaltungID().intValue());
@@ -403,6 +403,30 @@ public class UserService implements ServiceFacade {
 
 
     /**
+     * Returns a List of all Users that have the given role id
+     *
+     * @param roleId
+     * @return
+     */
+    @GetMapping(value = "/allusersbyrole/{roleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<UserRoleDTO> getAllUsersByRoleId(@PathVariable("roleId") final long roleId) {
+        Preconditions.checkArgument(roleId >= 0, "RoleID must not be negative.");
+
+        LOG.debug("Receive 'getAllUsersByRoleId' request with RoleID '{}'", roleId);
+
+        final List<UserRoleDO> userRoleDOlist = userRoleComponent.findByRoleId(roleId);
+        List<UserRoleDTO> userRoleDTOS = new ArrayList<>();
+
+        for(UserRoleDO userRoleDO : userRoleDOlist){
+            userRoleDTOS.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
+        }
+
+        return userRoleDTOS;
+    }
+
+
+    /**
      * I persist a new user and return this user entry.
      * <p>
      * Usage:
@@ -424,8 +448,6 @@ public class UserService implements ServiceFacade {
      *
      * @return {@link UserDTO} as JSON
      */
-
-
     @PostMapping(
             value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,

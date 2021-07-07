@@ -57,7 +57,7 @@ public class MatchComponentImplTestAll extends BaseMatchTest {
     @Before
     public void testSetup() {
         expectedBE = getMatchBE();
-        underTest = new MatchComponentImpl(matchDAO,dsbMannschaftComponent, vereinComponent,wettkampfComponent);
+        underTest = new MatchComponentImpl(matchDAO,dsbMannschaftComponent, vereinComponent);
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
     }
