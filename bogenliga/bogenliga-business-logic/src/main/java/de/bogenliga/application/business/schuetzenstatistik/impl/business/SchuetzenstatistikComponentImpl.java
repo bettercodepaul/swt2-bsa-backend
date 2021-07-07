@@ -50,7 +50,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
         final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikVeranstaltung(veranstaltungId, vereinId);
 
         if (schuetzenstatistikBEList == null) {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, ("No result found for Veranstaltungs-ID '%s'"+ veranstaltungId+ "and Verein-ID"+ vereinId));
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, ("No result found for Veranstaltungs-ID "+ veranstaltungId+ " and Verein-ID "+ vereinId));
         }
 
         for (int i = 0; i < schuetzenstatistikBEList.size(); i++) {
