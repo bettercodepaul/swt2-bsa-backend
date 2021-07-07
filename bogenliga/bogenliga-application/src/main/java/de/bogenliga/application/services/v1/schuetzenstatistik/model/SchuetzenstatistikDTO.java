@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.schuetzenstatistik.model;
 
 import de.bogenliga.application.common.service.types.DataTransferObject;
-
 import java.util.Objects;
 
 /**
@@ -12,7 +11,6 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     /**
      * attributes of DTO
      */
-
 
     private Long veranstaltungId;
     private String veranstaltungName;
@@ -57,7 +55,7 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
             Long dsbMitgliedId,
             String dsbMitgliedName,
             float pfeilpunkteSchnitt
-    ) {  //CHECKSTYLE:OFF
+    ) {
         this.veranstaltungId=veranstaltungId;
         this.veranstaltungName = veranstaltungName;
         this.wettkampfId = wettkampfId;
@@ -72,93 +70,91 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
-
     public SchuetzenstatistikDTO() {
     }
 
     // Getters and Setters
-
-    public Long getVeranstaltungId() { //CHECKSTYLE:OFF
+    public Long getVeranstaltungId() {
         return veranstaltungId;
     }
-    public void setVeranstaltungId(Long veranstaltungId) { //CHECKSTYLE:OFF
+    public void setVeranstaltungId(Long veranstaltungId) {
         this.veranstaltungId = veranstaltungId;
     }
 
-    public String getVeranstaltungName() { //CHECKSTYLE:OFF
+    public String getVeranstaltungName() {
         return veranstaltungName;
     }
-    public void setVeranstaltungName(String veranstaltungName) { //CHECKSTYLE:OFF
+    public void setVeranstaltungName(String veranstaltungName) {
         this.veranstaltungName = veranstaltungName;
     }
 
-    public Long getWettkampfId() { //CHECKSTYLE:OFF
+    public Long getWettkampfId() {
         return wettkampfId;
     }
-    public void setWettkampfId(Long wettkampfId) { //CHECKSTYLE:OFF
+    public void setWettkampfId(Long wettkampfId) {
         this.wettkampfId = wettkampfId;
     }
 
-    public int getWettkampfTag() {  //CHECKSTYLE:OFF
+    public int getWettkampfTag() {
         return wettkampfTag;
     }
-    public void setWettkampfTag(int wettkampfTag) {  //CHECKSTYLE:OFF
+    public void setWettkampfTag(int wettkampfTag) {
         this.wettkampfTag = wettkampfTag;
     }
 
-    public Long getMannschaftId() {  //CHECKSTYLE:OFF
+    public Long getMannschaftId() {
         return mannschaftId;
     }
-    public void setMannschaftId(Long mannschaftId) {  //CHECKSTYLE:OFF
+    public void setMannschaftId(Long mannschaftId) {
         this.mannschaftId = mannschaftId;
     }
 
-    public int getMannschaftNummer() {  //CHECKSTYLE:OFF
+    public int getMannschaftNummer() {
         return mannschaftNummer;
     }
-    public void setMannschaftNummer(int mannschaftNummer) {  //CHECKSTYLE:OFF
+    public void setMannschaftNummer(int mannschaftNummer) {
         this.mannschaftNummer = mannschaftNummer;
     }
 
-    public Long getVereinId() {  //CHECKSTYLE:OFF
+    public Long getVereinId() {
         return vereinId;
     }
-    public void setVereinId(Long vereinId) {  //CHECKSTYLE:OFF
+    public void setVereinId(Long vereinId) {
         this.vereinId = vereinId;
     }
 
-    public String getVereinName() {  //CHECKSTYLE:OFF
+    public String getVereinName() {
         return vereinName;
     }
-    public void setVereinName(String vereinName) {  //CHECKSTYLE:OFF
+    public void setVereinName(String vereinName) {
         this.vereinName = vereinName;
     }
 
-    public Long getMatchId() {  //CHECKSTYLE:OFF
+    public Long getMatchId() {
         return matchId;
     }
-    public void setMatchId(Long matchId) {  //CHECKSTYLE:OFF
+    public void setMatchId(Long matchId) {
         this.matchId = matchId;
     }
 
-    public Long getDsbMitgliedId() {  //CHECKSTYLE:OFF
+    public Long getDsbMitgliedId() {
         return dsbMitgliedId;
     }
-    public void setDsbMitgliedId(Long dsbMitgliedId) {  //CHECKSTYLE:OFF
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
         this.dsbMitgliedId = dsbMitgliedId;
     }
 
-    public String getDsbMitgliedName() {  //CHECKSTYLE:OFF
+    public String getDsbMitgliedName() {
         return dsbMitgliedName;
     }
-    public void setDsbMitgliedName(String dsbMitgliedName) {  //CHECKSTYLE:OFF
+    public void setDsbMitgliedName(String dsbMitgliedName) {
         this.dsbMitgliedName = dsbMitgliedName;
     }
 
-    public float getPfeilpunkteSchnitt() {  //CHECKSTYLE:OFF
+    public float getPfeilpunkteSchnitt() {
         return pfeilpunkteSchnitt;
     }
-    public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {  //CHECKSTYLE:OFF
+    public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 

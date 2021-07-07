@@ -203,7 +203,7 @@ public class SchuetzenstatistikComponentImplTest {
         // call test method
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.getSchuetzenstatistikWettkampf(anyLong(), anyLong()))
-                .withMessageContaining("ENTITY_NOT_FOUND_ERROR: No result found for Wettkampf-ID '0'")
+                .withMessageContaining("ENTITY_NOT_FOUND_ERROR: No result found for Wettkampf-ID 0 and Verein-ID 0")
                 .withNoCause();
 
         // assert result

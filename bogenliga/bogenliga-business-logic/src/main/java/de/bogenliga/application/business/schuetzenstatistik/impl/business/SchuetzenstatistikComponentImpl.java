@@ -20,10 +20,6 @@ import java.util.List;
 @Component
 public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikComponent {
 
-    private static final String PRECONDITION_MSG_ROLE = "RoleDO must not be null";
-    private static final String PRECONDITION_MSG_ROLE_ID = "RoleDO ID must not be negative";
-    private static final String PRECONDITION_MSG_ROLE_NAME = "RoleDO name must not be null or empty";
-    private static final String USER_ROLE_DEFAULT = "USER";
     private final SchuetzenstatistikDAO schuetzenstatistikDAO;
 
     private static final String PRECONDITION_VERANSTALTUNGID = "veranstaltungID cannot be null or negative";
@@ -67,8 +63,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
         final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
 
         if (schuetzenstatistikBEList == null) {
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for Wettkampf-ID '%s'", wettkampfId));
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, ("No result found for Wettkampf-ID " + wettkampfId) + " and Verein-ID " + vereinId);
         }
 
         for (int i = 0; i < schuetzenstatistikBEList.size(); i++) {

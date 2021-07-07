@@ -56,7 +56,7 @@ public class SchuetzenstatistikService implements ServiceFacade {
     public List<SchuetzenstatistikDTO> getSchuetzenstatistikVeranstaltung(@PathVariable("veranstaltungId") final long veranstaltungId, @PathVariable("vereinId") final long vereinId) {
 
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
-        logger.debug("Receive 'Schuetzenstatistik für Veranstaltung' request with ID '{}'", veranstaltungId);
+        logger.debug("Receive 'Schuetzenstatistik für Veranstaltung' request with ID '{}'  and Verein-ID '{}'", veranstaltungId, vereinId);
 
         final List<SchuetzenstatistikDO> schuetzenstatistikDOList = schuetzenstatistikComponent.getSchuetzenstatistikVeranstaltung(veranstaltungId, vereinId);
 
