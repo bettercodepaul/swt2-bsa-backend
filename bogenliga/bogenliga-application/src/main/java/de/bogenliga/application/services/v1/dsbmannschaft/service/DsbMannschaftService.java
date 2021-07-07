@@ -313,7 +313,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @DeleteMapping(value = "{id}")
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+    @RequiresPermission(UserPermission.CAN_DELETE_MANNSCHAFT)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
