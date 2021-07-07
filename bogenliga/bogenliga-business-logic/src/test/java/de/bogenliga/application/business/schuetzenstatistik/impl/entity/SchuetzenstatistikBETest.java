@@ -1,9 +1,7 @@
 package de.bogenliga.application.business.schuetzenstatistik.impl.entity;
 
-import de.bogenliga.application.business.ligatabelle.impl.entity.LigatabelleBE;
 import org.junit.Test;
-
-import static de.bogenliga.application.business.ligatabelle.impl.business.LigatabelleComponentImplTest.getLigatabelleBE;
+import static de.bogenliga.application.business.schuetzenstatistik.impl.business.SchuetzenstatistikComponentImplTest.getSchuetzenstatistikBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SchuetzenstatistikBETest {
@@ -13,7 +11,7 @@ public class SchuetzenstatistikBETest {
 
     @Test
     public void assertToString() {
-        final LigatabelleBE underTest = getLigatabelleBE();
+        final SchuetzenstatistikBE underTest = getSchuetzenstatistikBE();
         underTest.setVeranstaltungId(ID);
         underTest.setVereinName(VEREINNAME);
 
@@ -28,7 +26,7 @@ public class SchuetzenstatistikBETest {
 
     @Test
     public void assertToString_withoutName() {
-        final LigatabelleBE underTest = getLigatabelleBE();
+        final SchuetzenstatistikBE underTest = getSchuetzenstatistikBE();
         underTest.setVeranstaltungId(ID);
         underTest.setVereinName(null);
 
