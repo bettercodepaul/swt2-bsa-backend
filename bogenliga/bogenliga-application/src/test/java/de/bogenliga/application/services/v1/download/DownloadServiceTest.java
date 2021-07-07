@@ -25,6 +25,7 @@ public class DownloadServiceTest {
     private static final long VERANSTALTUNGS_ID = 0;
     private static final long MANSCHAFTS_ID = 101;
     private static final int JAHR = 2018;
+    private static final long WETTKAMPFTAG = 1;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -99,5 +100,24 @@ public class DownloadServiceTest {
         //verify invocations
         verify(wettkampfComponent).getPDFasByteArray("Gesamtstatistik",VERANSTALTUNGS_ID,MANSCHAFTS_ID,JAHR);
     }
+
+    @Test
+    public void downloadUebersichtPdf()
+    {
+        final byte[] test = new byte[0];
+
+        //configure Mocks
+        when(wettkampfComponent.getUebersichtPDFasByteArray(VERANSTALTUNGS_ID, WETTKAMPFTAG)).thenReturn(test);
+
+        //call Method
+        final ResponseEntity<InputStreamResource> actual = DownloadService.downloadUebersichtPdf(VERANSTALTUNGS_ID, WETTKAMPFTAG);
+
+        //result is nut NULL
+        Assertions.assertThat(actual).isNotNull();
+
+        //verify invocations
+        verify(wettkampfComponent).getUebersichtPDFasByteArray(VERANSTALTUNGS_ID, WETTKAMPFTAG);
+    }
+
 
 }

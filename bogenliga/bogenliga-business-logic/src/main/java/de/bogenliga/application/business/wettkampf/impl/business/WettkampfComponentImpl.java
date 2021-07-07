@@ -88,7 +88,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      * dependency injection with {@link Autowired}
      *
      * @param wettkampfDAO to access the database and return dsbmitglied representations
-     * @param ligatabelleComponent
      */
     @Autowired
     public WettkampfComponentImpl(final WettkampfDAO wettkampfDAO,
@@ -108,7 +107,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
-        this.veranstaltungDAO = veranstaltungDAO;5
+        this.veranstaltungDAO = veranstaltungDAO;
     }
 
     @Autowired
