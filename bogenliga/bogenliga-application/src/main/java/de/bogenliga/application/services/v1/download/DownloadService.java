@@ -360,20 +360,5 @@ public class DownloadService implements ServiceFacade {
         return generateInputStream(fileBloB);
     }
 
-    @CrossOrigin(maxAge = 0)
-    @GetMapping(
-            path = "pdf/Uebersicht",
-            produces = MediaType.APPLICATION_PDF_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public @ResponseBody
-    ResponseEntity<InputStreamResource> downloadUebersichtPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
-                                                                @RequestParam("wettkampftag") final long wettkampftag)
-    {
-
-        final byte[] fileBloB = wettkampfComponent.getUebersichtPDFasByteArray(veranstaltungsid,wettkampftag);
-
-        return generateInputStream(fileBloB);
-    }
-
 
 }
