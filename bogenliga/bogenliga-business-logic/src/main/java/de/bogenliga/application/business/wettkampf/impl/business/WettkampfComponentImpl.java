@@ -518,7 +518,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         long wettkampfid = wettkaempfe.get(0).getId();
 
         doc.setFontSize(20.0f);
-        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltungName()).setBold());
+        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltung_name()).setBold());
         doc.setFontSize(9.2f);
         doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
         doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfPlz() + ", " +  wettkaempfe.get(0).getWettkampfOrtsname()
