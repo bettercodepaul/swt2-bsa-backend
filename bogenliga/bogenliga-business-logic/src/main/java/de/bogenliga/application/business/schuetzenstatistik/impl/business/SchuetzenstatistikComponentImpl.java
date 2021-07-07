@@ -24,7 +24,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
 
     private static final String PRECONDITION_VERANSTALTUNGID = "veranstaltungID cannot be null or negative";
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfID cannot be null or negative";
-
+    private static final String PRECONDITION_VEREINID = "wettkampfID cannot be null or negative";
 
     /**
      * Constructor
@@ -41,6 +41,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
     @Override
     public List<SchuetzenstatistikDO> getSchuetzenstatistikVeranstaltung(Long veranstaltungId, Long vereinId) {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_VERANSTALTUNGID);
+        Preconditions.checkArgument(vereinId >= 0, PRECONDITION_VEREINID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
         final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikVeranstaltung(veranstaltungId, vereinId);
@@ -58,6 +59,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
     @Override
     public List<SchuetzenstatistikDO> getSchuetzenstatistikWettkampf(Long wettkampfId, Long vereinId) {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_WETTKAMPFID);
+        Preconditions.checkArgument(vereinId >= 0, PRECONDITION_VEREINID);
 
         final ArrayList<SchuetzenstatistikDO> returnList = new ArrayList<>();
         final List<SchuetzenstatistikBE> schuetzenstatistikBEList = schuetzenstatistikDAO.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
