@@ -40,11 +40,11 @@ public interface WettkampfComponent extends ComponentFacade {
     /**
      * retruns all wettkämpfe with the given veranstaltungId
      *
-     * @param veranstaltung_id id of the veranstaltung
+     * @param veranstaltungId id of the veranstaltung
      * @return a list with wettkampf entries
      */
 
-    List<WettkampfDO> findAllByVeranstaltungId(long veranstaltung_id);
+    List<WettkampfDO> findAllByVeranstaltungId(long veranstaltungId);
 
 
     /**
@@ -59,10 +59,10 @@ public interface WettkampfComponent extends ComponentFacade {
     /**
      * Create a new wettkampf in the database.
      *
-     * @param veranstaltung_id veranstaltung for which to create a new Day0 Entry
+     * @param veranstaltungId veranstaltung for which to create a new Day0 Entry
      * @return persisted version of the wettkampf
      */
-     WettkampfDO createWT0(long veranstaltung_id, long currentUserID);
+     WettkampfDO createWT0(long veranstaltungId, long currentUserID);
 
 
     /**
