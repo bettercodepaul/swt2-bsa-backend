@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
-import javax.print.Doc;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,12 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import com.itextpdf.io.source.ByteArrayOutputStream;
-import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
@@ -170,8 +165,8 @@ public class WettkampfComponentImplTest {
     public static VeranstaltungBE getVeranstaltungBE()
     {
         VeranstaltungBE veranstaltung = new VeranstaltungBE();
-        veranstaltung.setVeranstaltung_id(wettkampf_Veranstaltung_Id);
-        veranstaltung.setVeranstaltung_name("Demo Veranstaltung");
+        veranstaltung.setVeranstaltungId(wettkampf_Veranstaltung_Id);
+        veranstaltung.setVeranstaltungName("Demo Veranstaltung");
 
         return veranstaltung;
     }
