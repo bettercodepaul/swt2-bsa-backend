@@ -11,7 +11,7 @@ import java.util.Objects;
 public class SchuetzenstatistikDO extends CommonDataObject implements DataObject {
 
     /**
-     * business parameter
+     * DO attributes
      */
 
     private Long veranstaltungId;
@@ -27,8 +27,13 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
     private String dsbMitgliedName;
     private float pfeilpunkteSchnitt;
 
+
+    public SchuetzenstatistikDO() {
+        // no parameter-constructor
+    }
+
     /**
-     * Constructor with optional parameters
+     * A Constructor with optional parameters
      *
      * @param veranstaltungId;
      * @param veranstaltungName;
@@ -70,11 +75,6 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedName = dsbMitgliedName;
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
-    }
-
-
-    public SchuetzenstatistikDO() {
-        // empty constructor
     }
 
 
@@ -131,12 +131,6 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchId, dsbMitgliedId, dsbMitgliedName, pfeilpunkteSchnitt);
-    }
-
-    @Override
     public boolean equals(final Object o){
         if (this == o) {
             return true;
@@ -157,6 +151,12 @@ public class SchuetzenstatistikDO extends CommonDataObject implements DataObject
                 dsbMitgliedId.equals(that.dsbMitgliedId) &&
                 Objects.equals(dsbMitgliedName, that.dsbMitgliedName) &&
                 pfeilpunkteSchnitt == that.pfeilpunkteSchnitt;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
+                mannschaftNummer, vereinId, vereinName, matchId, dsbMitgliedId, dsbMitgliedName, pfeilpunkteSchnitt);
     }
 
 }

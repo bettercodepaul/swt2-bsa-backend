@@ -24,15 +24,9 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     private String dsbMitgliedName;
     private float pfeilpunkteSchnitt;
 
-
-
-    /**
-     * Constructor
-     */
     public SchuetzenstatistikBE() {
-        // empty
+        // nothing is here
     }
-
 
     @Override
     public String toString() {
@@ -51,7 +45,6 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
                 ", pfeilpunkteSchnitt='" + pfeilpunkteSchnitt +
                 '}';
     }
-
 
     public long getVeranstaltungId() {
         return veranstaltungId;
@@ -136,4 +129,6 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
+
+    // This were the Getters and Setters
 }

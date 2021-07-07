@@ -24,14 +24,12 @@ import java.util.Map;
  */
 @Repository
 public class SchuetzenstatistikDAO implements DataAccessObject {
-
     // define the logger context
     private static final Logger LOG = LoggerFactory.getLogger(SchuetzenstatistikDAO.class);
 
     // table name in the database
     private static final String TABLE = "schuetzenstatistik";
     // business entity parameter names
-
     private static final String VERANSTALTUNGID_BE = "veranstaltungId";
     private static final String VERANSTALTUNGNAME_BE = "veranstaltungName";
     private static final String WETTKAMPFID_BE = "wettkampfId";
@@ -64,11 +62,6 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
      */
 
     /* der Select liefert die aktuelle Schuetzenstatistik zur Veranstaltung -
-    * es wird immer der "höchste Wettkampftag ermittelt un die Tabellenreihenfolge
-    * automatisch erzeugt durch die Sortierkriterien beim generieren der Row-Number
-    * ggf. mpüssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
-    * hier jetzt erst mal der Select für Match-Punkte vor Satzpunkt-Differenz
-    * sollte für Liga-Satzsystem passen
      */
     private static final String GET_SCHUETZENSTATISTIK = new QueryBuilder().selectFields(
             VERANSTALTUNGID_TABLE,
@@ -103,6 +96,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
             )
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .compose().toString();
+
+    // wrap all specific config parameters
+    private static final BusinessEntityConfiguration<SchuetzenstatistikBE> SCHUETZENSTATISTIK = new BusinessEntityConfiguration<>(
+            SchuetzenstatistikBE.class, TABLE, getColumnsToFieldsMap(), LOG);
 
 
     /* der Select liefert die aktuelle Schuetzenstatistik zur Wettkampf-ID
@@ -142,15 +139,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
             .compose().toString();
 
 
-    // wrap all specific config parameters
-    private static final BusinessEntityConfiguration<SchuetzenstatistikBE> SCHUETZENSTATISTIK = new BusinessEntityConfiguration<>(
-            SchuetzenstatistikBE.class, TABLE, getColumnsToFieldsMap(), LOG);
-
-
-
     private final BasicDAO basicDao;
-
-
     /**
      * Initialize the transaction manager to provide a database connection
      *
@@ -161,11 +150,9 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
         this.basicDao = basicDao;
     }
 
-
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
-
 
         columnsToFieldsMap.put(VERANSTALTUNGID_TABLE, VERANSTALTUNGID_BE);
         columnsToFieldsMap.put(VERANSTALTUNGNAME_TABLE, VERANSTALTUNGNAME_BE);
@@ -179,7 +166,6 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
         columnsToFieldsMap.put(DSBMITGLIEDID_TABLE, DSBMITGLIEDID_BE);
         columnsToFieldsMap.put(DSBMITGLIEDNAME_TABLE, DSBMITGLIEDNAME_BE);
         columnsToFieldsMap.put(PFEILPUNKTESCHNITT_TABLE, PFEILPUNKTESCHNITT_BE);
-
 
         return columnsToFieldsMap;
     }
@@ -197,5 +183,7 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     public List<SchuetzenstatistikBE> getSchuetzenstatistikWettkampf(final long wettkampfId, final long vereinId) {
         return basicDao.selectEntityList(SCHUETZENSTATISTIK, GET_SCHUETZENSTATISTIK_WETTKAMPF, wettkampfId, vereinId);
     }
+
+
     
 }
