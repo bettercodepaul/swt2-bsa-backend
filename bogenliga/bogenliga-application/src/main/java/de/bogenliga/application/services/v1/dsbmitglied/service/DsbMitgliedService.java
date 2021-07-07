@@ -106,7 +106,7 @@ public class DsbMitgliedService implements ServiceFacade {
 
 
     @GetMapping(value = "/team/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DSBMITGLIEDER)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMitgliedDTO> findAllByTeamId(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
         LOG.debug("Receive 'findAllByTeamid' request with ID '{}'", id );
