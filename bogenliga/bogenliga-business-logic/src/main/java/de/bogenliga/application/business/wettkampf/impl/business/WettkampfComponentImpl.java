@@ -246,7 +246,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.setFontSize(20.0f);
         doc.add(new Paragraph(header).setBold());
         doc.setFontSize(9.2f);
-        doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltungName()));
+        doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltung_name()));
         doc.add(new Paragraph("Mannschaft: " + getTeamName(mannschaftsid)));
         doc.add(new Paragraph("Jahr: " +Integer.toString(jahr)));
         doc.add(new Paragraph(""));
