@@ -1,7 +1,6 @@
 package de.bogenliga.application.springconfiguration.security.permissions;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;

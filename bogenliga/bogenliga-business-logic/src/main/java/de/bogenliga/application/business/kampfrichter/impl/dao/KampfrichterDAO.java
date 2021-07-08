@@ -13,7 +13,6 @@ import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterEx
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
-import de.bogenliga.application.common.database.SQL;
 
 
 /**

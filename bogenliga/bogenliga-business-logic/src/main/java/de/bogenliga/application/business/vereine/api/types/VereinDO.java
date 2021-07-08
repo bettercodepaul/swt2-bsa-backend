@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
-import java.io.File;
 
 /**
  * Contains the values of the verein Business Entity

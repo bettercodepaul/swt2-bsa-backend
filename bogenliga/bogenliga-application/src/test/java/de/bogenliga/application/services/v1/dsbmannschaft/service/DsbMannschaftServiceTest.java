@@ -319,7 +319,12 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDO expected = getDsbMannschaftDO();
 
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
+
         // call test method
+        try{
         underTest.delete(ID, principal);
 
         // verify invocations
@@ -330,5 +335,6 @@ public class DsbMannschaftServiceTest {
         assertThat(deletedDsbMannschaft).isNotNull();
         assertThat(deletedDsbMannschaft.getId()).isEqualTo(expected.getId());
         assertThat(deletedDsbMannschaft.getVereinId()).isNull();
+        }catch (NoPermissionException e) { }
     }
 }

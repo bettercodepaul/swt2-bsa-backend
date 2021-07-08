@@ -1,9 +1,8 @@
 package de.bogenliga.application.business.wettkampf.impl.mapper;
 
 
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.function.Function;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
@@ -36,12 +35,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         final Long wettkampfAusrichter = be.getWettkampfAusrichter();
 
         // technical parameter
-        Long createdByUserId = be.getCreatedByUserId();
-        Long lastModifiedByUserId = be.getLastModifiedByUserId();
         Long version = be.getVersion();
-
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
-        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new WettkampfDO(
                 id,
