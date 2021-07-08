@@ -1,11 +1,8 @@
 package de.bogenliga.application.business.vereine.api;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.ComponentFacade;
-import java.io.File;
 
 /**
  * Responsible for the vereine database requests.
