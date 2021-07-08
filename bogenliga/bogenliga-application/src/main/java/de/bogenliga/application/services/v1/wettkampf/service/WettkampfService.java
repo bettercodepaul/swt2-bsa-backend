@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
-import de.bogenliga.application.business.user.impl.business.UserRoleComponentImpl;
-import de.bogenliga.application.business.user.impl.business.UserComponentImpl;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -50,8 +50,8 @@ public class WettkampfService implements ServiceFacade {
 
     private final WettkampfComponent wettkampfComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-    private final UserRoleComponentImpl userroleComponent;
-    private final UserComponentImpl userComponent;
+    private final UserRoleComponent userroleComponent;
+    private final UserComponent userComponent;
 
 
     /**
@@ -65,8 +65,8 @@ public class WettkampfService implements ServiceFacade {
     @Autowired
     public WettkampfService(final WettkampfComponent wettkampfComponent,
                             RequiresOnePermissionAspect requiresOnePermissionAspect,
-                            UserRoleComponentImpl userroleComponent,
-                            UserComponentImpl userComponent) {
+                            UserRoleComponent userroleComponent,
+                            UserComponent userComponent) {
         this.wettkampfComponent = wettkampfComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
         this.userroleComponent = userroleComponent;
