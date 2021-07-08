@@ -1,9 +1,14 @@
 package de.bogenliga.application.services.v1.wettkampf.service;
 
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.UserRoleComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
+import org.apache.catalina.User;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,6 +20,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.security.Principal;
+import java.sql.Array;
 import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -58,12 +64,19 @@ public class WettkampfServiceTest {
     private static final long version = 1234;
     private static final long wettkampfAusrichter = 8;
 
+    private static final long changedWettkampfAusrichter = 7;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     private WettkampfComponent wettkampfComponent;
+
+    @Mock
+    private UserRoleComponent userRoleComponent;
+
+    @Mock
+    private UserComponent userComponent;
 
     @Mock
     private RequiresOnePermissionAspect requiresOnePermissionAspect;
@@ -143,7 +156,26 @@ public class WettkampfServiceTest {
 
     }
 
+    private static final String U_email = "user@email";
 
+    private static UserDO getUserDO() {
+        UserDO userDO = new UserDO();
+        userDO.setId(wettkampfAusrichter);
+        userDO.setEmail(U_email);
+        return userDO;
+    }
+
+    private static List<UserRoleDO> getUserRoles(){
+        List<UserRoleDO> roles = new ArrayList<>();
+        UserRoleDO userRoleDO = new UserRoleDO();
+        userRoleDO.setId(wettkampfAusrichter);
+        userRoleDO.setEmail(U_email);
+        userRoleDO.setRoleId(6L);
+        userRoleDO.setRoleName("USER");
+        userRoleDO.setActive(true);
+        roles.add(userRoleDO);
+        return roles;
+    }
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(user_Id));
@@ -259,9 +291,14 @@ public class WettkampfServiceTest {
         final WettkampfDTO input = getWettkampfDTO();
 
         final WettkampfDO expected = getWettkampfDO();
+        final UserDO user = getUserDO();
+        final List<UserRoleDO> userRoles = getUserRoles();
 
         // configure mocks
-        when(wettkampfComponent.create(any(), anyLong())).thenReturn(expected);
+        when(wettkampfComponent.create(any() , anyLong())).thenReturn(expected);
+        when(userRoleComponent.findById(anyLong())).thenReturn(userRoles);
+        when(userComponent.findById(anyLong())).thenReturn(user);
+
 
         // call test method
         final WettkampfDTO actual = underTest.create(input, principal);
@@ -286,11 +323,15 @@ public class WettkampfServiceTest {
         final WettkampfDTO input = getWettkampfDTO();
 
         final WettkampfDO expected = getWettkampfDO();
-
+        final UserDO user = getUserDO();
+        final List<UserRoleDO> userRoles = getUserRoles();
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(wettkampfComponent.findById(anyLong())).thenReturn(expected);
         when(wettkampfComponent.update(any(), anyLong())).thenReturn(expected);
+        when(userRoleComponent.findById(anyLong())).thenReturn(userRoles);
+        when(userComponent.findById(anyLong())).thenReturn(user);
+
 
         try {
             // call test method
