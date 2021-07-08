@@ -20,8 +20,10 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     private Long vereinId;
     private String vereinName;
     private Long matchId;
+    private int matchNr;
     private Long dsbMitgliedId;
     private String dsbMitgliedName;
+    private int rueckenNummer;
     private float pfeilpunkteSchnitt;
 
     public SchuetzenstatistikBE() {
@@ -40,8 +42,10 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
                 ", vereinId='" + vereinId +
                 ", vereinName='" + vereinName +
                 ", matchId='" + matchId +
+                ", matchNr='" + matchNr +
                 ", dsbMitgliedId='" + dsbMitgliedId +
                 ", dsbMitgliedName='" + dsbMitgliedName +
+                ", rueckenNummer='" + rueckenNummer +
                 ", pfeilpunkteSchnitt='" + pfeilpunkteSchnitt +
                 '}';
     }
@@ -109,6 +113,13 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
         this.matchId = matchId;
     }
 
+    public int getMatchNr() {
+        return matchNr;
+    }
+    public void setMatchNr(int matchNr) {
+        this.matchNr = matchNr;
+    }
+
     public Long getDsbMitgliedId() {
         return dsbMitgliedId;
     }
@@ -123,12 +134,17 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
         this.dsbMitgliedName = dsbMitgliedName;
     }
 
+    public int getRueckenNummer() {
+        return rueckenNummer;
+    }
+    public void setRueckenNummer(int rueckenNummer) {
+        this.rueckenNummer = rueckenNummer;
+    }
+
     public float getPfeilpunkteSchnitt() {
         return pfeilpunkteSchnitt;
     }
     public void setPfeilpunkteSchnitt(float pfeilpunkteSchnitt) {
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
-
-    // This were the Getters and Setters
 }

@@ -60,8 +60,10 @@ public class SchuetzenstatistikDAOTest {
         assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getVereinName()).isEqualTo(expectedBE.getVereinName());
         assertThat(actual.get(0).getMatchId()).isEqualTo(expectedBE.getMatchId());
+        assertThat(actual.get(0).getMatchNr()).isEqualTo(expectedBE.getMatchNr());
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());
         assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedBE.getPfeilpunkteSchnitt());
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -94,8 +96,10 @@ public class SchuetzenstatistikDAOTest {
         assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getVereinName()).isEqualTo(expectedBE.getVereinName());
         assertThat(actual.get(0).getMatchId()).isEqualTo(expectedBE.getMatchId());
+        assertThat(actual.get(0).getMatchNr()).isEqualTo(expectedBE.getMatchNr());
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBE.getDsbMitgliedId());
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedBE.getRueckenNummer());
         assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedBE.getPfeilpunkteSchnitt());
 
         // verify invocations

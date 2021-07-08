@@ -39,8 +39,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     private static final String VEREINID_BE = "vereinId";
     private static final String VEREINNAME_BE = "vereinName";
     private static final String MATCHID_BE = "matchId";
+    private static final String MATCHNR_BE = "matchNr";
     private static final String DSBMITGLIEDID_BE = "dsbMitgliedId";
     private static final String DSBMITGLIEDNAME_BE = "dsbMitgliedName";
+    private static final String RUECKENNUMMER_BE = "rueckenNummer";
     private static final String PFEILPUNKTESCHNITT_BE = "pfeilpunkteSchnitt";
 
 
@@ -53,8 +55,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
     private static final String VEREINID_TABLE = "schuetzenstatistik_verein_id";
     private static final String VEREINNAME_TABLE = "schuetzenstatistik_verein_name";
     private static final String MATCHID_TABLE = "schuetzenstatistik_match_id";
+    private static final String MATCHNR_TABLE = "schuetzenstatistik_match_nr";
     private static final String DSBMITGLIEDID_TABLE = "schuetzenstatistik_dsb_mitglied_id";
     private static final String DSBMITGLIEDNAME_TABLE = "schuetzenstatistik_dsb_mitglied_name";
+    private static final String RUECKENNUMMER_TABLE = "schuetzenstatistik_rueckennummer";
     private static final String PFEILPUNKTESCHNITT_TABLE = "schuetzenstatistik_pfeilpunkte_schnitt";
 
     /*
@@ -73,8 +77,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
             VEREINID_TABLE,
             VEREINNAME_TABLE,
             MATCHID_TABLE,
+            MATCHNR_TABLE,
             DSBMITGLIEDID_TABLE,
             DSBMITGLIEDNAME_TABLE,
+            RUECKENNUMMER_TABLE,
             "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+") as "+PFEILPUNKTESCHNITT_BE
     )
             .from(TABLE)
@@ -90,8 +96,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     VEREINID_TABLE,
                     VEREINNAME_TABLE,
                     MATCHID_TABLE,
+                    MATCHNR_TABLE,
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
+                    RUECKENNUMMER_TABLE,
                     PFEILPUNKTESCHNITT_TABLE
             )
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
@@ -114,8 +122,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                 VEREINID_TABLE,
                 VEREINNAME_TABLE,
                 MATCHID_TABLE,
+                MATCHNR_TABLE,
                 DSBMITGLIEDID_TABLE,
                 DSBMITGLIEDNAME_TABLE,
+                RUECKENNUMMER_TABLE,
                 "SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+") as "+PFEILPUNKTESCHNITT_BE
             )
             .from(TABLE)
@@ -131,8 +141,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
                     VEREINID_TABLE,
                     VEREINNAME_TABLE,
                     MATCHID_TABLE,
+                    MATCHNR_TABLE,
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
+                    RUECKENNUMMER_TABLE,
                     PFEILPUNKTESCHNITT_TABLE
             )
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
@@ -163,8 +175,10 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
         columnsToFieldsMap.put(VEREINID_TABLE, VEREINID_BE);
         columnsToFieldsMap.put(VEREINNAME_TABLE, VEREINNAME_BE);
         columnsToFieldsMap.put(MATCHID_TABLE, MATCHID_BE);
+        columnsToFieldsMap.put(MATCHNR_TABLE, MATCHNR_BE);
         columnsToFieldsMap.put(DSBMITGLIEDID_TABLE, DSBMITGLIEDID_BE);
         columnsToFieldsMap.put(DSBMITGLIEDNAME_TABLE, DSBMITGLIEDNAME_BE);
+        columnsToFieldsMap.put(RUECKENNUMMER_TABLE, RUECKENNUMMER_BE);
         columnsToFieldsMap.put(PFEILPUNKTESCHNITT_TABLE, PFEILPUNKTESCHNITT_BE);
 
         return columnsToFieldsMap;
