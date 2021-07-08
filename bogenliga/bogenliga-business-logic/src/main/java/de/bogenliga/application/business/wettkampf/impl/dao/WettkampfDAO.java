@@ -65,7 +65,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String DEFAULT_BEGINN = " - ";
     private static final Long DEFAULT_DISZIPLIN_ID = 0L;
     private static final Long DEFAULT_TYP_ID = 0L;
-    private static final Long DEFAULT_WETTKAMPF_VERANSTALTER = 0L;      // WETTKAMPF_AUSRICHTER?
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<WettkampfBE> WETTKAMPF = new BusinessEntityConfiguration<>(
@@ -74,19 +73,21 @@ public class WettkampfDAO implements DataAccessObject {
     /*
      * SQL queries
      */
+    private static final String SELECT = "SELECT * ";
+
     private static final String FIND_ALL =
-            "SELECT * "
+            SELECT
                     + " FROM wettkampf"
                     + " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0"
                     + " ORDER BY wettkampf_id";
 
     private static final String FIND_BY_ID =
-            "SELECT * "
+            SELECT
                     + " FROM wettkampf "
                     + " WHERE wettkampf_id = ?";
 
     private static final String FIND_ALL_BY_MANNSCHAFTS_ID =
-            "SELECT * "
+            SELECT
                     + " FROM wettkampf "
                     + " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_id IN ("
                     + " SELECT match_wettkampf_id"
@@ -95,13 +96,13 @@ public class WettkampfDAO implements DataAccessObject {
                     "ORDER BY wettkampf_datum";
 
     private static final String FIND_ALL_BY_VERANSTALTUNG_ID =
-            "SELECT *" +
+            SELECT +
                     " FROM wettkampf" +
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_veranstaltung_id = ?" +
                     " order by wettkampf_datum";
 
     private static final String FIND_WT0_BY_VERANSTALTUNG_ID =
-            "SELECT *" +
+            SELECT +
                     " FROM wettkampf" +
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " = 0 AND wettkampf_veranstaltung_id = ?";
 
