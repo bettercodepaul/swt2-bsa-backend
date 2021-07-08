@@ -40,8 +40,10 @@ public class SchuetzenstatistikMapperTest {
                 schuetzenstatistikBE.getVereinId(),
                 schuetzenstatistikBE.getVereinName(),
                 schuetzenstatistikBE.getMatchId(),
+                schuetzenstatistikBE.getMatchNr(),
                 schuetzenstatistikBE.getDsbMitgliedId(),
                 schuetzenstatistikBE.getDsbMitgliedName(),
+                schuetzenstatistikBE.getRueckenNummer(),
                 schuetzenstatistikBE.getPfeilpunkteSchnitt());
 
         assertThat(actual.hashCode()).isEqualTo(schuetzenstatistikDO.hashCode());
@@ -63,8 +65,10 @@ public class SchuetzenstatistikMapperTest {
         assertThat(actual.getVereinId()).isEqualTo(schuetzenstatistikDO.getvereinId());
         assertThat(actual.getVereinName()).isEqualTo(schuetzenstatistikDO.getvereinName());
         assertThat(actual.getMatchId()).isEqualTo(schuetzenstatistikDO.getMatchId());
+        assertThat(actual.getMatchNr()).isEqualTo(schuetzenstatistikDO.getMatchNr());
         assertThat(actual.getDsbMitgliedId()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedId());
         assertThat(actual.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
+        assertThat(actual.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
         assertThat(actual.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
     }
 }

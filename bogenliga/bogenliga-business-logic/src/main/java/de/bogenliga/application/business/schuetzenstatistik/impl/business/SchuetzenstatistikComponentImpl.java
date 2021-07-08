@@ -24,7 +24,7 @@ public class SchuetzenstatistikComponentImpl implements SchuetzenstatistikCompon
 
     private static final String PRECONDITION_VERANSTALTUNGID = "veranstaltungID cannot be null or negative";
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfID cannot be null or negative";
-    private static final String PRECONDITION_VEREINID = "wettkampfID cannot be null or negative";
+    private static final String PRECONDITION_VEREINID = "vereinID cannot be null or negative";
 
     /**
      * Constructor
