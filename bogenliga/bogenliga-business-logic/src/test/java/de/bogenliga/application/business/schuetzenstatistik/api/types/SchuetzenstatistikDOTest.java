@@ -10,18 +10,20 @@ import org.mockito.junit.MockitoRule;
 import static org.junit.Assert.*;
 
 public class SchuetzenstatistikDOTest {
-    private static Long veranstaltungId = 1L;
-    private static String veranstaltungName = "Name_der_Veranstaltung";
-    private static Long wettkampfId = 2L;
-    private static int wettkampfTag = 3;
-    private static Long mannschaftId = 4L;
-    private static int mannschaftNummer = 9;
-    private static Long vereinId = 7L;
-    private static String vereinName = "Name_Verein";
-    private static Long matchId = 6L;
-    private static Long dsbMitgliedId = 2L;
-    private static String dsbMitgliedName = "Name_dsbMitglied";
-    private static float pfeilpunkteSchnitt = (float) 3.78;
+    private static final Long veranstaltungId = 1L;
+    private static final String veranstaltungName = "Name_der_Veranstaltung";
+    private static final Long wettkampfId = 2L;
+    private static final int wettkampfTag = 3;
+    private static final Long mannschaftId = 4L;
+    private static final int mannschaftNummer = 9;
+    private static final Long vereinId = 7L;
+    private static final String vereinName = "Name_Verein";
+    private static final Long matchId = 6L;
+    private static final int matchNr = 2;
+    private static final Long dsbMitgliedId = 2L;
+    private static final String dsbMitgliedName = "Mitglied_Name";
+    private static final int rueckenNummer = 5;
+    private static final float pfeilpunkteSchnitt = (float) 3.7;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -40,8 +42,10 @@ public class SchuetzenstatistikDOTest {
         expectedSchuetzenstatistikDO.setvereinId(vereinId);
         expectedSchuetzenstatistikDO.setvereinName(vereinName);
         expectedSchuetzenstatistikDO.setMatchId(matchId);
+        expectedSchuetzenstatistikDO.setMatchNr(matchNr);
         expectedSchuetzenstatistikDO.setDsbMitgliedId(dsbMitgliedId);
         expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
+        expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
         expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
 
         return expectedSchuetzenstatistikDO;

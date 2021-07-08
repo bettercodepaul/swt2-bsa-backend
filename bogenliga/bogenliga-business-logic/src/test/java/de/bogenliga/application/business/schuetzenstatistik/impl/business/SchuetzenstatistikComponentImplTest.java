@@ -26,18 +26,20 @@ public class SchuetzenstatistikComponentImplTest {
     private static final Long USER = 0L;
     private static final Long VERSION = 0L;
 
-    private static Long veranstaltungId = 1L;
-    private static String veranstaltungName = "Name_der_Veranstaltung";
-    private static Long wettkampfId = 2L;
-    private static int wettkampfTag = 3;
-    private static Long mannschaftId = 4L;
-    private static int mannschaftNummer = 9;
-    private static Long vereinId = 7L;
-    private static String vereinName = "Name_Verein";
-    private static Long matchId = 6L;
-    private static Long dsbMitgliedId = 2L;
-    private static String dsbMitgliedName = "Name_dsbMitglied";
-    private static float pfeilpunkteSchnitt = (float) 3.78;
+    private static final Long veranstaltungId = 1L;
+    private static final String veranstaltungName = "Name_der_Veranstaltung";
+    private static final Long wettkampfId = 2L;
+    private static final int wettkampfTag = 3;
+    private static final Long mannschaftId = 4L;
+    private static final int mannschaftNummer = 9;
+    private static final Long vereinId = 7L;
+    private static final String vereinName = "Name_Verein";
+    private static final Long matchId = 6L;
+    private static final int matchNr = 2;
+    private static final Long dsbMitgliedId = 2L;
+    private static final String dsbMitgliedName = "Mitglied_Name";
+    private static final int rueckenNummer = 5;
+    private static final float pfeilpunkteSchnitt = (float) 3.7;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -62,8 +64,10 @@ public class SchuetzenstatistikComponentImplTest {
         expectedSchuetzenstatistikBE.setVereinId(vereinId);
         expectedSchuetzenstatistikBE.setVereinName(vereinName);
         expectedSchuetzenstatistikBE.setMatchId(matchId);
+        expectedSchuetzenstatistikBE.setMatchNr(matchNr);
         expectedSchuetzenstatistikBE.setDsbMitgliedId(dsbMitgliedId);
         expectedSchuetzenstatistikBE.setDsbMitgliedName(dsbMitgliedName);
+        expectedSchuetzenstatistikBE.setRueckenNummer(rueckenNummer);
         expectedSchuetzenstatistikBE.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
 
         return expectedSchuetzenstatistikBE;
@@ -81,8 +85,10 @@ public class SchuetzenstatistikComponentImplTest {
         expectedSchuetzenstatistikDO.setvereinId(vereinId);
         expectedSchuetzenstatistikDO.setvereinName(vereinName);
         expectedSchuetzenstatistikDO.setMatchId(matchId);
+        expectedSchuetzenstatistikDO.setMatchNr(matchNr);
         expectedSchuetzenstatistikDO.setDsbMitgliedId(dsbMitgliedId);
         expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
+        expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
         expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
 
         return expectedSchuetzenstatistikDO;
@@ -120,8 +126,10 @@ public class SchuetzenstatistikComponentImplTest {
         assertThat(actual.get(0).getvereinId()).isEqualTo(expectedSchuetzenstatistikBE.getVereinId());
         assertThat(actual.get(0).getvereinName()).isEqualTo(expectedSchuetzenstatistikBE.getVereinName());
         assertThat(actual.get(0).getMatchId()).isEqualTo(expectedSchuetzenstatistikBE.getMatchId());
+        assertThat(actual.get(0).getMatchNr()).isEqualTo(expectedSchuetzenstatistikBE.getMatchNr());
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedSchuetzenstatistikBE.getDsbMitgliedId());
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedSchuetzenstatistikBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedSchuetzenstatistikBE.getRueckenNummer());
         assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedSchuetzenstatistikBE.getPfeilpunkteSchnitt());
 
         // verify invocations
@@ -152,7 +160,7 @@ public class SchuetzenstatistikComponentImplTest {
 
 
     @Test
-    public void getLigatabelleWettkampf_allesok() {
+    public void getSchuetzenstatistikWettkampf_allesok() {
         // prepare test data
         final SchuetzenstatistikBE expectedSchuetzenstatistikBE = getSchuetzenstatistikBE();
         final List<SchuetzenstatistikBE> expectedBEList = Collections.singletonList(expectedSchuetzenstatistikBE);
@@ -182,8 +190,10 @@ public class SchuetzenstatistikComponentImplTest {
         assertThat(actual.get(0).getvereinId()).isEqualTo(expectedSchuetzenstatistikBE.getVereinId());
         assertThat(actual.get(0).getvereinName()).isEqualTo(expectedSchuetzenstatistikBE.getVereinName());
         assertThat(actual.get(0).getMatchId()).isEqualTo(expectedSchuetzenstatistikBE.getMatchId());
+        assertThat(actual.get(0).getMatchNr()).isEqualTo(expectedSchuetzenstatistikBE.getMatchNr());
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedSchuetzenstatistikBE.getDsbMitgliedId());
         assertThat(actual.get(0).getDsbMitgliedName()).isEqualTo(expectedSchuetzenstatistikBE.getDsbMitgliedName());
+        assertThat(actual.get(0).getRueckenNummer()).isEqualTo(expectedSchuetzenstatistikBE.getRueckenNummer());
         assertThat(actual.get(0).getPfeilpunkteSchnitt()).isEqualTo(expectedSchuetzenstatistikBE.getPfeilpunkteSchnitt());
 
         // verify invocations
@@ -192,7 +202,7 @@ public class SchuetzenstatistikComponentImplTest {
 
     //Input ID null -> Exception
     @Test
-    public void getLigatabelleWettkampf_IDnull() {
+    public void getSchuetzenstatistikWettkampf_IDnull() {
         // prepare test data
         final SchuetzenstatistikBE expectedSchuetzenstatistikBE = getSchuetzenstatistikBE();
         final List<SchuetzenstatistikBE> expectedBEList = Collections.singletonList(expectedSchuetzenstatistikBE);

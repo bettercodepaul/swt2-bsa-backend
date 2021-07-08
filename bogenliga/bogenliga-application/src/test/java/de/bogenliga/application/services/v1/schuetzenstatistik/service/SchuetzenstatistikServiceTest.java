@@ -36,8 +36,10 @@ public class SchuetzenstatistikServiceTest {
         private static final Long vereinId = 7L;
         private static final String vereinName = "Name_Verein";
         private static final Long matchId = 6L;
+        private static final int matchNr = 2;
         private static final Long dsbMitgliedId = 2L;
         private static final String dsbMitgliedName = "Mitglied_Name";
+        private static final int rueckenNummer = 5;
         private static final int pfeilpunkteSchnitt = 3;
 
         public static SchuetzenstatistikDO getSchuetzenstatistikDO() {
@@ -51,8 +53,10 @@ public class SchuetzenstatistikServiceTest {
             expectedSchuetzenstatistikDO.setvereinId(vereinId);
             expectedSchuetzenstatistikDO.setvereinName(vereinName);
             expectedSchuetzenstatistikDO.setMatchId(matchId);
+            expectedSchuetzenstatistikDO.setMatchNr(matchNr);
             expectedSchuetzenstatistikDO.setDsbMitgliedId(dsbMitgliedId);
             expectedSchuetzenstatistikDO.setDsbMitgliedName(dsbMitgliedName);
+            expectedSchuetzenstatistikDO.setRueckenNummer(rueckenNummer);
             expectedSchuetzenstatistikDO.setPfeilpunkteSchnitt(pfeilpunkteSchnitt);
 
             return expectedSchuetzenstatistikDO;
@@ -69,8 +73,10 @@ public class SchuetzenstatistikServiceTest {
                     vereinId,
                     vereinName,
                     matchId,
+                    matchNr,
                     dsbMitgliedId,
                     dsbMitgliedName,
+                    rueckenNummer,
                     pfeilpunkteSchnitt
             );
         }
@@ -123,8 +129,10 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getVereinId()).isEqualTo(schuetzenstatistikDO.getvereinId());
             assertThat(actualDTO.getVereinName()).isEqualTo(schuetzenstatistikDO.getvereinName());
             assertThat(actualDTO.getMatchId()).isEqualTo(schuetzenstatistikDO.getMatchId());
+            assertThat(actualDTO.getMatchNr()).isEqualTo(schuetzenstatistikDO.getMatchNr());
             assertThat(actualDTO.getDsbMitgliedId()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedId());
             assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
+            assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
             assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
 
             // verify invocations
@@ -161,8 +169,10 @@ public class SchuetzenstatistikServiceTest {
             assertThat(actualDTO.getVereinId()).isEqualTo(schuetzenstatistikDO.getvereinId());
             assertThat(actualDTO.getVereinName()).isEqualTo(schuetzenstatistikDO.getvereinName());
             assertThat(actualDTO.getMatchId()).isEqualTo(schuetzenstatistikDO.getMatchId());
+            assertThat(actualDTO.getMatchNr()).isEqualTo(schuetzenstatistikDO.getMatchNr());
             assertThat(actualDTO.getDsbMitgliedId()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedId());
             assertThat(actualDTO.getDsbMitgliedName()).isEqualTo(schuetzenstatistikDO.getDsbMitgliedName());
+            assertThat(actualDTO.getRueckenNummer()).isEqualTo(schuetzenstatistikDO.getRueckenNummer());
             assertThat(actualDTO.getPfeilpunkteSchnitt()).isEqualTo(schuetzenstatistikDO.getPfeilpunkteSchnitt());
 
             // verify invocations
