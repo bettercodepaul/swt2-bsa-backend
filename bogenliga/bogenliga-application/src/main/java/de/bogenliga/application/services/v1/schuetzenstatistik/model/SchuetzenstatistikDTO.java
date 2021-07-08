@@ -21,8 +21,10 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     private Long vereinId;
     private String vereinName;
     private Long matchId;
+    private int matchNr;
     private Long dsbMitgliedId;
     private String dsbMitgliedName;
+    private int rueckenNummer;
     private float pfeilpunkteSchnitt;
 
     /**
@@ -37,8 +39,10 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
      * @param vereinId;
      * @param vereinName;
      * @param matchId;
+     * @param matchNr;
      * @param dsbMitgliedId;
      * @param dsbMitgliedName;
+     * @param rueckenNummer;
      * @param pfeilpunkteSchnitt;
 
      */
@@ -52,8 +56,10 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
             Long vereinId,
             String vereinName,
             Long matchId,
+            int matchNr,
             Long dsbMitgliedId,
             String dsbMitgliedName,
+            int rueckenNummer,
             float pfeilpunkteSchnitt
     ) {
         this.veranstaltungId=veranstaltungId;
@@ -65,8 +71,10 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.vereinId = vereinId;
         this.vereinName = vereinName;
         this.matchId = matchId;
+        this.matchNr = matchNr;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedName = dsbMitgliedName;
+        this.rueckenNummer = rueckenNummer;
         this.pfeilpunkteSchnitt = pfeilpunkteSchnitt;
     }
 
@@ -137,6 +145,13 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
         this.matchId = matchId;
     }
 
+    public int getMatchNr() {
+        return matchNr;
+    }
+    public void setMatchNr(int matchNr) {
+        this.matchNr = matchNr;
+    }
+
     public Long getDsbMitgliedId() {
         return dsbMitgliedId;
     }
@@ -149,6 +164,13 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
     }
     public void setDsbMitgliedName(String dsbMitgliedName) {
         this.dsbMitgliedName = dsbMitgliedName;
+    }
+
+    public int getRueckenNummer() {
+        return rueckenNummer;
+    }
+    public void setRueckenNummer(int rueckenNummer) {
+        this.rueckenNummer = rueckenNummer;
     }
 
     public float getPfeilpunkteSchnitt() {
@@ -172,14 +194,17 @@ public class SchuetzenstatistikDTO implements DataTransferObject {
                 vereinId.equals(that.vereinId) &&
                 Objects.equals(vereinName, that.vereinName) &&
                 matchId.equals(that.matchId) &&
+                matchNr == that.matchNr &&
                 dsbMitgliedId.equals(that.dsbMitgliedId) &&
                 Objects.equals(dsbMitgliedName, that.dsbMitgliedName) &&
+                rueckenNummer == that.rueckenNummer &&
                 pfeilpunkteSchnitt == that.pfeilpunkteSchnitt;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag,
-                mannschaftId, mannschaftNummer, vereinId, vereinName, matchId, dsbMitgliedId, dsbMitgliedName, pfeilpunkteSchnitt);
+                mannschaftId, mannschaftNummer, vereinId, vereinName, matchId, matchNr,
+                dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilpunkteSchnitt);
     }
 }
