@@ -12,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -58,7 +56,6 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-    private final VeranstaltungComponent veranstaltungComponent;
 
     /**
      * Constructor with dependency injection
@@ -67,11 +64,9 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @Autowired
     public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent,
-                                final RequiresOnePermissionAspect requiresOnePermissionAspect,
-                                final VeranstaltungComponent veranstaltungComponent) {
+                                final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
-        this.veranstaltungComponent = veranstaltungComponent;
     }
     /**
      * Autowired WebTokenProvider to get the Permissions of the current User when checking them
@@ -323,12 +318,11 @@ public class DsbMannschaftService implements ServiceFacade {
         // allow value == null, the value will be ignored
         final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
         final long userId = UserProvider.getCurrentUserId(principal);
-        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
         if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDO.getVeranstaltungID())){
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,dsbMannschaftDO.getVeranstaltungId())){
             throw new NoPermissionException();
         }
 
