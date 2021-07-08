@@ -316,13 +316,13 @@ public class DsbMannschaftService implements ServiceFacade {
     public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
-        final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
+        final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
         if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,dsbMannschaftDO.getVeranstaltungId())){
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, dsbMannschaftComponent.findById(id).getVeranstaltungId())){
             throw new NoPermissionException();
         }
 
