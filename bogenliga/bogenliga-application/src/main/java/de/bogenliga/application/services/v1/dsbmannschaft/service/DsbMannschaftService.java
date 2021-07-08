@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -56,7 +58,7 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-
+    private final VeranstaltungComponent veranstaltungComponent;
 
     /**
      * Constructor with dependency injection
@@ -65,9 +67,11 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @Autowired
     public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent,
-                                final RequiresOnePermissionAspect requiresOnePermissionAspect) {
+                                final RequiresOnePermissionAspect requiresOnePermissionAspect,
+                                final VeranstaltungComponent veranstaltungComponent) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
     /**
      * Autowired WebTokenProvider to get the Permissions of the current User when checking them
@@ -313,15 +317,21 @@ public class DsbMannschaftService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @DeleteMapping(value = "{id}")
-    @RequiresPermission(UserPermission.CAN_DELETE_MANNSCHAFT)
-    public void delete(@PathVariable("id") final long id, final Principal principal) {
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        // allow value == null, the value will be ignored
+        final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
+        final long userId = UserProvider.getCurrentUserId(principal);
+        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
 
         LOG.debug("Receive 'delete' request with id '{}'", id);
 
-        // allow value == null, the value will be ignored
-        final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
-        final long userId = UserProvider.getCurrentUserId(principal);
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG,veranstaltungDO.getVeranstaltungID())){
+            throw new NoPermissionException();
+        }
+
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }
