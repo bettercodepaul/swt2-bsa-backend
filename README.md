@@ -27,6 +27,7 @@ Use ```mvnw``` instead of ```mvn``` commands.
     - go to the bogenliga-application directory: ```cd bogenliga-application```
     - run: ```mvn spring-boot:run```
 4. Open Swagger API documentation
+
     - http://localhost:9000/swagger-ui.html
    
 ## References
