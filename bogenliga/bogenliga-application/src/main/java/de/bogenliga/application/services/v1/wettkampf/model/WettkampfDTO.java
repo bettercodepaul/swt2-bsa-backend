@@ -1,11 +1,12 @@
 package de.bogenliga.application.services.v1.wettkampf.model;
 
-import java.time.OffsetDateTime;
+import java.sql.Date;
 import de.bogenliga.application.common.service.types.DataTransferObject;
+
 /**
- *  *I´m the data transfer object of the wettkampf.
- *
- *  *I define the payload for the external REST interface of the wettkampf business entity.
+ * *I´m the data transfer object of the wettkampf.
+ * <p>
+ * *I define the payload for the external REST interface of the wettkampf business entity.
  *
  * @author Marvin Holm, Daniel Schott
  */
@@ -13,35 +14,40 @@ public class WettkampfDTO implements DataTransferObject {
 
 
     private Long id;
-    private Long veranstaltungsId;
-    private String datum;
-    private String wettkampfOrt;
+    private Long wettkampfVeranstaltungsId;
+    private String wettkampfDatum;
+    private String wettkampfStrasse;
+    private String wettkampfPlz;
+    private String wettkampfOrtsname;
+    private String wettkampfOrtsinfo;
     private String wettkampfBeginn;
     private Long wettkampfTag;
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
-    private OffsetDateTime createdAtUtc;
-    private Long createdByUserId;
     private Long version;
+    private Long wettkampfAusrichter;
 
 
-
-
-    public WettkampfDTO(Long wettkampfId, Long veranstaltungsId, String datum, String wettkampfOrt,
+    public WettkampfDTO(Long wettkampfId, Long wettkampfVeranstaltungsId, Date wettkampfDatum,
+                        String wettkampfStrasse,
+                        String wettkampfPlz, String wettkampfOrtsname, String wettkampfOrtsinfo,
                         String wettkampfBeginn, Long wettkampfTag,
                         Long wettkampfDisziplinId, Long wettkampfTypId,
-                        Long createdByUserId, OffsetDateTime createdAtUtc, Long version){
+                        Long version, Long wettkampfAusrichter) {
+
         this.setId(wettkampfId);
-        this.setVeranstaltungsId(veranstaltungsId);
-        this.setDatum(datum);
-        this.setWettkampfOrt(wettkampfOrt);
+        this.setwettkampfVeranstaltungsId(wettkampfVeranstaltungsId);
+        this.setDatum(wettkampfDatum);
+        this.setWettkampfStrasse(wettkampfStrasse);
+        this.setWettkampfPlz(wettkampfPlz);
+        this.setWettkampfOrtsname(wettkampfOrtsname);
+        this.setWettkampfOrtsinfo(wettkampfOrtsinfo);
         this.setWettkampfBeginn(wettkampfBeginn);
         this.setWettkampfTag(wettkampfTag);
         this.setWettkampfDisziplinId(wettkampfDisziplinId);
         this.setWettkampfTypId(wettkampfTypId);
-        this.setCreatedAtUtc(createdAtUtc);
-        this.setCreatedByUserId(createdByUserId);
         this.setVersion(version);
+        this.setWettkampfAusrichter(wettkampfAusrichter);
 
     }
 
@@ -56,34 +62,65 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
-    public Long getVeranstaltungsId() {
-        return veranstaltungsId;
+    public Long getwettkampfVeranstaltungsId() {
+        return wettkampfVeranstaltungsId;
     }
 
 
-    public void setVeranstaltungsId(Long veranstaltungsId) {
-        this.veranstaltungsId = veranstaltungsId;
+    public void setwettkampfVeranstaltungsId(Long wettkampfVeranstaltungsId) {
+        this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
     }
 
 
-    public String getDatum() {
-        return datum;
+    public Date getDatum() {
+        return Date.valueOf(wettkampfDatum);
     }
 
 
-    public void setDatum(String datum) {
-        this.datum = datum;
+    public void setDatum(Date datum) {
+        this.wettkampfDatum = datum.toString();
     }
 
 
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
+    public String getWettkampfStrasse() {
+        return wettkampfStrasse;
     }
 
 
-    public void setWettkampfOrt(String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
+    public void setWettkampfStrasse(String wettkampfStrasse) {
+        this.wettkampfStrasse = wettkampfStrasse;
     }
+
+
+    public String getWettkampfPlz() {
+        return wettkampfPlz;
+    }
+
+
+    public void setWettkampfPlz(String wettkampfPlz) {
+        this.wettkampfPlz = wettkampfPlz;
+    }
+
+
+    public String getWettkampfOrtsname() {
+        return wettkampfOrtsname;
+    }
+
+
+    public void setWettkampfOrtsname(String wettkampfOrtsname) {
+        this.wettkampfOrtsname = wettkampfOrtsname;
+    }
+
+
+    public String getWettkampfOrtsinfo() {
+        return wettkampfOrtsinfo;
+    }
+
+
+    public void setWettkampfOrtsinfo(String wettkampfOrtsinfo) {
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
+    }
+
 
 
     public String getWettkampfBeginn() {
@@ -126,26 +163,6 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
-    public OffsetDateTime getCreatedAtUtc() {
-        return createdAtUtc;
-    }
-
-
-    public void setCreatedAtUtc(OffsetDateTime createdAtUtc) {
-        this.createdAtUtc = createdAtUtc;
-    }
-
-
-    public Long getCreatedByUserId() {
-        return createdByUserId;
-    }
-
-
-    public void setCreatedByUserId(Long createdByUserId) {
-        this.createdByUserId = createdByUserId;
-    }
-
-
     public Long getVersion() {
         return version;
     }
@@ -156,20 +173,34 @@ public class WettkampfDTO implements DataTransferObject {
     }
 
 
+    public Long getWettkampfAusrichter() {
+        return wettkampfAusrichter;
+    }
+
+
+    public void setWettkampfAusrichter(Long wettkampfAusrichter) {
+        this.wettkampfAusrichter = wettkampfAusrichter;
+    }
+
+
     @Override
     public String toString() {
         return "WettkampfDTO{" +
                 "id='" + this.id + '\'' +
-                ", veranstaltungId='" + this.veranstaltungsId + '\'' +
-                ", datum='" + this.datum + '\'' +
-                ", wettkampfOrt='" + this.wettkampfOrt + '\'' +
+                ", wettkampfVeranstaltungsId='" + this.wettkampfVeranstaltungsId + '\'' +
+                ", wettkampfDatum='" + this.wettkampfDatum + '\'' +
+                ", wettkampfStrasse='"+ this.wettkampfStrasse + '\'' +
+                ", wettkampfPlz='"+ this.wettkampfPlz + '\'' +
+                ", wettkampfOrtsname='"+ this.wettkampfOrtsname + '\'' +
+                ", wettkampfOrtsinfo='"+ this.wettkampfOrtsinfo + '\'' +
                 ", wettkampfBeginn='" + this.wettkampfBeginn + '\'' +
                 ", wettkampfTag='" + this.wettkampfTag + '\'' +
                 ", wettkampfDisziplinId='" + this.wettkampfDisziplinId + '\'' +
                 ", wettkampfTypId='" + this.wettkampfTypId + '\'' +
-                ", createdAtUtc='" + this.createdAtUtc + '\'' +
-                ", createdByUserId='" + this.createdByUserId + '\'' +
                 ", version='" + this.version + '\'' +
+                ", wettkampfAusrichter='" + this.wettkampfAusrichter +
                 "}";
     }
+
+
 }

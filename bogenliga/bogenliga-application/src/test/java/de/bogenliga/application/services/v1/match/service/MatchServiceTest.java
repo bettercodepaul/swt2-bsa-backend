@@ -1,11 +1,13 @@
 package de.bogenliga.application.services.v1.match.service;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import javax.naming.NoPermissionException;
+
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,15 +27,19 @@ import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
-import de.bogenliga.application.business.wettkampftyp.api.WettkampftypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+
+import static java.lang.Math.toIntExact;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -55,10 +61,16 @@ public class MatchServiceTest {
     private WettkampfComponent wettkampfComponent;
 
     @Mock
-    private WettkampftypComponent wettkampfTypComponent;
+    private VeranstaltungComponent veranstaltungComponent;
+
+    @Mock
+    private WettkampfTypComponent wettkampfTypComponent;
 
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
     private Principal principal;
@@ -68,6 +80,7 @@ public class MatchServiceTest {
 
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+
 
     @InjectMocks
     private MatchService underTest;
@@ -106,6 +119,10 @@ public class MatchServiceTest {
     private static final Integer MM_dsbMitgliedEingesetzt = 1;
     private static final String MM_dsbMitgliedVorname = "Foo";
     private static final String MM_dsbMitgliedNachname = "Bar";
+    private static final Long MM_rueckennummer_1 = 5L;
+    private static final Long MM_rueckennummer_2 = 6L;
+    private static final Long MM_rueckennummer_3 = 7L;
+
 
     private static final Long W_id = 5L;
     private static final String W_name = "Liga_kummulativ";
@@ -113,16 +130,21 @@ public class MatchServiceTest {
     private static final Long W_vid = 243L;
     private static final Long W_typId = 0L;
     private static final Long W_tag = 5L;
-    private static final String W_datum = "gestern";
-    private static final String W_ort = "Hier";
+    private static final Date W_datum = new Date(20190521L);
+    private static final String W_strasse = "Reutlingerstr. 6";
+    private static final String W_plz = "72764";
+    private static final String W_ortsname = "Reutlingen";
+    private static final String W_ortsinfo= "Hinter dem Haus";
     private static final String W_begin = "gestern";
     private static final Long W_disId = 12345L;
 
     private static final Long M_id = 2222L;
+    private static final String M_name = null; //empty
     private static final Long M_vereinId = 101010L;
     private static final Long M_nummer = 111L;
     private static final Long M_benutzerId = 12L;
     private static final Long M_veranstaltungId = 1L;
+    private static final Long M_sortierung = 1L;
 
     private static final Long VEREIN_USER = 1L;
     private static final Long VERSION = 0L;
@@ -131,6 +153,9 @@ public class MatchServiceTest {
     private static final String VEREIN_DSB_IDENTIFIER = "id";
     private static final Long REGION_ID = 0L;
     private static final String REGION_NAME = "";
+    private static final String VEREIN_WEBSITE = "";
+    private static final String VEREIN_DESCRIPTION = "";
+    private static final String VEREIN_ICON = null;
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
 
 
@@ -169,14 +194,15 @@ public class MatchServiceTest {
     }
 
 
-    protected MannschaftsmitgliedDO getMMDO(Long id) {
+    protected MannschaftsmitgliedDO getMMDO(Long id, Long rueckennummer) {
         return new MannschaftsmitgliedDO(
                 id,
                 MM_mannschaftsId,
                 MM_dsbMitgliedId,
                 MM_dsbMitgliedEingesetzt,
                 MM_dsbMitgliedVorname,
-                MM_dsbMitgliedNachname
+                MM_dsbMitgliedNachname,
+                rueckennummer
         );
     }
 
@@ -188,6 +214,9 @@ public class MatchServiceTest {
                 VEREIN_DSB_IDENTIFIER,
                 REGION_ID,
                 REGION_NAME,
+                VEREIN_WEBSITE,
+                VEREIN_DESCRIPTION,
+                VEREIN_ICON,
                 VEREIN_OFFSETDATETIME,
                 VEREIN_USER,
                 VEREIN_OFFSETDATETIME,
@@ -200,16 +229,18 @@ public class MatchServiceTest {
     protected DsbMannschaftDO getMannschaftDO(Long id) {
         return new DsbMannschaftDO(
                 id,
+                M_name,
                 M_vereinId,
                 M_nummer,
                 M_benutzerId,
-                M_veranstaltungId
+                M_veranstaltungId,
+                M_sortierung
         );
     }
 
 
     protected WettkampfDO getWettkampfDO(Long id) {
-        return new WettkampfDO(id, W_vid, W_datum, W_ort, W_begin, W_tag, W_disId, W_typId, null,null,null);
+        return new WettkampfDO(id, W_vid, W_datum, W_strasse, W_plz, W_ortsname, W_ortsinfo, W_begin, W_tag, W_disId, W_typId, null,null,null, null);
     }
 
 
@@ -220,16 +251,16 @@ public class MatchServiceTest {
 
     protected List<MannschaftsmitgliedDO> getMannschaftsMitglieder() {
         List<MannschaftsmitgliedDO> mmdos = new ArrayList<>();
-        mmdos.add(getMMDO(MM_ID_1));
-        mmdos.add(getMMDO(MM_ID_2));
-        mmdos.add(getMMDO(MM_ID_3));
+        mmdos.add(getMMDO(MM_ID_1, 5L));
+        mmdos.add(getMMDO(MM_ID_2, 6L));
+        mmdos.add(getMMDO(MM_ID_3, 7L));
         return mmdos;
     }
 
 
     protected PasseDTO getPasseDTO(Long id, Integer nr) {
         PasseDTO passeDTO = PasseDTOMapper.toDTO.apply(getPasseDO(id));
-        passeDTO.setSchuetzeNr(nr);
+        passeDTO.setRueckennummer(nr);
         return passeDTO;
     }
 
@@ -237,6 +268,20 @@ public class MatchServiceTest {
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
+    }
+
+    @Test
+    public void testFindAll() {
+        MatchDO matchDO1 = getMatchDO();
+
+        ArrayList<MatchDO> matchesDO = new ArrayList<>();
+        matchesDO.add(matchDO1);
+        matchesDO.add(matchDO1);
+
+        when(matchComponent.findAll()).thenReturn(matchesDO);
+        final List<MatchDTO> actual = underTest.findAll();
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+
     }
 
 
@@ -262,9 +307,8 @@ public class MatchServiceTest {
     public void findById_Null() {
         when(matchComponent.findById(anyLong())).thenReturn(null);
         // expect a NPE as the null-state should be checked in MatchComponentImpl
-        assertThatThrownBy(() -> {
-            underTest.findById(MATCH_ID);
-        }).isInstanceOf(NullPointerException.class);
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.findById(MATCH_ID));
     }
 
 
@@ -290,10 +334,9 @@ public class MatchServiceTest {
     public void findMatchesByIds_Null() {
         when(matchComponent.findById(anyLong())).thenReturn(null);
         // expect a NPE as the null-state should be checked in MatchComponentImpl
-        assertThatThrownBy(() -> {
-            underTest.findMatchesByIds(MATCH_ID, MATCH_ID);
-        }).isInstanceOf(NullPointerException.class);
-    }
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.findMatchesByIds(MATCH_ID, MATCH_ID));
+     }
 
 
     @Test
@@ -325,11 +368,33 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        try {
+            final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+            MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
+    }
 
-        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
-        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+    @Test
+    public void saveMatchesNoPermission() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+        ArrayList<MatchDTO> matches = new ArrayList<>();
+        matches.add(matchDTO);
+        matches.add(matchDTO);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.saveMatches(matches, principal));
     }
 
 
@@ -341,12 +406,14 @@ public class MatchServiceTest {
         matches.add(null);
         matches.add(matchDTO);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
 
-        assertThatThrownBy(() -> {
-            underTest.saveMatches(matches, principal);
-        }).isInstanceOf(BusinessException.class);
-    }
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.saveMatches(matches, principal));
+
+     }
 
 
     @Test
@@ -354,8 +421,11 @@ public class MatchServiceTest {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, PASSE_SCHUETZE_NR_1);
-        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, PASSE_SCHUETZE_NR_2);
+        PasseDTO passe1 = getPasseDTO(PASSE_ID_1, toIntExact(MM_rueckennummer_1));
+        PasseDTO passe2 = getPasseDTO(PASSE_ID_2, toIntExact(MM_rueckennummer_2));
+        PasseDO passe1DO = PasseDTOMapper.toDO.apply(passe1);
+        PasseDO passe2DO = PasseDTOMapper.toDO.apply(passe2);
+
         // change lfdnr of passe2 to make them distinguishable
         passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
@@ -369,8 +439,14 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(getMannschaftsMitglieder().get(0));
+        when(passeComponent.findById(PASSE_ID_1)).thenReturn(passe1DO);
+        when(passeComponent.findById(PASSE_ID_2)).thenReturn(passe2DO);
 
+        try {
         final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
         assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
         MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
@@ -378,9 +454,13 @@ public class MatchServiceTest {
 
         // make sure update was called twice per passed DTO
         verify(passeComponent, times(4)).update(any(PasseDO.class), eq(CURRENT_USER_ID));
+
+        } catch (NoPermissionException e) {
+        }
     }
 
 
+    //test Null -< NullPointerException
     @Test
     public void saveMatches_WithPasseUpdate_Null() {
         MatchDO matchDO1 = getMatchDO();
@@ -399,24 +479,25 @@ public class MatchServiceTest {
 
         matchDTO.setPassen(passeDTOS);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(), anyLong())).thenReturn(getMannschaftsMitglieder().get(0));
 
         ArrayList<MatchDTO> matches = new ArrayList<>();
         matches.add(matchDTO);
         matches.add(matchDTO);
-        assertThatThrownBy(() -> {
-            underTest.saveMatches(matches, principal);
-        }).isInstanceOf(BusinessException.class);
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(() -> underTest.saveMatches(matches, principal));
     }
-
 
     @Test
     public void saveMatches_WithPasseCreate() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
 
-        PasseDTO passe1 = getPasseDTO(null, PASSE_SCHUETZE_NR_1);
-        PasseDTO passe2 = getPasseDTO(null, PASSE_SCHUETZE_NR_2);
+        PasseDTO passe1 = getPasseDTO(null, toIntExact(MM_rueckennummer_1));
+        PasseDTO passe2 = getPasseDTO(null, toIntExact(MM_rueckennummer_2));
         // change lfdnr of passe2 to make them distinguishable
         passe2.setLfdNr(PASSE_LFDR_NR + 1);
 
@@ -430,15 +511,21 @@ public class MatchServiceTest {
         matches.add(matchDTO);
         matches.add(matchDTO);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(getMannschaftsMitglieder());
+        when(mannschaftsmitgliedComponent.findByMemberAndTeamId(anyLong(),anyLong())).thenReturn(getMMDO(1L, 5L));
+        try {
+            final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+            MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
+            MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
 
-        final List<MatchDTO> actual = underTest.saveMatches(matches, principal);
-        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
-        MatchService.checkPreconditions(actual.get(0), MatchService.matchConditionErrors);
-        MatchService.checkPreconditions(actual.get(1), MatchService.matchConditionErrors);
+            // make sure create was called twice per passed DTO
+            verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
 
-        // make sure create was called twice per passed DTO
-        verify(passeComponent, times(4)).create(any(PasseDO.class), eq(CURRENT_USER_ID));
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -446,36 +533,114 @@ public class MatchServiceTest {
     public void create() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
-        final MatchDTO actual = underTest.create(matchDTO, principal);
-        assertThat(actual).isNotNull();
-        MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        try {
+            final MatchDTO actual = underTest.create(matchDTO, principal);
+            assertThat(actual).isNotNull();
+            MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+
+        } catch (NoPermissionException e) {
+        }
+    }
+
+    @Test
+    public void createNoPermission() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.create(matchDTO, principal));
     }
 
 
     @Test
     public void create_Null() {
-        assertThatThrownBy(() -> {
-            underTest.create(null, principal);
-        }).isInstanceOf(BusinessException.class);
-    }
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.create(null, principal));
+     }
 
 
     @Test
     public void update() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.update(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
+        try {
         final MatchDTO actual = underTest.update(matchDTO, principal);
         assertThat(actual).isNotNull();
         MatchService.checkPreconditions(actual, MatchService.matchConditionErrors);
+        } catch (NoPermissionException e) {
+        }
+    }
+
+    @Test
+    public void updateNoPermission() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(any(), anyLong())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(matchDTO, principal));
     }
 
 
     @Test
     public void update_Null() {
-        assertThatThrownBy(() -> {
-            underTest.update(null, principal);
-        }).isInstanceOf(BusinessException.class);
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.update(null, principal));
+     }
+
+
+    @Test
+    public void testFindByWettkampfId() {
+        MatchDO matchDO1 = getMatchDO();
+        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+
+        ArrayList<MatchDO> matchesDO = new ArrayList<>();
+        matchesDO.add(matchDO1);
+        matchesDO.add(matchDO1);
+
+        DsbMannschaftDO mannschaftDO = getMannschaftDO(M_id);
+        VereinDO vereinDO = getVereinDO(VEREIN_ID);
+
+        matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
+
+
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchesDO);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        final List<MatchDTO> actual = underTest.findByWettkampfId(1L);
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(2);
+
+        final MatchDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(matchDTO.getId());
+        assertThat(actualDTO.getMannschaftId()).isEqualTo(matchDTO.getMannschaftId());
+        assertThat(actualDTO.getMannschaftName()).isEqualTo(matchDTO.getMannschaftName());
+
+    }
+    //erst mal den OK Fall testen
+    @Test
+    public void testGetMemberIdFor() {
+        //zum testen brauchen wir eine Pass DTO mit Rückennummer eines existierenden
+        // Mannschaftsmitglieds (6 - ist das zweite Elemente der Liste)
+        PasseDTO passeDTOok = getPasseDTO(1L, 6);
+        assertEquals(MM_dsbMitgliedId, underTest.getMemberIdFor(passeDTOok, getMannschaftsMitglieder()));
     }
 }

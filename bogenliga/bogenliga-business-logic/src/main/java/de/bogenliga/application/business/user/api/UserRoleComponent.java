@@ -26,7 +26,16 @@ public interface UserRoleComponent extends ComponentFacade {
      * @return single user entry with the given id;
      * null, if no user is found
      */
-    UserRoleDO findById(Long id);
+    List<UserRoleDO> findById(Long id);
+
+
+    /**
+     * Return all users with the given role
+     * @param roleId
+     * @return
+     */
+    List<UserRoleDO> findByRoleId(Long roleId);
+
 
     /**
      * Return a user entry with the given id.
@@ -70,11 +79,22 @@ public interface UserRoleComponent extends ComponentFacade {
      * password requirements prdefined.
      *
      *
-     * @param userRoleDO users current ID and new Role ID
+     * @param userRolesDO users current ID and new Role ID
      * @param currentUserId current user
      *
      * @return the user, if the user exists and the password is sufficient
      */
-    UserRoleDO update(final UserRoleDO userRoleDO, final Long currentUserId);
+    List<UserRoleDO> update(final List<UserRoleDO> userRolesDO, final Long currentUserId);
+
+
+    /**
+     * Send Mail to all Admin E-mails with Feedback given as parameter
+     *
+     *
+     * @param text text given in Frontend, optional with Mail of the sender at the end
+     *
+     * @return void
+     */
+    void sendFeedback(final String text);
 
 }

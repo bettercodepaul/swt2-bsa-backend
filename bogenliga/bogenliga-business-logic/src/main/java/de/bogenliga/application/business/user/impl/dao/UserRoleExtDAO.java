@@ -1,23 +1,20 @@
 package de.bogenliga.application.business.user.impl.dao;
 
-import de.bogenliga.application.business.user.impl.entity.UserBE;
-import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
-import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
-import de.bogenliga.application.common.component.dao.BasicDAO;
-import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
-import de.bogenliga.application.common.component.dao.DataAccessObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the user entity in the database.
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
@@ -36,11 +33,13 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
     private static final String ROLE_BE_ID = "roleId";
     private static final String USER_BE_EMAIL = "userEmail";
     private static final String ROLE_BE_NAME = "roleName";
+    private static final String USER_BE_ACTIVE = "active";
 
     private static final String USER_TABLE_ID = "benutzer_rolle_benutzer_id";
     private static final String ROLE_TABLE_ID = "benutzer_rolle_rolle_id";
     private static final String USER_TABLE_EMAIL = "benutzer_email";
     private static final String ROLE_TABLE_NAME = "rolle_name";
+    private static final String USER_TABLE_ACTIVE = "benutzer_active";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserRoleExtBE> USERROLE = new BusinessEntityConfiguration<>(
@@ -50,14 +49,15 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
      * SQL queries
      */
     private static final String FIND_ALL =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email,"
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
                     + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id ";
+                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id "
+                    + " AND benutzer.benutzer_active = TRUE";
 
     private static final String FIND_BY_ID =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
                     + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = ? "
@@ -66,12 +66,20 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
 
 
     private static final String FIND_BY_EMAIL =
-            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, "
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
                     + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
                     + " FROM benutzer_rolle, benutzer, rolle "
                     + " WHERE upper(benutzer.benutzer_email) = upper(?) "
                     + " AND benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
-                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id";
+                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id"
+                    + " AND benutzer.benutzer_active = TRUE";
+
+//
+    private static final String FIND_MAIL_BY_ID =
+            "SELECT benutzer_email "
+                    + " FROM benutzer "
+                    + " JOIN benutzer_rolle ON benutzer.benutzer_id = benutzer_rolle.benutzer_rolle_benutzer_id "
+                    + " WHERE benutzer_rolle_rolle_id = 1";
 
 
     private final BasicDAO basicDao;
@@ -98,6 +106,7 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
         columnsToFieldsMap.put(ROLE_TABLE_ID, ROLE_BE_ID);
         columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
         columnsToFieldsMap.put(ROLE_TABLE_NAME, ROLE_BE_NAME);
+        columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -120,9 +129,9 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
      *
      * @param id - User Id the Role is to be searched for
      */
-    public UserRoleExtBE findById(final long id) {
+    public List<UserRoleExtBE> findById(final long id) {
 
-        return basicDao.selectSingleEntity(USERROLE, FIND_BY_ID, id);
+        return basicDao.selectEntityList(USERROLE, FIND_BY_ID, id);
     }
 
 
@@ -137,4 +146,14 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
     }
 
 
- }
+    /**
+     * Return emails of all admins
+     *
+     *
+     */
+    public List<UserRoleExtBE> findAdminEmails() {
+        return basicDao.selectEntityList(USERROLE, FIND_MAIL_BY_ID);
+    }
+
+
+}

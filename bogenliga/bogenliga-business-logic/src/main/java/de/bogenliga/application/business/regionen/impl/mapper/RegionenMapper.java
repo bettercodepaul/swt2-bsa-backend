@@ -34,7 +34,7 @@ public class RegionenMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(regionenBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedUtc = DateProvider.convertTimestamp(regionenBE.getLastModifiedAtUtc());
 
-        return new RegionenDO(regionID,regionName,regionKuerzel,regionTyp,regionUebergeordnet,
+        return new RegionenDO(regionID,regionName,regionKuerzel,regionTyp,regionUebergeordnet, null,
                     createdAtUtc,createdByUserId, lastModifiedUtc, lastModifiedByUserId, version);
     };
 
@@ -48,7 +48,7 @@ public class RegionenMapper implements ValueObjectMapper {
         regionenBE.setRegionId(regionenDO.getId());
         regionenBE.setRegionName(regionenDO.getRegionName());
         regionenBE.setRegionKuerzel(regionenDO.getRegionKuerzel());
-        regionenBE.setRegionTyp(regionenDO.getRegionType());
+        regionenBE.setRegionTyp(regionenDO.getRegionTyp());
         regionenBE.setRegionUebergeordnet(regionenDO.getRegionUebergeordnet());
 
         regionenBE.setCreatedAtUtc(createdAtUtcTimestamp);

@@ -40,6 +40,7 @@ public class JwtTokenProvider {
     private static final String USER_INFO_ID = "id";
     private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
     private static final String AUTH = "auth";
+    private static final String DEFAULT_USER_NAME = "ligadefault";
     private final SecurityJsonWebTokenConfiguration securityJsonWebTokenConfiguration;
     private final UserAuthenticationProvider userAuthenticationProvider;
 
@@ -180,12 +181,16 @@ public class JwtTokenProvider {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+        final JwtBuilder jwtBuilder = Jwts.builder().setClaims(claims).setIssuedAt(now).signWith(
+                SignatureAlgorithm.HS256, secretKey);
+
+        // if user is default user (not logged in user) expiration time is not set
+        // since the default should be logged in "forever"
+        if (!username.equals(DEFAULT_USER_NAME)) {
+            jwtBuilder.setExpiration(validity);
+        }
+
+        return jwtBuilder.compact();
     }
 
 
@@ -212,23 +217,30 @@ public class JwtTokenProvider {
 
     String refreshToken(final String token) {
 
-        final long remainingTimeInMilliSeconds = getRemainingValidityTime(token);
-        int refreshCounter = getRefreshCounter(token);
+        final String userName = getUsername(token);
+        // refresh token only if user is not default user as token for default user has no expiration date.
+        if(!userName.equals(DEFAULT_USER_NAME)) {
 
-        LOG.trace("Refresh token ? refreshCounter = {} and remainingTime = {} s", refreshCounter,
-                (remainingTimeInMilliSeconds / 1000));
+            final long remainingTimeInMilliSeconds = getRemainingValidityTime(token);
+            int refreshCounter = getRefreshCounter(token);
 
-        // check, if refresh necessary and possible
-        // expiration reached (last 90 %) and refresh allowed -> refresh
-        if (refreshCounter < maxTokenRefresh && remainingTimeInMilliSeconds < (validityInMilliseconds * 0.9)) {
+            LOG.trace("Refresh token ? refreshCounter = {} and remainingTime = {} s", refreshCounter,
+                      (remainingTimeInMilliSeconds / 1000));
 
-            final UserSignInDTO userSignInDTO = resolveUserSignInDTO(token);
-            refreshCounter++;
+            // check, if refresh necessary and possible
+            // expiration reached (last 90 %) and refresh allowed -> refresh
+            if (refreshCounter < maxTokenRefresh && remainingTimeInMilliSeconds < (validityInMilliseconds * 0.9)) {
 
-            LOG.trace("Token refreshed. Please use the new token");
+                final UserSignInDTO userSignInDTO = resolveUserSignInDTO(token);
+                refreshCounter++;
 
-            return createToken(userSignInDTO.getEmail(), userSignInDTO.getId(), userSignInDTO.getVersion(),
-                    userSignInDTO.getPermissions(), refreshCounter);
+                LOG.trace("Token refreshed. Please use the new token");
+
+                return createToken(userSignInDTO.getEmail(), userSignInDTO.getId(), userSignInDTO.getVersion(),
+                                   userSignInDTO.getPermissions(), refreshCounter);
+            } else {
+                return token;
+            }
         } else {
             return token;
         }

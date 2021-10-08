@@ -27,19 +27,23 @@ public final class ConfigurationDTOMapper implements DataTransferObjectMapper {
      * I map the {@link ConfigurationDO} object to the {@link ConfigurationDTO} object
      */
     public static final Function<ConfigurationDO, ConfigurationDTO> toDTO = vo -> {
+        final Long id = vo.getId();
         final String key = vo.getKey();
         final String value = vo.getValue();
+        final String regex = vo.getRegex();
 
-        return new ConfigurationDTO(key, value);
+        return new ConfigurationDTO(id, key, value, regex);
     };
 
     /**
      * I map the {@link ConfigurationDTO} object to the {@link ConfigurationDO} object
      */
-    public static final Function<ConfigurationDTO, ConfigurationDO> toVO = dto -> {
+    public static final Function<ConfigurationDTO, ConfigurationDO> toDO = dto -> {
+        final Long id = dto.getId();
         final String key = dto.getKey();
         final String value = dto.getValue();
+        final String regex = dto.getRegex();
 
-        return new ConfigurationDO(key, value);
+        return new ConfigurationDO(id, key, value, regex);
     };
 }

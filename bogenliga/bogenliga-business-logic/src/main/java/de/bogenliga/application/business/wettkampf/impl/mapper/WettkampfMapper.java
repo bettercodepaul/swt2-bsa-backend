@@ -1,8 +1,8 @@
 package de.bogenliga.application.business.wettkampf.impl.mapper;
 
 
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
@@ -23,23 +23,34 @@ public class WettkampfMapper implements ValueObjectMapper {
 
         final Long id = be.getId();
         final Long veranstaltungsId = be.getVeranstaltungsId();
-        final String datum = be.getDatum();
-        final String wettkampfOrt = be.getWettkampfOrt();
+        final Date datum = be.getDatum();
+        final String wettkampfStrasse = be.getWettkampfStrasse();
+        final String wettkampfPlz = be.getWettkampfPlz();
+        final String wettkampfOrtsname = be.getWettkampfOrtsname();
+        final String wettkampfOrstinfo = be.getWettkampfOrtsinfo();
         final String wettkampfBeginn = be.getWettkampfBeginn();
         final Long wettkampfTag = be.getWettkampfTag();
         final Long wettkampfDisziplinId = be.getWettkampfDisziplinId();
         final Long wettkampfTypId = be.getWettkampfTypId();
+        final Long wettkampfAusrichter = be.getWettkampfAusrichter();
 
         // technical parameter
-        Long createdByUserId = be.getCreatedByUserId();
-        Long lastModifiedByUserId = be.getLastModifiedByUserId();
         Long version = be.getVersion();
 
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
-        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
-
-        return new WettkampfDO(id, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag, wettkampfDisziplinId, wettkampfTypId,
-                createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new WettkampfDO(
+                id,
+                veranstaltungsId,
+                datum,
+                wettkampfStrasse,
+                wettkampfPlz,
+                wettkampfOrtsname,
+                wettkampfOrstinfo ,
+                wettkampfBeginn,
+                wettkampfTag,
+                wettkampfDisziplinId,
+                wettkampfTypId,
+                version,
+                wettkampfAusrichter);
     };
 
     /**
@@ -52,9 +63,12 @@ public class WettkampfMapper implements ValueObjectMapper {
 
         WettkampfBE wettkampfBe = new WettkampfBE();
         wettkampfBe.setId(wettkampfDO.getId());
-        wettkampfBe.setVeranstaltungsId(wettkampfDO.getVeranstaltungsId());
-        wettkampfBe.setDatum(wettkampfDO.getDatum());
-        wettkampfBe.setWettkampfOrt(wettkampfDO.getWettkampfOrt());
+        wettkampfBe.setVeranstaltungsId(wettkampfDO.getWettkampfVeranstaltungsId());
+        wettkampfBe.setDatum(wettkampfDO.getWettkampfDatum());
+        wettkampfBe.setWettkampfStrasse(wettkampfDO.getWettkampfStrasse());
+        wettkampfBe.setWettkampfPlz(wettkampfDO.getWettkampfPlz());
+        wettkampfBe.setWettkampfOrtsname(wettkampfDO.getWettkampfOrtsname());
+        wettkampfBe.setWettkampfOrtsinfo(wettkampfDO.getWettkampfOrtsinfo());
         wettkampfBe.setWettkampfBeginn(wettkampfDO.getWettkampfBeginn());
         wettkampfBe.setWettkampfTag(wettkampfDO.getWettkampfTag());
         wettkampfBe.setWettkampfDisziplinId(wettkampfDO.getWettkampfDisziplinId());
@@ -66,6 +80,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         wettkampfBe.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
         wettkampfBe.setLastModifiedByUserId(wettkampfDO.getLastModifiedByUserId());
         wettkampfBe.setVersion(wettkampfDO.getVersion());
+        wettkampfBe.setWettkampfAusrichter(wettkampfDO.getWettkampfAusrichter());
 
         return wettkampfBe;
     };

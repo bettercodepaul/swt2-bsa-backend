@@ -1,8 +1,5 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import de.bogenliga.application.business.user.impl.dao.UserPermissionDAO;
-import de.bogenliga.application.business.user.impl.entity.UserPermissionBE;
-import de.bogenliga.application.business.user.impl.types.SignInResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.user.api.UserComponent;
@@ -30,6 +27,7 @@ public class UserComponentImpl implements UserComponent {
     private static final String PRECONDITION_MSG_USER = "UserDO must not be null";
     private static final String PRECONDITION_MSG_USER_ID = "UserDO ID must not be negative";
     private static final String PRECONDITION_MSG_USER_NULL = "UserID must not be null";
+    private static final String PRECONDITION_MSG_DSB_MITGLIED_NULL = "DSB-ID must reference a DSB member - must not be null";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserDO email must not be null or empty";
     private static final String PRECONDITON_MSG_USER_PWD = "UserDO password must not be null or empty";
     private static final String PRECONDITON_MSG_USER_WRONG_PWD = "Current password incorrect";
@@ -139,18 +137,21 @@ public class UserComponentImpl implements UserComponent {
      * Neuen User anlegen
      * @param  email User-Name
      * @param  password Kennwort
+     * @param  dsb_mitglied_id dsb-mitlgieds_bezug
      * @param  currentUserId aktueller User mit den Rechten zur Neuanlage
      */
     @Override
-    public UserDO create(final String email, final String password, final Long currentUserId, final boolean isUsing2FA) {
+    public UserDO create(final String email, final String password, final Long dsb_mitglied_id, final Long currentUserId, final boolean isUsing2FA) {
         Preconditions.checkNotNullOrEmpty(email, PRECONDITION_MSG_USER_EMAIL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
+        Preconditions.checkNotNull(dsb_mitglied_id, PRECONDITION_MSG_DSB_MITGLIED_NULL);
         Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_NULL);
 
         final UserBE result = new UserBE();
         final String salt = passwordHashingBA.generateSalt();
         final String pwdhash = passwordHashingBA.calculateHash(password, salt);
         result.setUserEmail(email);
+        result.setDsb_mitglied_id(dsb_mitglied_id);
         result.setUserSalt(salt);
         result.setUserPassword(pwdhash);
         result.setUsing2FA(isUsing2FA);
@@ -175,7 +176,7 @@ public class UserComponentImpl implements UserComponent {
      *
      */
     @Override
-    public UserDO update(final UserDO userDO, final String password, final String newPassword, final Long currentUserId) {
+    public UserDO updatePassword(final UserDO userDO, final String password, final String newPassword, final Long currentUserId) {
         Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
         Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
         Preconditions.checkNotNullOrEmpty(password, PRECONDITON_MSG_USER_PWD);
@@ -185,6 +186,7 @@ public class UserComponentImpl implements UserComponent {
 
 
         final UserBE currentUser = userDAO.findById(userDO.getId());
+
         // string vergleich der hash-Werte im aktuelllen BE Object und aus dem aktuellen Password
         // nur bei Identität (Passwort richtig) geht es weiter
         // check password
@@ -203,6 +205,34 @@ public class UserComponentImpl implements UserComponent {
         }
     }
 
+    /**
+     * resetPassword
+     *
+     * Passwort des Benutzers aktualiseren
+     * @param  userDO User-ID des Accounts
+     * @param  newPassword Kennwort neu
+     * @param  currentUserId aktueller User mit den Rechten zum Ändern
+     *                       - hieraus wird das Passwort zur Vergleichsprüfung bestimmt
+     *
+     */
+    @Override
+    public UserDO resetPassword(UserDO userDO, String newPassword, Long currentUserId) {
+        Preconditions.checkNotNull(userDO, PRECONDITION_MSG_USER);
+        Preconditions.checkArgument(userDO.getId() > 0, PRECONDITION_MSG_USER_NULL);
+        Preconditions.checkNotNullOrEmpty(newPassword, PRECONDITON_MSG_USER_PWD);
+        Preconditions.checkNotNull(currentUserId, PRECONDITION_MSG_USER_ID);
+        Preconditions.checkArgument(currentUserId > 0, PRECONDITION_MSG_USER_NULL);
+
+        final UserBE selectedUser = userDAO.findById(userDO.getId());
+
+        final String newPWDHash = passwordHashingBA.calculateHash(newPassword, selectedUser.getUserSalt());
+
+        selectedUser.setUserPassword(newPWDHash);
+        final UserBE persistedUserBE = userDAO.update(selectedUser, currentUserId);
+        return UserMapper.toUserDO.apply(persistedUserBE);
+
+    }
+
 
     @Override
     public boolean isTechnicalUser(final UserDO userDO) {
@@ -211,6 +241,14 @@ public class UserComponentImpl implements UserComponent {
         Preconditions.checkNotNull(userDO.getEmail(), PRECONDITION_MSG_USER_EMAIL);
 
         return technicalUserBA.isTechnicalUser(userDO);
+    }
+
+    @Override
+    public boolean deactivate(long id) {
+        final UserBE user = userDAO.findById(id);
+        user.setActive(false);
+        final UserBE updatedUser = userDAO.update(user, id);
+        return !UserMapper.toUserDO.apply(updatedUser).isActive();
     }
 
 }

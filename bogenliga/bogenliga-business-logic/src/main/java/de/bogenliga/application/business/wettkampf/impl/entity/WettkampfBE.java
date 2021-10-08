@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.wettkampf.impl.entity;
 
+import java.sql.Date;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
@@ -18,12 +19,16 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private static final long serialVersionUID = 7307883175430867611L;
     private Long id;
     private Long veranstaltungsId;
-    private String datum;
-    private String wettkampfOrt;
+    private Date datum;
+    private String wettkampfStrasse;
+    private String wettkampfPlz;
+    private String wettkampfOrtsname;
+    private String wettkampfOrtsinfo;
     private String wettkampfBeginn;
     private Long wettkampfTag;
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
+    private Long wettkampfAusrichter;
 
 
     /**
@@ -54,23 +59,54 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
-    public String getDatum() {
+    public Date getDatum() {
         return datum;
     }
 
 
-    public void setDatum(final String datum) {
+    public void setDatum(final Date datum) {
         this.datum = datum;
     }
 
 
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
+
+    public String getWettkampfOrtsinfo() {
+        return wettkampfOrtsinfo;
     }
 
 
-    public void setWettkampfOrt(final String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
+    public void setWettkampfOrtsinfo(final String wettkampfOrtsinfo) {
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
+    }
+
+
+    public String getWettkampfOrtsname() {
+        return wettkampfOrtsname;
+    }
+
+
+    public void setWettkampfOrtsname(final String wettkampfOrtsname) {
+        this.wettkampfOrtsname = wettkampfOrtsname;
+    }
+
+
+    public String getWettkampfPlz() {
+        return wettkampfPlz;
+    }
+
+
+    public void setWettkampfPlz(final String wettkampfPlz) {
+        this.wettkampfPlz = wettkampfPlz;
+    }
+
+
+    public String getWettkampfStrasse() {
+        return wettkampfStrasse;
+    }
+
+
+    public void setWettkampfStrasse(final String wettkampfStrasse) {
+        this.wettkampfStrasse = wettkampfStrasse;
     }
 
 
@@ -114,15 +150,33 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
+    public Long getWettkampfAusrichter() {
+        return wettkampfAusrichter;
+    }
+
+
+    public void setWettkampfAusrichter(Long wettkampfAusrichter) {
+        this.wettkampfAusrichter = wettkampfAusrichter;
+    }
+
+
     @Override
     public String toString() {
-        return "Wettkampf ID = " + getId() + "\n" +
-                "Veranstaltungs ID =  " + getVeranstaltungsId() + "\n" +
-                "Datum = " + getDatum() + "\n" +
-                "Wettkampf Ort = " + getWettkampfOrt() + "\n" +
-                "Wettkampfbeginn = " + getWettkampfBeginn() + "\n" +
-                "Wettkampftag = " + getWettkampfTag() + "\n" +
-                "Wettkampfdiziplin ID = " + getWettkampfDisziplinId() + "\n" +
-                "Wettkampftyp ID = " + getWettkampfTypId();
+        return "WettkampfBE {\n" +
+                "\tWettkampfId = " + getId() + ",\n" +
+                "\tVeranstaltungsId =  " + getVeranstaltungsId() + ",\n" +
+                "\tDatum = " + getDatum() + ",\n" +
+                "\tWettkampfstrasse = " + getWettkampfStrasse() + ",\n" +
+                "\tWettkampfplz = " + getWettkampfPlz() + ",\n" +
+                "\tWettkampfortsname = " + getWettkampfOrtsname() + ",\n" +
+                "\tWettkampfortsinfo = " + getWettkampfOrtsinfo() + ",\n" +
+                "\tWettkampfbeginn = " + getWettkampfBeginn() + ",\n" +
+                "\tWettkampftag = " + getWettkampfTag() + ",\n" +
+                "\tWettkampfdiziplinId = " + getWettkampfDisziplinId() + ",\n" +
+                "\tWettkampftypId = " + getWettkampfTypId() + ",\n" +
+                "\tWettkampfAusrichter = " + getWettkampfAusrichter() + "\n" +
+                "}";
     }
+
+
 }

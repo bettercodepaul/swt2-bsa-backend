@@ -30,7 +30,11 @@
             <artifactId>bogenliga-business-logic</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>de.bogenliga</groupId>
+            <artifactId>bogenliga-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>       
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -52,6 +56,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.23.4</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -72,9 +88,66 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>6.0.2</version>
+        </dependency>
+
+        <!-- dependency for jaxb in combination with jdk 11 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
     </dependencies>
 
+    <!-- database migrate configuration -->
+    <profiles>
+        <profile>
+            <id>LOCAL</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <environment>LOCAL</environment>
+                <!-- WORKAROUND: use configuration parameter -->
+                <!-- mvn flyway:migrate -Denvironment=LOCAL -Ddatabase.url=jdbc:postgresql://localhost:5432/swt2 -Ddatabase.user=swt2 -Ddatabase.password=swt2 -->
+                <database.url>jdbc:postgresql://localhost:5432/swt2</database.url>
+                <database.user>swt2</database.user>
+                <database.password>swt2</database.password>
+            </properties>
+        </profile>
+        <profile>
+            <id>PROD-DATA-MIGRATION</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <environment>PROD-DATA-MIGRATION</environment>
+                <!-- WORKAROUND: use configuration parameter -->
+                <!-- mvn flyway:migrate -Denvironment=LOCAL -Ddatabase.url=jdbc:postgresql://localhost:5432/swt2 -Ddatabase.user=swt2 -Ddatabase.password=swt2 -->
+                <database.url>jdbc:postgresql://localhost:5432/swt2</database.url>
+                <database.user>swt2</database.user>
+                <database.password>swt2</database.password>
+            </properties>
+        </profile>
+        <!-- add profiles with properties for each environment, e.g. TEST, INT, PROD -->
+    </profiles>
+
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.6</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -87,7 +160,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -139,6 +211,58 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report-aggregate</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- database migration -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>9.4-1205-jdbc4</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <placeholderReplacement>false</placeholderReplacement>
+                    <outOfOrder>false</outOfOrder>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                    <schemas>
+                        <schema>public</schema>
+                        <schema>prod_data_migration</schema>
+                    </schemas>
+                    <!-- resolved by the profile properties -->
+                    <url>${database.url}</url>
+                    <user>${database.user}</user>
+                    <password>${database.password}</password>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration/all</location>
+
+                        <!-- modify initial data for the selected profile environment -->
+                        <location>filesystem:src/main/resources/db/migration/${environment}</location>
+                    </locations>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
+import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.impl.businessactivity.PasswordHashingBA;
 import de.bogenliga.application.business.user.impl.businessactivity.SignInBA;
@@ -17,14 +19,22 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.annotation.HttpMethodConstraint;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,12 +46,21 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class UserRoleComponentImplTest {
     private static final long ROLE_ID = 777;
+    private static final long ROLE_ROLE_ID = 777;
     private static final String EMAIL = "test@test.net";
     private static final String ROLE_NAME = "TEST_USER";
     private static final Long VERSION = 2L;
     private static final Long NEWVERSION = 3L;
     private static final Long USER = 1L;
     private static final long ID = 9999;
+    private static final String FEEDBACK = "TEST";
+    private static final String KEY_1 = "SMTPHost";
+    private static final String KEY_2 = "SMTPPasswort";
+    private static final String KEY_3 = "SMTPBenutzer";
+    private static final String KEY_4 = "SMTPEmail";
+    private static final String KEY_5 = "SMTPPort";
+    private static final String VALUE = "TEST_VALUE";
+
 
     private static final long ROLE_DEFAULT = 3;
     private static final String ROLE_NAME_DEFAULT = "USER";
@@ -54,6 +73,11 @@ public class UserRoleComponentImplTest {
     @Mock
     private RoleDAO roleDAO;
 
+    @Mock
+    private ConfigurationDO configurationDO;
+    @Mock
+    private ConfigurationComponent configurationComponent;
+
     @InjectMocks
     private UserRoleComponentImpl underTest;
 
@@ -62,6 +86,7 @@ public class UserRoleComponentImplTest {
 
     @Captor
     private ArgumentCaptor<UserRoleBE> userRoleBEArgumentCaptor;
+
 
 
     @Test
@@ -106,39 +131,41 @@ public class UserRoleComponentImplTest {
     }
 
 
+    // tests for findById
     @Test
     public void findById() {
         // prepare test data
+        List<UserRoleExtBE> userRoleExtBEList = new ArrayList<>();
         final UserRoleExtBE expectedBE = new UserRoleExtBE();
         expectedBE.setUserId(ID);
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        userRoleExtBEList.add(expectedBE);
 
         // configure mocks
-        when(userRoleExtDAO.findById(anyLong())).thenReturn(expectedBE);
+        when(userRoleExtDAO.findById(anyLong())).thenReturn(userRoleExtBEList);
 
         // call test method
-        final UserRoleDO actual = underTest.findById(ID);
+        final List<UserRoleDO> actual = underTest.findById(ID);
 
         // assert result
         assertThat(actual).isNotNull();
 
-        assertThat(actual.getId())
+        assertThat(actual.get(0).getId())
                 .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getEmail())
+        assertThat(actual.get(0).getEmail())
                 .isEqualTo(expectedBE.getUserEmail());
-        assertThat(actual.getRoleId())
+        assertThat(actual.get(0).getRoleId())
                 .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getRoleName())
+        assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
-        assertThat(actual.getVersion())
+        assertThat(actual.get(0).getVersion())
                 .isEqualTo(expectedBE.getVersion());
 
         // verify invocations
         verify(userRoleExtDAO).findById(ID);
     }
-
 
     @Test
     public void findById_withoutId_shouldThrowException() {
@@ -158,7 +185,6 @@ public class UserRoleComponentImplTest {
         verify(userRoleExtDAO, never()).findById(anyLong());
     }
 
-
     @Test
     public void findById_withInvalidId_shouldThrowException() {
         // prepare test data
@@ -176,7 +202,6 @@ public class UserRoleComponentImplTest {
         // verify invocations
         verify(userRoleExtDAO, never()).findById(anyLong());
     }
-
 
     @Test
     public void findById_notResult() {
@@ -198,6 +223,100 @@ public class UserRoleComponentImplTest {
         verify(userRoleExtDAO).findById(ID);
     }
 
+
+    // tests for findByRoleId
+    @Test
+    public void findByRoleId_IfSuccess() {
+        // prepare test data
+        final UserRoleExtBE userRole = new UserRoleExtBE();
+        userRole.setRoleId(ROLE_ID);
+        userRole.setUserEmail(EMAIL);
+
+        List<UserRoleExtBE> userRoleList = new ArrayList<>();
+        userRoleList.add(userRole);
+
+        // configure mocks
+        when(userRoleExtDAO.findAll()).thenReturn(userRoleList);
+
+        // call test method
+        final List<UserRoleDO> actual = underTest.findByRoleId(ROLE_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.get(0).getEmail())
+                .isEqualTo(userRole.getUserEmail());
+        assertThat(actual.get(0).getRoleId())
+                .isEqualTo(userRole.getRoleId());
+
+        // verify invocations
+        verify(userRoleExtDAO).findAll();
+    }
+
+    @Test
+    public void findByRoleId_IfFail() {
+        // prepare test data
+        final UserRoleExtBE userRole = new UserRoleExtBE();
+        userRole.setRoleId(1L);
+        userRole.setUserEmail(EMAIL);
+
+        List<UserRoleExtBE> userRoleList = new ArrayList<>();
+        userRoleList.add(userRole);
+
+        // configure mocks
+        when(userRoleExtDAO.findAll()).thenReturn(userRoleList);
+
+        // call test method
+        final List<UserRoleDO> actual = underTest.findByRoleId(2L);
+
+        // assert result
+        assertThat(actual).isNotNull().isEmpty();
+
+        // verify invocations
+        verify(userRoleExtDAO).findAll();
+    }
+
+    @Test
+    public void findByRoleId_withoutRoleId_shouldThrowException() {
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByRoleId(null))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleExtDAO, never()).findAll();
+    }
+
+    @Test
+    public void findByRoleId_withInvalidRoleId_shouldThrowException() {
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByRoleId(-1L))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleExtDAO, never()).findAll();
+    }
+
+    @Test
+    public void findByRoleId_notResult() {
+        // configure mocks
+        when(userRoleExtDAO.findAll()).thenReturn(null);
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByRoleId(ROLE_ID))
+                .withMessageContaining("No result found")
+                .withNoCause();
+
+        // verify invocations
+        verify(userRoleExtDAO).findAll();
+    }
+
+
+    // tests for findByEmail
     @Test
     public void findByEmail() {
         // prepare test data
@@ -271,7 +390,6 @@ public class UserRoleComponentImplTest {
     }
 
 
-
     @Test
     public void signIn() {
         // prepare test data
@@ -286,6 +404,7 @@ public class UserRoleComponentImplTest {
     }
 
 
+    // tests for create
     @Test
     public void create_UserIdnotNull(){
 
@@ -347,7 +466,6 @@ public class UserRoleComponentImplTest {
 
     }
 
-
     @Test
     public void create_Role_UserIdnotNull(){
 
@@ -358,7 +476,6 @@ public class UserRoleComponentImplTest {
 
     }
 
-
     @Test
     public void create_Role_RoleIdnotNull(){
 
@@ -368,7 +485,6 @@ public class UserRoleComponentImplTest {
                 .withNoCause();
 
     }
-
 
     @Test
     public void create_Role_CurrentUserIdnotNull(){
@@ -416,10 +532,7 @@ public class UserRoleComponentImplTest {
     }
 
 
-
-
-
-
+    // tests for update
     @Test
     public void update_UserRoleDO_notNull(){
 
@@ -433,16 +546,17 @@ public class UserRoleComponentImplTest {
     @Test
     public void update_UserDO_ID_notneagtive(){
 
+        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO inputDO = new UserRoleDO();
         inputDO.setId(null);
         inputDO.setRoleId(ROLE_ID);
         inputDO.setEmail(EMAIL);
         inputDO.setRoleName(ROLE_NAME);
         inputDO.setVersion(VERSION);
-
+        userRoleDOList.add(inputDO);
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inputDO, USER))
+                .isThrownBy(() -> underTest.update(userRoleDOList, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -451,36 +565,28 @@ public class UserRoleComponentImplTest {
     @Test
     public void update_UserDO_RoleID_notneagtive(){
 
+        final List<UserRoleDO> userRoleDOList = new ArrayList<>();
         final UserRoleDO inputDO = new UserRoleDO();
         inputDO.setId(ID);
         inputDO.setRoleId(null);
         inputDO.setEmail(EMAIL);
         inputDO.setRoleName(ROLE_NAME);
         inputDO.setVersion(VERSION);
-
+        userRoleDOList.add(inputDO);
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inputDO, USER))
+                .isThrownBy(() -> underTest.update(userRoleDOList, USER))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
     }
 
 
-
     @Test
-    public void update_sucessful(){
-
-        final UserRoleDO inputDO = new UserRoleDO();
-        inputDO.setId(ID);
-        inputDO.setRoleId(ROLE_ID);
-        inputDO.setEmail(EMAIL);
-        inputDO.setRoleName(ROLE_NAME);
-        inputDO.setVersion(VERSION);
-
-        final OffsetDateTime dateTime = OffsetDateTime.now();
+    public void sendFeedback() {
+        // Test Object
+        final UserRoleExtBE expectedBE = new UserRoleExtBE();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        final UserRoleBE expectedBE = new UserRoleBE();
         expectedBE.setUserId(ID);
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setVersion(VERSION);
@@ -488,25 +594,42 @@ public class UserRoleComponentImplTest {
         expectedBE.setLastModifiedAtUtc(timestamp);
         expectedBE.setCreatedByUserId(USER);
         expectedBE.setLastModifiedByUserId(USER);
+        expectedBE.setUserEmail(EMAIL);
+        final List<UserRoleExtBE> UserRoleBEList = Collections.singletonList(expectedBE);
 
+        final ConfigurationDO configurationDO_1 = new ConfigurationDO();
+        configurationDO_1.setKey(KEY_1);
+        configurationDO_1.setValue(VALUE);
+        final ConfigurationDO configurationDO_2 = new ConfigurationDO();
+        configurationDO_2.setKey(KEY_2);
+        configurationDO_2.setValue(VALUE);
+        final ConfigurationDO configurationDO_3 = new ConfigurationDO();
+        configurationDO_3.setKey(KEY_3);
+        configurationDO_3.setValue(VALUE);
+        final ConfigurationDO configurationDO_4 = new ConfigurationDO();
+        configurationDO_4.setKey(KEY_4);
+        configurationDO_4.setValue(VALUE);
+        final ConfigurationDO configurationDO_5 = new ConfigurationDO();
+        configurationDO_5.setKey(KEY_5);
+        configurationDO_5.setValue(VALUE);
+        final List<ConfigurationDO> configurationDOList = new ArrayList<>();
+        configurationDOList.add(configurationDO_1);
+        configurationDOList.add(configurationDO_2);
+        configurationDOList.add(configurationDO_3);
+        configurationDOList.add(configurationDO_4);
+        configurationDOList.add(configurationDO_5);
 
-        // configure mocks
-        when(userRoleExtDAO.update(any(UserRoleBE.class),anyLong())).thenReturn(expectedBE);
+        // Mock method calls
+        when(userRoleExtDAO.findAdminEmails()).thenReturn(UserRoleBEList);
+        when(configurationComponent.findAll()).thenReturn(configurationDOList);
 
-        // call test method
-        final UserRoleDO actual =  underTest.update(inputDO, USER);
+        // Call test method
+        underTest.sendFeedback(FEEDBACK);
+        // Verify call
+        verify(userRoleExtDAO).findAdminEmails();
+        verify(configurationComponent).findAll();
 
-        // assert result
-        assertThat(actual).isNotNull();
-
-        assertThat(actual.getId())
-                .isEqualTo(expectedBE.getUserId());
-        assertThat(actual.getRoleId())
-                .isEqualTo(expectedBE.getRoleId());
-        assertThat(actual.getVersion())
-                .isEqualTo(expectedBE.getVersion());
 
     }
-
 
 }

@@ -49,8 +49,6 @@ public class DsbMitgliedBasicDAOTest {
     private DsbMitgliedDAO underTest;
 
 
-
-
     @Test
     public void findAll() {
         // prepare test data
@@ -140,6 +138,7 @@ public class DsbMitgliedBasicDAOTest {
         final DsbMitgliedBE input = new DsbMitgliedBE();
         input.setDsbMitgliedId(ID);
         input.setDsbMitgliedVorname(VORNAME);
+        input.setDsbMitgliedUserId(USERID);
 
         // configure mocks
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);

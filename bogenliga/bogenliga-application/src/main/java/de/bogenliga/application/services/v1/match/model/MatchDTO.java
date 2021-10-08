@@ -20,6 +20,7 @@ public class MatchDTO implements DataTransferObject {
     private String mannschaftName;
     private Long begegnung;
     private String wettkampfTyp;
+    private Long wettkampfTag;
     private Long scheibenNummer;
     private Long matchpunkte;
     private Long satzpunkte;
@@ -34,6 +35,12 @@ public class MatchDTO implements DataTransferObject {
     // table form (schusszettel) to the database
     private List<PasseDTO> passen;
 
+
+    //empty constructor for json objekt form frontend to backend
+    public MatchDTO(){
+
+
+    }
 
     public MatchDTO(Long id, Long nr, Long version, Long wettkampfId, Long mannschaftId, Long begegnung,
                     Long scheibenNummer, Long matchpunkte, Long satzpunkte, List<PasseDTO> passen,
@@ -224,5 +231,15 @@ public class MatchDTO implements DataTransferObject {
 
     public void setStrafPunkteSatz5(Long strafPunkteSatz5) {
         this.strafPunkteSatz5 = strafPunkteSatz5;
+    }
+
+
+    public Long getWettkampfTag() {
+        return wettkampfTag;
+    }
+
+
+    public void setWettkampfTag(Long wettkampfTag) {
+        this.wettkampfTag = wettkampfTag;
     }
 }

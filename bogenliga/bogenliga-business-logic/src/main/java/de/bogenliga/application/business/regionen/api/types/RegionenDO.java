@@ -12,8 +12,9 @@ public class RegionenDO extends CommonDataObject implements DataObject {
     private Long id;
     private String regionName;
     private String regionKuerzel;
-    private String regionType;
+    private String regionTyp;
     private Long regionUebergeordnet;
+    private String regionUebergeordnetAsName;
 
 
     /**
@@ -21,15 +22,17 @@ public class RegionenDO extends CommonDataObject implements DataObject {
      */
 
     public RegionenDO(final Long id, final String regionName, final String regionKuerzel,
-                      final String regionType, final Long regionUebergeordnet, final OffsetDateTime createdAtUtc,
-                      final Long createdByUserId, final OffsetDateTime lastModifiedUtc, final Long lastModifiedByUserId,
-                      final Long version){
+                      final String regionType, final Long regionUebergeordnet, final String regionUebergeordnetAsName,
+                      final OffsetDateTime createdAtUtc, final Long createdByUserId,
+                      final OffsetDateTime lastModifiedUtc, final Long lastModifiedByUserId,
+                      final Long version) {
 
         this.id = id;
         this.regionName = regionName;
         this.regionKuerzel = regionKuerzel;
-        this.regionType = regionType;
+        this.regionTyp = regionType;
         this.regionUebergeordnet = regionUebergeordnet;
+        this.regionUebergeordnetAsName = regionUebergeordnetAsName;
 
         //set param from CommonDataObject
 
@@ -45,14 +48,15 @@ public class RegionenDO extends CommonDataObject implements DataObject {
      */
 
     public RegionenDO(final Long id, final String regionName, final String regionKuerzel,
-                      final String regionType, final Long regionUebergeordnet, final OffsetDateTime createdAtUtc,
-                      final Long createdByUserId, final Long version){
+                      final String regionType, final Long regionUebergeordnet, final String regionUebergeordnetAsName,
+                      final OffsetDateTime createdAtUtc, final Long createdByUserId, final Long version) {
 
         this.id = id;
         this.regionName = regionName;
         this.regionKuerzel = regionKuerzel;
-        this.regionType = regionType;
+        this.regionTyp = regionType;
         this.regionUebergeordnet = regionUebergeordnet;
+        this.regionUebergeordnetAsName = regionUebergeordnetAsName;
 
         //set param from CommonDataObject
 
@@ -63,14 +67,15 @@ public class RegionenDO extends CommonDataObject implements DataObject {
 
 
     public RegionenDO(final Long id, final String regionName, final String regionKuerzel,
-                      final String regionType, final Long regionUebergeordnet){
-
+                      final String regionType, final Long regionUebergeordnet,
+                      final String regionUebergeordnetAsName) {
 
         this.id = id;
         this.regionName = regionName;
         this.regionKuerzel = regionKuerzel;
-        this.regionType = regionType;
+        this.regionTyp = regionType;
         this.regionUebergeordnet = regionUebergeordnet;
+        this.regionUebergeordnetAsName = regionUebergeordnetAsName;
 
     }
 
@@ -113,13 +118,13 @@ public class RegionenDO extends CommonDataObject implements DataObject {
     }
 
 
-    public String getRegionType() {
-        return regionType;
+    public String getRegionTyp() {
+        return regionTyp;
     }
 
 
-    public void setRegionType(String regionType) {
-        this.regionType = regionType;
+    public void setRegionTyp(String regionTyp) {
+        this.regionTyp = regionTyp;
     }
 
 
@@ -130,5 +135,13 @@ public class RegionenDO extends CommonDataObject implements DataObject {
 
     public void setRegionUebergeordnet(Long regionUebergeordnet) {
         this.regionUebergeordnet = regionUebergeordnet;
+    }
+
+
+    public String getRegionUebergeordnetAsName() { return regionUebergeordnetAsName; }
+
+
+    public void setRegionUebergeordnetAsName(String regionUebergeordnetAsName) {
+        this.regionUebergeordnetAsName = regionUebergeordnetAsName;
     }
 }

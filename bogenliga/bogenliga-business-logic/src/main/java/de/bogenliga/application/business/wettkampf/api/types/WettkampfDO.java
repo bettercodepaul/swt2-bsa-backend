@@ -2,6 +2,7 @@ package de.bogenliga.application.business.wettkampf.api.types;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.sql.Date;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
@@ -15,24 +16,42 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
 
     private static final long serialVersionUID = -3541537678685603149L;
     private Long id;
-    private Long veranstaltungsId;
-    private String datum;
-    private String wettkampfOrt;
+    private Long wettkampfVeranstaltungsId;
+    private Date wettkampfDatum;
+    private String wettkampfStrasse;
+    private String wettkampfPlz;
+    private String wettkampfOrtsname;
+    private String wettkampfOrtsinfo;
     private String wettkampfBeginn;
     private Long wettkampfTag;
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
+    private Long wettkampfAusrichter;
 
 
-    public WettkampfDO(final Long id, final Long veranstaltungsId, final String datum, final String wettkampfOrt,
-                       final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
-                       final Long wettkampfTypId,
-                       final OffsetDateTime createdAtUtc, final Long createdByUserId,
-                       final Long version) {
+    public WettkampfDO(
+            final Long id,
+            final Long veranstaltungsId,
+            final Date datum,
+            final String wettkampfStrasse,
+            final String wettkampfPlz,
+            final String wettkampfOrtsname,
+            final String wettkampfOrtsinfo,
+            final String wettkampfBeginn,
+            final Long wettkampfTag,
+            final Long wettkampfDisziplinId,
+            final Long wettkampfTypId,
+            final OffsetDateTime createdAtUtc,
+            final Long createdByUserId,
+            final Long version,
+            final Long wettkampfAusrichter) {
         this.id = id;
-        this.veranstaltungsId = veranstaltungsId;
-        this.datum = datum;
-        this.wettkampfOrt = wettkampfOrt;
+        this.wettkampfVeranstaltungsId = veranstaltungsId;
+        this.wettkampfDatum = datum;
+        this.wettkampfStrasse = wettkampfStrasse;
+        this.wettkampfPlz = wettkampfPlz;
+        this.wettkampfOrtsname = wettkampfOrtsname;
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
         this.wettkampfBeginn = wettkampfBeginn;
         this.wettkampfTag = wettkampfTag;
         this.wettkampfDisziplinId = wettkampfDisziplinId;
@@ -40,6 +59,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
+        this.wettkampfAusrichter = wettkampfAusrichter;
 
     }
 
@@ -48,45 +68,46 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
      * Constructor with optional parameters
      *
      * @param id
-     * @param veranstaltungsId
-     * @param datum
-     * @param wettkampfOrt
+     * @param wettkampfVeranstaltungsId
+     * @param wettkampfDatum
+     * @param wettkampfStrasse
+     * @param wettkampfPlz
+     * @param wettkampfOrtsname
+     * @param wettkampfOrtsinfo
      * @param wettkampfBeginn
      * @param wettkampfTag
      * @param wettkampfDisziplinId
      * @param wettkampfTypId
-     * @param createdAtUtc
-     * @param createdByUserId
-     * @param lastModifiedAtUtc
-     * @param lastModifiedByUserId
      * @param version
      */
-    public WettkampfDO(final Long id, final Long veranstaltungsId, final String datum, final String wettkampfOrt,
+    public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum,
+                       final String wettkampfStrasse, final String wettkampfPlz,
+                       final String wettkampfOrtsname,
+                       final String wettkampfOrtsinfo,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
                        final Long wettkampfTypId,
-                       final OffsetDateTime createdAtUtc, final Long createdByUserId,
-                       final OffsetDateTime lastModifiedAtUtc,
-                       final Long lastModifiedByUserId,
-                       final Long version) {
+                       final Long version, final Long wettkampfAusrichter) {
         this.id = id;
-        this.veranstaltungsId = veranstaltungsId;
-        this.datum = datum;
-        this.wettkampfOrt = wettkampfOrt;
+        this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
+        this.wettkampfDatum = wettkampfDatum;
+        this.wettkampfStrasse = wettkampfStrasse;
+        this.wettkampfPlz = wettkampfPlz;
+        this.wettkampfOrtsname = wettkampfOrtsname;
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
         this.wettkampfBeginn = wettkampfBeginn;
         this.wettkampfTag = wettkampfTag;
         this.wettkampfDisziplinId = wettkampfDisziplinId;
         this.wettkampfTypId = wettkampfTypId;
-        this.createdAtUtc = createdAtUtc;
-        this.createdByUserId = createdByUserId;
         this.version = version;
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
-        this.lastModifiedByUserId = lastModifiedByUserId;
+        this.wettkampfAusrichter = wettkampfAusrichter;
 
     }
 
 
     /**
-     * Constructor with id for deleting existing entries
+     * existing entries
+     * <p>
+     * Constructor with id for deleting
      *
      * @param id
      */
@@ -95,46 +116,73 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-    /* Autogenerated getter and setters */
-
-
     public Long getId() {
         return id;
     }
 
 
-    public void setId(final Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
 
-    public Long getVeranstaltungsId() {
-        return veranstaltungsId;
+    public Long getWettkampfVeranstaltungsId() {
+        return wettkampfVeranstaltungsId;
     }
 
 
-    public void setVeranstaltungsId(final Long veranstaltungsId) {
-        this.veranstaltungsId = veranstaltungsId;
+    public void setWettkampfVeranstaltungsId(Long wettkampfVeranstaltungsId) {
+        this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
     }
 
 
-    public String getDatum() {
-        return datum;
+    public Date getWettkampfDatum() {
+        return wettkampfDatum;
     }
 
 
-    public void setDatum(final String datum) {
-        this.datum = datum;
+    public void setWettkampfDatum(Date wettkampfDatum) {
+        this.wettkampfDatum = wettkampfDatum;
     }
 
 
-    public String getWettkampfOrt() {
-        return wettkampfOrt;
+    public String getWettkampfStrasse() {
+        return wettkampfStrasse;
     }
 
 
-    public void setWettkampfOrt(final String wettkampfOrt) {
-        this.wettkampfOrt = wettkampfOrt;
+    public void setWettkampfStrasse(String wettkampfStrasse) {
+        this.wettkampfStrasse = wettkampfStrasse;
+    }
+
+
+    public String getWettkampfPlz() {
+        return wettkampfPlz;
+    }
+
+
+    public void setWettkampfPlz(String wettkampfPlz) {
+        this.wettkampfPlz = wettkampfPlz;
+    }
+
+
+    public String getWettkampfOrtsname() {
+        return wettkampfOrtsname;
+    }
+
+
+    public void setWettkampfOrtsname(String wettkampfOrtsname) {
+        this.wettkampfOrtsname = wettkampfOrtsname;
+    }
+
+
+    public String getWettkampfOrtsinfo() {
+        return wettkampfOrtsinfo;
+    }
+
+
+    public void setWettkampfOrtsinfo(String wettkampfOrtsinfo) {
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
     }
 
 
@@ -143,7 +191,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-    public void setWettkampfBeginn(final String wettkampfBeginn) {
+    public void setWettkampfBeginn(String wettkampfBeginn) {
         this.wettkampfBeginn = wettkampfBeginn;
     }
 
@@ -153,7 +201,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-    public void setWettkampfTag(final Long wettkampfTag) {
+    public void setWettkampfTag(Long wettkampfTag) {
         this.wettkampfTag = wettkampfTag;
     }
 
@@ -163,7 +211,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-    public void setWettkampfDisziplinId(final Long wettkampfDisziplinId) {
+    public void setWettkampfDisziplinId(Long wettkampfDisziplinId) {
         this.wettkampfDisziplinId = wettkampfDisziplinId;
     }
 
@@ -173,35 +221,46 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
-    public void setWettkampfTypId(final Long wettkampfTypId) {
+    public void setWettkampfTypId(Long wettkampfTypId) {
         this.wettkampfTypId = wettkampfTypId;
+    }
+
+
+    public Long getWettkampfAusrichter() {
+        return wettkampfAusrichter;
+    }
+
+
+    public void setWettkampfAusrichter(Long wettkampfAusrichter) {
+        this.wettkampfAusrichter = wettkampfAusrichter;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        WettkampfDO that = (WettkampfDO) o;
+        return id.equals(that.id) &&
+                wettkampfVeranstaltungsId.equals(that.wettkampfVeranstaltungsId) &&
+                Objects.equals(wettkampfDatum, that.wettkampfDatum) &&
+                Objects.equals(wettkampfBeginn, that.wettkampfBeginn) &&
+                wettkampfTag.equals(that.wettkampfTag) &&
+                Objects.equals(wettkampfDisziplinId, that.wettkampfDisziplinId) &&
+                Objects.equals(wettkampfTypId, that.wettkampfTypId) &&
+                Objects.equals(wettkampfAusrichter, that.wettkampfAusrichter);
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, veranstaltungsId, datum, wettkampfOrt, wettkampfBeginn, wettkampfTag,
-                wettkampfDisziplinId, wettkampfTypId,
-                createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
+        return Objects.hash(id, wettkampfVeranstaltungsId, wettkampfDatum, wettkampfBeginn, wettkampfTag,
+                wettkampfDisziplinId, wettkampfTypId, wettkampfAusrichter);
     }
 
-
-    @Override
-    public boolean equals(final Object o) {
-        if (o instanceof WettkampfDO) {
-            final WettkampfDO that = (WettkampfDO) o;
-            return (Objects.equals(getId(), that.getId())
-                    && Objects.equals(getVeranstaltungsId(),
-                    that.getVeranstaltungsId()) &&
-                    Objects.equals(getDatum(), that.getDatum()) && getWettkampfOrt().equals(that.getWettkampfOrt()) &&
-                    Objects.equals(getWettkampfBeginn(), that.getWettkampfBeginn()) &&
-                    Objects.equals(getWettkampfTag(), that.getWettkampfTag()) &&
-                    Objects.equals(getWettkampfDisziplinId(), that.getWettkampfDisziplinId()) &&
-                    Objects.equals(getWettkampfTypId(), that.getWettkampfTypId()));
-        }
-        return false;
-
-    }
 
 }

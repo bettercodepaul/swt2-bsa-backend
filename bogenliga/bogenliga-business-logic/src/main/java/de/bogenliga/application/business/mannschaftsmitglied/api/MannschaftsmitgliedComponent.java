@@ -23,10 +23,21 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
 
     /**
      *
-     * todo
+     * Die Funktion liefert alle einer Mannschaft zugeordneten Schützen,
+     * für die in mindestens einem Wettkampf Pfeilwerte erfasst wurden,
+     * d.h. sie haben aktiv geschossen
      */
 
-    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeamEingesetzt(Long mannschaftsmitgliederMannschaftsId);
+
+
+    /**
+     *
+     * Die Funktion liefert alle einer Mannschaft zugeordneten Schützen,
+     * unabhängig ob sie schon aktiv geschossen haben. Z.B. für die Bogenkontrollliste.
+     */
+
+    List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long mannschaftsmitgliederMannschaftsId);
 
 
 
@@ -37,20 +48,36 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * empty list, if no mannschaftsmitglied is found
      */
 
-    List<MannschaftsmitgliedDO> findByTeamId(Long MannschaftsmitgliederMannschaftsId);
+    List<MannschaftsmitgliedDO> findByTeamId(Long mannschaftsmitgliederMannschaftsId);
 
 
 
     /**
      * Return a mannschaftsmitglied entry with the given id.
      *
-     * @param MannschaftsmitgliedMannschaftId of the mannschaftsmitglied,
-     * @param MannschaftsmitgliedMitgliedId of the mannschaftsmitglied
+     * @param mannschaftsmitgliedMannschaftId of the mannschaftsmitglied,
+     * @param mannschaftsmitgliedMitgliedId of the mannschaftsmitglied
      * @return single mannschaftsmitglied entry with the given id;
      * null, if no mannschaftsmitglied is found
      */
-    MannschaftsmitgliedDO findByMemberAndTeamId(Long MannschaftsmitgliedMannschaftId, Long MannschaftsmitgliedMitgliedId);
+    MannschaftsmitgliedDO findByMemberAndTeamId(Long mannschaftsmitgliedMannschaftId, Long mannschaftsmitgliedMitgliedId);
 
+    /**
+     * Returns a mannschaftsmitglied entry with the given rueckennummer.
+     * @param mannschaftId of the mannschaftsmitglied
+     * @param rueckennummer of the mannschaftsmitglied
+     * @return single mannschaftsmitglied entry with the given rueckennummer;
+     * null, if no mannschaftsmitglied is found
+     */
+    MannschaftsmitgliedDO findByTeamIdAndRueckennummer(Long mannschaftId, Long rueckennummer);
+
+    /**
+     * return all mannschaftsmitglied entries from one dsbmitglied
+     *
+     * @param mannschaftsmitgliedMitgliedId of the mannschaftsmitglied
+     * @return lkist of mannschaftsmitglied entries with the given mitgliedsId
+     */
+    List<MannschaftsmitgliedDO> findByMemberId(Long mannschaftsmitgliedMitgliedId);
 
 
     /**
@@ -81,6 +108,14 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      * @param currentMemberId
      */
     void delete(MannschaftsmitgliedDO mannschaftsmitgliedDO, Long currentMemberId);
+
+
+    /**
+     * Deletes an existing mannschaftsmitlgied, identified by the teamId and the dsbMitlgiedId
+     * @param mannschaftsmitgliedDO mannschaftsmitglied to delete
+     * @param currentUserId
+     */
+    void deleteByTeamIdAndMemberId(MannschaftsmitgliedDO mannschaftsmitgliedDO, Long currentUserId);
 
     boolean checkExistingSchuetze(Long teamId, Long memberId);
 

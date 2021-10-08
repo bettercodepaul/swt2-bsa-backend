@@ -2,10 +2,7 @@ package de.bogenliga.application.services.v1.regionen.mapper;
 
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import org.springframework.beans.factory.annotation.Autowired;
-import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
-import de.bogenliga.application.business.regionen.impl.business.RegionenComponentImpl;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.regionen.model.RegionenDTO;
 
@@ -23,14 +20,16 @@ public class RegionenDTOMapper implements DataTransferObjectMapper {
         final Long id = regionenDO.getId();
         final String regionName = regionenDO.getRegionName();
         final String kuerzel = regionenDO.getRegionKuerzel();
-        final String typ = regionenDO.getRegionType();
+        final String typ = regionenDO.getRegionTyp();
         final Long uebergeordnet = regionenDO.getRegionUebergeordnet();
+        final String regionUebergeordnetAsName = regionenDO.getRegionUebergeordnetAsName();
         final Long createdByUserId = regionenDO.getCreatedByUserId();
         final OffsetDateTime createdAtUtc = regionenDO.getCreatedAtUtc();
         final Long version = regionenDO.getVersion();
 
 
-        return new RegionenDTO(id, regionName, kuerzel, typ, uebergeordnet,null, createdAtUtc,createdByUserId, version);
+        return new RegionenDTO(id, regionName, kuerzel, typ, uebergeordnet, regionUebergeordnetAsName, createdAtUtc,
+                createdByUserId, version);
     };
 
 
@@ -44,11 +43,13 @@ public class RegionenDTOMapper implements DataTransferObjectMapper {
         final String kuerzel = dto.getRegionKuerzel();
         final String typ = dto.getRegionTyp();
         final Long uebergeordnet = dto.getRegionUebergeordnet();
+        final String regionUebergeordnetAsName = dto.getRegionUebergeordnetAsName();
         final Long createdByUserId = dto.getCreatedByUserId();
         final OffsetDateTime createdAtUtc = dto.getCreatedAtUtc();
         final Long version = dto.getVersion();
 
-        return new RegionenDO(id, name, kuerzel, typ, uebergeordnet,
+
+        return new RegionenDO(id, name, kuerzel, typ, uebergeordnet, regionUebergeordnetAsName,
                 createdAtUtc, createdByUserId, version);
     };
 

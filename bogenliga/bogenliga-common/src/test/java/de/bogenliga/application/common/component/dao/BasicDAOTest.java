@@ -42,7 +42,7 @@ public class BasicDAOTest {
     private static final String BE_PARAMETER_ID = "id";
     private static final String BE_PARAMETER_NAME = "name";
 
-    private static final String SQL_QUERY_WITH_PARAMETER = "SELECT * FROM table WHERE table_id = ?;";
+    private static final String SQL_QUERY_WITH_PARAMETER = "SELECT * FROM table WHERE table_id = ? ;";
     private static final String SQL_QUERY = "DUMMY SQL QUERY;";
     private static final String PARAMETER = "parameter";
 
@@ -426,9 +426,9 @@ public class BasicDAOTest {
         assertThat(actual.getName()).isEqualTo(expected.getName());
 
         // verify invocations
-        verify(transactionManager).begin();
-        verify(transactionManager).commit();
-        verify(transactionManager).release();
+        verify(transactionManager, times(2)).begin();
+        verify(transactionManager, times(2)).commit();
+        verify(transactionManager, times(2)).release();
 
         verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanHandler.class),
                 eq(ID));
@@ -477,9 +477,9 @@ public class BasicDAOTest {
 
         // assert result
         // verify invocations
-        verify(transactionManager).begin();
-        verify(transactionManager).rollback();
-        verify(transactionManager).release();
+        verify(transactionManager, times(2)).begin();
+        verify(transactionManager, times(2)).rollback();
+        verify(transactionManager, times(2)).release();
 
         verify(queryRunner).query(eq(connection), eq(SQL_QUERY_WITH_PARAMETER), any(BasicBeanHandler.class),
                 eq(ID));

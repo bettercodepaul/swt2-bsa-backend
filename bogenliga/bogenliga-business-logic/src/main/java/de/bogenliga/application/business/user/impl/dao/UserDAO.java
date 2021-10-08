@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -35,6 +37,9 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_BE_PASSWORD = "userPassword";
     private static final String USER_BE_USING2FA = "using2FA";
     private static final String USER_BE_SECRET = "secret";
+    private static final String USER_BE_DSB_MITGLIED_ID = "dsb_mitglied_id";
+
+    private static final String USER_BE_ACTIVE = "active";
 
     private static final String USER_TABLE_ID = "benutzer_id";
     private static final String USER_TABLE_EMAIL = "benutzer_email";
@@ -42,6 +47,9 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_TABLE_PASSWORD = "benutzer_password";
     private static final String USER_TABLE_USING2FA = "benutzer_using_2fa";
     private static final String USER_TABLE_SECRET = "benutzer_secret";
+    private static final String USER_TABLE_DSB_MITGLIED_ID = "benutzer_dsb_mitglied_id";
+
+    private static final String USER_TABLE_ACTIVE = "benutzer_active";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserBE> USER = new BusinessEntityConfiguration<>(
@@ -52,7 +60,8 @@ public class UserDAO implements DataAccessObject {
      */
     private static final String FIND_ALL =
             "SELECT * "
-                    + " FROM benutzer";
+                    + " FROM benutzer"
+                    + " WHERE benutzer_active = TRUE";
 
     private static final String FIND_BY_ID =
             "SELECT * "
@@ -62,7 +71,13 @@ public class UserDAO implements DataAccessObject {
     private static final String FIND_BY_EMAIL =
             "SELECT * "
                     + " FROM benutzer "
-                    + " WHERE upper(benutzer_email) = upper(?)";
+                    + " WHERE upper(benutzer_email) = upper(?)"
+                    + " AND benutzer_active = TRUE";
+
+    private static final String FIND_BY_DSBMITGLIED_ID =
+            "SELECT * "
+                    + " FROM benutzer "
+                    + " WHERE benutzer_dsb_mitglied_id = ?";
 
     private final BasicDAO basicDao;
 
@@ -75,24 +90,6 @@ public class UserDAO implements DataAccessObject {
     @Autowired
     public UserDAO(final BasicDAO basicDao) {
         this.basicDao = basicDao;
-    }
-
-
-    // table column label mapping to the business entity parameter names
-    private static Map<String, String> getColumnsToFieldsMap() {
-        final Map<String, String> columnsToFieldsMap = new HashMap<>();
-
-        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
-        columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
-        columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
-        columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
-        columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
-        columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
-
-        // add technical columns
-        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
-
-        return columnsToFieldsMap;
     }
 
 
@@ -123,6 +120,35 @@ public class UserDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(USER, FIND_BY_EMAIL, email);
     }
 
+    /**
+     * Return user entry with specific dsbMitgliedId
+     *
+     * @param dsbMitgliedId
+     */
+    public UserBE findByDsbMitgliedId(final long dsbMitgliedId) {
+        return basicDao.selectSingleEntity(USER, FIND_BY_DSBMITGLIED_ID, dsbMitgliedId);
+    }
+
+
+    // table column label mapping to the business entity parameter names
+    private static Map<String, String> getColumnsToFieldsMap() {
+        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+
+        columnsToFieldsMap.put(USER_TABLE_ID, USER_BE_ID);
+        columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
+        columnsToFieldsMap.put(USER_TABLE_SALT, USER_BE_SALT);
+        columnsToFieldsMap.put(USER_TABLE_PASSWORD, USER_BE_PASSWORD);
+        columnsToFieldsMap.put(USER_TABLE_USING2FA, USER_BE_USING2FA);
+        columnsToFieldsMap.put(USER_TABLE_SECRET, USER_BE_SECRET);
+        columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
+        columnsToFieldsMap.put(USER_TABLE_DSB_MITGLIED_ID, USER_BE_DSB_MITGLIED_ID);
+
+        // add technical columns
+        columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
+
+        return columnsToFieldsMap;
+    }
+
 
     /**
      * Create a new user entry
@@ -134,8 +160,17 @@ public class UserDAO implements DataAccessObject {
      */
     public UserBE create(final UserBE userBE, final long currentUserId) {
         basicDao.setCreationAttributes(userBE, currentUserId);
+        UserBE persistedUser = basicDao.insertEntity(USER, userBE);
 
-        return basicDao.insertEntity(USER, userBE);
+        // Save UserId in the column dsb_mitglied_benutzer_id of entity dsb_mitglied
+        DsbMitgliedDAO DsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
+        DsbMitgliedBE DsbMitgliedBE = DsbMitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
+        if(DsbMitgliedBE != null) {
+            DsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
+            DsbMitgliedDAO.update(DsbMitgliedBE, DsbMitgliedBE.getDsbMitgliedId());
+        }
+
+        return persistedUser;
     }
 
 

@@ -31,6 +31,7 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class UserComponentImplTest {
     private static final Long ID = 777L;
+    private static final Long DSBMITGLIEDID = 28L;
     private static final Long VERSION = 2L;
     private static final Long NEWVERSION = 3L;
     private static final String EMAIL = "email";
@@ -40,7 +41,7 @@ public class UserComponentImplTest {
     private static final String PWDHASH = "pwdhash";
     private static final String NEWPWDHASH = "newpwdhash";
     private static final Long USER = 1L;
-    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", false, null, null, 0L, null, 0L, 0L);
+    private static final UserDO SYSTEM_USER = new UserDO(0L, "SYSTEM", false, true, null, null, 0L, null, 0L, 0L);
 
 
     @Rule
@@ -332,7 +333,7 @@ public class UserComponentImplTest {
     public void create_UserEmailnotNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create("", PASSWORD, ID, false))
+                .isThrownBy(() -> underTest.create("", PASSWORD, DSBMITGLIEDID, ID, false))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -343,7 +344,7 @@ public class UserComponentImplTest {
     public void create_UserPasswordnotNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(EMAIL, "", ID, false))
+                .isThrownBy(() -> underTest.create(EMAIL, "", DSBMITGLIEDID, ID, false))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -354,7 +355,17 @@ public class UserComponentImplTest {
     public void create_UserIDnotNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, null, false))
+                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, DSBMITGLIEDID,null, false))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void create_DSBIDIDnotNull() {
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.create(EMAIL, PASSWORD, null,ID, false))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -382,7 +393,7 @@ public class UserComponentImplTest {
         when(userDAO.create(any(UserBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final UserDO actual = underTest.create(EMAIL, PASSWORD, USER, false);
+        final UserDO actual = underTest.create(EMAIL, PASSWORD, DSBMITGLIEDID, USER, false);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -404,7 +415,7 @@ public class UserComponentImplTest {
     public void update_UserDO_notNull() {
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(null, PASSWORD, NEWPASSWORD, ID))
+                .isThrownBy(() -> underTest.updatePassword(null, PASSWORD, NEWPASSWORD, ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -416,7 +427,7 @@ public class UserComponentImplTest {
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(SYSTEM_USER, PASSWORD, NEWPASSWORD, ID))
+                .isThrownBy(() -> underTest.updatePassword(SYSTEM_USER, PASSWORD, NEWPASSWORD, ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -429,10 +440,11 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, "", NEWPASSWORD, ID))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, "", NEWPASSWORD, ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -445,10 +457,11 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, "", ID))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, PASSWORD, "", ID))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -461,10 +474,11 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, NEWPASSWORD, 0L))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, PASSWORD, NEWPASSWORD, 0L))
                 .withMessageContaining("must not be null")
                 .withNoCause();
 
@@ -502,6 +516,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
 
 
         // configure mocks
@@ -512,7 +527,7 @@ public class UserComponentImplTest {
 
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER))
+                .isThrownBy(() -> underTest.updatePassword(inUserDO, PASSWORD, NEWPASSWORD, USER))
                 .withMessageContaining("password incorrect")
                 .withNoCause();
 
@@ -521,6 +536,109 @@ public class UserComponentImplTest {
 
     @Test
     public void update_sucessful() {
+
+        final OffsetDateTime dateTime = OffsetDateTime.now();
+        final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        final UserBE inputBE = new UserBE();
+        inputBE.setUserId(ID);
+        inputBE.setUserPassword(PWDHASH);
+        inputBE.setUserSalt(SALT);
+        inputBE.setUserEmail(EMAIL);
+        inputBE.setVersion(VERSION);
+        inputBE.setCreatedAtUtc(timestamp);
+        inputBE.setLastModifiedAtUtc(timestamp);
+        inputBE.setCreatedByUserId(USER);
+        inputBE.setLastModifiedByUserId(USER);
+
+        final UserBE expectedBE = new UserBE();
+        expectedBE.setUserId(ID);
+        expectedBE.setUserPassword(PWDHASH);
+        expectedBE.setUserEmail(EMAIL);
+        expectedBE.setVersion(NEWVERSION);
+        expectedBE.setCreatedAtUtc(timestamp);
+        expectedBE.setLastModifiedAtUtc(timestamp);
+        expectedBE.setCreatedByUserId(USER);
+        expectedBE.setLastModifiedByUserId(USER);
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+
+
+        // configure mocks
+        when(passwordHashingBA.generateSalt()).thenReturn(SALT);
+        when(passwordHashingBA.calculateHash(anyString(), anyString())).thenReturn(PWDHASH);
+        when(userDAO.findById(anyLong())).thenReturn(inputBE);
+        when(userDAO.update(any(UserBE.class), anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final UserDO actual = underTest.updatePassword(inUserDO, PASSWORD, NEWPASSWORD, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getUserId());
+        assertThat(actual.getEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+        assertThat(actual.getVersion())
+                .isEqualTo(expectedBE.getVersion());
+
+    }
+
+    @Test
+    public void reset_UserDO_notNull() {
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(null, NEWPASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void reset_UserDO_ID_notNull() {
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(SYSTEM_USER, NEWPASSWORD, ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+    @Test
+    public void reset_NewPassword_notNull() {
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(inUserDO, "", ID))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void reset_CurrentUserId_notNull() {
+
+        final UserDO inUserDO = new UserDO();
+        inUserDO.setId(ID);
+        inUserDO.setEmail(EMAIL);
+
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.resetPassword(inUserDO, NEWPASSWORD, 0L))
+                .withMessageContaining("must not be null")
+                .withNoCause();
+
+    }
+
+    @Test
+    public void reset_sucessful() {
 
         final OffsetDateTime dateTime = OffsetDateTime.now();
         final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -557,7 +675,7 @@ public class UserComponentImplTest {
         when(userDAO.update(any(UserBE.class), anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final UserDO actual = underTest.update(inUserDO, PASSWORD, NEWPASSWORD, USER);
+        final UserDO actual = underTest.resetPassword(inUserDO, NEWPASSWORD, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -570,7 +688,6 @@ public class UserComponentImplTest {
                 .isEqualTo(expectedBE.getVersion());
 
     }
-
 
     @Test
     public void isTechnicalUser() {

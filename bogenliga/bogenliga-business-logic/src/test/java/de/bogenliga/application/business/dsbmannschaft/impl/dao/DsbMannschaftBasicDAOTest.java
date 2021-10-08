@@ -100,6 +100,39 @@ public class DsbMannschaftBasicDAOTest {
     }
 
     @Test
+    public void findAllByVeranstaltungsId() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<DsbMannschaftBE> actual = underTest.findAllByVeranstaltungsId(veranstaltungId);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+
+
+    }
+    @Test
     public void findById() {
         // prepare test data
         final DsbMannschaftBE expectedBE = new DsbMannschaftBE();

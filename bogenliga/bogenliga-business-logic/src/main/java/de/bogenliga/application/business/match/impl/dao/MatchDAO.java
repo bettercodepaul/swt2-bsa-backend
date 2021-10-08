@@ -34,11 +34,11 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_BE_BEGEGNUNG = "begegnung";
     private static final String MATCH_BE_MATCHPUNKTE = "matchpunkte";
     private static final String MATCH_BE_SATZPUNKTE = "satzpunkte";
-    private static final String MATCH_BE_STRAFPUNKTE_SATZ_1 = "strafPunktSatz1";
-    private static final String MATCH_BE_STRAFPUNKTE_SATZ_2 = "strafPunktSatz2";
-    private static final String MATCH_BE_STRAFPUNKTE_SATZ_3 = "strafPunktSatz3";
-    private static final String MATCH_BE_STRAFPUNKTE_SATZ_4 = "strafPunktSatz4";
-    private static final String MATCH_BE_STRAFPUNKTE_SATZ_5 = "strafPunktSatz5";
+    private static final String MATCH_BE_STRAFPUNKTE_SATZ_1 = "strafPunkteSatz1";
+    private static final String MATCH_BE_STRAFPUNKTE_SATZ_2 = "strafPunkteSatz2";
+    private static final String MATCH_BE_STRAFPUNKTE_SATZ_3 = "strafPunkteSatz3";
+    private static final String MATCH_BE_STRAFPUNKTE_SATZ_4 = "strafPunkteSatz4";
+    private static final String MATCH_BE_STRAFPUNKTE_SATZ_5 = "strafPunkteSatz5";
 
     // table columns
     private static final String MATCH_TABLE_ID = "match_id";
@@ -49,11 +49,11 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_BEGEGNUNG = "match_begegnung";
     private static final String MATCH_TABLE_MATCHPUNKTE = "match_matchpunkte";
     private static final String MATCH_TABLE_SATZPUNKTE = "match_satzpunkte";
-    private static final String MATCH_TABLE_STRAFPUNKT_SATZ1 = "match_strafpunkt_satz_1";
-    private static final String MATCH_TABLE_STRAFPUNKT_SATZ2 = "match_strafpunkt_satz_2";
-    private static final String MATCH_TABLE_STRAFPUNKT_SATZ3 = "match_strafpunkt_satz_3";
-    private static final String MATCH_TABLE_STRAFPUNKT_SATZ4 = "match_strafpunkt_satz_4";
-    private static final String MATCH_TABLE_STRAFPUNKT_SATZ5 = "match_strafpunkt_satz_5";
+    private static final String MATCH_TABLE_STRAFPUNKTE_SATZ1 = "match_strafpunkte_satz_1";
+    private static final String MATCH_TABLE_STRAFPUNKTE_SATZ2 = "match_strafpunkte_satz_2";
+    private static final String MATCH_TABLE_STRAFPUNKTE_SATZ3 = "match_strafpunkte_satz_3";
+    private static final String MATCH_TABLE_STRAFPUNKTE_SATZ4 = "match_strafpunkte_satz_4";
+    private static final String MATCH_TABLE_STRAFPUNKTE_SATZ5 = "match_strafpunkte_satz_5";
 
 
     // wrap all specific config parameters
@@ -86,11 +86,11 @@ public class MatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_SCHEIBENNUMMER, MATCH_BE_SCHEIBENNUMMER);
         columnsToFieldsMap.put(MATCH_TABLE_MATCHPUNKTE, MATCH_BE_MATCHPUNKTE);
         columnsToFieldsMap.put(MATCH_TABLE_SATZPUNKTE, MATCH_BE_SATZPUNKTE);
-        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ1, MATCH_BE_STRAFPUNKTE_SATZ_1);
-        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ2, MATCH_BE_STRAFPUNKTE_SATZ_2);
-        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ3, MATCH_BE_STRAFPUNKTE_SATZ_3);
-        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ4, MATCH_BE_STRAFPUNKTE_SATZ_4);
-        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKT_SATZ5, MATCH_BE_STRAFPUNKTE_SATZ_5);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKTE_SATZ1, MATCH_BE_STRAFPUNKTE_SATZ_1);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKTE_SATZ2, MATCH_BE_STRAFPUNKTE_SATZ_2);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKTE_SATZ3, MATCH_BE_STRAFPUNKTE_SATZ_3);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKTE_SATZ4, MATCH_BE_STRAFPUNKTE_SATZ_4);
+        columnsToFieldsMap.put(MATCH_TABLE_STRAFPUNKTE_SATZ5, MATCH_BE_STRAFPUNKTE_SATZ_5);
 
 
         // add technical columns
@@ -137,18 +137,24 @@ public class MatchDAO implements DataAccessObject {
             .orderBy(MATCH_TABLE_NR)
             .compose().toString();
 
-//    private static final String FIND_BY_MANNSCHAFT_ID = new QueryBuilder()
-//            .selectAll()
-//            .from(TABLE)
-//            .whereEquals(MATCH_TABLE_MANNSCHAFT_ID)
-//            .compose().toString();
-
-    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+    private static final String FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR = new QueryBuilder()
             .selectAll()
             .from(TABLE)
             .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
-            .orderBy(MATCH_TABLE_ID)
+            .andEquals(MATCH_TABLE_NR)
+            .andEquals(MATCH_TABLE_SCHEIBENNUMMER)
+            .orderBy(MATCH_TABLE_SCHEIBENNUMMER)
             .compose().toString();
+
+    private static final String FIND_BY_WETTKAMPF_ID =
+            "SELECT m.match_wettkampf_id, m.match_id, m.match_nr, m.match_mannschaft_id, m.match_scheibennummer, " +
+            "m.match_begegnung, m.match_matchpunkte, m.match_satzpunkte, m.match_strafpunkte_satz_1," +
+            "m.match_strafpunkte_satz_2, m.match_strafpunkte_satz_3, m.match_strafpunkte_satz_4," +
+            "m.match_strafpunkte_satz_5" +
+                    " FROM match as m" +
+                    " WHERE m.match_wettkampf_id = ?" +
+                     "ORDER BY match_wettkampf_id, match_nr, match_begegnung, match_scheibennummer, match_id";
+
 
 
     /**
@@ -172,6 +178,15 @@ public class MatchDAO implements DataAccessObject {
                 nr, wettkampfId, mannschaftId,
                 begegnung, scheibenNummer
         );
+    }
+
+    /**
+     * Return a specific match.
+     *
+     * @return match with given combined attributes
+     */
+    public MatchBE findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long matchNr, Long scheibenNummer){
+        return basicDao.selectSingleEntity(MATCH, FIND_BY_WETTKAMPF_MATCHNR_SCHEIBENNR, wettkampfId, matchNr, scheibenNummer);
     }
 
 

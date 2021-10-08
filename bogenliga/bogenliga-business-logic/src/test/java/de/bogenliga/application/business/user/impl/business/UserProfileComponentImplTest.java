@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.user.impl.business;
 
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.impl.dao.UserDAO;
@@ -36,9 +37,9 @@ public class UserProfileComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private DsbMitgliedDAO dsbMitgliedDAO;
-    @Mock
     private UserDAO userDAO;
+    @Mock
+    private DsbMitgliedComponent dsbMitgliedComponent;
     @InjectMocks
     private UserProfileComponentImpl underTest;
     @Captor
@@ -62,30 +63,50 @@ public class UserProfileComponentImplTest {
         return expectedBE;
     }
 
+    public static DsbMitgliedDO getDsbMitgliedDO() {
+        final DsbMitgliedDO expectedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET, MITGLIEDSNUMMER, VEREINSID, USERID, null, USERID, null, USERID, VERSION, true);
+
+        return expectedDO;
+    }
+
     public static UserBE getUserBE() {
         UserBE userBE = new UserBE();
-        userBE.setUserId(ID);
+        userBE.setUserId(USERID);
         userBE.setUserEmail(EMAIL);
+        userBE.setDsb_mitglied_id(ID);
         return userBE;
     }
 
     @Test
     public void findById() {
+
         // prepare test data
-        final DsbMitgliedBE expectedDsbMitgliedBE = getDsbMitgliedBE();
+        final DsbMitgliedDO expectedDsbMitgliedDO = getDsbMitgliedDO();
         final UserBE expectedUserBE = getUserBE();
 
         // configure mocks
-        when(dsbMitgliedDAO.findByUserId(ID)).thenReturn(expectedDsbMitgliedBE);
-        when(userDAO.findById(ID)).thenReturn(expectedUserBE);
+        when(dsbMitgliedComponent.findById(ID)).thenReturn(expectedDsbMitgliedDO);
+        when(userDAO.findById(USERID)).thenReturn(expectedUserBE);
 
         // call test method
-        final UserProfileDO actual = underTest.findById(ID);
+        final UserProfileDO actual = underTest.findById(USERID);
 
         // assert result
         assertThat(actual).isNotNull();
 
         assertThat(actual.getId())
-                .isEqualTo(expectedUserBE.getUserId());
+                .isEqualTo(expectedDsbMitgliedDO.getUserId());
+        assertThat(actual.getVorname())
+                .isEqualTo(expectedDsbMitgliedDO.getVorname());
+        assertThat(actual.getNachname())
+                .isEqualTo(expectedDsbMitgliedDO.getNachname());
+        assertThat(actual.getGeburtsdatum())
+                .isEqualTo(expectedDsbMitgliedDO.getGeburtsdatum());
+        assertThat(actual.getNationalitaet())
+                .isEqualTo(expectedDsbMitgliedDO.getNationalitaet());
+        assertThat(actual.getMitgliedsnummer())
+                .isEqualTo(expectedDsbMitgliedDO.getMitgliedsnummer());
+        assertThat(actual.getVereinsId())
+                .isEqualTo(expectedDsbMitgliedDO.getVereinsId());
     }
 }

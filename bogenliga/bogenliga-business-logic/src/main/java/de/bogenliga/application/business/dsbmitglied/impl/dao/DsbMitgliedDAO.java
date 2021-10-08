@@ -1,7 +1,8 @@
 package de.bogenliga.application.business.dsbmitglied.impl.dao;
 
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
-import de.bogenliga.application.business.lizenz.entity.LizenzBE;
+import de.bogenliga.application.business.user.impl.dao.UserDAO;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -71,10 +72,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
-    private static final String FIND_KAMPFRICHTER =
-            "SELECT * "
-                    + " FROM lizenz "
-                    + " WHERE lizenz_typ = 'Kampfrichter' AND lizenz_dsb_mitglied_id = ?";
+
 
     private static final String FIND_DSB_KAMPFRICHTER =
             "SELECT * FROM dsb_mitglied" +
@@ -84,6 +82,13 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     " WHERE lizenz_dsb_mitglied_id = ?" +
                     " AND lizenz_typ = 'Kampfrichter'" +
                     " )";
+
+    private static final String FIND_ALL_BY_TEAM_ID =
+            "SELECT * FROM dsb_mitglied" +
+                    " WHERE dsb_mitglied_id IN (" +
+                    " SELECT mannschaftsmitglied_dsb_mitglied_id" +
+                    " FROM mannschaftsmitglied" +
+                    " WHERE mannschaftsmitglied_mannschaft_id = ?)";
 
     private final BasicDAO basicDao;
 
@@ -138,6 +143,15 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
+     *
+     * @param id id of the team, in which the dsmitglied entries are used
+     * @return list of all dsbmitglied entries with the given id
+     */
+    public List<DsbMitgliedBE> findAllByTeamId(final long id) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_BY_TEAM_ID, id);
+    }
+
+    /**
      * Return dsbmitglied entry with specific id
      *
      * @param id
@@ -180,7 +194,16 @@ public class DsbMitgliedDAO implements DataAccessObject {
     public DsbMitgliedBE update(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
         basicDao.setModificationAttributes(dsbMitgliedBE, currentDsbMitgliedId);
 
-        return basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
+        // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
+        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
+            UserDAO UserDAO = new UserDAO(basicDao);
+            UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+            updatedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
+            updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
+        }
+
+        return updatedDsbMitgliedBE;
     }
 
 

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -42,10 +43,12 @@ public class BasicDAO implements DataAccessObject {
     private final TransactionManager transactionManager;
     private QueryRunner run = new QueryRunner();
 
+
     @Autowired
     public BasicDAO(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
+
 
     /**
      * Package-protected constructor with all dependencies
@@ -92,8 +95,6 @@ public class BasicDAO implements DataAccessObject {
     }
 
 
-
-
     /**
      * I set the modification parameter for the user and the timestamp.
      *
@@ -110,68 +111,125 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I return a single {@link BusinessEntity} for the given
-     * sql SELECT query.
+     * I return a single {@link BusinessEntity} for the given sql SELECT query.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the "
-     *                                    object-relational" mapping between the business entity and the database table.
+     *                                    object-relational" mapping between the business entity and the database
+     *                                    table.
      * @param sqlQuery                    to request the business entity
-     * @param params                      The parameter(s) are used to identify the single business entity
-     *                                    in the WHERE clause.
+     * @param params                      The parameter(s) are used to identify the single business entity in the WHERE
+     *                                    clause.
+     *
      * @return instance of the business entity which is defined in the {@code businessEntityConfiguration}
      */
     public <T> T selectSingleEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
                                     String sqlQuery,
                                     Object... params) {
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
+
             return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
                     new BasicBeanHandler<>(businessEntityConfiguration.getBusinessEntity(),
                             businessEntityConfiguration.getColumnToFieldMapping()), params);
+
         } catch (SQLException e) {
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+
+        } finally {
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
     }
 
 
     /**
-     * I return a list of {@link BusinessEntity} for the given
-     * sql SELECT query.
-     *
+     * I return a list of {@link BusinessEntity} for the given sql SELECT query.
+     * <p>
      * The instance of the business entity is defined in the {@code businessEntityConfiguration}
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
      * @param sqlQuery                    to request the list of business entities
      * @param params                      The parameter(s) are used to select the business entities in the WHERE clause
+     *
      * @return list of business entities
      */
     public <T> List<T> selectEntityList(BusinessEntityConfiguration<T> businessEntityConfiguration,
                                         String sqlQuery,
                                         Object... params) {
         List<T> businessEntityList;
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
+
             businessEntityList = run.query(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
                     new BasicBeanListHandler<>(businessEntityConfiguration.getBusinessEntity(),
                             businessEntityConfiguration.getColumnToFieldMapping()), params);
+
+            return businessEntityList == null ? Collections.emptyList() : businessEntityList;
+
         } catch (SQLException e) {
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+        } finally {
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
-
-        return businessEntityList == null ? Collections.emptyList() : businessEntityList;
-
     }
 
 
     /**
      * I persist a single {@link BusinessEntity}
-     *
+     * <p>
      * Encapsulate the INSERT query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param insertBusinessEntity        business entity to persist
-     *                                    the INSERT sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param insertBusinessEntity        business entity to persist the INSERT sql query is automatically generated
+     *
      * @return instance of the persisted business entity
      */
     public <T> T insertEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
@@ -180,8 +238,15 @@ public class BasicDAO implements DataAccessObject {
                 businessEntityConfiguration.getColumnToFieldMapping());
 
         T businessEntityAfterInsert;
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
             businessEntityAfterInsert = run.insert(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
@@ -190,12 +255,25 @@ public class BasicDAO implements DataAccessObject {
                             businessEntityConfiguration.getColumnToFieldMapping()),
                     sql.getParameter());
 
-            transactionManager.commit();
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
 
         return businessEntityAfterInsert;
@@ -203,60 +281,81 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I update one or more {@link BusinessEntity} objects
-     * in the database.
-     *
+     * I update one or more {@link BusinessEntity} objects in the database.
+     * <p>
      * Encapsulate the UPDATE query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param updateBusinessEntity        business entity to persist
-     *                                    the UPDATE sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param updateBusinessEntity        business entity to persist the UPDATE sql query is automatically generated
      * @param fieldSelector               to identify the target table rows in the WHERE clause
+     *
      * @return number of modified table rows
      */
     <T> int updateEntities(BusinessEntityConfiguration<T> businessEntityConfiguration,
-                           T updateBusinessEntity, String fieldSelector) {
+                           T updateBusinessEntity, String... fieldSelector) {
         SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
-            int affectedRows = runUpdate(businessEntityConfiguration, sql);
+            return runUpdate(businessEntityConfiguration, sql);
 
-            transactionManager.commit();
-
-            return affectedRows;
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
     }
 
 
     /**
-     * I update a single {@link CommonBusinessEntity} object
-     * in the database.
-     *
+     * I update a single {@link CommonBusinessEntity} object in the database.
+     * <p>
      * I validate the version of the given object and detect concurrent modification conflicts.
-     *
+     * <p>
      * I encapsulate the UPDATE and SELECT query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param updateBusinessEntity        business entity with a version field to persist
-     *                                    the UPDATE sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param updateBusinessEntity        business entity with a version field to persist the UPDATE sql query is
+     *                                    automatically generated
      * @param fieldSelector               to identify the target table row in the WHERE clause
+     *
      * @return instance of the updated business entity
+     *
      * @throws BusinessException if no or more than 1 row is affected by the update
      */
     <T extends CommonBusinessEntity> T updateVersionedEntity(BusinessEntityConfiguration<T>
                                                                      businessEntityConfiguration,
                                                              T updateBusinessEntity,
-                                                             String fieldSelector) {
+                                                             String... fieldSelector) {
         // check concurrent modification
         SQL.SQLWithParameter selectSql = SQL.selectSQL(updateBusinessEntity,
                 businessEntityConfiguration.getTable(), fieldSelector,
@@ -265,8 +364,9 @@ public class BasicDAO implements DataAccessObject {
         T objectBeforeUpdate = selectSingleEntity(businessEntityConfiguration, selectSql.getSql(),
                 selectSql.getParameter());
 
-        if (objectBeforeUpdate.getVersion() != updateBusinessEntity.getVersion()) {
-            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, "The business entity was modified by an other user.");
+        if (objectBeforeUpdate.getVersion() != null &&  !objectBeforeUpdate.getVersion().equals(updateBusinessEntity.getVersion()) ) {
+            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR,
+                    "The business entity was modified by an other user.");
         } // else: do update
 
         return updateEntity(businessEntityConfiguration, updateBusinessEntity, fieldSelector);
@@ -274,65 +374,81 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I update a single {@link BusinessEntity} object
-     * in the database.
-     *
+     * I update a single {@link BusinessEntity} object in the database.
+     * <p>
      * Encapsulate the UPDATE and SELECT query into a transaction.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param updateBusinessEntity        business entity to persist
-     *                                    the UPDATE sql query is automatically generated
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param updateBusinessEntity        business entity to persist the UPDATE sql query is automatically generated
      * @param fieldSelector               to identify the target table row in the WHERE clause
+     *
      * @return instance of the updated business entity
+     *
      * @throws BusinessException if no or more than 1 row is affected by the update
      */
     public <T> T updateEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
-                              T updateBusinessEntity, String fieldSelector) {
+                              T updateBusinessEntity, String... fieldSelector) {
         SQL.SQLWithParameter sql = SQL.updateSQL(updateBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
 
         T businessEntityAfterUpdate;
 
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
             int affectedRows = run.update(getConnection(),
                     logSQL(businessEntityConfiguration.getLogger(), sql.getSql(), sql.getParameter()),
                     sql.getParameter());
-
 
             SQL.SQLWithParameter selectSql = SQL.selectSQL(updateBusinessEntity,
                     businessEntityConfiguration.getTable(), fieldSelector,
                     businessEntityConfiguration.getColumnToFieldMapping());
 
             if (affectedRows == 1) {
-
                 businessEntityAfterUpdate = selectSingleEntity(businessEntityConfiguration, selectSql.getSql(),
                         selectSql.getParameter());
 
-                transactionManager.commit();
-
             } else if (affectedRows == 0) {
-                transactionManager.rollback();
-
+                error = true;
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' does not affect any row",
                                 updateBusinessEntity.toString()), selectSql.getParameter()[0]);
             } else {
-                transactionManager.rollback();
-
+                error = true;
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Update of business entity '%s' affected %d rows",
                                 updateBusinessEntity.toString(), affectedRows), selectSql.getParameter()[0]);
             }
 
         } catch (SQLException | TechnicalException | IndexOutOfBoundsException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
 
         return businessEntityAfterUpdate;
@@ -340,43 +456,61 @@ public class BasicDAO implements DataAccessObject {
 
 
     /**
-     * I delete a single {@link BusinessEntity} object
-     * from the database.
+     * I delete a single {@link BusinessEntity} object from the database.
      *
      * @param businessEntityConfiguration The {@code businessEntityConfiguration} is used to process the
-     *                                    "object-relational" mapping between the business entity and the database table
-     * @param deleteBusinessEntity        business entity to delete
-     *                                    the DELETE sql query is automatically generated
-     * @param fieldSelector               to identify the target table row in the WHERE clause
+     *                                    "object-relational" mapping between the business entity and the database
+     *                                    table
+     * @param deleteBusinessEntity        business entity to delete the DELETE sql query is automatically generated
+     * @param fieldSelector               to identify the target table row in the WHERE clause (you can have more than one fieldSelector)
+     *
      * @throws BusinessException if no or more than 1 row is affected by the delete.
      */
     public <T> void deleteEntity(BusinessEntityConfiguration<T> businessEntityConfiguration,
-                                 T deleteBusinessEntity, String fieldSelector) {
+                                 T deleteBusinessEntity, String... fieldSelector) {
         SQL.SQLWithParameter sql = SQL.deleteSQL(deleteBusinessEntity, businessEntityConfiguration.getTable(),
                 fieldSelector,
                 businessEntityConfiguration.getColumnToFieldMapping());
+        boolean error = false;
+        boolean activeTX = false;
+
         try {
-            transactionManager.begin();
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
 
             int affectedRows = runUpdate(businessEntityConfiguration, sql);
 
             // last parameter := identifier for the update query
             Object fieldSelectorValue = sql.getParameter()[sql.getParameter().length - 1];
 
-            if (affectedRows == 1) {
-                transactionManager.commit();
-            } else {
-                transactionManager.rollback();
-
+            if (affectedRows != 1) {
+                error = true;
                 throw new BusinessException(ErrorCode.INVALID_ARGUMENT_ERROR,
                         String.format("Deletion of business entity '%s' does affect %d rows",
                                 deleteBusinessEntity.toString(), affectedRows), fieldSelectorValue);
             }
         } catch (SQLException e) {
-            transactionManager.rollback();
+            error = true;
             throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
         } finally {
-            transactionManager.release();
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
         }
     }
 
@@ -384,9 +518,11 @@ public class BasicDAO implements DataAccessObject {
     /**
      * I log the sql query with the given logger instance and return the query to the query runner.
      *
-     * @param logger            specific {@link DataAccessObject} logger to log the logging message source in the log output
+     * @param logger            specific {@link DataAccessObject} logger to log the logging message source in the log
+     *                          output
      * @param sql               query with ?-parameters to log
      * @param sqlQueryParameter the ?-parameters are replaced with the {@code sqlQueryParameter}
+     *
      * @return sql query with parameters
      */
     public final String logSQL(Logger logger, String sql, Object... sqlQueryParameter) {
@@ -425,6 +561,7 @@ public class BasicDAO implements DataAccessObject {
      *
      * @param logger specific {@link DataAccessObject} logger to log the logging message source in the log output
      * @param sql    query to log
+     *
      * @return sql query
      */
     final String logSQL(Logger logger, String sql) {

@@ -21,6 +21,7 @@ public class PasseComponentImpl implements PasseComponent {
     public static final String PRECONDITION_FIELD_WETTKAMPF_ID = "wettkampfId";
     public static final String PRECONDITION_FIELD_MANNSCHAFT_ID = "mannschaftId";
     public static final String PRECONDITION_FIELD_MATCH_ID = "matchId";
+    public static final String PRECONDITION_FIELD_ID = "id";
     public static final String PRECONDITION_FIELD_MATCH_NR = "matchNr";
     public static final String PRECONDITION_FIELD_LFD_NR = "lfdNr";
 
@@ -73,6 +74,21 @@ public class PasseComponentImpl implements PasseComponent {
         final List<PasseBE> passeBEList = passeDAO.findAll();
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
 
+    }
+
+
+    /**
+     * Return passe by its id
+     *
+     * @param id: Passe ID
+     *
+     * @return Passe
+     */
+    @Override
+    public PasseDO findById(Long id) {
+        checkPreconditions(id, PRECONDITION_FIELD_ID);
+        final PasseBE passeBE = passeDAO.findByPasseId(id);
+        return PasseMapper.toPasseDO.apply(passeBE);
     }
 
 
@@ -186,6 +202,14 @@ public class PasseComponentImpl implements PasseComponent {
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<PasseDO> findByWettkampfIdAndMitgliedId(Long wettkampfId, Long mitgliedId) {
+        checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
+        checkPreconditions(mitgliedId, PRECONDITION_FIELD_MITGLIED_ID);
+        final List<PasseBE> passeBEList = passeDAO.findByWettkampfIdAndMitgliedId(wettkampfId, mitgliedId);
+        return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
+    }
+
 
     /**
      *  Finds a passe by its ID
@@ -222,6 +246,7 @@ public class PasseComponentImpl implements PasseComponent {
     public PasseDO create(PasseDO passeDO, final Long currentUserId) {
         checkPasseDO(passeDO);
         checkPreconditions(currentUserId, "currentUserId");
+
         final PasseBE passeBE = PasseMapper.toPasseBE.apply(passeDO);
 
         final PasseBE persistedPasseBE = passeDAO.create(passeBE, currentUserId);
@@ -259,8 +284,10 @@ public class PasseComponentImpl implements PasseComponent {
         checkPreconditions(passeDO.getPasseMatchId(), "MatchId");
         checkPreconditions(passeDO.getPasseLfdnr(), "Lfdnr");
         checkPreconditions(passeDO.getPasseDsbMitgliedId(), "DsbMitgliedId");
-        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil1");
-        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil2");
+        // Prüfung der Pfeilwerte auskommentiert - sie sind für das Speichern keine kritischen parameter
+        // ggf. könnte man prüfen ob die Werte sinnvoll d.h. <=10 sind - aber besser direkt am Client
+        //        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil1");
+        //        checkPreconditions(new Long(passeDO.getPfeil1()), "Pfeil2");
     }
 
 

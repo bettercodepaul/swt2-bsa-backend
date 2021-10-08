@@ -20,19 +20,21 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     private Integer dsbMitgliedEingesetzt;
     private String dsbMitgliedVorname;
     private String dsbMitgliedNachname;
+    private Long rueckennummer;
 
 
     /**
      * Constructor with optional parameters
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
-     * @param dsbMitgliedEingesetzt
-     * @param createdAtUtc
-     * @param createdByUserId
-     * @param lastModifiedAtUtc
-     * @param lastModifiedByUserId
-     * @param version
+     * @param mannschaftId id der Mannschaft
+     * @param dsbMitgliedId id des DSB Mitglieds
+     * @param dsbMitgliedEingesetzt hat er geschossen
+     * @param createdAtUtc created Time
+     * @param createdByUserId create user
+     * @param lastModifiedAtUtc modified time
+     * @param lastModifiedByUserId modified user
+     * @param version version
+     * @param rueckennummer nummer des Schützen in der Mannschaft
      */
 
     public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId,
@@ -40,7 +42,8 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
                                  final String dsbMitgliedVorname, final String dsbMitgliedNachname,
                                  final OffsetDateTime createdAtUtc,
                                  final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                                 final Long lastModifiedByUserId, final Long version) {
+                                 final Long lastModifiedByUserId, final Long version,
+                                 final Long rueckennummer) {
         this.mannschaftId = mannschaftId;
         this.id = id;
         this.dsbMitgliedId = dsbMitgliedId;
@@ -52,17 +55,18 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
+        this.rueckennummer = rueckennummer;
     }
 
 
     /**
      * Constructor with mandatory parameters
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
-     * @param createdAtUtc
-     * @param createdByUserId
-     * @param version
+     * @param mannschaftId manschafts ID
+     * @param dsbMitgliedId dsb mitlgieds ID
+     * @param createdAtUtc create time
+     * @param createdByUserId create user
+     * @param version version des Datensatzes
      */
 
 
@@ -81,20 +85,21 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor without technical parameters
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
-     * @param dsbMitgliedEingesetzt
+     * @param mannschaftId Manschafts ID
+     * @param dsbMitgliedId DSB MitgliedsID
+     * @param dsbMitgliedEingesetzt hat er geschossen
      */
 
     public MannschaftsmitgliedDO(final Long id, final Long mannschaftId, final Long dsbMitgliedId,
                                  final Integer dsbMitgliedEingesetzt, final String dsbMitgliedVorname,
-                                 final String dsbMitgliedNachname) {
+                                 final String dsbMitgliedNachname, final Long rueckennummer) {
         this.mannschaftId = mannschaftId;
         this.id = id;
         this.dsbMitgliedId = dsbMitgliedId;
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
         this.dsbMitgliedVorname = dsbMitgliedVorname;
         this.dsbMitgliedNachname = dsbMitgliedNachname;
+        this.rueckennummer = rueckennummer;
 
     }
 
@@ -102,12 +107,16 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     /**
      * Constructor with id for deleting existing entries
      *
-     * @param mannschaftId
-     * @param dsbMitgliedId
+     * @param mannschaftId mannschafts ID
+     * @param dsbMitgliedId dsb mitglieds ID
      */
     public MannschaftsmitgliedDO(final Long mannschaftId, final Long dsbMitgliedId) {
         this.mannschaftId = mannschaftId;
         this.dsbMitgliedId = dsbMitgliedId;
+    }
+
+    public MannschaftsmitgliedDO(final Long id) {
+        this.setId(id);
     }
 
 
@@ -135,7 +144,6 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         return dsbMitgliedEingesetzt;
     }
 
-
     public void setDsbMitgliedEingesetzt(Integer dsbMitgliedEingesetzt) {
         this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
@@ -156,7 +164,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
     }
 
 
-    public void setDsbMitgliedNachname() {
+    public void setDsbMitgliedNachname(String dsbMitgliedNachname) {
         this.dsbMitgliedNachname = dsbMitgliedNachname;
     }
 
@@ -170,12 +178,15 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
         this.id = id;
     }
 
+    public Long getRueckennummer() { return rueckennummer; }
+
+    public void setRueckennummer(Long rueckennummer) { this.rueckennummer = rueckennummer; }
 
     @Override
     public int hashCode() {
         return Objects.hash(mannschaftId, dsbMitgliedId, dsbMitgliedId, dsbMitgliedVorname, dsbMitgliedNachname,
                 createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version);
+                lastModifiedByUserId, version, rueckennummer);
     }
 
 
@@ -195,6 +206,7 @@ public class MannschaftsmitgliedDO extends CommonDataObject implements DataObjec
                 dsbMitgliedEingesetzt.equals(that.dsbMitgliedEingesetzt) &&
                 dsbMitgliedVorname.equals(that.dsbMitgliedVorname) &&
                 dsbMitgliedNachname.equals(that.dsbMitgliedNachname) &&
-                lastModifiedAtUtc.equals(that.lastModifiedAtUtc);
+                lastModifiedAtUtc.equals(that.lastModifiedAtUtc) &&
+                rueckennummer.equals(that.rueckennummer);
     }
 }

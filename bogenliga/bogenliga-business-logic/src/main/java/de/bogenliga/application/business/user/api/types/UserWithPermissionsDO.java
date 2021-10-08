@@ -59,7 +59,8 @@ public class UserWithPermissionsDO extends UserDO implements DataObject {
      */
     public UserWithPermissionsDO(final UserDO userDO,
                                  final List<String> permissions) {
-        super(userDO.getId(), userDO.getEmail(), userDO.isUsing2FA(), userDO.getSecret(), userDO.getCreatedAtUtc(),
+        super(userDO.getId(), userDO.getEmail(), userDO.isUsing2FA(), userDO.isActive(),
+                userDO.getSecret(), userDO.getCreatedAtUtc(),
                 userDO.getCreatedByUserId(),
                 userDO.getLastModifiedAtUtc(), userDO.getLastModifiedByUserId(), userDO.getVersion());
 
@@ -87,6 +88,7 @@ public class UserWithPermissionsDO extends UserDO implements DataObject {
         return getId() == userDO.getId() &&
                 getVersion() == userDO.getVersion() &&
                 Objects.equals(getEmail(), userDO.getEmail()) &&
+                Objects.equals(getDsb_mitglied_id(), userDO.getDsb_mitglied_id()) &&
                 Objects.equals(getPermissions(), userDO.getPermissions()) &&
                 Objects.equals(getCreatedAtUtc(), userDO.getCreatedAtUtc()) &&
                 Objects.equals(getCreatedByUserId(), userDO.getCreatedByUserId()) &&

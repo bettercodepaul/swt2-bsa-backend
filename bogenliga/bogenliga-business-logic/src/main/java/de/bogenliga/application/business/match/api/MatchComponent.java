@@ -24,14 +24,23 @@ public interface MatchComponent {
 
     MatchDO findById(Long id);
 
-
-    /**
+      /**
      * Return a single match by combined primary key attributes
      *
      * @return single matchDO
      */
 
     MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer);
+
+    /**
+     * Return a single match by combined attributes
+     * @param wettkampfId ID from Wettkampf
+     * @param matchNr Number of the match
+     * @param scheibenNummer number of the target board
+     * @return singleMatchDO
+     */
+
+    MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long matchNr, Long scheibenNummer);
 
 
     /**
@@ -62,6 +71,16 @@ public interface MatchComponent {
     public MatchDO create(MatchDO matchDO, final Long currentUserId);
 
     /**
+     * Create the initial Matches for the Wettkampftag 0 of the Veranstaltung.
+     * It's used to show the Ligatabelle.
+     *
+     * @param veranstaltungsId       the Id of the corresponding Veranstaltung
+     * @param currentUserId the id of the creating user
+     *
+     */
+    public void createInitialMatchesWT0(final Long veranstaltungsId, final Long currentUserId);
+
+    /**
      * Update an existing match. The match is identified by the id's set in matchDO.
      *
      * @param matchDO         existing matchDO to update
@@ -79,4 +98,12 @@ public interface MatchComponent {
      * @param currentMemberId id of the member currently updating the match
      */
     void delete(MatchDO matchDO, Long currentMemberId);
+
+    /**
+     * Erzeuge den Namen einer Mannschaft aus der ID
+     *
+     * @param mannschaftID         Mannschaft_ID
+     *
+     */
+    String getMannschaftsNameByID(long mannschaftID);
 }

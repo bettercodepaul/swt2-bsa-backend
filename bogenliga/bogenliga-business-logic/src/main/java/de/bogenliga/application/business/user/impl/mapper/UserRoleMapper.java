@@ -1,18 +1,13 @@
 package de.bogenliga.application.business.user.impl.mapper;
 
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.util.function.Function;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
-import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
-
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * I convert the userRole DataObjects and BusinessEntities.
@@ -33,6 +28,7 @@ public class UserRoleMapper implements ValueObjectMapper {
         final String email = be.getUserEmail();
         final Long roleId = be.getRoleId();
         final String roleName = be.getRoleName();
+        final boolean active = be.isActive();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -42,7 +38,7 @@ public class UserRoleMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new UserRoleDO(id, email, roleId, roleName, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new UserRoleDO(id, email, active, roleId, roleName, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
     };
 
     /**
@@ -98,6 +94,7 @@ public class UserRoleMapper implements ValueObjectMapper {
         userRoleExtBE.setRoleId(vo.getRoleId());
         userRoleExtBE.setUserEmail(vo.getEmail());
         userRoleExtBE.setRoleName(vo.getRoleName());
+        userRoleExtBE.setActive(vo.isActive());
 
         userRoleExtBE.setCreatedAtUtc(createdAtUtcTimestamp);
         userRoleExtBE.setCreatedByUserId(vo.getCreatedByUserId());

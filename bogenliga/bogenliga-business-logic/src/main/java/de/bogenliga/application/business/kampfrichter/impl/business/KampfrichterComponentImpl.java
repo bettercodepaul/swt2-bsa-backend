@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
 import de.bogenliga.application.business.kampfrichter.impl.mapper.KampfrichterMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -23,8 +23,6 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     private static final String PRECONDITION_MSG_KAMPFRICHTER = "KampfrichterDO must not be null";
     private static final String PRECONDITION_MSG_KAMPFRICHTER_ID = "KampfrichterDO ID must not be negative";
-    private static final String PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPFID = "Kampfrichter wettkampfId must not be negative";
-    private static final String PRECONDITION_MSG_KAMPFRICHTER_LEITEND = "Kampfrichter leitend must not be null";
     private static final String PRECONDITION_MSG_CURRENT_KAMPFRICHTER = "Current kampfrichter userId must not be negative";
 
     private final KampfrichterDAO kampfrichterDAO;
@@ -48,6 +46,17 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
         return kampfrichterBEList.stream().map(KampfrichterMapper.toKampfrichterDO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<KampfrichterDO> findByWettkampfidNotInWettkampftag(final long wettkampfId){
+        final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidNotInWettkampftag(wettkampfId);
+        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<KampfrichterDO> findByWettkampfidInWettkampftag(final long wettkampfId){
+        final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidInWettkampftag(wettkampfId);
+        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
+    }
 
     @Override
     public KampfrichterDO findById(final long userId) {
@@ -66,7 +75,8 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     @Override
     public KampfrichterDO create(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
-        //checkKampfrichterDO(kampfrichterDO, currentKampfrichterUserId);
+
+        Preconditions.checkArgument(kampfrichterDO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
 
         final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
         final KampfrichterBE persistedKampfrichterBE = kampfrichterDAO.create(kampfrichterBE, currentKampfrichterUserId);
@@ -77,7 +87,7 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     @Override
     public KampfrichterDO update(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
-        //checkKampfrichterDO(kampfrichterDO, currentKampfrichterUserId);
+
         Preconditions.checkArgument(kampfrichterDO.getUserId() >= 0, PRECONDITION_MSG_KAMPFRICHTER_ID);
 
         final KampfrichterBE kampfrichterBE = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
@@ -99,10 +109,4 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
 
     }
 
-    private void checkKampfrichterDO(final KampfrichterDO kampfrichterDO, final long currentKampfrichterUserId) {
-        Preconditions.checkNotNull(kampfrichterDO, PRECONDITION_MSG_KAMPFRICHTER);
-        Preconditions.checkArgument(currentKampfrichterUserId >= 0, PRECONDITION_MSG_CURRENT_KAMPFRICHTER);
-        Preconditions.checkNotNull(kampfrichterDO.getWettkampfId(), PRECONDITION_MSG_KAMPFRICHTER_WETTKAMPFID);
-        Preconditions.checkNotNull(kampfrichterDO.isLeitend(), PRECONDITION_MSG_KAMPFRICHTER_LEITEND);
-    }
 }

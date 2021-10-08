@@ -2,7 +2,6 @@ package de.bogenliga.application.business.lizenz.impl.entity;
 
 import org.junit.Test;
 import de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest;
-import de.bogenliga.application.business.lizenz.entity.LizenzBE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

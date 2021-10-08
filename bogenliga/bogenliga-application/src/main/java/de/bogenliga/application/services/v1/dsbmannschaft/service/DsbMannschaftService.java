@@ -1,21 +1,15 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.validation.constraints.Null;
+
+import javax.naming.NoPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -23,7 +17,9 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
-import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
+import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -40,18 +36,14 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID = "DsbMannschaftDO ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID = "DsbMannschaft Verein ID must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER = "DsbMannschaft Nummer must not be null";
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID = "DsbMannschaft Benutzer Id must not be null";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID = "DsbMannschaft Veranstaltung ID must not be null";
 
 
-    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_ID_NEGATIVE = "DsbMannschaft Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE = "DsbMannschaft Vereins Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
-
-
-
+    private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
 
@@ -63,7 +55,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMannschaftComponent dsbMannschaftComponent;
-
+    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     /**
      * Constructor with dependency injection
@@ -71,9 +63,15 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param dsbMannschaftComponent to handle the database CRUD requests
      */
     @Autowired
-    public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent) {
+    public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent,
+                                final RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
+    /**
+     * Autowired WebTokenProvider to get the Permissions of the current User when checking them
+     */
+    JwtTokenProvider jwtTokenProvider;
 
 
     /**
@@ -98,11 +96,11 @@ public class DsbMannschaftService implements ServiceFacade {
      *
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAll() {
         final List<DsbMannschaftDO> dsbMannschaftDOList = dsbMannschaftComponent.findAll();
+
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -127,14 +125,32 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param id the given vereinsId
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(value = "byVereinsID/{vereinsId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    //@RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @GetMapping(value = "byVereinsID/{vereinsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMannschaftDTO> findAllByVereinsId(@PathVariable("vereinsId") final long id) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findAllByVereinsId' request with ID '{}'", id);
 
         final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVereinsId(id);
+        return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+    /**
+     * I return the dsbMannschaft entries of the database with the given Veranstaltungs-Id.
+     *
+     * @param id the given Veranstaltungs-Id
+     * @return list of {@link DsbMannschaftDTO} as JSON
+     */
+    @GetMapping(value = "byVeranstaltungsID/{veranstaltungsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<DsbMannschaftDTO> findAllByVeranstaltungsId(@PathVariable("veranstaltungsId") final long id) {
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        LOG.debug("Receive 'findAllByVeranstaltungsId' request with ID '{}'", id);
+
+        final List<DsbMannschaftDO> dsbMannschaftDOList  = dsbMannschaftComponent.findAllByVeranstaltungsId(id);
         return dsbMannschaftDOList.stream().map(DsbMannschaftDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -154,10 +170,10 @@ public class DsbMannschaftService implements ServiceFacade {
      *
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public DsbMannschaftDTO findById(@PathVariable("id") final long id) {
-        Preconditions.checkArgument(id > 0, "ID must not be negative.");
+        Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         LOG.debug("Receive 'findById' request with ID '{}'", id);
         final DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(id);
@@ -187,28 +203,56 @@ public class DsbMannschaftService implements ServiceFacade {
      * @param principal authenticated user
      * @return list of {@link DsbMannschaftDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
-        checkPreconditions(dsbMannschaftDTO);
-        final Long userId = UserProvider.getCurrentUserId(principal);
-        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    public DsbMannschaftDTO create(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
+        //Check if the User has a General Permission or,
+        //check if his vereinId equals the vereinId of the mannschaft he wants to create a Team in
+        //and if the user has the permission to modify his verein.
+        if(this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
+                this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
 
-        LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
+            //if the user has the Specific Permission and the matching VereinId:
+            checkPreconditions(dsbMannschaftDTO);
+            final Long userId = UserProvider.getCurrentUserId(principal);
+            Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
-                dsbMannschaftDTO.getVereinId(),
-                dsbMannschaftDTO.getNummer(),
-                userId,
-                dsbMannschaftDTO.getVeranstaltungId());
+            LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
-        final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
+                    dsbMannschaftDTO.getVereinId(),
+                    dsbMannschaftDTO.getNummer(),
+                    userId,
+                    dsbMannschaftDTO.getVeranstaltungId());
 
-        final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
-        return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
+            final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
+
+            final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
+            return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
+
+        } else throw new NoPermissionException();
     }
 
+    /**
+     * I copy the dsbMannschaft entries in the database with the given Veranstaltungs-Ids.
+     * @param lastVeranstaltungsId
+     * @param currentVeranstaltungsId
+     * @param principal
+     */
+    @GetMapping(value = "byLastVeranstaltungsID/{lastVeranstaltungsId}/{currentVeranstaltungsId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final long lastVeranstaltungsId,
+                                              @PathVariable("currentVeranstaltungsId") final long currentVeranstaltungsId,
+                                              final Principal principal) {
+        Preconditions.checkArgument(lastVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(currentVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", lastVeranstaltungsId);
+        LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", currentVeranstaltungsId);
+        dsbMannschaftComponent.copyMannschaftFromVeranstaltung(lastVeranstaltungsId, currentVeranstaltungsId, userId);
+
+    }
 
     /**
      * I persist a newer version of the dsbMannschaft in the database.
@@ -222,17 +266,32 @@ public class DsbMannschaftService implements ServiceFacade {
      * }
      * }</pre>
      */
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) {
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions( perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public DsbMannschaftDTO update(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO, final Principal principal) throws NoPermissionException {
+        //Check if the User has a General Permission or,
+        //check if his vereinId equals the vereinId of the mannschaft he wants to modify a Team in
+        //and if the user has the permission to modify his verein.
+
+        if( !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) &&
+                !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
+            throw new NoPermissionException();
+        }
+            //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
+        if(this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) &&
+                !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
+            DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
+            if(!dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
+                throw new NoPermissionException();
+            }
+        }
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
 
-        LOG.debug("Receive 'create' request with verein nummer '{}', benutzer id '{}', veranstaltung id '{}',",
+        LOG.debug(
+                "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
 
-               // dsbMannschaftDTO.getId(),
+                // dsbMannschaftDTO.getId(),
                 dsbMannschaftDTO.getVereinId(),
                 dsbMannschaftDTO.getNummer(),
                 dsbMannschaftDTO.getBenutzerId(),
@@ -245,47 +304,46 @@ public class DsbMannschaftService implements ServiceFacade {
         return DsbMannschaftDTOMapper.toDTO.apply(updatedDsbMannschaftDO);
     }
 
+
     /**
      * I delete an existing dsbMannschaft entry from the database.
      *
      * Usage:
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
-    public void delete(@PathVariable("id") final long id, final Principal principal) {
-        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
-
-        LOG.debug("Receive 'delete' request with id '{}'", id);
-
+    @DeleteMapping(value = "{id}")
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         // allow value == null, the value will be ignored
         final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
 
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, dsbMannschaftComponent.findById(id).getVeranstaltungId())){
+            throw new NoPermissionException();
+        }
+
+
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }
 
-    private void checkPreconditions(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO) {
+    public static void checkPreconditions(@RequestBody final DsbMannschaftDTO dsbMannschaftDTO) {
         Preconditions.checkNotNull(dsbMannschaftDTO, PRECONDITION_MSG_DSBMANNSCHAFT);
-        //Preconditions.checkNotNull(dsbMannschaftDTO.getId(), PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         Preconditions.checkNotNull(dsbMannschaftDTO.getVereinId(), PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkNotNull(dsbMannschaftDTO.getNummer(), PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
         Preconditions.checkNotNull(dsbMannschaftDTO.getVeranstaltungId(), PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
-        //Preconditions.checkNotNull(dsbMannschaftDTO.getBenutzerId(), PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
 
 
 
-        //Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0,
-        //        PRECONDITION_MSG_DSBMANNSCHAFT_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getNummer() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE);
-        //Preconditions.checkArgument(dsbMannschaftDTO.getBenutzerId() >= 0,
-        //        PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getVeranstaltungId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE);
 
     }
-
 }

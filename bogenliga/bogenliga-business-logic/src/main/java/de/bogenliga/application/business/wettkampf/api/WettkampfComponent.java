@@ -18,7 +18,7 @@ public interface WettkampfComponent extends ComponentFacade {
      */
     List<WettkampfDO> findAll();
 
-
+    List<WettkampfDO> findByAusrichter(long id);
     /**
      * Return a wettkampf entry with the given id.
      *
@@ -38,28 +38,70 @@ public interface WettkampfComponent extends ComponentFacade {
     List<WettkampfDO> findAllWettkaempfeByMannschaftsId(long id);
 
     /**
-     * Create a new wettkampf in the database.
+     * retruns all wettkämpfe with the given veranstaltungId
      *
-     * @param wettkampfDO new wettkampf
-     * @return persisted version of the dsbmitglied
+     * @param veranstaltungId id of the veranstaltung
+     * @return a list with wettkampf entries
      */
-    WettkampfDO create(WettkampfDO wettkampfDO, long currentWettkampfID);
+
+    List<WettkampfDO> findAllByVeranstaltungId(long veranstaltungId);
 
 
     /**
-     * Update an existing wettkampf. The wettkampf is identified by the id.
+     * Create a new wettkampf in the database.
+     *
+     * @param wettkampfDO new wettkampf
+     * @return persisted version of the wettkampf
+     */
+    WettkampfDO create(WettkampfDO wettkampfDO, long currentUserID);
+
+
+    /**
+     * Create a new wettkampf in the database.
+     *
+     * @param veranstaltungId veranstaltung for which to create a new Day0 Entry
+     * @return persisted version of the wettkampf
+     */
+     WettkampfDO createWT0(long veranstaltungId, long currentUserID);
+
+
+    /**
+     * Update an existing wettkampf. The user is identified by the id.
      *
      * @param wettkampfDO existing wettkampfDO to update
      * @return persisted version of the wettkampfDO
      */
-    WettkampfDO update(WettkampfDO wettkampfDO, long currentWettkampfID);
+    WettkampfDO update(WettkampfDO wettkampfDO, long currentUserID);
 
 
     /**
-     * Delete an existing wettkampf. The wettkampf is identified by the id.
+     * Delete an existing wettkampf. The user is identified by the id.
      *
      * @param wettkampfDO wettkampf to delete
      */
-    void delete(WettkampfDO wettkampfDO, long currentWettkampfID);
+    void delete(WettkampfDO wettkampfDO, long currentUserID);
 
+
+    /**
+     * Generates a list of id's of allowed contestants for the given contest
+     * @param wettkampfid Id of a contest
+     * @return List of Miglied id's allowed to participate
+     */
+    List<Long> getAllowedMitglieder(long wettkampfid);
+
+    /**
+     * Generates a pdf as binary document
+     * @param veranstaltungsid ID for the competition
+     * @return document
+     */
+    byte[] getPDFasByteArray(String name, long veranstaltungsid,long manschaftsid,int jahr);
+
+    /**
+     * return Wettkampf  (Wettkampftag 0) from given VeranstaltungsID
+     * @param veranstaltungsId for the competition
+     * @return WettkampfDO
+     */
+    WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId);
+
+    byte[] getUebersichtPDFasByteArray(long veranstaltungsid,long wettkampftag);
 }

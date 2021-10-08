@@ -11,9 +11,10 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * @see DataTransferObject
  */
 public class ConfigurationDTO implements DataTransferObject {
+    private Long id;
     private String key;
     private String value;
-
+    private String regex;
 
     /**
      * Constructor
@@ -22,16 +23,28 @@ public class ConfigurationDTO implements DataTransferObject {
         // empty constructor
     }
 
-
     /**
      * Constructor with required fields
      *
      * @param key   of the key-value-pair
      * @param value of the key-value-pair
      */
-    public ConfigurationDTO(final String key, final String value) {
+
+    public ConfigurationDTO(final Long id, final String key, final String value, final String regex){
+        this.id = id;
         this.key = key;
         this.value = value;
+        this.regex = regex;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 
@@ -52,5 +65,15 @@ public class ConfigurationDTO implements DataTransferObject {
 
     public void setValue(final String value) {
         this.value = value;
+    }
+
+
+    public String getRegex() {
+        return regex;
+    }
+
+
+    public void setRegex(String regex) {
+        this.regex = regex;
     }
 }
