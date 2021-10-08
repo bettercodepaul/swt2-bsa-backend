@@ -3,7 +3,7 @@
 [![sonarcloud_cov](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=coverage)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
 
 
-# Bogenliga Application
+# Bogenliga Application WS21
 
 
 ## Content
