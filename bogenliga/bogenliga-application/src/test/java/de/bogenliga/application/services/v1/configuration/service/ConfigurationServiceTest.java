@@ -14,8 +14,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
 import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -154,6 +156,110 @@ public class ConfigurationServiceTest {
         assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
     }
 
+    @Test
+    public void createValidRegExMail() {
+        // prepare test data
+        final ConfigurationDTO input = new ConfigurationDTO();
+        input.setId(ID);
+        input.setKey("SMTPEmail");
+        input.setValue("test@test.de");
+
+        final ConfigurationDO expected = new ConfigurationDO();
+        expected.setId(input.getId());
+        expected.setKey(input.getKey());
+        expected.setValue(input.getValue());
+
+        // configure mocks
+        when(configurationComponent.create(any(), anyLong())).thenReturn(expected);
+
+        // call test method
+        final ConfigurationDTO actual = underTest.create(input, principal);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getKey()).isEqualTo(input.getKey());
+        assertThat(actual.getValue()).isEqualTo(input.getValue());
+
+        // verify invocations
+        verify(configurationComponent).create(configurationVOArgumentCaptor.capture(), anyLong());
+
+        final ConfigurationDO createdConfiguration = configurationVOArgumentCaptor.getValue();
+        assertThat(createdConfiguration).isNotNull();
+        assertThat(createdConfiguration.getId()).isEqualTo(input.getId());
+        assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
+        assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
+    }
+
+    @Test
+    public void createValidRegExPort() {
+        // prepare test data
+        final ConfigurationDTO input = new ConfigurationDTO();
+        input.setId(ID);
+        input.setKey("SMTPPort");
+        input.setValue("25");
+
+        final ConfigurationDO expected = new ConfigurationDO();
+        expected.setId(input.getId());
+        expected.setKey(input.getKey());
+        expected.setValue(input.getValue());
+
+        // configure mocks
+        when(configurationComponent.create(any(), anyLong())).thenReturn(expected);
+
+        // call test method
+        final ConfigurationDTO actual = underTest.create(input, principal);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getKey()).isEqualTo(input.getKey());
+        assertThat(actual.getValue()).isEqualTo(input.getValue());
+
+        // verify invocations
+        verify(configurationComponent).create(configurationVOArgumentCaptor.capture(), anyLong());
+
+        final ConfigurationDO createdConfiguration = configurationVOArgumentCaptor.getValue();
+        assertThat(createdConfiguration).isNotNull();
+        assertThat(createdConfiguration.getId()).isEqualTo(input.getId());
+        assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
+        assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
+    }
+
+    @Test
+    public void createValidRegExHostname() {
+        // prepare test data
+        final ConfigurationDTO input = new ConfigurationDTO();
+        input.setId(ID);
+        input.setKey("SMTPHost");
+        input.setValue("mail.test.de");
+
+        final ConfigurationDO expected = new ConfigurationDO();
+        expected.setId(input.getId());
+        expected.setKey(input.getKey());
+        expected.setValue(input.getValue());
+
+        // configure mocks
+        when(configurationComponent.create(any(), anyLong())).thenReturn(expected);
+
+        // call test method
+        final ConfigurationDTO actual = underTest.create(input, principal);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getKey()).isEqualTo(input.getKey());
+        assertThat(actual.getValue()).isEqualTo(input.getValue());
+
+        // verify invocations
+        verify(configurationComponent).create(configurationVOArgumentCaptor.capture(), anyLong());
+
+        final ConfigurationDO createdConfiguration = configurationVOArgumentCaptor.getValue();
+        assertThat(createdConfiguration).isNotNull();
+        assertThat(createdConfiguration.getId()).isEqualTo(input.getId());
+        assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
+        assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
+    }
 
     @Test
     public void update() {

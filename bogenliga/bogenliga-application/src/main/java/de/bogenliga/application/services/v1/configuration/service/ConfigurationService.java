@@ -115,6 +115,7 @@ public class ConfigurationService implements ServiceFacade {
     }
 
 
+    //Endpoint not in use
     /**
      * I persist a new configuration and return this configuration entry.
      *

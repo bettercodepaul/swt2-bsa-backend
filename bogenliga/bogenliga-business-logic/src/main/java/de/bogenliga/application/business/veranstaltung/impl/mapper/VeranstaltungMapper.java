@@ -1,18 +1,14 @@
 package de.bogenliga.application.business.veranstaltung.impl.mapper;
 
-import de.bogenliga.application.business.liga.api.types.LigaDO;
-import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
-import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.business.user.impl.entity.UserBE;
-
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**

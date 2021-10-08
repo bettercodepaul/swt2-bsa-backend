@@ -57,7 +57,6 @@ public class DsbMannschaftService implements ServiceFacade {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
-
     /**
      * Constructor with dependency injection
      *
@@ -246,6 +245,7 @@ public class DsbMannschaftService implements ServiceFacade {
                                               @PathVariable("currentVeranstaltungsId") final long currentVeranstaltungsId,
                                               final Principal principal) {
         Preconditions.checkArgument(lastVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(currentVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         final Long userId = UserProvider.getCurrentUserId(principal);
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", lastVeranstaltungsId);
@@ -312,15 +312,20 @@ public class DsbMannschaftService implements ServiceFacade {
      * <pre>{@code Request: DELETE /v1/dsbmitglied/app.bogenliga.frontend.autorefresh.active}</pre>
      */
     @DeleteMapping(value = "{id}")
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-    public void delete(@PathVariable("id") final long id, final Principal principal) {
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_ID_NEGATIVE);
-
-        LOG.debug("Receive 'delete' request with id '{}'", id);
-
         // allow value == null, the value will be ignored
         final DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_DELETE_STAMMDATEN)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, dsbMannschaftComponent.findById(id).getVeranstaltungId())){
+            throw new NoPermissionException();
+        }
+
 
         dsbMannschaftComponent.delete(dsbMannschaftDO, userId);
     }

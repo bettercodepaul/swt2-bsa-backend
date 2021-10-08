@@ -86,6 +86,13 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
             .compose().toString();
 
+    private static final String FIND_BY_TEAM_ID_AND_RUECKENNUMMER = new QueryBuilder()
+            .selectFields(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID, MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER, MANNSCHAFTSMITGLIED_TABLE_DSB_MITGLIED_ID)
+            .from(TABLE, TABLE_ALIAS)
+            .whereEquals(MANNSCHAFTSMITGLIED_TABLE_RUECKENNUMMER)
+            .andEquals(MANNSCHAFTSMITGLIED_TABLE_TEAM_ID)
+            .compose().toString();
+
     private static final String FIND_BY_MEMBER_ID = new QueryBuilder()
             .selectFields(selectedFields)
             .from(TABLE, TABLE_ALIAS)
@@ -199,6 +206,10 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
     public MannschaftsmitgliedExtendedBE findByMemberAndTeamId(long teamId, final long memberId) {
        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED_EXTENDED, FIND_BY_MEMBER_AND_TEAM_ID, memberId, teamId);
+    }
+
+    public MannschaftsmitgliedExtendedBE findByTeamIdAndRueckennummer(long teamId, final long rueckennummer) {
+        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED_EXTENDED, FIND_BY_TEAM_ID_AND_RUECKENNUMMER, rueckennummer, teamId);
     }
 
     public List<MannschaftsmitgliedExtendedBE> findByMemberId(final long memberId) {

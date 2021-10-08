@@ -2,21 +2,19 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
-import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -53,7 +51,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final MatchDAO matchDAO;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
-    private final WettkampfDAO wettkampfDAO;
+    private WettkampfComponent wettkampfComponent;
 
 
     /**
@@ -66,14 +64,15 @@ public class MatchComponentImpl implements MatchComponent {
     @Autowired
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
-                              final VereinComponent vereinComponent,
-                              final WettkampfDAO wettkampfDAO
-                              ) {
-
+                              final VereinComponent vereinComponent) {
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
-        this.wettkampfDAO = wettkampfDAO;
+    }
+
+    @Autowired
+    public void setWettkampfComponent(final WettkampfComponent wettkampfComponent){
+        this.wettkampfComponent = wettkampfComponent;
     }
 
 
@@ -130,23 +129,23 @@ public class MatchComponentImpl implements MatchComponent {
      * Return a single match by combined attributes
      *
      * @param wettkampfId ID from Wettkampf
-     * @param MatchNr Number of the match
+     * @param matchNr Number of the match
      * @param scheibenNummer number of the target board
      *
      * @return singleMatchDO
      */
     @Override
-    public MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer) {
+    public MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long matchNr, Long scheibenNummer) {
         checkPreconditions(wettkampfId, "wettkampf_Id");
-        checkPreconditions(MatchNr, "matchNr");
+        checkPreconditions(matchNr, "matchNr");
         checkPreconditions(scheibenNummer, "scheibenNummer");
 
-        final MatchBE matchBE = matchDAO.findByWettkampfIDMatchNrScheibenNr(wettkampfId,MatchNr,scheibenNummer);
+        final MatchBE matchBE = matchDAO.findByWettkampfIDMatchNrScheibenNr(wettkampfId,matchNr,scheibenNummer);
 
         if (matchBE == null) {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No match found with attributes wettkampfId: '%d', MatchNr: %d, scheibenNummer: %d",
-                             wettkampfId, MatchNr, scheibenNummer)
+                    String.format("No match found with attributes wettkampfId: '%d', matchNr: %d, scheibenNummer: %d",
+                             wettkampfId, matchNr, scheibenNummer)
             );
         }
         return MatchMapper.toMatchDO.apply(matchBE);
@@ -160,19 +159,6 @@ public class MatchComponentImpl implements MatchComponent {
         final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
         return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
     }
-
-
-
-    /*    @Override
-    public List<MatchBegegnungDO> findBegegnungByWettkampfId (Long wettkampfId) {
-        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
-
-        final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
-
-
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
-    }
-*/
 
     @Override
     public List<MatchDO> findByMannschaftId(Long mannschaftId) {
@@ -200,19 +186,19 @@ public class MatchComponentImpl implements MatchComponent {
 
         List<DsbMannschaftDO> mannschaften = this.dsbMannschaftComponent.findAllByVeranstaltungsId(veranstaltungsId);
 
-        WettkampfBE wettkampfBE = wettkampfDAO.findWT0byVeranstaltungsId(veranstaltungsId);
+        WettkampfDO wettkampfDO = wettkampfComponent.findWT0byVeranstaltungsId(veranstaltungsId);
 
-        if(mannschaften == null || mannschaften.size() != 8 || wettkampfBE == null
-                || wettkampfBE.getId() == null || wettkampfBE.getId() < 0){
+        if(mannschaften == null || mannschaften.size() != 8 || wettkampfDO == null
+                || wettkampfDO.getId() == null || wettkampfDO.getId() < 0){
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT);
         }else{
-            Long wettkampfId = wettkampfBE.getId();
+            Long wettkampfId = wettkampfDO.getId();
             Long begegnung = 0L;
             for(int i = 0; i< 8; i++){
                 if(i%2 == 0){
                     begegnung++;
                 }
-                this.createWT0Match(wettkampfId, begegnung, mannschaften.get(i).getId(), new Long(i) ,currentUserId);
+                this.createWT0Match(wettkampfId, begegnung, mannschaften.get(i).getId(), (long) i,currentUserId);
             }
         }
     }

@@ -15,6 +15,7 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
     private Long id;
     private String key;
     private String value;
+    private String regex;
 
 
     /**
@@ -24,12 +25,14 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
         // empty constructor
     }
 
-    public ConfigurationDO(final Long id, final String key, final String value, final OffsetDateTime createdAtUtc,
+    public ConfigurationDO(final Long id, final String key, final String value, final String regex,
+                           final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                            final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.key = key;
         this.value = value;
+        this.regex = regex;
 
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
@@ -39,10 +42,11 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
     }
 
 
-    public ConfigurationDO(final Long id, final String key, final String value) {
+    public ConfigurationDO(final Long id, final String key, final String value, final String regex) {
         this.id = id;
         this.key = key;
         this.value = value;
+        this.regex = regex;
     }
 
     public ConfigurationDO(final String key, final String value) {
@@ -80,6 +84,16 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
     }
 
 
+    public String getRegex() {
+        return regex;
+    }
+
+
+    public void setRegex(String regex) {
+        this.regex = regex;
+    }
+
+
     @Override
     public int hashCode() {
         return Objects.hash(getKey(), getValue());
@@ -97,6 +111,7 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
         final ConfigurationDO configurationDO = (ConfigurationDO) o;
         return  Objects.equals(getId(), configurationDO.getId()) &&
                 Objects.equals(getKey(), configurationDO.getKey()) &&
-                Objects.equals(getValue(), configurationDO.getValue());
+                Objects.equals(getValue(), configurationDO.getValue()) &&
+                Objects.equals(getRegex(), configurationDO.getRegex());
     }
 }

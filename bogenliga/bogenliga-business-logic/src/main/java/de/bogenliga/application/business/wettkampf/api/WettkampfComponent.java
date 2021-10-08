@@ -40,11 +40,11 @@ public interface WettkampfComponent extends ComponentFacade {
     /**
      * retruns all wettkämpfe with the given veranstaltungId
      *
-     * @param veranstaltung_id id of the veranstaltung
+     * @param veranstaltungId id of the veranstaltung
      * @return a list with wettkampf entries
      */
 
-    List<WettkampfDO> findAllByVeranstaltungId(long veranstaltung_id);
+    List<WettkampfDO> findAllByVeranstaltungId(long veranstaltungId);
 
 
     /**
@@ -59,10 +59,10 @@ public interface WettkampfComponent extends ComponentFacade {
     /**
      * Create a new wettkampf in the database.
      *
-     * @param veranstaltung_id veranstaltung for which to create a new Day0 Entry
+     * @param veranstaltungId veranstaltung for which to create a new Day0 Entry
      * @return persisted version of the wettkampf
      */
-     WettkampfDO createWT0(long veranstaltung_id, long currentUserID);
+     WettkampfDO createWT0(long veranstaltungId, long currentUserID);
 
 
     /**
@@ -83,10 +83,25 @@ public interface WettkampfComponent extends ComponentFacade {
 
 
     /**
+     * Generates a list of id's of allowed contestants for the given contest
+     * @param wettkampfid Id of a contest
+     * @return List of Miglied id's allowed to participate
+     */
+    List<Long> getAllowedMitglieder(long wettkampfid);
+
+    /**
      * Generates a pdf as binary document
-     * @param wettkampfid ID for the competition
+     * @param veranstaltungsid ID for the competition
      * @return document
      */
-    byte[] getEinzelstatistikPDFasByteArray(long veranstaltungsid,long manschaftsid,int jahr);
+    byte[] getPDFasByteArray(String name, long veranstaltungsid,long manschaftsid,int jahr);
 
+    /**
+     * return Wettkampf  (Wettkampftag 0) from given VeranstaltungsID
+     * @param veranstaltungsId for the competition
+     * @return WettkampfDO
+     */
+    WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId);
+
+    byte[] getUebersichtPDFasByteArray(long veranstaltungsid,long wettkampftag);
 }

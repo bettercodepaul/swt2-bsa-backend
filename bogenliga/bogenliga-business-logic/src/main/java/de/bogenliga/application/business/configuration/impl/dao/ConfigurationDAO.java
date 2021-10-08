@@ -32,10 +32,12 @@ public class ConfigurationDAO implements DataAccessObject {
     private static final String CONFIGURATION_BE_ID = "configurationId";
     private static final String CONFIGURATION_BE_KEY = "configurationKey";
     private static final String CONFIGURATION_BE_VALUE = "configurationValue";
+    private static final String CONFIGURATION_BE_REGEX = "configurationRegex";
 
     private static final String CONFIGURATION_TABLE_ID = "configuration_id";
     private static final String CONFIGURATION_TABLE_KEY = "configuration_key";
     private static final String CONFIGURATION_TABLE_VALUE = "configuration_value";
+    private static final String CONFIGURATION_TABLE_REGEX = "configuration_regex";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<ConfigurationBE> CONFIG = new BusinessEntityConfiguration<>(
@@ -76,6 +78,7 @@ public class ConfigurationDAO implements DataAccessObject {
         columnsToFieldsMap.put(CONFIGURATION_TABLE_ID, CONFIGURATION_BE_ID);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_KEY, CONFIGURATION_BE_KEY);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_VALUE, CONFIGURATION_BE_VALUE);
+        columnsToFieldsMap.put(CONFIGURATION_TABLE_REGEX, CONFIGURATION_BE_REGEX);
 
         //fill null fields
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());

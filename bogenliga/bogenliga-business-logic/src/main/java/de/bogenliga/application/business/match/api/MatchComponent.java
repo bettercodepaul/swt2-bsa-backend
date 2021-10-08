@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.match.api;
 
 import java.util.List;
-
-import de.bogenliga.application.business.match.api.types.MatchBegegnungDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 
 /**
@@ -37,12 +35,12 @@ public interface MatchComponent {
     /**
      * Return a single match by combined attributes
      * @param wettkampfId ID from Wettkampf
-     * @param MatchNr Number of the match
+     * @param matchNr Number of the match
      * @param scheibenNummer number of the target board
      * @return singleMatchDO
      */
 
-    MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long MatchNr, Long scheibenNummer);
+    MatchDO findByWettkampfIDMatchNrScheibenNr(Long wettkampfId, Long matchNr, Long scheibenNummer);
 
 
     /**
@@ -52,13 +50,6 @@ public interface MatchComponent {
      */
 
     List<MatchDO> findByWettkampfId(Long wettkampfId);
-
-
-    /**
-     * Return all matches entries from one mannschaft.
-     *
-     * @return list of all match from one mannschaft in the database; empty list, if no match are found
-     */
 
 
     /**

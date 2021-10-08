@@ -55,10 +55,10 @@ public class LigatabelleDTOMapper implements DataTransferObjectMapper {
         ligatabelleDO.setvereinId(dto.getVereinId());
         ligatabelleDO.setvereinName(dto.getVereinName());
         ligatabelleDO.setmatchpkt(dto.getMatchpkt());
-        ligatabelleDO.setmatchpktGegen(dto.getMatchpkt_gegen());
+        ligatabelleDO.setmatchpktGegen(dto.getMatchpktGegen());
         ligatabelleDO.setsatzpkt(dto.getSatzpkt());
-        ligatabelleDO.setsatzpktGegen(dto.getSatzpkt_gegen());
-        ligatabelleDO.setsatzpktDifferenz(dto.getSatzpkt_differenz());
+        ligatabelleDO.setsatzpktGegen(dto.getSatzpktGegen());
+        ligatabelleDO.setsatzpktDifferenz(dto.getSatzpktDifferenz());
         ligatabelleDO.setsortierung(dto.getSortierung());
         ligatabelleDO.settabellenplatz(dto.getTabellenplatz());
 

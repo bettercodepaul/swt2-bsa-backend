@@ -6,6 +6,10 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
 import de.bogenliga.application.business.dsbmannschaft.impl.mapper.DsbMannschaftMapper;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -38,7 +42,8 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private static final String EXCEPTION_NO_RESULTS = "No result for ID '%s'";
 
     private final DsbMannschaftDAO dsbMannschaftDAO;
-    private final VereinDAO vereinDAO;
+    private final VereinComponent vereinComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
 
     /**
@@ -50,10 +55,12 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
     @Autowired
     public DsbMannschaftComponentImpl(final DsbMannschaftDAO dsbMannschaftDAO,
-                                      final VereinDAO vereinDAO) {
+                                      final VereinComponent vereinComponent,
+                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
 
         this.dsbMannschaftDAO = dsbMannschaftDAO;
-        this.vereinDAO = vereinDAO;
+        this.vereinComponent = vereinComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
     public DsbMannschaftDAO getDAO(){
@@ -169,9 +176,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         Preconditions.checkNotNull(mannschaft, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkArgument(mannschaft.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
 
-        VereinBE vereinBE = this.vereinDAO.findById(mannschaft.getVereinId());
-        if (vereinBE != null && vereinBE.getVereinName() != null) {
-            mannschaft.setName(vereinBE.getVereinName() + " " + mannschaft.getNummer());
+        VereinDO vereinDO = this.vereinComponent.findById(mannschaft.getVereinId());
+        if (vereinDO != null && vereinDO.getName() != null) {
+            mannschaft.setName(vereinDO.getName() + " " + mannschaft.getNummer());
         }
         return mannschaft;
     }
@@ -277,9 +284,19 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
             mannschaftToCheck.setVeranstaltungId(currentVeranstaltungId);
             checkDsbMannschaftDO(mannschaftToCheck, currentVeranstaltungId);
+
             addedMannschaftenList.add(mannschaftToCheck);
             final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(mannschaftToCheck);
-            dsbMannschaftDAO.create(dsbMannschaftBE, currentVeranstaltungId);
+            DsbMannschaftBE addedMannschaft = dsbMannschaftDAO.create(dsbMannschaftBE, currentVeranstaltungId);
+            // Copy Mannschaftsmitglieder for every Mannschaft
+            // following lines of code are not outsourced because we currently assume that they are not needed anywhere else
+            MannschaftsmitgliedDO addedMitglied;
+            List<MannschaftsmitgliedDO> mitglieder = mannschaftsmitgliedComponent.findByTeamId(mannschaftToCheck.getId());
+            for(MannschaftsmitgliedDO mitglied : mitglieder){
+                addedMitglied = mitglied;
+                addedMitglied.setMannschaftId(addedMannschaft.getId());
+                mannschaftsmitgliedComponent.create(addedMitglied, userId);
+            }
         }
         return addedMannschaftenList;
     }

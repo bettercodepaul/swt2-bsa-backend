@@ -327,10 +327,52 @@ public class DownloadService implements ServiceFacade {
     @RequestParam("jahr") final int jahr)
     {
 
-        final byte[] fileBloB = wettkampfComponent.getEinzelstatistikPDFasByteArray(veranstaltungsid,manschaftsid,jahr);
+        final byte[] fileBloB = wettkampfComponent.getPDFasByteArray("Einzelstatistik",veranstaltungsid,manschaftsid,jahr);
 
         return generateInputStream(fileBloB);
     }
 
+
+    /**
+     * return Gesamtstatistik einer manschaft an einer veranstaltung in einem jahr
+     *
+     * @param veranstaltungsid from Get-request:
+     * @param manschaftsid from Get-request:
+     * @param jahr from Get-request:
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/Gesamtstatistik/?werte=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(
+            path = "pdf/Gesamtstatistik",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadGesamtstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
+                                                                   @RequestParam("manschaftsid") final long manschaftsid,
+                                                                   @RequestParam("jahr") final int jahr)
+    {
+
+        final byte[] fileBloB = wettkampfComponent.getPDFasByteArray("Gesamtstatistik" ,veranstaltungsid,manschaftsid,jahr);
+
+        return generateInputStream(fileBloB);
+    }
+
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(
+            path = "pdf/Uebersicht",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadUebersichtPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
+                                                              @RequestParam("wettkampftag") final long wettkampftag)
+    {
+
+        final byte[] fileBloB = wettkampfComponent.getUebersichtPDFasByteArray(veranstaltungsid,wettkampftag);
+
+        return generateInputStream(fileBloB);
+    }
 
 }
