@@ -10,8 +10,6 @@
 
 - Spring Boot with REST services
 - Flyway
-- Deployment Pipeline
-
 
 ## How to use
 
