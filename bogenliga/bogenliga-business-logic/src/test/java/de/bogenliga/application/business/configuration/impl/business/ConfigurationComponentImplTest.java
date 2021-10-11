@@ -219,7 +219,7 @@ public class ConfigurationComponentImplTest {
         expectedBE.setConfigurationValue(input.getValue());
 
         // configure mocks
-        when(configurationDAO.create(any(ConfigurationBE.class), anyLong())).thenReturn(expectedBE);
+        when(configurationDAO.create(any(ConfigurationBE.class))).thenReturn(expectedBE);
 
         // call test method
         final ConfigurationDO actual = underTest.create(input, USER);
@@ -233,7 +233,7 @@ public class ConfigurationComponentImplTest {
                 .isEqualTo(input.getValue());
 
         // verify invocations
-        verify(configurationDAO).create(configurationBEArgumentCaptor.capture(), anyLong());
+        verify(configurationDAO).create(configurationBEArgumentCaptor.capture());
 
         final ConfigurationBE persistedBE = configurationBEArgumentCaptor.getValue();
 
@@ -343,7 +343,7 @@ public class ConfigurationComponentImplTest {
         expectedBE.setConfigurationValue(input.getValue());
 
         // configure mocks
-        when(configurationDAO.update(any(ConfigurationBE.class), anyLong())).thenReturn(expectedBE);
+        when(configurationDAO.update(any(ConfigurationBE.class))).thenReturn(expectedBE);
 
         // call test method
         final ConfigurationDO actual = underTest.update(input, USER);
@@ -357,7 +357,7 @@ public class ConfigurationComponentImplTest {
                 .isEqualTo(input.getValue());
 
         // verify invocations
-        verify(configurationDAO).update(configurationBEArgumentCaptor.capture(), anyLong());
+        verify(configurationDAO).update(configurationBEArgumentCaptor.capture());
 
         final ConfigurationBE persistedBE = configurationBEArgumentCaptor.getValue();
 
@@ -474,7 +474,7 @@ public class ConfigurationComponentImplTest {
         // assert result
 
         // verify invocations
-        verify(configurationDAO).delete(configurationBEArgumentCaptor.capture(), anyLong());
+        verify(configurationDAO).delete(configurationBEArgumentCaptor.capture());
 
         final ConfigurationBE persistedBE = configurationBEArgumentCaptor.getValue();
 
