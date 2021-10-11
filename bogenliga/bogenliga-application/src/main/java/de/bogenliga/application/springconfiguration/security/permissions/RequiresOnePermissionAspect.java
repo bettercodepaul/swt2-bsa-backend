@@ -235,7 +235,7 @@ public class RequiresOnePermissionAspect {
                 if (userPermissions.contains(toTest)) {
                     Long userId = jwtTokenProvider.getUserId(jwt);
                     UserDO userDO = this.userComponent.findById(userId);
-                    DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id());
+                    DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsbMitgliedId());
                     if (dsbMitgliedDO.getVereinsId().equals(vereinsId)) {
                         return true;
                     }
