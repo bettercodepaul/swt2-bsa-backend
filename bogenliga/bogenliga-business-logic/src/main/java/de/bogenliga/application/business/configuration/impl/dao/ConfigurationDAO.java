@@ -101,7 +101,7 @@ public class ConfigurationDAO implements DataAccessObject {
     }
 
 
-    public ConfigurationBE create(final ConfigurationBE configurationBE, final long currentUserId) {
+    public ConfigurationBE create(final ConfigurationBE configurationBE) {
         return basicDao.insertEntity(CONFIG, configurationBE);
     }
 
@@ -109,11 +109,11 @@ public class ConfigurationDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(CONFIG, FIND_BY_ID, id);
     }
 
-    public ConfigurationBE update(final ConfigurationBE configurationBE, final long currentUserId) {
+    public ConfigurationBE update(final ConfigurationBE configurationBE) {
         return basicDao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 
-    public void delete(final ConfigurationBE configurationBE, final long currentUserId) {
+    public void delete(final ConfigurationBE configurationBE) {
         basicDao.deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
 }
