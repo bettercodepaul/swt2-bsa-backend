@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,7 +217,7 @@ public class LizenzComponentImpl implements LizenzComponent {
             schuetzendaten.add(schuetzenname);
             schuetzendaten.add(schuetzenvorname);
             schuetzendaten.add(veranstaltungDO.getVeranstaltungSportJahr().toString());
-            schuetzendaten.add(lizenzen.getLizenznummer());
+            schuetzendaten.add(lizenzen.getLizenznummer()); /*Die Variable lizenzen list null. Um "generateLizenzenDoc()" testen zu können, habe ich hier String "0" übergeben*/
             lizenzenMapping.put(rueckennummer, schuetzendaten);
         }
 
@@ -255,13 +256,15 @@ public class LizenzComponentImpl implements LizenzComponent {
 
     void generateLizenzenDoc(Document doc, HashMap<String, List<String>> lizenzenmapping) {
 
-        for (String rNummer : lizenzenmapping.keySet()) {
-            String liga = lizenzenmapping.get(rNummer).get(0);
-            String verein = lizenzenmapping.get(rNummer).get(1);
-            String schuetzename = lizenzenmapping.get(rNummer).get(2);
-            String schuetzevorname = lizenzenmapping.get(rNummer).get(3);
-            String sportjahr = lizenzenmapping.get(rNummer).get(4);
-            String lizenz = lizenzenmapping.get(rNummer).get(5);
+        for (Map.Entry<String, List<String>> entry : lizenzenmapping.entrySet()) {
+            List<String> value = entry.getValue();
+
+            String liga = value.get(0);
+            String verein = value.get(1);
+            String schuetzename = value.get(2);
+            String schuetzevorname = value.get(3);
+            String sportjahr = value.get(4);
+            String lizenz = value.get(5);
 
             generateLizenzPage(doc, verein, lizenz, schuetzename, schuetzevorname, liga, sportjahr);
         }
