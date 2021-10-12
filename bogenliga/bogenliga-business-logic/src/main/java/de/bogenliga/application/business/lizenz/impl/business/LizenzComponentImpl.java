@@ -217,7 +217,7 @@ public class LizenzComponentImpl implements LizenzComponent {
             schuetzendaten.add(schuetzenname);
             schuetzendaten.add(schuetzenvorname);
             schuetzendaten.add(veranstaltungDO.getVeranstaltungSportJahr().toString());
-            schuetzendaten.add(lizenzen.getLizenznummer()); /*Die Variable lizenzen list null. Um "generateLizenzenDoc()" testen zu können, habe ich hier String "0" übergeben*/
+            schuetzendaten.add(lizenzen.getLizenznummer()); /*Die Variable lizenzen ist null, um generateLizenzenDoc() testen zu können, habe ich "0" eingesetzt*/
             lizenzenMapping.put(rueckennummer, schuetzendaten);
         }
 
@@ -258,7 +258,6 @@ public class LizenzComponentImpl implements LizenzComponent {
 
         for (Map.Entry<String, List<String>> entry : lizenzenmapping.entrySet()) {
             List<String> value = entry.getValue();
-
             String liga = value.get(0);
             String verein = value.get(1);
             String schuetzename = value.get(2);
