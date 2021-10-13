@@ -30,8 +30,7 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(CustomizedResponseEntityExceptionHandler.class);
-
-
+    
     /**
      * Handles all {@link BusinessException}
      *
