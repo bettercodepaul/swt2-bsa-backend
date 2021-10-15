@@ -222,41 +222,49 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     }
 
 
+    @Override
     public OffsetDateTime getCreatedAtUtc() {
         return createdAtUtc;
     }
 
 
+    @Override
     public void setCreatedAtUtc(OffsetDateTime createdAtUtc) {
         this.createdAtUtc = createdAtUtc;
     }
 
 
+    @Override
     public Long getCreatedByUserId() {
         return createdByUserId;
     }
 
 
+    @Override
     public void setCreatedByUserId(Long createdByUserId) {
         this.createdByUserId = createdByUserId;
     }
 
 
+    @Override
     public OffsetDateTime getLastModifiedAtUtc() {
         return lastModifiedAtUtc;
     }
 
 
+    @Override
     public void setLastModifiedAtUtc(OffsetDateTime lastModifiedAtUtc) {
         this.lastModifiedAtUtc = lastModifiedAtUtc;
     }
 
 
+    @Override
     public Long getVersion() {
         return version;
     }
 
 
+    @Override
     public void setVersion(Long version) {
         this.version = version;
     }
