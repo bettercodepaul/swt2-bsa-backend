@@ -40,7 +40,7 @@ public class UserMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new UserDO(id, email, be.getDsb_mitglied_id(), be.isUsing2FA(), be.isActive(), be.getSecret(), createdAtUtc, createdByUserId, lastModifiedAtUtc,
+        return new UserDO(id, email, be.getDsbMitgliedId(), be.isUsing2FA(), be.isActive(), be.getSecret(), createdAtUtc, createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     };
 
@@ -65,7 +65,7 @@ public class UserMapper implements ValueObjectMapper {
         UserBE userBE = new UserBE();
         userBE.setUserId(vo.getId());
         userBE.setUserEmail(vo.getEmail());
-        userBE.setDsb_mitglied_id(vo.getDsb_mitglied_id());
+        userBE.setDsbMitgliedId(vo.getDsbMitgliedId());
         userBE.setUsing2FA(vo.isUsing2FA());
         userBE.setSecret(vo.getSecret());
 
