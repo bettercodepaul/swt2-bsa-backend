@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,11 +161,11 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         //Table for the entire document
         final Table docTable = new Table(UnitValue.createPercentArray(1), true).setBorder(Border.NO_BORDER);
         //iterate over all Mannschaftsmitglieder
-        for(String rNummer : rueckennummerMapping.keySet())
+        for(Map.Entry<String, List<String>> rNummer : rueckennummerMapping.entrySet())
         {
-            String liga = rueckennummerMapping.get(rNummer).get(0);
-            String verein = rueckennummerMapping.get(rNummer).get(1);
-            String schuetze = rueckennummerMapping.get(rNummer).get(2);
+            String liga = rNummer.getValue().get(0);
+            String verein = rNummer.getValue().get(1);
+            String schuetze = rNummer.getValue().get(2);
 
             //create single RueckennummerDoc
             final Table singleDoc = new Table(UnitValue.createPercentArray(1), true)
@@ -187,7 +188,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             final Cell schuetzeFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                     .add(new Paragraph(schuetze).setBold().setFontSize(25.0F));
             final Cell rueckenNrFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                    .add(new Paragraph(rNummer).setBold().setFontSize(100.0F));
+                    .add(new Paragraph(rNummer.getKey()).setBold().setFontSize(100.0F));
 
             veranstaltung
                     .addCell(ligaFeld)
