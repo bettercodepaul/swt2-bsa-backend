@@ -30,7 +30,7 @@ public class ConfigurationBasicDAOTest {
 
     private static final String KEY = "key";
     private static final String VALUE = "value";
-    private static final long USER = 0;
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -110,7 +110,7 @@ public class ConfigurationBasicDAOTest {
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final ConfigurationBE actual = underTest.create(input, USER);
+        final ConfigurationBE actual = underTest.create(input);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -136,7 +136,7 @@ public class ConfigurationBasicDAOTest {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final ConfigurationBE actual = underTest.update(input, USER);
+        final ConfigurationBE actual = underTest.update(input);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -161,7 +161,7 @@ public class ConfigurationBasicDAOTest {
         // configure mocks
 
         // call test method
-        underTest.delete(input, USER);
+        underTest.delete(input);
 
         // assert result
 

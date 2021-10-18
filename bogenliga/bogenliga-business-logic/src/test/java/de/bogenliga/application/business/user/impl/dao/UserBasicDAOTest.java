@@ -1,7 +1,5 @@
 package de.bogenliga.application.business.user.impl.dao;
 
-import de.bogenliga.application.business.dsbmitglied.impl.dao.DsbMitgliedDAO;
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import org.junit.Rule;
@@ -133,7 +131,7 @@ public class UserBasicDAOTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
-        expectedBE.setDsb_mitglied_id(DSBID);
+        expectedBE.setDsbMitgliedId(DSBID);
 
 
         // configure mocks
@@ -160,7 +158,7 @@ public class UserBasicDAOTest {
         final UserBE input = new UserBE();
         input.setUserId(ID);
         input.setUserEmail(EMAIL);
-        input.setDsb_mitglied_id(USER);
+        input.setDsbMitgliedId(USER);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
