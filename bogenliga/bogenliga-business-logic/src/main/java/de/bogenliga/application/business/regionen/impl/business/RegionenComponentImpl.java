@@ -168,7 +168,7 @@ public class RegionenComponentImpl implements RegionenComponent {
                 currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getRegionId());
             } else {
                 LOGGER.debug(String.format(
-                    "Mapping of the regionUebergeordnetAsName (%s) to the regionUebergeordnet Id (%s) failed.",
+                    "Mapping of the regionUebergeordnetAsName {} to the regionUebergeordnet Id {} failed.",
                     currentRegion.getRegionUebergeordnetAsName(),
                     currentRegion.getRegionUebergeordnet()
                 ));
@@ -186,7 +186,7 @@ public class RegionenComponentImpl implements RegionenComponent {
                 currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
             } else {
                 LOGGER.debug(String.format(
-                    "Mapping of the regionUerbgeordnet Id (%s) to the regionUerbergeordnetAsName (%s) failed.",
+                    "Mapping of the regionUerbgeordnet Id {} to the regionUerbergeordnetAsName {} failed.",
                     currentRegion.getRegionUebergeordnet(),
                     currentRegion.getRegionUebergeordnetAsName()
                 ));
