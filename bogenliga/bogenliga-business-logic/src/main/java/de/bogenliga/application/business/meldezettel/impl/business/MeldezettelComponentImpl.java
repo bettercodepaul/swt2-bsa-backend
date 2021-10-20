@@ -116,6 +116,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             teamMemberMapping.put(teamName, dsbMitgliedDOList);
         }
 
+        
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
              PdfWriter writer = new PdfWriter(result);
              PdfDocument pdfDocument = new PdfDocument(writer);
