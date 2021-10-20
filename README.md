@@ -11,7 +11,6 @@
 - Spring Boot with REST services
 - Flyway
 
-
 ## How to use
 
 You can use mvnw (shell) or mvnw.cmd script to configure Apache Maven.
@@ -34,4 +33,3 @@ Use ```mvnw``` instead of ```mvn``` commands.
 - https://flywaydb.org/documentation/migrations
 - https://flywaydb.org/documentation/maven/
 - https://flywaydb.org/documentation/command/migrate
--
