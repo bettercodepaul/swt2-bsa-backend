@@ -26,7 +26,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
 
 
     public VeranstaltungDO() {
-        //empty
+        // empty
     }
 
 
