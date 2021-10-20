@@ -22,10 +22,6 @@ import java.util.List;
 @Component
 public class LigatabelleComponentImpl implements LigatabelleComponent {
 
-    private static final String PRECONDITION_MSG_ROLE = "RoleDO must not be null";
-    private static final String PRECONDITION_MSG_ROLE_ID = "RoleDO ID must not be negative";
-    private static final String PRECONDITION_MSG_ROLE_NAME = "RoleDO name must not be null or empty";
-    private static final String USER_ROLE_DEFAULT = "USER";
     private final LigatabelleDAO ligatabelleDAO;
     private final DsbMannschaftSortierungComponent mannschaftSortierungComp;
 
