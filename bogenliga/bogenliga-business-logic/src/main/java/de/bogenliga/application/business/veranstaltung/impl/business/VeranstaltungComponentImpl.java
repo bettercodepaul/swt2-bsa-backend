@@ -40,7 +40,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR = "veranstaltungsportjahr must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_NAME = "veranstaltungname must be not null";
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
-    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
+
     private final VeranstaltungDAO veranstaltungDAO;
     private final WettkampfComponent wettkampfComponent;
     private final LigaComponent ligaComponent;
@@ -80,7 +80,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     public List<VeranstaltungDO> findAll() {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll();
-        final List<String> cacheList = new ArrayList<>();
+
 
 
         for (int i = 0; i < veranstaltungBEList.size(); i++) {
@@ -88,12 +88,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
             returnList.add(i, completeNames(veranstaltungBEList.get(i)));
 
         }
-        /*
-        for(int x = 0;x<returnList.size();x++){
-            cacheList.add(wettkampftypDAO.findById(returnList.get(x).getVeranstaltung_wettkampftyp_id()).getName());
-            System.out.println("test: " + cacheList.get(x));
-            System.out.println("test2: " + returnList.get(x).getVeranstaltung_wettkampftyp_id());
-        }*/
+
         return returnList;
     }
 
@@ -147,8 +142,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         Preconditions.checkArgument(veranstaltungDO.getVeranstaltungID() >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
-//        System.out.println("\n\n");
-//        System.out.println(veranstaltungBE.toString());
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
 
         return completeNames(persistedVeranstaltungBE);
@@ -158,9 +151,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     @Override
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
-//        Preconditions.checkArgument(
-//              validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()),
-//               PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
+
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
@@ -170,7 +161,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         // als ID für den Ligaleiter genutzt werden - wir benötigen für die Fremdschlüsselbeziehung aber existierende
         // User-id - daher wird hier die Ligaleiter-Id als User-id übergeben
         // fehler: ind er DB wird ein Eintrag unter diesem User angelegt, obwohl das nicht der aktuelle User ist.
-        final WettkampfDO wettkampfTag0 = wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltung_id(), persistedVeranstaltungBE.getVeranstaltung_ligaleiter_id());
 
         return completeNames(persistedVeranstaltungBE);
     }
@@ -269,25 +259,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     }
 
-
-    /**
-     * Checks if a Liga already has a Veranstaltung in a specific Sportjahr
-     *
-     * @param liga_id   The ID of the Liga to check
-     * @param sportjahr The Sportjahr to check
-     *
-     * @return true: when no Veranstaltung exists for Liga in Sportjahr false: when there already is a Veranstaltung for
-     * Liga in Sportjahr
-     */
-    private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_veranstaltungen = this.findAll();
-        for (VeranstaltungDO vdo : all_veranstaltungen) {
-            if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     // we will add all information required in VeranstaltungDO which are not stored in the entity
     // especially names in addition to IDs
