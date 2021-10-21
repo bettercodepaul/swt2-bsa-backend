@@ -80,10 +80,6 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + "GROUP BY veranstaltung_sportjahr "
                     + "ORDER BY veranstaltung_sportjahr DESC";
 
-    private static final String FIND_ALL_SPORTJAHR =
-            "SELECT veranstaltung_sportjahr, veranstaltung_id, version "
-                    + "FROM veranstaltung "
-                    + "ORDER BY veranstaltung_sportjahr DESC ";
 
     private static final String FIND_BY_LIGAID =
             "SELECT * "
