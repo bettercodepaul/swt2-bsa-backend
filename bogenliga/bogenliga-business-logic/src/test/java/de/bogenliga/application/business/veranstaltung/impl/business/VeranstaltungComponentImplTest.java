@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.naming.NoPermissionException;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
@@ -96,13 +95,13 @@ public class VeranstaltungComponentImplTest {
 
     private static VeranstaltungBE getVeranstaltungBE() {
         VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
-        expectedBE.setVeranstaltung_wettkampftyp_id(VERANSTALTUNG_WETTKAMPFTYP_ID);
-        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltung_sportjahr(VERANSTALTUNG_SPORTJAHR);
-        expectedBE.setVeranstaltung_meldedeadline(VERANSTALTUNG_MELDEDEADLINE);
-        expectedBE.setVeranstaltung_ligaleiter_id(VERANSTALTUNG_LIGALEITER_ID);
-        expectedBE.setVeranstaltung_liga_id(VERANSTALTUNG_LIGA_ID);
+        expectedBE.setVeranstaltungId(VERANSTALTUNG_ID);
+        expectedBE.setVeranstaltungWettkampftypId(VERANSTALTUNG_WETTKAMPFTYP_ID);
+        expectedBE.setVeranstaltungName(VERANSTALTUNG_NAME);
+        expectedBE.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
+        expectedBE.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
+        expectedBE.setVeranstaltungLigaleiterId(VERANSTALTUNG_LIGALEITER_ID);
+        expectedBE.setVeranstaltungLigaId(VERANSTALTUNG_LIGA_ID);
 
         return expectedBE;
     }
@@ -261,7 +260,7 @@ public class VeranstaltungComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltung_id())
+        assertThat(persistedBE.getVeranstaltungId())
                 .isEqualTo(input.getVeranstaltungID());
     }
 
@@ -347,9 +346,9 @@ public class VeranstaltungComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltung_id())
+        assertThat(persistedBE.getVeranstaltungId())
                 .isEqualTo(input.getVeranstaltungID());
-        assertThat(persistedBE.getVeranstaltung_name())
+        assertThat(persistedBE.getVeranstaltungName())
                 .isEqualTo(input.getVeranstaltungName());
     }
 
@@ -373,7 +372,7 @@ public class VeranstaltungComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltung_id())
+        assertThat(persistedBE.getVeranstaltungId())
                 .isEqualTo(input.getVeranstaltungID());
     }
 
@@ -597,8 +596,8 @@ public class VeranstaltungComponentImplTest {
 
         List<VeranstaltungBE> veranstaltungBEList = new LinkedList<>();
         VeranstaltungBE lastVeranstaltungBE = getVeranstaltungBE();
-        lastVeranstaltungBE.setVeranstaltung_sportjahr(LAST_VERANSTALTUNG_SPORTJAHR);
-        lastVeranstaltungBE.setVeranstaltung_id(LAST_VERANSTALTUNG_ID);
+        lastVeranstaltungBE.setVeranstaltungSportjahr(LAST_VERANSTALTUNG_SPORTJAHR);
+        lastVeranstaltungBE.setVeranstaltungId(LAST_VERANSTALTUNG_ID);
         veranstaltungBEList.add(lastVeranstaltungBE);
 
         //UserDO user = getUserDO();
