@@ -167,8 +167,11 @@ public class RegionenComponentImpl implements RegionenComponent {
             if (possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnet(possibleRegions.get(0).getRegionId());
             } else {
-                LOGGER.debug("Mapping of the regionUebergeordnetAsName ("+ currentRegion.getRegionUebergeordnetAsName()
-                        + ") to the regionUebergeordnet Id ("+ currentRegion.getRegionUebergeordnet() +") failed.");
+                LOGGER.debug(
+                    "Mapping of the regionUebergeordnetAsName {} to the regionUebergeordnet Id {} failed.",
+                    currentRegion.getRegionUebergeordnetAsName(),
+                    currentRegion.getRegionUebergeordnet()
+                );
             }
 
             //Case: The region has a superordinate id but not its corresponding name
@@ -182,8 +185,11 @@ public class RegionenComponentImpl implements RegionenComponent {
             if (possibleRegions != null && !possibleRegions.isEmpty()) {
                 currentRegion.setRegionUebergeordnetAsName(possibleRegions.get(0).getRegionName());
             } else {
-                LOGGER.debug("Mapping of the regionUebergeordnet Id (" + currentRegion.getRegionUebergeordnet()
-                        + ") to the regionUebergeordnetAsName (" + currentRegion.getRegionUebergeordnetAsName() + ") failed.");
+                LOGGER.debug(
+                    "Mapping of the regionUerbgeordnet Id {} to the regionUerbergeordnetAsName {} failed.",
+                    currentRegion.getRegionUebergeordnet(),
+                    currentRegion.getRegionUebergeordnetAsName()
+                );
             }
         }
         return currentRegion;
