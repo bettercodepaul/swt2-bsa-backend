@@ -42,13 +42,13 @@ public class UserDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with all parameters
      */
-    public UserDO(final Long id, final String email, final Long dsb_mitglied_id, boolean using2FA,
+    public UserDO(final Long id, final String email, final Long dsbMitgliedId, boolean using2FA,
                   boolean active, String secret, final OffsetDateTime createdAtUtc,
                   final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                   final Long lastModifiedByUserId, final Long version) {
         this.id = id;
         this.email = email;
-        this.dsbMitgliedId = dsb_mitglied_id;
+        this.dsbMitgliedId = dsbMitgliedId;
         this.using2FA = using2FA;
         this.active = active;
         this.secret = secret;
