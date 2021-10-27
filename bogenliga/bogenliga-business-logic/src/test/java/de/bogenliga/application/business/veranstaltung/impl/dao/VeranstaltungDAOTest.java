@@ -37,9 +37,9 @@ public class VeranstaltungDAOTest {
     public void testFindBySportjahrDestinct() {
         //create test data
         VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
-        expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
-        expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltung_id(VERANSTALTUNGSID);
+        expectedBE.setVeranstaltung_name(VERANSTALTUNGSNAME);
+        expectedBE.setVeranstaltung_liga_id(LIGAID);
 
         //mock the methode
         when(basicDao.selectEntityList(any(),any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -54,12 +54,12 @@ public class VeranstaltungDAOTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        assertThat(actual.get(0).getVeranstaltungId())
-                .isEqualTo(expectedBE.getVeranstaltungId());
-        assertThat(actual.get(0).getVeranstaltungName())
-                .isEqualTo(expectedBE.getVeranstaltungName());
-        assertThat(actual.get(0).getVeranstaltungLigaId())
-                .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltung_id())
+                .isEqualTo(expectedBE.getVeranstaltung_id());
+        assertThat(actual.get(0).getVeranstaltung_name())
+                .isEqualTo(expectedBE.getVeranstaltung_name());
+        assertThat(actual.get(0).getVeranstaltung_liga_id())
+                .isEqualTo(expectedBE.getVeranstaltung_liga_id());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
