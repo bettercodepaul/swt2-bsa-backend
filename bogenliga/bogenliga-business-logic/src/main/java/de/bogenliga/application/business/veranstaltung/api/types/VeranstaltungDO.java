@@ -26,7 +26,6 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
 
 
     public VeranstaltungDO() {
-        // empty
     }
 
 
@@ -101,7 +100,6 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.veranstaltungLigaleiterEmail = ligaleiterEmail;
         this.veranstaltungWettkampftypName = wettkampftypName;
         this.veranstaltungLigaName = ligaName;
-
     }
 
 
