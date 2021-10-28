@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.role.api.types.RoleDO;
 import de.bogenliga.application.business.role.impl.dao.RoleDAO;
 import de.bogenliga.application.business.role.impl.entity.RoleBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -65,6 +66,26 @@ public class RoleComponentImplTest {
 
         // verify invocations
         verify(roleDAO).findAll();
+    }
+
+
+    @Test
+    public void findByName() {
+        //check if error thrown when roelName is NULL
+        try {
+            RoleDO nullCheck = underTest.findByName(null);
+        } catch (BusinessException e) {
+            assertThat(e.getMessage()).isEqualTo("INVALID_ARGUMENT_ERROR: RoleDO name must not be null or empty");
+        }
+
+        // Test for non-null valid String inputs
+        String invalidRoleName = "MODRATOHR";
+
+        try {
+            RoleDO nullCheck = underTest.findByName(invalidRoleName);
+        } catch (BusinessException e) {
+            assertThat(e.getMessage()).isEqualTo(String.format("ENTITY_NOT_FOUND_ERROR: No result found for RoleName '%s'", invalidRoleName));
+        }
     }
 
 }

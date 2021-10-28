@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.naming.NoPermissionException;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
