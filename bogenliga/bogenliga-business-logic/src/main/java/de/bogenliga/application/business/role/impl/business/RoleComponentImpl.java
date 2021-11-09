@@ -36,12 +36,25 @@ public class RoleComponentImpl implements RoleComponent {
     }
 
 
+    /**
+     * Getter for all Roles
+     *
+     * @return List of all Roles as RoleDO
+     */
     @Override
     public List<RoleDO> findAll() {
         final List<RoleBE> roleBEList = roleDAO.findAll();
         return roleBEList.stream().map(RoleMapper.toRoleDO).collect(Collectors.toList());
     }
 
+
+    /**
+     * Getter for a Role by the RoleName
+     *
+     *
+     * @param roleName Name of the Role
+     * @return RoleDo as the Role
+     */
     @Override
     public RoleDO findByName(final String roleName) {
         Preconditions.checkNotNullOrEmpty(roleName, PRECONDITION_MSG_ROLE_NAME);
