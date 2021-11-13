@@ -2,8 +2,11 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -358,6 +361,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                 count++;
             }
         }
+        //List<Long> allowedList = new ArrayList<>();
 
         return allowedList;
     }
