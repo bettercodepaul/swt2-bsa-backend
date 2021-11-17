@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.ligapasse.entity;
+package de.bogenliga.application.business.ligapasse.impl.entity;
 
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
