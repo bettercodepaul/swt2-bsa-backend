@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.ligamatch.dao;
+package de.bogenliga.application.business.ligamatch.impl.dao;
 
 import java.util.HashMap;
 import java.util.Map;
