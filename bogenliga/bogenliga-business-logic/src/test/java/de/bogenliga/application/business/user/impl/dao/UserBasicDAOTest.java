@@ -131,7 +131,7 @@ public class UserBasicDAOTest {
         final UserBE expectedBE = new UserBE();
         expectedBE.setUserId(ID);
         expectedBE.setUserEmail(EMAIL);
-        expectedBE.setDsb_mitglied_id(DSBID);
+        expectedBE.setDsbMitgliedId(DSBID);
 
 
         // configure mocks
@@ -158,7 +158,7 @@ public class UserBasicDAOTest {
         final UserBE input = new UserBE();
         input.setUserId(ID);
         input.setUserEmail(EMAIL);
-        input.setDsb_mitglied_id(USER);
+        input.setDsbMitgliedId(USER);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
