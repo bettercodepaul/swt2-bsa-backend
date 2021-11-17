@@ -213,7 +213,7 @@ public class WettkampfService implements ServiceFacade {
     /**
      * checks the preconditions defined above in this class
      *
-     * @param wettkampfDTO datensatz zu prüfen
+     * @param wettkampfDTO Datensatz zu prüfen
      */
     private void checkPreconditions(@RequestBody final WettkampfDTO wettkampfDTO) {
         Preconditions.checkNotNull(wettkampfDTO, PRECONDITION_MSG_WETTKAMPF);
@@ -229,6 +229,20 @@ public class WettkampfService implements ServiceFacade {
                 PRECONDITION_MSG_WETTKAMPF_VERANSTALTUNGS_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTypId() >= 0, PRECONDITION_MSG_WETTKAMPF_TYP_ID);
         Preconditions.checkArgument(wettkampfDTO.getWettkampfTag() >= 0, PRECONDITION_MSG_WETTKAMPF_TAG);
+    }
+
+
+    /**
+     * Generates a list of id's of allowed contestants for the given contest
+     * @param id Id of a contest
+     * @param id Id of a Mannschaft 1
+     * @param id Id of a Mannschaft 2
+     * @return List of Miglied id's allowed to participate of Mannschaft 1 and Mannschaft 2
+     */
+    @GetMapping(value = "{id}/{mannschaft1ID}/{mannschaft2ID}/allowedContestants", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = UserPermission.CAN_READ_DEFAULT)
+    public List<Long> getAllowedMitgliedForWettkampf(@PathVariable long id, @PathVariable long mannschaft1ID, @PathVariable long mannschaft2ID){
+        return wettkampfComponent.getAllowedMitglieder(id, mannschaft1ID, mannschaft2ID);
     }
 
 
