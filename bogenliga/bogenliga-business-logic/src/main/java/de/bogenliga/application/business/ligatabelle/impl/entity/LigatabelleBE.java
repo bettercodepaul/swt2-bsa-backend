@@ -22,10 +22,10 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
     private Long vereinId;
     private String vereinName;
     private int matchpkt;
-    private int matchpkt_gegen;
+    private int matchpktGegen;
     private int satzpkt;
-    private int satzpkt_gegen;
-    private int satzpkt_differenz;
+    private int satzpktGegen;
+    private int satzpktDifferenz;
     private int sortierung;
     private int tabellenplatz;
 
@@ -73,10 +73,10 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
                 ", vereinId='" + vereinId +
                 ", vereinName='" + vereinName +
                 ", matchpkt='" + matchpkt + '\'' +
-                ", matchpkt_gegen='" + matchpkt_gegen +
+                ", matchpktGegen='" + matchpktGegen +
                 ", satzpkt='" + satzpkt +
-                ", satzpkt_gegen='" + satzpkt_gegen +
-                ", satzpkt_differenz='" + satzpkt_differenz +
+                ", satzpktGegen='" + satzpktGegen +
+                ", satzpktDifferenz='" + satzpktDifferenz +
                 ", sortierung='" + sortierung +
                 ", tabellenplatz='" + tabellenplatz +
                 '}';
@@ -147,10 +147,10 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
     }
 
     public int getMatchpkt_gegen() {
-        return matchpkt_gegen;
+        return matchpktGegen;
     }
     public void setMatchpkt_gegen(final int matchpkt_gegen) {
-        this.matchpkt_gegen = matchpkt_gegen;
+        this.matchpktGegen = matchpkt_gegen;
     }
 
     public int getSatzpkt() {
@@ -161,17 +161,17 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
     }
 
     public int getSatzpkt_gegen() {
-        return satzpkt_gegen;
+        return satzpktGegen;
     }
-    public void setSatzpkt_gegen(final int satzpkt_gegen) {
-        this.satzpkt_gegen = satzpkt_gegen;
+    public void setSatzpkt_gegen(final int satzpktGegen) {
+        this.satzpktGegen = satzpktGegen;
     }
 
     public int getSatzpkt_differenz() {
-        return satzpkt_differenz;
+        return satzpktDifferenz;
     }
-    public void setSatzpkt_differenz(final int satzpkt_differenz) {
-        this.satzpkt_differenz = satzpkt_differenz;
+    public void setSatzpkt_differenz(final int satzpktDifferenz) {
+        this.satzpktDifferenz = satzpktDifferenz;
     }
 
     public int getSortierung() {
