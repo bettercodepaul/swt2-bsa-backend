@@ -35,7 +35,7 @@ public class LigatabelleServiceTest {
     private static final Long vereinId = 7L;
     private static final String vereinName = "Name_Verein";
     private static final int matchpkt = 6;
-    private static final int matchpkt_gegen = 2;
+    private static final int matchpktGegen = 2;
     private static final int satzpkt = 18;
     private static final int satzpkt_gegen = 3;
     private static final int satzpkt_differenz = 15;
@@ -53,7 +53,7 @@ public class LigatabelleServiceTest {
         expectedLigatabelleDO.setvereinId(vereinId);
         expectedLigatabelleDO.setvereinName(vereinName);
         expectedLigatabelleDO.setmatchpkt(matchpkt);
-        expectedLigatabelleDO.setmatchpktGegen(matchpkt_gegen);
+        expectedLigatabelleDO.setmatchpktGegen(matchpktGegen);
         expectedLigatabelleDO.setsatzpkt(satzpkt);
         expectedLigatabelleDO.setsatzpktGegen(satzpkt_gegen);
         expectedLigatabelleDO.setsatzpktDifferenz(satzpkt_differenz);
@@ -74,7 +74,7 @@ public class LigatabelleServiceTest {
         vereinId,
         vereinName,
         matchpkt,
-        matchpkt_gegen,
+                matchpktGegen,
         satzpkt,
         satzpkt_gegen,
         satzpkt_differenz,
