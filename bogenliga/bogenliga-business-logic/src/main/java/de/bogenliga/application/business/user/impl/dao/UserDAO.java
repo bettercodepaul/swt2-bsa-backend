@@ -37,7 +37,7 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_BE_PASSWORD = "userPassword";
     private static final String USER_BE_USING2FA = "using2FA";
     private static final String USER_BE_SECRET = "secret";
-    private static final String USER_BE_DSB_MITGLIED_ID = "dsb_mitglied_id";
+    private static final String USER_BE_DSB_MITGLIED_ID = "dsbMitgliedId";
 
     private static final String USER_BE_ACTIVE = "active";
 
@@ -164,7 +164,7 @@ public class UserDAO implements DataAccessObject {
 
         // Save UserId in the column dsb_mitglied_benutzer_id of entity dsb_mitglied
         DsbMitgliedDAO dsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
-        DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
+        DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(persistedUser.getDsbMitgliedId());
         if(dsbMitgliedBE != null) {
             dsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
             dsbMitgliedDAO.update(dsbMitgliedBE, dsbMitgliedBE.getDsbMitgliedId());
