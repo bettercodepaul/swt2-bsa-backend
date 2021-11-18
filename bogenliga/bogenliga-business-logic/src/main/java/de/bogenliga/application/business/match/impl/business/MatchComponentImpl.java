@@ -224,7 +224,7 @@ public class MatchComponentImpl implements MatchComponent {
         // proof if matches already exist
         if(!matches.isEmpty ()){
 
-            // delete matches for wettkampf
+            // delete matches  wettkampf
           matches.forEach(match -> this.delete(match, currentUserId));
         }
 
