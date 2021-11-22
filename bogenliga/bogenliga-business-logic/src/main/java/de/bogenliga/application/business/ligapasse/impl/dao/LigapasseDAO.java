@@ -52,7 +52,7 @@ public class LigapasseDAO implements DataAccessObject {
 
 
     // wrap all specific config parameters
-    private static final BusinessEntityConfiguration<LigatabelleBE> LIGAPASSE = new BusinessEntityConfiguration<>(
+    private static final BusinessEntityConfiguration<LigatabelleBE> LIGAPASSES = new BusinessEntityConfiguration<>(
             LigatabelleBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
     private final BasicDAO BasicDao;
