@@ -53,7 +53,6 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private WettkampfComponent wettkampfComponent;
 
-
     /**
      * Constructor
      * <p>
@@ -191,7 +190,7 @@ public class MatchComponentImpl implements MatchComponent {
         if(mannschaften == null || mannschaften.size() != 8 || wettkampfDO == null
                 || wettkampfDO.getId() == null || wettkampfDO.getId() < 0){
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT);
-        }else{
+        } else {
             Long wettkampfId = wettkampfDO.getId();
             Long begegnung = 0L;
             for(int i = 0; i< 8; i++){
@@ -219,6 +218,14 @@ public class MatchComponentImpl implements MatchComponent {
         matchBe.setBegegnung(begegnung);
         matchBe.setMannschaftId(mannschaftId);
         matchBe.setScheibenNummer(scheibennummer);
+
+        List<MatchDO> matches = this.findByWettkampfId(wettkampfId);
+
+        // proof if matches already exist
+        if(!matches.isEmpty ()){
+            // delete matches
+          matches.forEach(match -> this.delete(match, currentUserId));
+        }
 
         this.matchDAO.create(matchBe,currentUserId);
     }
