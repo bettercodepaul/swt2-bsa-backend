@@ -37,10 +37,10 @@ public class LigatabelleComponentImplTest {
     private static Long vereinId = 7L;
     private static String vereinName = "Name_Verein";
     private static int matchpkt = 6;
-    private static int matchpkt_gegen = 2;
+    private static int matchpktGegen = 2;
     private static int satzpkt = 18;
-    private static int satzpkt_gegen = 3;
-    private static int satzpkt_differenz = 15;
+    private static int satzpktGegen = 3;
+    private static int satzpktDifferenz = 15;
     private static int sortierung = 0;
     private static int tabellenplatz = 8;
 
@@ -67,10 +67,10 @@ public class LigatabelleComponentImplTest {
         expectedLigatabelleBE.setVereinId(vereinId);
         expectedLigatabelleBE.setVereinName(vereinName);
         expectedLigatabelleBE.setMatchpkt(matchpkt);
-        expectedLigatabelleBE.setMatchpkt_gegen(matchpkt_gegen);
+        expectedLigatabelleBE.setMatchpktGegen(matchpktGegen);
         expectedLigatabelleBE.setSatzpkt(satzpkt);
-        expectedLigatabelleBE.setSatzpkt_gegen(satzpkt_gegen);
-        expectedLigatabelleBE.setSatzpkt_differenz(satzpkt_differenz);
+        expectedLigatabelleBE.setSatzpktGegen(satzpktGegen);
+        expectedLigatabelleBE.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleBE.setSortierung(sortierung);
         expectedLigatabelleBE.setTabellenplatz(tabellenplatz);
 
@@ -89,10 +89,10 @@ public class LigatabelleComponentImplTest {
         expectedLigatabelleDO.setvereinId(vereinId);
         expectedLigatabelleDO.setvereinName(vereinName);
         expectedLigatabelleDO.setmatchpkt(matchpkt);
-        expectedLigatabelleDO.setmatchpktGegen(matchpkt_gegen);
+        expectedLigatabelleDO.setMatchpktGegen(matchpktGegen);
         expectedLigatabelleDO.setsatzpkt(satzpkt);
-        expectedLigatabelleDO.setsatzpktGegen(satzpkt_gegen);
-        expectedLigatabelleDO.setsatzpktDifferenz(satzpkt_differenz);
+        expectedLigatabelleDO.setSatzpktGegen(satzpktGegen);
+        expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
 
@@ -133,10 +133,10 @@ public class LigatabelleComponentImplTest {
         assertThat(actual.get(0).getvereinId()).isEqualTo(expectedLigatabelleBE.getVereinId());
         assertThat(actual.get(0).getvereinName()).isEqualTo(expectedLigatabelleBE.getVereinName());
         assertThat(actual.get(0).getmatchpkt()).isEqualTo(expectedLigatabelleBE.getMatchpkt());
-        assertThat(actual.get(0).getmatchpktGegen()).isEqualTo(expectedLigatabelleBE.getMatchpkt_gegen());
+        assertThat(actual.get(0).getMatchpktGegen()).isEqualTo(expectedLigatabelleBE.getMatchpktGegen());
         assertThat(actual.get(0).getsatzpkt()).isEqualTo(expectedLigatabelleBE.getSatzpkt());
-        assertThat(actual.get(0).getsatzpktGegen()).isEqualTo(expectedLigatabelleBE.getSatzpkt_gegen());
-        assertThat(actual.get(0).getsatzpktDifferenz()).isEqualTo(expectedLigatabelleBE.getSatzpkt_differenz());
+        assertThat(actual.get(0).getSatzpktGegen()).isEqualTo(expectedLigatabelleBE.getSatzpktGegen());
+        assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedLigatabelleBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getsortierung()).isEqualTo(expectedLigatabelleBE.getSortierung());
         assertThat(actual.get(0).gettabellenplatz()).isEqualTo(expectedLigatabelleBE.getTabellenplatz());
 
@@ -197,10 +197,10 @@ public class LigatabelleComponentImplTest {
         assertThat(actual.get(0).getvereinId()).isEqualTo(expectedLigatabelleBE.getVereinId());
         assertThat(actual.get(0).getvereinName()).isEqualTo(expectedLigatabelleBE.getVereinName());
         assertThat(actual.get(0).getmatchpkt()).isEqualTo(expectedLigatabelleBE.getMatchpkt());
-        assertThat(actual.get(0).getmatchpktGegen()).isEqualTo(expectedLigatabelleBE.getMatchpkt_gegen());
+        assertThat(actual.get(0).getMatchpktGegen()).isEqualTo(expectedLigatabelleBE.getMatchpktGegen());
         assertThat(actual.get(0).getsatzpkt()).isEqualTo(expectedLigatabelleBE.getSatzpkt());
-        assertThat(actual.get(0).getsatzpktGegen()).isEqualTo(expectedLigatabelleBE.getSatzpkt_gegen());
-        assertThat(actual.get(0).getsatzpktDifferenz()).isEqualTo(expectedLigatabelleBE.getSatzpkt_differenz());
+        assertThat(actual.get(0).getSatzpktGegen()).isEqualTo(expectedLigatabelleBE.getSatzpktGegen());
+        assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedLigatabelleBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getsortierung()).isEqualTo(expectedLigatabelleBE.getSortierung());
         assertThat(actual.get(0).gettabellenplatz()).isEqualTo(expectedLigatabelleBE.getTabellenplatz());
 

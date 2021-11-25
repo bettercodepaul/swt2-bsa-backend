@@ -663,9 +663,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         {
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.gettabellenplatz()))));
             table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(getTeamName(team.getmannschaftId()))));
-            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getsatzpkt() + " : " + team.getsatzpktGegen())));
-            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.getsatzpktDifferenz()))));
-            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getmatchpkt() + " : " + team.getmatchpktGegen())));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getsatzpkt() + " : " + team.getSatzpktGegen())));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(String.valueOf(team.getSatzpktDifferenz()))));
+            table2.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(team.getmatchpkt() + " : " + team.getMatchpktGegen())));
         }
         return table2;
     }
