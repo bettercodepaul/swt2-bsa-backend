@@ -23,11 +23,6 @@ public class LigapasseComponentImpl implements LigapasseComponent {
     }
 
 
-    @Override
-    public List<LigapasseDO> findAll() {
-        return null;
-    }
-
 
     @Override
     public LigapasseDO findById(long wettkampfId) {

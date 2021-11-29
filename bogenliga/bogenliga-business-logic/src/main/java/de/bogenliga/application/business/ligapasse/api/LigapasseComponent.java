@@ -11,12 +11,6 @@ import de.bogenliga.application.common.component.ComponentFacade;
  * @author Paul Zeller, Paul_Johann.Zeller@Student.Reutlingen-University.de
  */
 public interface LigapasseComponent extends ComponentFacade {
-    /**
-     * Returns all Ligapasse objects.
-     *
-     * @return List of all MatchPasseView objects. MatchPasseView is created by merging the views ligamatch and ligapasse
-     */
-    List<LigapasseDO> findAll();
 
     /**
      * Returns a Ligapasse with the given id

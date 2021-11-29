@@ -24,12 +24,6 @@ public class LigamatchComponentImpl implements LigamatchComponent {
 
 
     @Override
-    public List<LigamatchDO> findAll() {
-        return null;
-    }
-
-
-    @Override
     public LigamatchDO findById(long wettkampfId) {
         return null;
     }
