@@ -19,6 +19,6 @@ public interface LigamatchComponent extends ComponentFacade {
      *
      * @return returns a MatchPasseView
      */
-    LigamatchDO findById(long wettkampfId);
+    List<LigamatchDO> findById(long wettkampfId);
 
 }

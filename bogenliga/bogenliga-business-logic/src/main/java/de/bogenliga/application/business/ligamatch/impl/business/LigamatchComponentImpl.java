@@ -1,11 +1,15 @@
 package de.bogenliga.application.business.ligamatch.impl.business;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.ligamatch.api.LigamatchComponent;
 import de.bogenliga.application.business.ligamatch.api.types.LigamatchDO;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchMapper;
+
 
 /**
  * TODO [AL] class documentation
@@ -24,8 +28,9 @@ public class LigamatchComponentImpl implements LigamatchComponent {
 
 
     @Override
-    public LigamatchDO findById(long wettkampfId) {
-        return null;
+    public List<LigamatchDO> findById(long wettkampfId) {
+        final List<LigamatchBE> LigamatchBEList = ligamatchDAO.getLigamatchWettkampf(wettkampfId);
+        return LigamatchBEList.stream().map(LigamatchMapper.toMatchDO).collect(Collectors.toList());
     }
 
 
