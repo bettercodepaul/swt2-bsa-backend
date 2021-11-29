@@ -1,14 +1,14 @@
 package de.bogenliga.application.business.ligamatch.impl.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import de.bogenliga.application.business.ligamatch.entity.LigamatchBE;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligatabelle.impl.dao.LigatabelleDAO;
-import de.bogenliga.application.business.ligatabelle.impl.entity.LigatabelleBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -29,22 +29,22 @@ public class LigamatchDAO implements DataAccessObject {
 
 
     //business entity parameters
-    private static final String MATCH_BE_WETTKAMPF_ID = "wettkampf_id";
-    private static final String MATCH_BE_MATCH_ID = "match_id";
-    private static final String MATCH_BE_MATCH_NR = "match_nr";
+    private static final String MATCH_BE_WETTKAMPF_ID = "wettkampfId";
+    private static final String MATCH_BE_MATCH_ID = "matchId";
+    private static final String MATCH_BE_MATCH_NR = "matchNr";
     private static final String MATCH_BE_MATCH_SCHEIBENNUMMER = "scheibennummer";
-    private static final String MATCH_BE_MATCH_MANSCHAFT_ID = "mannschaft_id";
-    private static final String MATCH_BE_MANNSCHAFT_NAME = "mannschaft_name";
-    private static final String MATCH_BE_MANNSCHAFT_NAME_GEGNER = "mannschaft_name_gegner";
-    private static final String MATCH_BE_MATCH_SCHEIBENNUMMER_GEGNER = "scheibennummer_gegner";
-    private static final String MATCH_BE_MATCH_ID_GEGNER = "id_gegner";
-    private static final String MATCH_BE_NAECHSTE_MATCH_ID = "naechste_match_id";
-    private static final String MATCH_BE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "naechste_naechste_match_nr_match_id";
-    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_1 = "strafpunkte_satz_1";
-    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_2 = "strafpunkte_satz_2";
-    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_3 = "strafpunkte_satz_3";
-    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_4 = "strafpunkte_satz_4";
-    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_5 = "strafpunkte_satz_5";
+    private static final String MATCH_BE_MATCH_MANSCHAFT_ID = "mannschaftId";
+    private static final String MATCH_BE_MANNSCHAFT_NAME = "mannschaftName";
+    private static final String MATCH_BE_MANNSCHAFT_NAME_GEGNER = "mannschaftNameGegner";
+    private static final String MATCH_BE_MATCH_SCHEIBENNUMMER_GEGNER = "scheibennummerGegner";
+    private static final String MATCH_BE_MATCH_ID_GEGNER = "idGegner";
+    private static final String MATCH_BE_NAECHSTE_MATCH_ID = "naechsteMatchId";
+    private static final String MATCH_BE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "naechsteNaechsteMatchNrMatchId";
+    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_1 = "strafpunkteSatz1";
+    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_2 = "strafpunkteSatz2";
+    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_3 = "strafpunkteSatz3";
+    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_4 = "strafpunkteSatz4";
+    private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_5 = "strafpunkteSatz5";
 
 
     // table columns
@@ -67,11 +67,12 @@ public class LigamatchDAO implements DataAccessObject {
 
 
     // wrap all specific config parameters
-    private static final BusinessEntityConfiguration<LigatabelleBE> LIGAMATCH = new BusinessEntityConfiguration<>(
-            LigatabelleBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
+    private static final BusinessEntityConfiguration<LigamatchBE> LIGAMATCH = new BusinessEntityConfiguration<>(
+            LigamatchBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
 
 
-    private final BasicDAO BasicDao;
+    private final BasicDAO basicDao;
+
 
     /**
      * Initialize the transaction manager to provide a database connection
@@ -79,7 +80,8 @@ public class LigamatchDAO implements DataAccessObject {
      * @param basicDao to handle the commonly used database operations
      */
     @Autowired
-    public LigamatchDAO(final BasicDAO basicDao) {this.BasicDao = basicDao;}
+    public LigamatchDAO(final BasicDAO basicDao) {this.basicDao = basicDao;}
+
 
 
     // table column label mapping to the business entity parameter names
@@ -107,7 +109,7 @@ public class LigamatchDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
-/*
+
     //SQL Selects
 
     private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
@@ -118,11 +120,13 @@ public class LigamatchDAO implements DataAccessObject {
             .compose().toString();
 
 
-    public LigamatchBE (Long Wettkampf_ID){
-        return basicDao.
+    public List<LigamatchBE> getLigamatchWettkampf (final Long wettkampfId){
+        return basicDao.selectEntityList(LIGAMATCH, FIND_BY_WETTKAMPF_ID, wettkampfId);
     }
 
- */
+
+
+
 
 
 }
