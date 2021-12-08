@@ -198,8 +198,8 @@ public class WettkampfComponentImplTest {
     public static VeranstaltungBE getVeranstaltungBE()
     {
         VeranstaltungBE veranstaltung = new VeranstaltungBE();
-        veranstaltung.setVeranstaltung_id(wettkampf_Veranstaltung_Id);
-        veranstaltung.setVeranstaltung_name("Demo Veranstaltung");
+        veranstaltung.setVeranstaltungId(wettkampf_Veranstaltung_Id);
+        veranstaltung.setVeranstaltungName("Demo Veranstaltung");
 
         return veranstaltung;
     }
