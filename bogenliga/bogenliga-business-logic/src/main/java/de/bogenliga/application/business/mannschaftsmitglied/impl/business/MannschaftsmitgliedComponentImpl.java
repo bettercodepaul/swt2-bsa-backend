@@ -224,6 +224,10 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
         return result.getDsbMitgliedEingesetzt() > 0;
     }
+    @Override
+    public List<MannschaftsmitgliedLigaBE> findSchuetzenInUebergeordneterLiga(Long sportsjahr, Long mannschaftsId, Long ligaId){
+        
+    }
 
     public List<MannschaftsmitgliedBE> findSchuetzenInUebergeordneterLiga(Long sportsjahr, Long mannschaftsId, Long ligaId){
         final List<MannschaftsmitgliedLigaBE> result = mannschaftsmitgliedExtDAO.findSchuetzenInUebergeordneterLiga(sportsjahr, mannschaftsId, ligaId);
