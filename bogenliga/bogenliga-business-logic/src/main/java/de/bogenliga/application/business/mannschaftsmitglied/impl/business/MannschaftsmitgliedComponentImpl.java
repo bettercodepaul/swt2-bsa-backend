@@ -9,6 +9,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.api.types.Mannschaf
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedLigaBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.MannschaftsmitgliedMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -217,6 +218,10 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         final MannschaftsmitgliedBE result = mannschaftsmitgliedDAO.findByMemberAndTeamId(mannschaftId, mitgliedId);
 
         return result.getDsbMitgliedEingesetzt() > 0;
+    }
+    @Override
+    public List<MannschaftsmitgliedLigaBE> findSchuetzenInUebergeordneterLiga(Long sportsjahr, Long mannschaftsId, Long ligaId){
+        
     }
 
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO) {

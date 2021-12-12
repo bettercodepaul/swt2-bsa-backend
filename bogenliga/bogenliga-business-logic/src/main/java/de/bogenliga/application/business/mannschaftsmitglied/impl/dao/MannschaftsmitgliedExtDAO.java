@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedLigaBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -154,6 +155,8 @@ public class MannschaftsmitgliedExtDAO extends MannschaftsmitgliedDAO implements
     private static final BusinessEntityConfiguration<MannschaftsmitgliedExtendedBE> MANNSCHAFTSMITGLIED_EXTENDED = new BusinessEntityConfiguration<>(
             MannschaftsmitgliedExtendedBE.class, TABLE, getColumnsToFieldsMapExtended(), LOGGER);
 
+    private static final BusinessEntityConfiguration<MannschaftsmitgliedLigaBE> MANNSCHAFTSMITGLIED_LIGA = new BusinessEntityConfiguration<>(
+            MannschaftsmitgliedLigaBE.class, TABLE, getColumnsToFieldsMapExtended(), LOGGER);
 
     private final BasicDAO basicDao;
 
@@ -214,11 +217,10 @@ public class MannschaftsmitgliedExtDAO extends MannschaftsmitgliedDAO implements
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_BY_TEAM_ID, id);
     }
 
-    //returns list of members that are allowed to shoot on given competition day.
-    public List<MannschaftsmitgliedBE> findSchuetzenInUebergeordneterLiga(final long sportsjahr, final long mannschaftsId, final long ligaId){
-        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED, FIND_SCHUETZE_IN_UEBERGELEGENER_LIGA, sportsjahr, mannschaftsId, ligaId);
+    //returns list of members, that shot in higher
+    public List<MannschaftsmitgliedLigaBE> findSchuetzenInUebergeordneterLiga(final long sportsjahr, final long mannschaftsId, final long ligaId){
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_LIGA, FIND_SCHUETZE_IN_UEBERGELEGENER_LIGA, sportsjahr, mannschaftsId, ligaId);
     }
-
 
     public List<MannschaftsmitgliedExtendedBE> findAllSchuetzeInTeamEingesetzt(final long id) {
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_ALL_SCHUETZE_TEAM_EINGESETZT, id);

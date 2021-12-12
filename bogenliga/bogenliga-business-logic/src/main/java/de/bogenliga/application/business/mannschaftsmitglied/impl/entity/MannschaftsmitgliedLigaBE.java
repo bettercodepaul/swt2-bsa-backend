@@ -4,6 +4,7 @@ package de.bogenliga.application.business.mannschaftsmitglied.impl.entity;
  * extends ManschaftsmitgliedBE by fore- and surname from dsb-Mitglied
  */
 public class MannschaftsmitgliedLigaBE extends MannschaftsmitgliedBE {
+
     private long ligaId;
     private long mannschaftsId;
     private long wettkampftag;
@@ -12,10 +13,40 @@ public class MannschaftsmitgliedLigaBE extends MannschaftsmitgliedBE {
     public MannschaftsmitgliedLigaBE() {
     }
 
+    public long getLigaId() {
+        return ligaId;
+    }
+
+
+    public void setLigaId(long ligaId) {
+        this.ligaId = ligaId;
+    }
+
+
+    public long getMannschaftsId() {
+        return mannschaftsId;
+    }
+
+
+    public void setMannschaftsId(long mannschaftsId) {
+        this.mannschaftsId = mannschaftsId;
+    }
+
+
+    public long getWettkampftag() {
+        return wettkampftag;
+    }
+
+
+    public void setWettkampftag(long wettkampftag) {
+        this.wettkampftag = wettkampftag;
+    }
+
     // IMPORTANT
     // Methods from Base class need to be overwritten because of the BasicTest-class
     // the BasicTest-class does not recognize that there are inherited methods
     // this results into failure within running the unit-tests
+
     @Override
     public Long getId() {
         return super.getId();
