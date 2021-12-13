@@ -30,7 +30,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_ID = "Mannschaftsmitglied Id must not be negative";
 
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
-    private final MannschaftsmitgliedExtDAO mannschaftsmitgliedExtDAO;
+    private MannschaftsmitgliedExtDAO mannschaftsmitgliedExtDAO = null;
 
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Mannschaftsmitglied: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Mannschaftsmitglied: %s must not be negative";
@@ -60,6 +60,11 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
         this.mannschaftsmitgliedExtDAO = mannschaftsmitgliedExtDAO;
     }
+    public MannschaftsmitgliedComponentImpl(final MannschaftsmitgliedDAO mannschaftsmitgliedDAO) {
+        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+
+    }
+
 
     @Override
     public List<MannschaftsmitgliedDO> findAll() {
@@ -237,13 +242,13 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         return result.getDsbMitgliedEingesetzt() > 0;
     }
 
-    public List<MannschaftsmitgliedBE> findSchuetzenInUebergeordneterLiga(Long sportsjahr, Long mannschaftsId, Long ligaId){
+    /*public List<MannschaftsmitgliedBE> findSchuetzenInUebergeordneterLiga(Long sportsjahr, Long mannschaftsId, Long ligaId){
         final List<MannschaftsmitgliedLigaBE> result = mannschaftsmitgliedExtDAO.findSchuetzenInUebergeordneterLiga(sportsjahr, mannschaftsId, ligaId);
         //aus result mit findbyid mannschaftsmitgliedBE holen.
 
 
         return
-    }
+    }*/
 
 
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO) {
