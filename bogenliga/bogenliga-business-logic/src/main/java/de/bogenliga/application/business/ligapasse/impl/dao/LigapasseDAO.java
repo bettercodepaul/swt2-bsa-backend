@@ -38,6 +38,7 @@ public class LigapasseDAO implements DataAccessObject {
     private static final String MATCH_BE_MANNSCHAFTSMITGLIED_RUECKENNUMMER = "mannschaftsmitglied_Rueckennummer";
     private static final String MATCH_BE_PASSE_RINGZAHL_PFEIL1 = "passeRingzahlPfeil1";
     private static final String MATCH_BE_PASSE_RINGZAHL_PFEIL2 = "passeRingzahlPfeil2";
+    private static final String MATCH_BE_PASSE_MATCH_NR = "passeMatchNr";
 
 
     // table columns
@@ -51,6 +52,7 @@ public class LigapasseDAO implements DataAccessObject {
     private static final String MATCH_TABLE_MANNSCHAFTSMITGLIED_RUECKENNUMMER = "ligapasse_mannschaftsmitglied_rueckennummer";
     private static final String MATCH_TABLE_PASSE_RINGZAHL_PFEIL1 = "ligapsse_passe_ringzahl_pfeil1";
     private static final String MATCH_TABLE_PASSE_RINGZAHL_PFEIL2 = "ligapasse_passe_ringzahl_pfeil2";
+    private static final String MATCH_TABLE_PASSE_MATCH_NR = "ligapasse_passe_match_nr";
 
 
     // wrap all specific config parameters
@@ -83,22 +85,25 @@ public class LigapasseDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFTSMITGLIED_RUECKENNUMMER, MATCH_BE_MANNSCHAFTSMITGLIED_RUECKENNUMMER);
         columnsToFieldsMap.put(MATCH_TABLE_PASSE_RINGZAHL_PFEIL1, MATCH_BE_PASSE_RINGZAHL_PFEIL1);
         columnsToFieldsMap.put(MATCH_TABLE_PASSE_RINGZAHL_PFEIL2, MATCH_BE_PASSE_RINGZAHL_PFEIL2);
+        columnsToFieldsMap.put(MATCH_TABLE_PASSE_MATCH_NR, MATCH_BE_PASSE_MATCH_NR);
 
         return columnsToFieldsMap;
     }
 
+    public List<LigapasseBE> findLigapassenByLigamatchId(Long ligapasseID){
+        return this.basicDao.selectEntityList(LIGAPASSE, FIND_BY_LIGAPASSE_ID, ligapasseID);
+
+    }
+
     //SQL Selects
-    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+    private static final String FIND_BY_LIGAPASSE_ID = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
-            .orderBy(MATCH_TABLE_WETTKAMPF_ID)
+            .whereEquals(MATCH_TABLE_MATCH_ID)
+            .orderBy(MATCH_TABLE_PASSE_LFDNR)
             .compose().toString();
 
 
-    public List<LigapasseBE> getLigapasseWettkampf (final Long wettkampfId){
-        return basicDao.selectEntityList(LIGAPASSE, FIND_BY_WETTKAMPF_ID, wettkampfId);
-    }
 
 
 

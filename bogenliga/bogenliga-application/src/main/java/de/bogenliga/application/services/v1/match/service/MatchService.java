@@ -699,8 +699,10 @@ public class MatchService implements ServiceFacade {
      * @param addPassen True: dann werden auch die Daten der Passen mit gelesen
      * @return MatchDTO
      */
+
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
-        final MatchDO matchDo = matchComponent.findById(matchId);
+        //final MatchDO matchDo = matchComponent.findById(matchId);
+        final MatchDO matchDo = matchComponent.findLigamatchById(matchId);
         final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
                 wettkampfComponent.findById(matchDo.getWettkampfId()));
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
@@ -715,7 +717,8 @@ public class MatchService implements ServiceFacade {
             VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
             matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
 
-            List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
+            //List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
+            List<PasseDO> passeDOs = passeComponent.findLigapassenByLigamatchId(matchId);
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 
             // reverse map the schuetzeNr to the passeDTO
