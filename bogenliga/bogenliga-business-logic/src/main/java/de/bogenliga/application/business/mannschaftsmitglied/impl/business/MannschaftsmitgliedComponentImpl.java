@@ -79,6 +79,16 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
                 Collectors.toList());
     }
 
+
+    public List<MannschaftsmitgliedDO> findSchuetzenInUebergelegenerLiga(Long mannschaftsId, Long wettkampfId) {
+
+        final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findSchuetzenInUebergelegenerLiga(
+                 mannschaftsId, wettkampfId);
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
+                Collectors.toList());
+    }
+
+
     @Override
     public List<MannschaftsmitgliedDO> findByTeamId(Long mannschaftsId) {
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
