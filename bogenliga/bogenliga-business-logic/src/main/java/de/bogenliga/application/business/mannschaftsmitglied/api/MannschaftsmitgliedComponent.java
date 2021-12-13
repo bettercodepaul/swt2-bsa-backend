@@ -40,6 +40,18 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
     List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long mannschaftsmitgliederMannschaftsId);
 
 
+    /**
+     *
+     * Die Funktion liefert alle erlaubten Schützen,
+     * abhängig ob sie schon aktiv geschossen haben. Z.B. für die Bogenkontrollliste.
+     * @param mannschaftsId
+     * @param wettkampfId
+     * @return list of mannschaftsmitglied entries with the given mitgliedsId
+     */
+
+    List<MannschaftsmitgliedDO> findSchuetzenInUebergelegenerLiga(Long mannschaftsId, Long wettkampfId);
+
+
 
     /**
      * Return all mannschaftsmitglied entries from one team.

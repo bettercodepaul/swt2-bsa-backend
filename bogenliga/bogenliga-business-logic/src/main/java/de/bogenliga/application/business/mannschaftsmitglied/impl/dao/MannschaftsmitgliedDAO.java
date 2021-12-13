@@ -128,6 +128,42 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .compose().toString();
 
 
+
+    private static final String FIND_SCHUETZE_IN_UEBERGELEGENER_LIGA =
+            "SELECT DISTINCT m.* FROM mannschaftsmitglied as m, wettkampf as w, passe as p, veranstaltung v, liga l\n" +
+            "WHERE m.mannschaftsmitglied_mannschaft_id = ?\n" +
+            "AND w.wettkampf_id = ?\n" +
+            "AND w.wettkampf_veranstaltung_id = v.veranstaltung_id\n" +
+            "AND m.mannschaftsmitglied_dsb_mitglied_id NOT IN\n" +
+            "(SELECT p2.passe_dsb_mitglied_id from passe as p2\n" +
+            "WHERE p2.passe_wettkampf_id = w.wettkampf_id\n" +
+            "AND p2.passe_dsb_mitglied_id = m.mannschaftsmitglied_dsb_mitglied_id)\n" +
+            "AND m.mannschaftsmitglied_dsb_mitglied_id NOT IN(\n" +
+            "SELECT passe_dsb_mitglied_id from (\n" +
+            "select veranstaltung.veranstaltung_liga_id, passe.passe_dsb_mitglied_id, wettkampf.wettkampf_tag, wettkampf.wettkampf_id\n" +
+            "from veranstaltung, wettkampf, passe\n" +
+            "where veranstaltung.veranstaltung_id = wettkampf.wettkampf_veranstaltung_id\n" +
+            "and passe.passe_wettkampf_id = wettkampf.wettkampf_id\n" +
+            "and passe.passe_mannschaft_id = m.mannschaftsmitglied_mannschaft_id\n" +
+            "and w.wettkampf_id != wettkampf.wettkampf_id\n" +
+            "and v.veranstaltung_sportjahr =veranstaltung.veranstaltung_sportjahr\n" +
+            "and veranstaltung.veranstaltung_liga_id in (\n" +
+            "WITH RECURSIVE traverse AS (\n" +
+            "SELECT liga_uebergeordnet FROM liga\n" +
+            "WHERE liga.liga_id = v.veranstaltung_liga_id\n" +
+            "UNION ALL\n" +
+            "SELECT liga.liga_uebergeordnet FROM liga\n" +
+            "INNER JOIN traverse\n" +
+            "ON liga.liga_id = traverse.liga_uebergeordnet\n" +
+            ")\n" +
+            "SELECT liga_uebergeordnet FROM traverse\n" +
+            ")\n" +
+            "group by veranstaltung.veranstaltung_liga_id, passe.passe_dsb_mitglied_id, wettkampf.wettkampf_tag, wettkampf.wettkampf_id\n" +
+            ")AS Foo GROUP BY passe_dsb_mitglied_id HAVING ( COUNT(passe_dsb_mitglied_id) >= 2));";
+
+
+
+
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<MannschaftsmitgliedBE> MANNSCHAFTSMITGLIED = new BusinessEntityConfiguration<>(
             MannschaftsmitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
@@ -137,6 +173,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     private final BasicDAO basicDao;
+
 
 
     @Autowired
@@ -176,6 +213,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         return columnsToFieldsMapExtended;
     }
 
+
+
     /**
      * Return all mannschaftsmitglied entries
      */
@@ -203,6 +242,9 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_ALL_SCHUETZE_TEAM, id);
     }
 
+    public List<MannschaftsmitgliedExtendedBE> findSchuetzenInUebergelegenerLiga( final long mannschaftsId, final long wettkampfId) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_SCHUETZE_IN_UEBERGELEGENER_LIGA,  mannschaftsId, wettkampfId);
+    }
 
     public MannschaftsmitgliedExtendedBE findByMemberAndTeamId(long teamId, final long memberId) {
        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED_EXTENDED, FIND_BY_MEMBER_AND_TEAM_ID, memberId, teamId);

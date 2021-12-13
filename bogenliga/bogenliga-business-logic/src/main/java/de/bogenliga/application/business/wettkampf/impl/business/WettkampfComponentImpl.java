@@ -295,7 +295,14 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public List<Long> getAllowedMitglieder(long wettkampfid, long mannschaft1Id, long mannschaft2Id){
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
-        
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft1Id,wettkampfid);
+        List<Long> allowedList=new ArrayList<>();
+        for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
+            allowedList.add(mannschaftsmitglied.getDsbMitgliedId());
+        }
+        return allowedList;
+
+        /*
         List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
 
         //Liste mit allen Schützen aus beiden Teams
@@ -304,7 +311,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         allSchuetzenVonBeidenTeams.addAll(mannschaftsmitglied2DOList);
 
         return getAllowedMitgliederList(allSchuetzenVonBeidenTeams, dsbMitgliedDOList, wettkampfid);
-
+        */
     }
 
     //Alte Version von getAllowedMitglieder
