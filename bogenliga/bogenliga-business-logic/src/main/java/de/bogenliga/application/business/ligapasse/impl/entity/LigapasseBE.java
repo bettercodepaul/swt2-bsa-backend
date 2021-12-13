@@ -14,13 +14,14 @@ public class LigapasseBE extends CommonBusinessEntity implements BusinessEntity 
     private Long wettkampfId;
     private Long matchId;
     private Long passeId;
-    private int passeLfdnr;
+    private Long passeLfdnr;
     private Long passeMannschaftId;
     private Long dsbMitgliedId;
     private String dsbMitgliedName;
     private int mannschaftsmitgliedRueckennummer;
     private int passeRingzahlPfeil1;
     private int passeRingzahlPfeil2;
+    private Long passeMatchNr;
 
 
     public LigapasseBE() {
@@ -40,21 +41,28 @@ public class LigapasseBE extends CommonBusinessEntity implements BusinessEntity 
                 ", mannschaftsmitgliedRueckennummer=" + mannschaftsmitgliedRueckennummer +
                 ", passeRingzahlPfeil1=" + passeRingzahlPfeil1 +
                 ", passeRingzahlPfeil2=" + passeRingzahlPfeil2 +
+                ", passeMatchNr=" + passeMatchNr +
                 '}';
     }
 
+
+
+
+
+    public Long getPasseMatchNr() {return passeMatchNr;}
+    public void setPasseMatchNr(Long passeMatchNr) {this.passeMatchNr = passeMatchNr;}
 
     public Long getWettkampfId() {return wettkampfId;}
     public void setWettkampfId(Long wettkampfId) {this.wettkampfId = wettkampfId;}
 
     public Long getMatchId() {return matchId;}
-    public void setMatch_id(Long matchId) {this.matchId = matchId;}
+    public void setMatchId(Long matchId) {this.matchId = matchId;}
 
     public Long getPasseId() {return passeId;}
     public void setPasseId(Long passeId) {this.passeId = passeId;}
 
-    public int getPasseLfdnr() {return passeLfdnr;}
-    public void setPasseLfdnr(int passeLfdnr) {this.passeLfdnr = passeLfdnr;}
+    public Long getPasseLfdnr() {return passeLfdnr;}
+    public void setPasseLfdnr(Long passeLfdnr) {this.passeLfdnr = passeLfdnr;}
 
     public Long getPasseMannschaftId() {return passeMannschaftId;}
     public void setPasseMannschaftId(Long passeMannschaftId) {this.passeMannschaftId = passeMannschaftId;}

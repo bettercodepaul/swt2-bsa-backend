@@ -24,11 +24,15 @@ public interface MatchComponent {
 
     MatchDO findById(Long id);
 
-      /**
+
+    MatchDO findLigamatchById(Long id);
+
+    /**
      * Return a single match by combined primary key attributes
      *
      * @return single matchDO
      */
+
 
     MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer);
 
