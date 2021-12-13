@@ -20,13 +20,13 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 @Repository
 public class VeranstaltungDAO implements DataAccessObject{
 
-    private static final String VERANSTALTUNG_BE_ID = "veranstaltung_id";
-    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltung_name";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltung_sportjahr";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltung_meldedeadline";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
-    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltung_liga_id";
+    private static final String VERANSTALTUNG_BE_ID = "veranstaltungId";
+    private static final String VERANSTALTUNG_BE_WETTKAMPFTYP_ID= "veranstaltungWettkampftypId";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_NAME= "veranstaltungName";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_SPORTJAHR = "veranstaltungSportjahr";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE = "veranstaltungMeldedeadline";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterId";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltungLigaId";
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
@@ -163,8 +163,8 @@ public class VeranstaltungDAO implements DataAccessObject{
         List<VeranstaltungBE> veranstaltungen = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_SPORTJAHR_DESTINCT);
         ArrayList<SportjahrDO> sportjahre = new ArrayList<>();
         for(int i = 0; i < veranstaltungen.size(); i++){
-            sportjahre.add(new SportjahrDO(veranstaltungen.get(i).getVeranstaltung_id(),
-                    veranstaltungen.get(i).getVeranstaltung_sportjahr(),
+            sportjahre.add(new SportjahrDO(veranstaltungen.get(i).getVeranstaltungId(),
+                    veranstaltungen.get(i).getVeranstaltungSportjahr(),
                     veranstaltungen.get(i).getVersion()));
         }
         return sportjahre;
