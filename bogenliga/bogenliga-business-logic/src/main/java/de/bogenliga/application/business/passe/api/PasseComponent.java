@@ -19,11 +19,16 @@ public interface PasseComponent {
 
     PasseDO findById(Long id);
 
+
+    List<PasseDO> findLigapassenByLigamatchId(Long matchId);
+
+
     /**
      * Return all passe from one Wettkampf
      *
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
+
 
     List<PasseDO> findByWettkampfId(Long wettkampfId);
 

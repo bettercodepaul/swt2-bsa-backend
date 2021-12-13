@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.ligapasse.impl.dao.LigapasseDAO;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.passe.impl.dao.PasseBaseDAOTest;
 import de.bogenliga.application.business.passe.impl.dao.PasseDAO;
@@ -39,6 +40,8 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
 
     private PasseComponentImpl underTest;
 
+    private LigapasseDAO ligapasseDAO;
+
 
     private BasicComponentTest<PasseComponentImpl, PasseDO> basicComponentTest;
     private BasicTest<PasseBE, PasseDO> basicTest;
@@ -47,7 +50,7 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
     @Before
     public void testSetup() {
         expectedBE = getPasseBE();
-        underTest = new PasseComponentImpl(passeDAO);
+        underTest = new PasseComponentImpl(passeDAO, ligapasseDAO);
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
     }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.ligamatch.api.LigamatchComponent;
 import de.bogenliga.application.business.ligamatch.api.types.LigamatchDO;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
+import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 
 /**
  * TODO [AL] class documentation
@@ -15,11 +16,11 @@ import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
 @Component
 public class LigamatchComponentImpl implements LigamatchComponent {
 
-    private final LigamatchDAO ligamatchDAO;
+    private final MatchDAO matchDAO;
 
     @Autowired
-    public LigamatchComponentImpl(LigamatchDAO ligamatchDAO) {
-        this.ligamatchDAO = ligamatchDAO;
+    public LigamatchComponentImpl(MatchDAO matchDAO) {
+        this.matchDAO = matchDAO;
     }
 
 
@@ -33,6 +34,5 @@ public class LigamatchComponentImpl implements LigamatchComponent {
     public LigamatchDO findById(long wettkampfId) {
         return null;
     }
-
 
 }

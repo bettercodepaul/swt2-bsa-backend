@@ -34,10 +34,10 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_BE_MATCH_NR = "matchNr";
     private static final String MATCH_BE_MATCH_SCHEIBENNUMMER = "scheibennummer";
     private static final String MATCH_BE_MATCH_MANSCHAFT_ID = "mannschaftId";
-    private static final String MATCH_BE_MANNSCHAFT_NAME = "mannschaftName";
-    private static final String MATCH_BE_MANNSCHAFT_NAME_GEGNER = "mannschaftNameGegner";
-    private static final String MATCH_BE_MATCH_SCHEIBENNUMMER_GEGNER = "scheibennummerGegner";
-    private static final String MATCH_BE_MATCH_ID_GEGNER = "idGegner";
+//    private static final String MATCH_BE_MANNSCHAFT_NAME = "mannschaftName";
+//    private static final String MATCH_BE_MANNSCHAFT_NAME_GEGNER = "mannschaftNameGegner";
+//    private static final String MATCH_BE_MATCH_SCHEIBENNUMMER_GEGNER = "scheibennummerGegner";
+//    private static final String MATCH_BE_MATCH_ID_GEGNER = "idGegner";
     private static final String MATCH_BE_NAECHSTE_MATCH_ID = "naechsteMatchId";
     private static final String MATCH_BE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "naechsteNaechsteMatchNrMatchId";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_1 = "strafpunkteSatz1";
@@ -45,6 +45,7 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_3 = "strafpunkteSatz3";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_4 = "strafpunkteSatz4";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_5 = "strafpunkteSatz5";
+    private static final String MATCH_BE_BEGEGNUNG = "begegnung";
 
 
     // table columns
@@ -53,10 +54,10 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_MATCH_NR = "ligamatch_match_nr";
     private static final String MATCH_TABLE_MATCH_SCHEIBENNUMMER = "ligamatch_match_scheibennummer";
     private static final String MATCH_TABLE_MATCH_MANSCHAFT_ID = "ligamatch_match_mannschaft_id";
-    private static final String MATCH_TABLE_MANNSCHAFT_NAME = "ligamatch_mannschaft_name";
-    private static final String MATCH_TABLE_MANNSCHAFT_NAME_GEGNER = "ligamatch_mannschaft_name_gegner";
-    private static final String MATCH_TABLE_MATCH_SCHEIBENNUMMER_GEGNER = "ligamatch_match_scheibennummer_gegner";
-    private static final String MATCH_TABLE_MATCH_ID_GEGNER = "ligamatch_match_id_gegner";
+//    private static final String MATCH_TABLE_MANNSCHAFT_NAME = "ligamatch_mannschaft_name";
+//    private static final String MATCH_TABLE_MANNSCHAFT_NAME_GEGNER = "ligamatch_mannschaft_name_gegner";
+//    private static final String MATCH_TABLE_MATCH_SCHEIBENNUMMER_GEGNER = "ligamatch_match_scheibennummer_gegner";
+//    private static final String MATCH_TABLE_MATCH_ID_GEGNER = "ligamatch_match_id_gegner";
     private static final String MATCH_TABLE_NAECHSTE_MATCH_ID = "ligamatch_naechste_match_id";
     private static final String MATCH_TABLE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "ligamatch_naechste_naechste_match_nr_match_id";
     private static final String MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_1 = "ligamatch_match_strafpunkte_satz_1";
@@ -64,6 +65,7 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_3 = "ligamatch_match_strafpunkte_satz_3";
     private static final String MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_4 = "ligamatch_match_strafpunkte_satz_4";
     private static final String MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_5 = "ligamatch_match_strafpunkte_satz_5";
+    private static final String MATCH_TABLE_BEGEGNUNG = "ligamatch_begegnung";
 
 
     // wrap all specific config parameters
@@ -94,10 +96,10 @@ public class LigamatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_NR, MATCH_BE_MATCH_NR);
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_SCHEIBENNUMMER, MATCH_BE_MATCH_SCHEIBENNUMMER);
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_MANSCHAFT_ID, MATCH_BE_MATCH_MANSCHAFT_ID);
-        columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFT_NAME, MATCH_TABLE_MANNSCHAFT_NAME);
-        columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFT_NAME_GEGNER, MATCH_BE_MANNSCHAFT_NAME_GEGNER);
-        columnsToFieldsMap.put(MATCH_TABLE_MATCH_SCHEIBENNUMMER_GEGNER, MATCH_BE_MATCH_SCHEIBENNUMMER_GEGNER);
-        columnsToFieldsMap.put(MATCH_TABLE_MATCH_ID_GEGNER, MATCH_BE_MATCH_ID_GEGNER);
+//        columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFT_NAME, MATCH_TABLE_MANNSCHAFT_NAME);
+//        columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFT_NAME_GEGNER, MATCH_BE_MANNSCHAFT_NAME_GEGNER);
+//        columnsToFieldsMap.put(MATCH_TABLE_MATCH_SCHEIBENNUMMER_GEGNER, MATCH_BE_MATCH_SCHEIBENNUMMER_GEGNER);
+//        columnsToFieldsMap.put(MATCH_TABLE_MATCH_ID_GEGNER, MATCH_BE_MATCH_ID_GEGNER);
         columnsToFieldsMap.put(MATCH_TABLE_NAECHSTE_MATCH_ID, MATCH_BE_NAECHSTE_MATCH_ID);
         columnsToFieldsMap.put(MATCH_TABLE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID, MATCH_BE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID);
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_1, MATCH_BE_MATCH_STRAFPUNKTE_SATZ_1);
@@ -105,25 +107,29 @@ public class LigamatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_3, MATCH_BE_MATCH_STRAFPUNKTE_SATZ_3);
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_4, MATCH_BE_MATCH_STRAFPUNKTE_SATZ_4);
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_5, MATCH_BE_MATCH_STRAFPUNKTE_SATZ_5);
+        columnsToFieldsMap.put(MATCH_TABLE_BEGEGNUNG, MATCH_BE_BEGEGNUNG);
 
         return columnsToFieldsMap;
     }
 
+    public LigamatchBE findById(final Long ligamatchId){
+        return basicDao.selectSingleEntity(LIGAMATCH, FIND_BY_MATCH_ID, ligamatchId);
+    }
 
     //SQL Selects
 
-    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+    private static final String FIND_BY_MATCH_ID = new QueryBuilder()
             .selectAll()
             .from(TABLE)
-            .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
-            .orderBy(MATCH_TABLE_WETTKAMPF_ID)
+            .whereEquals(MATCH_TABLE_MATCH_ID)
+            .orderBy(MATCH_TABLE_MATCH_ID)
             .compose().toString();
 
-
-    public List<LigamatchBE> getLigamatchWettkampf (final Long wettkampfId){
-        return basicDao.selectEntityList(LIGAMATCH, FIND_BY_WETTKAMPF_ID, wettkampfId);
-    }
-
+//    private static final String FIND_BY_MATCH_ID =
+//            "SELECT ligamatch.*, match.match_begegnung FROM ligamatch" +
+//            " LEFT JOIN  match" +
+//            " ON ligamatch.ligamatch_match_id = match.match_id" +
+//            " WHERE match_id = ?";
 
 
 
