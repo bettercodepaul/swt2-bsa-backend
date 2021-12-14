@@ -127,7 +127,7 @@ public class DsbMitgliedService implements ServiceFacade {
         Preconditions.checkNotNull(searchstring, PRECONDITION_MSG_SEARCHTERM);
         LOG.debug("Receive 'findByName' request with Searchterm '{}'", searchstring);
 
-        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findByName("%" + searchstring + "%");
+        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findByName(searchstring);
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
