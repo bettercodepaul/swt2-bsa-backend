@@ -72,6 +72,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
+    private static final String FIND_BY_NAME =
+            "SELECT * "
+                    + " FROM dsb_mitglied "
+                    + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
+                    + " ' ', LOWER(dsb_mitglied_nachname)) LIKE LOWER(?) ";
+
 
 
     private static final String FIND_DSB_KAMPFRICHTER =
@@ -167,6 +173,15 @@ public class DsbMitgliedDAO implements DataAccessObject {
      */
     public DsbMitgliedBE findByUserId(final long id) {
         return basicDao.selectSingleEntity(DSBMITGLIED, FIND_BY_USER_ID, id);
+    }
+
+
+    /**
+     * @param searchstring
+     * @return dsbmitglied entries which contain the search term
+     */
+    public List<DsbMitgliedBE> findByName(final String searchstring) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_NAME, searchstring);
     }
 
 

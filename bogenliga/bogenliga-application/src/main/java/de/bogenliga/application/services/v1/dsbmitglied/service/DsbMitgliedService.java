@@ -51,6 +51,7 @@ public class DsbMitgliedService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID = "DsbMitglied vereins id must not be null";
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
+    private static final String PRECONDITION_MSG_SEARCHTERM = "Search term must not be negative";
 
     private static final Logger LOG = LoggerFactory.getLogger(DsbMitgliedService.class);
 
@@ -111,6 +112,22 @@ public class DsbMitgliedService implements ServiceFacade {
         Preconditions.checkArgument(id > 0, PRECONDITION_MSG_ID_NEGATIVE);
         LOG.debug("Receive 'findAllByTeamid' request with ID '{}'", id );
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findAllByTeamId(id);
+        return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+    /**
+     * I return dsbMitglied entries of the database which contain the search term
+     * @param searchstring
+     * @return list of {@link DsbMitgliedDTO} as JSON
+     */
+    @GetMapping(value = "/namesearch/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<DsbMitgliedDTO> findByName(@PathVariable("searchstring") final String searchstring) {
+        Preconditions.checkNotNull(searchstring, PRECONDITION_MSG_SEARCHTERM);
+        LOG.debug("Receive 'findByName' request with Searchterm '{}'", searchstring);
+
+        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findByName("%" + searchstring + "%");
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
