@@ -2,11 +2,8 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,7 +246,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         doc.setFontSize(20.0f);
         doc.add(new Paragraph(header).setBold());
         doc.setFontSize(9.2f);
-        doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltung_name()));
+        doc.add(new Paragraph("Veranstaltung: " + selectedVeranstaltung.getVeranstaltungName()));
         doc.add(new Paragraph("Mannschaft: " + getTeamName(mannschaftsid)));
         doc.add(new Paragraph("Jahr: " + jahr));
         doc.add(new Paragraph(""));
@@ -545,7 +542,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         long wettkampfid = wettkaempfe.get(0).getId();
 
         doc.setFontSize(20.0f);
-        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltung_name()).setBold());
+        doc.add(new Paragraph(wettkampftag+". Bogenligawettkampf / "+ selectedVeranstaltung.getVeranstaltungName()).setBold());
         doc.setFontSize(9.2f);
         doc.add(new Paragraph("am "+ wettkaempfe.get(0).getDatum()));
         doc.add(new Paragraph("in "+ wettkaempfe.get(0).getWettkampfPlz() + ", " +  wettkaempfe.get(0).getWettkampfOrtsname()
