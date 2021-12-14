@@ -181,7 +181,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
      * @return dsbmitglied entries which contain the search term
      */
     public List<DsbMitgliedBE> findByName(final String searchstring) {
-        return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_NAME, searchstring);
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_NAME, new StringBuilder()
+                                                                        .append("%")
+                                                                        .append(searchstring)
+                                                                        .append("%")
+                                                                        .toString()
+        );
     }
 
 
