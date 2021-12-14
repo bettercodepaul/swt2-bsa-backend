@@ -37,8 +37,8 @@ public class LigatabelleServiceTest {
     private static final int matchpkt = 6;
     private static final int matchpktGegen = 2;
     private static final int satzpkt = 18;
-    private static final int satzpkt_gegen = 3;
-    private static final int satzpkt_differenz = 15;
+    private static final int satzpktGegen = 3;
+    private static final int satzpktDifferenz = 15;
     private static final int sortierung = 0;
     private static final int tabellenplatz = 8;
 
@@ -53,10 +53,10 @@ public class LigatabelleServiceTest {
         expectedLigatabelleDO.setvereinId(vereinId);
         expectedLigatabelleDO.setvereinName(vereinName);
         expectedLigatabelleDO.setmatchpkt(matchpkt);
-        expectedLigatabelleDO.setmatchpktGegen(matchpktGegen);
+        expectedLigatabelleDO.setMatchpktGegen(matchpktGegen);
         expectedLigatabelleDO.setsatzpkt(satzpkt);
-        expectedLigatabelleDO.setsatzpktGegen(satzpkt_gegen);
-        expectedLigatabelleDO.setsatzpktDifferenz(satzpkt_differenz);
+        expectedLigatabelleDO.setSatzpktGegen(satzpktGegen);
+        expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
 
@@ -76,8 +76,8 @@ public class LigatabelleServiceTest {
         matchpkt,
                 matchpktGegen,
         satzpkt,
-        satzpkt_gegen,
-        satzpkt_differenz,
+        satzpktGegen,
+        satzpktDifferenz,
         sortierung,
         tabellenplatz
         );
@@ -131,10 +131,10 @@ public class LigatabelleServiceTest {
         assertThat(actualDTO.getVereinId()).isEqualTo(ligatabelleDO.getvereinId());
         assertThat(actualDTO.getVereinName()).isEqualTo(ligatabelleDO.getvereinName());
         assertThat(actualDTO.getMatchpkt()).isEqualTo(ligatabelleDO.getmatchpkt());
-        assertThat(actualDTO.getMatchpktGegen()).isEqualTo(ligatabelleDO.getmatchpktGegen());
+        assertThat(actualDTO.getMatchpktGegen()).isEqualTo(ligatabelleDO.getMatchpktGegen());
         assertThat(actualDTO.getSatzpkt()).isEqualTo(ligatabelleDO.getsatzpkt());
-        assertThat(actualDTO.getSatzpktGegen()).isEqualTo(ligatabelleDO.getsatzpktGegen());
-        assertThat(actualDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getsatzpktDifferenz());
+        assertThat(actualDTO.getSatzpktGegen()).isEqualTo(ligatabelleDO.getSatzpktGegen());
+        assertThat(actualDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actualDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actualDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
 
@@ -172,10 +172,10 @@ public class LigatabelleServiceTest {
         assertThat(actualDTO.getVereinId()).isEqualTo(ligatabelleDO.getvereinId());
         assertThat(actualDTO.getVereinName()).isEqualTo(ligatabelleDO.getvereinName());
         assertThat(actualDTO.getMatchpkt()).isEqualTo(ligatabelleDO.getmatchpkt());
-        assertThat(actualDTO.getMatchpktGegen()).isEqualTo(ligatabelleDO.getmatchpktGegen());
+        assertThat(actualDTO.getMatchpktGegen()).isEqualTo(ligatabelleDO.getMatchpktGegen());
         assertThat(actualDTO.getSatzpkt()).isEqualTo(ligatabelleDO.getsatzpkt());
-        assertThat(actualDTO.getSatzpktGegen()).isEqualTo(ligatabelleDO.getsatzpktGegen());
-        assertThat(actualDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getsatzpktDifferenz());
+        assertThat(actualDTO.getSatzpktGegen()).isEqualTo(ligatabelleDO.getSatzpktGegen());
+        assertThat(actualDTO.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actualDTO.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actualDTO.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
 
