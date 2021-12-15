@@ -34,6 +34,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     private static final String PRECONDITION_MSG_DSBMITGLIED_VEREIN_ID_NEGATIVE = "DsbMitglied vereins id must not be negative";
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
     private static final String PRECONDITION_MSG_DSBMITGLIED_MANNSCHAFT_ID = "Team id must not be negative";
+    private static final String PRECONDITION_MSG_DSBMITGLIED_SEARCHTERM = "Search term must not be null";
 
     private final DsbMitgliedDAO dsbMitgliedDAO;
     private final LizenzDAO lizenzDAO;
@@ -79,6 +80,14 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         DsbMitgliedDO dsbMitgliedDO = DsbMitgliedMapper.toDsbMitgliedDO.apply(result);
         dsbMitgliedDO.setKampfrichter(dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId()));
         return dsbMitgliedDO;
+    }
+
+    @Override
+    public List<DsbMitgliedDO> findByName(final String searchstring) {
+        Preconditions.checkNotNull(searchstring, PRECONDITION_MSG_DSBMITGLIED_SEARCHTERM);
+
+        final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findByName(searchstring);
+        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
     }
 
 

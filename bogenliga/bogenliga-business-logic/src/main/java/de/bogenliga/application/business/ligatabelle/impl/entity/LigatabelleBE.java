@@ -146,11 +146,11 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
         this.matchpkt = matchpkt;
     }
 
-    public int getMatchpkt_gegen() {
+    public int getMatchpktGegen() {
         return matchpktGegen;
     }
-    public void setMatchpkt_gegen(final int matchpkt_gegen) {
-        this.matchpktGegen = matchpkt_gegen;
+    public void setMatchpktGegen(final int matchpktGegen) {
+        this.matchpktGegen = matchpktGegen;
     }
 
     public int getSatzpkt() {
@@ -160,17 +160,17 @@ public class LigatabelleBE extends CommonBusinessEntity implements BusinessEntit
         this.satzpkt = satzpkt;
     }
 
-    public int getSatzpkt_gegen() {
+    public int getSatzpktGegen() {
         return satzpktGegen;
     }
-    public void setSatzpkt_gegen(final int satzpktGegen) {
+    public void setSatzpktGegen(final int satzpktGegen) {
         this.satzpktGegen = satzpktGegen;
     }
 
-    public int getSatzpkt_differenz() {
+    public int getSatzpktDifferenz() {
         return satzpktDifferenz;
     }
-    public void setSatzpkt_differenz(final int satzpktDifferenz) {
+    public void setSatzpktDifferenz(final int satzpktDifferenz) {
         this.satzpktDifferenz = satzpktDifferenz;
     }
 
