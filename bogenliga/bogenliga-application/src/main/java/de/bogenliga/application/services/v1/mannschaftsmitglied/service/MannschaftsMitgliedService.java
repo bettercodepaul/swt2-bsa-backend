@@ -110,6 +110,8 @@ public class MannschaftsMitgliedService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findSchuetzenInUebergelegenerLiga(@PathVariable("mannschaftsId") final long mannschaftsId,
                                                                           @PathVariable("wettkampfId") final long wettkampfId) {
+        Preconditions.checkArgument(mannschaftsId > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(wettkampfId > 0, PRECONDITION_MSG_ID_NEGATIVE);
         final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findSchuetzenInUebergelegenerLiga(
                 mannschaftsId,wettkampfId);
         return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
