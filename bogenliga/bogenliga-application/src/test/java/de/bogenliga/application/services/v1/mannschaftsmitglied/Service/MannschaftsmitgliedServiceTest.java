@@ -40,6 +40,7 @@ public class MannschaftsmitgliedServiceTest {
     private static final String dsbMitgliedVorname = "Mario";
     private static final String dsbMitgliedNachname = "Gomez";
     private static final Long rueckennummer = 5L;
+    private static final Long wettkampId = 30L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -197,6 +198,19 @@ public class MannschaftsmitgliedServiceTest {
         assertThatThrownBy(()->{
             underTest.findByTeamIdAndRueckennummer(mannschaftsId, 0);
         }).isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    public void findSchuetzenInUebergelegenerLiga(){
+        final MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+        final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
+
+        // configure mocks
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampId)).thenReturn(mannschaftsmitgliedDOList);
+        final List<MannschaftsMitgliedDTO> actual = underTest.findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampId);
+
+        assertThat(actual.size()).isEqualTo(mannschaftsmitgliedDOList.size());
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDOList.get(0));
     }
 
     @Test
