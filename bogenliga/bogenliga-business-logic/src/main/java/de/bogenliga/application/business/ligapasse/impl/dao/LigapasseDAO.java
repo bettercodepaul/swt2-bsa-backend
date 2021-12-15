@@ -14,20 +14,23 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 import de.bogenliga.application.common.database.queries.QueryBuilder;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * DataAccessObject for the ligapasse view
+ *
+ * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
+ *
  */
+
 @Repository
 public class LigapasseDAO implements DataAccessObject {
 
+    //define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(LigapasseDAO.class);
 
     //table name in the DB
     private static final String TABLE = "ligapasse";
 
-
-    //business entity parameters
+    //business entity parameter names
     private static final String MATCH_BE_WETTKAMPF_ID = "wettkampfId";
     private static final String MATCH_BE_MATCH_ID = "matchId";
     private static final String MATCH_BE_PASSE_ID = "passeId";
@@ -41,7 +44,7 @@ public class LigapasseDAO implements DataAccessObject {
     private static final String MATCH_BE_PASSE_MATCH_NR = "passeMatchNr";
 
 
-    // table columns
+    // table column names
     private static final String MATCH_TABLE_WETTKAMPF_ID = "ligapasse_wettkampf_id";
     private static final String MATCH_TABLE_MATCH_ID = "ligapasse_match_id";
     private static final String MATCH_TABLE_PASSE_ID = "ligapasse_passe_id";
@@ -61,11 +64,13 @@ public class LigapasseDAO implements DataAccessObject {
 
     private final BasicDAO basicDao;
 
+
     /**
      * Initialize the transaction manager to provide a database connection
      *
      * @param basicDao to handle the commonly used database operations
      */
+
     @Autowired
     public LigapasseDAO(final BasicDAO basicDao){this.basicDao = basicDao;}
 
@@ -90,6 +95,12 @@ public class LigapasseDAO implements DataAccessObject {
         return columnsToFieldsMap;
     }
 
+
+    /**
+     *
+     * @param ligapasseID
+     * @return a list of ligapassen with the given param ligapasseID
+     */
     public List<LigapasseBE> findLigapassenByLigamatchId(Long ligapasseID){
         return this.basicDao.selectEntityList(LIGAPASSE, FIND_BY_LIGAPASSE_ID, ligapasseID);
 

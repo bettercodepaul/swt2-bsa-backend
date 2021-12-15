@@ -4,16 +4,13 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
-import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * I map the ligapasseBE to a PasseDO in order to be able to use the known structure and functions of passeDO
  */
 public class LigapasseToPasseMapper implements ValueObjectMapper {
 
