@@ -4,9 +4,10 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * TODO [AL] class documentation
+ * Im the Business Entity for a ligamatch. The Schusszettel gets this data from the View ligamatch
+ * to increase perfomance.
+ * This Entity will later be matched into a matchDO to send it to the frontend.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 6766917935149997789L;
@@ -17,10 +18,6 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private Long scheibennummer;
     private Long mannschaftId;
     private Long begegnung;
-//    private String mannschaftName;
-//    private String mannschaftNameGegner;
-//    private int scheibennummerGegner;
-//    private Long idGegner;
     private Long naechsteMatchId;
     private Long naechsteNaechsteMatchNrMatchId;
     private Long strafpunkteSatz1;
@@ -31,7 +28,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
 
 
     public LigamatchBE() {
-        //empty Contructor
+        //empty constructor
     }
 
 
@@ -44,10 +41,6 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
                 ", scheibennummer=" + scheibennummer +
                 ", mannschaftId=" + mannschaftId +
                 ",begegnung=" + begegnung +
-//                ", mannschaftName='" + mannschaftName + '\'' +
-//                ", mannschaftNameGegner='" + mannschaftNameGegner + '\'' +
-//                ", scheibennummerGegner=" + scheibennummerGegner +
-//                ", idGegner=" + idGegner +
                 ", naechsteMatchId=" + naechsteMatchId +
                 ", naechsteNaechsteMatchNrMatchId=" + naechsteNaechsteMatchNrMatchId +
                 ", strafpunkteSatz1=" + strafpunkteSatz1 +
@@ -76,18 +69,6 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
 
     public Long getBegegnung() {return begegnung;}
     public void setBegegnung(Long begegnung) {this.begegnung = begegnung;}
-
-//    public String getMannschaftName() {return mannschaftName;}
-//    public void setMannschaftName(String mannschaftName) {this.mannschaftName = mannschaftName;}
-//
-//    public String getMannschaftNameGegner() {return mannschaftNameGegner;}
-//    public void setMannschaftNameGegner(String mannschaftNameGegner) {this.mannschaftNameGegner = mannschaftNameGegner;}
-//
-//    public int getScheibennummerGegner() {return scheibennummerGegner;}
-//    public void setScheibennummerGegner(int scheibennummerGegner) {this.scheibennummerGegner = scheibennummerGegner;}
-//
-//    public Long getIdGegner() {return idGegner;}
-//    public void setIdGegner(Long idGegner) {this.idGegner = idGegner;}
 
     public Long getNaechsteMatchId() {return naechsteMatchId;}
     public void setNaechsteMatchId(Long naechsteMatchId) {this.naechsteMatchId = naechsteMatchId;}
