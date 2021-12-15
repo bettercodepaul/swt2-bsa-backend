@@ -4,14 +4,11 @@ import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * I map the ligamatchBE to a MatchDO in order to be able to use the known structure and functions of MatchDO
  */
 public class LigamatchToMatchMapper implements ValueObjectMapper {
 

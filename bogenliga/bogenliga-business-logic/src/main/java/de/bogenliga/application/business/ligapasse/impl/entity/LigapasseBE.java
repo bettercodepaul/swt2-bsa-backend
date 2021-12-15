@@ -4,9 +4,10 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * Im the Business Entity for a ligapasse. The Schusszettel gets this data from the View ligapasse
+ * to increase perfomance.
+ * This Entity will later be matched into a passeDO and will then be collected into an array which is part of a MatchDTO
+ * to send it to the frontend.
  */
 public class LigapasseBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = -4448642082943788879L;
@@ -25,6 +26,7 @@ public class LigapasseBE extends CommonBusinessEntity implements BusinessEntity 
 
 
     public LigapasseBE() {
+        //empty contructor
     }
 
 
