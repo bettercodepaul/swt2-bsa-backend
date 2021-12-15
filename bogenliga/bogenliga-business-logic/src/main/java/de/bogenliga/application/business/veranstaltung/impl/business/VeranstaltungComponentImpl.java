@@ -267,14 +267,14 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         WettkampfTypDO tempWettkampfTypDO = new WettkampfTypDO(0L);
         UserDO tempUserDO = new UserDO();
 
-        if (veranstaltungBE.getVeranstaltung_liga_id() != null) {
-              tempLigaDO = ligaComponent.findById(veranstaltungBE.getVeranstaltung_liga_id());
+        if (veranstaltungBE.getVeranstaltungLigaId() != null) {
+              tempLigaDO = ligaComponent.findById(veranstaltungBE.getVeranstaltungLigaId());
         }
-        if (veranstaltungBE.getVeranstaltung_wettkampftyp_id() != null) {
-             tempWettkampfTypDO = wettkampfTypComponent.findById(veranstaltungBE.getVeranstaltung_wettkampftyp_id());
+        if (veranstaltungBE.getVeranstaltungWettkampftypId() != null) {
+             tempWettkampfTypDO = wettkampfTypComponent.findById(veranstaltungBE.getVeranstaltungWettkampftypId());
         }
-        if (veranstaltungBE.getVeranstaltung_ligaleiter_id() != null) {
-             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltung_ligaleiter_id());
+        if (veranstaltungBE.getVeranstaltungLigaleiterId() != null) {
+             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
         }
 
         return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO);
