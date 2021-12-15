@@ -209,8 +209,7 @@ public class MannschaftsmitgliedServiceTest {
         when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampId)).thenReturn(mannschaftsmitgliedDOList);
         final List<MannschaftsMitgliedDTO> actual = underTest.findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampId);
 
-        assertThat(actual.size()).isEqualTo(mannschaftsmitgliedDOList.size());
-        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDOList.get(0));
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDOList.get(0).getDsbMitgliedId());
     }
 
     @Test
