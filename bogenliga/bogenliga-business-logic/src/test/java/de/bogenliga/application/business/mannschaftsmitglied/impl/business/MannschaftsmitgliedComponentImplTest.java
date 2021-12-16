@@ -375,8 +375,6 @@ public class MannschaftsmitgliedComponentImplTest {
         when(mannschaftsmitgliedDAO.findSchuetzenInUebergelegenerLiga(MANNSCHAFTSID, WETTKAMPFID)).thenReturn(expectedBEList);
         final List<MannschaftsmitgliedDO> actual = underTest.findSchuetzenInUebergelegenerLiga(MANNSCHAFTSID, WETTKAMPFID);
 
-        assertThat(actual).isNotNull();
-
         assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBEList.get(0).getDsbMitgliedId());
     }
 }
