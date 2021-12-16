@@ -300,16 +300,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         return allowedList;
 
-        /*
-        List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
-
-        //Liste mit allen Schützen aus beiden Teams
-        List<MannschaftsmitgliedDO> allSchuetzenVonBeidenTeams = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(mannschaft1Id);
-        List<MannschaftsmitgliedDO> mannschaftsmitglied2DOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(mannschaft2Id);
-        allSchuetzenVonBeidenTeams.addAll(mannschaftsmitglied2DOList);
-
-        return getAllowedMitgliederList(allSchuetzenVonBeidenTeams, dsbMitgliedDOList, wettkampfid);
-        */
     }
 
     //Alte Version von getAllowedMitglieder
