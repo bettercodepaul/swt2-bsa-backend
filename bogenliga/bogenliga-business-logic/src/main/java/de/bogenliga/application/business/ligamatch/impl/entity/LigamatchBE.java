@@ -49,6 +49,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
                 ", strafpunkteSatz4=" + strafpunkteSatz4 +
                 ", strafpunkteSatz5=" + strafpunkteSatz5 +
                 '}';
+        
     }
 
 
