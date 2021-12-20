@@ -206,8 +206,8 @@ public class MatchService implements ServiceFacade {
         this.checkMatchId(matchId1);
         this.checkMatchId(matchId2);
 
-        MatchDTO matchDTO1 = getMatchFromIdForSchusszettel(matchId1, true);
-        MatchDTO matchDTO2 = getMatchFromIdForSchusszettel(matchId2, true);
+        MatchDTO matchDTO1 = getMatchFromId(matchId1, true);
+        MatchDTO matchDTO2 = getMatchFromId(matchId2, true);
 
         checkPreconditions(matchDTO1, matchConditionErrors);
         checkPreconditions(matchDTO2, matchConditionErrors);
@@ -701,48 +701,7 @@ public class MatchService implements ServiceFacade {
      */
 
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
-        final MatchDO matchDo = matchComponent.findById(matchId);
-        //final MatchDO matchDo = matchComponent.findLigamatchById(matchId);
-        final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
-                wettkampfComponent.findById(matchDo.getWettkampfId()));
-        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-        WettkampfTypDO wettDO = wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
-        final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
-        matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
-        matchDTO.setWettkampfTag(wettkampfDTO.getWettkampfTag());
-
-        // the match is shown on the Schusszettel, add passen and mannschaft name
-        if (addPassen) {
-            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
-            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
-            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
-
-            List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
-            //List<PasseDO> passeDOs = passeComponent.findLigapassenByLigamatchId(matchId);
-            List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
-
-            // reverse map the schuetzeNr to the passeDTO
-            for (PasseDTO passeDTO : passeDTOs) {
-                long mannschaftID = passeDTO.getMannschaftId();
-                long rueckennummer = mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftID,
-                        passeDTO.getDsbMitgliedId()).getRueckennummer();
-
-                passeDTO.setRueckennummer((int)rueckennummer);
-                Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
-                        String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
-            }
-
-            matchDTO.setPassen(passeDTOs);
-        }
-
-        return matchDTO;
-    }
-
-
-    /**
-     * Nur für Schusszettel
-     */
-    private MatchDTO getMatchFromIdForSchusszettel(Long matchId, boolean addPassen) {
+        //final MatchDO matchDo = matchComponent.findById(matchId);
         final MatchDO matchDo = matchComponent.findLigamatchById(matchId);
         final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
                 wettkampfComponent.findById(matchDo.getWettkampfId()));
@@ -758,6 +717,7 @@ public class MatchService implements ServiceFacade {
             VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
             matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
 
+            //List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
             List<PasseDO> passeDOs = passeComponent.findLigapassenByLigamatchId(matchId);
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 
