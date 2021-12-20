@@ -355,7 +355,7 @@ public class WettkampfServiceTest {
     public void getAllowedMitgliedForWettkampf() {
         // prepare test data
         List<Long> expected = new ArrayList<>();
-        expected.add(70L);
+        expected.add(77L);
         expected.add(120L);
 
         // configure mocks
@@ -367,4 +367,21 @@ public class WettkampfServiceTest {
         // assert result
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    public void getAllowedMitgliedForWettkampfByMannschaftIDs() {
+        // prepare test data
+        List<Long> expected = new ArrayList<>();
+        expected.add(77L);
+
+        // configure mocks
+        when(wettkampfComponent.getAllowedMitglieder(anyLong(),anyLong(),anyLong())).thenReturn(expected);
+
+        // call test method
+        List<Long> actual = underTest.getAllowedMitgliedForWettkampf(30L,101L,102L);
+
+        // assert result
+        assertThat(actual).isEqualTo(expected);
+    }
+
 }

@@ -106,6 +106,17 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
     }
 
+    @GetMapping(value = "{mannschaftsId}/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<MannschaftsMitgliedDTO> findSchuetzenInUebergelegenerLiga(@PathVariable("mannschaftsId") final long mannschaftsId,
+                                                                          @PathVariable("wettkampfId") final long wettkampfId) {
+        Preconditions.checkArgument(mannschaftsId > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(wettkampfId > 0, PRECONDITION_MSG_ID_NEGATIVE);
+        final List<MannschaftsmitgliedDO> mannschaftmitgliedDOList = mannschaftsMitgliedComponent.findSchuetzenInUebergelegenerLiga(
+                mannschaftsId,wettkampfId);
+        return mannschaftmitgliedDOList.stream().map(MannschaftsMitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     @GetMapping(value = "{teamIdInTeam}/{istEingesetzt}/{test3}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -226,6 +237,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         }
         mannschaftsMitgliedComponent.deleteByTeamIdAndMemberId(mannschaftsMitgliedDO, currentUserId);
     }
+
 
 
     private void checkPreconditions(@RequestBody final MannschaftsMitgliedDTO mannschaftsMitgliedDTO) {
