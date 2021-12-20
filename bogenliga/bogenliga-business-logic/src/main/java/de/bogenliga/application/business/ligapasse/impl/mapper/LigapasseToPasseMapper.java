@@ -36,7 +36,7 @@ public class LigapasseToPasseMapper implements ValueObjectMapper {
                 null,
                 null,
                 null,
-                6,
+                null,
                 createdAtUtc,
                 ligapasseBE.getCreatedByUserId(),
                 lastModifiedUtc,

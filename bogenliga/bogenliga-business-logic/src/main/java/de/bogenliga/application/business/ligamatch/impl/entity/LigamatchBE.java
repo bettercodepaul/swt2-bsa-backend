@@ -40,7 +40,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
                 ", matchNr=" + matchNr +
                 ", scheibennummer=" + scheibennummer +
                 ", mannschaftId=" + mannschaftId +
-                ", begegnung=" + begegnung +
+                ",begegnung=" + begegnung +
                 ", naechsteMatchId=" + naechsteMatchId +
                 ", naechsteNaechsteMatchNrMatchId=" + naechsteNaechsteMatchNrMatchId +
                 ", strafpunkteSatz1=" + strafpunkteSatz1 +
@@ -49,7 +49,6 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
                 ", strafpunkteSatz4=" + strafpunkteSatz4 +
                 ", strafpunkteSatz5=" + strafpunkteSatz5 +
                 '}';
-        
     }
 
 
