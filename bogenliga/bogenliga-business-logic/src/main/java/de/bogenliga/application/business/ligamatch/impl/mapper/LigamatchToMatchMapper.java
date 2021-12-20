@@ -27,7 +27,7 @@ public class LigamatchToMatchMapper implements ValueObjectMapper {
                 ligamatchBE.getBegegnung(),
                 ligamatchBE.getScheibennummer(),
                 null,
-                null,
+                new Long(69),
                 ligamatchBE.getStrafpunkteSatz1(),
                 ligamatchBE.getStrafpunkteSatz2(),
                 ligamatchBE.getStrafpunkteSatz3(),
