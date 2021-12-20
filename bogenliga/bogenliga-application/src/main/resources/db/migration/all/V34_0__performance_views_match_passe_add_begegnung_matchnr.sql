@@ -25,7 +25,7 @@ CREATE VIEW ligapasse (
                        ligapasse_passe_ringzahl_pfeil2,
                        ligapasse_passe_match_nr
     )
-AS (D
+AS (
     select
        passe.passe_wettkampf_id,
        passe.passe_match_id,
