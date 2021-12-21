@@ -53,7 +53,7 @@ public class LigapasseDAO implements DataAccessObject {
     private static final String MATCH_TABLE_DSB_MITGLIED_ID = "ligapasse_dsb_mitglied_id";
     private static final String MATCH_TABLE_DSB_MITGLIED_NAME = "ligapasse_dsb_mitglied_name";
     private static final String MATCH_TABLE_MANNSCHAFTSMITGLIED_RUECKENNUMMER = "ligapasse_mannschaftsmitglied_rueckennummer";
-    private static final String MATCH_TABLE_PASSE_RINGZAHL_PFEIL1 = "ligapsse_passe_ringzahl_pfeil1";
+    private static final String MATCH_TABLE_PASSE_RINGZAHL_PFEIL1 = "ligapasse_passe_ringzahl_pfeil1";
     private static final String MATCH_TABLE_PASSE_RINGZAHL_PFEIL2 = "ligapasse_passe_ringzahl_pfeil2";
     private static final String MATCH_TABLE_PASSE_MATCH_NR = "ligapasse_passe_match_nr";
 
