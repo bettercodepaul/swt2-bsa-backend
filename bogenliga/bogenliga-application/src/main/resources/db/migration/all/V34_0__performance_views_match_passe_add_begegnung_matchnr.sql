@@ -145,3 +145,20 @@ where match1.match_mannschaft_id = mannschaft.mannschaft_id
 order by match1.match_wettkampf_id, match1.match_nr, match1.match_scheibennummer
     )
 ;
+
+update passe
+SET passe_match_id = (select match.match_id from match
+    where passe_mannschaft_id = match.match_mannschaft_id
+        and passe_wettkampf_id = match.match_wettkampf_id
+        and passe_match_nr = match.match_nr)
+
+
+
+/*
+update passe
+SET passe_match_id = (select match.match_id from match where match.match_id = passe.passe_match_id)
+where passe_match_id  IN (SELECT match_id from match
+                        where passe_mannschaft_id = match.match_mannschaft_id
+                          and passe_wettkampf_id = match.match_wettkampf_id
+                          and passe_match_nr = match.match_nr)
+*/
