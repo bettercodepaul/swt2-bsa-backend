@@ -24,6 +24,10 @@ public interface MatchComponent {
 
     MatchDO findById(Long id);
 
+    String getMannschaftNameById(Long id);
+    String getWettkampftypById(Long id);
+    Long getWettkampfTag(Long id);
+
 
     MatchDO findLigamatchById(Long id);
 

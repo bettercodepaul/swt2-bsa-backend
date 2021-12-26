@@ -108,6 +108,33 @@ public class MatchComponentImpl implements MatchComponent {
     }
 
     @Override
+    public String getWettkampftypById(Long id) {
+        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
+
+        final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
+
+        return ligamatchBE.getWettkampftypId();
+    }
+
+    @Override
+    public Long getWettkampfTag(Long id){
+        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
+
+        final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
+
+        return ligamatchBE.getWettkampfTag();
+    }
+
+    @Override
+    public String getMannschaftNameById(Long id) {
+        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
+
+        final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
+
+        return ligamatchBE.getMannschaftName();
+    }
+
+    @Override
     public MatchDO findById(Long id) {
         checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
 

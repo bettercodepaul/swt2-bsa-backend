@@ -25,6 +25,9 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private Long strafpunkteSatz3;
     private Long strafpunkteSatz4;
     private Long strafpunkteSatz5;
+    private String wettkampftypId;
+    private Long wettkampfTag;
+    private String mannschaftName;
 
 
     public LigamatchBE() {
@@ -90,4 +93,14 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
 
     public Long getStrafpunkteSatz5() {return strafpunkteSatz5;}
     public void setStrafpunkteSatz5(Long strafpunkteSatz5) {this.strafpunkteSatz5 = strafpunkteSatz5;}
+
+    public String getWettkampftypId() {return wettkampftypId;}
+    public void setWettkampftypId(String wettkampftypId) {this.wettkampftypId = wettkampftypId;}
+
+    public Long getWettkampfTag() {return wettkampfTag;}
+    public void setWettkampfTag(Long wettkampfTag) {this.wettkampfTag = wettkampfTag;}
+
+
+    public String getMannschaftName() {return mannschaftName;}
+    public void setMannschaftName(String mannschaftName) {this.mannschaftName = mannschaftName;}
 }

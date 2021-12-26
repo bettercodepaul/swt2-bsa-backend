@@ -1,9 +1,11 @@
 package de.bogenliga.application.business.ligamatch.impl.mapper;
 
+import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
@@ -27,7 +29,7 @@ public class LigamatchToMatchMapper implements ValueObjectMapper {
                 ligamatchBE.getBegegnung(),
                 ligamatchBE.getScheibennummer(),
                 null,
-                null,
+                new Long(69),
                 ligamatchBE.getStrafpunkteSatz1(),
                 ligamatchBE.getStrafpunkteSatz2(),
                 ligamatchBE.getStrafpunkteSatz3(),
@@ -42,6 +44,34 @@ public class LigamatchToMatchMapper implements ValueObjectMapper {
 
 
     };
+
+//    public static final Function<MatchDO, LigamatchBE> toLigamatchBE = matchDO -> {
+//
+//        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(matchDO.getCreatedAtUtc());
+//        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(matchDO.getLastModifiedAtUtc());
+//
+//        LigamatchBE ligamatchBE = new LigamatchBE();
+//
+//        ligamatchBE.setMatchId(matchDO.getId());
+//        ligamatchBE.setMatchNr(matchDO.getNr());
+//        ligamatchBE.setMannschaftId(matchDO.getMannschaftId());
+//        ligamatchBE.setWettkampfId(matchDO.getWettkampfId());
+//        ligamatchBE.setScheibennummer(matchDO.getScheibenNummer());
+//        ligamatchBE.setBegegnung(matchDO.getBegegnung());
+//        ligamatchBE.setStrafpunkteSatz1(matchDO.getStrafPunkteSatz1());
+//        ligamatchBE.setStrafpunkteSatz2(matchDO.getStrafPunkteSatz2());
+//        ligamatchBE.setStrafpunkteSatz3(matchDO.getStrafPunkteSatz3());
+//        ligamatchBE.setStrafpunkteSatz4(matchDO.getStrafPunkteSatz4());
+//        ligamatchBE.setStrafpunkteSatz5(matchDO.getStrafPunkteSatz5());
+//
+//        ligamatchBE.setCreatedAtUtc(createdAtUtcTimestamp);
+//        ligamatchBE.setCreatedByUserId(matchDO.getCreatedByUserId());
+//        ligamatchBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+//        ligamatchBE.setLastModifiedByUserId(matchDO.getLastModifiedByUserId());
+//        ligamatchBE.setVersion(matchDO.getVersion());
+//
+//        return ligamatchBE;
+//    };
 
 
 }

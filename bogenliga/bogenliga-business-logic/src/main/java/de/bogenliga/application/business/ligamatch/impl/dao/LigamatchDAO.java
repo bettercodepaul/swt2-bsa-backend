@@ -44,6 +44,9 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_4 = "strafpunkteSatz4";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_5 = "strafpunkteSatz5";
     private static final String MATCH_BE_BEGEGNUNG = "begegnung";
+    private static final String MATCH_BE_WETTKAMPFTYP_ID = "wettkampftypId";
+    private static final String MATCH_BE_WETTKAMPF_TAG = "wettkampfTag";
+    private static final String MATCH_BE_MANNSCHAFT_NAME = "mannschaftName";
 
 
     // table columns
@@ -60,6 +63,9 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_4 = "ligamatch_match_strafpunkte_satz_4";
     private static final String MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_5 = "ligamatch_match_strafpunkte_satz_5";
     private static final String MATCH_TABLE_BEGEGNUNG = "ligamatch_begegnung";
+    private static final String MATCH_TABLE_WETTKAMPFTYP_ID = "ligamatch_wettkampftyp_id";
+    private static final String MATCH_TABLE_WETTKAMPF_TAG = "ligamatch_wettkampf_tag";
+    private static final String MATCH_TABLE_MANNSCHAFT_NAME = "ligamatch_mannschaft_name";
 
 
     // wrap all specific config parameters
@@ -98,6 +104,9 @@ public class LigamatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_4, MATCH_BE_MATCH_STRAFPUNKTE_SATZ_4);
         columnsToFieldsMap.put(MATCH_TABLE_MATCH_STRAFPUNKTE_SATZ_5, MATCH_BE_MATCH_STRAFPUNKTE_SATZ_5);
         columnsToFieldsMap.put(MATCH_TABLE_BEGEGNUNG, MATCH_BE_BEGEGNUNG);
+        columnsToFieldsMap.put(MATCH_TABLE_WETTKAMPFTYP_ID, MATCH_BE_WETTKAMPFTYP_ID);
+        columnsToFieldsMap.put(MATCH_TABLE_WETTKAMPF_TAG, MATCH_BE_WETTKAMPF_TAG);
+        columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFT_NAME, MATCH_BE_MANNSCHAFT_NAME);
 
         return columnsToFieldsMap;
     }
@@ -113,6 +122,8 @@ public class LigamatchDAO implements DataAccessObject {
     }
 
 
+
+
     //SQL Selects
     private static final String FIND_BY_MATCH_ID = new QueryBuilder()
             .selectAll()
@@ -120,6 +131,8 @@ public class LigamatchDAO implements DataAccessObject {
             .whereEquals(MATCH_TABLE_MATCH_ID)
             .orderBy(MATCH_TABLE_MATCH_ID)
             .compose().toString();
+
+
 
 
 
