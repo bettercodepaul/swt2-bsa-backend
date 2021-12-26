@@ -22,8 +22,7 @@ CREATE VIEW ligapasse (
                        ligapasse_dsb_mitglied_name,
                        ligapasse_mannschaftsmitglied_rueckennummer,
                        ligapasse_passe_ringzahl_pfeil1,
-                       ligapasse_passe_ringzahl_pfeil2,
-                       ligapasse_passe_match_nr
+                       ligapasse_passe_ringzahl_pfeil2
     )
 AS (
     select
@@ -36,8 +35,7 @@ AS (
        dsb_mitglied.dsb_mitglied_nachname  || ','  || dsb_mitglied.dsb_mitglied_vorname as name,
        mannschaftsmitglied.mannschaftsmitglied_rueckennummer,
        passe.passe_ringzahl_pfeil1,
-       passe.passe_ringzahl_pfeil2,
-       passe.passe_match_nr
+       passe.passe_ringzahl_pfeil2
     from passe as passe,
          dsb_mitglied as dsb_mitglied,
          mannschaftsmitglied as mannschaftsmitglied
@@ -95,8 +93,7 @@ CREATE VIEW ligamatch (
                        ligamatch_match_strafpunkte_satz_2,
                        ligamatch_match_strafpunkte_satz_3,
                        ligamatch_match_strafpunkte_satz_4,
-                       ligamatch_match_strafpunkte_satz_5,
-                       ligamatch_begegnung
+                       ligamatch_match_strafpunkte_satz_5
     )
 AS
 (
@@ -116,8 +113,7 @@ select match1.match_wettkampf_id,
        match1.match_strafpunkte_satz_2,
        match1.match_strafpunkte_satz_3,
        match1.match_strafpunkte_satz_4,
-       match1.match_strafpunkte_satz_5,
-       match1.match_begegnung
+       match1.match_strafpunkte_satz_5
 
 from match as match1,
      mannschaft as mannschaft,
