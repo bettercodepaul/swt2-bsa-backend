@@ -30,14 +30,13 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_ID = "Mannschaftsmitglied Id must not be negative";
 
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
-    private MannschaftsmitgliedExtDAO mannschaftsmitgliedExtDAO = null;
+    private final MannschaftsmitgliedExtDAO mannschaftsmitgliedExtDAO;
 
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Mannschaftsmitglied: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Mannschaftsmitglied: %s must not be negative";
     private static final String PRECONDITION_FIELD_MANNSCHAFT_ID = "mannschaftsId";
     private static final String PRECONDITION_FIELD_MITGLIED_ID = "mitgliedId";
     private static final String PRECONDITION_FIELD_USER_ID = "currentUserId";
-    private static final String PRECONDITION_FIELD_WETTKAMPF_ID ="wettkampfId";
 
 
     public void checkPreconditions(final Long id, String iDIdentifier) {
@@ -60,11 +59,6 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
         this.mannschaftsmitgliedExtDAO = mannschaftsmitgliedExtDAO;
     }
-    public MannschaftsmitgliedComponentImpl(final MannschaftsmitgliedDAO mannschaftsmitgliedDAO) {
-        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
-
-    }
-
 
     @Override
     public List<MannschaftsmitgliedDO> findAll() {
@@ -90,17 +84,6 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
                 Collectors.toList());
     }
-
-
-    public List<MannschaftsmitgliedDO> findSchuetzenInUebergelegenerLiga(Long mannschaftsId, Long wettkampfId) {
-        checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
-        checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
-        final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findSchuetzenInUebergelegenerLiga(
-                 mannschaftsId, wettkampfId);
-        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
-                Collectors.toList());
-    }
-
 
     @Override
     public List<MannschaftsmitgliedDO> findByTeamId(Long mannschaftsId) {
@@ -242,13 +225,13 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
         return result.getDsbMitgliedEingesetzt() > 0;
     }
 
-    /*public List<MannschaftsmitgliedBE> findSchuetzenInUebergeordneterLiga(Long sportsjahr, Long mannschaftsId, Long ligaId){
+    public List<MannschaftsmitgliedBE> findSchuetzenInUebergeordneterLiga(Long sportsjahr, Long mannschaftsId, Long ligaId){
         final List<MannschaftsmitgliedLigaBE> result = mannschaftsmitgliedExtDAO.findSchuetzenInUebergeordneterLiga(sportsjahr, mannschaftsId, ligaId);
         //aus result mit findbyid mannschaftsmitgliedBE holen.
 
 
         return
-    }*/
+    }
 
 
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO) {
