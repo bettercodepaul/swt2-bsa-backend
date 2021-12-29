@@ -80,7 +80,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
                 Collectors.toList());
     }
 
-
+    @Override
     public List<MannschaftsmitgliedDO> findSchuetzenInUebergelegenerLiga(Long mannschaftsId, Long wettkampfId) {
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
         checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
