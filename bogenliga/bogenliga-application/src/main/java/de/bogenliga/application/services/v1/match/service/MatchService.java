@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import org.slf4j.Logger;
@@ -175,19 +177,24 @@ public class MatchService implements ServiceFacade {
     public List<MatchDTO> findByWettkampfId(@PathVariable("id") Long wettkampfid) {
         this.checkMatchId(wettkampfid);
 
-        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+        if(this.checkIfLigamatch(wettkampfid)){
+            List<LigamatchBE> wettkampfMatches = matchComponent.findLigamatchesByWettkampfId(wettkampfid);
 
-        final List<MatchDTO> matchDTOs = new ArrayList<>();
+            final List<MatchDTO> matchDTOs = new ArrayList<>();
 
-        for( MatchDO einmatch: wettkampfMatches) {
-            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
-            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
-            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
-            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
-            matchDTOs.add(matchDTO);
+
+            for( LigamatchBE einmatch: wettkampfMatches) {
+                MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(LigamatchToMatchMapper.LigamatchToMatchDO.apply(einmatch));
+                matchDTO.setMannschaftName(einmatch.getMannschaftName());
+                matchDTOs.add(matchDTO);
+            }
+
+            return matchDTOs;
+        }else{
+            
         }
 
-        return matchDTOs;
+
     }
 
     /**
@@ -733,6 +740,11 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
         Preconditions.checkArgument(matchId >= 0,
                 String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
+    }
+
+    private boolean checkIfLigamatch(Long Id){
+        boolean isLigamatch = false;
+        return matchComponent.checkIfLigamatch(Id);
     }
 
 

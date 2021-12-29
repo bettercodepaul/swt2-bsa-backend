@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.match.api;
 
 import java.util.List;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 
 /**
@@ -27,6 +28,9 @@ public interface MatchComponent {
     String getMannschaftNameById(Long id);
     String getWettkampftypById(Long id);
     Long getWettkampfTag(Long id);
+    Boolean checkIfLigamatch(Long id);
+
+    List<LigamatchBE> findLigamatchesByWettkampfId(Long wettkampfId);
 
 
     MatchDO findLigamatchById(Long id);

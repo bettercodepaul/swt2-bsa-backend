@@ -106,6 +106,8 @@ public class LigapasseDAO implements DataAccessObject {
 
     }
 
+
+
     public LigapasseBE findLigapasseByLigamatchId(Long ligapasseID){
         return this.basicDao.selectSingleEntity(LIGAPASSE, FIND_SINGLEPASSE_BY_LIGAPASSE_ID, ligapasseID);
     }

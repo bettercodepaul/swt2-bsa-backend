@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.ligamatch.impl.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligatabelle.impl.dao.LigatabelleDAO;
+import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -121,6 +123,15 @@ public class LigamatchDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(LIGAMATCH, FIND_BY_MATCH_ID, ligamatchId);
     }
 
+    public List<LigamatchBE> findLigamatchesByWettkampfId(Long wettkampfId) {
+        return basicDao.selectEntityList(LIGAMATCH, FIND_LIGAMATCHES_BY_WETTKAMPF_ID, wettkampfId);
+    }
+
+    public Boolean checkIfLigamatch(Long id){
+        String wettkampfID = new String(FIND_BY_WETTKAMPF_ID);
+        return wettkampfID.equals(id);
+    }
+
 
 
 
@@ -132,8 +143,19 @@ public class LigamatchDAO implements DataAccessObject {
             .orderBy(MATCH_TABLE_MATCH_ID)
             .compose().toString();
 
+    private static final String FIND_LIGAMATCHES_BY_WETTKAMPF_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
+            .orderBy(MATCH_TABLE_WETTKAMPF_ID)
+            .compose().toString();
 
 
+    private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
+            .selectField(MATCH_TABLE_WETTKAMPF_ID)
+            .from(TABLE)
+            .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
+            .compose().toString();
 
 
 }
