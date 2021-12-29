@@ -1,12 +1,5 @@
 DO $do$
 BEGIN
-    --insert test data into actual liga
-    IF NOT EXISTS(SELECT
-                    1
-                FROM
-                    liga
-                WHERE
-                    liga_id = 13) THEN
 
     --insert test data into table verein
     INSERT INTO verein (verein_id, verein_name, verein_dsb_identifier, verein_region_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
@@ -50,7 +43,7 @@ BEGIN
     VALUES (2013, 'SWT2_Test_Vorname38', 'SWT2_Test_Nachname38', '2002-04-25', 'DE', 'SWT2_Mitgliedsnummer38', 2002, null, '2021-01-28 21:09:56.870332', 0, null, null, 0) ON CONFLICT DO NOTHING;
     INSERT INTO dsb_mitglied (dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum, dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id, dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
     VALUES (2014, 'SWT2_Test_Vorname39', 'SWT2_Test_Nachname39', '2003-04-25', 'DE', 'SWT2_Mitgliedsnummer39', 2003, null, '2021-01-28 21:09:56.870332', 0, null, null, 0) ON CONFLICT DO NOTHING;
-    INSERT INTO dsb_mitglied (dsb_mitlied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum, dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id, dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
+    INSERT INTO dsb_mitglied (dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum, dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id, dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
     VALUES (2015, 'SWT2_Test_Vorname40', 'SWT2_Test_Nachname40', '2003-04-25', 'DE', 'SWT2_Mitgliedsnummer40', 2003, null, '2021-01-28 21:09:56.870332', 0, null, null, 0) ON CONFLICT DO NOTHING;
     INSERT INTO dsb_mitglied (dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum, dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id, dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
     VALUES (2016, 'SWT2_Test_Vorname41', 'SWT2_Test_Nachname41', '2003-04-25', 'DE', 'SWT2_Mitgliedsnummer41', 2003, null, '2021-01-28 21:09:56.870332', 0, null, null, 0) ON CONFLICT DO NOTHING;
@@ -58,9 +51,9 @@ BEGIN
 
     --insert test data into table veranstaltung
     INSERT INTO veranstaltung (veranstaltung_id, veranstaltung_wettkampftyp_id, veranstaltung_name, veranstaltung_sportjahr, veranstaltung_meldedeadline, veranstaltung_ligaleiter_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, veranstaltung_liga_id)
-    VALUES (2000, 1, 'SWT2_Test_Veranstaltung', 2018, '2017-11-01', 2, '2021-01-28 20:51:23.509994', 0, null, null, 0, 13) ON CONFLICT DO NOTHING;
+    VALUES (2000, 1, 'SWT2_Test_Veranstaltung_Liga_13', 2022, '2017-11-01', 2, '2021-01-28 20:51:23.509994', 0, null, null, 0, 13) ON CONFLICT DO NOTHING;
     INSERT INTO veranstaltung (veranstaltung_id, veranstaltung_wettkampftyp_id, veranstaltung_name, veranstaltung_sportjahr, veranstaltung_meldedeadline, veranstaltung_ligaleiter_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, veranstaltung_liga_id)
-    VALUES (2001, 1, 'SWT2_Test_Veranstaltung', 2018, '2017-11-01', 2, '2021-01-28 20:51:23.509994', 0, null, null, 0, 11) ON CONFLICT DO NOTHING;
+    VALUES (2001, 1, 'SWT2_Test_Veranstaltung_Liga_11', 2022, '2017-11-01', 2, '2021-01-28 20:51:23.509994', 0, null, null, 0, 11) ON CONFLICT DO NOTHING;
 
     --insert test data into table mannschaft
     --veranstaltung 2000 liga 13
@@ -126,22 +119,22 @@ BEGIN
 
     --wettkampf in liga 13
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2050, 2000, '2018-05-01', '11:30', 1, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 7, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2050, 2000, '2022-05-01', '11:30', 1, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 7, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2051, 2000, '2018-05-02', '12:30', 2, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 7, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2051, 2000, '2022-05-02', '12:30', 2, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 7, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2052, 2000, '2018-05-03', '13:30', 3, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 6, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2052, 2000, '2022-05-03', '13:30', 3, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 6, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2053, 2000, '2018-05-04', '14:30', 4, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2053, 2000, '2022-05-04', '14:30', 4, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
     --wettkampf in liga 11
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2054, 2001, '2018-05-01', '14:30', 1, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2054, 2001, '2022-05-01', '14:30', 1, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2055, 2001, '2018-05-02', '14:30', 2, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2055, 2001, '2022-05-02', '14:30', 2, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2056, 2001, '2018-05-03', '14:30', 3, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2056, 2001, '2022-05-03', '14:30', 3, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
     INSERT INTO wettkampf (wettkampf_id, wettkampf_veranstaltung_id, wettkampf_datum, wettkampf_beginn, wettkampf_tag, wettkampf_disziplin_id, wettkampf_wettkampftyp_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, wettkampfausrichter, wettkampf_strasse, wettkampf_plz, wettkampf_ortsname)
-    VALUES (2057, 2001, '2018-05-04', '14:30', 4, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
+    VALUES (2057, 2001, '2022-05-04', '14:30', 4, 0, 0, '2021-01-28 21:27:42.305203', 0, null, null, 9, null, 'Bahnhofstrasse', 72764, 'Reutlingen') ON CONFLICT DO NOTHING;
 
     --insert test data into table match
 
@@ -277,8 +270,6 @@ BEGIN
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2056, 1, 1, 2015, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2597) ON CONFLICT DO NOTHING;
 
-
-    end if;
 
 END
 $do$
