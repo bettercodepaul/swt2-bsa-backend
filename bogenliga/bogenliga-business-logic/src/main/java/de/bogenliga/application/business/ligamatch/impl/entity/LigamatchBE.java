@@ -28,6 +28,9 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private String wettkampftypId;
     private Long wettkampfTag;
     private String mannschaftName;
+    private Integer rueckennummer;
+
+
 
 
     public LigamatchBE() {
@@ -100,7 +103,10 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     public Long getWettkampfTag() {return wettkampfTag;}
     public void setWettkampfTag(Long wettkampfTag) {this.wettkampfTag = wettkampfTag;}
 
-
     public String getMannschaftName() {return mannschaftName;}
     public void setMannschaftName(String mannschaftName) {this.mannschaftName = mannschaftName;}
+
+    public Integer getRueckennummer() {return rueckennummer;}
+    public void setRueckennummer(Integer rueckennummer) {this.rueckennummer = rueckennummer;}
+
 }

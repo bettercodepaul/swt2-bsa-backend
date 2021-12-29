@@ -38,7 +38,7 @@ public class LigapasseDAO implements DataAccessObject {
     private static final String MATCH_BE_PASSE_MANNSCHAFT_ID = "passeMannschaftId";
     private static final String MATCH_BE_DSB_MITGLIED_ID = "dsbMitgliedId";
     private static final String MATCH_BE_DSB_MITGLIED_NAME = "dsbMitgliedName";
-    private static final String MATCH_BE_MANNSCHAFTSMITGLIED_RUECKENNUMMER = "mannschaftsmitglied_Rueckennummer";
+    private static final String MATCH_BE_MANNSCHAFTSMITGLIED_RUECKENNUMMER = "mannschaftsmitgliedRueckennummer";
     private static final String MATCH_BE_PASSE_RINGZAHL_PFEIL1 = "passeRingzahlPfeil1";
     private static final String MATCH_BE_PASSE_RINGZAHL_PFEIL2 = "passeRingzahlPfeil2";
     private static final String MATCH_BE_PASSE_MATCH_NR = "passeMatchNr";
@@ -98,12 +98,16 @@ public class LigapasseDAO implements DataAccessObject {
 
     /**
      *
-     * @param ligapasseID
+     * @param ligamatchID
      * @return a list of ligapassen with the given param ligapasseID
      */
-    public List<LigapasseBE> findLigapassenByLigamatchId(Long ligapasseID){
-        return this.basicDao.selectEntityList(LIGAPASSE, FIND_BY_LIGAPASSE_ID, ligapasseID);
+    public List<LigapasseBE> findLigapassenByLigamatchId(Long ligamatchID){
+        return this.basicDao.selectEntityList(LIGAPASSE, FIND_BY_LIGAPASSE_ID, ligamatchID);
 
+    }
+
+    public LigapasseBE findLigapasseByLigamatchId(Long ligapasseID){
+        return this.basicDao.selectSingleEntity(LIGAPASSE, FIND_SINGLEPASSE_BY_LIGAPASSE_ID, ligapasseID);
     }
 
     //SQL Selects
@@ -112,6 +116,13 @@ public class LigapasseDAO implements DataAccessObject {
             .from(TABLE)
             .whereEquals(MATCH_TABLE_MATCH_ID)
             .orderBy(MATCH_TABLE_PASSE_LFDNR)
+            .compose().toString();
+
+
+    private static final String FIND_SINGLEPASSE_BY_LIGAPASSE_ID = new QueryBuilder()
+            .selectAll()
+            .from(TABLE)
+            .whereEquals(MATCH_TABLE_PASSE_ID)
             .compose().toString();
 
 

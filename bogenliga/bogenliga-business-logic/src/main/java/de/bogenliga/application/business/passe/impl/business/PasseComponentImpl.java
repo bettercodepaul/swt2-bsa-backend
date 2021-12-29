@@ -203,6 +203,12 @@ public class PasseComponentImpl implements PasseComponent {
         return ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
     }
 
+    @Override
+    public Integer getRueckenNummer(Long passeId){
+        return ligapasseDAO.findLigapasseByLigamatchId(passeId).getMannschaftsmitgliedRueckennummer();
+    }
+
+
     /**
      * Return a passe entry with the given ids.
      *
