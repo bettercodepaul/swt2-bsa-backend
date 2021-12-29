@@ -84,36 +84,36 @@ BEGIN
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
     VALUES (2002, 2010, 2002, 0, '2021-01-28 21:44:10.421685', 0, null, null, 0, 3) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2003, 2011, 2003, 0, '2021-01-28 21:44:29.136280', 0, null, null, 0, 4) ON CONFLICT DO NOTHING;
+    VALUES (2003, 2011, 2003, 0, '2021-01-28 21:44:29.136280', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2004, 2011, 2004, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 5) ON CONFLICT DO NOTHING;
+    VALUES (2004, 2011, 2004, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 2) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2005, 2011, 2005, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 6) ON CONFLICT DO NOTHING;
+    VALUES (2005, 2011, 2005, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 3) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2006, 2012, 2006, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 7) ON CONFLICT DO NOTHING;
+    VALUES (2006, 2012, 2006, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2007, 2012, 2007, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 8) ON CONFLICT DO NOTHING;
+    VALUES (2007, 2012, 2007, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 2) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2008, 2012, 2008, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 9) ON CONFLICT DO NOTHING;
+    VALUES (2008, 2012, 2008, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 3) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2009, 2013, 2009, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 10) ON CONFLICT DO NOTHING;
+    VALUES (2009, 2013, 2009, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2010, 2013, 2010, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 11) ON CONFLICT DO NOTHING;
+    VALUES (2010, 2013, 2010, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 2) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2011, 2013, 2011, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 12) ON CONFLICT DO NOTHING;
+    VALUES (2011, 2013, 2011, 0, '2021-01-28 21:44:32.891021', 0, null, null, 0, 3) ON CONFLICT DO NOTHING;
     --Testperson 2000 wird in neue Mannschaft eingesetzt
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
     VALUES (2012, 2014, 2000, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2013, 2014, 2012, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
+    VALUES (2013, 2014, 2012, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 2) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2014, 2014, 2013, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
+    VALUES (2014, 2014, 2013, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 3) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
     VALUES (2015, 2015, 2014, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2016, 2015, 2015, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
+    VALUES (2016, 2015, 2015, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 2) ON CONFLICT DO NOTHING;
     INSERT INTO mannschaftsmitglied (mannschaftsmitglied_id, mannschaftsmitglied_mannschaft_id, mannschaftsmitglied_dsb_mitglied_id, mannschaftsmitglied_dsb_mitglied_eingesetzt, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, mannschaftsmitglied_rueckennummer)
-    VALUES (2017, 2015, 2016, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 1) ON CONFLICT DO NOTHING;
+    VALUES (2017, 2015, 2016, 0, '2021-01-28 21:44:00.847745', 0, null, null, 0, 3) ON CONFLICT DO NOTHING;
 
     --insert test data into table wettkampf
 
@@ -146,27 +146,27 @@ BEGIN
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2050, 1, 1, 2011, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2551) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2050, 1, 2, 2012, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2552) ON CONFLICT DO NOTHING;
+    VALUES (2050, 1, 2, 2012, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2552) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2050, 1, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2553) ON CONFLICT DO NOTHING;
+    VALUES (2050, 1, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2553) ON CONFLICT DO NOTHING;
     --second match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2050, 2, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2554) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2050, 2, 1, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2555) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2050, 2, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2556) ON CONFLICT DO NOTHING;
+    VALUES (2050, 2, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2556) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2050, 2, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2557) ON CONFLICT DO NOTHING;
+    VALUES (2050, 2, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2557) ON CONFLICT DO NOTHING;
     --third match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2050, 3, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2558) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2050, 3, 1, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2559) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2050, 3, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2560) ON CONFLICT DO NOTHING;
+    VALUES (2050, 3, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2560) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2050, 3, 2, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2561) ON CONFLICT DO NOTHING;
+    VALUES (2050, 3, 2, 2012, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2561) ON CONFLICT DO NOTHING;
 
     --second comp day liga 13
 
@@ -176,27 +176,27 @@ BEGIN
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2051, 1, 1, 2011, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2563) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2051, 1, 2, 2012, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2564) ON CONFLICT DO NOTHING;
+    VALUES (2051, 1, 2, 2012, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2564) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2051, 1, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2565) ON CONFLICT DO NOTHING;
+    VALUES (2051, 1, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2565) ON CONFLICT DO NOTHING;
     --second match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2051, 2, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2566) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2051, 2, 1, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2567) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2051, 2, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2568) ON CONFLICT DO NOTHING;
+    VALUES (2051, 2, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2568) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2051, 2, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2569) ON CONFLICT DO NOTHING;
+    VALUES (2051, 2, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2569) ON CONFLICT DO NOTHING;
     --third match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2051, 3, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2570) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2051, 3, 1, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2571) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2051, 3, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2572) ON CONFLICT DO NOTHING;
+    VALUES (2051, 3, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2572) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2051, 3, 2, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2573) ON CONFLICT DO NOTHING;
+    VALUES (2051, 3, 2, 2012, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2573) ON CONFLICT DO NOTHING;
 
     --third comp day liga 13
 
@@ -206,27 +206,27 @@ BEGIN
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2052, 1, 1, 2011, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2575) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2052, 1, 2, 2012, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2576) ON CONFLICT DO NOTHING;
+    VALUES (2052, 1, 2, 2012, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2576) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2052, 1, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2577) ON CONFLICT DO NOTHING;
+    VALUES (2052, 1, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2577) ON CONFLICT DO NOTHING;
     --second match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2052, 2, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2578) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2052, 2, 1, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2579) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2052, 2, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2580) ON CONFLICT DO NOTHING;
+    VALUES (2052, 2, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2580) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2052, 2, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2581) ON CONFLICT DO NOTHING;
+    VALUES (2052, 2, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2581) ON CONFLICT DO NOTHING;
     --third match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2052, 3, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2582) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2052, 3, 1, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2583) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2052, 3, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2584) ON CONFLICT DO NOTHING;
+    VALUES (2052, 3, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2584) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2052, 3, 2, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2585) ON CONFLICT DO NOTHING;
+    VALUES (2052, 3, 2, 2012, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2585) ON CONFLICT DO NOTHING;
 
     --fourth comp day liga 13
 
@@ -236,39 +236,39 @@ BEGIN
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2053, 1, 1, 2011, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2587) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2053, 1, 2, 2012, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2588) ON CONFLICT DO NOTHING;
+    VALUES (2053, 1, 2, 2012, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2588) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2053, 1, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2589) ON CONFLICT DO NOTHING;
+    VALUES (2053, 1, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2589) ON CONFLICT DO NOTHING;
     --second match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2053, 2, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2590) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2053, 2, 1, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2591) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2053, 2, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2592) ON CONFLICT DO NOTHING;
+    VALUES (2053, 2, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2592) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2053, 2, 2, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2593) ON CONFLICT DO NOTHING;
+    VALUES (2053, 2, 2, 2013, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2593) ON CONFLICT DO NOTHING;
     --third match
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2053, 3, 1, 2010, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2594) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2053, 3, 1, 2013, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2595) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2053, 3, 2, 2011, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2596) ON CONFLICT DO NOTHING;
+    VALUES (2053, 3, 2, 2011, 3, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2596) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2053, 3, 2, 2012, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2597) ON CONFLICT DO NOTHING;
+    VALUES (2053, 3, 2, 2012, 4, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2597) ON CONFLICT DO NOTHING;
 
     -- first comp day liga 11
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2054, 1, 1, 2014, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2598) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2054, 1, 1, 2015, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2599) ON CONFLICT DO NOTHING;
+    VALUES (2054, 1, 1, 2015, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2599) ON CONFLICT DO NOTHING;
 
     -- third comp day liga 11
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
     VALUES (2056, 1, 1, 2014, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2600) ON CONFLICT DO NOTHING;
     INSERT INTO match (match_wettkampf_id, match_nr, match_begegnung, match_mannschaft_id, match_scheibennummer, match_matchpunkte, match_satzpunkte, match_strafpunkte_satz_1, match_strafpunkte_satz_2, match_strafpunkte_satz_3, match_strafpunkte_satz_4, match_strafpunkte_satz_5, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, match_id)
-    VALUES (2056, 1, 1, 2015, 1, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2601) ON CONFLICT DO NOTHING;
+    VALUES (2056, 1, 1, 2015, 2, null, null, null, null, null, null, null, '2020-03-01 17:14:35.105428', 0, null, null, 3, 2601) ON CONFLICT DO NOTHING;
 
 
 END
