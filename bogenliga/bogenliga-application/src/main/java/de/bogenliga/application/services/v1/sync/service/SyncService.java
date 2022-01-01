@@ -2,7 +2,6 @@ package de.bogenliga.application.services.v1.sync.service;
 
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
-import de.bogenliga.application.services.v1.ligatabelle.model.LigatabelleDTO;
 
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RequestMapping("v1/sync")
 public class SyncService implements ServiceFacade {
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
 
     private final Logger logger = LoggerFactory.getLogger(de.bogenliga.application.services.v1.sync.service.SyncService.class);
@@ -51,21 +51,23 @@ public class SyncService implements ServiceFacade {
     /**
      * I return the current "ligatabelle" for a "wettkampftid (tag)" entries of the database.
      *
-     * @return list of {@link LigatabelleDTO} as JSON
+     * @return list of {@link LigaSyncLigatabelleDTO} as JSON
      */
     @GetMapping(
-            value = "ligatabelle/wettkampf={id}",
+            value = "\"veranstaltung={id}\"",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<LigaSyncLigatabelleDTO> getLigatabelleWettkampf(@PathVariable("id") final long id) {
+    public List<LigaSyncLigatabelleDTO> getLigatabelleVeranstaltung(@PathVariable("id") final long id) {
 
-        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        logger.debug("Receive 'Ligatabelle für Wettkampf' request with ID '{}'", id);
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+        logger.debug("Receive 'Ligatabelle für Veranstaltung' request with ID '{}'", id);
 
-        final List<LigatabelleDO> ligatabelleDOList = ligatabelleComponent.getLigatabelleWettkampf(id);
+        final List<LigatabelleDO> ligatabelleDOList = ligatabelleComponent.getLigatabelleVeranstaltung(id);
 
         return ligatabelleDOList.stream().map(LigaSyncLigatabelleDTOMapper.toDTO).collect(Collectors.toList());
     }
+
+
     /* TODO
      * I return the all Matches from "ligamatch"-Table for
      * a "wettkampftid (tag)" entries of the database.
