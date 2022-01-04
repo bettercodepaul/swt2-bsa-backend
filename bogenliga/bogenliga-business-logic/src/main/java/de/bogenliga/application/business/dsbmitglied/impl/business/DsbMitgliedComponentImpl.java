@@ -83,10 +83,10 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     }
 
     @Override
-    public List<DsbMitgliedDO> findByName(final String searchstring) {
-        Preconditions.checkNotNull(searchstring, PRECONDITION_MSG_DSBMITGLIED_SEARCHTERM);
+    public List<DsbMitgliedDO> findBySearch(final String searchTerm) {
+        Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_DSBMITGLIED_SEARCHTERM);
 
-        final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findByName(searchstring);
+        final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findBySearch(searchTerm);
         return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
     }
 
