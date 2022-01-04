@@ -1,0 +1,1 @@
+Alter TABLE wettkampf  ADD COLUMN Offlinetoken varchar (200);
