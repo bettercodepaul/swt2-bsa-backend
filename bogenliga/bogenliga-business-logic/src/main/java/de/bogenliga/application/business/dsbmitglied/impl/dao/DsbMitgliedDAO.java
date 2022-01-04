@@ -177,13 +177,13 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
-     * @param searchstring
+     * @param searchTerm
      * @return dsbmitglied entries which contain the search term
      */
-    public List<DsbMitgliedBE> findByName(final String searchstring) {
+    public List<DsbMitgliedBE> findBySearch(final String searchTerm) {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_NAME, new StringBuilder()
                                                                         .append("%")
-                                                                        .append(searchstring)
+                                                                        .append(searchTerm)
                                                                         .append("%")
                                                                         .toString()
         );
