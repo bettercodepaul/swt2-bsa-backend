@@ -25,8 +25,10 @@ import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.impl.dao.UserRoleExtDAO;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
+import de.bogenliga.application.business.user.impl.mapper.UserMapper;
 import de.bogenliga.application.business.user.impl.mapper.UserRoleMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -42,6 +44,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     private static final String PRECONDITION_MSG_USER_ID = "UserID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserEmail must not be null or empty";
     private static final String PRECONDITION_MSG_ROLE_ID = "RoleID must not be null or negative";
+    private static final String PRECONDITION_MSG_USER_SEARCH = "Search term cannot be empty";
     private static final String USER_ROLE_DEFAULT = "USER";
     private final UserRoleExtDAO userRoleExtDAO;
 
@@ -75,6 +78,15 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     public List<UserRoleDO> findAll() {
         final List<UserRoleExtBE> userRoleExtBEList = userRoleExtDAO.findAll();
         return userRoleExtBEList.stream().map(UserRoleMapper.extToUserRoleDO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserRoleDO> findBySearch(String searchTerm) {
+        Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_USER_SEARCH);
+
+        final List<UserRoleExtBE> result = userRoleExtDAO.findBySearch(searchTerm);
+
+        return result.stream().map(UserRoleMapper.extToUserRoleDO).collect(Collectors.toList());
     }
 
 

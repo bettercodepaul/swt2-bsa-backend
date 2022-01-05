@@ -79,11 +79,6 @@ public class UserDAO implements DataAccessObject {
                     + " FROM benutzer "
                     + " WHERE benutzer_dsb_mitglied_id = ?";
 
-    private static final String FIND_BY_SEARCH =
-            "SELECT * "
-                    + "FROM benutzer "
-                    + " WHERE upper(benutzer_email) = upper(?)";
-
     private final BasicDAO basicDao;
 
 
@@ -113,15 +108,6 @@ public class UserDAO implements DataAccessObject {
      */
     public UserBE findById(final long id) {
         return basicDao.selectSingleEntity(USER, FIND_BY_ID, id);
-    }
-
-
-    /**
-     * Return a list of entries that contains the search Term
-     * @param searchTerm
-     */
-    public List<UserBE> findBySearch(final String searchTerm) {
-        return basicDao.selectEntityList(USER, FIND_BY_SEARCH, searchTerm);
     }
 
     /**

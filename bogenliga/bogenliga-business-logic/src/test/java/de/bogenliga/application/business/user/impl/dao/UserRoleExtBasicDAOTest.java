@@ -87,6 +87,43 @@ public class UserRoleExtBasicDAOTest {
 
     }
 
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final UserRoleExtBE expectedBE = new UserRoleExtBE();
+        expectedBE.setUserId(ID);
+        expectedBE.setRoleId(ROLE_ID);
+        expectedBE.setUserEmail(EMAIL);
+        expectedBE.setRoleName(ROLE_NAME);
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<UserRoleExtBE> actual = underTest.findBySearch(EMAIL);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getUserId())
+                .isEqualTo(expectedBE.getUserId());
+        assertThat(actual.get(0).getUserEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+
+        assertThat(actual.get(0).getRoleId())
+                .isEqualTo(expectedBE.getRoleId());
+        assertThat(actual.get(0).getRoleName())
+                .isEqualTo(expectedBE.getRoleName());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
 
     @Test
     public void findById() {

@@ -38,7 +38,6 @@ public interface UserComponent extends ComponentFacade {
      */
     UserDO findByEmail(String email);
 
-
     /**
      * Sign in an user with an email address and a password.
      * <p>
