@@ -121,11 +121,11 @@ public class DsbMitgliedService implements ServiceFacade {
      * @param searchTerm
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @GetMapping(value = "/namesearch/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<DsbMitgliedDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
         Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_SEARCHTERM);
-        LOG.debug("Receive 'findByName' request with Searchterm '{}'", searchTerm);
+        LOG.debug("Receive 'findBySearch' request with Searchterm '{}'", searchTerm);
 
         final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findBySearch(searchTerm);
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
