@@ -86,7 +86,32 @@ public class SyncService implements ServiceFacade {
      * I return the all Mannschaftsmitglieder Entries for all Mannschaften
      * participating a "wettkampftid (tag)" entries of the database.
      *
+     * Aufruf von WettkampfComponent -> getAllowedMitglieder(wettkampfID)
      * @return list of {@link LigaSyncMannschaftsmitgliedDTO} as JSON
+     */
+
+    /* TODO
+     * I will update the dataset of a single Wettkampf and set the OfflineToken
+     *
+     * @return WettkampfExtDTO as JSON
+     */
+
+    /* TODO
+     * I will recieve the OfflineToken form Client
+     * and a list of new Mannschaftmitglieder (identified by missing IDs)
+     * the follwing checks will be performed:
+     * - are all new Manschaftsmitglieder existing in Backend -> otherwise one Error per missing entry
+     *   including Rückennummern und Name der Mannschaft
+     * - is the Offline identical to the stored in Backend Wettkampf Table -> otherwise this Dataset is not
+     *   the most recent one --> Gero sould advised what to do.
+     * @return ok or list of errors
+     */
+
+    /* TODO
+     * I will recieve both lists: matches and passen to store data consistantly in a single transaction
+     * when data successfully stored, the offlinetoken in wettkampf table is to be removed
+     * @return ok or list of errors
+     * in case of ok - client should delete offline data
      */
 
 }
