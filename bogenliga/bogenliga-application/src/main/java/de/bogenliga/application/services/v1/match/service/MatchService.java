@@ -191,6 +191,19 @@ public class MatchService implements ServiceFacade {
 
             return matchDTOs;
         }else{
+            List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+
+            final List<MatchDTO> matchDTOs = new ArrayList<>();
+
+            for( MatchDO einmatch: wettkampfMatches) {
+                MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
+                DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
+                VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+                matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
+                matchDTOs.add(matchDTO);
+            }
+
+            return matchDTOs;
             
         }
 
@@ -717,7 +730,10 @@ public class MatchService implements ServiceFacade {
         if (addPassen) {
             matchDTO.setMannschaftName(matchComponent.getMannschaftNameById(matchId));
 
+            //HIer brauche ich eine Ligapasse damit ich in der for loop direkt daraus die rückennummer lesen kann. später dann erst mappen
+
             //List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
+
             List<PasseDO> passeDOs = passeComponent.findLigapassenByLigamatchId(matchId);
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 
@@ -733,6 +749,8 @@ public class MatchService implements ServiceFacade {
 
         return matchDTO;
     }
+
+
 
 
     private void checkMatchId(Long matchId) {
