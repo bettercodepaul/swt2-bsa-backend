@@ -73,12 +73,15 @@ public class SyncService implements ServiceFacade {
      * a "wettkampftid (tag)" entries of the database.
      *
      * @return list of {@link LigaSyncMatchDTO} as JSON
+     * vermutlich die folgende Funktion:
+     * list<ligamatchDO> ligamatchcomponent.findById(wetkkmapfID)
      **/
 
     /* TODO
      * I return the all Passe Entries from "ligapasse"-Table for
      * a "wettkampftid (tag)" entries of the database.
      *
+     * list<ligapasseDO> ligapassecomponent.findById(wetkkmapfID)
      * @return list of {@link LigaSyncPasseDTO} as JSON
      */
 
