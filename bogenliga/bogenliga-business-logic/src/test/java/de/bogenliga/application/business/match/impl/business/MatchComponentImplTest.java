@@ -225,16 +225,17 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
     @Test
     public void getLigamatchById(){
-        MatchDO expectedMatchDO = getMatchDO();
+        LigamatchBE expectedLigamatchBE = BaseLigamatchTest.getLigamatchBE();
 
         // configure mocks
-        when(underTest.getLigamatchById(anyLong())).thenReturn(expectedMatchDO);
+        when(ligamatchDAO.findById(anyLong())).thenReturn(expectedLigamatchBE);
 
         // call test method
-        final MatchDO actual = underTest.getLigamatchById(MATCH_ID);
+        final LigamatchBE actual = underTest.getLigamatchById(MATCH_ID);
 
         // assert result
-        assertThat(expectedMatchDO.equals(actual));
+        BaseLigamatchTest.assertValid(expectedLigamatchBE, actual);
+        verify(ligamatchDAO).findById(MATCH_ID);
     }
 
 

@@ -33,7 +33,7 @@ public interface MatchComponent {
     List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId);
 
 
-    MatchDO getLigamatchById(Long id);
+    LigamatchBE getLigamatchById(Long id);
 
     /**
      * Return a single match by combined primary key attributes

@@ -5,16 +5,15 @@ import org.junit.Rule;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
-import de.bogenliga.application.business.match.api.types.MatchDO;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+
 public class BaseLigamatchTest {
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     protected static final Long WETTKAMPF_ID = 1L;
     protected static final Long MATCH_ID = 1L;
@@ -34,7 +33,6 @@ public class BaseLigamatchTest {
     protected static final String MANNSCHAFT_NAME = "TSV_GRAFENBERG";
     protected static final Integer RUECKENNUMMER = 2;
 
-    protected static final Long CURRENT_USER_ID = 1L;
     private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
 
     public static LigamatchBE getLigamatchBE(){
@@ -59,11 +57,28 @@ public class BaseLigamatchTest {
         return ligamatchBE;
     }
 
-    public static MatchDO getMatchDO() {
-        return new MatchDO(MATCH_ID, MATCH_NR, WETTKAMPF_ID, MANNSCHAFT_ID, BEGEGNUNG,
-                SCHEIBENNUMMER, null, null, STRAFPUNKT_SATZ_1,
-                STRAFPUNKT_SATZ_2, STRAFPUNKT_SATZ_3, STRAFPUNKT_SATZ_4, STRAFPUNKT_SATZ_5);
+    public static void assertValid(LigamatchBE ligamatchBE, LigamatchBE actual) {
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMatchNr()).isEqualTo(ligamatchBE.getMatchNr()).isEqualTo(MATCH_NR);
+        assertThat(actual.getMatchId()).isEqualTo(ligamatchBE.getMatchId()).isEqualTo(MATCH_ID);
+        assertThat(actual.getScheibennummer()).isEqualTo(ligamatchBE.getScheibennummer()).isEqualTo(SCHEIBENNUMMER);
+        assertThat(actual.getMannschaftId()).isEqualTo(ligamatchBE.getMannschaftId()).isEqualTo(MANNSCHAFT_ID);
+        assertThat(actual.getBegegnung()).isEqualTo(ligamatchBE.getBegegnung()).isEqualTo(BEGEGNUNG);
+        assertThat(actual.getNaechsteMatchId()).isEqualTo(ligamatchBE.getNaechsteMatchId()).isEqualTo(NAECHSTE_MATCH_ID);
+        assertThat(actual.getNaechsteNaechsteMatchId()).isEqualTo(ligamatchBE.getNaechsteNaechsteMatchId()).isEqualTo(NAECHSTE_NAECHSTE_MATCH_ID);
+
+        assertThat(actual.getStrafpunkteSatz1()).isEqualTo(ligamatchBE.getStrafpunkteSatz1()).isEqualTo(STRAFPUNKT_SATZ_1);
+        assertThat(actual.getStrafpunkteSatz2()).isEqualTo(ligamatchBE.getStrafpunkteSatz2()).isEqualTo(STRAFPUNKT_SATZ_2);
+        assertThat(actual.getStrafpunkteSatz3()).isEqualTo(ligamatchBE.getStrafpunkteSatz3()).isEqualTo(STRAFPUNKT_SATZ_3);
+        assertThat(actual.getStrafpunkteSatz4()).isEqualTo(ligamatchBE.getStrafpunkteSatz4()).isEqualTo(STRAFPUNKT_SATZ_4);
+        assertThat(actual.getStrafpunkteSatz5()).isEqualTo(ligamatchBE.getStrafpunkteSatz5()).isEqualTo(STRAFPUNKT_SATZ_5);
+        assertThat(actual.getWettkampfId()).isEqualTo(ligamatchBE.getWettkampfId()).isEqualTo(WETTKAMPF_ID);
+        assertThat(actual.getWettkampfTag()).isEqualTo(ligamatchBE.getWettkampfTag()).isEqualTo(WETTKAMPF_TAG);
+        assertThat(actual.getMannschaftName()).isEqualTo(ligamatchBE.getMannschaftName()).isEqualTo(MANNSCHAFT_NAME);
+        assertThat(actual.getRueckennummer()).isEqualTo(ligamatchBE.getRueckennummer()).isEqualTo(RUECKENNUMMER);
+
     }
+
 
     public BaseLigamatchTest(){
         valuesToMethodMap.put("getWettkampfId", WETTKAMPF_ID);
