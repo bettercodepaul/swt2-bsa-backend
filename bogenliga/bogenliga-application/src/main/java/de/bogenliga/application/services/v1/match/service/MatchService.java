@@ -178,7 +178,7 @@ public class MatchService implements ServiceFacade {
         this.checkMatchId(wettkampfid);
 
         if(this.checkIfLigamatch(wettkampfid)){
-            List<LigamatchBE> wettkampfMatches = matchComponent.findLigamatchesByWettkampfId(wettkampfid);
+            List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
 
             final List<MatchDTO> matchDTOs = new ArrayList<>();
 
@@ -721,13 +721,16 @@ public class MatchService implements ServiceFacade {
      */
 
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
-        final MatchDO matchDo = matchComponent.findLigamatchById(matchId);
-        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-        matchDTO.setWettkampfTyp(matchComponent.getWettkampftypById(matchId));
-        matchDTO.setWettkampfTag(matchComponent.getWettkampfTag(matchId));
+
+
+
 
         // the match is shown on the Schusszettel, add passen and mannschaft name
         if (addPassen) {
+            final MatchDO matchDo = matchComponent.getLigamatchById(matchId);
+            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
+            matchDTO.setWettkampfTyp(matchComponent.getWettkampftypById(matchId));
+            matchDTO.setWettkampfTag(matchComponent.getWettkampfTag(matchId));
             matchDTO.setMannschaftName(matchComponent.getMannschaftNameById(matchId));
 
             //HIer brauche ich eine Ligapasse damit ich in der for loop direkt daraus die rückennummer lesen kann. später dann erst mappen
@@ -745,9 +748,21 @@ public class MatchService implements ServiceFacade {
             }
 
             matchDTO.setPassen(passeDTOs);
+            return matchDTO;
+        }else{
+
+            final MatchDO matchDo = matchComponent.findById(matchId);
+            final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
+                    wettkampfComponent.findById(matchDo.getWettkampfId()));
+            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
+            WettkampfTypDO wettDO = wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
+            final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
+            matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
+            matchDTO.setWettkampfTag(wettkampfDTO.getWettkampfTag());
+            return matchDTO;
         }
 
-        return matchDTO;
+
     }
 
 

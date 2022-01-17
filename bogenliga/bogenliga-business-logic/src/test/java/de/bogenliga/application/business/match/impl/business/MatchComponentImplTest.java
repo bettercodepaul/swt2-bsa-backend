@@ -8,6 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.ligamatch.impl.BaseLigamatchTest;
+import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
@@ -28,6 +31,8 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
     @Mock
     private MatchDAO matchDAO;
+    @Mock
+    private LigamatchDAO ligamatchDAO;
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
     @Mock
@@ -216,6 +221,20 @@ public class MatchComponentImplTest extends BaseMatchTest {
         // assert result
         validateObjectList(actual);
         verify(matchDAO).findByWettkampfId(MATCH_WETTKAMPF_ID);
+    }
+
+    @Test
+    public void getLigamatchById(){
+        MatchDO expectedMatchDO = getMatchDO();
+
+        // configure mocks
+        when(underTest.getLigamatchById(anyLong())).thenReturn(expectedMatchDO);
+
+        // call test method
+        final MatchDO actual = underTest.getLigamatchById(MATCH_ID);
+
+        // assert result
+        assertThat(expectedMatchDO.equals(actual));
     }
 
 
