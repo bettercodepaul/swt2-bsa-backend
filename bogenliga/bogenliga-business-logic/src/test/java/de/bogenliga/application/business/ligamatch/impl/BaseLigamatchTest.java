@@ -1,10 +1,12 @@
 package de.bogenliga.application.business.ligamatch.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import org.junit.Rule;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
@@ -79,6 +81,15 @@ public class BaseLigamatchTest {
         assertThat(actual.getMannschaftName()).isEqualTo(ligamatchBE.getMannschaftName()).isEqualTo(MANNSCHAFT_NAME);
         assertThat(actual.getRueckennummer()).isEqualTo(ligamatchBE.getRueckennummer()).isEqualTo(RUECKENNUMMER);
 
+    }
+
+    public static void validateObjectList (List<LigamatchBE> actual) {
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
     }
 
 

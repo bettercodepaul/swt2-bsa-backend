@@ -45,31 +45,5 @@ public class LigamatchMapperTest extends BaseLigamatchTest {
         this.validateDO(ligamatchBE, matchDO);
     }
 
-//    private void validateBES(LigamatchBE ligamatchBE, LigamatchBE ligamatchBEMapped) {
-//        assertThat(ligamatchBE).isNotNull();
-//        assertThat(ligamatchBE.getWettkampfId()).isEqualTo(ligamatchBEMapped.getWettkampfId()).isEqualTo(WETTKAMPF_ID);
-//        assertThat(ligamatchBE.getMatchId()).isEqualTo(ligamatchBEMapped.getMatchId()).isEqualTo(MATCH_ID);
-//        assertThat(ligamatchBE.getMatchNr()).isEqualTo(ligamatchBEMapped.getMatchNr()).isEqualTo(MATCH_NR);
-//        assertThat(ligamatchBE.getScheibennummer()).isEqualTo(ligamatchBEMapped.getScheibennummer()).isEqualTo(SCHEIBENNUMMER);
-//        assertThat(ligamatchBE.getMannschaftId()).isEqualTo(ligamatchBEMapped.getMannschaftId()).isEqualTo(
-//                MANNSCHAFT_ID);
-//        assertThat(ligamatchBE.getBegegnung()).isEqualTo(ligamatchBEMapped.getBegegnung()).isEqualTo(BEGEGNUNG);
-//        assertThat(ligamatchBE.getNaechsteMatchId()).isEqualTo(ligamatchBEMapped.getNaechsteMatchId()).isEqualTo(NAECHSTE_MATCH_ID);
-//        assertThat(ligamatchBE.getNaechsteNaechsteMatchId()).isEqualTo(ligamatchBEMapped.getNaechsteNaechsteMatchId()).isEqualTo(NAECHSTE_NAECHSTE_MATCH_ID);
-//        assertThat(ligamatchBE.getStrafpunkteSatz1()).isEqualTo(ligamatchBEMapped.getStrafpunkteSatz1()).isEqualTo(
-//                STRAFPUNKT_SATZ_1);
-//        assertThat(ligamatchBE.getStrafpunkteSatz2()).isEqualTo(ligamatchBEMapped.getStrafpunkteSatz2()).isEqualTo(
-//                STRAFPUNKT_SATZ_2);
-//        assertThat(ligamatchBE.getStrafpunkteSatz3()).isEqualTo(ligamatchBEMapped.getStrafpunkteSatz3()).isEqualTo(
-//                STRAFPUNKT_SATZ_3);
-//        assertThat(ligamatchBE.getStrafpunkteSatz4()).isEqualTo(ligamatchBEMapped.getStrafpunkteSatz4()).isEqualTo(
-//                STRAFPUNKT_SATZ_4);
-//        assertThat(ligamatchBE.getStrafpunkteSatz5()).isEqualTo(ligamatchBEMapped.getStrafpunkteSatz5()).isEqualTo(
-//                STRAFPUNKT_SATZ_5);
-//        assertThat(ligamatchBE.getWettkampftypId()).isEqualTo(ligamatchBEMapped.getWettkampftypId()).isEqualTo(WETTKAMP_TYP_ID);
-//        assertThat(ligamatchBE.getWettkampfTag()).isEqualTo(ligamatchBEMapped.getWettkampfTag()).isEqualTo(WETTKAMPF_TAG);
-//        assertThat(ligamatchBE.getMannschaftName()).isEqualTo(ligamatchBEMapped.getMannschaftName()).isEqualTo(MANNSCHAFT_NAME);
-//        assertThat(ligamatchBE.getRueckennummer()).isEqualTo(ligamatchBEMapped.getRueckennummer()).isEqualTo(RUECKENNUMMER);
-//
-//    }
+
 }

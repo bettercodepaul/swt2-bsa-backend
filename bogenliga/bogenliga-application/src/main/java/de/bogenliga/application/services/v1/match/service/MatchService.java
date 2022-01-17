@@ -730,9 +730,9 @@ public class MatchService implements ServiceFacade {
             final LigamatchBE ligamatchBE = matchComponent.getLigamatchById(matchId);
             MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(ligamatchBE);
             MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO);
-            matchDTO.setWettkampfTyp(matchComponent.getWettkampftypById(matchId));
-            matchDTO.setWettkampfTag(matchComponent.getWettkampfTag(matchId));
-            matchDTO.setMannschaftName(matchComponent.getMannschaftNameById(matchId));
+            matchDTO.setWettkampfTyp(ligamatchBE.getWettkampftypId());
+            matchDTO.setWettkampfTag(ligamatchBE.getWettkampfTag());
+            matchDTO.setMannschaftName(ligamatchBE.getMannschaftName());
 
             //HIer brauche ich eine Ligapasse damit ich in der for loop direkt daraus die rückennummer lesen kann. später dann erst mappen
 
@@ -742,7 +742,7 @@ public class MatchService implements ServiceFacade {
 
             // reverse map the schuetzeNr to the passeDTO
             for (PasseDTO passeDTO : passeDTOs) {
-                passeDTO.setRueckennummer(passeComponent.getRueckenNummer(passeDTO.getId()));
+                passeDTO.setRueckennummer(passeDTO.getRueckennummer());
                 Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
@@ -775,7 +775,6 @@ public class MatchService implements ServiceFacade {
     }
 
     private boolean checkIfLigamatch(Long Id){
-        boolean isLigamatch = false;
         return matchComponent.checkIfLigamatch(Id);
     }
 
