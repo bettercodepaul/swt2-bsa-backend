@@ -101,7 +101,7 @@ public class MatchComponentImpl implements MatchComponent {
 
 
     @Override
-    public List<LigamatchBE> findLigamatchesByWettkampfId(Long wettkampfId) {
+    public List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId) {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
 
         final List<LigamatchBE> ligamatchBEList = ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
@@ -109,7 +109,7 @@ public class MatchComponentImpl implements MatchComponent {
     }
 
     @Override
-    public MatchDO findLigamatchById(Long id) {
+    public MatchDO getLigamatchById(Long id) {
         checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
 
         final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);

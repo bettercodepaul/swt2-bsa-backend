@@ -30,10 +30,10 @@ public interface MatchComponent {
     Long getWettkampfTag(Long id);
     Boolean checkIfLigamatch(Long id);
 
-    List<LigamatchBE> findLigamatchesByWettkampfId(Long wettkampfId);
+    List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId);
 
 
-    MatchDO findLigamatchById(Long id);
+    MatchDO getLigamatchById(Long id);
 
     /**
      * Return a single match by combined primary key attributes

@@ -19,7 +19,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private Long mannschaftId;
     private Long begegnung;
     private Long naechsteMatchId;
-    private Long naechsteNaechsteMatchNrMatchId;
+    private Long naechsteNaechsteMatchId;
     private Long strafpunkteSatz1;
     private Long strafpunkteSatz2;
     private Long strafpunkteSatz3;
@@ -48,7 +48,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
                 ", mannschaftId=" + mannschaftId +
                 ",begegnung=" + begegnung +
                 ", naechsteMatchId=" + naechsteMatchId +
-                ", naechsteNaechsteMatchNrMatchId=" + naechsteNaechsteMatchNrMatchId +
+                ", naechsteNaechsteMatchNrMatchId=" + naechsteNaechsteMatchId +
                 ", strafpunkteSatz1=" + strafpunkteSatz1 +
                 ", strafpunkteSatz2=" + strafpunkteSatz2 +
                 ", strafpunkteSatz3=" + strafpunkteSatz3 +
@@ -79,8 +79,8 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     public Long getNaechsteMatchId() {return naechsteMatchId;}
     public void setNaechsteMatchId(Long naechsteMatchId) {this.naechsteMatchId = naechsteMatchId;}
 
-    public Long getNaechsteNaechsteMatchNrMatchId() {return naechsteNaechsteMatchNrMatchId;}
-    public void setNaechsteNaechsteMatchNrMatchId(Long naechsteNaechsteMatchNrMatchId) {this.naechsteNaechsteMatchNrMatchId = naechsteNaechsteMatchNrMatchId;}
+    public Long getNaechsteNaechsteMatchId() {return naechsteNaechsteMatchId;}
+    public void setNaechsteNaechsteMatchId(Long naechsteNaechsteMatchId) {this.naechsteNaechsteMatchId = naechsteNaechsteMatchId;}
 
     public Long getStrafpunkteSatz1() {return strafpunkteSatz1;}
     public void setStrafpunkteSatz1(Long strafpunkteSatz1) {this.strafpunkteSatz1 = strafpunkteSatz1;}
