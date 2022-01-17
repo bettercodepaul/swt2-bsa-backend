@@ -14,6 +14,8 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
  */
 
 public class BaseLigamatchTest {
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     protected static final Long WETTKAMPF_ID = 1L;
     protected static final Long MATCH_ID = 1L;
