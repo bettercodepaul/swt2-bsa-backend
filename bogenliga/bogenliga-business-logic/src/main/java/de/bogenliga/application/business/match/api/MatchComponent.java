@@ -25,9 +25,6 @@ public interface MatchComponent {
 
     MatchDO findById(Long id);
 
-    String getMannschaftNameById(Long id);
-    String getWettkampftypById(Long id);
-    Long getWettkampfTag(Long id);
     Boolean checkIfLigamatch(Long id);
 
     List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId);

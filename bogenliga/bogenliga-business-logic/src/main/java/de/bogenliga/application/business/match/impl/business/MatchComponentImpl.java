@@ -8,7 +8,6 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
-import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
@@ -103,9 +102,7 @@ public class MatchComponentImpl implements MatchComponent {
     @Override
     public List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId) {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
-
-        final List<LigamatchBE> ligamatchBEList = ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
-        return ligamatchBEList;
+        return ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
     }
 
     @Override
@@ -121,32 +118,6 @@ public class MatchComponentImpl implements MatchComponent {
         return ligamatchBE;
     }
 
-    @Override
-    public String getWettkampftypById(Long id) {
-        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
-
-        final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
-
-        return ligamatchBE.getWettkampftypId();
-    }
-
-    @Override
-    public Long getWettkampfTag(Long id){
-        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
-
-        final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
-
-        return ligamatchBE.getWettkampfTag();
-    }
-
-    @Override
-    public String getMannschaftNameById(Long id) {
-        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
-
-        final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
-
-        return ligamatchBE.getMannschaftName();
-    }
 
     @Override
     public MatchDO findById(Long id) {

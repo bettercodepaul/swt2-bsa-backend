@@ -128,8 +128,8 @@ public class LigamatchDAO implements DataAccessObject {
     }
 
     public Boolean checkIfLigamatch(Long id){
-        String wettkampfID = new String(FIND_BY_WETTKAMPF_ID);
-        return wettkampfID.equals(id);
+        String wettkampfID = FIND_BY_WETTKAMPF_ID;
+        return wettkampfID.equals(id.toString());
     }
 
 

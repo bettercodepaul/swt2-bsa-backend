@@ -22,7 +22,6 @@ public interface PasseComponent {
 
     List<PasseDO> getLigapassenByLigamatchId(Long matchId);
 
-    Integer getRueckenNummer(Long passeId);
 
 
     /**
