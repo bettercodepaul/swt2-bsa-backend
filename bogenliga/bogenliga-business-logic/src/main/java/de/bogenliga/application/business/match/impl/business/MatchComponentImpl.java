@@ -109,7 +109,7 @@ public class MatchComponentImpl implements MatchComponent {
     }
 
     @Override
-    public MatchDO getLigamatchById(Long id) {
+    public LigamatchBE getLigamatchById(Long id) {
         checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
 
         final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
@@ -118,7 +118,7 @@ public class MatchComponentImpl implements MatchComponent {
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No match found for ID '%s'", id));
         }
-        return LigamatchToMatchMapper.LigamatchToMatchDO.apply(ligamatchBE);
+        return ligamatchBE;
     }
 
     @Override

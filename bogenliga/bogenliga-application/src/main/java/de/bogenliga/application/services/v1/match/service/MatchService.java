@@ -727,17 +727,17 @@ public class MatchService implements ServiceFacade {
 
         // the match is shown on the Schusszettel, add passen and mannschaft name
         if (addPassen) {
-            final MatchDO matchDo = matchComponent.getLigamatchById(matchId);
-            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
+            final LigamatchBE ligamatchBE = matchComponent.getLigamatchById(matchId);
+            MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(ligamatchBE);
+            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO);
             matchDTO.setWettkampfTyp(matchComponent.getWettkampftypById(matchId));
             matchDTO.setWettkampfTag(matchComponent.getWettkampfTag(matchId));
             matchDTO.setMannschaftName(matchComponent.getMannschaftNameById(matchId));
 
             //HIer brauche ich eine Ligapasse damit ich in der for loop direkt daraus die rückennummer lesen kann. später dann erst mappen
 
-            //List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
 
-            List<PasseDO> passeDOs = passeComponent.findLigapassenByLigamatchId(matchId);
+            List<PasseDO> passeDOs = passeComponent.getLigapassenByLigamatchId(matchId);
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 
             // reverse map the schuetzeNr to the passeDTO
@@ -750,7 +750,6 @@ public class MatchService implements ServiceFacade {
             matchDTO.setPassen(passeDTOs);
             return matchDTO;
         }else{
-
             final MatchDO matchDo = matchComponent.findById(matchId);
             final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
                     wettkampfComponent.findById(matchDo.getWettkampfId()));
