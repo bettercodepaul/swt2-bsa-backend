@@ -176,6 +176,29 @@ public class DsbMitgliedServiceTest {
         verify(dsbMitgliedComponent).findById(ID);
     }
 
+    @Test
+    public void findBySearch() {
+        //prepare test data
+        final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
+        final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
+        // configure mocks
+        when(dsbMitgliedComponent.findBySearch(dsbMitgliedDO.getVorname())).thenReturn(dsbMitgliedDOList);
+
+        // call test method
+        final List<DsbMitgliedDTO> actual = underTest.findBySearch(dsbMitgliedDO.getVorname());
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        final DsbMitgliedDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(dsbMitgliedDO.getId());
+        assertThat(actualDTO.getVorname()).isEqualTo(dsbMitgliedDO.getVorname());
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findBySearch(dsbMitgliedDO.getVorname());
+    }
 
     @Test
     public void insertUserId(){

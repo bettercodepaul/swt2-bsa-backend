@@ -9,7 +9,6 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
-import de.bogenliga.application.business.user.impl.dao.UserRoleDAO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.services.common.errorhandling.ErrorDTO;
@@ -31,7 +30,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -131,7 +129,7 @@ public class UserServiceTest {
         dsbMitgliedDO.setVereinsId(VEREINID);
 
         final UserDO userDO = new UserDO();
-        userDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        userDO.setDsbMitgliedId(DSBMITGLIEDID);
         userDO.setId(ID);
 
 
@@ -144,7 +142,7 @@ public class UserServiceTest {
         when(jwtTokenProvider.createToken(any(Authentication.class))).thenReturn(JWT);
 
         when(userComponent.findById(anyLong())).thenReturn(userDO);
-        when(dsbMitgliedComponent.findById(userDO.getDsb_mitglied_id())).thenReturn(dsbMitgliedDO);
+        when(dsbMitgliedComponent.findById(userDO.getDsbMitgliedId())).thenReturn(dsbMitgliedDO);
 
         // call test method
         final ResponseEntity<UserSignInDTO> actual = underTest.login(userCredentials);
@@ -659,7 +657,7 @@ public class UserServiceTest {
         final UserRoleDO expectedURDO = new UserRoleDO();
         expectedURDO.setId(ID);
         expectedURDO.setRoleId(ROLE_ID);
-        expectedURDO.setEmail(USERNAME);
+        expectedURDO.setEmail(EMAIL);
         expectedURDO.setRoleName(ROLE_NAME);
 
         // configure mocks
@@ -692,6 +690,45 @@ public class UserServiceTest {
         verify(userRoleComponent).findAll();
 
 
+    }
+
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final UserRoleDO expectedURDO = new UserRoleDO();
+        expectedURDO.setId(ID);
+        expectedURDO.setRoleId(ROLE_ID);
+        expectedURDO.setEmail(EMAIL);
+        expectedURDO.setRoleName(ROLE_NAME);
+
+        // configure mocks
+        when(userRoleComponent.findBySearch(EMAIL)).thenReturn(Collections.singletonList(expectedURDO));
+
+        // call test method
+        final List<UserRoleDTO> actual = underTest.findBySearch(EMAIL);
+
+        // assert result
+        Java6Assertions.assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+        Java6Assertions.assertThat(actual.get(0).getId())
+                .isEqualTo(expectedURDO.getId());
+        Java6Assertions.assertThat(actual.get(0).getEmail())
+                .isEqualTo(expectedURDO.getEmail());
+        Java6Assertions.assertThat(actual.get(0).getRoleId())
+                .isEqualTo(expectedURDO.getRoleId());
+        Java6Assertions.assertThat(actual.get(0).getRoleName())
+                .isEqualTo(expectedURDO.getRoleName());
+        Java6Assertions.assertThat(actual.get(0).getVersion())
+                .isEqualTo(expectedURDO.getVersion());
+
+
+        // verify invocations
+        verify(userRoleComponent).findBySearch(EMAIL);
     }
 
 
@@ -763,7 +800,7 @@ public class UserServiceTest {
         final UserDO userCreatedDO = new UserDO();
         userCreatedDO.setEmail(USERNAME);
         userCreatedDO.setId(ID);
-        userCreatedDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        userCreatedDO.setDsbMitgliedId(DSBMITGLIEDID);
         userCreatedDO.setVersion(VERSION);
 
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();

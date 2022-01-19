@@ -146,6 +146,29 @@ public class DsbMitgliedComponentImplTest {
         verify(dsbMitgliedDAO).findAll();
     }
 
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
+        final List<DsbMitgliedBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(dsbMitgliedDAO.findBySearch(expectedBE.getDsbMitgliedVorname())).thenReturn(expectedBEList);
+
+
+        // call test method
+        final List<DsbMitgliedDO> actual = underTest.findBySearch(expectedBE.getDsbMitgliedVorname());
+
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        // verify invocations
+        verify(dsbMitgliedDAO).findBySearch(expectedBE.getDsbMitgliedVorname());
+    }
 
     @Test
     public void findById() {

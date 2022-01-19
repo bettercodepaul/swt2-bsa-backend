@@ -135,6 +135,28 @@ public class CompetitionClassServiceTest {
         assertEquals(competitionClassDO.getKlasseNr(), resultDTO.getKlasseNr());
     }
 
+    @Test
+    public void findBySearch() {
+        // given
+        final CompetitionClassDO competitionClassDO = getCompetitionClassDO();
+        final List<CompetitionClassDO> competitionClassDOList = Collections.singletonList(competitionClassDO);
+
+        when(competitionClassComponent.findBySearch(competitionClassDO.getKlasseName())).thenReturn(competitionClassDOList);
+
+        // when
+        final List<CompetitionClassDTO> result = competitionClassService.findBySearch(competitionClassDO.getKlasseName());
+
+        // then
+        final CompetitionClassDTO resultDTO = result.get(0);
+
+        assertNotNull(resultDTO);
+        assertEquals(competitionClassDO.getId(), resultDTO.getId());
+        assertEquals(competitionClassDO.getKlasseName(), resultDTO.getKlasseName());
+        assertEquals(competitionClassDO.getKlasseJahrgangMax(), resultDTO.getKlasseJahrgangMax());
+        assertEquals(competitionClassDO.getKlasseJahrgangMin(), resultDTO.getKlasseJahrgangMin());
+        assertEquals(competitionClassDO.getKlasseNr(), resultDTO.getKlasseNr());
+    }
+
 
     @Test
     public void update() {

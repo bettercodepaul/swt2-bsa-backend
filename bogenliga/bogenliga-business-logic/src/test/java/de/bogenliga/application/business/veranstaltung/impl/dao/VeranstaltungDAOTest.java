@@ -10,7 +10,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
-import junit.framework.TestCase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,9 +37,9 @@ public class VeranstaltungDAOTest {
     public void testFindBySportjahrDestinct() {
         //create test data
         VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltung_id(VERANSTALTUNGSID);
-        expectedBE.setVeranstaltung_name(VERANSTALTUNGSNAME);
-        expectedBE.setVeranstaltung_liga_id(LIGAID);
+        expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
+        expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
+        expectedBE.setVeranstaltungLigaId(LIGAID);
 
         //mock the methode
         when(basicDao.selectEntityList(any(),any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -55,12 +54,12 @@ public class VeranstaltungDAOTest {
 
         assertThat(actual.get(0)).isNotNull();
 
-        assertThat(actual.get(0).getVeranstaltung_id())
-                .isEqualTo(expectedBE.getVeranstaltung_id());
-        assertThat(actual.get(0).getVeranstaltung_name())
-                .isEqualTo(expectedBE.getVeranstaltung_name());
-        assertThat(actual.get(0).getVeranstaltung_liga_id())
-                .isEqualTo(expectedBE.getVeranstaltung_liga_id());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedBE.getVeranstaltungName());
+        assertThat(actual.get(0).getVeranstaltungLigaId())
+                .isEqualTo(expectedBE.getVeranstaltungLigaId());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
