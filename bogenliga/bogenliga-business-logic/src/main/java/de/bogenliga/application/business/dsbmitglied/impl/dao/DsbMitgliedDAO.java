@@ -76,7 +76,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
             "SELECT * "
                     + " FROM dsb_mitglied "
                     + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
-                    + " ' ', LOWER(dsb_mitglied_nachname)) LIKE LOWER(?) ";
+                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
 
 
 
