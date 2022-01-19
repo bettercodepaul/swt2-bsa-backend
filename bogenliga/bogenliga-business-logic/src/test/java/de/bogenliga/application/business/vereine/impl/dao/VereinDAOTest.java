@@ -73,6 +73,35 @@ public class VereinDAOTest {
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
+
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final VereinBE expectedBE = getVereinBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<VereinBE> actual = underTest.findBySearch(expectedBE.getVereinName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getVereinName())
+                .isEqualTo(expectedBE.getVereinName());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
     @Test
     public void findById() {
         // prepare test data
