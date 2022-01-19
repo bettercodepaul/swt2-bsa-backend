@@ -81,6 +81,14 @@ public interface WettkampfComponent extends ComponentFacade {
      */
     void delete(WettkampfDO wettkampfDO, long currentUserID);
 
+    /**
+     * Generates a list of id's of allowed contestants for the given contest
+     * @param wettkampfid Id of a contest
+     * @param mannschaft1ID Id of mannschaft1
+     * @param mannschaft2ID Id of mannschaft2
+     * @return List of Miglied id's allowed to participate
+     */
+    List<Long> getAllowedMitglieder(long wettkampfid, long mannschaft1ID, long mannschaft2ID);
 
     /**
      * Generates a list of id's of allowed contestants for the given contest

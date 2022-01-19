@@ -39,6 +39,7 @@ public class RoleService implements ServiceFacade {
 
 
     private final RoleComponent roleComponent;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     private final WebSecurityConfiguration webSecurityConfiguration;

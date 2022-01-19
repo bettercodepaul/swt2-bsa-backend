@@ -46,10 +46,10 @@ public class LigatabelleDOTest extends TestCase {
         expectedLigatabelleDO.setvereinId(vereinId);
         expectedLigatabelleDO.setvereinName(vereinName);
         expectedLigatabelleDO.setmatchpkt(matchpkt);
-        expectedLigatabelleDO.setmatchpktGegen(matchpktGegen);
+        expectedLigatabelleDO.setMatchpktGegen(matchpktGegen);
         expectedLigatabelleDO.setsatzpkt(satzpkt);
-        expectedLigatabelleDO.setsatzpktGegen(satzpktGegen);
-        expectedLigatabelleDO.setsatzpktDifferenz(satzpktDifferenz);
+        expectedLigatabelleDO.setSatzpktGegen(satzpktGegen);
+        expectedLigatabelleDO.setSatzpktDifferenz(satzpktDifferenz);
         expectedLigatabelleDO.setsortierung(sortierung);
         expectedLigatabelleDO.settabellenplatz(tabellenplatz);
 

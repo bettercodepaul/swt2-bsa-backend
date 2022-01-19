@@ -27,10 +27,10 @@ public class LigatabelleMapperTest {
         assertThat(actual.getvereinId()).isEqualTo(ligatabelleBE.getVereinId());
         assertThat(actual.getvereinName()).isEqualTo(ligatabelleBE.getVereinName());
         assertThat(actual.getmatchpkt()).isEqualTo(ligatabelleBE.getMatchpkt());
-        assertThat(actual.getmatchpktGegen()).isEqualTo(ligatabelleBE.getMatchpkt_gegen());
+        assertThat(actual.getMatchpktGegen()).isEqualTo(ligatabelleBE.getMatchpktGegen());
         assertThat(actual.getsatzpkt()).isEqualTo(ligatabelleBE.getSatzpkt());
-        assertThat(actual.getsatzpktGegen()).isEqualTo(ligatabelleBE.getSatzpkt_gegen());
-        assertThat(actual.getsatzpktDifferenz()).isEqualTo(ligatabelleBE.getSatzpkt_differenz());
+        assertThat(actual.getSatzpktGegen()).isEqualTo(ligatabelleBE.getSatzpktGegen());
+        assertThat(actual.getSatzpktDifferenz()).isEqualTo(ligatabelleBE.getSatzpktDifferenz());
         assertThat(actual.getsortierung()).isEqualTo(ligatabelleBE.getSortierung());
         assertThat(actual.gettabellenplatz()).isEqualTo(ligatabelleBE.getTabellenplatz());
 
@@ -44,10 +44,10 @@ public class LigatabelleMapperTest {
                 ligatabelleBE.getVereinId(),
                 ligatabelleBE.getVereinName(),
                 ligatabelleBE.getMatchpkt(),
-                ligatabelleBE.getMatchpkt_gegen(),
+                ligatabelleBE.getMatchpktGegen(),
                 ligatabelleBE.getSatzpkt(),
-                ligatabelleBE.getSatzpkt_gegen(),
-                ligatabelleBE.getSatzpkt_differenz(),
+                ligatabelleBE.getSatzpktGegen(),
+                ligatabelleBE.getSatzpktDifferenz(),
                 ligatabelleBE.getSortierung(),
                 ligatabelleBE.getTabellenplatz());
 
@@ -70,10 +70,10 @@ public class LigatabelleMapperTest {
         assertThat(actual.getVereinId()).isEqualTo(ligatabelleDO.getvereinId());
         assertThat(actual.getVereinName()).isEqualTo(ligatabelleDO.getvereinName());
         assertThat(actual.getMatchpkt()).isEqualTo(ligatabelleDO.getmatchpkt());
-        assertThat(actual.getMatchpkt_gegen()).isEqualTo(ligatabelleDO.getmatchpktGegen());
+        assertThat(actual.getMatchpktGegen()).isEqualTo(ligatabelleDO.getMatchpktGegen());
         assertThat(actual.getSatzpkt()).isEqualTo(ligatabelleDO.getsatzpkt());
-        assertThat(actual.getSatzpkt_gegen()).isEqualTo(ligatabelleDO.getsatzpktGegen());
-        assertThat(actual.getSatzpkt_differenz()).isEqualTo(ligatabelleDO.getsatzpktDifferenz());
+        assertThat(actual.getSatzpktGegen()).isEqualTo(ligatabelleDO.getSatzpktGegen());
+        assertThat(actual.getSatzpktDifferenz()).isEqualTo(ligatabelleDO.getSatzpktDifferenz());
         assertThat(actual.getSortierung()).isEqualTo(ligatabelleDO.getsortierung());
         assertThat(actual.getTabellenplatz()).isEqualTo(ligatabelleDO.gettabellenplatz());
     }
