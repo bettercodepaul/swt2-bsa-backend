@@ -78,6 +78,26 @@ public class DsbMitgliedBasicDAOTest {
 
 
     }
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<DsbMitgliedBE> actual = underTest.findBySearch(expectedBE.getDsbMitgliedVorname());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
 
     @Test
     public void findBySearch() {

@@ -39,10 +39,10 @@ public class LigatabelleDAO implements DataAccessObject {
     private static final String VEREINID_BE = "vereinId";
     private static final String VEREINNAME_BE = "vereinName";
     private static final String MATCHPKT_BE = "matchpkt";
-    private static final String MATCHPKTGEGEN_BE = "matchpkt_gegen";
+    private static final String MATCHPKTGEGEN_BE = "matchpktGegen";
     private static final String SATZPKT_BE = "satzpkt";
-    private static final String SATZPKTGEGEN_BE = "satzpkt_gegen";
-    private static final String SATZPKTDIFFERENZ_BE = "satzpkt_differenz";
+    private static final String SATZPKTGEGEN_BE = "satzpktGegen";
+    private static final String SATZPKTDIFFERENZ_BE = "satzpktDifferenz";
     private static final String SORTIERUNG_BE = "sortierung";
     private static final String TABELLENPLATZ_BE = "tabellenplatz";
 

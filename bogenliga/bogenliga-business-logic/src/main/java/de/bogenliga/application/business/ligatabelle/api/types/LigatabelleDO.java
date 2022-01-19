@@ -127,17 +127,17 @@ public class LigatabelleDO extends CommonDataObject implements DataObject {
     public int getmatchpkt() { return matchpkt; }
     public void setmatchpkt(int matchpkt) { this.matchpkt = matchpkt; }
 
-    public int getmatchpktGegen() { return matchpktGegen; }
-    public void setmatchpktGegen(int matchpktGegen) { this.matchpktGegen = matchpktGegen; }
+    public int getMatchpktGegen() { return matchpktGegen; }
+    public void setMatchpktGegen(int matchpktGegen) { this.matchpktGegen = matchpktGegen; }
 
     public int getsatzpkt() { return satzpkt; }
     public void setsatzpkt(int satzpkt) { this.satzpkt = satzpkt; }
 
-    public int getsatzpktGegen() { return satzpktGegen; }
-    public void setsatzpktGegen(int satzpktGegen) { this.satzpktGegen = satzpktGegen; }
+    public int getSatzpktGegen() { return satzpktGegen; }
+    public void setSatzpktGegen(int satzpktGegen) { this.satzpktGegen = satzpktGegen; }
 
-    public int getsatzpktDifferenz() { return satzpktDifferenz; }
-    public void setsatzpktDifferenz(int satzpktDifferenz) { this.satzpktDifferenz = satzpktDifferenz; }
+    public int getSatzpktDifferenz() { return satzpktDifferenz; }
+    public void setSatzpktDifferenz(int satzpktDifferenz) { this.satzpktDifferenz = satzpktDifferenz; }
 
     public int getsortierung() { return sortierung; }
     public void setsortierung(int sortierung) { this.sortierung = sortierung; }
