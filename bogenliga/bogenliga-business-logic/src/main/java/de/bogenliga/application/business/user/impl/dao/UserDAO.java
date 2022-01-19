@@ -110,7 +110,6 @@ public class UserDAO implements DataAccessObject {
         return basicDao.selectSingleEntity(USER, FIND_BY_ID, id);
     }
 
-
     /**
      * Return user entry with specific email adress
      *

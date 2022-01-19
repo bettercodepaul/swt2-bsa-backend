@@ -19,6 +19,8 @@ public interface CompetitionClassComponent extends ComponentFacade {
      */
     List<CompetitionClassDO> findAll();
 
+    List<CompetitionClassDO> findBySearch(final String searchTerm);
+
     /**
      * Returns a klasse entry of the given id
      *

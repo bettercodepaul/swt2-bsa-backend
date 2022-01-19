@@ -50,6 +50,11 @@ public class CompetitionClassDAO implements DataAccessObject {
     private static final String FIND_ALL =
             "SELECT * " + " FROM klasse" +  " ORDER BY klasse_nr";
 
+    private static final String FIND_BY_SEARCH =
+            "SELECT * " +
+                    "FROM klasse " +
+                    " WHERE LOWER(klasse_name) LIKE LOWER(?) ";
+
     private static final String FIND_BY_ID =
             "SELECT * " + " FROM klasse" + " WHERE klasse_id = ?";
 
@@ -85,6 +90,19 @@ public class CompetitionClassDAO implements DataAccessObject {
      */
     public List<CompetitionClassBE> findAll() { return basicDao.selectEntityList(COMPETITIONCLASS, FIND_ALL); }
 
+
+    /**
+     * Return corresponding search entries
+     * @return List with Klasse Business Entities
+     */
+    public List<CompetitionClassBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(COMPETITIONCLASS, FIND_BY_SEARCH, new StringBuilder()
+                                                                              .append("%")
+                                                                              .append(searchTerm)
+                                                                              .append("%")
+                                                                              .toString()
+        );
+    }
 
     /**
      * Return a competition class matching the id

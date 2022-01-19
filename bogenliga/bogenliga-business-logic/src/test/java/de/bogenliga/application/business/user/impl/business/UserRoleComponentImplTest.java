@@ -130,6 +130,45 @@ public class UserRoleComponentImplTest {
 
     }
 
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final UserRoleExtBE expectedBE = new UserRoleExtBE();
+        expectedBE.setUserId(ID);
+        expectedBE.setRoleId(ROLE_ID);
+        expectedBE.setUserEmail(EMAIL);
+        expectedBE.setRoleName(ROLE_NAME);
+
+        // configure mocks
+        when(userRoleExtDAO.findBySearch(EMAIL)).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<UserRoleDO> actual = underTest.findBySearch(EMAIL);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getUserId());
+        assertThat(actual.get(0).getEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+        assertThat(actual.get(0).getRoleId())
+                .isEqualTo(expectedBE.getRoleId());
+        assertThat(actual.get(0).getRoleName())
+                .isEqualTo(expectedBE.getRoleName());
+        assertThat(actual.get(0).getVersion())
+                .isEqualTo(expectedBE.getVersion());
+
+
+        // verify invocations
+        verify(userRoleExtDAO).findBySearch(EMAIL);
+    }
+
 
     // tests for findById
     @Test

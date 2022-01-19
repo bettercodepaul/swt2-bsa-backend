@@ -53,6 +53,15 @@ public class VereinDAO implements DataAccessObject {
                     + " FROM verein v"
                     + " JOIN region r on v.verein_region_id=r.region_id"
                     + " ORDER BY verein_id";
+
+    private static final String FIND_BY_SEARCH =
+            "SELECT v.*, r.region_name "
+                    + " FROM verein v"
+                    + " JOIN region r on v.verein_region_id=r.region_id "
+                    + " WHERE CONCAT(LOWER(v.verein_name), ' ', "
+                    + " LOWER(r.region_name), ' ', "
+                    + " LOWER(v.verein_dsb_identifier)) LIKE LOWER(?) ";
+
     private static final String FIND_BY_ID =
             "SELECT * "
                     + " FROM verein v"
@@ -92,6 +101,15 @@ public class VereinDAO implements DataAccessObject {
      */
     public List<VereinBE> findAll() {
         return basicDao.selectEntityList(VEREIN, FIND_ALL);
+    }
+
+    public List<VereinBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(VEREIN, FIND_BY_SEARCH, new StringBuilder()
+                                                                     .append("%")
+                                                                     .append(searchTerm)
+                                                                     .append("%")
+                                                                     .toString()
+        );
     }
 
 

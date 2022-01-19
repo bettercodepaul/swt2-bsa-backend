@@ -138,6 +138,30 @@ public class VereinComponentImplTest {
     }
 
     @Test
+    public void findBySearch() {
+        // prepare test data
+        final VereinBE expectedBE = getVereinBE();
+        final RegionenDO expectedRegionDO = getRegionenDO();
+        final List<VereinBE> expectedVereinBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(vereinDAO.findBySearch(expectedBE.getVereinName())).thenReturn(expectedVereinBEList);
+        // call test method
+        final List<VereinDO> actual = underTest.findBySearch(expectedBE.getVereinName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        // verify invocations
+        verify(vereinDAO).findBySearch(expectedBE.getVereinName());
+    }
+
+    @Test
     public void create() {
         // prepare test data
         final VereinDO input = getVereinDO();
