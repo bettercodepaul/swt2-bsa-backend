@@ -72,6 +72,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
+    private static final String FIND_BY_SEARCH =
+            "SELECT * "
+                    + " FROM dsb_mitglied "
+                    + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
+                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
+
 
 
     private static final String FIND_DSB_KAMPFRICHTER =
@@ -171,6 +177,20 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
+     * @param searchTerm
+     * @return dsbmitglied entries which contain the search term
+     */
+    public List<DsbMitgliedBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_SEARCH, new StringBuilder()
+                                                                        .append("%")
+                                                                        .append(searchTerm)
+                                                                        .append("%")
+                                                                        .toString()
+        );
+    }
+
+
+    /**
      * Create a new dsbmitglied entry
      *
      * @param dsbMitgliedBE
@@ -196,9 +216,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
         DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
-        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
-            UserDAO UserDAO = new UserDAO(basicDao);
-            UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+        UserDAO UserDAO = new UserDAO(basicDao);
+        UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && UserBE != null) {
             updatedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
             updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
         }
