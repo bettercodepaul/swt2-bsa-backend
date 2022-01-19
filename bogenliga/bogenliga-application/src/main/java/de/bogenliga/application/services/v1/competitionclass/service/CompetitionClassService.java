@@ -32,6 +32,7 @@ public class CompetitionClassService implements ServiceFacade {
     private static final String PRECONDITION_MSG_KLASSE_JAHRGANG_MAX = "Max Age must not be negative";
     private static final String PRECONDITION_MSG_KLASSE_NR = "Something is wrong with the CompetitionClass Number";
     private static final String PRECONDITION_MSG_NAME = "The CompetitionClass must be given a name";
+    private static final String PRECONDITION_MSG_SEARCHTERM = "The search term cannot be empty";
 
 
 
@@ -59,6 +60,21 @@ public class CompetitionClassService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<CompetitionClassDTO> findAll() {
         final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findAll();
+        return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+    /**
+     * I return klass entries that contain corresponding search term
+     * @return lost of {@link CompetitionClassDTO} as JSON 
+     */
+
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<CompetitionClassDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_SEARCHTERM);
+
+        final List<CompetitionClassDO> competitionClassDOList = competitionClassComponent.findBySearch(searchTerm);
         return competitionClassDOList.stream().map(CompetitionClassDTOMapper.toDTO).collect(Collectors.toList());
     }
 
