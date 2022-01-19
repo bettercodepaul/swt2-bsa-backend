@@ -109,6 +109,38 @@ public class CompetitionClassComponentImplTest {
 
     }
 
+    @Test
+    public void findBySearch() {
+        //prepare test data
+        final CompetitionClassBE expectedBE = getCompetitionClassBE();
+        final List<CompetitionClassBE> epxectedBEList = Collections.singletonList(expectedBE);
+
+        //configure mocks
+        when(competitionClassDAO.findBySearch(expectedBE.getKlasseName())).thenReturn(epxectedBEList);
+
+        //call test method
+        final List<CompetitionClassDO> actual = underTest.findBySearch(expectedBE.getKlasseName());
+
+        //assert Result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getKlasseId());
+        assertThat(actual.get(0).getKlasseName())
+                .isEqualTo(expectedBE.getKlasseName());
+        assertThat(actual.get(0).getKlasseNr())
+                .isEqualTo(expectedBE.getKlasseNr());
+
+
+        //verify invocations
+        verify(competitionClassDAO).findBySearch(expectedBE.getKlasseName());
+    }
+
 
     @Test
     public void create()

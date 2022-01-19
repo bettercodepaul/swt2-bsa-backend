@@ -33,10 +33,10 @@ public class LigatabelleMapper implements ValueObjectMapper {
         final Long vereinId=be.getVereinId();
         final String vereinName=be.getVereinName();
         final int matchpkt=be.getMatchpkt();
-        final int matchpkt_gegen=be.getMatchpkt_gegen();
+        final int matchpktGegen=be.getMatchpktGegen();
         final int satzpkt=be.getSatzpkt();
-        final int satzpkt_gegen=be.getSatzpkt_gegen();
-        final int satzpkt_differenz=be.getSatzpkt_differenz();
+        final int satzpktGegen=be.getSatzpktGegen();
+        final int satzpktDifferenz=be.getSatzpktDifferenz();
         final int sortierung=be.getSortierung();
         final int tabellenplatz=be.getTabellenplatz();
 
@@ -49,8 +49,8 @@ public class LigatabelleMapper implements ValueObjectMapper {
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
         return new LigatabelleDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt, satzpkt_gegen,
-                satzpkt_differenz, sortierung,tabellenplatz);
+                mannschaftNummer, vereinId, vereinName, matchpkt, matchpktGegen, satzpkt, satzpktGegen,
+                satzpktDifferenz, sortierung,tabellenplatz);
 
     };
 
@@ -73,10 +73,10 @@ public class LigatabelleMapper implements ValueObjectMapper {
         ligatabelleBE.setVereinId(vo.getvereinId());
         ligatabelleBE.setVereinName(vo.getvereinName());
         ligatabelleBE.setMatchpkt(vo.getmatchpkt());
-        ligatabelleBE.setMatchpkt_gegen(vo.getmatchpktGegen());
+        ligatabelleBE.setMatchpktGegen(vo.getMatchpktGegen());
         ligatabelleBE.setSatzpkt(vo.getsatzpkt());
-        ligatabelleBE.setSatzpkt_gegen(vo.getsatzpktGegen());
-        ligatabelleBE.setSatzpkt_differenz(vo.getsatzpktDifferenz());
+        ligatabelleBE.setSatzpktGegen(vo.getSatzpktGegen());
+        ligatabelleBE.setSatzpktDifferenz(vo.getSatzpktDifferenz());
         ligatabelleBE.setSortierung(vo.getsortierung());
         ligatabelleBE.setTabellenplatz(vo.gettabellenplatz());
 

@@ -117,4 +117,25 @@ public class CompetitionClassDAOTest {
 
     }
 
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final CompetitionClassBE expectedBE = getCompetitionClassBE();
+
+        // configure mocks
+        when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<CompetitionClassBE> actual = competitionClassDAO.findBySearch(expectedBE.getKlasseName());
+
+        // assert result
+        assertThat(actual).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(actual.get(0)).isNotNull();
+        assertThat(actual.get(0).getKlasseId()).isEqualTo(expectedBE.getKlasseId());
+        assertThat(actual.get(0).getKlasseName()).isEqualTo(expectedBE.getKlasseName());
+
+        // verify invocations
+        verify(basicDAO).selectEntityList(any(), any(), any());
+    }
+
 }

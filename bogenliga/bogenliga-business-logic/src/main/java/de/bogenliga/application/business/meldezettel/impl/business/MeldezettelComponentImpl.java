@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -92,7 +92,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     public byte[] getMeldezettelPDFasByteArray(long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-        Hashtable<String, List<DsbMitgliedDO>> teamMemberMapping = new Hashtable<>();
+        HashMap<String, List<DsbMitgliedDO>> teamMemberMapping = new HashMap<>();
 
         // Collect Information
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
@@ -116,6 +116,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             teamMemberMapping.put(teamName, dsbMitgliedDOList);
         }
 
+        
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
              PdfWriter writer = new PdfWriter(result);
              PdfDocument pdfDocument = new PdfDocument(writer);
@@ -134,7 +135,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     /**
      * <p>writes a Meldezettel document for the Wettkampf</p>
      */
-    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, Hashtable<String, List<DsbMitgliedDO>> teamMemberMapping) {
+    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfTag, PRECONDITION_WETTKAMPFTAG);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);

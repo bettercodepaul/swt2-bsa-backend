@@ -3,10 +3,7 @@ package de.bogenliga.application.business.schuetzenstatistik.impl.mapper;
 import de.bogenliga.application.business.schuetzenstatistik.api.types.SchuetzenstatistikDO;
 import de.bogenliga.application.business.schuetzenstatistik.impl.entity.SchuetzenstatistikBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
-import de.bogenliga.application.common.time.DateProvider;
 
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.util.function.Function;
 
 /**
@@ -39,14 +36,6 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
         final int rueckenNummer = be.getRueckenNummer();
         final float pfeilPunkteSchnitt = be.getPfeilpunkteSchnitt();
 
-        // technical parameter
-        Long createdByUserId = be.getCreatedByUserId();
-        Long lastModifiedByUserId = be.getLastModifiedByUserId();
-        Long version = be.getVersion();
-
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
-        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
-
         return new SchuetzenstatistikDO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
                 mannschaftNummer, vereinId, vereinName, matchId, matchNr, dsbMitgliedId, dsbMitgliedName, rueckenNummer, pfeilPunkteSchnitt);
     };
@@ -55,9 +44,6 @@ public class SchuetzenstatistikMapper implements ValueObjectMapper {
      * Converts a {@link SchuetzenstatistikDO} to a {@link SchuetzenstatistikBE}
      */
     public static final Function<SchuetzenstatistikDO, SchuetzenstatistikBE> toSchuetzenstatistikBE = vo -> {
-
-        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getCreatedAtUtc());
-        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(vo.getLastModifiedAtUtc());
 
         SchuetzenstatistikBE schuetzenstatistik = new SchuetzenstatistikBE();
 
