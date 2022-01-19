@@ -66,7 +66,7 @@ public class CompetitionClassService implements ServiceFacade {
 
     /**
      * I return klass entries that contain corresponding search term
-     * @return lost of {@link CompetitionClassDTO} as JSON 
+     * @return lost of {@link CompetitionClassDTO} as JSON
      */
 
     @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
