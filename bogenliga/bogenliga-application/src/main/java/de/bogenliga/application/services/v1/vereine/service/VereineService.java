@@ -69,6 +69,13 @@ public class VereineService implements ServiceFacade {
         return vereinDOList.stream().map(VereineDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VereineDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        final List<VereinDO> vereinDOList = vereinComponent.findBySearch(searchTerm);
+        return vereinDOList.stream().map(VereineDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     /**
      * I return the verein Entry of the database with a specific id

@@ -51,6 +51,14 @@ public class VereinComponentImpl implements VereinComponent {
     }
 
     @Override
+    public List<VereinDO> findBySearch(final String searchTerm) {
+        final List<VereinBE> vereinBEList = vereinDAO.findBySearch(searchTerm);
+        List<VereinDO> vereinDOList = vereinBEList.stream().map(VereinMapper.toVereinDO).collect(Collectors.toList());
+
+        return alterDoByRegionName(vereinDOList);
+    }
+
+    @Override
     public VereinDO create(VereinDO vereinDO, long currentDsbMitglied) {
         checkVereinDO(vereinDO, currentDsbMitglied);
 
