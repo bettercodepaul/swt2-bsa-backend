@@ -742,9 +742,19 @@ public class MatchService implements ServiceFacade {
 
             // reverse map the schuetzeNr to the passeDTO
             for (PasseDTO passeDTO : passeDTOs) {
-                passeDTO.setRueckennummer(passeDTO.getRueckennummer());
+                long mannschaftID = passeDTO.getMannschaftId();
+                long rueckennummer = mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftID,
+                        passeDTO.getDsbMitgliedId()).getRueckennummer();
+
+
+                passeDTO.setRueckennummer((int)rueckennummer);
                 Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
+
+
+//                passeDTO.setRueckennummer(passeDTO.getRueckennummer());
+//                Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
+//                        String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
 
             matchDTO.setPassen(passeDTOs);
