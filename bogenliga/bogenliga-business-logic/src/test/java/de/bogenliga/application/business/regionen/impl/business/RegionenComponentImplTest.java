@@ -123,6 +123,41 @@ public class RegionenComponentImplTest {
         verify(regionenDAO, times(2)).findAll();
     }
 
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final RegionenBE expectedBE = getRegionenBE();
+        final List<RegionenBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(regionenDAO.findBySearch(expectedBE.getRegionName())).thenReturn(expectedBEList);
+
+        // call test method
+        final List<RegionenDO> actual = underTest.findBySearch(expectedBE.getRegionName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getRegionId());
+        assertThat(actual.get(0).getRegionKuerzel())
+                .isEqualTo(expectedBE.getRegionKuerzel());
+        assertThat(actual.get(0).getRegionName())
+                .isEqualTo(expectedBE.getRegionName());
+        assertThat(actual.get(0).getRegionTyp())
+                .isEqualTo(expectedBE.getRegionTyp());
+        assertThat(actual.get(0).getRegionUebergeordnet())
+                .isEqualTo(expectedBE.getRegionUebergeordnet());
+
+        // verify invocations
+        verify(regionenDAO).findBySearch(expectedBE.getRegionName());
+    }
+
 
     @Test
     public void findAllByType() {

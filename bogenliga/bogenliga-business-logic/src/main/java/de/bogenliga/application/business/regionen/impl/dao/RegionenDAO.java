@@ -51,6 +51,12 @@ public class RegionenDAO implements DataAccessObject {
                     + " FROM region"
                     + " ORDER BY region_id";
 
+    private static final String FIND_BY_SEARCH =
+            "SELECT * "
+                    + " FROM region "
+                    + " WHERE LOWER(region_name) LIKE LOWER(?) "
+                    + " ORDER BY region_id";
+
     private static final String FIND_BY_ID =
             "SELECT * "
                     + " FROM region "
@@ -101,6 +107,14 @@ public class RegionenDAO implements DataAccessObject {
         return basicDAO.selectEntityList(REGIONEN, FIND_ALL);
     }
 
+    public List<RegionenBE> findBySearch(final String searchTerm) {
+        return basicDAO.selectEntityList(REGIONEN, FIND_BY_SEARCH, new StringBuilder()
+                .append("%")
+                .append(searchTerm)
+                .append("%")
+                .toString()
+        );
+    }
 
     /**
      * Returns all the region entries of type = KREIS
