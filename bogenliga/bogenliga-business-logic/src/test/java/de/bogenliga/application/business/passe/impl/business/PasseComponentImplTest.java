@@ -85,17 +85,14 @@ public class PasseComponentImplTest extends PasseBaseDAOTest {
 
 
         final List<LigapasseBE> expectedList = Collections.singletonList(expectedLigapasseBE);
-        final List<PasseDO> expectedDOList = expectedList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(
-                Collectors.toList());
-
         //configure mocks
         when(ligapasseDAO.findLigapassenByLigamatchId(anyLong())).thenReturn(expectedList);
 
         //call test method
-        final List<PasseDO> actual = underTest.getLigapassenByLigamatchId(BaseLigapasseTest.getLigapasseBE().getMatchId());
+        final List<LigapasseBE> actual = underTest.getLigapassenByLigamatchId(BaseLigapasseTest.getLigapasseBE().getMatchId());
 
         //assert results
-        validateObjectList(actual);
+        validateObjectList(actual.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList()));
         verify(ligapasseDAO).findLigapassenByLigamatchId(BaseLigapasseTest.getLigapasseBE().getMatchId());
     }
 

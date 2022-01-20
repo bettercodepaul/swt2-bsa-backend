@@ -128,8 +128,12 @@ public class LigamatchDAO implements DataAccessObject {
     }
 
     public Boolean checkIfLigamatch(Long id){
-        String wettkampfID = FIND_BY_WETTKAMPF_ID;
-        return wettkampfID.equals(id.toString());
+        try{
+            List<LigamatchBE> liste = basicDao.selectEntityList(LIGAMATCH, FIND_BY_WETTKAMPF_ID, id);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
 
@@ -152,7 +156,7 @@ public class LigamatchDAO implements DataAccessObject {
 
 
     private static final String FIND_BY_WETTKAMPF_ID = new QueryBuilder()
-            .selectField(MATCH_TABLE_WETTKAMPF_ID)
+            .selectAll()
             .from(TABLE)
             .whereEquals(MATCH_TABLE_WETTKAMPF_ID)
             .compose().toString();
