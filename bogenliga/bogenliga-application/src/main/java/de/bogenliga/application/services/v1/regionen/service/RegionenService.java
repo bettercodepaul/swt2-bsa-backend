@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.regionen.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.plaf.synth.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,14 @@ public class RegionenService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RegionenDTO> findAll() {
         final List<RegionenDO> regionDOList = regionenComponent.findAll();
+
+        return regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<RegionenDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        final List<RegionenDO> regionDOList = regionenComponent.findBySearch(searchTerm);
 
         return regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
     }
