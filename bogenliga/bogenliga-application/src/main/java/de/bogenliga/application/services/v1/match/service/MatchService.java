@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
+import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
+import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import org.slf4j.Logger;
@@ -734,27 +736,15 @@ public class MatchService implements ServiceFacade {
             matchDTO.setWettkampfTag(ligamatchBE.getWettkampfTag());
             matchDTO.setMannschaftName(ligamatchBE.getMannschaftName());
 
-            //HIer brauche ich eine Ligapasse damit ich in der for loop direkt daraus die rückennummer lesen kann. später dann erst mappen
 
-
-            List<PasseDO> passeDOs = passeComponent.getLigapassenByLigamatchId(matchId);
+            List<LigapasseBE> ligapasseBEList = passeComponent.getLigapassenByLigamatchId(matchId);
+            List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 
-            // reverse map the schuetzeNr to the passeDTO
-            for (PasseDTO passeDTO : passeDTOs) {
-                long mannschaftID = passeDTO.getMannschaftId();
-                long rueckennummer = mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftID,
-                        passeDTO.getDsbMitgliedId()).getRueckennummer();
-
-
-                passeDTO.setRueckennummer((int)rueckennummer);
-                Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
+            for (int i = 0; i < passeDTOs.size(); i++){
+                passeDTOs.get(i).setRueckennummer(ligapasseBEList.get(i).getMannschaftsmitgliedRueckennummer());
+                Preconditions.checkArgument(passeDTOs.get(i).getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
-
-
-//                passeDTO.setRueckennummer(passeDTO.getRueckennummer());
-//                Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
-//                        String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
 
             matchDTO.setPassen(passeDTOs);

@@ -197,10 +197,9 @@ public class PasseComponentImpl implements PasseComponent {
 
 
     @Override
-    public List<PasseDO> getLigapassenByLigamatchId(Long id) {
+    public List<LigapasseBE> getLigapassenByLigamatchId(Long id) {
         checkPreconditions(id, PRECONDITION_FIELD_ID);
-        final List<LigapasseBE> ligapasseBEList = ligapasseDAO.findLigapassenByLigamatchId(id);
-        return ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
+        return ligapasseDAO.findLigapassenByLigamatchId(id);
     }
 
 

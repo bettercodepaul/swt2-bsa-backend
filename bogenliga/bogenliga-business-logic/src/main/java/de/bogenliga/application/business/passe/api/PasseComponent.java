@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.passe.api;
 
 import java.util.List;
+import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 
 /**
@@ -20,7 +21,7 @@ public interface PasseComponent {
     PasseDO findById(Long id);
 
 
-    List<PasseDO> getLigapassenByLigamatchId(Long matchId);
+    List<LigapasseBE> getLigapassenByLigamatchId(Long matchId);
 
 
 
