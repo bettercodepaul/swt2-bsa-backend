@@ -1,19 +1,16 @@
 package de.bogenliga.application.business.ligamatch.impl.mapper;
 
 import org.junit.Test;
-import de.bogenliga.application.business.ligamatch.impl.BaseLigamatchTest;
+import de.bogenliga.application.business.ligamatch.impl.dao.BaseLigamatchTest;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Christopher Luzzi, Tests the Mapping from LigamatchBE to MatchDO
  */
-public class LigamatchMapperTest extends BaseLigamatchTest {
 
+public class LigamatchMapperTest extends BaseLigamatchTest {
 
     private void validateDO(LigamatchBE ligamatchBE, MatchDO matchDOMapped){
         assertThat(ligamatchBE).isNotNull();
@@ -23,8 +20,8 @@ public class LigamatchMapperTest extends BaseLigamatchTest {
         assertThat(ligamatchBE.getScheibennummer()).isEqualTo(matchDOMapped.getScheibenNummer()).isEqualTo(SCHEIBENNUMMER);
         assertThat(ligamatchBE.getMannschaftId()).isEqualTo(matchDOMapped.getMannschaftId()).isEqualTo(
                 MANNSCHAFT_ID);
-        assertThat(matchDOMapped.getMatchpunkte()).isEqualTo(null);
-        assertThat(matchDOMapped.getSatzpunkte()).isEqualTo(null);
+        assertThat(ligamatchBE.getSatzpunkte()).isEqualTo(matchDOMapped.getSatzpunkte()).isEqualTo(SATZPUNKTE);
+        assertThat(ligamatchBE.getMatchpunkte()).isEqualTo(matchDOMapped.getMatchpunkte()).isEqualTo(MATCHPUNKTE);
         assertThat(ligamatchBE.getBegegnung()).isEqualTo(matchDOMapped.getBegegnung()).isEqualTo(BEGEGNUNG);
         assertThat(ligamatchBE.getStrafpunkteSatz1()).isEqualTo(matchDOMapped.getStrafPunkteSatz1()).isEqualTo(
                 STRAFPUNKT_SATZ_1);
@@ -36,6 +33,7 @@ public class LigamatchMapperTest extends BaseLigamatchTest {
                 STRAFPUNKT_SATZ_4);
         assertThat(ligamatchBE.getStrafpunkteSatz5()).isEqualTo(matchDOMapped.getStrafPunkteSatz5()).isEqualTo(
                 STRAFPUNKT_SATZ_5);
+
     }
 
     @Test
@@ -44,6 +42,5 @@ public class LigamatchMapperTest extends BaseLigamatchTest {
         MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(ligamatchBE);
         this.validateDO(ligamatchBE, matchDO);
     }
-
 
 }

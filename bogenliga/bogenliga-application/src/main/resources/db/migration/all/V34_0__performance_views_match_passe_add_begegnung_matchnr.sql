@@ -98,7 +98,9 @@ CREATE VIEW ligamatch (
                        ligamatch_match_strafpunkte_satz_5,
                        ligamatch_begegnung,
                        ligamatch_wettkampftyp_id,
-                       ligamatch_wettkampf_tag
+                       ligamatch_wettkampf_tag,
+                       ligamatch_satzpunkte,
+                       ligamatch_matchpunkte
     )
 AS
 (
@@ -121,7 +123,9 @@ select match1.match_wettkampf_id,
        match1.match_strafpunkte_satz_5,
        match1.match_begegnung,
        wett.wettkampf_wettkampftyp_id,
-       wett.wettkampf_tag
+       wett.wettkampf_tag,
+       match1.match_satzpunkte,
+       match1.match_matchpunkte
 
 from match as match1,
      mannschaft as mannschaft,
@@ -157,6 +161,7 @@ SET passe_match_id = (select match.match_id from match
     where passe_mannschaft_id = match.match_mannschaft_id
         and passe_wettkampf_id = match.match_wettkampf_id
         and passe_match_nr = match.match_nr)
+
 
 
 

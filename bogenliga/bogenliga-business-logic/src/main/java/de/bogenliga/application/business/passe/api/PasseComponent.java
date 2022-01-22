@@ -21,6 +21,11 @@ public interface PasseComponent {
     PasseDO findById(Long id);
 
 
+    /**
+     * optimized function for Schusszettel
+     *
+     * @return a list of all Ligapassen with the matchId looked for
+     */
     List<LigapasseBE> getLigapassenByLigamatchId(Long matchId);
 
 
