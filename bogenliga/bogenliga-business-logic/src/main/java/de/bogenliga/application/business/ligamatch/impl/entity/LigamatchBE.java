@@ -29,6 +29,8 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private Long wettkampfTag;
     private String mannschaftName;
     private Integer rueckennummer;
+    private Long satzpunkte;
+    private Long matchpunkte;
 
 
 
@@ -54,8 +56,12 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
                 ", strafpunkteSatz3=" + strafpunkteSatz3 +
                 ", strafpunkteSatz4=" + strafpunkteSatz4 +
                 ", strafpunkteSatz5=" + strafpunkteSatz5 +
+                ", satzpunkte=" + satzpunkte +
+                ", matchpunkte=" + matchpunkte +
                 '}';
     }
+
+
 
 
     public Long getWettkampfId() {return wettkampfId;}
@@ -108,5 +114,11 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
 
     public Integer getRueckennummer() {return rueckennummer;}
     public void setRueckennummer(Integer rueckennummer) {this.rueckennummer = rueckennummer;}
+
+    public Long getSatzpunkte() {return satzpunkte;}
+    public void setSatzpunkte(Long satzpunkte) {this.satzpunkte = satzpunkte;}
+
+    public Long getMatchpunkte() {return matchpunkte;}
+    public void setMatchpunkte(Long matchpunkte) {this.matchpunkte = matchpunkte;}
 
 }

@@ -49,6 +49,8 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_BE_WETTKAMPFTYP_ID = "wettkampftypId";
     private static final String MATCH_BE_WETTKAMPF_TAG = "wettkampfTag";
     private static final String MATCH_BE_MANNSCHAFT_NAME = "mannschaftName";
+    private static final String MATCH_BE_SATZPUNKTE = "satzpunkte";
+    private static final String MATCH_BE_MATCHPUNKTE = "matchpunkte";
 
 
     // table columns
@@ -68,6 +70,8 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_TABLE_WETTKAMPFTYP_ID = "ligamatch_wettkampftyp_id";
     private static final String MATCH_TABLE_WETTKAMPF_TAG = "ligamatch_wettkampf_tag";
     private static final String MATCH_TABLE_MANNSCHAFT_NAME = "ligamatch_mannschaft_name";
+    private static final String MATCH_TABLE_SATZPUNKTE = "ligamatch_satzpunkte";
+    private static final String MATCH_TABLE_MATCHPUNKTE = "ligamatch_matchpunkte";
 
 
     // wrap all specific config parameters
@@ -109,6 +113,8 @@ public class LigamatchDAO implements DataAccessObject {
         columnsToFieldsMap.put(MATCH_TABLE_WETTKAMPFTYP_ID, MATCH_BE_WETTKAMPFTYP_ID);
         columnsToFieldsMap.put(MATCH_TABLE_WETTKAMPF_TAG, MATCH_BE_WETTKAMPF_TAG);
         columnsToFieldsMap.put(MATCH_TABLE_MANNSCHAFT_NAME, MATCH_BE_MANNSCHAFT_NAME);
+        columnsToFieldsMap.put(MATCH_TABLE_SATZPUNKTE, MATCH_BE_SATZPUNKTE);
+        columnsToFieldsMap.put(MATCH_TABLE_MATCHPUNKTE, MATCH_BE_MATCHPUNKTE);
 
         return columnsToFieldsMap;
     }
