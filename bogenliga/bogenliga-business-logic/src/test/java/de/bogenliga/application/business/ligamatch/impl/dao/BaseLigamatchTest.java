@@ -1,23 +1,39 @@
-package de.bogenliga.application.business.ligamatch.impl;
+package de.bogenliga.application.business.ligamatch.impl.dao;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
-import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Christopher Luzzi Base for Ligamatch Tests & Tests for LigamatchDAO
  */
 
 public class BaseLigamatchTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+    @Mock
+    private BasicDAO basicDAO;
+
+    @InjectMocks
+    private LigamatchDAO underTest;
+
+    private LigamatchBE expectedBE;
+
 
     protected static final Long WETTKAMPF_ID = 1L;
     protected static final Long MATCH_ID = 1L;
@@ -114,4 +130,51 @@ public class BaseLigamatchTest {
     }
 
     public HashMap<String, Object> getValuesToMethodMap(){return valuesToMethodMap; }
+
+
+    /**
+     * Tests for LigamatchDAO
+     */
+
+    //Implements generic way to test business entities methods
+    private BasicTest<LigamatchBE, LigamatchBE> basicDAOTest;
+
+    @Before
+    public void testSetup() {
+        expectedBE = getLigamatchBE();
+        basicDAOTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
+        //configure mocks
+        when(basicDAO.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        when(basicDAO.selectEntityList(any(),any(),any())).thenReturn(Collections.singletonList(expectedBE));
+    }
+
+    @Test
+    public void testAllFindMethods() throws InvocationTargetException, IllegalAccessException{
+        basicDAOTest.testAllFindMethods(underTest);
+    }
+
+    @Test
+    public void findById(){
+        try{
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findById(MATCH_ID));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findLigamatchesByWettkampfId(){
+        try{
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findLigamatchesByWettkampfId(WETTKAMPF_ID));
+        } catch (InvocationTargetException e){
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

@@ -1,14 +1,13 @@
 package de.bogenliga.application.business.ligapasse.impl.entity;
 
 import org.junit.Test;
-import de.bogenliga.application.business.ligapasse.impl.BaseLigapasseTest;
+import de.bogenliga.application.business.ligapasse.impl.dao.BaseLigapasseTest;
 import static org.junit.Assert.*;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Christopher Luzzi, Tests for Ligapasse toString Method
  */
+
 public class LigapasseBETest  extends BaseLigapasseTest {
 
     @Test

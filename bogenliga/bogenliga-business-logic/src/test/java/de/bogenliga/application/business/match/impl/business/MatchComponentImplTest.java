@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.ligamatch.impl.BaseLigamatchTest;
+import de.bogenliga.application.business.ligamatch.impl.dao.BaseLigamatchTest;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;

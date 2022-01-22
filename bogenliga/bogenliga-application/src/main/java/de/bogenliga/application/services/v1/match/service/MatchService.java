@@ -716,7 +716,7 @@ public class MatchService implements ServiceFacade {
     /**
      * Gets and enriches a match from the DB.
      * Control the presence of related passe objects with the addPassen parameter.
-     * Each passe object then gets its schuetzeNr (see getSchuetzeNrFor).
+     * Each passe object then gets its RueckenNr.
      * @param matchId Match ID, die gelesen werden soll
      * @param addPassen True: dann werden auch die Daten der Passen mit gelesen
      * @return MatchDTO
@@ -727,7 +727,8 @@ public class MatchService implements ServiceFacade {
 
 
 
-        // the match is shown on the Schusszettel, add passen and mannschaft name
+        // the match is shown on the Schusszettel, add passen and mannschaft name from the views ligamatch and ligapasse
+        // if the match is not shown on the Schusszettel, enrich matchDTO with data from the tables
         if (addPassen) {
             final LigamatchBE ligamatchBE = matchComponent.getLigamatchById(matchId);
             MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(ligamatchBE);
