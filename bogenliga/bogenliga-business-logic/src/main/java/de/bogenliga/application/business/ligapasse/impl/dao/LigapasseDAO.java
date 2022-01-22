@@ -97,7 +97,6 @@ public class LigapasseDAO implements DataAccessObject {
 
 
     /**
-     *
      * @param ligamatchID
      * @return a list of ligapassen with the given param ligapasseID
      */
@@ -107,6 +106,10 @@ public class LigapasseDAO implements DataAccessObject {
     }
 
 
+    /**
+     * @param ligapasseID
+     * @return a single ligapasse for the ligapasseID looked for
+     */
 
     public LigapasseBE findLigapasseByLigamatchId(Long ligapasseID){
         return this.basicDao.selectSingleEntity(LIGAPASSE, FIND_SINGLEPASSE_BY_LIGAPASSE_ID, ligapasseID);

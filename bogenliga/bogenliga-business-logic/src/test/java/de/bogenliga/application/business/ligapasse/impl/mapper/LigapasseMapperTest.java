@@ -1,18 +1,15 @@
 package de.bogenliga.application.business.ligapasse.impl.mapper;
 
 import org.junit.Test;
-import de.bogenliga.application.business.ligamatch.impl.BaseLigamatchTest;
-import de.bogenliga.application.business.ligapasse.impl.BaseLigapasseTest;
-import de.bogenliga.application.business.ligapasse.impl.dao.LigapasseDAO;
+import de.bogenliga.application.business.ligapasse.impl.dao.BaseLigapasseTest;
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Christopher Luzzi, Tests the Mapping from LigapasseBE to PasseDO
  */
+
 public class LigapasseMapperTest extends BaseLigapasseTest {
 
     private void validateDO(LigapasseBE ligapasseBE, PasseDO passeDOMapped){
