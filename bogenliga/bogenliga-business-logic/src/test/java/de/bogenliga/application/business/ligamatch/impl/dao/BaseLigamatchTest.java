@@ -52,6 +52,8 @@ public class BaseLigamatchTest {
     protected static final Long WETTKAMPF_TAG = 1L;
     protected static final String MANNSCHAFT_NAME = "TSV_GRAFENBERG";
     protected static final Integer RUECKENNUMMER = 2;
+    protected static final Long SATZPUNKTE = 1L;
+    protected static final Long MATCHPUNKTE = 2L;
 
     private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
 
@@ -74,6 +76,8 @@ public class BaseLigamatchTest {
         ligamatchBE.setWettkampfTag(WETTKAMPF_TAG);
         ligamatchBE.setMannschaftName(MANNSCHAFT_NAME);
         ligamatchBE.setRueckennummer(RUECKENNUMMER);
+        ligamatchBE.setSatzpunkte(SATZPUNKTE);
+        ligamatchBE.setMatchpunkte(MATCHPUNKTE);
         return ligamatchBE;
     }
 
@@ -96,6 +100,8 @@ public class BaseLigamatchTest {
         assertThat(actual.getWettkampfTag()).isEqualTo(ligamatchBE.getWettkampfTag()).isEqualTo(WETTKAMPF_TAG);
         assertThat(actual.getMannschaftName()).isEqualTo(ligamatchBE.getMannschaftName()).isEqualTo(MANNSCHAFT_NAME);
         assertThat(actual.getRueckennummer()).isEqualTo(ligamatchBE.getRueckennummer()).isEqualTo(RUECKENNUMMER);
+        assertThat(actual.getSatzpunkte()).isEqualTo(ligamatchBE.getSatzpunkte()).isEqualTo(SATZPUNKTE);
+        assertThat(actual.getMatchpunkte()).isEqualTo(ligamatchBE.getMatchpunkte()).isEqualTo(MATCHPUNKTE);
 
     }
 
@@ -127,6 +133,8 @@ public class BaseLigamatchTest {
         valuesToMethodMap.put("getWettkampfTag", WETTKAMPF_TAG);
         valuesToMethodMap.put("getMannschaftName", MANNSCHAFT_NAME);
         valuesToMethodMap.put("getRueckennummer", RUECKENNUMMER);
+        valuesToMethodMap.put("getSatzpunkte", SATZPUNKTE);
+        valuesToMethodMap.put("getMatchpunkte", MATCHPUNKTE);
     }
 
     public HashMap<String, Object> getValuesToMethodMap(){return valuesToMethodMap; }

@@ -20,8 +20,8 @@ public class LigamatchMapperTest extends BaseLigamatchTest {
         assertThat(ligamatchBE.getScheibennummer()).isEqualTo(matchDOMapped.getScheibenNummer()).isEqualTo(SCHEIBENNUMMER);
         assertThat(ligamatchBE.getMannschaftId()).isEqualTo(matchDOMapped.getMannschaftId()).isEqualTo(
                 MANNSCHAFT_ID);
-        assertThat(matchDOMapped.getMatchpunkte()).isEqualTo(null);
-        assertThat(matchDOMapped.getSatzpunkte()).isEqualTo(null);
+        assertThat(ligamatchBE.getSatzpunkte()).isEqualTo(matchDOMapped.getSatzpunkte()).isEqualTo(SATZPUNKTE);
+        assertThat(ligamatchBE.getMatchpunkte()).isEqualTo(matchDOMapped.getMatchpunkte()).isEqualTo(MATCHPUNKTE);
         assertThat(ligamatchBE.getBegegnung()).isEqualTo(matchDOMapped.getBegegnung()).isEqualTo(BEGEGNUNG);
         assertThat(ligamatchBE.getStrafpunkteSatz1()).isEqualTo(matchDOMapped.getStrafPunkteSatz1()).isEqualTo(
                 STRAFPUNKT_SATZ_1);
@@ -33,6 +33,7 @@ public class LigamatchMapperTest extends BaseLigamatchTest {
                 STRAFPUNKT_SATZ_4);
         assertThat(ligamatchBE.getStrafpunkteSatz5()).isEqualTo(matchDOMapped.getStrafPunkteSatz5()).isEqualTo(
                 STRAFPUNKT_SATZ_5);
+
     }
 
     @Test
