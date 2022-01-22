@@ -539,6 +539,50 @@ public class MatchService implements ServiceFacade {
     }
 
 
+    @GetMapping(value = "{matchId}/previousPair",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<Long> previousPair(@PathVariable final Long matchId) {
+        Preconditions.checkNotNull(matchId,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
+        MatchDO matchDO = matchComponent.findById(matchId);
+
+        this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
+        long scheibeNr;
+        if(matchDO.getScheibenNummer() > 2){
+            //wir suchen im gleichen Match die vorherige Scheiben-Paarung (-2)
+            scheibeNr = matchDO.getScheibenNummer() - 2;
+        }
+        else if(matchDO.getScheibenNummer() <= 2 && matchDO.getNr() > 1){
+            //wir sind noch nicht am Anfang des Wettkampfs angekommen
+            scheibeNr = 8L;
+            matchDO.setNr(matchDO.getNr() - 1);
+        }
+        else {
+            //Ende - wir geben null zurück
+            return null;
+        }
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
+        // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
+        // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
+        final Long ersteScheibe = scheibeNr;
+        final Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
+        return wettkampfMatches
+                .stream()
+                .filter(mDO -> mDO.getNr().equals(matchDO.getNr()))
+                .filter(mDO -> (
+                        ersteScheibe.equals(mDO.getScheibenNummer())
+                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                ))
+                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .map(MatchDO::getId)
+                .collect(Collectors.toList());
+    }
+
+
+
     /**
      * Update-Method changes the chosen match entry in the Database
      *
