@@ -129,6 +129,18 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
 
+        /*The query gets a competition ID and team ID.
+    In the first part of the query it is ensured that the shooters have not already participated in another competition on the same day.
+    It is filtered by the competition ID and team ID. Then it is checked if the dsb_member has not already participated under another teamId.
+    For this the results of a subquery are filtered out.
+    The subquery checks by the competition_day and the team_id in the table passe, if the dsb_member has participated under another team in this year.
+
+
+    In the second part of the query it is ensured that the shooters have participated in a competition in a higher league at most once (only on one day).
+    For this purpose the results of the following subquery are filtered out.
+    The subquery checks recursively if the dsb_member has participated in a higher league more than two times this year, using the attribute liga_overriding in the table liga.
+    For this the event_id, competition_id are queried in advance.
+    */
     private static final String FIND_SCHUETZE_IN_UEBERGELEGENER_LIGA =
             "SELECT DISTINCT m.* FROM mannschaftsmitglied m, wettkampf w, passe p, veranstaltung v, liga l\n" +
                     "WHERE m.mannschaftsmitglied_mannschaft_id = ?\n" +
