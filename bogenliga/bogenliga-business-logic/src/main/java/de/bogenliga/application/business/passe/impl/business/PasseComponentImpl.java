@@ -195,7 +195,11 @@ public class PasseComponentImpl implements PasseComponent {
     }
 
 
-
+    /**
+     * optimized function for Schusszettel
+     *
+     * @return a list of all Ligapassen with the matchId looked for
+     */
     @Override
     public List<LigapasseBE> getLigapassenByLigamatchId(Long id) {
         checkPreconditions(id, PRECONDITION_FIELD_ID);

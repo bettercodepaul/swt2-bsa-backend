@@ -93,18 +93,28 @@ public class MatchComponentImpl implements MatchComponent {
         return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
     }
 
+
+    /**
+     * checks if the match is in the Ligamatch-View
+     */
     @Override
     public Boolean checkIfLigamatch(Long id){
         return ligamatchDAO.checkIfLigamatch(id);
     }
 
 
+    /**
+     * optimized function for Schusszettel
+     */
     @Override
     public List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId) {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
         return ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
     }
 
+    /**
+     * optimized function for Schusszettel
+     */
     @Override
     public LigamatchBE getLigamatchById(Long id) {
         checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);

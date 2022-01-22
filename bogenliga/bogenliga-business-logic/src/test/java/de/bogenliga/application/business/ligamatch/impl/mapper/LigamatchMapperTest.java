@@ -1,19 +1,16 @@
 package de.bogenliga.application.business.ligamatch.impl.mapper;
 
 import org.junit.Test;
-import de.bogenliga.application.business.ligamatch.impl.BaseLigamatchTest;
+import de.bogenliga.application.business.ligamatch.impl.dao.BaseLigamatchTest;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Christopher Luzzi, Tests the Mapping from LigamatchBE to MatchDO
  */
-public class LigamatchMapperTest extends BaseLigamatchTest {
 
+public class LigamatchMapperTest extends BaseLigamatchTest {
 
     private void validateDO(LigamatchBE ligamatchBE, MatchDO matchDOMapped){
         assertThat(ligamatchBE).isNotNull();
@@ -44,6 +41,5 @@ public class LigamatchMapperTest extends BaseLigamatchTest {
         MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(ligamatchBE);
         this.validateDO(ligamatchBE, matchDO);
     }
-
 
 }

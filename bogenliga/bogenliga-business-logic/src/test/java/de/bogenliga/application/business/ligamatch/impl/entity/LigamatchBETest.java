@@ -1,13 +1,11 @@
 package de.bogenliga.application.business.ligamatch.impl.entity;
 
 import org.junit.Test;
-import de.bogenliga.application.business.ligamatch.impl.BaseLigamatchTest;
-import org.junit.Assert.*;
+import de.bogenliga.application.business.ligamatch.impl.dao.BaseLigamatchTest;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author Christopher Luzzi
+ * @author Christopher Luzzi Test for Ligamatch toString method
  */
 
 public class LigamatchBETest extends BaseLigamatchTest {

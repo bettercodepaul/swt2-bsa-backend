@@ -22,14 +22,30 @@ public interface MatchComponent {
      *
      * @return single matchDO
      */
-
     MatchDO findById(Long id);
 
+
+    /**
+     * Returns true/false wether the checked id is a Ligamatch or not
+     *
+     * @return Boolean
+     */
     Boolean checkIfLigamatch(Long id);
 
+
+    /**
+     * optimized function for schusszettel
+     *
+     * @return a list of all Ligamatches with the wettkampfId looked for
+     */
     List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId);
 
 
+    /**
+     * optimized function for schusszettel
+     *
+     * @return a single ligamatch with the matchid looked for
+     */
     LigamatchBE getLigamatchById(Long id);
 
     /**
@@ -37,8 +53,6 @@ public interface MatchComponent {
      *
      * @return single matchDO
      */
-
-
     MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer);
 
     /**
@@ -114,5 +128,4 @@ public interface MatchComponent {
      * @param mannschaftID         Mannschaft_ID
      *
      */
-    String getMannschaftsNameByID(long mannschaftID);
 }
