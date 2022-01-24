@@ -100,7 +100,16 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
         String eventName = veranstaltungDO.getVeranstaltungName();
 
-        List<Long> allowedList= wettkampfComponent.getAllowedMitglieder(wettkampfid);
+        List<Long> allowedList=new ArrayList<>();
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOListAllowedContestants = new ArrayList<>();
+        List<DsbMannschaftDO> dsbMannschaftDoList= dsbMannschaftComponent.findAllByWettkampfId(wettkampfid);
+
+        for (DsbMannschaftDO dsbMannschaftItem : dsbMannschaftDoList) {
+            mannschaftsmitgliedDOListAllowedContestants.addAll(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(dsbMannschaftItem.getId(),wettkampfid));
+        }
+        for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOListAllowedContestants){
+            allowedList.add(mannschaftsmitglied.getDsbMitgliedId());
+        }
 
         for(int i=1; i <= 8; i++){
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
