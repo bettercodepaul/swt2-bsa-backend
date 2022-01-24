@@ -299,7 +299,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             allowedList.add(mannschaftsmitglied.getDsbMitgliedId());
         }
         return allowedList;
-
     }
 
     //Alte Version von getAllowedMitglieder

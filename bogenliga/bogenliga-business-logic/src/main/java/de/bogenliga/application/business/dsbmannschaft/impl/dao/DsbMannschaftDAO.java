@@ -67,6 +67,13 @@ public class DsbMannschaftDAO implements DataAccessObject {
                     + " WHERE " + MANNSCHAFT_TABLE_EVENTID +" = ?"
                     + " ORDER BY "+MANNSCHAFT_TABLE_SORTIERUNG;
 
+    private static final String FIND_ALL_BY_WETTKAMPF_ID =
+            "select DISTINCT m.* FROM mannschaft m, wettkampf w, veranstaltung v\n" +
+                    "WHERE w.wettkampf_veranstaltung_id = v.veranstaltung_id\n" +
+                    "AND m.mannschaft_veranstaltung_id = v.veranstaltung_id\n" +
+                    "AND w.wettkampf_id = ?\n" +
+                    "group by m.mannschaft_id";
+
     private final BasicDAO basicDao;
 
 
@@ -129,6 +136,17 @@ public class DsbMannschaftDAO implements DataAccessObject {
 
     public List<DsbMannschaftBE> findAllByVeranstaltungsId(final long id) {
         return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_VERANSTALTUNGS_ID, id);}
+
+    /**
+     * Return all dsbmannschaft entries with the given Wettkampf-Id
+     *
+     * @param id from the Wettkampf
+     * @return all dbsmannschaft entries with the given Wettkampf-Id
+     */
+
+    public List<DsbMannschaftBE> findAllByWettkampfId(final long id) {
+        return basicDao.selectEntityList(MANNSCHAFT, FIND_ALL_BY_WETTKAMPF_ID, id);}
+
 
     /**
      * Return dsbmitglied entry with specific id
