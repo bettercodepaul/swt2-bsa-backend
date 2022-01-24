@@ -61,6 +61,12 @@ public class RegionenComponentImpl implements RegionenComponent {
         return syncListofDOs(regionenBEList.stream().map(RegionenMapper.toRegionDO).collect(Collectors.toList()));
     }
 
+    @Override
+    public List<RegionenDO> findBySearch(final String searchTerm) {
+        final List<RegionenBE> regionenBEList = regionenDAO.findBySearch(searchTerm);
+        return syncListofDOs(regionenBEList.stream().map(RegionenMapper.toRegionDO).collect(Collectors.toList()));
+    }
+
 
     @Override
     public List<RegionenDO> findAllByType(final String type) {

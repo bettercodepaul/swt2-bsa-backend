@@ -72,11 +72,11 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
-    private static final String FIND_BY_NAME =
+    private static final String FIND_BY_SEARCH =
             "SELECT * "
                     + " FROM dsb_mitglied "
                     + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
-                    + " ' ', LOWER(dsb_mitglied_nachname)) LIKE LOWER(?) ";
+                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
 
 
 
@@ -177,13 +177,13 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
-     * @param searchstring
+     * @param searchTerm
      * @return dsbmitglied entries which contain the search term
      */
-    public List<DsbMitgliedBE> findByName(final String searchstring) {
-        return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_NAME, new StringBuilder()
+    public List<DsbMitgliedBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_SEARCH, new StringBuilder()
                                                                         .append("%")
-                                                                        .append(searchstring)
+                                                                        .append(searchTerm)
                                                                         .append("%")
                                                                         .toString()
         );
