@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.match.api;
 
 import java.util.List;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 
 /**
@@ -21,15 +22,37 @@ public interface MatchComponent {
      *
      * @return single matchDO
      */
-
     MatchDO findById(Long id);
 
-      /**
+
+    /**
+     * Returns true/false wether the checked id is a Ligamatch or not
+     *
+     * @return Boolean
+     */
+    Boolean checkIfLigamatch(Long id);
+
+
+    /**
+     * optimized function for schusszettel
+     *
+     * @return a list of all Ligamatches with the wettkampfId looked for
+     */
+    List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId);
+
+
+    /**
+     * optimized function for schusszettel
+     *
+     * @return a single ligamatch with the matchid looked for
+     */
+    LigamatchBE getLigamatchById(Long id);
+
+    /**
      * Return a single match by combined primary key attributes
      *
      * @return single matchDO
      */
-
     MatchDO findByPk(Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer);
 
     /**
@@ -105,5 +128,4 @@ public interface MatchComponent {
      * @param mannschaftID         Mannschaft_ID
      *
      */
-    String getMannschaftsNameByID(long mannschaftID);
 }
