@@ -38,6 +38,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     private static final String PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT = "Current dsbmannschaft id must not be negative";
     private static final String PRECONDITION_MSG_SORTIERUNG = "The Sortierung must not be null or negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs ID must not be negative";
+    private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf ID must not be negative";
 
     private static final String EXCEPTION_NO_RESULTS = "No result for ID '%s'";
 
@@ -92,6 +93,19 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public List<DsbMannschaftDO> findAllByVeranstaltungsId(long id){
         Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_VERANSTALTUNGS_ID);
         final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByVeranstaltungsId(id);
+        if(dsbMannschaftBeList == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format(EXCEPTION_NO_RESULTS, id));
+        }
+
+        return fillAllNames(dsbMannschaftBeList.stream()
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<DsbMannschaftDO> findAllByWettkampfId(long id){
+        Preconditions.checkArgument( id>= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAllByWettkampfId(id);
         if(dsbMannschaftBeList == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format(EXCEPTION_NO_RESULTS, id));
