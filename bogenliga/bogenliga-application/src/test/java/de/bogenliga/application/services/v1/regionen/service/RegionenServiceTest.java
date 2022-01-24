@@ -122,6 +122,34 @@ public class RegionenServiceTest {
         verify(regionenComponent).findAll();
     }
 
+    @Test
+    public void findBySearch() {
+        //prepare Test
+        final RegionenDO regionenDO = getRegionenDO();
+
+        final List<RegionenDO> regionenDOList = Collections.singletonList(regionenDO);
+
+        //configure Mocks
+        when(regionenComponent.findBySearch(regionenDO.getRegionName())).thenReturn(regionenDOList);
+
+        //call test method
+        final List<RegionenDTO> actual = underTest.findBySearch(regionenDO.getRegionName());
+
+        //assert result
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final RegionenDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(regionenDO.getId());
+        assertThat(actualDTO.getRegionName()).isEqualTo(regionenDO.getRegionName());
+
+        //verify invocations
+        verify(regionenComponent).findBySearch(regionenDO.getRegionName());
+    }
+
 
     @Test
     public void findAllByType() {
