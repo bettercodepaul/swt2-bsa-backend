@@ -67,7 +67,7 @@ public class LigatabelleDAO implements DataAccessObject {
      */
 
     /* der Select liefert die aktuelle Ligatabelle zur Veranstaltung -
-    * es wird immer der "höchste Wettkampftag ermittelt un die Tabellenreihenfolge
+    * es wird immer der "höchste Wettkampftag ermittelt und die Tabellenreihenfolge
     * automatisch erzeugt durch die Sortierkriterien beim generieren der Row-Number
     * ggf. mpüssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
     * hier jetzt erst mal der Select für Match-Punkte vor Satzpunkt-Differenz
@@ -92,7 +92,7 @@ public class LigatabelleDAO implements DataAccessObject {
             "from ligatabelle as ligat where ligat.ligatabelle_veranstaltung_id = lt.ligatabelle_veranstaltung_id)";
 
     /* der Select liefert die aktuelle Ligatabelle zur Wettkampf-ID
-     * ggf. mpüssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
+     * ggf. müssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
      * hier jetzt erst mal der Select für Match-Punkte vor Satzpunkt-Differenz
      * sollte für Liga-Satzsystem passen
      */

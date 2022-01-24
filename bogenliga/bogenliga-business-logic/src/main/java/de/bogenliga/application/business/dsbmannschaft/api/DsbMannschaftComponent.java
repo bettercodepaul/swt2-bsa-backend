@@ -43,6 +43,17 @@ public interface DsbMannschaftComponent extends ComponentFacade {
 
 
     /**
+     * Return all dsbmannschaft entries with the given Wettkampf-Id.
+     *
+     * @param id of th eWettkampf
+     * @return all dsbmannschaft entries with the given Wettkampf-Id.
+     * null, if no dsbmannschaft is found.
+     */
+
+    List<DsbMannschaftDO> findAllByWettkampfId(long id);
+
+
+    /**
      * Return a dsbmannschaft entry with the given id.
      *
      * @param id of the dsbmannschaft
