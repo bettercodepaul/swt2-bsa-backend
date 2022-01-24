@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -518,8 +519,8 @@ public class MatchService implements ServiceFacade {
             matchDO.setNr(matchDO.getNr()+1);
         }
         else {
-            //Ende - wir geben null zurück
-            return null;
+            //Ende - wir geben eine leere Liste zurück
+            return Collections.emptyList();
         }
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
@@ -561,8 +562,9 @@ public class MatchService implements ServiceFacade {
             matchDO.setNr(matchDO.getNr() - 1);
         }
         else {
-            //Ende - wir geben null zurück
-            return null;
+            //am Anfang des Wettkampfs angekommen, eine leere Liste wird zurückgegeben
+
+            return Collections.emptyList();
         }
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
@@ -819,8 +821,8 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
     }
 
-    private boolean checkIfLigamatch(Long Id){
-        return matchComponent.checkIfLigamatch(Id);
+    private boolean checkIfLigamatch(Long id){
+        return matchComponent.checkIfLigamatch(id);
     }
 
 
