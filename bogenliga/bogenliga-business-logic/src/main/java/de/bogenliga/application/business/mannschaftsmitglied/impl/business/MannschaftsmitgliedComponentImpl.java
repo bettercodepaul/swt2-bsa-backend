@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedExtDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedLigaBE;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.mapper.MannschaftsmitgliedMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -28,6 +30,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_ID = "Mannschaftsmitglied Id must not be negative";
 
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+    private MannschaftsmitgliedExtDAO mannschaftsmitgliedExtDAO = null;
 
     private static final String PRECONDITION_MSG_TEMPLATE_NULL = "Mannschaftsmitglied: %s must not be null";
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Mannschaftsmitglied: %s must not be negative";
@@ -49,11 +52,19 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
      * dependency injection with {@link Autowired}
      *
      * @param mannschaftsmitgliedDAO to access the database and return dsbmitglied representations
+     * @param mannschaftsmitgliedExtDAO
      */
     @Autowired
+    public MannschaftsmitgliedComponentImpl(final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
+                                            MannschaftsmitgliedExtDAO mannschaftsmitgliedExtDAO) {
+        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+        this.mannschaftsmitgliedExtDAO = mannschaftsmitgliedExtDAO;
+    }
     public MannschaftsmitgliedComponentImpl(final MannschaftsmitgliedDAO mannschaftsmitgliedDAO) {
         this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
+
     }
+
 
     @Override
     public List<MannschaftsmitgliedDO> findAll() {
@@ -230,6 +241,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
 
         return result.getDsbMitgliedEingesetzt() > 0;
     }
+
 
     private void checkMannschaftsmitgliedDO(final MannschaftsmitgliedDO mannschaftsmitgliedDO) {
         Preconditions.checkNotNull(mannschaftsmitgliedDO, PRECONDITION_MANNSCHAFTSMITGLIED);
