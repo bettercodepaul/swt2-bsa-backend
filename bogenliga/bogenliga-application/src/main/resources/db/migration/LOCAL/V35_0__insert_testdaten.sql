@@ -1,6 +1,7 @@
 DO $do$
-BEGIN
 
+BEGIN
+    return;
     --insert test data into table verein
     INSERT INTO verein (verein_id, verein_name, verein_dsb_identifier, verein_region_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
     VALUES (2000, 'SWT2_Test_Verein9', 'SWT2_Vereinsnummer9', 3, '2021-01-28 20:54:10.225483', 0, null, null, 0) ON CONFLICT DO NOTHING;
@@ -47,6 +48,8 @@ BEGIN
     VALUES (2015, 'SWT2_Test_Vorname40', 'SWT2_Test_Nachname40', '2003-04-25', 'DE', 'SWT2_Mitgliedsnummer40', 2003, null, '2021-01-28 21:09:56.870332', 0, null, null, 0) ON CONFLICT DO NOTHING;
     INSERT INTO dsb_mitglied (dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum, dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id, dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
     VALUES (2016, 'SWT2_Test_Vorname41', 'SWT2_Test_Nachname41', '2003-04-25', 'DE', 'SWT2_Mitgliedsnummer41', 2003, null, '2021-01-28 21:09:56.870332', 0, null, null, 0) ON CONFLICT DO NOTHING;
+    INSERT INTO dsb_mitglied (dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum, dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id, dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
+    VALUES (2017, 'SWT2_Test_Vorname42', 'SWT2_Test_Nachname42', '2003-04-25', 'DE', 'SWT2_Mitgliedsnummer41', 2003, null, '2021-01-28 21:09:56.870332', 0, null, null, 0) ON CONFLICT DO NOTHING;
 
 
     --insert test data into table veranstaltung
