@@ -319,8 +319,10 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     public List<Long> getAllowedMitgliederList(List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList, List<DsbMitgliedDO> dsbMitgliedDOList, long wettkampfid){
+
         List<Long> allowedList=new ArrayList<>();
         List<LigaDO> ligen = ligaComponent.findAll();
+
         int count = 0;
         for(MannschaftsmitgliedDO mannschaftsmitglied: mannschaftsmitgliedDOList){
             DsbMitgliedDO dsbMitglied=dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());

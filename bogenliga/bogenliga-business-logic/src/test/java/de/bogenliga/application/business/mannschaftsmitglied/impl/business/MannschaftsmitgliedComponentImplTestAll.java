@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.MannschaftsmitgliedBaseDAOTest;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
+import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedExtDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedBE;
 import de.bogenliga.application.business.baseClass.impl.BasicComponentTest;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
@@ -35,6 +36,7 @@ public class MannschaftsmitgliedComponentImplTestAll extends Mannschaftsmitglied
 
     @InjectMocks
     private MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+    private MannschaftsmitgliedExtDAO mannschaftsmitgliedExtDAO;
 
     private MannschaftsmitgliedBE expectedBE;
     private MannschaftsmitgliedExtendedBE expectedExtendedBE;
@@ -51,7 +53,7 @@ public class MannschaftsmitgliedComponentImplTestAll extends Mannschaftsmitglied
     public void testSetup() {
         expectedBE = getMannschaftsmitgliedExtendedBE();
         expectedExtendedBE = getMannschaftsmitgliedExtendedBE();
-        underTest = new MannschaftsmitgliedComponentImpl(mannschaftsmitgliedDAO);
+        underTest = new MannschaftsmitgliedComponentImpl(mannschaftsmitgliedDAO, mannschaftsmitgliedExtDAO);
         basicComponentTest = new BasicComponentTest<>(underTest);
         basicTest = new BasicTest<>(expectedBE, getValuesToMethodMap());
         basicExtendedTest = new BasicTest<>(expectedExtendedBE, getValuesToMethodMap());
