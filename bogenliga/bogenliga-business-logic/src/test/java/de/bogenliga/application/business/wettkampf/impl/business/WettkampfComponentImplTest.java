@@ -10,6 +10,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
+
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,21 +30,16 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
-import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
-import static org.assertj.core.api.Java6Assertions.anyOf;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -81,11 +81,11 @@ public class WettkampfComponentImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private VeranstaltungDAO veranstaltungDAO;
+    private VeranstaltungComponent veranstaltungComponent;
     @Mock
     private WettkampfDAO wettkampfDAO;
     @Mock
-    private MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+    private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
     private PasseComponent passeComponent;
     @Mock
@@ -195,18 +195,18 @@ public class WettkampfComponentImplTest {
         return passen;
     }
 
-    public static VeranstaltungBE getVeranstaltungBE()
+    public static VeranstaltungDO getVeranstaltungDO()
     {
-        VeranstaltungBE veranstaltung = new VeranstaltungBE();
-        veranstaltung.setVeranstaltungId(wettkampf_Veranstaltung_Id);
+        VeranstaltungDO veranstaltung = new VeranstaltungDO();
+        veranstaltung.setVeranstaltungID(wettkampf_Veranstaltung_Id);
         veranstaltung.setVeranstaltungName("Demo Veranstaltung");
 
         return veranstaltung;
     }
 
-    public static MannschaftsmitgliedExtendedBE getMannschaftsmitgliedExtendedBE()
+    public static MannschaftsmitgliedDO getMannschaftsmitgliedDO()
     {
-        MannschaftsmitgliedExtendedBE newMittglied = new MannschaftsmitgliedExtendedBE();
+        MannschaftsmitgliedDO newMittglied = new MannschaftsmitgliedDO(1L, 2L);
         newMittglied.setId(1l);
         newMittglied.setDsbMitgliedVorname("Sascha");
         newMittglied.setDsbMitgliedNachname("DeTiris");
@@ -587,15 +587,15 @@ public class WettkampfComponentImplTest {
 
     private void prepareMocksForPDFTest()
     {
-        MannschaftsmitgliedExtendedBE exampleMitglied = getMannschaftsmitgliedExtendedBE();
+        MannschaftsmitgliedDO exampleMitglied = getMannschaftsmitgliedDO();
 
         List<WettkampfBE> wettkaempfe = new ArrayList<WettkampfBE>();
         wettkaempfe.add(getWettkampfBE());
         wettkaempfe.add(getWettkampfBE());
 
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(wettkaempfe);
-        when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
-        when(mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(Arrays.asList(exampleMitglied));
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(Arrays.asList(exampleMitglied));
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(),anyLong())).thenReturn(getPassenDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
@@ -682,7 +682,7 @@ public class WettkampfComponentImplTest {
 
         when(wettkampfDAO.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampflisteBEList);
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(Collections.singletonList(getMatchDO()));
-        when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(getVeranstaltungDO());
         when(dsbManschaftComponent.findById(anyLong())).thenReturn(getDsbMannschaftDO());
         when(vereinComponent.findById(anyLong())).thenReturn(getVereinDO());
         when(ligatabelleComponent.getLigatabelleWettkampf(anyLong())).thenReturn(Collections.singletonList(getLigatabelleDO()));

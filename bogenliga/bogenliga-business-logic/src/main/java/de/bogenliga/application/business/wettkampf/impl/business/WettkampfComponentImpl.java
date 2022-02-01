@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +30,12 @@ import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
-import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
-import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
@@ -69,9 +68,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
 
     private final WettkampfDAO wettkampfDAO;
-    private final VeranstaltungDAO veranstaltungDAO;
-    private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
-  
+
     private final LigaComponent ligaComponent;
     private MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -97,8 +94,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
                                   final DsbMitgliedComponent dsbMitgliedComponent,
                                   final DsbMannschaftComponent dsbMannschaftComponent,
                                   final VereinComponent vereinComponent,
-                                  final MannschaftsmitgliedDAO mannschaftsmitgliedDAO,
-                                  final VeranstaltungDAO veranstaltungDAO) {
+                                   final VeranstaltungComponent veranstaltungComponent) {
         this.wettkampfDAO = wettkampfDAO;
         this.ligaComponent = ligaComponent;
         this.passeComponent = passeComponent;
@@ -106,8 +102,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         this.dsbMitgliedComponent = dsbMitgliedComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
-        this.mannschaftsmitgliedDAO = mannschaftsmitgliedDAO;
-        this.veranstaltungDAO = veranstaltungDAO;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
     @Autowired
@@ -241,7 +236,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     public void generateDoc(Document doc, String header, List<WettkampfBE> wettkampflisteBEList,long veranstaltungsid,long mannschaftsid,int jahr)
     {
         Preconditions.checkArgument(header.equals("Einzelstatistik") || header.equals("Gesamtstatistik"),"Invalid Header!");
-        VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstaltungsid);
+        VeranstaltungDO selectedVeranstaltung = veranstaltungComponent.findById(veranstaltungsid);
 
         doc.setFontSize(20.0f);
         doc.add(new Paragraph(header).setBold());
@@ -460,7 +455,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     {
         for(WettkampfBE wettkampf : wettkampflisteBEList)
         {
-            List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
+            List<MannschaftsmitgliedDO> mitglied = mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
 
             Table table = new Table(new float[]{100, 150, 100, 250});
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
@@ -468,7 +463,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match").setBold()));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
 
-            for (MannschaftsmitgliedExtendedBE schuetze : mitglied)
+            for (MannschaftsmitgliedDO schuetze : mitglied)
             {
                 List<PasseDO> passen = passeComponent.findByWettkampfIdAndMitgliedId(wettkampf.getId(),schuetze.getDsbMitgliedId());
                 List<Long> passennummern = getNummern(passen);
@@ -495,14 +490,14 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     //Generiert Tabelle für Gesammtstatistik
     void generateGesamt(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
-        List<MannschaftsmitgliedExtendedBE> mitglied = mannschaftsmitgliedDAO.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
+        List<MannschaftsmitgliedDO> mitglied = mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(mannschaftsid);
 
         Table table = new Table(new float[]{100, 150, 250});
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Rückennummer").setBold()));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Schütze").setBold()));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Dürchschnittlicher Pfeilwert pro Match").setBold()));
 
-        for(MannschaftsmitgliedExtendedBE schuetze : mitglied)
+        for(MannschaftsmitgliedDO schuetze : mitglied)
         {
             float average = -1;
             for(WettkampfBE wettkampf : wettkampflisteBEList)
@@ -535,7 +530,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
     void generateUebersicht(Document doc, List<WettkampfBE> wettkaempfe, long veranstatungsId, long wettkampftag)
     {
-        VeranstaltungBE selectedVeranstaltung = veranstaltungDAO.findById(veranstatungsId);
+        VeranstaltungDO selectedVeranstaltung = veranstaltungComponent.findById(veranstatungsId);
         long wettkampfid = wettkaempfe.get(0).getId();
 
         doc.setFontSize(20.0f);
