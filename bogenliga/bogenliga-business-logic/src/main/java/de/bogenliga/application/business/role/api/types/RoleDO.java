@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Contains the values of the user business entity.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class RoleDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = 298357103627898987L;

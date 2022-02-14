@@ -8,7 +8,7 @@ import de.bogenliga.application.common.component.ComponentFacade;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public interface MannschaftsmitgliedComponent extends ComponentFacade {
 

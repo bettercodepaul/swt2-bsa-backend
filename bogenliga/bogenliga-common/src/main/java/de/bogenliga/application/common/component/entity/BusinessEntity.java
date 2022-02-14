@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Marker interface for database entity representations.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public interface BusinessEntity extends Serializable {
 

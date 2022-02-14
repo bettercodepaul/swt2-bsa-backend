@@ -11,7 +11,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class CustomWebAuthenticationDetailsSourceTest {
 

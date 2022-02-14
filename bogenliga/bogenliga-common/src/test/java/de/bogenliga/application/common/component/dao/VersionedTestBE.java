@@ -3,7 +3,7 @@ package de.bogenliga.application.common.component.dao;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class VersionedTestBE extends CommonBusinessEntity {
 

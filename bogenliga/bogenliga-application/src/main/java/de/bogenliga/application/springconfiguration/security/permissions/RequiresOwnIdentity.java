@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

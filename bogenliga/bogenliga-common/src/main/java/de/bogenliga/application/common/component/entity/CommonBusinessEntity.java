@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  *
  * Versioned business entities are used to detect concurrent modifications.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public abstract class CommonBusinessEntity implements BusinessEntity {
 
