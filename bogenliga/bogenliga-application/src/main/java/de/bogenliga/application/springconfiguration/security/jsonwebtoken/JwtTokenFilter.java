@@ -18,7 +18,7 @@ import org.springframework.web.filter.GenericFilterBean;
  * <p>
  * No database query is necessary to authorize the user.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class JwtTokenFilter extends GenericFilterBean {
 

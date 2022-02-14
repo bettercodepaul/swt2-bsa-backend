@@ -12,7 +12,7 @@ import de.bogenliga.application.common.component.types.DataObject;
  * <p>
  * Extends the {@link UserDO} with the list of permissions.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserWithPermissionsDO extends UserDO implements DataObject {
 

@@ -14,7 +14,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * The {@link CommonBusinessEntity} contains the technical parameter. Business entities commonly use these parameters to
  * control their lifecycle.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see CommonBusinessEntity
  */
 public class UserBE extends CommonBusinessEntity implements BusinessEntity {

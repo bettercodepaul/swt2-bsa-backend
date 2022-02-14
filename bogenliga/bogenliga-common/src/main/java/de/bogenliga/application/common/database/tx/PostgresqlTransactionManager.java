@@ -15,7 +15,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://www.baeldung.com/properties-with-spring">Properties with Spring and Spring Boot</a>
  */
 @Profile({"LOCAL", "INT", "DEV", "PROD", "DOCKER"})

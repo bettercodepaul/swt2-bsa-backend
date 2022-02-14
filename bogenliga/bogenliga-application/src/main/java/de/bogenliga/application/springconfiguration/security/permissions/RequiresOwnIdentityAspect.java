@@ -26,7 +26,7 @@ import java.util.List;
  * <p>
  * The logic will be wrapped around the annotated method.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Aspect
 @Component

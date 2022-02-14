@@ -7,7 +7,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
  * <p>
  * The number of failed sign in attempts is calculated with a SQL query.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserFailedSignInAttemptsBE implements BusinessEntity {
     private static final long serialVersionUID = -1560862619093862110L;

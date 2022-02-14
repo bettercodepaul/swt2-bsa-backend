@@ -11,7 +11,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 /**
  * Base exception class
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 abstract class CoreException extends RuntimeException implements
         Serializable {

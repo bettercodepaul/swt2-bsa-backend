@@ -18,7 +18,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
  * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Repository
 public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {

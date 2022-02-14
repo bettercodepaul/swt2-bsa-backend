@@ -9,7 +9,7 @@ import org.slf4j.Logger;
  *
  * The configuration is used by the {@link BasicDAO} to perform the "object-relational-mapping".
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class BusinessEntityConfiguration<T> {
     private final Class<T> businessEntity;

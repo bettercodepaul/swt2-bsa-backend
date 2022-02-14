@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * <p>
  * The permissions can be checked with the {@link RequiresPermission} annotation.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Component
 public class JwtTokenProvider {
