@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, BettercallPaul gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">

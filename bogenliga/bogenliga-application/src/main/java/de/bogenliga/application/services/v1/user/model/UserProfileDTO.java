@@ -9,7 +9,7 @@ import java.sql.Date;
  * <p>
  * I define the payload for the external REST interface of the userProfile business entity.
  *
- * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, BettercallPaul gmbh
  * @see DataTransferObject
  */
 public class UserProfileDTO {

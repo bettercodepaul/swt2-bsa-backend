@@ -24,7 +24,7 @@ import de.bogenliga.application.common.time.DateProvider;
 /**
  * Basic data access object implementation for CRUD operations.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://www.baeldung.com/apache-commons-dbutils">A Guide to Apache Commons DbUtils</a>
  */
 @Repository

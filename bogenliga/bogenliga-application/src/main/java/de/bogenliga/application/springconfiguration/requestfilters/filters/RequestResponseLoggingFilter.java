@@ -19,7 +19,7 @@ import org.springframework.core.annotation.Order;
  *
  * I log the called REST resource and the response code for the request.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://www.baeldung.com/spring-boot-add-filter">How to Define a Spring Boot Filter?</a>
  */
 // @Component // activate the filter globally

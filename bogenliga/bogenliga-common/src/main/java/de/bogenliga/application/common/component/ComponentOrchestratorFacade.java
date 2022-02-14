@@ -5,7 +5,7 @@ package de.bogenliga.application.common.component;
  *
  * The orchestrator component orchestrates other components.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public interface ComponentOrchestratorFacade {
 }

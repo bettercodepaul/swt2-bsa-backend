@@ -12,7 +12,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
  *
  * I handle the mapping between table column names and the bean parameter names.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see BeanHandler
  * @see ResultSet
  */

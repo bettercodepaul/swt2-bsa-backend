@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">

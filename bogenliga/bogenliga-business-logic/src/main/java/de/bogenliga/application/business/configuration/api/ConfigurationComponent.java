@@ -7,7 +7,7 @@ import de.bogenliga.application.common.component.ComponentFacade;
 /**
  * I´m responsible for the configuration database requests.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public interface ConfigurationComponent extends ComponentFacade {
 

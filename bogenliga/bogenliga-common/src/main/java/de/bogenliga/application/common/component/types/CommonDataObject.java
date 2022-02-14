@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public abstract class CommonDataObject implements DataObject {
 
