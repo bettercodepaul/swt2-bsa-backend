@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  *
  * Handle database connection and support the transaction management.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 final class SessionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(SessionHandler.class);

@@ -7,7 +7,7 @@ import de.bogenliga.application.common.component.businessactivity.BusinessActivi
 /**
  * I encapsulate the logic for technical users and their management.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Component
 public class TechnicalUserBA implements BusinessActivity {

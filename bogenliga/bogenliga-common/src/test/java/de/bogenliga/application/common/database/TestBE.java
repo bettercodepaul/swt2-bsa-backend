@@ -1,7 +1,7 @@
 package de.bogenliga.application.common.database;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class TestBE {
 

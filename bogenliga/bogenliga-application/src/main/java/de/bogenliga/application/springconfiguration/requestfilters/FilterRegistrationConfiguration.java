@@ -9,7 +9,7 @@ import de.bogenliga.application.springconfiguration.requestfilters.filters.Reque
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Configuration
 public class FilterRegistrationConfiguration {

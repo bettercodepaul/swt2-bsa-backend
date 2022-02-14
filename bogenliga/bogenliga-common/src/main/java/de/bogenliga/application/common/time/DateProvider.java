@@ -8,7 +8,7 @@ import java.time.ZoneOffset;
 /**
  * I handle date and time operations.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public final class DateProvider {
 

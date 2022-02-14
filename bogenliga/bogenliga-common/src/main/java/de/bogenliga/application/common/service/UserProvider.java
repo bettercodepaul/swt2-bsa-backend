@@ -5,7 +5,7 @@ import java.security.Principal;
 /**
  * I handle operations with the current user.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public final class UserProvider {
 
