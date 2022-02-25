@@ -54,7 +54,7 @@ public class SyncService implements ServiceFacade {
      * @return list of {@link LigaSyncLigatabelleDTO} as JSON
      */
     @GetMapping(
-            value = "\"veranstaltung={id}\"",
+            value = "veranstaltung={id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaSyncLigatabelleDTO> getLigatabelleVeranstaltung(@PathVariable("id") final long id) {
