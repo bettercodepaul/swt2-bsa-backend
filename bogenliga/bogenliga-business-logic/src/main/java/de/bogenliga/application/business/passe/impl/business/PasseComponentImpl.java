@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
+import de.bogenliga.application.business.ligapasse.impl.dao.LigapasseDAO;
+import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
+import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.passe.impl.dao.PasseDAO;
@@ -37,6 +41,7 @@ public class PasseComponentImpl implements PasseComponent {
     private static final String PRECONDITION_MSG_TEMPLATE_NEGATIVE = "Passe: %s must not be negative";
 
     private final PasseDAO passeDAO;
+    private final LigapasseDAO ligapasseDAO;
 
 
     /**
@@ -47,8 +52,9 @@ public class PasseComponentImpl implements PasseComponent {
      * @param passeDAO to access the database and return passe representations
      */
     @Autowired
-    public PasseComponentImpl(final PasseDAO passeDAO) {
+    public PasseComponentImpl(final PasseDAO passeDAO, final LigapasseDAO ligapasseDAO) {
         this.passeDAO = passeDAO;
+        this.ligapasseDAO = ligapasseDAO;
     }
 
 
@@ -75,6 +81,7 @@ public class PasseComponentImpl implements PasseComponent {
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
 
     }
+
 
 
     /**
@@ -186,6 +193,19 @@ public class PasseComponentImpl implements PasseComponent {
         final List<PasseBE> passeBEList = passeDAO.findByMannschaftMatchId(mannschaftId, matchId);
         return passeBEList.stream().map(PasseMapper.toPasseDO).collect(Collectors.toList());
     }
+
+
+    /**
+     * optimized function for Schusszettel
+     *
+     * @return a list of all Ligapassen with the matchId looked for
+     */
+    @Override
+    public List<LigapasseBE> getLigapassenByLigamatchId(Long id) {
+        checkPreconditions(id, PRECONDITION_FIELD_ID);
+        return ligapasseDAO.findLigapassenByLigamatchId(id);
+    }
+
 
 
     /**

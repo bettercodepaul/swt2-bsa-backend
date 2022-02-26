@@ -8,6 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.ligamatch.impl.dao.BaseLigamatchTest;
+import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
@@ -28,6 +31,8 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
     @Mock
     private MatchDAO matchDAO;
+    @Mock
+    private LigamatchDAO ligamatchDAO;
     @Mock
     private DsbMannschaftComponent mannschaftComponent;
     @Mock
@@ -217,6 +222,61 @@ public class MatchComponentImplTest extends BaseMatchTest {
         validateObjectList(actual);
         verify(matchDAO).findByWettkampfId(MATCH_WETTKAMPF_ID);
     }
+
+
+    @Test
+    public void getLigamatchesByWettkampfId(){
+        LigamatchBE expectedLigamatchBE = BaseLigamatchTest.getLigamatchBE();
+
+        final List<LigamatchBE> expectedBEList = Collections.singletonList(expectedLigamatchBE);
+
+        //configure mocks
+        when(ligamatchDAO.findLigamatchesByWettkampfId(anyLong())).thenReturn(expectedBEList);
+
+        //call test method
+        final List<LigamatchBE> actual = underTest.getLigamatchesByWettkampfId(MATCH_WETTKAMPF_ID);
+
+        //assert result
+        BaseLigamatchTest.validateObjectList(actual);
+        verify(ligamatchDAO).findLigamatchesByWettkampfId(MATCH_WETTKAMPF_ID);
+    }
+
+
+
+
+
+    @Test
+    public void getLigamatchById(){
+        LigamatchBE expectedLigamatchBE = BaseLigamatchTest.getLigamatchBE();
+
+        // configure mocks
+        when(ligamatchDAO.findById(anyLong())).thenReturn(expectedLigamatchBE);
+
+        // call test method
+        final LigamatchBE actual = underTest.getLigamatchById(MATCH_ID);
+
+        // assert result
+
+        BaseLigamatchTest.assertValid(expectedLigamatchBE, actual);
+        verify(ligamatchDAO).findById(MATCH_ID);
+    }
+
+    @Test
+    public void getLigagmatchByIdThrowsExecption(){
+        LigamatchBE expectedLigamatchBE = null;
+
+        //configure mocks
+        when(ligamatchDAO.findById(anyLong())).thenReturn(expectedLigamatchBE);
+
+        //call the method
+        assertThatThrownBy(()->{
+            underTest.getLigamatchById(1L);
+        })
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("No match found for ID");
+        verify(ligamatchDAO).findById(1L);
+    }
+
 
 
     @Test

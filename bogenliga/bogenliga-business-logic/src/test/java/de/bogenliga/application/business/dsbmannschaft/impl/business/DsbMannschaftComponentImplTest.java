@@ -42,6 +42,7 @@ public class DsbMannschaftComponentImplTest {
     private static final long NUMMER =111L;
     private static final long BENUTZER_ID =12L;
     private static final long VERANSTALTUNG_ID =1L;
+    private static final long WETTKAMPF_ID =30L;
     private static final long CURRENT_VERANSTALTUNG_ID =2L;
     private static final long SORTIERUNG =1L;
 
@@ -250,6 +251,56 @@ public class DsbMannschaftComponentImplTest {
 
         // verify invocations
         verify(dsbMannschaftDAO).findAllByVeranstaltungsId(VERANSTALTUNG_ID);
+        verify(vereinComponent).findById(anyLong());
+    }
+
+    @Test
+    public void findAllByWettkampfId() {
+        // prepare test data
+        final DsbMannschaftBE expectedBE = getDsbMannschaftBE();
+        final List<DsbMannschaftBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(dsbMannschaftDAO.findAllByWettkampfId(WETTKAMPF_ID)).thenReturn(expectedBEList);
+        when(dsbMannschaftDAO.findAllByWettkampfId(WETTKAMPF_ID+1)).thenReturn(null);
+
+        // call test method
+        final List<DsbMannschaftDO> actual = underTest.findAllByWettkampfId(WETTKAMPF_ID);
+
+        // check if expected exception is thrown if id isn't contained
+        assertThatThrownBy(()-> underTest.findAllByWettkampfId(WETTKAMPF_ID+1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(String.format("'%d'", WETTKAMPF_ID+1));
+
+        // check if expected exception is thrown if id is negative
+        assertThatThrownBy(()-> underTest.findAllByWettkampfId(-1))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.INVALID_ARGUMENT_ERROR.getValue());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getId());
+        assertThat(actual.get(0).getBenutzerId())
+                .isEqualTo(expectedBE.getBenutzerId());
+        assertThat(actual.get(0).getNummer())
+                .isEqualTo(expectedBE.getNummer());
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVereinId())
+                .isEqualTo(expectedBE.getVereinId());
+        assertThat(actual.get(0).getSortierung())
+                .isEqualTo(expectedBE.getSortierung());
+
+
+        // verify invocations
+        verify(dsbMannschaftDAO).findAllByWettkampfId(WETTKAMPF_ID);
         verify(vereinComponent).findById(anyLong());
     }
 

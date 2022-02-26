@@ -6,7 +6,7 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 /**
  * I perform precondition checks.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://en.wikipedia.org/wiki/Fail-fast">Wikipedia - Fail-fast</a>
  * @see <a href="https://en.wikipedia.org/wiki/Design_by_contract">Wikipedia - Design by contract</a>
  * @see <a href="https://docs.oracle.com/cd/E19683-01/806-7930/assert-13/index.html">

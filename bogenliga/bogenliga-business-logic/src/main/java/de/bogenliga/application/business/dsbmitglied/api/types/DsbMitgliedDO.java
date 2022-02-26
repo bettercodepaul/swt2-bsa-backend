@@ -9,7 +9,7 @@ import de.bogenliga.application.common.component.types.DataObject;
 /**
  * Contains the values of the dsbmitglied business entity.
  *
- * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, BettercallPaul gmbh
  */
 public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     private static final long serialVersionUID = 298357103627898987L;

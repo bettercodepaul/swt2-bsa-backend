@@ -40,6 +40,7 @@ public class MannschaftsmitgliedComponentImplTest {
     private static final String DSB_MITGLIED_VORNSME = "Mario";
     private static final String DSB_MItglied_Nachname = "Gomez";
     private static final Long RUECKENNUMMER = 5L;
+    private static final Long WETTKAMPFID = 11L;
 
 
     @Rule
@@ -364,5 +365,16 @@ public class MannschaftsmitgliedComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(mannschaftsmitgliedDAO);
+    }
+
+    @Test
+        public void findSchuetzenInUebergelegenerLiga(){
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+        final List<MannschaftsmitgliedExtendedBE> expectedBEList = Collections.singletonList(expectedBE);
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findSchuetzenInUebergelegenerLiga(MANNSCHAFTSID, WETTKAMPFID)).thenReturn(expectedBEList);
+        final List<MannschaftsmitgliedDO> actual = underTest.findSchuetzenInUebergelegenerLiga(MANNSCHAFTSID, WETTKAMPFID);
+
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBEList.get(0).getDsbMitgliedId());
     }
 }

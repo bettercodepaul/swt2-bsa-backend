@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
+import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
+import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import org.slf4j.Logger;
@@ -175,19 +180,37 @@ public class MatchService implements ServiceFacade {
     public List<MatchDTO> findByWettkampfId(@PathVariable("id") Long wettkampfid) {
         this.checkMatchId(wettkampfid);
 
-        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+        if(this.checkIfLigamatch(wettkampfid)){
+            List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
 
-        final List<MatchDTO> matchDTOs = new ArrayList<>();
+            final List<MatchDTO> matchDTOs = new ArrayList<>();
 
-        for( MatchDO einmatch: wettkampfMatches) {
-            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
-            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
-            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
-            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
-            matchDTOs.add(matchDTO);
+
+            for( LigamatchBE einmatch: wettkampfMatches) {
+                MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(LigamatchToMatchMapper.LigamatchToMatchDO.apply(einmatch));
+                matchDTO.setMannschaftName(einmatch.getMannschaftName());
+                matchDTOs.add(matchDTO);
+            }
+
+            return matchDTOs;
+        }else{
+            List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(wettkampfid);
+
+            final List<MatchDTO> matchDTOs = new ArrayList<>();
+
+            for( MatchDO einmatch: wettkampfMatches) {
+                MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(einmatch);
+                DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
+                VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
+                matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
+                matchDTOs.add(matchDTO);
+            }
+
+            return matchDTOs;
+            
         }
 
-        return matchDTOs;
+
     }
 
     /**
@@ -496,8 +519,8 @@ public class MatchService implements ServiceFacade {
             matchDO.setNr(matchDO.getNr()+1);
         }
         else {
-            //Ende - wir geben null zurück
-            return null;
+            //Ende - wir geben eine leere Liste zurück
+            return Collections.emptyList();
         }
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
@@ -517,6 +540,51 @@ public class MatchService implements ServiceFacade {
                 .map(MatchDO::getId)
                 .collect(Collectors.toList());
     }
+
+
+    @GetMapping(value = "{matchId}/previousPair",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
+    public List<Long> previousPair(@PathVariable final Long matchId) {
+        Preconditions.checkNotNull(matchId,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_NEXT, CHECKED_PARAM_MATCH_ID));
+        MatchDO matchDO = matchComponent.findById(matchId);
+
+        this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
+        long scheibeNr;
+        if(matchDO.getScheibenNummer() > 2){
+            //wir suchen im gleichen Match die vorherige Scheiben-Paarung (-2)
+            scheibeNr = matchDO.getScheibenNummer() - 2;
+        }
+        else if(matchDO.getScheibenNummer() <= 2 && matchDO.getNr() > 1){
+            //wir sind noch nicht am Anfang des Wettkampfs angekommen
+            scheibeNr = 8L;
+            matchDO.setNr(matchDO.getNr() - 1);
+        }
+        else {
+            //am Anfang des Wettkampfs angekommen, eine leere Liste wird zurückgegeben
+
+            return Collections.emptyList();
+        }
+
+        List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
+        // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
+        // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
+        // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
+        final Long ersteScheibe = scheibeNr;
+        final Long otherScheibeNr = scheibeNr % 2 == 0 ? scheibeNr - 1 : scheibeNr + 1;
+        return wettkampfMatches
+                .stream()
+                .filter(mDO -> mDO.getNr().equals(matchDO.getNr()))
+                .filter(mDO -> (
+                        ersteScheibe.equals(mDO.getScheibenNummer())
+                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                ))
+                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .map(MatchDO::getId)
+                .collect(Collectors.toList());
+    }
+
 
 
     /**
@@ -694,46 +762,56 @@ public class MatchService implements ServiceFacade {
     /**
      * Gets and enriches a match from the DB.
      * Control the presence of related passe objects with the addPassen parameter.
-     * Each passe object then gets its schuetzeNr (see getSchuetzeNrFor).
+     * Each passe object then gets its RueckenNr.
      * @param matchId Match ID, die gelesen werden soll
      * @param addPassen True: dann werden auch die Daten der Passen mit gelesen
      * @return MatchDTO
      */
+
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
-        final MatchDO matchDo = matchComponent.findById(matchId);
-        final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
-                wettkampfComponent.findById(matchDo.getWettkampfId()));
-        MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
-        WettkampfTypDO wettDO = wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
-        final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
-        matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
-        matchDTO.setWettkampfTag(wettkampfDTO.getWettkampfTag());
 
-        // the match is shown on the Schusszettel, add passen and mannschaft name
+
+
+
+        // the match is shown on the Schusszettel, add passen and mannschaft name from the views ligamatch and ligapasse
+        // if the match is not shown on the Schusszettel, enrich matchDTO with data from the tables
         if (addPassen) {
-            DsbMannschaftDO mannschaftDO = mannschaftComponent.findById(matchDTO.getMannschaftId());
-            VereinDO vereinDO = vereinComponent.findById(mannschaftDO.getVereinId());
-            matchDTO.setMannschaftName(vereinDO.getName() + '-' + mannschaftDO.getNummer());
+            final LigamatchBE ligamatchBE = matchComponent.getLigamatchById(matchId);
+            MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(ligamatchBE);
+            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO);
+            matchDTO.setWettkampfTyp(ligamatchBE.getWettkampftypId());
+            matchDTO.setWettkampfTag(ligamatchBE.getWettkampfTag());
+            matchDTO.setMannschaftName(ligamatchBE.getMannschaftName());
 
-            List<PasseDO> passeDOs = passeComponent.findByMatchId(matchId);
+
+            List<LigapasseBE> ligapasseBEList = passeComponent.getLigapassenByLigamatchId(matchId);
+            List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
 
-            // reverse map the schuetzeNr to the passeDTO
-            for (PasseDTO passeDTO : passeDTOs) {
-                long mannschaftID = passeDTO.getMannschaftId();
-                long rueckennummer = mannschaftsmitgliedComponent.findByMemberAndTeamId(mannschaftID,
-                        passeDTO.getDsbMitgliedId()).getRueckennummer();
-
-                passeDTO.setRueckennummer((int)rueckennummer);
-                Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
+            for (int i = 0; i < passeDTOs.size(); i++){
+                passeDTOs.get(i).setRueckennummer(ligapasseBEList.get(i).getMannschaftsmitgliedRueckennummer());
+                Preconditions.checkArgument(passeDTOs.get(i).getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
 
             matchDTO.setPassen(passeDTOs);
+            return matchDTO;
+        }else{
+            final MatchDO matchDo = matchComponent.findById(matchId);
+            final WettkampfDTO wettkampfDTO = WettkampfDTOMapper.toDTO.apply(
+                    wettkampfComponent.findById(matchDo.getWettkampfId()));
+            MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDo);
+            WettkampfTypDO wettDO = wettkampfTypComponent.findById(wettkampfDTO.getWettkampfTypId());
+            final WettkampfTypDTO wettkampfTypDTO = WettkampfTypDTOMapper.toDTO.apply(wettDO);
+            matchDTO.setWettkampfTyp(wettkampfTypDTO.getName());
+            matchDTO.setWettkampfTag(wettkampfDTO.getWettkampfTag());
+            return matchDTO;
         }
 
-        return matchDTO;
+
     }
+
+
 
 
     private void checkMatchId(Long matchId) {
@@ -741,6 +819,10 @@ public class MatchService implements ServiceFacade {
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
         Preconditions.checkArgument(matchId >= 0,
                 String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
+    }
+
+    private boolean checkIfLigamatch(Long id){
+        return matchComponent.checkIfLigamatch(id);
     }
 
 

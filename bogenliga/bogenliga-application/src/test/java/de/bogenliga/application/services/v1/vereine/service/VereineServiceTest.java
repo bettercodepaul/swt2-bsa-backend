@@ -123,6 +123,31 @@ public class VereineServiceTest {
         verify(vereinComponent).findAll();
     }
 
+    @Test
+    public void findByName() {
+        // prepare test data
+        final VereinDO vereinDO = getVereinDO();
+        final List<VereinDO> VereinDOList = Collections.singletonList(vereinDO);
+
+        // configure mocks
+        when(vereinComponent.findBySearch(vereinDO.getName())).thenReturn(VereinDOList);
+
+        // call test method
+        final List<VereineDTO> actual = underTest.findBySearch(vereinDO.getName());
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final VereineDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(vereinDO.getId());
+        assertThat(actualDTO.getName()).isEqualTo(vereinDO.getName());
+
+        // verify invocations
+        verify(vereinComponent).findBySearch(vereinDO.getName());
+    }
+
 
     @Test
     public void findById() {

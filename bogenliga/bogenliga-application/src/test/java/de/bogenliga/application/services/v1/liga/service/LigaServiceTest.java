@@ -128,6 +128,34 @@ public class LigaServiceTest {
     }
 
     @Test
+    public void findBySearch() {
+        // prepare test data
+        final LigaDO ligaDO = getLigaDO();
+
+        final List<LigaDO> ligaDOList = Collections.singletonList(ligaDO);
+
+        // configure mocks
+        when(ligaComponent.findBySearch(ligaDO.getName())).thenReturn(ligaDOList);
+
+        // call test method
+        final List<LigaDTO> actual = underTest.findBySearch(ligaDO.getName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final LigaDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(ligaDO.getId());
+        assertThat(actualDTO.getName()).isEqualTo(ligaDO.getName());
+
+        // verify invocations
+        verify(ligaComponent).findBySearch(ligaDO.getName());
+    }
+
+    @Test
     public void findById() {
         // prepare test data
         final LigaDO ligaDO = getLigaDO();

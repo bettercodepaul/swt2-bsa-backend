@@ -9,7 +9,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

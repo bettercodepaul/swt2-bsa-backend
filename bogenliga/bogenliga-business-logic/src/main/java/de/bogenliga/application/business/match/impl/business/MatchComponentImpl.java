@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
@@ -52,6 +54,8 @@ public class MatchComponentImpl implements MatchComponent {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
     private WettkampfComponent wettkampfComponent;
+    private final LigamatchDAO ligamatchDAO;
+
 
     /**
      * Constructor
@@ -63,10 +67,12 @@ public class MatchComponentImpl implements MatchComponent {
     @Autowired
     public MatchComponentImpl(final MatchDAO matchDAO,
                               final DsbMannschaftComponent dsbMannschaftComponent,
-                              final VereinComponent vereinComponent) {
+                              final VereinComponent vereinComponent,
+                              final LigamatchDAO ligamatchDAO) {
         this.matchDAO = matchDAO;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.vereinComponent = vereinComponent;
+        this.ligamatchDAO = ligamatchDAO;
     }
 
     @Autowired
@@ -85,6 +91,41 @@ public class MatchComponentImpl implements MatchComponent {
     public List<MatchDO> findAll() {
         final List<MatchBE> matchBEList = matchDAO.findAll();
         return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+    }
+
+
+    /**
+     * checks if the match is in the Ligamatch-View
+     */
+    @Override
+    public Boolean checkIfLigamatch(Long id){
+        return ligamatchDAO.checkIfLigamatch(id);
+    }
+
+
+    /**
+     * optimized function for Schusszettel
+     */
+    @Override
+    public List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId) {
+        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
+        return ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
+    }
+
+    /**
+     * optimized function for Schusszettel
+     */
+    @Override
+    public LigamatchBE getLigamatchById(Long id) {
+        checkPreconditions(id, PRECONDITION_MSG_MATCH_NR);
+
+        final LigamatchBE ligamatchBE = ligamatchDAO.findById(id);
+
+        if (ligamatchBE == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No match found for ID '%s'", id));
+        }
+        return ligamatchBE;
     }
 
 
@@ -190,7 +231,7 @@ public class MatchComponentImpl implements MatchComponent {
         if(mannschaften == null || mannschaften.size() != 8 || wettkampfDO == null
                 || wettkampfDO.getId() == null || wettkampfDO.getId() < 0){
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT);
-        } else {
+        }else{
             Long wettkampfId = wettkampfDO.getId();
             Long begegnung = 0L;
             for(int i = 0; i< 8; i++){
@@ -218,14 +259,6 @@ public class MatchComponentImpl implements MatchComponent {
         matchBe.setBegegnung(begegnung);
         matchBe.setMannschaftId(mannschaftId);
         matchBe.setScheibenNummer(scheibennummer);
-
-        List<MatchDO> matches = this.findByWettkampfId(wettkampfId);
-
-        // proof if matches already exist
-        if(!matches.isEmpty ()){
-            // delete matches
-          matches.forEach(match -> this.delete(match, currentUserId));
-        }
 
         this.matchDAO.create(matchBe,currentUserId);
     }

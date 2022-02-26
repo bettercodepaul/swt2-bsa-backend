@@ -7,7 +7,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  * sowohl das aktuelle, als auch das neue Passwort
  *
  *
- * @author Michael Dirksmöller, eXXcellent solutions consulting & software gmbh
+ * @author Michael Dirksmöller, BettercallPaul gmbh
  */
 public class UserChangeCredentialsDTO implements DataTransferObject {
 

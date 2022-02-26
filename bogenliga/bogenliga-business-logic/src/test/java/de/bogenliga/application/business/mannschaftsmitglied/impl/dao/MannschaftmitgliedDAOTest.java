@@ -121,5 +121,16 @@ public void findAll() throws InvocationTargetException, IllegalAccessException {
         }
     }
 
+    @Test
+    public void findSchuetzenInUebergelegenerLiga(){
+        try {
+            basicDAOTest.testAllFieldsOnEqualToExpectedEntity(underTest.findSchuetzenInUebergelegenerLiga(mannschaftId, wettkampfId));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

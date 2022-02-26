@@ -45,7 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class UserServiceTest {
@@ -657,7 +657,7 @@ public class UserServiceTest {
         final UserRoleDO expectedURDO = new UserRoleDO();
         expectedURDO.setId(ID);
         expectedURDO.setRoleId(ROLE_ID);
-        expectedURDO.setEmail(USERNAME);
+        expectedURDO.setEmail(EMAIL);
         expectedURDO.setRoleName(ROLE_NAME);
 
         // configure mocks
@@ -690,6 +690,45 @@ public class UserServiceTest {
         verify(userRoleComponent).findAll();
 
 
+    }
+
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final UserRoleDO expectedURDO = new UserRoleDO();
+        expectedURDO.setId(ID);
+        expectedURDO.setRoleId(ROLE_ID);
+        expectedURDO.setEmail(EMAIL);
+        expectedURDO.setRoleName(ROLE_NAME);
+
+        // configure mocks
+        when(userRoleComponent.findBySearch(EMAIL)).thenReturn(Collections.singletonList(expectedURDO));
+
+        // call test method
+        final List<UserRoleDTO> actual = underTest.findBySearch(EMAIL);
+
+        // assert result
+        Java6Assertions.assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+        Java6Assertions.assertThat(actual.get(0).getId())
+                .isEqualTo(expectedURDO.getId());
+        Java6Assertions.assertThat(actual.get(0).getEmail())
+                .isEqualTo(expectedURDO.getEmail());
+        Java6Assertions.assertThat(actual.get(0).getRoleId())
+                .isEqualTo(expectedURDO.getRoleId());
+        Java6Assertions.assertThat(actual.get(0).getRoleName())
+                .isEqualTo(expectedURDO.getRoleName());
+        Java6Assertions.assertThat(actual.get(0).getVersion())
+                .isEqualTo(expectedURDO.getVersion());
+
+
+        // verify invocations
+        verify(userRoleComponent).findBySearch(EMAIL);
     }
 
 
