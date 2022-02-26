@@ -7,7 +7,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
  * Interface to map implementations of the {@link DataObject} and {@link DataTransferObject}
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public interface DataTransferObjectMapper extends TransferObjectMapper {
 

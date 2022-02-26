@@ -53,6 +53,12 @@ public class LigaDAO implements DataAccessObject {
                     + " FROM liga"
                     + " ORDER BY liga_id";
 
+    private static final String FIND_BY_SEARCH =
+            "SELECT * "
+                    + " FROM liga "
+                    + " WHERE LOWER(liga_name) LIKE (?) "
+                    + " ORDER BY liga_id";
+
     private static final String FIND_BY_ID =
             "SELECT * "
                     + " FROM liga "
@@ -104,6 +110,15 @@ public class LigaDAO implements DataAccessObject {
      */
     public List<LigaBE> findAll() {
         return basicDao.selectEntityList(LIGA, FIND_ALL);
+    }
+
+    public List<LigaBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(LIGA, FIND_BY_SEARCH, new StringBuilder()
+                                                                     .append("%")
+                                                                     .append(searchTerm)
+                                                                     .append("%")
+                                                                     .toString()
+        );
     }
 
 

@@ -8,7 +8,7 @@ import de.bogenliga.application.common.component.types.DataObject;
 /**
  * I contain the data of the configuration business entity.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see DataObject
  */
 public class ConfigurationDO extends CommonDataObject implements DataObject {

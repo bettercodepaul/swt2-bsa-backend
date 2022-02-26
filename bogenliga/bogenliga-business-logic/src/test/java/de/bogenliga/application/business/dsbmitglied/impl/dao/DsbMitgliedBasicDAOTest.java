@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, BettercallPaul gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">
@@ -79,7 +79,7 @@ public class DsbMitgliedBasicDAOTest {
 
     }
     @Test
-    public void findByName() {
+    public void findBySearch() {
         // prepare test data
         final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
 
@@ -87,7 +87,7 @@ public class DsbMitgliedBasicDAOTest {
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
 
         // call test method
-        final List<DsbMitgliedBE> actual = underTest.findByName(expectedBE.getDsbMitgliedVorname());
+        final List<DsbMitgliedBE> actual = underTest.findBySearch(expectedBE.getDsbMitgliedVorname());
 
         // assert result
         assertThat(actual)
@@ -98,7 +98,6 @@ public class DsbMitgliedBasicDAOTest {
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
-
 
     @Test
     public void findById() {

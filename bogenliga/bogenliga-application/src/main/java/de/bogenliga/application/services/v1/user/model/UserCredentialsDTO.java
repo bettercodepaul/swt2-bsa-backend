@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
  * Zur initialen Anlage einer neuen Anwenders werden Name und Password gehalten
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserCredentialsDTO implements DataTransferObject {
 

@@ -25,7 +25,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 /**
  * I´m a REST resource and handle dsbMitglied CRUD requests over the HTTP protocol.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">Wikipedia - CRUD</a>
  * @see <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">Wikipedia - REST</a>
  * @see <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">Wikipedia - HTTP</a>
@@ -118,16 +118,16 @@ public class DsbMitgliedService implements ServiceFacade {
 
     /**
      * I return dsbMitglied entries of the database which contain the search term
-     * @param searchstring
+     * @param searchTerm
      * @return list of {@link DsbMitgliedDTO} as JSON
      */
-    @GetMapping(value = "/namesearch/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<DsbMitgliedDTO> findByName(@PathVariable("searchstring") final String searchstring) {
-        Preconditions.checkNotNull(searchstring, PRECONDITION_MSG_SEARCHTERM);
-        LOG.debug("Receive 'findByName' request with Searchterm '{}'", searchstring);
+    public List<DsbMitgliedDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_SEARCHTERM);
+        LOG.debug("Receive 'findBySearch' request with Searchterm '{}'", searchTerm);
 
-        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findByName(searchstring);
+        final List<DsbMitgliedDO> dsbMitgliedDOList = dsbMitgliedComponent.findBySearch(searchTerm);
         return dsbMitgliedDOList.stream().map(DsbMitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 

@@ -1,6 +1,7 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=exxcellent_swt2-bsa-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=exxcellent_swt2-bsa-backend)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=exxcellent_swt2-bsa-backend&metric=coverage)](https://sonarcloud.io/dashboard?id=exxcellent_swt2-bsa-backend)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=exxcellent_swt2-bsa-backend&metric=code_smells)](https://sonarcloud.io/dashboard?id=exxcellent_swt2-bsa-backend)
+[![Build](https://github.com/bettercodepaul/swt2-bsa-backend/actions/workflows/build.yml/badge.svg)](https://github.com/bettercodepaul/swt2-bsa-backend/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bettercodepaul_swt2-bsa-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=bettercodepaul_swt2-bsa-backend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bettercodepaul_swt2-bsa-backend&metric=coverage)](https://sonarcloud.io/dashboard?id=bettercodepaul_swt2-bsa-backend)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=bettercodepaul_swt2-bsa-backend&metric=code_smells)](https://sonarcloud.io/dashboard?id=bettercodepaul_swt2-bsa-backend)
 
 
 # Bogenliga Application

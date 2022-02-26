@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import de.bogenliga.application.common.database.tx.TransactionManager;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Profile("TEST")
 @Service("TransactionManager")

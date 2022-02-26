@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -17,7 +18,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
  * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Repository
 public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
@@ -55,6 +56,15 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
                     + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
                     + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id "
                     + " AND benutzer.benutzer_active = TRUE";
+
+    private static final String FIND_BY_SEARCH =
+            "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
+                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
+                    + " FROM benutzer_rolle, benutzer, rolle "
+                    + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
+                    + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id "
+                    + " AND benutzer.benutzer_active = TRUE "
+                    + " AND upper(benutzer.benutzer_email) LIKE upper(?)";
 
     private static final String FIND_BY_ID =
             "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
@@ -123,6 +133,18 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
         return basicDao.selectEntityList(USERROLE, FIND_ALL);
     }
 
+    /**
+     * Return a list of entries that contains the search Term
+     * @param searchTerm
+     */
+    public List<UserRoleExtBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(USERROLE, FIND_BY_SEARCH, new StringBuilder()
+                .append("%")
+                .append(searchTerm)
+                .append("%")
+                .toString()
+        );
+    }
 
     /**
      * Return user entry with specific id

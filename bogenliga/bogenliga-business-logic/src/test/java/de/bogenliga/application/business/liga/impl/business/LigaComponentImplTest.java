@@ -104,6 +104,47 @@ public class LigaComponentImplTest {
         return expectedUserDO;
     }
 
+    @Test
+    public void findBySearch_whenEverythingIsSet() {
+        // prepare test data
+        final LigaBE expectedLigaBE = getLigaBE();
+        final LigaBE expectedLigaUebergeordnetBE = expectedLigaBE;
+        final RegionenDO expectedRegionBE = getRegionenDO();
+        final UserDO expectedUserDO = getUserDO();
+        final List<LigaBE> expectedBEList = Collections.singletonList(expectedLigaBE);
+
+        // configure mocks
+        when(ligaDao.findBySearch(expectedLigaBE.getLigaName())).thenReturn(expectedBEList);
+        when(ligaDao.findById(anyLong())).thenReturn(expectedLigaBE);
+        when(regionenComponentImpl.findById(anyLong())).thenReturn(expectedRegionBE);
+        when(userComponentImpl.findById(anyLong())).thenReturn(expectedUserDO);
+
+
+        // call test method
+        final List<LigaDO> actual = underTest.findBySearch(expectedLigaBE.getLigaName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+
+        assertThat(actual.get(0).getId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.get(0).getName()).isEqualTo(expectedLigaBE.getLigaName());
+        assertThat(actual.get(0).getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
+        assertThat(actual.get(0).getRegionName()).isEqualTo(expectedRegionBE.getRegionName());
+        assertThat(actual.get(0).getLigaUebergeordnetId()).isEqualTo(expectedLigaUebergeordnetBE.getLigaId());
+        assertThat(actual.get(0).getLigaUebergeordnetName()).isEqualTo(expectedLigaUebergeordnetBE.getLigaName());
+        assertThat(actual.get(0).getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
+        assertThat(actual.get(0).getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
+
+        // verify invocations
+        verify(ligaDao).findBySearch(expectedLigaBE.getLigaName());
+        verify(ligaDao).findById(expectedLigaBE.getLigaUebergeordnetId());
+        verify(regionenComponentImpl).findById(expectedLigaBE.getLigaRegionId());
+        verify(userComponentImpl).findById(expectedLigaBE.getLigaVerantwortlichId());
+    }
 
     @Test
     public void findAll_whenEverythingIsSet() {
@@ -146,6 +187,41 @@ public class LigaComponentImplTest {
         verify(regionenComponentImpl).findById(expectedLigaBE.getLigaRegionId());
         verify(userComponentImpl).findById(expectedLigaBE.getLigaVerantwortlichId());
     }
+
+        @Test
+        public void findBySearch_whenAttributesAreNull() {
+            // prepare test data
+            final LigaBE expectedLigaBE = getLigaBE();
+            final List<LigaBE> expectedBEList = Collections.singletonList(expectedLigaBE);
+
+            expectedLigaBE.setLigaUebergeordnetId(null);
+            expectedLigaBE.setLigaRegionId(null);
+            expectedLigaBE.setLigaVerantwortlichId(null);
+
+            // configure mocks
+            when(ligaDao.findBySearch(expectedLigaBE.getLigaName())).thenReturn(expectedBEList);
+
+            // call test method
+            final List<LigaDO> actual = underTest.findBySearch(expectedLigaBE.getLigaName());
+
+            // assert result
+            assertThat(actual)
+                    .isNotNull()
+                    .isNotEmpty()
+                    .hasSize(1);
+
+            assertThat(actual.get(0).getId()).isEqualTo(expectedLigaBE.getLigaId());
+            assertThat(actual.get(0).getName()).isEqualTo(expectedLigaBE.getLigaName());
+            assertThat(actual.get(0).getRegionId()).isEqualTo(0L);
+            assertThat(actual.get(0).getRegionName()).isEqualTo(null);
+            assertThat(actual.get(0).getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaUebergeordnetId());
+            assertThat(actual.get(0).getLigaUebergeordnetName()).isEqualTo(null);
+            assertThat(actual.get(0).getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
+            assertThat(actual.get(0).getLigaVerantwortlichMail()).isEqualTo(null);
+
+            // verify invocations
+            verify(ligaDao).findBySearch(expectedLigaBE.getLigaName());
+        }
 
         @Test
         public void findAll_whenAttributesAreNull() {

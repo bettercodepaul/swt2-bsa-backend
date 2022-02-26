@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.passe.api;
 
 import java.util.List;
+import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 
 /**
@@ -19,11 +20,22 @@ public interface PasseComponent {
 
     PasseDO findById(Long id);
 
+
+    /**
+     * optimized function for Schusszettel
+     *
+     * @return a list of all Ligapassen with the matchId looked for
+     */
+    List<LigapasseBE> getLigapassenByLigamatchId(Long matchId);
+
+
+
     /**
      * Return all passe from one Wettkampf
      *
      * @return list of all passe from one Wettkampf in the database; empty list, if no passe are found
      */
+
 
     List<PasseDO> findByWettkampfId(Long wettkampfId);
 

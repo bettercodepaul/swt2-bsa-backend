@@ -57,6 +57,19 @@ public class LigaComponentImpl implements LigaComponent {
         return returnList;
     }
 
+    @Override
+    public List<LigaDO> findBySearch(final String searchTerm) {
+        final ArrayList<LigaDO> returnList = new ArrayList<>();
+        final List<LigaBE> ligaBEList = ligaDAO.findBySearch(searchTerm);
+
+        for (int i = 0; i < ligaBEList.size(); i++) {
+
+            returnList.add(i, completeLiga(ligaBEList.get(i)));
+
+        }
+        return returnList;
+    }
+
 
     @Override
     public LigaDO findById(long id) {

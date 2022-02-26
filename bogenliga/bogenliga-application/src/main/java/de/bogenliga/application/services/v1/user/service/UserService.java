@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">Wikipedia - CRUD</a>
  * @see <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">Wikipedia - REST</a>
  * @see <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">Wikipedia - HTTP</a>
@@ -64,6 +64,7 @@ public class UserService implements ServiceFacade {
     private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
     private static final String PRECONDITION_MSG_USER_PW = "This is not a valid Password";
+    private static final String PRECONDITION_MSG_SEARCHTERM = "Search term must not be negative";
 
     private static final String PRECONDITION_MSG_DSB_MITGLIED_ID = "User must reference an existing DSB-member -not be null or negative";
 
@@ -368,6 +369,15 @@ public class UserService implements ServiceFacade {
     public List<UserRoleDTO> findAll() {
         final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
         return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<UserRoleDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_SEARCHTERM);
+
+        final List<UserRoleDO> result = userRoleComponent.findBySearch(searchTerm);
+        return result.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 

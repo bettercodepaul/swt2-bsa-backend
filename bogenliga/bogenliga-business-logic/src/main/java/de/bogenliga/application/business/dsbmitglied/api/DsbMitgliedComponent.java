@@ -42,7 +42,7 @@ public interface DsbMitgliedComponent extends ComponentFacade {
      * @param searchItem first name or last name of dsbmitglied
      * @return a list of dsbmitglied entries
      */
-    List<DsbMitgliedDO> findByName(String searchItem);
+    List<DsbMitgliedDO> findBySearch(String searchItem);
 
     /**
      * Create a new dsbmitglied in the database.

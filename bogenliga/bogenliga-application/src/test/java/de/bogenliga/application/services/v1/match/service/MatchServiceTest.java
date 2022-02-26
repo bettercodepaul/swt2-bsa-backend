@@ -6,7 +6,9 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import javax.naming.NoPermissionException;
 
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import org.junit.Before;
 import org.junit.Rule;
@@ -100,6 +102,15 @@ public class MatchServiceTest {
     protected static final Long MATCH_STRAFPUNKTE_SATZ3 = 20L;
     protected static final Long MATCH_STRAFPUNKTE_SATZ4 = 0L;
     protected static final Long MATCH_STRAFPUNKTE_SATZ5 = 0L;
+
+    protected static final Long MATCH_VERSION = 1L;
+    protected static final String MATCH_MANNSCHAFT_NAME = "TSV_Grafenberg";
+    protected static final Long MATCH_NAECHSTE_MATCH_ID = 1L;
+    protected static final Long MATCH_NAECHSTE_NAECHSTE_MATCH_ID = 1L;
+    protected static final String MATCH_WETTKAMP_TYP_ID = "0";
+    protected static final Long MATCH_WETTKAMPF_TAG = 1L;
+    protected static final Integer MATCH_RUECKENNUMMER = 2;
+
 
 
     private static final Long PASSE_ID_1 = 1L;
@@ -265,6 +276,30 @@ public class MatchServiceTest {
     }
 
 
+
+    private LigamatchBE getLigamatchBE() {
+        LigamatchBE ligamatchBE = new LigamatchBE();
+        ligamatchBE.setWettkampfId(MATCH_WETTKAMPF_ID);
+        ligamatchBE.setMatchId(MATCH_ID);
+        ligamatchBE.setMatchNr(MATCH_NR);
+        ligamatchBE.setScheibennummer(MATCH_SCHEIBENNUMMER);
+        ligamatchBE.setMannschaftId(MATCH_MANNSCHAFT_ID);
+        ligamatchBE.setBegegnung(MATCH_BEGEGNUNG);
+        ligamatchBE.setNaechsteMatchId(MATCH_NAECHSTE_MATCH_ID);
+        ligamatchBE.setNaechsteNaechsteMatchId(MATCH_NAECHSTE_NAECHSTE_MATCH_ID);
+        ligamatchBE.setStrafpunkteSatz1(MATCH_STRAFPUNKTE_SATZ1);
+        ligamatchBE.setStrafpunkteSatz2(MATCH_STRAFPUNKTE_SATZ2);
+        ligamatchBE.setStrafpunkteSatz3(MATCH_STRAFPUNKTE_SATZ3);
+        ligamatchBE.setStrafpunkteSatz4(MATCH_STRAFPUNKTE_SATZ4);
+        ligamatchBE.setStrafpunkteSatz5(MATCH_STRAFPUNKTE_SATZ5);
+        ligamatchBE.setWettkampftypId(MATCH_WETTKAMP_TYP_ID);
+        ligamatchBE.setWettkampfTag(MATCH_WETTKAMPF_TAG);
+        ligamatchBE.setMannschaftName(MATCH_MANNSCHAFT_NAME);
+        ligamatchBE.setRueckennummer(MATCH_RUECKENNUMMER);
+        return ligamatchBE;
+    }
+
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
@@ -319,6 +354,8 @@ public class MatchServiceTest {
         WettkampfTypDO wettkampftypDO = getWettkampfTypDO(W_typId);
         WettkampfDO wettkampfDO = getWettkampfDO(W_id);
         VereinDO vereinDO = getVereinDO(VEREIN_ID);
+        LigamatchBE ligamatchBE = getLigamatchBE();
+        when(matchComponent.getLigamatchById(anyLong())).thenReturn(ligamatchBE);
         when(matchComponent.findById(anyLong())).thenReturn(matchDO1);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
         when(mannschaftComponent.findById(anyLong())).thenReturn(mannschaftDO);

@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
  * <p>
  * The permissions are configured in the database and stored in the JSON Web Token after the signIn.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public enum UserPermission implements GrantedAuthority {
 

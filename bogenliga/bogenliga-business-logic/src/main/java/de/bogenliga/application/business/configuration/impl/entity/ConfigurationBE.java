@@ -6,7 +6,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 /**
  * I represent a configuration table row as business entity
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 
 public class ConfigurationBE extends CommonBusinessEntity implements BusinessEntity {

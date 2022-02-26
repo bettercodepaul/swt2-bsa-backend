@@ -19,7 +19,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
  * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Repository
 public class UserDAO implements DataAccessObject {
@@ -109,7 +109,6 @@ public class UserDAO implements DataAccessObject {
     public UserBE findById(final long id) {
         return basicDao.selectSingleEntity(USER, FIND_BY_ID, id);
     }
-
 
     /**
      * Return user entry with specific email adress

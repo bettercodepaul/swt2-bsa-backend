@@ -22,7 +22,7 @@ import de.bogenliga.application.common.time.DateProvider;
 /**
  * I handle the user sign in process.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Component
 public class SignInBA {

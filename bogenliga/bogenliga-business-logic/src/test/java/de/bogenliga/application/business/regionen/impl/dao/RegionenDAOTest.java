@@ -65,6 +65,34 @@ public class RegionenDAOTest {
 
     }
 
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final RegionenBE expectedBE = getRegionenBE();
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<RegionenBE> actual = underTest.findBySearch(expectedBE.getRegionName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getRegionId())
+                .isEqualTo(expectedBE.getRegionId());
+        assertThat(actual.get(0).getRegionName())
+                .isEqualTo(expectedBE.getRegionName());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
 
     @Test
     public void findAllByType() {

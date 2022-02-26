@@ -128,6 +128,64 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
             .compose().toString();
 
 
+
+        /*The query gets a competition ID and team ID.
+    In the first part of the query it is ensured that the shooters have not already participated in another competition on the same day.
+    It is filtered by the competition ID and team ID. Then it is checked if the dsb_member has not already participated under another teamId.
+    For this the results of a subquery are filtered out.
+    The subquery checks by the competition_day and the team_id in the table passe, if the dsb_member has participated under another team in this year.
+
+
+    In the second part of the query it is ensured that the shooters have participated in a competition in a higher league at most once (only on one day).
+    For this purpose the results of the following subquery are filtered out.
+    The subquery checks recursively if the dsb_member has participated in a higher league more than two times this year, using the attribute liga_overriding in the table liga.
+    For this the event_id, competition_id are queried in advance.
+    */
+    private static final String FIND_SCHUETZE_IN_UEBERGELEGENER_LIGA =
+            "SELECT DISTINCT m.* FROM mannschaftsmitglied m, wettkampf w, passe p, veranstaltung v, liga l\n" +
+                    "WHERE m.mannschaftsmitglied_mannschaft_id = ?\n" +
+                    "  AND w.wettkampf_id = ?\n" +
+                    "  AND w.wettkampf_veranstaltung_id = v.veranstaltung_id\n" +
+                    "\n" +
+                    "  AND m.mannschaftsmitglied_dsb_mitglied_id NOT IN\n" +
+                    "      (select DISTINCT passe.passe_dsb_mitglied_id\n" +
+                    "        from passe, mannschaftsmitglied, wettkampf, veranstaltung\n" +
+                    "        where veranstaltung.veranstaltung_sportjahr = v.veranstaltung_sportjahr\n" +
+                    "          and wettkampf.wettkampf_tag = (select wettkampf.wettkampf_tag from wettkampf\n" +
+                    "                                         where wettkampf.wettkampf_id = w.wettkampf_id)\n" +
+                    "          and passe.passe_dsb_mitglied_id IN (select passe.passe_dsb_mitglied_id from passe\n" +
+                    "                                              where passe_mannschaft_id != m.mannschaftsmitglied_mannschaft_id\n" +
+                    "                                                and passe.passe_dsb_mitglied_id in\n" +
+                    "                                                    (select mannschaftsmitglied_dsb_mitglied_id from mannschaftsmitglied\n" +
+                    "                                                     where mannschaftsmitglied_mannschaft_id = m.mannschaftsmitglied_mannschaft_id)\n" +
+                    "        )\n" +
+                    "    )\n" +
+                    "  AND m.mannschaftsmitglied_dsb_mitglied_id NOT IN(\n" +
+                    "    SELECT passe_dsb_mitglied_id from (\n" +
+                    "                                        select veranstaltung.veranstaltung_liga_id, passe.passe_dsb_mitglied_id, wettkampf.wettkampf_tag, wettkampf.wettkampf_id\n" +
+                    "                                          from veranstaltung, wettkampf, passe\n" +
+                    "                                          where veranstaltung.veranstaltung_id = wettkampf.wettkampf_veranstaltung_id\n" +
+                    "                                            and passe.passe_wettkampf_id = wettkampf.wettkampf_id\n" +
+                    "                                            and passe.passe_mannschaft_id = m.mannschaftsmitglied_mannschaft_id\n" +
+                    "                                            and w.wettkampf_id != wettkampf.wettkampf_id\n" +
+                    "                                            and v.veranstaltung_sportjahr = veranstaltung.veranstaltung_sportjahr\n" +
+                    "                                            and veranstaltung.veranstaltung_liga_id in (\n" +
+                    "                                              WITH RECURSIVE traverse AS (\n" +
+                    "                                                  SELECT liga_uebergeordnet FROM liga\n" +
+                    "                                                  WHERE liga.liga_id = v.veranstaltung_liga_id\n" +
+                    "                                                  UNION ALL\n" +
+                    "                                                  SELECT liga.liga_uebergeordnet FROM liga\n" +
+                    "                                                                                      INNER JOIN traverse\n" +
+                    "                                                                                                 ON liga.liga_id = traverse.liga_uebergeordnet\n" +
+                    "                                              )\n" +
+                    "                                              SELECT liga_uebergeordnet FROM traverse\n" +
+                    "                                          )\n" +
+                    "                                          group by veranstaltung.veranstaltung_liga_id, passe.passe_dsb_mitglied_id, wettkampf.wettkampf_tag, wettkampf.wettkampf_id\n" +
+                    "                                      )AS Foo GROUP BY passe_dsb_mitglied_id HAVING ( COUNT(passe_dsb_mitglied_id) >= 2));";
+
+
+
+
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<MannschaftsmitgliedBE> MANNSCHAFTSMITGLIED = new BusinessEntityConfiguration<>(
             MannschaftsmitgliedBE.class, TABLE, getColumnsToFieldsMap(), LOGGER);
@@ -137,6 +195,7 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
 
 
     private final BasicDAO basicDao;
+
 
 
     @Autowired
@@ -176,6 +235,8 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         return columnsToFieldsMapExtended;
     }
 
+
+
     /**
      * Return all mannschaftsmitglied entries
      */
@@ -203,6 +264,9 @@ public class MannschaftsmitgliedDAO implements DataAccessObject {
         return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_ALL_SCHUETZE_TEAM, id);
     }
 
+    public List<MannschaftsmitgliedExtendedBE> findSchuetzenInUebergelegenerLiga( final long mannschaftsId, final long wettkampfId) {
+        return basicDao.selectEntityList(MANNSCHAFTSMITGLIED_EXTENDED, FIND_SCHUETZE_IN_UEBERGELEGENER_LIGA,  mannschaftsId, wettkampfId);
+    }
 
     public MannschaftsmitgliedExtendedBE findByMemberAndTeamId(long teamId, final long memberId) {
        return basicDao.selectSingleEntity(MANNSCHAFTSMITGLIED_EXTENDED, FIND_BY_MEMBER_AND_TEAM_ID, memberId, teamId);

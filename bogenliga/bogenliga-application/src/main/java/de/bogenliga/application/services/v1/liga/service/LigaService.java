@@ -59,6 +59,13 @@ public class LigaService implements ServiceFacade {
         return ligaDOList.stream().map(LigaDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<LigaDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        final List<LigaDO> ligaDOList = ligaComponent.findBySearch(searchTerm);
+        return ligaDOList.stream().map(LigaDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
 
     /**
      * Returns a liga entry of the given id
