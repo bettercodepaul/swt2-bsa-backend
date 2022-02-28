@@ -51,18 +51,8 @@ public class LigaSyncMatchDTO {
                             Long naechsteNaechsteMatchNrMatchId, Integer strafpunkteSatz1,
                             Integer strafpunkteSatz2, Integer strafpunkteSatz3,
                             Integer strafpunkteSatz4, Integer strafpunkteSatz5) {
-        this.id = id;
-        this.version = version;
-        this.wettkampfId = wettkampfId;
-        this.matchNr = matchNr;
-        this.matchScheibennummer = matchScheibennummer;
-        this.mannschaftId = mannschaftId;
-        this.mannschaftName = mannschaftName;
-        this.nameGegner = nameGegner;
-        this.scheibennummerGegner = scheibennummerGegner;
-        this.matchIdGegner = matchIdGegner;
-        this.naechsteMatchId = naechsteMatchId;
-        this.naechsteNaechsteMatchNrMatchId = naechsteNaechsteMatchNrMatchId;
+        new LigaSyncMatchDTO(id,version, wettkampfId, matchNr, matchScheibennummer, mannschaftId, mannschaftName,
+                nameGegner, scheibennummerGegner, matchIdGegner, naechsteMatchId, naechsteNaechsteMatchNrMatchId);
         this.strafpunkteSatz1 = strafpunkteSatz1;
         this.strafpunkteSatz2 = strafpunkteSatz2;
         this.strafpunkteSatz3 = strafpunkteSatz3;
