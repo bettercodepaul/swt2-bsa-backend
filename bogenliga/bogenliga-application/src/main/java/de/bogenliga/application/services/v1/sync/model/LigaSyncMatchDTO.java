@@ -43,6 +43,7 @@ public class LigaSyncMatchDTO {
         this.naechsteNaechsteMatchNrMatchId = naechsteNaechsteMatchNrMatchId;
     }
 
+    // Konstruktor mit allen Attributen
     public LigaSyncMatchDTO(Long id, Long version, Long wettkampfId,
                             Integer matchNr, Integer matchScheibennummer,
                             Long mannschaftId, String mannschaftName,
