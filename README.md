@@ -11,6 +11,7 @@
 
 - Spring Boot with REST services
 - Flyway
+- Docker
 
 ## How to use
 
