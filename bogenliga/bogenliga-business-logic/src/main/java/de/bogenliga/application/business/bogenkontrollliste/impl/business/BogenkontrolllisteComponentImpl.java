@@ -329,6 +329,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                             mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
                                             teamNameList[manschaftCounter]).get(
                                             mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
+                            .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                    .add(new Paragraph(" ").setFontSize(10.0F)))
                     ;
                 }else{
                     tableBodyFirstPart
