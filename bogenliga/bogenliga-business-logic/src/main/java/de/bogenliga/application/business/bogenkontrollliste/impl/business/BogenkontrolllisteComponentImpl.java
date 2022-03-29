@@ -329,8 +329,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                             mitgliedCounter - 1).getNachname() + ", " + teamMemberMapping.get(
                                             teamNameList[manschaftCounter]).get(
                                             mitgliedCounter - 1).getVorname()).setBold().setFontSize(10.0F)))
-                            .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                    .add(new Paragraph(" ").setFontSize(10.0F)))
+
                     ;
                 }else{
                     tableBodyFirstPart
@@ -418,7 +417,11 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             docTable
                     .setPaddings(10.0F, 10.0F, 0.0F, 10.0F).setBorder(Border.NO_BORDER)
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(tableBody));
+                            .add(tableBody))
+                    //Add Space under Teams
+                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                            .add(new Paragraph(" ")));
+
         }
 
         //Add document table to document
