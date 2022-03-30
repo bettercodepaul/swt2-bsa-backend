@@ -26,7 +26,7 @@ public class MatchDTOMapper implements DataTransferObjectMapper {
             matchDO.getId(), matchDO.getNr(), matchDO.getVersion(), matchDO.getWettkampfId(),
             matchDO.getMannschaftId(), matchDO.getBegegnung(), matchDO.getScheibenNummer(),
             matchDO.getMatchpunkte(), matchDO.getSatzpunkte(),
-            new ArrayList<PasseDTO>(), // init empty, filled when required
+            new ArrayList<>(), // init empty, filled when required
             matchDO.getStrafPunkteSatz1(), matchDO.getStrafPunkteSatz2(),
             matchDO.getStrafPunkteSatz3(), matchDO.getStrafPunkteSatz4(), matchDO.getStrafPunkteSatz5()
     );
