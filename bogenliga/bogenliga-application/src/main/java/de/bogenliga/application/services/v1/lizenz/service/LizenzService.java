@@ -84,7 +84,7 @@ public class LizenzService implements ServiceFacade {
 
         List<LizenzDO> lizenzDOlist = lizenzComponent.findByDsbMitgliedId(id);
         if (lizenzDOlist == null) {
-            lizenzDOlist = new ArrayList<LizenzDO>();
+            lizenzDOlist = new ArrayList<>();
             logger.debug("Created Empty response");
         }
 
