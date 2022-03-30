@@ -14,7 +14,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  * The {@link CommonBusinessEntity} contains the technical parameter. Business entities commonly use these parameters to
  * control their lifecycle.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see CommonBusinessEntity
  */
 public class UserBE extends CommonBusinessEntity implements BusinessEntity {
@@ -23,7 +23,7 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     private String userEmail;
     private String userSalt;
     private String userPassword;
-    private Long dsb_mitglied_id;
+    private Long dsbMitgliedId;
     private boolean using2FA = true;
     private boolean active = true;
 
@@ -43,7 +43,7 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
                 ", userEmail='" + userEmail + '\'' +
                 ", userSalt='" + userSalt + '\'' +
                 ", userPassword='" + userPassword + '\'' +
-                ", dsb_mitglied_id='" + dsb_mitglied_id + '\'' +
+                ", dsbMitgliedId='" + dsbMitgliedId + '\'' +
                 '}';
     }
 
@@ -88,13 +88,13 @@ public class UserBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public Long getDsb_mitglied_id() {
-        return dsb_mitglied_id;
+    public Long getDsbMitgliedId() {
+        return dsbMitgliedId;
     }
 
 
-    public void setDsb_mitglied_id(final Long dsb_mitglied_id) {
-        this.dsb_mitglied_id = dsb_mitglied_id;
+    public void setDsbMitgliedId(final Long dsbMitgliedId) {
+        this.dsbMitgliedId = dsbMitgliedId;
     }
 
 

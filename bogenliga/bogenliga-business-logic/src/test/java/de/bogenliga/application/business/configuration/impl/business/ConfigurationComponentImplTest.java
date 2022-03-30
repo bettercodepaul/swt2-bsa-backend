@@ -19,7 +19,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">
@@ -76,6 +76,52 @@ public class ConfigurationComponentImplTest {
         verify(configurationDAO).findAll();
     }
 
+    @Test
+    public void findById(){
+        // prepare test data
+        long id = 63476;
+        final ConfigurationBE expectedBE = new ConfigurationBE();
+        expectedBE.setConfigurationId(id);
+        expectedBE.setConfigurationKey(KEY);
+        expectedBE.setConfigurationValue(VALUE);
+
+        // configure mocks
+        when(configurationDAO.findById(id)).thenReturn(expectedBE);
+
+        // call test method
+        final ConfigurationDO actual = underTest.findById(id);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getConfigurationId());
+        assertThat(actual.getKey())
+                .isEqualTo(expectedBE.getConfigurationKey());
+        assertThat(actual.getValue())
+                .isEqualTo(expectedBE.getConfigurationValue());
+
+        // verify invocations
+        verify(configurationDAO).findById(id);
+    }
+
+    @Test
+    public void findById_withException(){
+        // prepare test data
+        long id = 63476;
+
+        // configure mocks
+        when(configurationDAO.findById(id)).thenReturn(null);
+
+        // assert result
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findById(id))
+                .withNoCause();
+
+
+        // verify invocations
+        verify(configurationDAO).findById(id);
+    }
 
     @Test
     public void findByKey() {
@@ -173,7 +219,7 @@ public class ConfigurationComponentImplTest {
         expectedBE.setConfigurationValue(input.getValue());
 
         // configure mocks
-        when(configurationDAO.create(any(ConfigurationBE.class), anyLong())).thenReturn(expectedBE);
+        when(configurationDAO.create(any(ConfigurationBE.class))).thenReturn(expectedBE);
 
         // call test method
         final ConfigurationDO actual = underTest.create(input, USER);
@@ -187,7 +233,7 @@ public class ConfigurationComponentImplTest {
                 .isEqualTo(input.getValue());
 
         // verify invocations
-        verify(configurationDAO).create(configurationBEArgumentCaptor.capture(), anyLong());
+        verify(configurationDAO).create(configurationBEArgumentCaptor.capture());
 
         final ConfigurationBE persistedBE = configurationBEArgumentCaptor.getValue();
 
@@ -297,7 +343,7 @@ public class ConfigurationComponentImplTest {
         expectedBE.setConfigurationValue(input.getValue());
 
         // configure mocks
-        when(configurationDAO.update(any(ConfigurationBE.class), anyLong())).thenReturn(expectedBE);
+        when(configurationDAO.update(any(ConfigurationBE.class))).thenReturn(expectedBE);
 
         // call test method
         final ConfigurationDO actual = underTest.update(input, USER);
@@ -311,7 +357,7 @@ public class ConfigurationComponentImplTest {
                 .isEqualTo(input.getValue());
 
         // verify invocations
-        verify(configurationDAO).update(configurationBEArgumentCaptor.capture(), anyLong());
+        verify(configurationDAO).update(configurationBEArgumentCaptor.capture());
 
         final ConfigurationBE persistedBE = configurationBEArgumentCaptor.getValue();
 
@@ -428,7 +474,7 @@ public class ConfigurationComponentImplTest {
         // assert result
 
         // verify invocations
-        verify(configurationDAO).delete(configurationBEArgumentCaptor.capture(), anyLong());
+        verify(configurationDAO).delete(configurationBEArgumentCaptor.capture());
 
         final ConfigurationBE persistedBE = configurationBEArgumentCaptor.getValue();
 

@@ -10,7 +10,7 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
  * <p>
  * The sign in history documents each sign in attempt of an user.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserSignInHistoryBE implements BusinessEntity {
 

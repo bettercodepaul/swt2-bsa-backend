@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -13,13 +14,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.bogenkontrollliste.api.BogenkontrolllisteComponent;
 import de.bogenliga.application.business.meldezettel.api.MeldezettelComponent;
 import de.bogenliga.application.business.schusszettel.api.SchusszettelComponent;
@@ -54,7 +49,7 @@ public class DownloadService implements ServiceFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(DownloadService.class);
 
-    private final String PRECONDITION_WETTKAMPFID = "WettkampfID cannot be negative";
+    private static final String PRECONDITION_WETTKAMPFID = "WettkampfID cannot be negative";
 
     /*
      * Business components
@@ -67,6 +62,7 @@ public class DownloadService implements ServiceFacade {
     private final MeldezettelComponent meldezettelComponent;
     private final BogenkontrolllisteComponent bogenkontrolllisteComponent;
     private final RueckennummernComponent rueckennummernComponent;
+    private final WettkampfComponent wettkampfComponent;
 
 
     /**
@@ -77,13 +73,15 @@ public class DownloadService implements ServiceFacade {
                            final SchusszettelComponent schusszettelComponent,
                            final MeldezettelComponent meldezettelComponent,
                            final BogenkontrolllisteComponent bogenkontrolllisteComponent,
-                           final RueckennummernComponent rueckennummernComponent) {
+                           final RueckennummernComponent rueckennummernComponent,
+                           final WettkampfComponent wettkampfComponent) {
         this.lizenzComponent = lizenzComponent;
         this.setzlisteComponent = setzlisteComponent;
         this.schusszettelComponent = schusszettelComponent;
         this.meldezettelComponent = meldezettelComponent;
         this.bogenkontrolllisteComponent = bogenkontrolllisteComponent;
         this.rueckennummernComponent = rueckennummernComponent;
+        this.wettkampfComponent = wettkampfComponent;
     }
   
     /**
@@ -96,7 +94,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/setzliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -122,7 +120,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/schusszettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -143,7 +141,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/schusszettel_matches/{matchId1}/{matchId2}",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -166,7 +164,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/meldezettel",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -189,7 +187,7 @@ public class DownloadService implements ServiceFacade {
      * @return PDF as InputStreamResource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/bogenkontrollliste",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -213,7 +211,7 @@ public class DownloadService implements ServiceFacade {
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
                     path = "pdf/rueckennummern",
                     produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -238,7 +236,7 @@ public class DownloadService implements ServiceFacade {
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/rueckennummer",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -271,14 +269,14 @@ public class DownloadService implements ServiceFacade {
         }
     }
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/schuetzenlizenz/{dsbMitgliedId}/{teamId}",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public ResponseEntity<InputStreamResource> downloadLizenz(@PathVariable("dsbMitgliedId") final long dsbMitgliedID,
     @PathVariable("teamId") final long teamID) {
-        LOG.debug("dsbMitgliedID: " + dsbMitgliedID);
-        LOG.debug("teamID: " + teamID);
+        LOG.debug("dsbMitgliedID: {}", dsbMitgliedID);
+        LOG.debug("teamID: {}", teamID);
         final byte[] fileBloB = lizenzComponent.getLizenzPDFasByteArray(dsbMitgliedID, teamID);
 
         return generateInputStream(fileBloB);
@@ -294,7 +292,7 @@ public class DownloadService implements ServiceFacade {
      * @return pdf as InputStreamRessource
      */
     @CrossOrigin(maxAge = 0)
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             path = "pdf/lizenzen",
             produces = MediaType.APPLICATION_PDF_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -306,4 +304,75 @@ public class DownloadService implements ServiceFacade {
 
         return generateInputStream(fileBloB);
     }
+
+    /**
+     * return Einzelstatistik einer manschaft an einer veranstaltung in einem jahr
+     *
+     * @param veranstaltungsid from Get-request:
+     * @param manschaftsid from Get-request:
+     * @param jahr from Get-request:
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/Einzelstatistik/?werte=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+    */
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(
+            path = "pdf/Einzelstatistik",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadEinzelstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
+    @RequestParam("manschaftsid") final long manschaftsid,
+    @RequestParam("jahr") final int jahr)
+    {
+
+        final byte[] fileBloB = wettkampfComponent.getPDFasByteArray("Einzelstatistik",veranstaltungsid,manschaftsid,jahr);
+
+        return generateInputStream(fileBloB);
+    }
+
+
+    /**
+     * return Gesamtstatistik einer manschaft an einer veranstaltung in einem jahr
+     *
+     * @param veranstaltungsid from Get-request:
+     * @param manschaftsid from Get-request:
+     * @param jahr from Get-request:
+     * Usage:
+     * <pre>{@code Request: GET /v1/download/pdf/Gesamtstatistik/?werte=x}</pre>
+     *
+     * @return pdf as InputStreamRessource
+     */
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(
+            path = "pdf/Gesamtstatistik",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadGesamtstatistikPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
+                                                                   @RequestParam("manschaftsid") final long manschaftsid,
+                                                                   @RequestParam("jahr") final int jahr)
+    {
+
+        final byte[] fileBloB = wettkampfComponent.getPDFasByteArray("Gesamtstatistik" ,veranstaltungsid,manschaftsid,jahr);
+
+        return generateInputStream(fileBloB);
+    }
+
+    @CrossOrigin(maxAge = 0)
+    @GetMapping(
+            path = "pdf/Uebersicht",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public @ResponseBody
+    ResponseEntity<InputStreamResource> downloadUebersichtPdf(@RequestParam("veranstaltungsid") final long veranstaltungsid,
+                                                              @RequestParam("wettkampftag") final long wettkampftag)
+    {
+
+        final byte[] fileBloB = wettkampfComponent.getUebersichtPDFasByteArray(veranstaltungsid,wettkampftag);
+
+        return generateInputStream(fileBloB);
+    }
+
 }

@@ -17,6 +17,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.Mannsch
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -39,6 +40,7 @@ public class MannschaftsmitgliedComponentImplTest {
     private static final String DSB_MITGLIED_VORNSME = "Mario";
     private static final String DSB_MItglied_Nachname = "Gomez";
     private static final Long RUECKENNUMMER = 5L;
+    private static final Long WETTKAMPFID = 11L;
 
 
     @Rule
@@ -148,6 +150,29 @@ public class MannschaftsmitgliedComponentImplTest {
 
     }
 
+    @Test
+    public void findByTeamIdAndRueckennummer() {
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findByTeamIdAndRueckennummer(MANNSCHAFTSID, RUECKENNUMMER)).thenReturn(expectedBE);
+        final MannschaftsmitgliedDO actual = underTest.findByTeamIdAndRueckennummer(MANNSCHAFTSID, RUECKENNUMMER);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getMannschaftId()).isEqualTo(expectedBE.getMannschaftId());
+        assertThat(actual.getRueckennummer()).isEqualTo(expectedBE.getRueckennummer());
+    }
+
+    @Test
+    public void findByTeamIdAndRueckennummerResultNull() {
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findByTeamIdAndRueckennummer(MANNSCHAFTSID, RUECKENNUMMER)).thenReturn(null);
+
+        //call test method
+        assertThatThrownBy(()->{
+            underTest.findByTeamIdAndRueckennummer(MANNSCHAFTSID, RUECKENNUMMER);
+        }).isInstanceOf(BusinessException.class);
+    }
 
     @Test
     public void findByTeamId() {
@@ -340,5 +365,16 @@ public class MannschaftsmitgliedComponentImplTest {
 
         // verify invocations
         verifyZeroInteractions(mannschaftsmitgliedDAO);
+    }
+
+    @Test
+        public void findSchuetzenInUebergelegenerLiga(){
+        final MannschaftsmitgliedExtendedBE expectedBE = getMannschatfsmitgliedExtendedBE();
+        final List<MannschaftsmitgliedExtendedBE> expectedBEList = Collections.singletonList(expectedBE);
+        // configure mocks
+        when(mannschaftsmitgliedDAO.findSchuetzenInUebergelegenerLiga(MANNSCHAFTSID, WETTKAMPFID)).thenReturn(expectedBEList);
+        final List<MannschaftsmitgliedDO> actual = underTest.findSchuetzenInUebergelegenerLiga(MANNSCHAFTSID, WETTKAMPFID);
+
+        assertThat(actual.get(0).getDsbMitgliedId()).isEqualTo(expectedBEList.get(0).getDsbMitgliedId());
     }
 }

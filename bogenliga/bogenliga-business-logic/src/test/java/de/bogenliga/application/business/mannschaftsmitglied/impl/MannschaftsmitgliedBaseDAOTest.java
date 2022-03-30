@@ -21,6 +21,7 @@ public class MannschaftsmitgliedBaseDAOTest {
     protected static String dsbMitgliedVorname = "Max";
     protected static String dsbMitgliedNachname = "Mustermann";
     protected static Long rueckennummer = 0L;
+    protected static Long wettkampfId = 30L;
 
     private static final OffsetDateTime offsetDateTime = null;
     private static final Long USER = 4L;

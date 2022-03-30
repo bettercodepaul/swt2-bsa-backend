@@ -44,6 +44,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
+    private static final String SETZLISTE_MPKTE = "M.Pkte";
     private static final Logger LOGGER = LoggerFactory.getLogger(SetzlisteComponentImpl.class);
 
     private final SetzlisteDAO setzlisteDAO;
@@ -156,8 +157,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         doc.setFontSize(9.2f);
 
-        //description
-        DateFormat sdF = new SimpleDateFormat("yyyy-MM-dd");
+        // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
         WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid());
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
@@ -178,13 +178,13 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         //Table header
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 1 + 2")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("M.Pkte")));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 3 + 4")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("M.Pkte")));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 5 + 6")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("M.Pkte")));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 7 + 8")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("M.Pkte")));
+        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
 
         int mpkteSpacing = 25;
 

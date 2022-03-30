@@ -19,7 +19,7 @@ import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTok
 /**
  * I configure the Spring Security to protect REST resources against unauthorized requests.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)

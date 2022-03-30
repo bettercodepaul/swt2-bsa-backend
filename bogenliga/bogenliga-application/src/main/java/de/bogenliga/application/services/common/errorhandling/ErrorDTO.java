@@ -5,7 +5,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 /**
  * I´m used to show backend errors on the user interface
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class ErrorDTO {
     private final ErrorCode errorCode;

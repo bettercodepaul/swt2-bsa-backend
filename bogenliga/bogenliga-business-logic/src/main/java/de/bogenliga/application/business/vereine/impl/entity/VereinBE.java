@@ -17,6 +17,7 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     private Long vereinRegionId;
     private String vereinWebsite;
     private String vereinDescription;
+    private String vereinIcon;
 
     /**
      * Empty constructor
@@ -78,6 +79,12 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
     public void setVereinDescription(String vereinDescription) { this.vereinDescription = vereinDescription; }
 
 
+    public String getVereinIcon() { return vereinIcon; }
+
+
+    public void setVereinIcon(String vereinIcon) { this.vereinIcon = vereinIcon; }
+
+
     @Override
     public String toString() {
         return "VereinBE{" +
@@ -87,6 +94,7 @@ public class VereinBE extends CommonBusinessEntity implements BusinessEntity {
                 ", vereinRegionId='" + vereinRegionId + '\'' +
                 ", vereinWebsite='" + vereinWebsite + '\'' +
                 ", vereinDescription='" + vereinDescription + '\'' +
+                ", vereinIcon='" + vereinIcon + '\'' +
                 "}";
     }
 }

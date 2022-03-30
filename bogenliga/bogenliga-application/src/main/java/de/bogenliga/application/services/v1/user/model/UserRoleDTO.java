@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
  * Der Name und ID der dem User zugeordneten Rolle werden gehalten
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserRoleDTO implements DataTransferObject {
 

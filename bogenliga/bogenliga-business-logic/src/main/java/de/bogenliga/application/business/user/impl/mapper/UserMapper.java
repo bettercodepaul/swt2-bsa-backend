@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.user.impl.mapper;
 
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 /**
  * I convert the user DataObjects and BusinessEntities.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
@@ -40,7 +40,7 @@ public class UserMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new UserDO(id, email, be.getDsb_mitglied_id(), be.isUsing2FA(), be.isActive(), be.getSecret(), createdAtUtc, createdByUserId, lastModifiedAtUtc,
+        return new UserDO(id, email, be.getDsbMitgliedId(), be.isUsing2FA(), be.isActive(), be.getSecret(), createdAtUtc, createdByUserId, lastModifiedAtUtc,
                 lastModifiedByUserId, version);
     };
 
@@ -65,7 +65,7 @@ public class UserMapper implements ValueObjectMapper {
         UserBE userBE = new UserBE();
         userBE.setUserId(vo.getId());
         userBE.setUserEmail(vo.getEmail());
-        userBE.setDsb_mitglied_id(vo.getDsb_mitglied_id());
+        userBE.setDsbMitgliedId(vo.getDsbMitgliedId());
         userBE.setUsing2FA(vo.isUsing2FA());
         userBE.setSecret(vo.getSecret());
 
@@ -80,18 +80,18 @@ public class UserMapper implements ValueObjectMapper {
 
 
     /**
-     * Converts a {@link UserBE} and a corresponding {@link DsbMitgliedBE}to a {@link UserProfileDO}
+     * Converts a {@link UserBE} and a corresponding {@link DsbMitgliedDO}to a {@link UserProfileDO}
      */
-    public static final BiFunction<UserBE, DsbMitgliedBE, UserProfileDO> toUserProfileDO = (userBE, dsbMitgliedBE) -> {
+    public static final BiFunction<UserBE, DsbMitgliedDO, UserProfileDO> toUserProfileDO = (userBE, dsbMitgliedDO) -> {
         UserProfileDO userProfileDO = new UserProfileDO();
         userProfileDO.setId(userBE.getUserId());
         userProfileDO.setEmail(userBE.getUserEmail());
-        userProfileDO.setVorname(dsbMitgliedBE.getDsbMitgliedVorname());
-        userProfileDO.setNachname(dsbMitgliedBE.getDsbMitgliedNachname());
-        userProfileDO.setGeburtsdatum(dsbMitgliedBE.getDsbMitgliedGeburtsdatum());
-        userProfileDO.setNationalitaet(dsbMitgliedBE.getDsbMitgliedNationalitaet());
-        userProfileDO.setMitgliedsnummer(dsbMitgliedBE.getDsbMitgliedMitgliedsnummer());
-        userProfileDO.setVereinsId(dsbMitgliedBE.getDsbMitgliedVereinsId());
+        userProfileDO.setVorname(dsbMitgliedDO.getVorname());
+        userProfileDO.setNachname(dsbMitgliedDO.getNachname());
+        userProfileDO.setGeburtsdatum(dsbMitgliedDO.getGeburtsdatum());
+        userProfileDO.setNationalitaet(dsbMitgliedDO.getNationalitaet());
+        userProfileDO.setMitgliedsnummer(dsbMitgliedDO.getMitgliedsnummer());
+        userProfileDO.setVereinsId(dsbMitgliedDO.getVereinsId());
         return userProfileDO;
     };
 

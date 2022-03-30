@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.DashedBorder;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -37,7 +36,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
 /**
- * Class to generate Rückennummer-pdf to print the labels of the teammembers for a wettkampf
+ * Class to generate Rueckennummer-pdf to print the labels of the teammembers for a wettkampf
  *
  * @author Jonas Winkler, jonas.winkler@student.reutlingen-university.de
  */
@@ -82,25 +81,25 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(dsbMitgliedId);
         VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
-        HashMap<String, List<String>> RueckennummerMapping = new HashMap<>();
+        HashMap<String, List<String>> rueckennummerMapping = new HashMap<>();
 
-        String Liganame = veranstaltungDO.getVeranstaltungName();
-        String Verein = vereinDO.getName();
-        String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
-        String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
+        String liganame = veranstaltungDO.getVeranstaltungName();
+        String verein = vereinDO.getName();
+        String schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
+        String rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-        List<String> Schuetzendaten = new ArrayList();
-        Schuetzendaten.add(Liganame);
-        Schuetzendaten.add(Verein);
-        Schuetzendaten.add(Schuetzenname);
-        RueckennummerMapping.put(Rueckennummer,Schuetzendaten);
+        List<String> schuetzendaten = new ArrayList<>();
+        schuetzendaten.add(liganame);
+        schuetzendaten.add(verein);
+        schuetzendaten.add(schuetzenname);
+        rueckennummerMapping.put(rueckennummer,schuetzendaten);
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
              PdfWriter writer = new PdfWriter(result);
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateRueckennummernDoc(doc, RueckennummerMapping);
+            generateRueckennummernDoc(doc, rueckennummerMapping);
 
             return result.toByteArray();
 
@@ -120,24 +119,24 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
 
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOs = this.mannschaftsmitgliedComponent.findByTeamId(dsbMannschaftsId);
 
-        HashMap<String, List<String>> RueckennummerMapping = new HashMap<>();
+        HashMap<String, List<String>> rueckennummerMapping = new HashMap<>();
 
-        String Liganame = veranstaltungDO.getVeranstaltungName();
+        String liganame = veranstaltungDO.getVeranstaltungName();
 
         for(MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
             DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
             VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
-            String Verein = vereinDO.getName();
-            String Schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
-            String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
+            String verein = vereinDO.getName();
+            String schuetzenname = dsbMitgliedDO.getVorname() + ' ' + dsbMitgliedDO.getNachname();
+            String rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-            List<String> Schuetzendaten = new ArrayList();
-            Schuetzendaten.add(Liganame);
-            Schuetzendaten.add(Verein);
-            Schuetzendaten.add(Schuetzenname);
-            RueckennummerMapping.put(Rueckennummer,Schuetzendaten);
-            LOGGER.info("Teammitglied {} mit Rückennummer {} gefunden",Schuetzenname,Rueckennummer);
+            List<String> schuetzendaten = new ArrayList<>();
+            schuetzendaten.add(liganame);
+            schuetzendaten.add(verein);
+            schuetzendaten.add(schuetzenname);
+            rueckennummerMapping.put(rueckennummer,schuetzendaten);
+            LOGGER.info("Teammitglied {} mit Rückennummer {} gefunden",schuetzenname,rueckennummer);
         }
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -145,7 +144,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateRueckennummernDoc(doc, RueckennummerMapping);
+            generateRueckennummernDoc(doc, rueckennummerMapping);
 
             return result.toByteArray();
 
@@ -155,17 +154,18 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
         }
     }
 
-    private void generateRueckennummernDoc(Document doc, HashMap<String, List<String>> RueckennummerMapping) {
-        LOGGER.info("Es wurden {} Mannschaftsmitglieder gefunden", RueckennummerMapping.size());
+    private void generateRueckennummernDoc(Document doc, HashMap<String, List<String>> rueckennummerMapping) {
+        LOGGER.info("Es wurden {} Mannschaftsmitglieder gefunden", rueckennummerMapping.size());
         doc.setMargins(0,0,0,0);
 
         //Table for the entire document
         final Table docTable = new Table(UnitValue.createPercentArray(1), true).setBorder(Border.NO_BORDER);
         //iterate over all Mannschaftsmitglieder
-        for(String rNummer : RueckennummerMapping.keySet()){
-            String liga = RueckennummerMapping.get(rNummer).get(0);
-            String verein = RueckennummerMapping.get(rNummer).get(1);
-            String schuetze = RueckennummerMapping.get(rNummer).get(2);
+        for(Map.Entry<String, List<String>> rNummer : rueckennummerMapping.entrySet())
+        {
+            String liga = rNummer.getValue().get(0);
+            String verein = rNummer.getValue().get(1);
+            String schuetze = rNummer.getValue().get(2);
 
             //create single RueckennummerDoc
             final Table singleDoc = new Table(UnitValue.createPercentArray(1), true)
@@ -188,7 +188,7 @@ public class RueckennummernComponentImpl implements RueckennummernComponent {
             final Cell schuetzeFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                     .add(new Paragraph(schuetze).setBold().setFontSize(25.0F));
             final Cell rueckenNrFeld = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                    .add(new Paragraph(rNummer).setBold().setFontSize(100.0F));
+                    .add(new Paragraph(rNummer.getKey()).setBold().setFontSize(100.0F));
 
             veranstaltung
                     .addCell(ligaFeld)
