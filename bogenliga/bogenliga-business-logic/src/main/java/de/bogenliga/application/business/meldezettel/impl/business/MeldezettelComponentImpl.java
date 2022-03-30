@@ -123,7 +123,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
             generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping);
-            doc.close();
+
 
             return result.toByteArray();
         } catch (IOException e) {
