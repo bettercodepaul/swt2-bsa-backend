@@ -358,7 +358,10 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                 .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(tableCheckbox2.setBorder(Border.NO_BORDER))
+
                         )
+
+
                 ;
 
                 tableBodyThirdPart
@@ -408,7 +411,21 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                             )
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
                             )
-                    ;
+                            //new empty cell if not more than 8 Teams
+
+                           ;
+                    //Add Space if not more than 8 Teams
+                    if (teamMemberMapping.size() <= 8) {
+                         tableBody
+                                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph(" ").setBold().setLineThrough().setFontSize(10.0F)))
+                                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                        .add(new Paragraph(" ").setFontSize(10.0F)))
+
+                                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                        .add(new Paragraph(" ").setBold().setLineThrough().setFontSize(10.0F)));
+                    }
+
                 }
             }
 
