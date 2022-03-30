@@ -204,7 +204,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      **/
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN})
-    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
         LOG.debug("Receive 'delete' request with Id '{}'", id);
