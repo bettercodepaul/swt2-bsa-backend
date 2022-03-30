@@ -21,6 +21,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED = "MannschaftsmitgliedDO must not be null";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID = "MannschaftsmitgliedDO_Mannschaft_ID must not be null";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID = "MannschaftsmitgliedDO_Mitglied_ID must not be null";
+    private static final String PRECONDITION_FIELD_RUECKENNUMMER = "MannschaftsmitgliedDO_Rueckennummer must not be null";
 
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV = "MannschaftsmitgliedDO_Mannschaft_ID must not be negativ";
     private static final String PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV = "MannschaftsmitgliedDO_Mitglied_ID must not be negativ";
@@ -33,6 +34,7 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
     private static final String PRECONDITION_FIELD_MANNSCHAFT_ID = "mannschaftsId";
     private static final String PRECONDITION_FIELD_MITGLIED_ID = "mitgliedId";
     private static final String PRECONDITION_FIELD_USER_ID = "currentUserId";
+    private static final String PRECONDITION_FIELD_WETTKAMPF_ID ="wettkampfId";
 
 
     public void checkPreconditions(final Long id, String iDIdentifier) {
@@ -78,6 +80,17 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
                 Collectors.toList());
     }
 
+
+    public List<MannschaftsmitgliedDO> findSchuetzenInUebergelegenerLiga(Long mannschaftsId, Long wettkampfId) {
+        checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
+        checkPreconditions(wettkampfId, PRECONDITION_FIELD_WETTKAMPF_ID);
+        final List<MannschaftsmitgliedExtendedBE> mannschaftsmitgliedBEList = mannschaftsmitgliedDAO.findSchuetzenInUebergelegenerLiga(
+                 mannschaftsId, wettkampfId);
+        return mannschaftsmitgliedBEList.stream().map(MannschaftsmitgliedMapper.toMannschaftsmitgliedDO).collect(
+                Collectors.toList());
+    }
+
+
     @Override
     public List<MannschaftsmitgliedDO> findByTeamId(Long mannschaftsId) {
         checkPreconditions(mannschaftsId, PRECONDITION_FIELD_MANNSCHAFT_ID);
@@ -100,6 +113,25 @@ public class MannschaftsmitgliedComponentImpl implements MannschaftsmitgliedComp
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for mannschaftId '%s' and mitgliedId '%s", mannschaftId,
                             mitgliedId));
+        }
+
+        return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(result);
+    }
+
+    @Override
+    public MannschaftsmitgliedDO findByTeamIdAndRueckennummer(Long mannschaftId, Long rueckennummer) {
+        checkPreconditions(mannschaftId, PRECONDITION_FIELD_MANNSCHAFT_ID);
+        checkPreconditions(rueckennummer, PRECONDITION_FIELD_RUECKENNUMMER);
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MANNSCHAFT_ID_NEGATIV);
+        Preconditions.checkArgument(rueckennummer >= 0, PRECONDITION_MANNSCHAFTSMITGLIED_MITGLIED_ID_NEGATIV);
+
+        final MannschaftsmitgliedExtendedBE result =
+                mannschaftsmitgliedDAO.findByTeamIdAndRueckennummer(mannschaftId, rueckennummer);
+
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for mannschaftId '%s' and rueckennummer '%s", mannschaftId,
+                            rueckennummer));
         }
 
         return MannschaftsmitgliedMapper.toMannschaftsmitgliedDO.apply(result);

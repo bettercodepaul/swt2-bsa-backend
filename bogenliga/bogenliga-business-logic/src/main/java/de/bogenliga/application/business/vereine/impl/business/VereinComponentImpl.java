@@ -5,15 +5,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
-import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
+import de.bogenliga.application.business.regionen.api.RegionenComponent;
+import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.dao.VereinDAO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.business.vereine.impl.mapper.VereinMapper;
 import de.bogenliga.application.common.validation.Preconditions;
+
 
 /**
  * Implementation of {@link VereinComponent}
@@ -32,14 +34,13 @@ public class VereinComponentImpl implements VereinComponent {
     private static final String PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG = "DsbMitglied id must not be negative";
 
     private final VereinDAO vereinDAO;
-    private final RegionenDAO regionenDAO;
+    private final RegionenComponent regionenComponent;
 
     @Autowired
-    public VereinComponentImpl(VereinDAO vereinDAO, RegionenDAO regionenDao) {
+    public VereinComponentImpl(VereinDAO vereinDAO, @Lazy RegionenComponent regionenComponent) {
         this.vereinDAO = vereinDAO;
-        this.regionenDAO = regionenDao;
+        this.regionenComponent = regionenComponent;
     }
-
 
     @Override
     public List<VereinDO> findAll() {
@@ -49,6 +50,13 @@ public class VereinComponentImpl implements VereinComponent {
         return alterDoByRegionName(vereinDOList);
     }
 
+    @Override
+    public List<VereinDO> findBySearch(final String searchTerm) {
+        final List<VereinBE> vereinBEList = vereinDAO.findBySearch(searchTerm);
+        List<VereinDO> vereinDOList = vereinBEList.stream().map(VereinMapper.toVereinDO).collect(Collectors.toList());
+
+        return alterDoByRegionName(vereinDOList);
+    }
 
     @Override
     public VereinDO create(VereinDO vereinDO, long currentDsbMitglied) {
@@ -60,12 +68,11 @@ public class VereinComponentImpl implements VereinComponent {
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
 
-
     @Override
     public VereinDO findById(long vereinId) {
         final VereinBE vereinBE = vereinDAO.findById(vereinId);
         final VereinDO vereinDO = VereinMapper.toVereinDO.apply(vereinBE);
-        vereinDO.setRegionName(this.regionenDAO.findById(vereinBE.getVereinRegionId()).getRegionName());
+        vereinDO.setRegionName(this.regionenComponent.findById(vereinBE.getVereinRegionId()).getRegionName());
 
         return vereinDO;
     }
@@ -80,7 +87,6 @@ public class VereinComponentImpl implements VereinComponent {
         return VereinMapper.toVereinDO.apply(persistedVereinBE);
     }
 
-
     @Override
     public void delete(VereinDO vereinDO, long currentDsbMitglied) {
         Preconditions.checkNotNull(vereinDO, PRECONDITION_MSG_VEREIN);
@@ -92,8 +98,6 @@ public class VereinComponentImpl implements VereinComponent {
         vereinDAO.delete(vereinBE, currentDsbMitglied);
     }
 
-
-
     private void checkVereinDO(final VereinDO vereinDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(vereinDO, PRECONDITION_MSG_VEREIN);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_VEREIN_DSB_MITGLIED_NOT_NEG);
@@ -104,7 +108,6 @@ public class VereinComponentImpl implements VereinComponent {
         Preconditions.checkArgument(vereinDO.getRegionId() >= 0, PRECONDITION_MSG_VEREIN_REGION_ID_NOT_NEG);
     }
 
-
     /**
      * Alters a {@VereinDO} with a regionName that matches to the regionId
      *
@@ -113,15 +116,15 @@ public class VereinComponentImpl implements VereinComponent {
      * @return List of {@VereinDO} elements altered with a regionName
      */
     private List<VereinDO> alterDoByRegionName(List<VereinDO> vereinDOList) {
-        final List<RegionenBE> regionenBEList = regionenDAO.findAll();
+        final List<RegionenDO> regionenDOList = regionenComponent.findAll();
         for (int i = 0; i < vereinDOList.size(); i++) {
             VereinDO tmpVerein = vereinDOList.get(i);
 
-            Optional<RegionenBE> regionenBEOptional = regionenBEList.stream()
-                    .filter(region -> region.getRegionId().equals(tmpVerein.getRegionId())).findFirst();
+            Optional<RegionenDO> regionenDOOptional = regionenDOList.stream()
+                    .filter(region -> region.getId().equals(tmpVerein.getRegionId())).findFirst();
 
-            if(regionenBEOptional.isPresent()) {
-                tmpVerein.setRegionName(regionenBEOptional.get().getRegionName());
+            if(regionenDOOptional.isPresent()) {
+                tmpVerein.setRegionName(regionenDOOptional.get().getRegionName());
                 vereinDOList.set(i, tmpVerein);
             }
         }

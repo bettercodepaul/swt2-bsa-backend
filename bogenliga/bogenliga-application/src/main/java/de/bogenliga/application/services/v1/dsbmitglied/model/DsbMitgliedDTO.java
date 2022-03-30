@@ -7,7 +7,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  *
  * I define the payload for the external REST interface of the dsbMitglied business entity.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see DataTransferObject
  */
 public class DsbMitgliedDTO implements DataTransferObject {

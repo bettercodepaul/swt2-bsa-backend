@@ -19,6 +19,13 @@ public interface VereinComponent extends ComponentFacade {
     List<VereinDO> findAll();
 
     /**
+     * Return list of entries that contain a search term
+     * @param searchTerm
+     * @return Return list of entries that contain a search term
+     */
+    List<VereinDO> findBySearch(final String searchTerm);
+
+    /**
      * Returns a "Region" with the given id
      *
      * @param vereinId ID of the region to be queried from the database.
@@ -55,5 +62,4 @@ public interface VereinComponent extends ComponentFacade {
      * @param currentDsbMitglied id of the currently logged in user that sent the delete request
      */
     void delete(VereinDO vereinDO, long currentDsbMitglied);
-
 }

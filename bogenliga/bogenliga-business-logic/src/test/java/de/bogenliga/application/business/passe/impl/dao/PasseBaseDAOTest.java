@@ -8,7 +8,7 @@ import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class PasseBaseDAOTest {
 

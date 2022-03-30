@@ -101,5 +101,5 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
 
     public Long getAccessToken() {return this.accessToken;}
 
-    public void setAccessToken(Long accesToken) {this.accessToken = accessToken;}
+    public void setAccessToken(Long accessToken) {this.accessToken = accessToken;}
 }

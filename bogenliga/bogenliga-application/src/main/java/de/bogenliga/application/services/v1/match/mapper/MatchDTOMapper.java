@@ -31,6 +31,8 @@ public class MatchDTOMapper implements DataTransferObjectMapper {
             matchDO.getStrafPunkteSatz3(), matchDO.getStrafPunkteSatz4(), matchDO.getStrafPunkteSatz5()
     );
 
+
+
     /**
      * I map the {@link ConfigurationDTO} object to the {@link ConfigurationDO} object
      */

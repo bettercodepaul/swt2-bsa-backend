@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class UserComponentImplTest {
@@ -440,7 +440,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -457,7 +457,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -474,7 +474,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         assertThatExceptionOfType(BusinessException.class)
@@ -516,7 +516,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         // configure mocks
@@ -563,7 +563,7 @@ public class UserComponentImplTest {
         final UserDO inUserDO = new UserDO();
         inUserDO.setId(ID);
         inUserDO.setEmail(EMAIL);
-        inUserDO.setDsb_mitglied_id(DSBMITGLIEDID);
+        inUserDO.setDsbMitgliedId(DSBMITGLIEDID);
 
 
         // configure mocks

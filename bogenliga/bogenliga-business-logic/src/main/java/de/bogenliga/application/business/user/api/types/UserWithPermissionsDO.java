@@ -12,7 +12,7 @@ import de.bogenliga.application.common.component.types.DataObject;
  * <p>
  * Extends the {@link UserDO} with the list of permissions.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserWithPermissionsDO extends UserDO implements DataObject {
 
@@ -88,7 +88,7 @@ public class UserWithPermissionsDO extends UserDO implements DataObject {
         return getId() == userDO.getId() &&
                 getVersion() == userDO.getVersion() &&
                 Objects.equals(getEmail(), userDO.getEmail()) &&
-                Objects.equals(getDsb_mitglied_id(), userDO.getDsb_mitglied_id()) &&
+                Objects.equals(getDsbMitgliedId(), userDO.getDsbMitgliedId()) &&
                 Objects.equals(getPermissions(), userDO.getPermissions()) &&
                 Objects.equals(getCreatedAtUtc(), userDO.getCreatedAtUtc()) &&
                 Objects.equals(getCreatedByUserId(), userDO.getCreatedByUserId()) &&

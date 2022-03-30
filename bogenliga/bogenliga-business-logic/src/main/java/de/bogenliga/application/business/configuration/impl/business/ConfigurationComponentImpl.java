@@ -19,7 +19,7 @@ import de.bogenliga.application.common.validation.Preconditions;
  * The global application configuration consists of a key-value pairs.
  * The configuration is stored in the database.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Component
 public class ConfigurationComponentImpl implements ConfigurationComponent {
@@ -52,6 +52,16 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
 
 
     @Override
+    public ConfigurationDO findById(long id) {
+        final ConfigurationBE result = configurationDAO.findById(id);
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "no match found for id ");
+        }
+        return ConfigurationMapper.toDO.apply(result);
+    }
+
+
+    @Override
     public ConfigurationDO findByKey(final String key) {
         Preconditions.checkNotNullOrEmpty(key, PRECONDITION_MSG_CONFIGURATION_KEY);
 
@@ -74,7 +84,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
-        final ConfigurationBE persistedConfigurationBE = configurationDAO.create(configurationBE, currentUser);
+        final ConfigurationBE persistedConfigurationBE = configurationDAO.create(configurationBE);
         return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }
 
@@ -87,7 +97,7 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
                 PRECONDITION_MSG_CONFIGURATION_VALUE);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
-        final ConfigurationBE persistedConfigurationBE = configurationDAO.update(configurationBE, currentUser);
+        final ConfigurationBE persistedConfigurationBE = configurationDAO.update(configurationBE);
         return ConfigurationMapper.toDO.apply(persistedConfigurationBE);
     }
 
@@ -98,6 +108,6 @@ public class ConfigurationComponentImpl implements ConfigurationComponent {
         Preconditions.checkNotNullOrEmpty(configurationDO.getKey(), PRECONDITION_MSG_CONFIGURATION_KEY);
 
         final ConfigurationBE configurationBE = ConfigurationMapper.toBE.apply(configurationDO);
-        configurationDAO.delete(configurationBE, currentUser);
+        configurationDAO.delete(configurationBE);
     }
 }

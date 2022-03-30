@@ -1,23 +1,18 @@
 package de.bogenliga.application.business.user.impl.mapper;
 
-import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.util.function.Function;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
-import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
 
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 /**
  * I convert the userRole DataObjects and BusinessEntities.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>

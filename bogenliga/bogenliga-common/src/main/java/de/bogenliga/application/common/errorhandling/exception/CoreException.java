@@ -11,7 +11,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 /**
  * Base exception class
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 abstract class CoreException extends RuntimeException implements
         Serializable {
@@ -33,9 +33,11 @@ abstract class CoreException extends RuntimeException implements
         this.errorCode = errorCode;
         this.parameters = new String[0];
 
-        logger.debug("{}: {}", errorCode.getValue(), message);
-    }
+        if (logger.isDebugEnabled()) {
+            logger.debug("{}: {}", errorCode.getValue(), message.replaceAll("[\n\r\t]", "_"));
 
+        }
+    }
 
     /**
      * CoreException

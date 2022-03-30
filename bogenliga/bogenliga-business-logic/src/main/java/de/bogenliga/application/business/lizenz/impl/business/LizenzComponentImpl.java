@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     private static final String PRECONDITION_LIZENZ_LIZENZNUMMER = "LizenzDO_lizenznummer must not be null";
     private static final String PRECONDITION_LIZENZ_DISZIPLIN = "LizenzDO_Disziplin must not be null";
     private static final String PRECONDITION_LIZENZ_REGION = "LizenzDO_Region must not be null";
+    private static final String LIZENZ_UNTERSCHRIFT = "Unterschrift:";
 
 
     private final LizenzDAO lizenzDAO;
@@ -79,6 +81,17 @@ public class LizenzComponentImpl implements LizenzComponent {
         Preconditions.checkArgument(id >= 0, PRECONDITION_CURRENT_USER_ID_NEGATIVE);
     }
 
+    private void checkPrecondition(LizenzDO lizenzDO, long currentUserId) {
+        Preconditions.checkNotNull(lizenzDO, PRECONDITION_LIZENZ);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_CURRENT_USER_ID);
+        Preconditions.checkNotNull(lizenzDO.getLizenztyp(), PRECONDITION_LIZENZ_LIZENZTYP);
+        Preconditions.checkNotNull(lizenzDO.getLizenzDsbMitgliedId(), PRECONDITION_LIZENZ_DSBMITGLIED);
+        if (lizenzDO.getLizenztyp().equals("Liga")) {
+            Preconditions.checkNotNull(lizenzDO.getLizenznummer(), PRECONDITION_LIZENZ_LIZENZNUMMER);
+            Preconditions.checkNotNull(lizenzDO.getLizenzRegionId(), PRECONDITION_LIZENZ_REGION);
+            Preconditions.checkNotNull(lizenzDO.getLizenzDisziplinId(), PRECONDITION_LIZENZ_DISZIPLIN);
+        }
+    }
 
     /**
      * Constructor
@@ -102,6 +115,13 @@ public class LizenzComponentImpl implements LizenzComponent {
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
+    @Override
+    public List<LizenzDO> findByDsbMitgliedId(long id) {
+        final List<LizenzBE> lizenzBEList = lizenzDAO.findByDsbMitgliedId(id);
+        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
+                Collectors.toList());
+
+    }
 
     @Override
     public List<LizenzDO> findAll() {
@@ -112,46 +132,12 @@ public class LizenzComponentImpl implements LizenzComponent {
 
 
     @Override
-    public List<LizenzDO> findByDsbMitgliedId(long id) {
-        final List<LizenzBE> LizenzBEList = lizenzDAO.findByDsbMitgliedId(id);
-        return LizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
-                Collectors.toList());
-
-    }
-
-
-    private void checkPrecondition(LizenzDO lizenzDO, long currentUserId) {
-        Preconditions.checkNotNull(lizenzDO, PRECONDITION_LIZENZ);
-        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_CURRENT_USER_ID);
-        Preconditions.checkNotNull(lizenzDO.getLizenztyp(), PRECONDITION_LIZENZ_LIZENZTYP);
-        Preconditions.checkNotNull(lizenzDO.getLizenzDsbMitgliedId(), PRECONDITION_LIZENZ_DSBMITGLIED);
-        if (lizenzDO.getLizenztyp().equals("Liga")) {
-            Preconditions.checkNotNull(lizenzDO.getLizenznummer(), PRECONDITION_LIZENZ_LIZENZNUMMER);
-            Preconditions.checkNotNull(lizenzDO.getLizenzRegionId(), PRECONDITION_LIZENZ_REGION);
-            Preconditions.checkNotNull(lizenzDO.getLizenzDisziplinId(), PRECONDITION_LIZENZ_DISZIPLIN);
-        }
-    }
-
-
-    @Override
     public LizenzDO create(LizenzDO lizenzDO, long currentUserId) {
 
         this.checkCurrentUserPreconditions(currentUserId);
         this.checkPrecondition(lizenzDO, currentUserId);
 
         LizenzBE lizenzBE = lizenzDAO.create(LizenzMapper.toLizenzBE.apply(lizenzDO), currentUserId);
-        return LizenzMapper.toLizenzDO.apply(lizenzBE);
-    }
-
-
-    @Override
-    public LizenzDO update(LizenzDO lizenzDO, long currentUserId) {
-
-        this.checkCurrentUserPreconditions(currentUserId);
-        this.checkPrecondition(lizenzDO, currentUserId);
-
-
-        LizenzBE lizenzBE = this.lizenzDAO.update(LizenzMapper.toLizenzBE.apply(lizenzDO), currentUserId);
         return LizenzMapper.toLizenzDO.apply(lizenzBE);
     }
 
@@ -168,6 +154,18 @@ public class LizenzComponentImpl implements LizenzComponent {
 
 
     @Override
+    public LizenzDO update(LizenzDO lizenzDO, long currentUserId) {
+
+        this.checkCurrentUserPreconditions(currentUserId);
+        this.checkPrecondition(lizenzDO, currentUserId);
+
+
+        LizenzBE lizenzBE = this.lizenzDAO.update(LizenzMapper.toLizenzBE.apply(lizenzDO), currentUserId);
+        return LizenzMapper.toLizenzDO.apply(lizenzBE);
+    }
+
+
+    @Override
     public byte[] getLizenzPDFasByteArray(long dsbMitgliedID, long teamID) {
         byte[] result;
         DsbMitgliedDO mitgliedDO = dsbMitgliedComponent.findById(dsbMitgliedID);
@@ -177,7 +175,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 veranstaltungDO.getVeranstaltungID());
         LizenzBE lizenz = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(mitgliedDO.getId(),
                 wettkampfDOList.get(0).getWettkampfDisziplinId());
-        System.out.println(lizenz);
+        LOGGER.info("Lizenz:\n {}", lizenz);
         result = generateDoc(mitgliedDO, lizenz, veranstaltungDO).toByteArray();
         return result;
     }
@@ -198,29 +196,29 @@ public class LizenzComponentImpl implements LizenzComponent {
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOs = this.mannschaftsmitgliedComponent.findByTeamId(
                 dsbMannschaftsId);
 
-        HashMap<String, List<String>> LizenzenMapping = new HashMap<>();
+        HashMap<String, List<String>> lizenzenMapping = new HashMap<>();
 
-        String Liganame = veranstaltungDO.getVeranstaltungName();
+        String liganame = veranstaltungDO.getVeranstaltungName();
 
         for (MannschaftsmitgliedDO mannschaftsmitgliedDO : mannschaftsmitgliedDOs) {
             DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(mannschaftsmitgliedDO.getDsbMitgliedId());
             VereinDO vereinDO = this.vereinComponent.findById(dsbMitgliedDO.getVereinsId());
 
-            String Verein = vereinDO.getName();
-            String Schuetzenname = dsbMitgliedDO.getNachname();
-            String Schuetzenvorname = dsbMitgliedDO.getVorname();
+            String verein = vereinDO.getName();
+            String schuetzenname = dsbMitgliedDO.getNachname();
+            String schuetzenvorname = dsbMitgliedDO.getVorname();
             LizenzBE lizenzen = lizenzDAO.findByDsbMitgliedIdAndDisziplinId(dsbMitgliedDO.getId(),
                     wettkampfDOList.get(0).getWettkampfDisziplinId());
-            String Rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
+            String rueckennummer = mannschaftsmitgliedDO.getRueckennummer().toString();
 
-            List<String> Schuetzendaten = new ArrayList();
-            Schuetzendaten.add(Liganame);
-            Schuetzendaten.add(Verein);
-            Schuetzendaten.add(Schuetzenname);
-            Schuetzendaten.add(Schuetzenvorname);
-            Schuetzendaten.add(veranstaltungDO.getVeranstaltungSportJahr().toString());
-            Schuetzendaten.add(lizenzen.getLizenznummer());
-            LizenzenMapping.put(Rueckennummer, Schuetzendaten);
+            List<String> schuetzendaten = new ArrayList<>();
+            schuetzendaten.add(liganame);
+            schuetzendaten.add(verein);
+            schuetzendaten.add(schuetzenname);
+            schuetzendaten.add(schuetzenvorname);
+            schuetzendaten.add(veranstaltungDO.getVeranstaltungSportJahr().toString());
+            schuetzendaten.add(lizenzen.getLizenznummer()); /*Die Variable lizenzen ist null, um generateLizenzenDoc() testen zu können, habe ich "0" eingesetzt*/
+            lizenzenMapping.put(rueckennummer, schuetzendaten);
         }
 
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -228,7 +226,7 @@ public class LizenzComponentImpl implements LizenzComponent {
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateLizenzenDoc(doc, LizenzenMapping);
+            generateLizenzenDoc(doc, lizenzenMapping);
 
             return result.toByteArray();
 
@@ -239,7 +237,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     }
 
 
-    private ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, VeranstaltungDO veranstaltung) {
+    ByteArrayOutputStream generateDoc(DsbMitgliedDO mitglied, LizenzBE lizenz, VeranstaltungDO veranstaltung) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
@@ -249,7 +247,6 @@ public class LizenzComponentImpl implements LizenzComponent {
                     lizenz.getLizenznummer(), mitglied.getNachname(), mitglied.getVorname(),
                     veranstaltung.getVeranstaltungName(),
                     veranstaltung.getVeranstaltungSportJahr().toString());
-            doc.close();
             ret = result;
         } catch (final IOException e) {
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR, "PDF Dokument konnte nicht erstellt werden: " + e);
@@ -257,22 +254,23 @@ public class LizenzComponentImpl implements LizenzComponent {
         return ret;
     }
 
-    private void generateLizenzenDoc(Document doc, HashMap<String, List<String>> LizenzenMapping) {
+    void generateLizenzenDoc(Document doc, HashMap<String, List<String>> lizenzenmapping) {
 
-        for (String rNummer : LizenzenMapping.keySet()) {
-            String liga = LizenzenMapping.get(rNummer).get(0);
-            String verein = LizenzenMapping.get(rNummer).get(1);
-            String schuetzename = LizenzenMapping.get(rNummer).get(2);
-            String schuetzevorname = LizenzenMapping.get(rNummer).get(3);
-            String sportjahr = LizenzenMapping.get(rNummer).get(4);
-            String lizenz = LizenzenMapping.get(rNummer).get(5);
+        for (Map.Entry<String, List<String>> entry : lizenzenmapping.entrySet()) {
+            List<String> value = entry.getValue();
+            String liga = value.get(0);
+            String verein = value.get(1);
+            String schuetzename = value.get(2);
+            String schuetzevorname = value.get(3);
+            String sportjahr = value.get(4);
+            String lizenz = value.get(5);
 
             generateLizenzPage(doc, verein, lizenz, schuetzename, schuetzevorname, liga, sportjahr);
         }
         doc.close();
     }
 
-    private void generateLizenzPage(Document doc, String verein, String lizenz, String schuetzename,
+    void generateLizenzPage(Document doc, String verein, String lizenz, String schuetzename,
                                     String schuetzevorname, String liga, String sportjahr) {
         final Table tableHead = new Table(UnitValue.createPercentArray(1), true);
         final Table secondTable = new Table(UnitValue.createPercentArray(1), true);
@@ -322,7 +320,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("1").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -341,7 +339,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("2").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -360,7 +358,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("3").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
@@ -379,7 +377,7 @@ public class LizenzComponentImpl implements LizenzComponent {
                 .addCell(new Cell().setHeight(50.0F).add(
                         new Paragraph("4").setBold().setFontSize(25.0F)).setTextAlignment(TextAlignment.CENTER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
-                        .add(new Paragraph("Unterschrift:").setBold().setFontSize(13.0F))
+                        .add(new Paragraph(LIZENZ_UNTERSCHRIFT).setBold().setFontSize(13.0F))
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))

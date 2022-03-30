@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class PasseBETest {
     private static long PASSE_ID = 0;

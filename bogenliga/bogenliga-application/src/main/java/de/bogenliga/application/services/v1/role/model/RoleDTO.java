@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
  *  I map and construct {@link RoleDTO} objects
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class RoleDTO implements DataTransferObject {
 

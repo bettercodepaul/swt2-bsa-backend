@@ -3,16 +3,12 @@ package de.bogenliga.application.services.v1.regionen.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.plaf.synth.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -43,9 +39,6 @@ public class RegionenService implements ServiceFacade {
     private static final String PRECONDITION_MSG_NAME = "Name must not be null ";
     private static final String PRECONDITION_MSG_REGION_KUERZEL = "Region Contraction must not be null";
 
-
-    private static final Logger LOG = LoggerFactory.getLogger(RegionenService.class);
-
     private final RegionenComponent regionenComponent;
 
 
@@ -64,9 +57,9 @@ public class RegionenService implements ServiceFacade {
     /**
      * I return all regions of the database.
      *
-     * @return
+     * @return List>RegionenDTO> Liste aller Regionen
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RegionenDTO> findAll() {
@@ -75,12 +68,19 @@ public class RegionenService implements ServiceFacade {
         return regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "ID/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<RegionenDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        final List<RegionenDO> regionDOList = regionenComponent.findBySearch(searchTerm);
+
+        return regionDOList.stream().map(RegionenDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "ID/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public RegionenDTO findById(@PathVariable ("id") final long id){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
 
-        LOG.debug("Receive 'findById' with requested ID '{}'", id);
 
         final RegionenDO regionenDO = regionenComponent.findById(id);
 
@@ -88,7 +88,7 @@ public class RegionenService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
@@ -96,12 +96,6 @@ public class RegionenService implements ServiceFacade {
         checkPreconditions(regionenDTO);
         Preconditions.checkArgument(regionenDTO.getId() >= 0, PRECONDITION_MSG_REGION_ID);
 
-        LOG.debug("Receive  'update' request with id '{}', name '{}'; kuerzel '{}',typ '{}'; uebergeordnete_region '{}' ",
-                regionenDTO.getId(),
-                regionenDTO.getRegionName(),
-                regionenDTO.getRegionKuerzel(),
-                regionenDTO.getRegionTyp(),
-                regionenDTO.getRegionUebergeordnet());
 
         final RegionenDO newRegionenDo = RegionenDTOMapper.toDO.apply(regionenDTO);
         final long userID = UserProvider.getCurrentUserId(principal);
@@ -111,12 +105,11 @@ public class RegionenService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-        LOG.debug("Receive 'delete' request with id '{}'", id);
 
         final RegionenDO regionenDO = new RegionenDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -130,7 +123,7 @@ public class RegionenService implements ServiceFacade {
      * @param principal the current User, who is locked in
      * @return the new RegionenDTO
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
@@ -138,14 +131,6 @@ public class RegionenService implements ServiceFacade {
         checkPreconditions(regionenDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
-        //debug
-        LOG.debug("Receive 'create' request with name '{}', identifier '{}', region kuerzel '{}', typ '{}', uebergeordnet '{}', user '{}'",
-                regionenDTO.getRegionName(),
-                regionenDTO.getId(),
-                regionenDTO.getRegionKuerzel(),
-                regionenDTO.getRegionTyp(),
-                regionenDTO.getRegionUebergeordnet(),
-                userId);
 
         final RegionenDO regionenDO = RegionenDTOMapper.toDO.apply(regionenDTO);
         final RegionenDO persistedRegionenDO = regionenComponent.create(regionenDO, userId);
@@ -158,9 +143,9 @@ public class RegionenService implements ServiceFacade {
     /**
      * I return all regions of a specific type from the database
      * @param type of the regions
-     * @return list of {@RegionenDTO}
+     * @return List</RegionenDTO> Liste aller Region dieses Typs
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             value = "{type}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_STAMMDATEN)
@@ -177,7 +162,7 @@ public class RegionenService implements ServiceFacade {
 
 
     /**
-     * Checks if given type is a member of {@RegionTypes}
+     * Checks if given type is a member of </RegionTypes>
      * @param type to be checked
      */
     private void checkRegionType(final String type) {

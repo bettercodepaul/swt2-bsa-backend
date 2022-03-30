@@ -19,7 +19,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
  * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Repository
 public class UserDAO implements DataAccessObject {
@@ -37,7 +37,7 @@ public class UserDAO implements DataAccessObject {
     private static final String USER_BE_PASSWORD = "userPassword";
     private static final String USER_BE_USING2FA = "using2FA";
     private static final String USER_BE_SECRET = "secret";
-    private static final String USER_BE_DSB_MITGLIED_ID = "dsb_mitglied_id";
+    private static final String USER_BE_DSB_MITGLIED_ID = "dsbMitgliedId";
 
     private static final String USER_BE_ACTIVE = "active";
 
@@ -93,6 +93,42 @@ public class UserDAO implements DataAccessObject {
     }
 
 
+    /**
+     * Return all user entries
+     */
+    public List<UserBE> findAll() {
+        return basicDao.selectEntityList(USER, FIND_ALL);
+    }
+
+
+    /**
+     * Return user entry with specific id
+     *
+     * @param id
+     */
+    public UserBE findById(final long id) {
+        return basicDao.selectSingleEntity(USER, FIND_BY_ID, id);
+    }
+
+    /**
+     * Return user entry with specific email adress
+     *
+     * @param email
+     */
+    public UserBE findByEmail(final String email) {
+        return basicDao.selectSingleEntity(USER, FIND_BY_EMAIL, email);
+    }
+
+    /**
+     * Return user entry with specific dsbMitgliedId
+     *
+     * @param dsbMitgliedId
+     */
+    public UserBE findByDsbMitgliedId(final long dsbMitgliedId) {
+        return basicDao.selectSingleEntity(USER, FIND_BY_DSBMITGLIED_ID, dsbMitgliedId);
+    }
+
+
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
@@ -114,42 +150,6 @@ public class UserDAO implements DataAccessObject {
 
 
     /**
-     * Return all user entries
-     */
-    public List<UserBE> findAll() {
-        return basicDao.selectEntityList(USER, FIND_ALL);
-    }
-
-
-    /**
-     * Return user entry with specific id
-     *
-     * @param id
-     */
-    public UserBE findById(final long id) {
-        return basicDao.selectSingleEntity(USER, FIND_BY_ID, id);
-    }
-
-
-    /**
-     * Return user entry with specific email adress
-     *
-     * @param email
-     */
-    public UserBE findByEmail(final String email) {
-        return basicDao.selectSingleEntity(USER, FIND_BY_EMAIL, email);
-    }
-
-    /**
-     * Return user entry with specific dsbMitgliedId
-     *
-     * @param dsbMitgliedId
-     */
-    public UserBE findByDsbMitgliedId(final long dsbMitgliedId) {
-        return basicDao.selectSingleEntity(USER, FIND_BY_DSBMITGLIED_ID, dsbMitgliedId);
-    }
-
-    /**
      * Create a new user entry
      *
      * @param userBE
@@ -162,11 +162,11 @@ public class UserDAO implements DataAccessObject {
         UserBE persistedUser = basicDao.insertEntity(USER, userBE);
 
         // Save UserId in the column dsb_mitglied_benutzer_id of entity dsb_mitglied
-        DsbMitgliedDAO DsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
-        DsbMitgliedBE DsbMitgliedBE = DsbMitgliedDAO.findById(persistedUser.getDsb_mitglied_id());
-        if(DsbMitgliedBE != null) {
-            DsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
-            DsbMitgliedDAO.update(DsbMitgliedBE, DsbMitgliedBE.getDsbMitgliedId());
+        DsbMitgliedDAO dsbMitgliedDAO = new DsbMitgliedDAO(basicDao);
+        DsbMitgliedBE dsbMitgliedBE = dsbMitgliedDAO.findById(persistedUser.getDsbMitgliedId());
+        if(dsbMitgliedBE != null) {
+            dsbMitgliedBE.setDsbMitgliedUserId(persistedUser.getUserId());
+            dsbMitgliedDAO.update(dsbMitgliedBE, dsbMitgliedBE.getDsbMitgliedId());
         }
 
         return persistedUser;

@@ -5,7 +5,7 @@ package de.bogenliga.application.common.errorhandling;
  *
  * Errors are handled and mapped to an error code.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public enum ErrorCode {
     /*

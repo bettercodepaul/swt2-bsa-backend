@@ -1,6 +1,5 @@
 package de.bogenliga.application.springconfiguration.security.jsonwebtoken;
 
-import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -36,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class JwtTokenProviderTest {
@@ -223,7 +222,7 @@ public class JwtTokenProviderTest {
                 PERMISSIONS.stream().map(UserPermission::name).collect(Collectors.toList()));
 
         final UserDO userDO = new UserDO();
-        userDO.setDsb_mitglied_id(1L);
+        userDO.setDsbMitgliedId(1L);
 
         final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(1L);
         dsbMitgliedDO.setVereinsId(1L);

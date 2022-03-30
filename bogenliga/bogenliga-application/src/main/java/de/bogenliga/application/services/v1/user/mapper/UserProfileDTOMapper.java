@@ -10,7 +10,7 @@ import java.util.function.Function;
 /**
  * I map the {@link UserProfileDO} and {@link UserProfileDTO} objects
  *
- * @author Yann Philippczyk eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk BettercallPaul gmbh
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>

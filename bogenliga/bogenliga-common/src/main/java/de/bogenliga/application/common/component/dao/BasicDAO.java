@@ -24,7 +24,7 @@ import de.bogenliga.application.common.time.DateProvider;
 /**
  * Basic data access object implementation for CRUD operations.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://www.baeldung.com/apache-commons-dbutils">A Guide to Apache Commons DbUtils</a>
  */
 @Repository
@@ -364,7 +364,7 @@ public class BasicDAO implements DataAccessObject {
         T objectBeforeUpdate = selectSingleEntity(businessEntityConfiguration, selectSql.getSql(),
                 selectSql.getParameter());
 
-        if (objectBeforeUpdate.getVersion() != updateBusinessEntity.getVersion()) {
+        if (objectBeforeUpdate.getVersion() != null &&  !objectBeforeUpdate.getVersion().equals(updateBusinessEntity.getVersion()) ) {
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR,
                     "The business entity was modified by an other user.");
         } // else: do update
@@ -462,7 +462,7 @@ public class BasicDAO implements DataAccessObject {
      *                                    "object-relational" mapping between the business entity and the database
      *                                    table
      * @param deleteBusinessEntity        business entity to delete the DELETE sql query is automatically generated
-     * @param fieldSelector               to identify the target table row in the WHERE clause
+     * @param fieldSelector               to identify the target table row in the WHERE clause (you can have more than one fieldSelector)
      *
      * @throws BusinessException if no or more than 1 row is affected by the delete.
      */

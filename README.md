@@ -1,6 +1,7 @@
-[![Build Status](https://travis-ci.org/exxcellent/swt2-bsa-backend.svg?branch=master)](https://travis-ci.org/exxcellent/swt2-bsa-backend)
-[![sonarcloud](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
-[![sonarcloud_cov](https://sonarcloud.io/api/project_badges/measure?project=de.bogenliga.application&metric=coverage)](https://sonarcloud.io/dashboard?id=de.bogenliga.application)
+[![Build](https://github.com/bettercodepaul/swt2-bsa-backend/actions/workflows/build.yml/badge.svg)](https://github.com/bettercodepaul/swt2-bsa-backend/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bettercodepaul_swt2-bsa-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=bettercodepaul_swt2-bsa-backend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bettercodepaul_swt2-bsa-backend&metric=coverage)](https://sonarcloud.io/dashboard?id=bettercodepaul_swt2-bsa-backend)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=bettercodepaul_swt2-bsa-backend&metric=code_smells)](https://sonarcloud.io/dashboard?id=bettercodepaul_swt2-bsa-backend)
 
 
 # Bogenliga Application
@@ -10,7 +11,6 @@
 
 - Spring Boot with REST services
 - Flyway
-
 
 ## How to use
 

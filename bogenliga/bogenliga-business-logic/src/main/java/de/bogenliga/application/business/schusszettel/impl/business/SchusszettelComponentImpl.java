@@ -54,6 +54,15 @@ import de.bogenliga.application.common.validation.Preconditions;
 public class SchusszettelComponentImpl implements SchusszettelComponent {
 
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
+    private static final String SCHUSSZETTEL_SATZ1 = "1. Satz";
+    private static final String SCHUSSZETTEL_SATZ2 = "2. Satz";
+    private static final String SCHUSSZETTEL_SATZ3 = "3. Satz";
+    private static final String SCHUSSZETTEL_SATZ4 = "4. Satz";
+    private static final String SCHUSSZETTEL_SATZ5 = "5. Satz";
+    private static final String SCHUSSZETTEL_SUMME = "Summe";
+    private static final String SCHUSSZETTEL_PFEIL1 = "Pfeil 1";
+    private static final String SCHUSSZETTEL_PFEIL2 = "Pfeil 2";
+    private static final String SCHUSSZETTEL_UNTERSCHRIFT = "Unterschrift";
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -84,7 +93,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
 
         byte[] bResult;
-        if (matchDOList.size() != 0) {
+        if (!matchDOList.isEmpty()) {
             bResult = generateDoc(matchDOList).toByteArray();
         }else{
             throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
@@ -159,9 +168,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         for (int i = 1; i <= 2; i++) {
             Map<Long, List<PasseDO>> schuetzenPasseMap = new HashMap<>();
             for (PasseDO passeDO : passenDOs[i-1]) {
-                // schuetzenPasseMap.computeIfAbsent(passeDO.getPasseDsbMitgliedId(), k -> new ArrayList<>());
-                // schuetzenPasseMap.get(passeDO.getPasseDsbMitgliedId()).add(passeDO);
-
                 // Only pick 3 schuetzen
                 if (!schuetzenPasseMap.containsKey(passeDO.getPasseDsbMitgliedId())) {
                     if (schuetzenPasseMap.size() < 3) {
@@ -180,7 +186,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             MatchDO currentMatch = matchDOs[i-1];
             MatchDO otherMatch = matchDOs[(i == 1 ? 2 : 1) - 1];
             // Skip matches with no passen
-            if (passenDOs[i-1].size() == 0) {
+            if (passenDOs[i-1].isEmpty()) {
                 continue;
             }
 
@@ -230,22 +236,22 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             // Second part
             tableFirstRowSecondPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("1. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("2. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ2).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("3. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ3).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("4. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ4).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("5. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ5).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("Summe").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(new Paragraph("Match").setFontSize(7.5F))
@@ -343,34 +349,34 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph("5. Satz/ Pfeile").setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     );
 
             // Add sum array and initialize with 0
@@ -423,7 +429,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                         .addCell(
                                 new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER)
                                         .setHeight(20.0F)
-                                        .add(new Paragraph("Summe").setFontSize(10.0F))
+                                        .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(10.0F))
                         )
                         .addCell(
                                 new Cell().setHeight(20.0F).add(new Paragraph(sum.toString()).setFontSize(10.0F))
@@ -487,10 +493,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph("\n"))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
                     )
             ;
 
@@ -710,22 +716,22 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
             // Second part
             tableFirstRowSecondPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("1. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("2. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ2).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("3. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ3).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("4. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ4).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("5. Satz").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ5).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("Summe").setFontSize(7.5F))
+                            .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(7.5F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
                             .add(new Paragraph("Match").setFontSize(7.5F))
@@ -787,34 +793,34 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph("5. Satz/ Pfeile").setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderRight(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 1").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL1).setFontSize(8.0F))
                     )
                     .addCell(new Cell().setBorderTop(Border.NO_BORDER).setBorderLeft(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(12.5F)
-                            .add(new Paragraph("Pfeil 2").setFontSize(8.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_PFEIL2).setFontSize(8.0F))
                     )
                     // Add thirty cells for text input
                     .addCell(new Cell().setHeight(20.0F))
@@ -848,23 +854,23 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(10.0F))
                     )
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(10.0F))
                     )
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(10.0F))
                     )
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(10.0F))
                     )
                     .addCell(new Cell().setHeight(20.0F))
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("Summe").setFontSize(10.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SUMME).setFontSize(10.0F))
                     )
                     .addCell(new Cell().setHeight(20.0F))
                     // Add ten cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
@@ -887,19 +893,19 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph("punkte").setFontSize(8.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("1. Satz").setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("2. Satz").setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("3. Satz").setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("4. Satz").setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph("5. Satz").setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
                     )
                     // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
@@ -921,10 +927,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph("\n"))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("Unterschrift").setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
                     )
             ;
 
