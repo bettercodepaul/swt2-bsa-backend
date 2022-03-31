@@ -7,7 +7,6 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
-import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 
 /**
  * @author Dominik Halle, HSRT MKI SS19 - SWT2
