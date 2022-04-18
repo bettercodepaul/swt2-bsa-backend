@@ -102,6 +102,12 @@ public class UserService implements ServiceFacade {
     }
 
 
+    /**
+     * Login...
+     *
+     * @return ResponseEntity mit der Rückmeldung nzur Anmeldung
+     */
+
 
     /**
      * Login...
@@ -138,7 +144,7 @@ public class UserService implements ServiceFacade {
 
                     final HttpHeaders headers = new HttpHeaders();
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
-                    try {
+
                         //Get the Verein ID and teh Veranstaltungs ID's
                         userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsbMitgliedId()).getVereinsId());
                         ArrayList<Integer> temp = new ArrayList<>();
@@ -146,11 +152,9 @@ public class UserService implements ServiceFacade {
                             temp.add(veranstaltungDO.getVeranstaltungID().intValue());
                         }
                         userSignInDTO.setVeranstaltungenIds(temp);
-                        ArrayList<Integer> wettkampftemp = new ArrayList<Integer>();
+                        ArrayList<Integer> wettkampftemp = new ArrayList<>();
                         userSignInDTO.setWettkampfIds(wettkampftemp);
-                    } catch (Exception ignore) {
-                       LOG.warn("Failed to define additional user information", ignore);
-                    }
+
                     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(userSignInDTO);
                 } else {
                     errorDetails = new ErrorDTO(ErrorCode.INVALID_SIGN_IN_CREDENTIALS, "Sign in failed");
@@ -241,7 +245,7 @@ public class UserService implements ServiceFacade {
          //update password is limited to own password,
         // therefore we get the current user id based on system utils
 
-        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
         final UserDO userDO = new UserDO();
@@ -292,7 +296,7 @@ public class UserService implements ServiceFacade {
         UserDTO userUpdatedDTO;
 
         //bestimmt den aktuell eingeloggten User, damit bei der Überprüfung die User unterschieden werden können
-        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
         final Long currentLoggedUserId = jwtTokenProvider.getUserId(jwt);
 
         UserDO selectedUserDO = userComponent.findByEmail(selectedUser.getUsername());
@@ -330,7 +334,7 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(updatedUserRoles.get(0).getId(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(updatedUserRoles.get(0).getRoleId(), PRECONDITION_MSG_ROLE_ID);
 
-        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
         List<UserRoleDO> updatedUserRolesDo = new ArrayList<>();
@@ -476,7 +480,7 @@ public class UserService implements ServiceFacade {
 
         userCredentialsDTO.getCode();
 
-        final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
+        final String jwt = JwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
 
         // user anlegen
