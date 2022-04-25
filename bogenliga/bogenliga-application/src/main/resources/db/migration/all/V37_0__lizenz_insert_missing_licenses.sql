@@ -1,4 +1,5 @@
 -- lizenzen erstellen fuer alle mannschaftsmitglieder, die noch keine haben
+-- lizenznummer besteht aus: Region Kürzel, Veranstaltung ID, Verein ID, Mannschaftsnummer, DSB Mitglied ID des Schützen
 INSERT INTO lizenz (
     lizenz_nummer,
     lizenz_region_id,
@@ -6,7 +7,7 @@ INSERT INTO lizenz (
     lizenz_typ,
     lizenz_disziplin_id
     )
--- no duplicates, everyone can only have one liga license, but can have kampfrichter and liga:
+-- keine doppelungen: eine liga lizenz pro spieler, aber kampfrichter und liga möglich:
 SELECT DISTINCT (
         r.region_kuerzel ||
         CAST(m.mannschaft_veranstaltung_id AS TEXT) ||
