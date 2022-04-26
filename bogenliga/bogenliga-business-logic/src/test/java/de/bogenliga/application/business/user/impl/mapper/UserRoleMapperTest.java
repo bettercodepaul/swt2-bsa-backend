@@ -26,6 +26,8 @@ public class UserRoleMapperTest {
     private static final String ROLE_NAME = "TESTUSER";
     private static final Timestamp TIMESTAMP = DateProvider.currentTimestampUtc();
     private static final long VERSION = 7;
+    private static final String DSBMITGLIED_TABLE_SURNAME = "Schmidt";
+    private static final String DSBMITGLIED_TABLE_FORENAME = "Hans";
 
 
     @Test
@@ -40,6 +42,8 @@ public class UserRoleMapperTest {
         userRoleExtBE.setVersion(VERSION);
         userRoleExtBE.setLastModifiedAtUtc(TIMESTAMP);
         userRoleExtBE.setLastModifiedByUserId(OTHER_USER_ID);
+        userRoleExtBE.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        userRoleExtBE.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
         final UserRoleDO actual = UserRoleMapper.extToUserRoleDO.apply(userRoleExtBE);
 
@@ -52,6 +56,8 @@ public class UserRoleMapperTest {
         assertThat(actual.getLastModifiedAtUtc()).isEqualTo(DateProvider.convertTimestamp(TIMESTAMP));
         assertThat(actual.getLastModifiedByUserId()).isEqualTo(OTHER_USER_ID);
         assertThat(actual.getVersion()).isEqualTo(VERSION);
+        assertThat(actual.getDsbMitgliedNachname()).isEqualTo(DSBMITGLIED_TABLE_SURNAME);
+        assertThat(actual.getDsbMitgliedVorname()).isEqualTo(DSBMITGLIED_TABLE_FORENAME);
     }
 
     @Test
@@ -64,6 +70,7 @@ public class UserRoleMapperTest {
         userRoleBE.setVersion(VERSION);
         userRoleBE.setLastModifiedAtUtc(TIMESTAMP);
         userRoleBE.setLastModifiedByUserId(OTHER_USER_ID);
+
 
         final UserRoleDO actual = UserRoleMapper.toUserRoleDO.apply(userRoleBE);
 

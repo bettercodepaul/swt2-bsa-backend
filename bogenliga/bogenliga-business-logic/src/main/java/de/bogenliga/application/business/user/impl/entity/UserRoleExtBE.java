@@ -77,7 +77,10 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
     public boolean isActive () {return this.active;}
     public void setActive (boolean active) {this.active = active;}
 
-    public String getDsbMitgliedNachname () {return this.dsbMitgliedNachname = dsbMitgliedNachname;}
-    public String getDsbMitgliedVorname () {return this.dsbMitgliedVorname = dsbMitgliedVorname;}
+    public String getDsbMitgliedNachname () {return dsbMitgliedNachname;}
+    public void setDsbMitgliedNachname (String dsbMitgliedNachname) {this.dsbMitgliedNachname = dsbMitgliedNachname;}
+
+    public String getDsbMitgliedVorname () {return dsbMitgliedVorname;}
+    public void setDsbMitgliedVorname (String dsbMitgliedVorname) {this.dsbMitgliedVorname = dsbMitgliedVorname;}
 
 }
