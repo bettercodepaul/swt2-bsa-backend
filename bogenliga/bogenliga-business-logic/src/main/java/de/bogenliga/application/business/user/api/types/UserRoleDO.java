@@ -22,6 +22,8 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
     private Long roleId;
     private String roleName;
     private boolean active;
+    private String dsbMitgliedVorname;
+    private String dsbMitgliedNachname;
 
 
     /**
@@ -69,12 +71,14 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
     public UserRoleDO(final Long id, final String email, final boolean active, final Long roleId, final String roleName,
                       final OffsetDateTime createdAtUtc,
                       final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                      final Long lastModifiedByUserId, final Long version) {
+                      final Long lastModifiedByUserId, final Long version, final String dsbMitgliedNachname, final String dsbMitgliedVorname) {
         this.id = id;
         this.email = email;
         this.roleId = roleId;
         this.roleName = roleName;
         this.active = active;
+        this.dsbMitgliedNachname = dsbMitgliedNachname;
+        this.dsbMitgliedVorname = dsbMitgliedVorname;
 
         // set parameter from CommonDataObject
         this.createdAtUtc = createdAtUtc;
@@ -116,11 +120,17 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
     public boolean isActive () {return this.active;}
     public void setActive (boolean active) {this.active = active;}
 
+    public String getDsbMitgliedNachname () {return this.dsbMitgliedNachname;}
+    public void setDsbMitgliedNachname (String dsbMitgliedNachname) {this.dsbMitgliedNachname = dsbMitgliedNachname;}
+
+    public String getDsbMitgliedVorname () {return this.dsbMitgliedVorname;}
+    public void setDsbMitgliedVorname (String dsbMitgliedVorname) {this.dsbMitgliedVorname = dsbMitgliedVorname;}
+
 
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getEmail(), getRoleId(), getRoleName(), getCreatedAtUtc(),
-                getCreatedByUserId(), getLastModifiedAtUtc(), getLastModifiedByUserId(), getVersion(), isActive());
+                getCreatedByUserId(), getLastModifiedAtUtc(), getLastModifiedByUserId(), getVersion(), isActive(), getDsbMitgliedNachname(), getDsbMitgliedVorname());
     }
 
 
@@ -142,6 +152,8 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
                 Objects.equals(getCreatedByUserId(), userRoleDO.getCreatedByUserId()) &&
                 Objects.equals(getLastModifiedAtUtc(), userRoleDO.getLastModifiedAtUtc()) &&
                 Objects.equals(getLastModifiedByUserId(), userRoleDO.getLastModifiedByUserId()) &&
-                Objects.equals(isActive(), userRoleDO.isActive());
+                Objects.equals(isActive(), userRoleDO.isActive()&&
+                Objects.equals(getDsbMitgliedNachname(), userRoleDO.getDsbMitgliedNachname())&&
+                Objects.equals(getDsbMitgliedVorname(), userRoleDO.getDsbMitgliedVorname()));
     }
 }
