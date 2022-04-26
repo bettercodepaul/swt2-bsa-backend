@@ -120,10 +120,10 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
     public boolean isActive () {return this.active;}
     public void setActive (boolean active) {this.active = active;}
 
-    public String getDsbMitgliedNachname () {return this.dsbMitgliedNachname;}
+    public String getDsbMitgliedNachname () {return dsbMitgliedNachname;}
     public void setDsbMitgliedNachname (String dsbMitgliedNachname) {this.dsbMitgliedNachname = dsbMitgliedNachname;}
 
-    public String getDsbMitgliedVorname () {return this.dsbMitgliedVorname;}
+    public String getDsbMitgliedVorname () {return dsbMitgliedVorname;}
     public void setDsbMitgliedVorname (String dsbMitgliedVorname) {this.dsbMitgliedVorname = dsbMitgliedVorname;}
 
 
