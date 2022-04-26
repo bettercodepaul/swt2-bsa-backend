@@ -16,6 +16,8 @@ public class UserRoleDTO implements DataTransferObject {
     private String roleName;
     private boolean active;
     private Long version;
+    private String dsbMitgliedVorname;
+    private String dsbMitgliedNachname;
 
 
     /**
@@ -29,13 +31,15 @@ public class UserRoleDTO implements DataTransferObject {
     /**
      * Constructor with mandatory parameters
      */
-    public UserRoleDTO(final Long id, final String email, final boolean active, final Long roleId, final String RoleName, final Long version) {
+    public UserRoleDTO(final Long id, final String email, final boolean active, final Long roleId, final String RoleName, final Long version, final String dsbMitgliedVorname, final String dsbMitgliedNachname) {
         this.id = id;
         this.email = email;
         this.roleId = roleId;
         this.roleName = RoleName;
         this.version = version;
         this.active = active;
+        this.dsbMitgliedVorname = dsbMitgliedVorname;
+        this.dsbMitgliedNachname = dsbMitgliedNachname;
     }
 
 
@@ -46,7 +50,8 @@ public class UserRoleDTO implements DataTransferObject {
      * @param userDTO to copy
      */
     public UserRoleDTO(final UserRoleDTO userDTO) {
-        this(userDTO.getId(), userDTO.getEmail(), userDTO.isActive(), userDTO.getRoleId(), userDTO.getRoleName(), userDTO.getVersion());
+        this(userDTO.getId(), userDTO.getEmail(), userDTO.isActive(), userDTO.getRoleId(), userDTO.getRoleName(), userDTO.getVersion(),
+                userDTO.getDsbMitgliedVorname(), userDTO.getDsbMitgliedNachname());
     }
 
 
@@ -76,17 +81,19 @@ public class UserRoleDTO implements DataTransferObject {
     public String getRoleName() {
         return roleName;
     }
-    public void setRoleName(final String roleName) {
-        this.roleName = roleName;
-    }
+    public void setRoleName(final String roleName) {this.roleName = roleName;}
 
     public Long getVersion() {
         return version;
     }
-    public void setVersion(final Long version) {
-        this.version = version;
-    }
+    public void setVersion(final Long version) {this.version = version;}
 
     public boolean isActive () {return this.active;}
     public void setActive (boolean active) {this.active = active;}
+
+    public String getDsbMitgliedNachname() {return dsbMitgliedNachname;}
+    public void setDsbMitgliedNachname(final String dsbMitgliedNachname) {this.dsbMitgliedNachname = dsbMitgliedNachname;}
+
+    public String getDsbMitgliedVorname() {return dsbMitgliedVorname;}
+    public void setDsbMitgliedVorname(final String dsbMitgliedVorname) {this.dsbMitgliedVorname = dsbMitgliedVorname;}
 }
