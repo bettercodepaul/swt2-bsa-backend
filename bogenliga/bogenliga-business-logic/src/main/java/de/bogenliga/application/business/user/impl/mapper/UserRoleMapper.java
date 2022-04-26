@@ -29,6 +29,8 @@ public class UserRoleMapper implements ValueObjectMapper {
         final Long roleId = be.getRoleId();
         final String roleName = be.getRoleName();
         final boolean active = be.isActive();
+        final String dsbMitgliedVorname = be.getDsbMitgliedVorname();
+        final String dsbMitgliedNachname = be.getDsbMitgliedNachname();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -38,7 +40,7 @@ public class UserRoleMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new UserRoleDO(id, email, active, roleId, roleName, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new UserRoleDO(id, email, active, roleId, roleName, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, dsbMitgliedNachname, dsbMitgliedVorname);
     };
 
     /**
