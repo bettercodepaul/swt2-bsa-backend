@@ -13,7 +13,7 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
  * I generate the password hash value with a given plain text password and the salt of the user.
  *
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  *
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/security/MessageDigest.html">
  *     Java Class MessageDigest</a>

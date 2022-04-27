@@ -17,8 +17,7 @@ public class LigatabelleDTO implements DataTransferObject {
      * business parameter
      */
 
-    private Long id;
-    private Long version;
+
     private Long veranstaltungId;
     private String veranstaltungName;
     private Long wettkampfId;
@@ -28,10 +27,10 @@ public class LigatabelleDTO implements DataTransferObject {
     private Long vereinId;
     private String vereinName;
     private int matchpkt;
-    private int matchpkt_gegen;
+    private int matchpktGegen;
     private int satzpkt;
-    private int satzpkt_gegen;
-    private int satzpkt_differenz;
+    private int satzpktGegen;
+    private int satzpktDifferenz;
     private int sortierung;
     private int tabellenplatz;
 
@@ -47,10 +46,10 @@ public class LigatabelleDTO implements DataTransferObject {
      * @param vereinId;
      * @param vereinName;
      * @param matchpkt;
-     * @param matchpkt_gegen;
+     * @param matchpktGegen;
      * @param satzpkt;
-     * @param satzpkt_gegen;
-     * @param satzpkt_differenz;
+     * @param satzpktGegen;
+     * @param satzpktDifferenz;
      * @param sortierung;
      * @param tabellenplatz;
 
@@ -65,10 +64,10 @@ public class LigatabelleDTO implements DataTransferObject {
             Long vereinId,
             String vereinName,
             int matchpkt,
-            int matchpkt_gegen,
+            int matchpktGegen,
             int satzpkt,
-            int satzpkt_gegen,
-            int satzpkt_differenz,
+            int satzpktGegen,
+            int satzpktDifferenz,
             int sortierung,
             int tabellenplatz
     ) {
@@ -81,14 +80,12 @@ public class LigatabelleDTO implements DataTransferObject {
         this.vereinId = vereinId;
         this.vereinName = vereinName;
         this.matchpkt = matchpkt;
-        this.matchpkt_gegen = matchpkt_gegen;
+        this.matchpktGegen = matchpktGegen;
         this.satzpkt = satzpkt;
-        this.satzpkt_gegen = satzpkt_gegen;
-        this.satzpkt_differenz = satzpkt_differenz;
+        this.satzpktGegen = satzpktGegen;
+        this.satzpktDifferenz = satzpktDifferenz;
         this.sortierung = sortierung;
         this.tabellenplatz = tabellenplatz;
-        this.id= null;
-        this.version = 1L;
     }
 
 
@@ -168,12 +165,12 @@ public class LigatabelleDTO implements DataTransferObject {
         this.matchpkt = matchpkt;
     }
 
-    public int getMatchpkt_gegen() {
-        return matchpkt_gegen;
+    public int getMatchpktGegen() {
+        return matchpktGegen;
     }
 
-    public void setMatchpkt_gegen(int matchpkt_gegen) {
-        this.matchpkt_gegen = matchpkt_gegen;
+    public void setMatchpktGegen(int matchpktGegen) {
+        this.matchpktGegen = matchpktGegen;
     }
 
     public int getSatzpkt() {
@@ -184,20 +181,20 @@ public class LigatabelleDTO implements DataTransferObject {
         this.satzpkt = satzpkt;
     }
 
-    public int getSatzpkt_gegen() {
-        return satzpkt_gegen;
+    public int getSatzpktGegen() {
+        return satzpktGegen;
     }
 
-    public void setSatzpkt_gegen(int satzpkt_gegen) {
-        this.satzpkt_gegen = satzpkt_gegen;
+    public void setSatzpktGegen(int satzpktGegen) {
+        this.satzpktGegen = satzpktGegen;
     }
 
-    public int getSatzpkt_differenz() {
-        return satzpkt_differenz;
+    public int getSatzpktDifferenz() {
+        return satzpktDifferenz;
     }
 
-    public void setSatzpkt_differenz(int satzpkt_differenz) {
-        this.satzpkt_differenz = satzpkt_differenz;
+    public void setSatzpktDifferenz(int satzpktDifferenz) {
+        this.satzpktDifferenz = satzpktDifferenz;
     }
 
     public int getSortierung() {
@@ -224,10 +221,10 @@ public class LigatabelleDTO implements DataTransferObject {
         return wettkampfTag == that.wettkampfTag &&
                 mannschaftNummer == that.mannschaftNummer &&
                 matchpkt == that.matchpkt &&
-                matchpkt_gegen == that.matchpkt_gegen &&
+                matchpktGegen == that.matchpktGegen &&
                 satzpkt == that.satzpkt &&
-                satzpkt_gegen == that.satzpkt_gegen &&
-                satzpkt_differenz == that.satzpkt_differenz &&
+                satzpktGegen == that.satzpktGegen &&
+                satzpktDifferenz == that.satzpktDifferenz &&
                 sortierung == that.sortierung &&
                 tabellenplatz == that.tabellenplatz &&
                 veranstaltungId.equals(that.veranstaltungId) &&
@@ -241,7 +238,7 @@ public class LigatabelleDTO implements DataTransferObject {
     @Override
     public int hashCode() {
         return Objects.hash(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag,
-                mannschaftId, mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen,
-                satzpkt, satzpkt_gegen, satzpkt_differenz, sortierung, tabellenplatz);
+                mannschaftId, mannschaftNummer, vereinId, vereinName, matchpkt, matchpktGegen,
+                satzpkt, satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz);
     }
 }

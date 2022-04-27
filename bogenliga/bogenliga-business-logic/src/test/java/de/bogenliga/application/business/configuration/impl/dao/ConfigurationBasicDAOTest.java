@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.configuration.impl.entity.ConfigurationBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">
@@ -29,7 +30,7 @@ public class ConfigurationBasicDAOTest {
 
     private static final String KEY = "key";
     private static final String VALUE = "value";
-    private static final long USER = 0;
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -109,7 +110,7 @@ public class ConfigurationBasicDAOTest {
         when(basicDao.insertEntity(any(), any())).thenReturn(input);
 
         // call test method
-        final ConfigurationBE actual = underTest.create(input, USER);
+        final ConfigurationBE actual = underTest.create(input);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -135,7 +136,7 @@ public class ConfigurationBasicDAOTest {
         when(basicDao.updateEntity(any(), any(), any())).thenReturn(input);
 
         // call test method
-        final ConfigurationBE actual = underTest.update(input, USER);
+        final ConfigurationBE actual = underTest.update(input);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -160,11 +161,28 @@ public class ConfigurationBasicDAOTest {
         // configure mocks
 
         // call test method
-        underTest.delete(input, USER);
+        underTest.delete(input);
 
         // assert result
 
         // verify invocations
         verify(basicDao).deleteEntity(any(), eq(input), any());
+    }
+
+    @Test
+    public void findById() {
+        // prepare test data
+        long id = 1223;
+
+        ConfigurationBE expected = new ConfigurationBE();
+
+        // configure mocks
+        when(basicDao.selectSingleEntity(any(), any(), eq(id))).thenReturn(expected);
+
+        // call test method
+        ConfigurationBE result = underTest.findById(id);
+
+        // assert result
+        assertThat(result).isEqualTo(expected);
     }
 }

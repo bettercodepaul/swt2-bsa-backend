@@ -26,18 +26,18 @@ public class LigatabelleDTOMapper implements DataTransferObjectMapper {
         final Long vereinId = ligatabelleDO.getvereinId();
         final String vereinName = ligatabelleDO.getvereinName();
         final int matchpkt = ligatabelleDO.getmatchpkt();
-        final int matchpkt_gegen = ligatabelleDO.getmatchpkt_gegen();
+        final int matchpktGegen = ligatabelleDO.getMatchpktGegen();
         final int satzpkt = ligatabelleDO.getsatzpkt();
-        final int satzpkt_gegen = ligatabelleDO.getsatzpkt_gegen();
-        final int satzpkt_differenz = ligatabelleDO.getsatzpkt_differenz();
+        final int satzpktGegen = ligatabelleDO.getSatzpktGegen();
+        final int satzpktDifferenz = ligatabelleDO.getSatzpktDifferenz();
         final int sortierung = ligatabelleDO.getsortierung();
         final int tabellenplatz = ligatabelleDO.gettabellenplatz();
 
 
 
         return new LigatabelleDTO(veranstaltungId, veranstaltungName, wettkampfId, wettkampfTag, mannschaftId,
-                mannschaftNummer, vereinId, vereinName, matchpkt, matchpkt_gegen, satzpkt,
-                satzpkt_gegen, satzpkt_differenz, sortierung, tabellenplatz);
+                mannschaftNummer, vereinId, vereinName, matchpkt, matchpktGegen, satzpkt,
+                satzpktGegen, satzpktDifferenz, sortierung, tabellenplatz);
     };
     /**
      * I map the {@link LigatabelleDTO} object to the {@link LigatabelleDO} object
@@ -55,10 +55,10 @@ public class LigatabelleDTOMapper implements DataTransferObjectMapper {
         ligatabelleDO.setvereinId(dto.getVereinId());
         ligatabelleDO.setvereinName(dto.getVereinName());
         ligatabelleDO.setmatchpkt(dto.getMatchpkt());
-        ligatabelleDO.setmatchpkt_gegen(dto.getMatchpkt_gegen());
+        ligatabelleDO.setMatchpktGegen(dto.getMatchpktGegen());
         ligatabelleDO.setsatzpkt(dto.getSatzpkt());
-        ligatabelleDO.setsatzpkt_gegen(dto.getSatzpkt_gegen());
-        ligatabelleDO.setsatzpkt_differenz(dto.getSatzpkt_differenz());
+        ligatabelleDO.setSatzpktGegen(dto.getSatzpktGegen());
+        ligatabelleDO.setSatzpktDifferenz(dto.getSatzpktDifferenz());
         ligatabelleDO.setsortierung(dto.getSortierung());
         ligatabelleDO.settabellenplatz(dto.getTabellenplatz());
 

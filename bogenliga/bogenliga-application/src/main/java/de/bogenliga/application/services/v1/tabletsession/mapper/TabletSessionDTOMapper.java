@@ -7,7 +7,7 @@ import de.bogenliga.application.services.v1.tabletsession.model.TabletSessionDTO
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class TabletSessionDTOMapper {
     private TabletSessionDTOMapper() {

@@ -13,11 +13,11 @@ public class MatchBegegnungDO extends CommonDataObject {
     private Long wettkampfId;
     private Long matchnummer;
     private Long matchid;
-    private Long matchid_gegner;
+    private Long matchIdGegner;
     private String mannschaften;
     private Long begegnung;
     private Long scheibenNummer;
-    private Long scheibenNummer_gegner;
+    private Long scheibenNummerGegner;
     private Long matchpunkte;
     private Long satzpunkte;
     private Long strafPunkteSatz1;
@@ -30,11 +30,11 @@ public class MatchBegegnungDO extends CommonDataObject {
     public MatchBegegnungDO(Long wettkampfId,
                             Long matchnummer,
                             Long matchid,
-                            Long matchid_gegner,
+                            Long matchIdGegner,
                             String mannschaften,
                             Long begegnung,
                             Long scheibenNummer,
-                            Long scheibenNummer_gegner,
+                            Long scheibenNummerGegner,
                             Long matchpunkte,
                             Long satzpunkte,
                             Long strafPunkteSatz1, Long strafPunkteSatz2,
@@ -46,11 +46,11 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.setWettkampfId(wettkampfId);
         this.setMatchnummer(matchnummer);
         this.setMatchid(matchid);
-        this.setMatchid_gegner(matchid_gegner);
+        this.setMatchIdGegner(matchIdGegner);
         this.setMannschaften(mannschaften);
         this.setBegegnung(begegnung);
         this.setScheibenNummer(scheibenNummer);
-        this.setScheibenNummer_gegner(scheibenNummer_gegner);
+        this.setScheibenNummerGegner(scheibenNummerGegner);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
         this.setStrafPunkteSatz1(strafPunkteSatz1);
@@ -65,38 +65,6 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.setCreatedByUserId(createdByUserId);
         this.setLastModifiedByUserId(lastModifiedByUserId);
     }
-
-    public MatchBegegnungDO(Long wettkampfId,
-                            Long matchnummer,
-                            Long matchid,
-                            Long matchid_gegner,
-                            String mannschaften,
-                            Long begegnung,
-                            Long scheibenNummer,
-                            Long scheibenNummer_gegner,
-                            Long matchpunkte,
-                            Long satzpunkte,
-                            Long strafPunkteSatz1, Long strafPunkteSatz2,
-                            Long strafPunkteSatz3,
-                            Long strafPunkteSatz4, Long strafPunkteSatz5) {
-        this.setWettkampfId(wettkampfId);
-        this.setMatchnummer(matchnummer);
-        this.setMatchid(matchid);
-        this.setMatchid_gegner(matchid_gegner);
-        this.setMannschaften(mannschaften);
-        this.setBegegnung(begegnung);
-        this.setScheibenNummer(scheibenNummer);
-        this.setScheibenNummer_gegner(scheibenNummer_gegner);
-        this.setMatchpunkte(matchpunkte);
-        this.setSatzpunkte(satzpunkte);
-        this.setStrafPunkteSatz1(strafPunkteSatz1);
-        this.setStrafPunkteSatz2(strafPunkteSatz2);
-        this.setStrafPunkteSatz3(strafPunkteSatz3);
-        this.setStrafPunkteSatz4(strafPunkteSatz4);
-        this.setStrafPunkteSatz5(strafPunkteSatz5);
-
-    }
-
 
 
     public static long getSerialVersionUID() {
@@ -127,12 +95,12 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.matchid = matchid;
     }
 
-    public Long getMatchid_gegner() {
-        return matchid_gegner;
+    public Long getMatchIdGegner() {
+        return matchIdGegner;
     }
 
-    public void setMatchid_gegner(Long matchid_gegner) {
-        this.matchid_gegner = matchid_gegner;
+    public void setMatchIdGegner(Long matchIdGegner) {
+        this.matchIdGegner = matchIdGegner;
     }
 
     public String getMannschaften() {
@@ -159,12 +127,12 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.scheibenNummer = scheibenNummer;
     }
 
-    public Long getScheibenNummer_gegner() {
-        return scheibenNummer_gegner;
+    public Long getScheibenNummerGegner() {
+        return scheibenNummerGegner;
     }
 
-    public void setScheibenNummer_gegner(Long scheibenNummer_gegner) {
-        this.scheibenNummer_gegner = scheibenNummer_gegner;
+    public void setScheibenNummerGegner(Long scheibenNummerGegner) {
+        this.scheibenNummerGegner = scheibenNummerGegner;
     }
 
     public Long getMatchpunkte() {

@@ -6,12 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -59,7 +54,7 @@ public class WettkampfTypService implements ServiceFacade {
      *
      * @return wettkampftypDoList - List filled with Data Objects of Wettkämpfe
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfTypDTO> findAll() {
@@ -71,9 +66,9 @@ public class WettkampfTypService implements ServiceFacade {
      * findByID-Method gives back a specific Wettkampftyp according to a single Wettkampftyp_ID
      *
      * @param id - single id of the Wettkampftyp you want te access
-     * @return
+     * @return WettkampfTypDTO zur ID
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public WettkampfTypDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id > 0, "ID must not be negative.");
@@ -86,11 +81,11 @@ public class WettkampfTypService implements ServiceFacade {
 
     /**
      * create-Method() writes a new entry of Wettkampftyp into the database
-     * @param wettkampftypDTO
-     * @param principal
-     * @return
+     * @param wettkampftypDTO zum Anlegen auf der DB
+     * @param principal User der speichert
+     * @return WettkampfTypDTO der angelegt wurde
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
@@ -98,11 +93,7 @@ public class WettkampfTypService implements ServiceFacade {
 
         checkPreconditions(wettkampftypDTO);
 
-        LOG.debug("Received 'create' request with id '{}', name '{}' ",
-                wettkampftypDTO.getId(),
-                wettkampftypDTO.getName());
-
-        final WettkampfTypDO newDsbMitgliedDO = WettkampfTypDTOMapper.toDO.apply(wettkampftypDTO);
+         final WettkampfTypDO newDsbMitgliedDO = WettkampfTypDTOMapper.toDO.apply(wettkampftypDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
 
         final WettkampfTypDO savedWettkampfTypDO= wettkampftypComponent.create(newDsbMitgliedDO, userId);
@@ -115,18 +106,13 @@ public class WettkampfTypService implements ServiceFacade {
      * @param principal
      * @return
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public WettkampfTypDTO update(@RequestBody final WettkampfTypDTO wettkampftypDTO, final Principal principal) {
         checkPreconditions(wettkampftypDTO);
         Preconditions.checkArgument(wettkampftypDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPFTYP_ID);
-
-                LOG.debug("Received 'update' request with id '{}', Datum '{}', VeranstaltungsID'{}', WettkampftypDisziplinID'{}', Wettkampftyport'{}'," +
-                                " WettkampftypTag '{}', WettkampftypBeginn'{}', WettkampftypTypID '{}' ",
-                        wettkampftypDTO.getId(),
-                        wettkampftypDTO.getName());
 
         final WettkampfTypDO newWettkampfTypDO = WettkampfTypDTOMapper.toDO.apply(wettkampftypDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -140,7 +126,7 @@ public class WettkampfTypService implements ServiceFacade {
      * @param id
      * @param principal
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");

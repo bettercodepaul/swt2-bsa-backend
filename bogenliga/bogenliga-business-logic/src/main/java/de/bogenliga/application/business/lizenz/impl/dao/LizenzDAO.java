@@ -17,8 +17,9 @@ import java.util.Map;
  * DataAccessObject for the Lizenz/Dsbmitglied entity in the database.
  *
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
+ * Functionality to find all Kampfrichter who are not in a Wettkampftag (wettkampfid) but have the Kampfrichter-Lizenz is implemented in KampfrichterDAO
  *
- * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, BettercallPaul gmbh
  */
 @Repository
 public class LizenzDAO implements DataAccessObject {

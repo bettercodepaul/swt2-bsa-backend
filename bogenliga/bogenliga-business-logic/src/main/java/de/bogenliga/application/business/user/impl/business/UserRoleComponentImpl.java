@@ -17,16 +17,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.einstellungen.impl.dao.EinstellungenDAO;
-import de.bogenliga.application.business.einstellungen.impl.entity.EinstellungenBE;
+import de.bogenliga.application.business.configuration.api.ConfigurationComponent;
+import de.bogenliga.application.business.configuration.api.types.ConfigurationDO;
 import de.bogenliga.application.business.role.impl.dao.RoleDAO;
 import de.bogenliga.application.business.role.impl.entity.RoleBE;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.impl.dao.UserRoleExtDAO;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleBE;
 import de.bogenliga.application.business.user.impl.entity.UserRoleExtBE;
+import de.bogenliga.application.business.user.impl.mapper.UserMapper;
 import de.bogenliga.application.business.user.impl.mapper.UserRoleMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -42,12 +44,13 @@ public class UserRoleComponentImpl implements UserRoleComponent {
     private static final String PRECONDITION_MSG_USER_ID = "UserID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "UserEmail must not be null or empty";
     private static final String PRECONDITION_MSG_ROLE_ID = "RoleID must not be null or negative";
+    private static final String PRECONDITION_MSG_USER_SEARCH = "Search term cannot be empty";
     private static final String USER_ROLE_DEFAULT = "USER";
     private final UserRoleExtDAO userRoleExtDAO;
 
     private final RoleDAO roleDAO;
 
-    private EinstellungenDAO einstellungenDAO;
+    private ConfigurationComponent einstellungenComponent;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRoleComponentImpl.class);
 
@@ -62,18 +65,28 @@ public class UserRoleComponentImpl implements UserRoleComponent {
      */
     @Autowired
     public UserRoleComponentImpl(final UserRoleExtDAO userRoleExtDAO, RoleDAO roleDAO,
-                                 EinstellungenDAO einstellungenDAO) {
+                                 ConfigurationComponent einstellungenComponent) {
 
         this.userRoleExtDAO = userRoleExtDAO;
         this.roleDAO = roleDAO;
-        this.einstellungenDAO = einstellungenDAO;
+        this.einstellungenComponent = einstellungenComponent;
     }
+
 
 
     @Override
     public List<UserRoleDO> findAll() {
         final List<UserRoleExtBE> userRoleExtBEList = userRoleExtDAO.findAll();
         return userRoleExtBEList.stream().map(UserRoleMapper.extToUserRoleDO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserRoleDO> findBySearch(String searchTerm) {
+        Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_USER_SEARCH);
+
+        final List<UserRoleExtBE> result = userRoleExtDAO.findBySearch(searchTerm);
+
+        return result.stream().map(UserRoleMapper.extToUserRoleDO).collect(Collectors.toList());
     }
 
 
@@ -94,6 +107,35 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
         return userRoleDOList;
+    }
+
+
+    /**
+     * gets all users from findAll() and checks if they have the
+     * special role with the given "roleId"
+     * @param roleId
+     * @return List of all users with this role
+     */
+    @Override
+    public List<UserRoleDO> findByRoleId(final Long roleId) {
+        Preconditions.checkNotNull(roleId, PRECONDITION_MSG_USERROLE);
+        Preconditions.checkArgument(roleId >= 0, PRECONDITION_MSG_ROLE_ID);
+
+        List<UserRoleDO> allUsersOfRole = new ArrayList<>();
+        List<UserRoleExtBE> allUsers = userRoleExtDAO.findAll();
+        if (allUsers == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for roleID '%s'", roleId));
+        }
+
+
+        for (UserRoleExtBE i: allUsers) {
+            if( i.getRoleId().equals(roleId)){
+                allUsersOfRole.add(UserRoleMapper.extToUserRoleDO.apply(i));
+            }
+        }
+
+        return allUsersOfRole;
     }
 
 
@@ -202,7 +244,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
             recipients[i] = (result.get(i).getUserEmail());
         }
 
-        List<EinstellungenBE> einstellungen = einstellungenDAO.findAll();
+        List<ConfigurationDO> einstellungen = einstellungenComponent.findAll();
 
         String smtpHost = "";
         String smtpPW = "";
@@ -211,20 +253,22 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         String smtpPort = "";
 
         for (int i = 0; i < einstellungen.size(); i++) {
-            String tempKey = einstellungen.get(i).getEinstellungenKey();
+            String tempKey = einstellungen.get(i).getKey();
             if (tempKey.equals("SMTPHost")) {
-                smtpHost = einstellungen.get(i).getEinstellungenValue();
+                smtpHost = einstellungen.get(i).getValue();
             } else if (tempKey.equals("SMTPPasswort")) {
-                smtpPW = einstellungen.get(i).getEinstellungenValue();
+                smtpPW = einstellungen.get(i).getValue();
             } else if (tempKey.equals("SMTPBenutzer")) {
-                smtpBenutzer = einstellungen.get(i).getEinstellungenValue();
+                smtpBenutzer = einstellungen.get(i).getValue();
             } else if (tempKey.equals("SMTPEmail")) {
-                smtpEMail = einstellungen.get(i).getEinstellungenValue();
+                smtpEMail = einstellungen.get(i).getValue();
             } else if (tempKey.equals("SMTPPort")) {
-                smtpPort = einstellungen.get(i).getEinstellungenValue();
+                smtpPort = einstellungen.get(i).getValue();
             }
 
         }
+
+        LOGGER.debug("Found smtpHost {} and smtpPort {}", smtpHost, smtpPort);
 
         final String username = smtpBenutzer;
         final String password = smtpPW;
@@ -269,6 +313,5 @@ public class UserRoleComponentImpl implements UserRoleComponent {
         }
 
     }
-
 
 }

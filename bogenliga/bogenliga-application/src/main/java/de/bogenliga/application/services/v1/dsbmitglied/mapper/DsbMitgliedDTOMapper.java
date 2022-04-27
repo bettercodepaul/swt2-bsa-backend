@@ -9,7 +9,7 @@ import de.bogenliga.application.services.v1.dsbmitglied.model.DsbMitgliedDTO;
 /**
  * I map the {@link DsbMitgliedDO} and {@link DsbMitgliedDTO} objects
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
  * Oracle Function Package Overview</a>
  * @see <a href="https://www.baeldung.com/java-8-functional-interfaces">Functional Interfaces in Java 8</a>
@@ -42,7 +42,7 @@ public final class DsbMitgliedDTOMapper implements DataTransferObjectMapper {
                 dsbMitgliedNationalitaet,
                 dsbMitgliedMitgliedsnummer,
                 dsbMitgliedVereinsId,
-                dsbMitgliedUserId, dsbMitgliedKampfrichterlizenz);//,dsbMitgliedKampfrichter);
+                dsbMitgliedUserId, dsbMitgliedKampfrichterlizenz);
     };
 
     /**

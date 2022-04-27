@@ -6,7 +6,6 @@ import de.bogenliga.application.services.v1.ligatabelle.mapper.LigatabelleDTOMap
 import de.bogenliga.application.services.v1.ligatabelle.model.LigatabelleDTO;
 
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,9 +51,8 @@ public class LigatabelleService implements ServiceFacade {
      *
      * @return lost of {@link LigatabelleDTO} as JSON
      */
-    @RequestMapping(
+    @GetMapping(
             value = "veranstaltung={id}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigatabelleDTO> getLigatabelleVeranstaltung(@PathVariable("id") final long id) {
@@ -73,9 +70,8 @@ public class LigatabelleService implements ServiceFacade {
      *
      * @return lost of {@link LigatabelleDTO} as JSON
      */
-    @RequestMapping(
+    @GetMapping(
             value = "wettkampf={id}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigatabelleDTO> getLigatabelleWettkampf(@PathVariable("id") final long id) {

@@ -41,7 +41,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_WETTKAMPF_TAG = "wettkampfTag";
     private static final String WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinId";
     private static final String WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampfTypId";
-    private static final String WETTKAMPF_BE_WETTKAMPF_KAMPFRICHTER_ID= "kampfrichterId";
     private static final String WETTKAMPF_BE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
 
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
@@ -55,7 +54,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_WETTKAMPF_TAG = "wettkampf_tag";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampf_wettkampftyp_id";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_KAMPFRICHTER_ID= "kampfrichter_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
 
     //default Values for Wettkampftag 0
@@ -67,8 +65,6 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String DEFAULT_BEGINN = " - ";
     private static final Long DEFAULT_DISZIPLIN_ID = 0L;
     private static final Long DEFAULT_TYP_ID = 0L;
-    private static final Long DEFAULT_KAMPFRICHTER_ID = 0L;
-    private static final Long DEFAULT_WETTKAMPF_VERANSTALTER = 0L;      // WETTKAMPF_AUSRICHTER?
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<WettkampfBE> WETTKAMPF = new BusinessEntityConfiguration<>(
@@ -77,19 +73,21 @@ public class WettkampfDAO implements DataAccessObject {
     /*
      * SQL queries
      */
+    private static final String SELECT = "SELECT * ";
+
     private static final String FIND_ALL =
-            "SELECT * "
+            SELECT
                     + " FROM wettkampf"
                     + " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0"
                     + " ORDER BY wettkampf_id";
 
     private static final String FIND_BY_ID =
-            "SELECT * "
+            SELECT
                     + " FROM wettkampf "
                     + " WHERE wettkampf_id = ?";
 
     private static final String FIND_ALL_BY_MANNSCHAFTS_ID =
-            "SELECT * "
+            SELECT
                     + " FROM wettkampf "
                     + " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_id IN ("
                     + " SELECT match_wettkampf_id"
@@ -98,13 +96,13 @@ public class WettkampfDAO implements DataAccessObject {
                     "ORDER BY wettkampf_datum";
 
     private static final String FIND_ALL_BY_VERANSTALTUNG_ID =
-            "SELECT *" +
+            SELECT +
                     " FROM wettkampf" +
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " > 0 AND wettkampf_veranstaltung_id = ?" +
                     " order by wettkampf_datum";
 
     private static final String FIND_WT0_BY_VERANSTALTUNG_ID =
-            "SELECT *" +
+            SELECT +
                     " FROM wettkampf" +
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " = 0 AND wettkampf_veranstaltung_id = ?";
 
@@ -139,7 +137,6 @@ public class WettkampfDAO implements DataAccessObject {
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_ORTSINFO, WETTKAMPF_BE_WETTKAMPF_ORTSINFO);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_TAG, WETTKAMPF_BE_WETTKAMPF_TAG);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID, WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID);
-        columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_KAMPFRICHTER_ID, WETTKAMPF_BE_WETTKAMPF_KAMPFRICHTER_ID);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER, WETTKAMPF_BE_WETTKAMPF_AUSRICHTER);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -158,7 +155,7 @@ public class WettkampfDAO implements DataAccessObject {
     /**
      * Return Wettkampf entry with specific id
      *
-     * @param id
+     * @param id die ID vom zu suchenden Wettkampf
      */
     public WettkampfBE findById(final long id) {
         return basicDao.selectSingleEntity(WETTKAMPF, FIND_BY_ID, id);
@@ -178,12 +175,12 @@ public class WettkampfDAO implements DataAccessObject {
     /**
      * Create a new Wettkampf entry
      *
-     * @param wettkampfBE
-     * @param currentWettkampfId
+     * @param wettkampfBE Daten des neu anzulegenden Wettkampfs
+     * @param currentUserId aktueller Änderungs-User
      * @return Business Entity corresponding to the created wettkampf entry
      */
-    public WettkampfBE create(final WettkampfBE wettkampfBE, final long currentWettkampfId) {
-        basicDao.setCreationAttributes(wettkampfBE, currentWettkampfId);
+    public WettkampfBE create(final WettkampfBE wettkampfBE, final long currentUserId) {
+        basicDao.setCreationAttributes(wettkampfBE, currentUserId);
 
         return basicDao.insertEntity(WETTKAMPF, wettkampfBE);
     }
@@ -192,12 +189,12 @@ public class WettkampfDAO implements DataAccessObject {
     /**
      * Update an existing Wettkampf entry
      *
-     * @param wettkampfBE
-     * @param currentWettkampfId
+     * @param wettkampfBE Datensatz zur Aktualisierung
+     * @param currentUserId aktueller Änderungs-User
      * @return Business Entity corresponding to the updated wettkampf entry
      */
-    public WettkampfBE update(final WettkampfBE wettkampfBE, final long currentWettkampfId) {
-        basicDao.setModificationAttributes(wettkampfBE, currentWettkampfId);
+    public WettkampfBE update(final WettkampfBE wettkampfBE, final long currentUserId) {
+        basicDao.setModificationAttributes(wettkampfBE, currentUserId);
 
         return basicDao.updateEntity(WETTKAMPF, wettkampfBE, WETTKAMPF_BE_ID);
     }
@@ -206,11 +203,11 @@ public class WettkampfDAO implements DataAccessObject {
     /**
      * Delete existing wettkampf entrycreated_at_utc
      *
-     * @param wettkampfBE
-     * @param currentWettkampfId
+     * @param wettkampfBE zu löschender Datensatz
+     * @param currentUserId aktueller Änderungs-User
      */
-    public void delete(final WettkampfBE wettkampfBE, final long currentWettkampfId) {
-        basicDao.setModificationAttributes(wettkampfBE, currentWettkampfId);
+    public void delete(final WettkampfBE wettkampfBE, final long currentUserId) {
+        basicDao.setModificationAttributes(wettkampfBE, currentUserId);
 
         basicDao.deleteEntity(WETTKAMPF, wettkampfBE, WETTKAMPF_BE_ID);
     }
@@ -220,11 +217,12 @@ public class WettkampfDAO implements DataAccessObject {
      * Creates a new Wettkampf entry with default values. The entry represents the Wettkampftag 0 for a given Veranstaltung.
      * This entry is needed to initialise the Ligatabelle.
      *
-     * @param veranstaltungsId
-     * @param currentUserId
+     * @param veranstaltungsId Veranstaltung für die der Wettkampftag anzulegen ist
+     * @param currentUserId aktueller Änderungs-User
      */
-    public void createWettkampftag0(final long veranstaltungsId, final long currentUserId){
+    public WettkampfBE createWettkampftag0(final long veranstaltungsId, final long currentUserId){
         WettkampfBE defaultWettkampfBE = new WettkampfBE();
+        basicDao.setCreationAttributes(defaultWettkampfBE, currentUserId);
         defaultWettkampfBE.setVeranstaltungsId(veranstaltungsId);
         defaultWettkampfBE.setWettkampfTag(0L);
         defaultWettkampfBE.setDatum(DEFAULT_DATUM);
@@ -235,15 +233,15 @@ public class WettkampfDAO implements DataAccessObject {
         defaultWettkampfBE.setWettkampfOrtsinfo(DEFAULT_ORTSINFO);
         defaultWettkampfBE.setWettkampfDisziplinId(DEFAULT_DISZIPLIN_ID);
         defaultWettkampfBE.setWettkampfTypId(DEFAULT_TYP_ID);
-        defaultWettkampfBE.setKampfrichterId(DEFAULT_KAMPFRICHTER_ID);
-        defaultWettkampfBE.setWettkampfAusrichter(DEFAULT_WETTKAMPF_VERANSTALTER);
-        this.create(defaultWettkampfBE, currentUserId);
+        defaultWettkampfBE.setWettkampfAusrichter(currentUserId);
+
+        return basicDao.insertEntity(WETTKAMPF, defaultWettkampfBE);
     }
 
     /**
      * Return Wettkampf entry (Wettkampftag 0) with specific veranstaltungs_id
      *
-     * @param veranstaltungsId
+     * @param veranstaltungsId Veranstaltung für die der WT0 gesucht wird
      */
     public WettkampfBE findWT0byVeranstaltungsId(final long veranstaltungsId) {
         return basicDao.selectSingleEntity(WETTKAMPF, FIND_WT0_BY_VERANSTALTUNG_ID, veranstaltungsId);

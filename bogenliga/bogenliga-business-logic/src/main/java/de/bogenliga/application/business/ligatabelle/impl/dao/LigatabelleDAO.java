@@ -18,7 +18,7 @@ import java.util.Map;
  * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Repository
 public class LigatabelleDAO implements DataAccessObject {
@@ -39,10 +39,10 @@ public class LigatabelleDAO implements DataAccessObject {
     private static final String VEREINID_BE = "vereinId";
     private static final String VEREINNAME_BE = "vereinName";
     private static final String MATCHPKT_BE = "matchpkt";
-    private static final String MATCHPKTGEGEN_BE = "matchpkt_gegen";
+    private static final String MATCHPKTGEGEN_BE = "matchpktGegen";
     private static final String SATZPKT_BE = "satzpkt";
-    private static final String SATZPKTGEGEN_BE = "satzpkt_gegen";
-    private static final String SATZPKTDIFFERENZ_BE = "satzpkt_differenz";
+    private static final String SATZPKTGEGEN_BE = "satzpktGegen";
+    private static final String SATZPKTDIFFERENZ_BE = "satzpktDifferenz";
     private static final String SORTIERUNG_BE = "sortierung";
     private static final String TABELLENPLATZ_BE = "tabellenplatz";
 
@@ -67,7 +67,7 @@ public class LigatabelleDAO implements DataAccessObject {
      */
 
     /* der Select liefert die aktuelle Ligatabelle zur Veranstaltung -
-    * es wird immer der "höchste Wettkampftag ermittelt un die Tabellenreihenfolge
+    * es wird immer der "höchste Wettkampftag ermittelt und die Tabellenreihenfolge
     * automatisch erzeugt durch die Sortierkriterien beim generieren der Row-Number
     * ggf. mpüssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
     * hier jetzt erst mal der Select für Match-Punkte vor Satzpunkt-Differenz
@@ -92,7 +92,7 @@ public class LigatabelleDAO implements DataAccessObject {
             "from ligatabelle as ligat where ligat.ligatabelle_veranstaltung_id = lt.ligatabelle_veranstaltung_id)";
 
     /* der Select liefert die aktuelle Ligatabelle zur Wettkampf-ID
-     * ggf. mpüssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
+     * ggf. müssen wir für die verschiedenen Liga-Formen andere Selects hinterlegen
      * hier jetzt erst mal der Select für Match-Punkte vor Satzpunkt-Differenz
      * sollte für Liga-Satzsystem passen
      */
@@ -126,8 +126,8 @@ public class LigatabelleDAO implements DataAccessObject {
                         "ligatabelle_mannschaft_nummer," +
                         "ligatabelle_verein_id," +
                         "ligatabelle_verein_name" +
-                        ")as tabellenplatz" +
-                    "from ligatabelle" +
+                        ")as tabellenplatz " +
+                    "from ligatabelle " +
                     "where ligatabelle_wettkampf_id = ?" ;
 
 

@@ -18,6 +18,13 @@ public interface RegionenComponent extends ComponentFacade {
     List<RegionenDO> findAll();
 
     /**
+     *  Return list of entries that contain a search term
+     * @param searchTerm
+     * @return list of Region classes entries
+     */
+    List<RegionenDO> findBySearch(final String searchTerm);
+
+    /**
      * Return all class entries
      * @return list of all Region classes of type = kreis in the DB
      */

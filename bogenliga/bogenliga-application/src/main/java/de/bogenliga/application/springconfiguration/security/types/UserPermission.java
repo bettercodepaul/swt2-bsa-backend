@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
  * <p>
  * The permissions are configured in the database and stored in the JSON Web Token after the signIn.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public enum UserPermission implements GrantedAuthority {
 
@@ -160,7 +160,12 @@ public enum UserPermission implements GrantedAuthority {
 
     CAN_DELETE_MANNSCHAFT,
     CAN_MODIFY_MANNSCHAFT,
-    CAN_MODIFY_MY_WETTKAMPF
+    CAN_MODIFY_MY_WETTKAMPF,
+
+    CAN_MODIFY_SYSTEMDATEN_LIGALEITER,
+    CAN_CREATE_SYSTEMDATEN_LIGALEITER,
+    CAN_CREATE_STAMMDATEN_LIGALEITER,
+    CAN_MODIFY_STAMMDATEN_LIGALEITER
     ;
 
 

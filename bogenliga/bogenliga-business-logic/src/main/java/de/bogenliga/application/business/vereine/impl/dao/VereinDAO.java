@@ -33,6 +33,7 @@ public class VereinDAO implements DataAccessObject {
     private static final String VEREIN_BE_REGION_ID = "vereinRegionId";
     private static final String VEREIN_BE_WEBSITE = "vereinWebsite";
     private static final String VEREIN_BE_DESCRIPTION = "vereinDescription";
+    private static final String VEREIN_BE_ICON = "vereinIcon";
 
     private static final String VEREIN_TABLE_ID = "verein_id";
     private static final String VEREIN_TABLE_NAME = "verein_name";
@@ -40,6 +41,7 @@ public class VereinDAO implements DataAccessObject {
     private static final String VEREIN_TABLE_REGION_ID = "verein_region_id";
     private static final String VEREIN_TABLE_WEBSITE = "verein_website";
     private static final String VEREIN_TABLE_DESCRIPTION = "verein_description";
+    private static final String VEREIN_TABLE_ICON = "verein_icon";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<VereinBE> VEREIN = new BusinessEntityConfiguration<>(
@@ -51,6 +53,15 @@ public class VereinDAO implements DataAccessObject {
                     + " FROM verein v"
                     + " JOIN region r on v.verein_region_id=r.region_id"
                     + " ORDER BY verein_id";
+
+    private static final String FIND_BY_SEARCH =
+            "SELECT v.*, r.region_name "
+                    + " FROM verein v"
+                    + " JOIN region r on v.verein_region_id=r.region_id "
+                    + " WHERE CONCAT(LOWER(v.verein_name), ' ', "
+                    + " LOWER(r.region_name), ' ', "
+                    + " LOWER(v.verein_dsb_identifier)) LIKE LOWER(?) ";
+
     private static final String FIND_BY_ID =
             "SELECT * "
                     + " FROM verein v"
@@ -67,7 +78,8 @@ public class VereinDAO implements DataAccessObject {
 
     // table column label mapping to the business entity parameter names
     private static Map<String, String> getColumnsToFieldsMap() {
-        final Map<String, String> columnsToFieldsMap = new HashMap<>();
+        final Map<String, String> columnsToFieldsMap;
+        columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(VEREIN_TABLE_ID, VEREIN_BE_ID);
         columnsToFieldsMap.put(VEREIN_TABLE_NAME, VEREIN_BE_NAME);
@@ -75,6 +87,7 @@ public class VereinDAO implements DataAccessObject {
         columnsToFieldsMap.put(VEREIN_TABLE_REGION_ID, VEREIN_BE_REGION_ID);
         columnsToFieldsMap.put(VEREIN_TABLE_WEBSITE, VEREIN_BE_WEBSITE);
         columnsToFieldsMap.put(VEREIN_TABLE_DESCRIPTION, VEREIN_BE_DESCRIPTION);
+        columnsToFieldsMap.put(VEREIN_TABLE_ICON, VEREIN_BE_ICON);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -88,6 +101,15 @@ public class VereinDAO implements DataAccessObject {
      */
     public List<VereinBE> findAll() {
         return basicDao.selectEntityList(VEREIN, FIND_ALL);
+    }
+
+    public List<VereinBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(VEREIN, FIND_BY_SEARCH, new StringBuilder()
+                                                                     .append("%")
+                                                                     .append(searchTerm)
+                                                                     .append("%")
+                                                                     .toString()
+        );
     }
 
 

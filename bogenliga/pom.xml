@@ -6,7 +6,7 @@
     <!-- ROOT POM - Artifact -->
     <groupId>de.bogenliga</groupId>
     <artifactId>bogenliga</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 
     <name>${serviceId.uppercase} :: ${serviceName}</name>
     <description>Bogenliga Application</description>
@@ -16,6 +16,7 @@
         <module>./bogenliga-application</module>
         <module>./bogenliga-business-logic</module>
         <module>./bogenliga-common</module>
+        <module>./bogenliga-report</module>
     </modules>
 
     <properties>
@@ -30,6 +31,12 @@
         <downloadJavadocs>true</downloadJavadocs>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.projectKey>bettercodepaul_swt2-bsa-backend</sonar.projectKey>
+        <sonar.organization>bettercodepaul</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url> 
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/bogenliga-report/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>  
     </properties>
 
     <packaging>pom</packaging>
@@ -92,8 +99,6 @@
                     <artifactId>flyway-maven-plugin</artifactId>
                     <version>4.0.3</version>
                 </plugin>
-
-
                 <!-- dependency check -->
                 <plugin>
                     <groupId>org.owasp</groupId>
@@ -111,12 +116,6 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>cobertura-maven-plugin</artifactId>
                     <version>2.7</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.2</version>
                 </plugin>
 
 
@@ -230,17 +229,6 @@
                         <version>5.0.3</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>

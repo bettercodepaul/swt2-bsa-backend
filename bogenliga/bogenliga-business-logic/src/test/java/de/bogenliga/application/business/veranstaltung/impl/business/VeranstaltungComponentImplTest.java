@@ -1,6 +1,22 @@
 package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.sql.Date;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.regionen.api.RegionenComponent;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.assertj.core.api.ThrowableTypeAssert;
+import org.assertj.core.util.CheckReturnValue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -9,15 +25,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.liga.impl.entity.LigaBE;
-import de.bogenliga.application.business.regionen.impl.dao.RegionenDAO;
-import de.bogenliga.application.business.regionen.impl.entity.RegionenBE;
-import de.bogenliga.application.business.user.impl.entity.UserBE;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
-import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
-import de.bogenliga.application.business.wettkampftyp.impl.entity.WettkampfTypBE;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -29,9 +40,11 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long VERANSTALTUNG_ID = 0L;
+    private static final Long LAST_VERANSTALTUNG_ID = 1L;
     private static final Long VERANSTALTUNG_WETTKAMPFTYP_ID = 1L;
     private static final String VERANSTALTUNG_NAME = "";
     private static final Long VERANSTALTUNG_SPORTJAHR = 2018L;
+    private static final Long LAST_VERANSTALTUNG_SPORTJAHR = 2017L;
     private static final Date VERANSTALTUNG_DSB_IDENTIFIER = new Date(1L);
     private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
     private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
@@ -40,14 +53,6 @@ public class VeranstaltungComponentImplTest {
     private static final String VERANSTALTUNG_LIGALEITER_EMAIL = "a@b.c";
     private static final String VERANSTALTUNG_WETTKAMPFTYP_NAME = "abc";
     private static final String VERANSTALTUNG_LIGA_NAME = "def";
-
-
-    private static final Long REGION_ID = 5L;
-    private static final String REGION_KUERZEL = "asdasd";
-    private static final String REGION_TYPE = "lsdf";
-    private static final Long REGION_UEBERGEORDNET = 1L;
-    private static final String REGION_NAME = "efsf";
-
 
     private static  final Long LIGA_REGION_ID= 1L;
     private static  final Long LIGA_UebergeordneteR_LIGA_ID= 2L;
@@ -70,21 +75,33 @@ public class VeranstaltungComponentImplTest {
     @Mock
     private VeranstaltungDAO veranstaltungDAO;
     @Mock
-    private RegionenDAO regionenDAO;
+    private RegionenComponent regionenComponent;
+    @Mock
+    private LigaComponent ligaComponent;
+    @Mock
+    private WettkampfComponent wettkampfComponent;
+    @Mock
+    private WettkampfTypComponent wettkampfTypComponent;
+    @Mock
+    private UserComponent userComponent;
     @InjectMocks
     private VeranstaltungComponentImpl underTest;
     @Captor
     private ArgumentCaptor<VeranstaltungBE> veranstaltungBEArgumentCaptor;
+    @CheckReturnValue
+    public static <T extends Throwable> ThrowableTypeAssert<T> assertThatExceptionOfType(Class<? extends T> exceptionType) {
+        return AssertionsForClassTypes.assertThatExceptionOfType(exceptionType);
+    }
 
     private static VeranstaltungBE getVeranstaltungBE() {
         VeranstaltungBE expectedBE = new VeranstaltungBE();
-        expectedBE.setVeranstaltung_id(VERANSTALTUNG_ID);
-        expectedBE.setVeranstaltung_wettkampftyp_id(VERANSTALTUNG_WETTKAMPFTYP_ID);
-        expectedBE.setVeranstaltung_name(VERANSTALTUNG_NAME);
-        expectedBE.setVeranstaltung_sportjahr(VERANSTALTUNG_SPORTJAHR);
-        expectedBE.setVeranstaltung_meldedeadline(VERANSTALTUNG_MELDEDEADLINE);
-        expectedBE.setVeranstaltung_ligaleiter_id(VERANSTALTUNG_LIGALEITER_ID);
-        expectedBE.setVeranstaltung_liga_id(VERANSTALTUNG_LIGA_ID);
+        expectedBE.setVeranstaltungId(VERANSTALTUNG_ID);
+        expectedBE.setVeranstaltungWettkampftypId(VERANSTALTUNG_WETTKAMPFTYP_ID);
+        expectedBE.setVeranstaltungName(VERANSTALTUNG_NAME);
+        expectedBE.setVeranstaltungSportjahr(VERANSTALTUNG_SPORTJAHR);
+        expectedBE.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
+        expectedBE.setVeranstaltungLigaleiterId(VERANSTALTUNG_LIGALEITER_ID);
+        expectedBE.setVeranstaltungLigaId(VERANSTALTUNG_LIGA_ID);
 
         return expectedBE;
     }
@@ -104,78 +121,70 @@ public class VeranstaltungComponentImplTest {
     }
 
 
-    public static RegionenBE getRegionenBE() { // da ist die region die der Veranstaltung ID entspricht
-        RegionenBE regionenBE = new RegionenBE();
-        regionenBE.setRegionId(REGION_ID);
-        regionenBE.setRegionKuerzel(REGION_KUERZEL);
-        regionenBE.setRegionTyp(REGION_TYPE);
-        regionenBE.setRegionUebergeordnet(REGION_UEBERGEORDNET);
-        regionenBE.setRegionName(REGION_NAME);
 
-        return regionenBE;
+    public static UserDO getUserDO() { // da ist der User, der als Leiter der Veranstaltung hinterlegt wird
+        UserDO userDO = new UserDO();
+        userDO.setId (VERANSTALTUNG_LIGALEITER_ID);
+        userDO.setEmail(VERANSTALTUNG_LIGALEITER_EMAIL);
+
+        return userDO;
     }
 
-    public static UserBE getUserBE() { // da ist die region die der Veranstaltung ID entspricht
-        UserBE UserBE = new UserBE();
-        UserBE.setUserId(REGION_ID);
-        UserBE.setUserEmail(REGION_KUERZEL);
+    public static WettkampfTypDO getWettkampfTypDO() {
+        WettkampfTypDO wettkampftypDO = new WettkampfTypDO(0L);
+        wettkampftypDO.setId(VERANSTALTUNG_WETTKAMPFTYP_ID);
+        wettkampftypDO.setName(VERANSTALTUNG_WETTKAMPFTYP_NAME);
 
-        return UserBE;
+        return wettkampftypDO;
     }
 
-    public static WettkampfTypBE getWettkampfTypBE() {
-        WettkampfTypBE wettkampftypBE = new WettkampfTypBE();
-        wettkampftypBE.setwettkampftypID(VERANSTALTUNG_WETTKAMPFTYP_ID);
-        wettkampftypBE.setwettkampftypname(VERANSTALTUNG_WETTKAMPFTYP_NAME);
+    public static LigaDO getLigaDO() {
+        LigaDO ligaDO = new LigaDO();
+        ligaDO.setId(VERANSTALTUNG_LIGA_ID);
+        ligaDO.setName(VERANSTALTUNG_LIGA_NAME);
+        ligaDO.setRegionId(LIGA_REGION_ID);
+        ligaDO.setLigaUebergeordnetId(LIGA_UebergeordneteR_LIGA_ID);
+        ligaDO.setLigaVerantwortlichId(LIGA_VERANTWORTLICH_ID);
 
-        return wettkampftypBE;
+        return ligaDO;
     }
 
-    public static LigaBE getLigaBE() {
-        LigaBE ligaBE = new LigaBE();
-        ligaBE.setLigaId(VERANSTALTUNG_LIGA_ID);
-        ligaBE.setLigaName(VERANSTALTUNG_LIGA_NAME);
-        ligaBE.setLigaRegionId(LIGA_REGION_ID);
-        ligaBE.setLigaUebergeordnetId(LIGA_UebergeordneteR_LIGA_ID);
-        ligaBE.setLigaVerantwortlichId(LIGA_VERANTWORTLICH_ID);
+    public static WettkampfDO getWettkampfDO(){
+        WettkampfDO wettkampfDO = new WettkampfDO(0L);
+        wettkampfDO.setId(WETTKAMPF_ID);
+        wettkampfDO.setWettkampfDatum(WETTKAMPF_DATUM);
+        wettkampfDO.setWettkampfBeginn(WETTKAMPF_BEGINN);
+        wettkampfDO.setWettkampfStrasse(WETTKAMPF_STRASSE);
+        wettkampfDO.setWettkampfPlz(WETTKAMPF_PLZ);
+        wettkampfDO.setWettkampfOrtsname(WETTKAMPF_ORTSNAME);
+        wettkampfDO.setWettkampfOrtsinfo(WETTKAMPF_ORTSINFO);
 
-        return ligaBE;
-    }
-
-    public static WettkampfBE getWettkampfBE(){
-        WettkampfBE wettkampfBE = new WettkampfBE();
-        wettkampfBE.setId(WETTKAMPF_ID);
-        wettkampfBE.setDatum(WETTKAMPF_DATUM);
-        wettkampfBE.setWettkampfBeginn(WETTKAMPF_BEGINN);
-        wettkampfBE.setWettkampfStrasse(WETTKAMPF_STRASSE);
-        wettkampfBE.setWettkampfPlz(WETTKAMPF_PLZ);
-        wettkampfBE.setWettkampfOrtsname(WETTKAMPF_ORTSNAME);
-        wettkampfBE.setWettkampfOrtsinfo(WETTKAMPF_ORTSINFO);
-
-        return wettkampfBE;
+        return wettkampfDO;
     }
 
 
     //TODO Fix
-   /* @Test
+   @Test
     public void findAll() {
         // prepare test data
         final VeranstaltungBE expectedBE = getVeranstaltungBE();
-        final UserBE expectedUserBE = getUserBE();
-        final WettkampfTypBE expectedWettkamofBE = getWettkampfTypBE();
-        final LigaBE expectedligaBE = getLigaBE();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+       final VeranstaltungDO expectedDO = getVeranstaltungDO();
 
-
-        final RegionenBE expectedRegionBE = getRegionenBE();
-        final List<RegionenBE> expectedRegionBEList = Collections.singletonList(expectedRegionBE);
         final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
 
         // configure mocks
         when(veranstaltungDAO.findAll()).thenReturn(expectedVeranstaltungBEList);
 
-        when(regionenDAO.findAll()).thenReturn(expectedRegionBEList);
-        // call test method
+       when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+       when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+       when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+       // call test method
         final List<VeranstaltungDO> actual = underTest.findAll();
+
 
         // assert result
         assertThat(actual)
@@ -186,34 +195,43 @@ public class VeranstaltungComponentImplTest {
         assertThat(actual.get(0)).isNotNull();
 
         assertThat(actual.get(0).getVeranstaltungID())
-                .isEqualTo(expectedBE.getVeranstaltung_id());
+                .isEqualTo(expectedDO.getVeranstaltungID());
 
         assertThat(actual.get(0).getVeranstaltungName())
-                .isEqualTo(expectedBE.getVeranstaltung_name());
+                .isEqualTo(expectedDO.getVeranstaltungName());
 
-        assertThat(actual.get(0).getVeranstaltungWettkampftypName())
-                .isEqualTo(getRegionenBE().getRegionId());
-
-        //assertThat(actual.get(0).getDsbIdentifier())
-        //        .isEqualTo(expectedBE.getVeranstaltungDsbIdentifier());
-
-        assertThat(getRegionenBE())
-                .isEqualTo(expectedRegionBE.getRegionName());
+       assertThat(actual.get(0).getVeranstaltungWettkampftypName())
+               .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+       assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
+               .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+       assertThat(actual.get(0).getVeranstaltungLigaName())
+               .isEqualTo(expectedDO.getVeranstaltungLigaName());
 
 
         // verify invocations
         verify(veranstaltungDAO).findAll();
-    }*/
+    }
     //TODO Fix
-   /* @Test
+   @Test
     public void create() {
         // prepare test data
-        final VeranstaltungDO input = getVeranstaltungDO();
+       final VeranstaltungDO input = getVeranstaltungDO();
+
+       final WettkampfDO expectedWettkampfDO = getWettkampfDO();
+       final UserDO expectedUserDO = getUserDO();
+       final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+       final LigaDO expectedligaDO = getLigaDO();
+       final VeranstaltungDO expectedDO = getVeranstaltungDO();
 
         final VeranstaltungBE expectedBE = getVeranstaltungBE();
 
         // configure mocks
         when(veranstaltungDAO.create(any(VeranstaltungBE.class), anyLong())).thenReturn(expectedBE);
+        when(wettkampfComponent.createWT0(anyLong(), anyLong())).thenReturn(expectedWettkampfDO);
+
+       when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+       when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+       when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
 
         // call test method
         final VeranstaltungDO actual = underTest.create(input, USER);
@@ -222,26 +240,45 @@ public class VeranstaltungComponentImplTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getVeranstaltungID())
-                .isEqualTo(input.getVeranstaltungID());
+                .isEqualTo(expectedDO.getVeranstaltungID());
 
-        // verify invocations
+       assertThat(actual.getVeranstaltungName())
+               .isEqualTo(expectedDO.getVeranstaltungName());
+
+       assertThat(actual.getVeranstaltungWettkampftypName())
+               .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+       assertThat(actual.getVeranstaltungLigaleiterEmail())
+               .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+       assertThat(actual.getVeranstaltungLigaName())
+               .isEqualTo(expectedDO.getVeranstaltungLigaName());
+
+
+       // verify invocations
         verify(veranstaltungDAO).create(veranstaltungBEArgumentCaptor.capture(), anyLong());
 
         final VeranstaltungBE persistedBE = veranstaltungBEArgumentCaptor.getValue();
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltung_id())
+        assertThat(persistedBE.getVeranstaltungId())
                 .isEqualTo(input.getVeranstaltungID());
     }
-    //TODO Fix
-    /*@Test
+
+    @Test
     public void findById() {
         // prepare test data
         final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
 
         // configure mocks
         when(veranstaltungDAO.findById(VERANSTALTUNG_ID)).thenReturn(expectedBE);
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
 
         // call test method
         final VeranstaltungDO actual = underTest.findById(VERANSTALTUNG_ID);
@@ -250,21 +287,38 @@ public class VeranstaltungComponentImplTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getVeranstaltungID())
-                .isEqualTo(expectedBE.getVeranstaltung_id());
+                .isEqualTo(expectedDO.getVeranstaltungID());
+
+        assertThat(actual.getVeranstaltungName())
+                .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.getVeranstaltungWettkampftypName())
+                .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.getVeranstaltungLigaleiterEmail())
+                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.getVeranstaltungLigaName())
+                .isEqualTo(expectedDO.getVeranstaltungLigaName());
 
         // verify invocations
         verify(veranstaltungDAO).findById(VERANSTALTUNG_ID);
-    }*/
+    }
     //TODO Fix
-  /*  @Test
+  @Test
   public void update() {
         // prepare test data
         final VeranstaltungDO input = getVeranstaltungDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
 
         final VeranstaltungBE expectedBE = getVeranstaltungBE();
 
         // configure mocks
         when(veranstaltungDAO.update(any(VeranstaltungBE.class), anyLong())).thenReturn(expectedBE);
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
 
         // call test method
         final VeranstaltungDO actual = underTest.update(input, USER);
@@ -273,9 +327,17 @@ public class VeranstaltungComponentImplTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getVeranstaltungID())
-                .isEqualTo(input.getVeranstaltungID());
+              .isEqualTo(expectedDO.getVeranstaltungID());
+
         assertThat(actual.getVeranstaltungName())
-                .isEqualTo(input.getVeranstaltungName());
+              .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.getVeranstaltungWettkampftypName())
+              .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.getVeranstaltungLigaleiterEmail())
+              .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.getVeranstaltungLigaName())
+              .isEqualTo(expectedDO.getVeranstaltungLigaName());
 
         // verify invocations
         verify(veranstaltungDAO).update(veranstaltungBEArgumentCaptor.capture(), anyLong());
@@ -284,12 +346,12 @@ public class VeranstaltungComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltung_id())
+        assertThat(persistedBE.getVeranstaltungId())
                 .isEqualTo(input.getVeranstaltungID());
-        assertThat(persistedBE.getVeranstaltung_name())
+        assertThat(persistedBE.getVeranstaltungName())
                 .isEqualTo(input.getVeranstaltungName());
     }
-*/
+
     @Test
     public void delete() {
         VeranstaltungDO input = getVeranstaltungDO();
@@ -310,7 +372,7 @@ public class VeranstaltungComponentImplTest {
 
         assertThat(persistedBE).isNotNull();
 
-        assertThat(persistedBE.getVeranstaltung_id())
+        assertThat(persistedBE.getVeranstaltungId())
                 .isEqualTo(input.getVeranstaltungID());
     }
 
@@ -329,4 +391,263 @@ public class VeranstaltungComponentImplTest {
          assertThat(underTest.getVeranstaltungWettkampftypName()).isEqualTo(getVeranstaltungDO().getVeranstaltungWettkampftypName());
          assertEquals(underTest,getVeranstaltungDO());
     }
+
+    @Test
+    public void testFindByLigaleiterId() {
+        // prepare test data
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+
+        final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(veranstaltungDAO.findByLigaleiterId(VERANSTALTUNG_LIGALEITER_ID)).thenReturn(expectedVeranstaltungBEList);
+
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+        // call test method
+        final List<VeranstaltungDO> actual = underTest.findByLigaleiterId(VERANSTALTUNG_LIGALEITER_ID);
+
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getVeranstaltungID())
+                .isEqualTo(expectedDO.getVeranstaltungID());
+
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.get(0).getVeranstaltungWettkampftypName())
+                .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
+                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.get(0).getVeranstaltungLigaName())
+                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+
+
+        // verify invocations
+        verify(veranstaltungDAO).findByLigaleiterId(VERANSTALTUNG_LIGALEITER_ID);
+    }
+
+    @Test
+    public void testFindBySportjahr() {
+        // prepare test data
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+
+        final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR)).thenReturn(expectedVeranstaltungBEList);
+
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+        // call test method
+        final List<VeranstaltungDO> actual = underTest.findBySportjahr(VERANSTALTUNG_SPORTJAHR);
+
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getVeranstaltungID())
+                .isEqualTo(expectedDO.getVeranstaltungID());
+
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.get(0).getVeranstaltungWettkampftypName())
+                .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
+                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.get(0).getVeranstaltungLigaName())
+                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+
+
+        // verify invocations
+        verify(veranstaltungDAO).findBySportjahr(VERANSTALTUNG_SPORTJAHR);
+    }
+
+    @Test
+    public void testFindByLigaID() {
+        // prepare test data
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+
+        final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(veranstaltungDAO.findByLigaID(VERANSTALTUNG_LIGA_ID)).thenReturn(expectedVeranstaltungBEList);
+
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+        // call test method
+        final List<VeranstaltungDO> actual = underTest.findByLigaID(VERANSTALTUNG_LIGA_ID);
+
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getVeranstaltungID())
+                .isEqualTo(expectedDO.getVeranstaltungID());
+
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.get(0).getVeranstaltungWettkampftypName())
+                .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
+                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.get(0).getVeranstaltungLigaName())
+                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+
+
+        // verify invocations
+        verify(veranstaltungDAO).findByLigaID(VERANSTALTUNG_LIGA_ID);
+    }
+
+
+    /**
+     * Test for findBySportjahrDestinct
+     *
+     * @author Johannes Schänzle, Max Weise; FH Reutlingen
+     */
+    @Test
+    public void testfindBySportjahrDestinct(){
+        // prepare test data
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+
+        final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(veranstaltungDAO.findBySportjahrDestinct(VERANSTALTUNG_SPORTJAHR)).thenReturn(expectedVeranstaltungBEList);
+
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+        // call test method
+        final List<VeranstaltungDO> actual = underTest.findBySportjahrDestinct(VERANSTALTUNG_SPORTJAHR);
+
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getVeranstaltungID())
+                .isEqualTo(expectedDO.getVeranstaltungID());
+
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.get(0).getVeranstaltungWettkampftypName())
+                .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.get(0).getVeranstaltungLigaleiterEmail())
+                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.get(0).getVeranstaltungLigaName())
+                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+
+        // verify invocations
+        verify(veranstaltungDAO).findBySportjahrDestinct(VERANSTALTUNG_SPORTJAHR);
+    }
+
+    @Test
+    public void testFindLastVeranstaltungById() {
+        // prepare test data
+        VeranstaltungBE currentVeranstaltungBE = getVeranstaltungBE();
+
+        List<VeranstaltungBE> veranstaltungBEList = new LinkedList<>();
+        VeranstaltungBE lastVeranstaltungBE = getVeranstaltungBE();
+        lastVeranstaltungBE.setVeranstaltungSportjahr(LAST_VERANSTALTUNG_SPORTJAHR);
+        lastVeranstaltungBE.setVeranstaltungId(LAST_VERANSTALTUNG_ID);
+        veranstaltungBEList.add(lastVeranstaltungBE);
+
+        //UserDO user = getUserDO();
+
+        // configure mocks
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(currentVeranstaltungBE);
+        when(veranstaltungDAO.findBySportjahr(anyLong())).thenReturn(veranstaltungBEList);
+        when(userComponent.findById(anyLong())).thenReturn(getUserDO());
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(getWettkampfTypDO());
+        when(ligaComponent.findById(anyLong())).thenReturn(getLigaDO());
+
+        // call test method
+        final VeranstaltungDO actual = underTest.findLastVeranstaltungById(VERANSTALTUNG_ID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getVeranstaltungID()).isEqualTo(LAST_VERANSTALTUNG_ID);
+        assertThat(actual.getVeranstaltungSportJahr()).isEqualTo(LAST_VERANSTALTUNG_SPORTJAHR);
+        assertThat(actual.getVeranstaltungLigaID()).isEqualTo(VERANSTALTUNG_LIGA_ID);
+        assertThat(actual.getVeranstaltungWettkampftypID()).isEqualTo(VERANSTALTUNG_WETTKAMPFTYP_ID);
+
+        // verify invocations
+        verify(veranstaltungDAO).findById(anyLong());
+        verify(veranstaltungDAO).findBySportjahr(anyLong());
+    }
+
+
+    @Test
+    public void testFindLastVeranstaltungById_NoLastVeranstaltung() {
+        // prepare test data
+        VeranstaltungBE currentVeranstaltungBE = getVeranstaltungBE();
+
+        List<VeranstaltungBE> veranstaltungBEList = new LinkedList<>();
+
+        // configure mocks
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(currentVeranstaltungBE);
+        when(veranstaltungDAO.findBySportjahr(anyLong())).thenReturn(veranstaltungBEList);
+        when(userComponent.findById(anyLong())).thenReturn(getUserDO());
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(getWettkampfTypDO());
+        when(ligaComponent.findById(anyLong())).thenReturn(getLigaDO());
+
+        // assert exception
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findLastVeranstaltungById(VERANSTALTUNG_ID));
+
+        // verify invocations
+        verify(veranstaltungDAO).findById(anyLong());
+        verify(veranstaltungDAO).findBySportjahr(anyLong());
+    }
+
+
+
 }
