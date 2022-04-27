@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * I contain the type-safe values of the application properties with the prefix "database."
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Component
 @ConfigurationProperties("database")

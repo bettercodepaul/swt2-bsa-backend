@@ -3,7 +3,7 @@ package de.bogenliga.application.common.mapping;
 /**
  * Marker interface for transfer object mapper.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public interface TransferObjectMapper {
 }

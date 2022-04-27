@@ -12,6 +12,7 @@ public interface LigaComponent {
      */
     List<LigaDO> findAll();
 
+    List<LigaDO> findBySearch(final String searchTerm);
 
     /**
      * Return a liga entry with the given id.

@@ -1,6 +1,6 @@
 package de.bogenliga.application.services.v1.user.model;
 
-import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +11,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserSignInDTO extends UserDTO implements DataTransferObject {
 

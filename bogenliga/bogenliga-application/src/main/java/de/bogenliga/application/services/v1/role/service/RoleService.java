@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">Wikipedia - CRUD</a>
  * @see <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">Wikipedia - REST</a>
  * @see <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">Wikipedia - HTTP</a>
@@ -39,6 +39,7 @@ public class RoleService implements ServiceFacade {
 
 
     private final RoleComponent roleComponent;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     private final WebSecurityConfiguration webSecurityConfiguration;
@@ -78,7 +79,7 @@ public class RoleService implements ServiceFacade {
      *
      * @return list of {@link RoleDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RoleDTO> findAll() {

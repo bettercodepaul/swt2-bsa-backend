@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
- * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, BettercallPaul gmbh
  */
 @Repository
 public class DsbMitgliedDAO implements DataAccessObject {
@@ -72,10 +72,13 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " FROM dsb_mitglied "
                     + " WHERE dsb_mitglied_benutzer_id = ?";
 
-    private static final String FIND_KAMPFRICHTER =
+    private static final String FIND_BY_SEARCH =
             "SELECT * "
-                    + " FROM lizenz "
-                    + " WHERE lizenz_typ = 'Kampfrichter' AND lizenz_dsb_mitglied_id = ?";
+                    + " FROM dsb_mitglied "
+                    + " WHERE CONCAT(LOWER(dsb_mitglied_vorname), "
+                    + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
+
+
 
     private static final String FIND_DSB_KAMPFRICHTER =
             "SELECT * FROM dsb_mitglied" +
@@ -174,6 +177,20 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
+     * @param searchTerm
+     * @return dsbmitglied entries which contain the search term
+     */
+    public List<DsbMitgliedBE> findBySearch(final String searchTerm) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_SEARCH, new StringBuilder()
+                                                                        .append("%")
+                                                                        .append(searchTerm)
+                                                                        .append("%")
+                                                                        .toString()
+        );
+    }
+
+
+    /**
      * Create a new dsbmitglied entry
      *
      * @param dsbMitgliedBE
@@ -199,9 +216,9 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
         DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
-        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null) {
-            UserDAO UserDAO = new UserDAO(basicDao);
-            UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+        UserDAO UserDAO = new UserDAO(basicDao);
+        UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && UserBE != null) {
             updatedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
             updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
         }

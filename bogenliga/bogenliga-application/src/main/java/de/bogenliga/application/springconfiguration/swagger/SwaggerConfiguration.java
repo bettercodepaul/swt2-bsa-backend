@@ -14,7 +14,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 /**
  * Configure the Swagger API documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api">Spring Swagger Tutorial</a>
  * @see <a href="http://localhost:9000/swagger-ui.html#">Open Swagger UI</a>
  */

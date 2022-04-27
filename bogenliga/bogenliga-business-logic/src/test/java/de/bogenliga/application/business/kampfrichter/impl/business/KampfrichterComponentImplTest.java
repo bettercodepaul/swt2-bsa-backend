@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.dao.KampfrichterDAO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
+import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterExtendedBE;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -40,6 +41,11 @@ public class KampfrichterComponentImplTest {
     private static final long WETTKAMPFID = 9999;
     private static final boolean LEITEND = true;
 
+    private static final String VORNAME = "Sorscha";
+    private static final String NACHNAME = "Kratikoff";
+    private static final String EMAIL = "Sorscha.Kratikoff@test.de";
+
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
@@ -63,6 +69,25 @@ public class KampfrichterComponentImplTest {
         return expectedBE;
     }
 
+
+    /***
+     * Utility methods for creating business entities/data objects.
+     * If this method is needed in other test classes change
+     * its visibility to "public"
+     *
+     * Author: Max Weise
+     */
+    private KampfrichterExtendedBE getKampfrichterExtendedBE() {
+        final KampfrichterExtendedBE expectedBE = new KampfrichterExtendedBE();
+        expectedBE.setKampfrichterExtendedUserID(USERID);
+        expectedBE.setKampfrichterExtendedWettkampfID(WETTKAMPFID);
+        expectedBE.setKampfrichterExtendedLeitend(LEITEND);
+        expectedBE.setKampfrichterExtendedVorname(VORNAME);
+        expectedBE.setKampfrichterExtendedNachname(NACHNAME);
+        expectedBE.setKampfrichterExtendedEmail(EMAIL);
+
+        return expectedBE;
+    }
 
     public static KampfrichterDO getKampfrichterDO() {
         return new KampfrichterDO(
@@ -103,6 +128,37 @@ public class KampfrichterComponentImplTest {
         verify(kampfrichterDAO).findAll();
     }
 
+
+    @Test
+    public void findByWettkampfidNotInWettkampftag() {
+        // prepare test data
+        final KampfrichterExtendedBE expectedBE = getKampfrichterExtendedBE();
+        final List<KampfrichterExtendedBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(kampfrichterDAO.findByWettkampfidNotInWettkampftag(WETTKAMPFID)).thenReturn(expectedBEList);
+
+        // call test method
+        final List<KampfrichterDO> actual = underTest.findByWettkampfidNotInWettkampftag(WETTKAMPFID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getUserId())
+                .isEqualTo(expectedBE.getKampfrichterExtendedUserID());
+        assertThat(actual.get(0).getWettkampfId())
+                .isEqualTo(expectedBE.getKampfrichterExtendedWettkampfID());
+        assertThat(actual.get(0).isLeitend())
+                .isEqualTo(expectedBE.getKampfrichterExtendedLeitend());
+
+        // verify invocations
+        verify(kampfrichterDAO).findByWettkampfidNotInWettkampftag(WETTKAMPFID);
+    }
 
     @Test
     public void findById() {
@@ -273,4 +329,109 @@ public class KampfrichterComponentImplTest {
         // verify invocations
         verifyZeroInteractions(kampfrichterDAO);
     }
+
+    @Test
+    public void findById_Precondition_shouldThrowException()
+    {
+        //prepare test data
+        final Long userId_Test = -1337L;
+        final KampfrichterBE kampfrichter_Test = getKampfrichterBE();
+
+        //call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findById(userId_Test))
+                .withMessageContaining("KampfrichterDO ID must not be negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void findById_resultIsNull_shouldThrowException()
+    {
+        //prepare test data
+        final Long userId_Test = 1337L;
+        final KampfrichterBE kampfrichter_Test = getKampfrichterBE();
+
+        //prepare method call
+        when(kampfrichterDAO.findById(anyLong())).thenReturn(null);
+
+        //call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.findById(userId_Test))
+                .withMessageContaining("No result found for ID")
+                .withNoCause();
+    }
+
+    @Test
+    public void create_Precondition_shouldThrowException()
+    {
+
+        //prepare test data
+        final long userId_Test = -1337L;
+        final KampfrichterBE kampfrichterBE_Test = getKampfrichterBE();
+        final KampfrichterDO kampfrichterDO_Test = getKampfrichterDO();
+        kampfrichterDO_Test.setUserId(userId_Test);
+
+        //prepare method call
+        when(kampfrichterDAO.create(any(KampfrichterBE.class), anyLong())).thenReturn(kampfrichterBE_Test);
+
+        //call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.create(kampfrichterDO_Test,userId_Test))
+                .withMessageContaining("KampfrichterDO ID must not be negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void update_Precondition_shouldThrowException()
+    {
+
+        //prepare test data
+        final long userId_Test = -1337L;
+        final KampfrichterBE kampfrichterBE_Test = getKampfrichterBE();
+        final KampfrichterDO kampfrichterDO_Test = getKampfrichterDO();
+        kampfrichterDO_Test.setUserId(userId_Test);
+
+        //prepare method call
+        when(kampfrichterDAO.update(any(KampfrichterBE.class), anyLong())).thenReturn(kampfrichterBE_Test);
+
+        //call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.update(kampfrichterDO_Test,userId_Test))
+                .withMessageContaining("KampfrichterDO ID must not be negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void delete_KampfrichterUserID_Precondition_shouldThrowException()
+    {
+
+        //prepare test data
+        final long userId_Test = -1337L;
+        final KampfrichterDO kampfrichterDO_Test = getKampfrichterDO();
+        kampfrichterDO_Test.setUserId(userId_Test);
+
+        //call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.delete(kampfrichterDO_Test,userId_Test))
+                .withMessageContaining("KampfrichterDO ID must not be negative")
+                .withNoCause();
+    }
+
+    @Test
+    public void delete_CurrentKampfrichterUserID_Precondition_shouldThrowException()
+    {
+
+        //prepare test data
+        final long userId_Test = 1337L;
+        final long userID_Test_currentKampfrichterUserID = -1337;
+        final KampfrichterDO kampfrichterDO_Test = getKampfrichterDO();
+        kampfrichterDO_Test.setUserId(userId_Test);
+
+        //call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.delete(kampfrichterDO_Test,userID_Test_currentKampfrichterUserID))
+                .withMessageContaining("Current kampfrichter userId must not be negative")
+                .withNoCause();
+    }
+
 }

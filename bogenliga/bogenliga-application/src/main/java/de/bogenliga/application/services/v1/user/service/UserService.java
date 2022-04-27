@@ -21,6 +21,7 @@ import de.bogenliga.application.services.v1.user.mapper.UserProfileDTOMapper;
 import de.bogenliga.application.services.v1.user.model.*;
 import de.bogenliga.application.springconfiguration.security.WebSecurityConfiguration;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOwnIdentity;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">Wikipedia - CRUD</a>
  * @see <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">Wikipedia - REST</a>
  * @see <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">Wikipedia - HTTP</a>
@@ -63,6 +64,7 @@ public class UserService implements ServiceFacade {
     private static final String PRECONDITION_MSG_ROLE_ID = "User Role ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_EMAIL = "Benutzer email must not be null";
     private static final String PRECONDITION_MSG_USER_PW = "This is not a valid Password";
+    private static final String PRECONDITION_MSG_SEARCHTERM = "Search term must not be negative";
 
     private static final String PRECONDITION_MSG_DSB_MITGLIED_ID = "User must reference an existing DSB-member -not be null or negative";
 
@@ -100,8 +102,15 @@ public class UserService implements ServiceFacade {
     }
 
 
-    @RequestMapping(
-            method = RequestMethod.POST,
+
+    /**
+     * Login...
+     *
+     * @param </UserCredentialsDTO> User zum Anmelden
+     *
+     * @return ResponseEntity mit der Rückmeldung nzur Anmeldung
+     */
+    @PostMapping(
             value = "/signin",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -116,7 +125,6 @@ public class UserService implements ServiceFacade {
                     credentials.getUsername(),
                     credentials.getPassword());
             authenticationToken.setDetails(credentials.getCode());
-                    //credentials.getCode());
             final Authentication authentication = webSecurityConfiguration.authenticationManagerBean()
                     .authenticate(authenticationToken);
 
@@ -132,14 +140,14 @@ public class UserService implements ServiceFacade {
                     headers.add("Authorization", "Bearer " + userSignInDTO.getJwt());
                     try {
                         //Get the Verein ID and teh Veranstaltungs ID's
-                        userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsb_mitglied_id()).getVereinsId());
+                        userSignInDTO.setVereinId(this.dsbMitgliedComponent.findById(this.userComponent.findById(userSignInDTO.getId()).getDsbMitgliedId()).getVereinsId());
                         ArrayList<Integer> temp = new ArrayList<>();
                         for (VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userSignInDTO.getId())) {
                             temp.add(veranstaltungDO.getVeranstaltungID().intValue());
                         }
                         userSignInDTO.setVeranstaltungenIds(temp);
-                        ArrayList<Integer> wetkampftemp = new ArrayList<Integer>();
-                        userSignInDTO.setWettkampfIds(wetkampftemp);
+                        ArrayList<Integer> wettkampftemp = new ArrayList<Integer>();
+                        userSignInDTO.setWettkampfIds(wettkampftemp);
                     } catch (Exception ignore) {
                        LOG.warn("Failed to define additional user information", ignore);
                     }
@@ -164,8 +172,7 @@ public class UserService implements ServiceFacade {
     }
 
 
-    @RequestMapping(
-            method = RequestMethod.GET,
+    @GetMapping(
             value = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO whoAmI(final HttpServletRequest requestWithHeader) {
@@ -182,7 +189,7 @@ public class UserService implements ServiceFacade {
      *
      * @return
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOwnIdentity
     public UserProfileDTO getUserProfileById(@PathVariable("id") final Long id) {
         Preconditions.checkNotNull(id, "UserID must not be null.");
@@ -221,8 +228,7 @@ public class UserService implements ServiceFacade {
      *
      * @return {@link UserDTO} as JSON
      */
-    @RequestMapping(
-            method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
@@ -232,9 +238,7 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNullOrEmpty(uptCredentials.getPassword(), "Password must not be null or empty");
         Preconditions.checkNotNullOrEmpty(uptCredentials.getNewPassword(), "New password must not be null or empty");
 
-        ErrorDTO errorDetails = null;
-
-        //update password is limited to own password,
+         //update password is limited to own password,
         // therefore we get the current user id based on system utils
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
@@ -248,8 +252,7 @@ public class UserService implements ServiceFacade {
                 uptCredentials.getNewPassword(), userId);
 
         //prepare return DTO
-        final UserDTO userUpdatedDTO = UserDTOMapper.toUserDTO.apply(userUpdatedDO);
-        return userUpdatedDTO;
+         return UserDTOMapper.toUserDTO.apply(userUpdatedDO);
     }
 
     /**
@@ -276,8 +279,7 @@ public class UserService implements ServiceFacade {
      */
 
 
-    @RequestMapping(
-            method = RequestMethod.PUT,
+    @PutMapping(
             value = "/resetPW",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -317,8 +319,7 @@ public class UserService implements ServiceFacade {
      * @param updatedUserRoles there is a single UserRoleDTO for every role that is send to this service
      * @return
      */
-    @RequestMapping(
-            method = RequestMethod.PUT,
+    @PutMapping(
             value = "/uptRoles",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -328,8 +329,6 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(updatedUserRoles, "UserRole-Definition must not be null");
         Preconditions.checkNotNull(updatedUserRoles.get(0).getId(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(updatedUserRoles.get(0).getRoleId(), PRECONDITION_MSG_ROLE_ID);
-
-        ErrorDTO errorDetails = null;
 
         final String jwt = jwtTokenProvider.resolveToken(requestWithHeader);
         final Long userId = jwtTokenProvider.getUserId(jwt);
@@ -365,12 +364,20 @@ public class UserService implements ServiceFacade {
      *
      * @return list of {@link UserDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<UserRoleDTO> findAll() {
         final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
         return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<UserRoleDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_SEARCHTERM);
+
+        final List<UserRoleDO> result = userRoleComponent.findBySearch(searchTerm);
+        return result.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -387,7 +394,7 @@ public class UserService implements ServiceFacade {
      *
      * @return list of {@link UserDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             value = "/userrole/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
@@ -401,6 +408,30 @@ public class UserService implements ServiceFacade {
         for(UserRoleDO userRoleDO : userRoleDOlist){
             userRoleDTOS.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
         }
+        return userRoleDTOS;
+    }
+
+
+    /**
+     * Returns a List of all Users that have the given role id
+     *
+     * @param roleId
+     * @return
+     */
+    @GetMapping(value = "/allusersbyrole/{roleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<UserRoleDTO> getAllUsersByRoleId(@PathVariable("roleId") final long roleId) {
+        Preconditions.checkArgument(roleId >= 0, "RoleID must not be negative.");
+
+        LOG.debug("Receive 'getAllUsersByRoleId' request with RoleID '{}'", roleId);
+
+        final List<UserRoleDO> userRoleDOlist = userRoleComponent.findByRoleId(roleId);
+        List<UserRoleDTO> userRoleDTOS = new ArrayList<>();
+
+        for(UserRoleDO userRoleDO : userRoleDOlist){
+            userRoleDTOS.add(UserRoleDTOMapper.toDTO.apply(userRoleDO));
+        }
+
         return userRoleDTOS;
     }
 
@@ -427,28 +458,21 @@ public class UserService implements ServiceFacade {
      *
      * @return {@link UserDTO} as JSON
      */
-
-
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_SYSTEMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_SYSTEMDATEN, UserPermission.CAN_CREATE_SYSTEMDATEN_LIGALEITER})
     public UserDTO create(final HttpServletRequest requestWithHeader,
                           @RequestBody final UserCredentialsDTO userCredentialsDTO) {
 
         Preconditions.checkNotNull(userCredentialsDTO, "User Credentials must not be null");
         Preconditions.checkNotNull(userCredentialsDTO.getUsername(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userCredentialsDTO.getPassword(), PRECONDITION_MSG_USER_EMAIL);
-        Preconditions.checkNotNull(userCredentialsDTO.getDsb_mitglied_id(), PRECONDITION_MSG_DSB_MITGLIED_ID);
+        Preconditions.checkNotNull(userCredentialsDTO.getDsbMitgliedId(), PRECONDITION_MSG_DSB_MITGLIED_ID);
         // Check if password is valid by running it against the regular expression for the password
         Preconditions.checkArgument(userCredentialsDTO.getPassword().matches(PW_VALIDATION_REGEX), PRECONDITION_MSG_USER_PW);
 
-        LOG.debug("Receive 'create' request with username '{}', password '{}', using2FA {}",
-                userCredentialsDTO.getUsername(),
-                userCredentialsDTO.getPassword(),
-                userCredentialsDTO.getDsb_mitglied_id(),
-                userCredentialsDTO.isUsing2FA());
 
         userCredentialsDTO.getCode();
 
@@ -458,9 +482,9 @@ public class UserService implements ServiceFacade {
         // user anlegen
 
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(),
-                userCredentialsDTO.getPassword(), userCredentialsDTO.getDsb_mitglied_id(), userId, userCredentialsDTO.isUsing2FA());
+                userCredentialsDTO.getPassword(), userCredentialsDTO.getDsbMitgliedId(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
-        final UserRoleDO userRoleCreatedDO = userRoleComponent.create(userCreatedDO.getId(), userId);
+        userRoleComponent.create(userCreatedDO.getId(), userId);
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
 
@@ -471,7 +495,7 @@ public class UserService implements ServiceFacade {
      * @param requestWithHeader JwtToken used to prevent deleting your own user
      * @return true, if the deactivation was successful or the user is already disabled
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
     public boolean deactivate(@PathVariable("id") final long id, final HttpServletRequest requestWithHeader) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");

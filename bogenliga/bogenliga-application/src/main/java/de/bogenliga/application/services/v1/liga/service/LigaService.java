@@ -3,16 +3,9 @@ package de.bogenliga.application.services.v1.liga.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -39,8 +32,6 @@ public class LigaService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID_NEG = "Verantwortlich id can not be negative";
 
-    private final Logger logger = LoggerFactory.getLogger(LigaService.class);
-
     private final LigaComponent ligaComponent;
 
 
@@ -60,11 +51,18 @@ public class LigaService implements ServiceFacade {
      *
      * @return lost of {@link de.bogenliga.application.services.v1.liga.model.LigaDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.GET,
+    @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaDTO> findAll() {
         final List<LigaDO> ligaDOList = ligaComponent.findAll();
+        return ligaDOList.stream().map(LigaDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<LigaDTO> findBySearch(@PathVariable("searchstring") final String searchTerm) {
+        final List<LigaDO> ligaDOList = ligaComponent.findBySearch(searchTerm);
         return ligaDOList.stream().map(LigaDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -76,15 +74,13 @@ public class LigaService implements ServiceFacade {
      *
      * @return returns a klasse
      */
-    @RequestMapping(
+    @GetMapping(
             value = "{id}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public LigaDTO findById(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 
-        logger.debug("Receive 'findById' request with ID '{}'", id);
 
         final LigaDO ligaDO = ligaComponent.findById(id);
 
@@ -95,23 +91,16 @@ public class LigaService implements ServiceFacade {
     /**
      * I persist a new liga and return this liga entry
      *
-     * @param ligaDTO
-     * @param principal
+     * @param ligaDTO Data to be stored to DB
+     * @param principal User saving the data
      *
      * @return list of {@link LigaDTO} as JSON
      */
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
     public LigaDTO create(@RequestBody final LigaDTO ligaDTO, final Principal principal) {
-        logger.debug(
-                "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
-                ligaDTO.getId(),
-                ligaDTO.getName(),
-                ligaDTO.getRegionId(),
-                ligaDTO.getLigaUebergeordnetId(),
-                ligaDTO.getLigaVerantwortlichId());
 
         checkPreconditions(ligaDTO);
 
@@ -127,20 +116,13 @@ public class LigaService implements ServiceFacade {
     /**
      * I persist a newer version of the CompetitionClass in the database.
      */
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
 
-        logger.debug(
-                "Receive 'create' request with ligaId '{}', ligaName '{}', regionId '{}', ligaUebergeordnetId '{}', verantwortlichId '{}' ",
-                ligaDTO.getId(),
-                ligaDTO.getName(),
-                ligaDTO.getRegionId(),
-                ligaDTO.getLigaUebergeordnetId(),
-                ligaDTO.getLigaVerantwortlichId());
 
 
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
@@ -155,12 +137,11 @@ public class LigaService implements ServiceFacade {
     /**
      * I delete an existing Liga entry from the DB.
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal){
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-        logger.debug("Receive 'delete' request with id '{}'", id);
 
         final LigaDO ligaDO = new LigaDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);

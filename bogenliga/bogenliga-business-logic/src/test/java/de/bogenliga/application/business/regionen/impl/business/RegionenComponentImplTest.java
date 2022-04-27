@@ -14,6 +14,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.lizenz.api.LizenzComponent;
+import de.bogenliga.application.business.lizenz.api.types.LizenzDO;
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
@@ -39,7 +41,7 @@ public class RegionenComponentImplTest {
     private static final long VERSION = 2;
     private static final List<VereinDO> EMPTYVEREINLIST = new LinkedList<>();
     private static final List<LigaDO> EMPTYLIGALIST = new LinkedList<>();
-    private static final List<LizenzBE> EMPTYLIZENZLIST = new LinkedList<>();
+    private static final List<LizenzDO> EMPTYLIZENZLIST = new LinkedList<>();
 
 
 
@@ -52,7 +54,7 @@ public class RegionenComponentImplTest {
     @Mock
     private LigaComponent ligaComponent;
     @Mock
-    private LizenzDAO lizenzDAO;
+    private LizenzComponent lizenzComponent;
     @InjectMocks
     private RegionenComponentImpl underTest;
     @Captor
@@ -119,6 +121,41 @@ public class RegionenComponentImplTest {
 
         // verify invocations
         verify(regionenDAO, times(2)).findAll();
+    }
+
+    @Test
+    public void findBySearch() {
+        // prepare test data
+        final RegionenBE expectedBE = getRegionenBE();
+        final List<RegionenBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(regionenDAO.findBySearch(expectedBE.getRegionName())).thenReturn(expectedBEList);
+
+        // call test method
+        final List<RegionenDO> actual = underTest.findBySearch(expectedBE.getRegionName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(expectedBE.getRegionId());
+        assertThat(actual.get(0).getRegionKuerzel())
+                .isEqualTo(expectedBE.getRegionKuerzel());
+        assertThat(actual.get(0).getRegionName())
+                .isEqualTo(expectedBE.getRegionName());
+        assertThat(actual.get(0).getRegionTyp())
+                .isEqualTo(expectedBE.getRegionTyp());
+        assertThat(actual.get(0).getRegionUebergeordnet())
+                .isEqualTo(expectedBE.getRegionUebergeordnet());
+
+        // verify invocations
+        verify(regionenDAO).findBySearch(expectedBE.getRegionName());
     }
 
 
@@ -361,7 +398,7 @@ public class RegionenComponentImplTest {
         // configure mocks
         when(vereinComponent.findAll()).thenReturn(EMPTYVEREINLIST);
         when(ligaComponent.findAll()).thenReturn(EMPTYLIGALIST);
-        when(lizenzDAO.findAll()).thenReturn(EMPTYLIZENZLIST);
+        when(lizenzComponent.findAll()).thenReturn(EMPTYLIZENZLIST);
 
         // call test method
         underTest.delete(input, USER);

@@ -2,9 +2,8 @@ package de.bogenliga.application.services.v1.vereine.service;
 
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
-import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
-import org.assertj.core.data.Offset;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 import java.time.OffsetDateTime;
@@ -24,11 +21,12 @@ import java.util.List;
 
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 public class VereineServiceTest {
 
@@ -38,20 +36,21 @@ public class VereineServiceTest {
 
     private static final String VEREIN_NAME = "";
     private static final long VEREIN_ID = 0;
-    private static final String VEREIN = "";
     private static final String VEREIN_DSB_IDENTIFIER = "";
-    private static final long REGION_ID_NOT_NEG = 0;
     private static final long REGION_ID = 0;
     private static final String REGION_NAME = "";
     private static final String VEREIN_WEBSITE = "";
     private static final String VEREIN_DESCRIPTION = "";
+    private static final String VEREIN_ICON = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
-    private static final Logger LOG = LoggerFactory.getLogger(VereineService.class);
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     private VereinComponent vereinComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     @Mock
     private Principal principal;
@@ -62,21 +61,6 @@ public class VereineServiceTest {
     @Captor
     private ArgumentCaptor<VereinDO> vereinDOArgumentCaptor;
 
-    /***
-     * Utility methods for creating business entities/data objects.
-     * Also used by other test classes.
-     */
-    public static VereinBE getDsbMitgliedBE() {
-        final VereinBE expectedBE = new VereinBE();
-        expectedBE.setVereinId(VEREIN_ID);
-        expectedBE.setVereinName(VEREIN_NAME);
-        expectedBE.setVereinDsbIdentifier(VEREIN_DSB_IDENTIFIER);
-        expectedBE.setVereinRegionId(REGION_ID);
-        expectedBE.setVereinWebsite(VEREIN_WEBSITE);
-        expectedBE.setVereinDescription(VEREIN_DESCRIPTION);
-
-        return expectedBE;
-    }
 
     public static VereinDO getVereinDO() {
         return new VereinDO(VEREIN_ID,
@@ -86,6 +70,7 @@ public class VereineServiceTest {
                 REGION_NAME,
                 VEREIN_WEBSITE,
                 VEREIN_DESCRIPTION,
+                VEREIN_ICON,
                 VEREIN_OFFSETDATETIME,
                 USER,
                 VEREIN_OFFSETDATETIME,
@@ -106,6 +91,8 @@ public class VereineServiceTest {
         return vereineDTO;
     }
 
+
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(USER));
@@ -115,7 +102,6 @@ public class VereineServiceTest {
     public void findAll() {
         // prepare test data
         final VereinDO vereinDO = getVereinDO();
-
         final List<VereinDO> VereinDOList = Collections.singletonList(vereinDO);
 
         // configure mocks
@@ -125,9 +111,7 @@ public class VereineServiceTest {
         final List<VereineDTO> actual = underTest.findAll();
 
         // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
+        assertThat(actual).isNotNull().hasSize(1);
 
         final VereineDTO actualDTO = actual.get(0);
 
@@ -138,6 +122,32 @@ public class VereineServiceTest {
         // verify invocations
         verify(vereinComponent).findAll();
     }
+
+    @Test
+    public void findByName() {
+        // prepare test data
+        final VereinDO vereinDO = getVereinDO();
+        final List<VereinDO> VereinDOList = Collections.singletonList(vereinDO);
+
+        // configure mocks
+        when(vereinComponent.findBySearch(vereinDO.getName())).thenReturn(VereinDOList);
+
+        // call test method
+        final List<VereineDTO> actual = underTest.findBySearch(vereinDO.getName());
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final VereineDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(vereinDO.getId());
+        assertThat(actualDTO.getName()).isEqualTo(vereinDO.getName());
+
+        // verify invocations
+        verify(vereinComponent).findBySearch(vereinDO.getName());
+    }
+
 
     @Test
     public void findById() {
@@ -159,11 +169,11 @@ public class VereineServiceTest {
         verify(vereinComponent).findById(ID);
     }
 
+
     @Test
     public void create() {
         // prepare test data
         final VereineDTO input = getVereineDTO();
-
         final VereinDO expected = getVereinDO();
 
         // configure mocks
@@ -187,15 +197,16 @@ public class VereineServiceTest {
         assertThat(createdDsbMitglied.getName()).isEqualTo(input.getName());
     }
 
+
     @Test
     public void update() {
         // prepare test data
         final VereineDTO input = getVereineDTO();
-
         final VereinDO expected = getVereinDO();
 
         // configure mocks
         when(vereinComponent.update(any(), anyLong())).thenReturn(expected);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
 
         try {
             // call test method
@@ -215,21 +226,33 @@ public class VereineServiceTest {
             assertThat(updatedDsbMitglied.getId()).isEqualTo(input.getId());
             assertThat(updatedDsbMitglied.getName()).isEqualTo(input.getName());
 
-        }catch (NoPermissionException e) {
-        }
+        }catch (NoPermissionException e) { }
     }
+
+
+    @Test
+    public void updateNoPermission() {
+        // prepare test data
+        final VereineDTO input = getVereineDTO();
+        final VereinDO expected = getVereinDO();
+
+        // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
+        when(vereinComponent.update(any(), anyLong())).thenReturn(expected);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(input, principal));
+    }
+
 
     @Test
     public void delete() {
         // prepare test data
         final VereinDO expected = getVereinDO();
 
-        // configure mocks
-
         // call test method
         underTest.delete(ID, principal);
-
-        // assert result
 
         // verify invocations
         verify(vereinComponent).delete(vereinDOArgumentCaptor.capture(), anyLong());

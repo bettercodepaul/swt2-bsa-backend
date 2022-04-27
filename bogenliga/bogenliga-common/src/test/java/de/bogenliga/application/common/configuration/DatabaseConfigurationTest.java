@@ -4,7 +4,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @SuppressWarnings({"pmd-unit-tests:JUnitTestsShouldIncludeAssert", "squid:S2187"})
 public class DatabaseConfigurationTest {
@@ -21,7 +21,7 @@ public class DatabaseConfigurationTest {
     public void asert() {
         final DatabaseConfiguration underTest = new DatabaseConfiguration();
         assertThat(underTest.getHost()).isNull();
-        assertThat(underTest.getPort()).isEqualTo(0);
+        assertThat(underTest.getPort()).isZero();
         assertThat(underTest.getDatabaseName()).isNull();
         assertThat(underTest.getUser()).isNull();
         assertThat(underTest.getPassword()).isNull();

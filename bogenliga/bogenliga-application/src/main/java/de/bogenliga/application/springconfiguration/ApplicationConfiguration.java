@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * <li>Configure the package with spring boot application context</li>
  * </ul>
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Configuration
 @ComponentScan("de.bogenliga.application")

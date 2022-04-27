@@ -61,10 +61,10 @@ public class LigatabelleDAOTest {
         assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getVereinName()).isEqualTo(expectedBE.getVereinName());
         assertThat(actual.get(0).getMatchpkt()).isEqualTo(expectedBE.getMatchpkt());
-        assertThat(actual.get(0).getMatchpkt_gegen()).isEqualTo(expectedBE.getMatchpkt_gegen());
+        assertThat(actual.get(0).getMatchpktGegen()).isEqualTo(expectedBE.getMatchpktGegen());
         assertThat(actual.get(0).getSatzpkt()).isEqualTo(expectedBE.getSatzpkt());
-        assertThat(actual.get(0).getSatzpkt_gegen()).isEqualTo(expectedBE.getSatzpkt_gegen());
-        assertThat(actual.get(0).getSatzpkt_differenz()).isEqualTo(expectedBE.getSatzpkt_differenz());
+        assertThat(actual.get(0).getSatzpktGegen()).isEqualTo(expectedBE.getSatzpktGegen());
+        assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getSortierung()).isEqualTo(expectedBE.getSortierung());
         assertThat(actual.get(0).getTabellenplatz()).isEqualTo(expectedBE.getTabellenplatz());
 
@@ -99,10 +99,10 @@ public class LigatabelleDAOTest {
         assertThat(actual.get(0).getVereinId()).isEqualTo(expectedBE.getVereinId());
         assertThat(actual.get(0).getVereinName()).isEqualTo(expectedBE.getVereinName());
         assertThat(actual.get(0).getMatchpkt()).isEqualTo(expectedBE.getMatchpkt());
-        assertThat(actual.get(0).getMatchpkt_gegen()).isEqualTo(expectedBE.getMatchpkt_gegen());
+        assertThat(actual.get(0).getMatchpktGegen()).isEqualTo(expectedBE.getMatchpktGegen());
         assertThat(actual.get(0).getSatzpkt()).isEqualTo(expectedBE.getSatzpkt());
-        assertThat(actual.get(0).getSatzpkt_gegen()).isEqualTo(expectedBE.getSatzpkt_gegen());
-        assertThat(actual.get(0).getSatzpkt_differenz()).isEqualTo(expectedBE.getSatzpkt_differenz());
+        assertThat(actual.get(0).getSatzpktGegen()).isEqualTo(expectedBE.getSatzpktGegen());
+        assertThat(actual.get(0).getSatzpktDifferenz()).isEqualTo(expectedBE.getSatzpktDifferenz());
         assertThat(actual.get(0).getSortierung()).isEqualTo(expectedBE.getSortierung());
         assertThat(actual.get(0).getTabellenplatz()).isEqualTo(expectedBE.getTabellenplatz());
 

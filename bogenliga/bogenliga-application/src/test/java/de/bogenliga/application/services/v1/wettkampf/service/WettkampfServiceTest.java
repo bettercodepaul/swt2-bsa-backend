@@ -17,15 +17,19 @@ import org.mockito.junit.MockitoRule;
 import java.security.Principal;
 import java.sql.Date;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 
 
 /**
@@ -52,7 +56,6 @@ public class WettkampfServiceTest {
     private static final long mannschafts_id = 1;
     private static final OffsetDateTime created_At_Utc = OffsetDateTime.now();
     private static final long version = 1234;
-    private static final long wettkampf_kampfrichter_Id = 8;
     private static final long wettkampfAusrichter = 8;
 
 
@@ -61,6 +64,10 @@ public class WettkampfServiceTest {
 
     @Mock
     private WettkampfComponent wettkampfComponent;
+
+    @Mock
+    private RequiresOnePermissionAspect requiresOnePermissionAspect;
+
 
     @Mock
     private Principal principal;
@@ -89,7 +96,6 @@ public class WettkampfServiceTest {
         expectedBE.setWettkampfOrtsinfo(wettkampf_Ortsinfo);
         expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
         expectedBE.setWettkampfTag(wettkampf_Tag);
-        expectedBE.setKampfrichterId(wettkampf_kampfrichter_Id);
         expectedBE.setWettkampfAusrichter(wettkampfAusrichter);
 
         return expectedBE;
@@ -112,7 +118,6 @@ public class WettkampfServiceTest {
                 created_At_Utc,
                 user_Id,
                 version,
-                wettkampf_kampfrichter_Id,
                 wettkampfAusrichter
         );
     }
@@ -132,7 +137,6 @@ public class WettkampfServiceTest {
                 wettkampf_Disziplin_Id,
                 wettkampf_Wettkampftyp_Id,
                 version,
-                wettkampf_kampfrichter_Id,
                 wettkampfAusrichter
 
         );
@@ -223,6 +227,33 @@ public class WettkampfServiceTest {
 
 
     @Test
+    public void findAllByVeranstaltungId(){
+        //prepare test data
+        final WettkampfDO wettkampfDO = getWettkampfDO();
+        final List<WettkampfDO> wettkampfDOList = Collections.singletonList(wettkampfDO);
+
+        //configure mocks
+        when(wettkampfComponent.findAllByVeranstaltungId(anyLong())).thenReturn(wettkampfDOList);
+
+        //call test method
+        final List<WettkampfDTO> actual = underTest.findAllByVeranstaltungId(wettkampf_Veranstaltung_Id);
+
+        //assert result
+        assertThat(actual)
+                .isNotNull()
+                .hasSize(1);
+
+        final WettkampfDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getwettkampfVeranstaltungsId()).isEqualTo(wettkampfDO.getWettkampfVeranstaltungsId());
+
+        // verify invocations
+        verify(wettkampfComponent).findAllByVeranstaltungId(wettkampf_Veranstaltung_Id);
+    }
+
+
+    @Test
     public void create() {
         // prepare test data
         final WettkampfDTO input = getWettkampfDTO();
@@ -257,6 +288,8 @@ public class WettkampfServiceTest {
         final WettkampfDO expected = getWettkampfDO();
 
         // configure mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(expected);
         when(wettkampfComponent.update(any(), anyLong())).thenReturn(expected);
 
         try {
@@ -278,6 +311,22 @@ public class WettkampfServiceTest {
         } catch (NoPermissionException e) {
         }
     }
+    @Test
+    public void updateNoPermission() {
+        // prepare test data
+        final WettkampfDTO input = getWettkampfDTO();
+
+        final WettkampfDO expected = getWettkampfDO();
+
+        // configure mocks
+        when(wettkampfComponent.findById(anyLong())).thenReturn(expected);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
+        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
+
+        assertThatExceptionOfType(NoPermissionException.class)
+                .isThrownBy(()-> underTest.update(input, principal));
+
+     }
 
 
     @Test
@@ -301,4 +350,38 @@ public class WettkampfServiceTest {
         assertThat(deletedWettkampf.getId()).isEqualTo(expected.getId());
 
     }
+
+    @Test
+    public void getAllowedMitgliedForWettkampf() {
+        // prepare test data
+        List<Long> expected = new ArrayList<>();
+        expected.add(77L);
+        expected.add(120L);
+
+        // configure mocks
+        when(wettkampfComponent.getAllowedMitglieder(anyLong())).thenReturn(expected);
+
+        // call test method
+        List<Long> actual = underTest.getAllowedMitgliedForWettkampf(30L);
+
+        // assert result
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void getAllowedMitgliedForWettkampfByMannschaftIDs() {
+        // prepare test data
+        List<Long> expected = new ArrayList<>();
+        expected.add(77L);
+
+        // configure mocks
+        when(wettkampfComponent.getAllowedMitglieder(anyLong(),anyLong(),anyLong())).thenReturn(expected);
+
+        // call test method
+        List<Long> actual = underTest.getAllowedMitgliedForWettkampf(30L,101L,102L);
+
+        // assert result
+        assertThat(actual).isEqualTo(expected);
+    }
+
 }

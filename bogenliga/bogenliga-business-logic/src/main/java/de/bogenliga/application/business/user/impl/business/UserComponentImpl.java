@@ -151,7 +151,7 @@ public class UserComponentImpl implements UserComponent {
         final String salt = passwordHashingBA.generateSalt();
         final String pwdhash = passwordHashingBA.calculateHash(password, salt);
         result.setUserEmail(email);
-        result.setDsb_mitglied_id(dsb_mitglied_id);
+        result.setDsbMitgliedId(dsb_mitglied_id);
         result.setUserSalt(salt);
         result.setUserPassword(pwdhash);
         result.setUsing2FA(isUsing2FA);

@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public class UserDTO implements DataTransferObject {
 

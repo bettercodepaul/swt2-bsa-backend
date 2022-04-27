@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.veranstaltung.api;
 
 import java.util.List;
-import de.bogenliga.application.business.sportjahr.SportjahrDO;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
@@ -63,6 +63,15 @@ public interface VeranstaltungComponent extends ComponentFacade {
     VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
     /**
+     * Returns the last "Veranstaltung" of the given current Veranstaltung id
+     *
+     * @param veranstaltungId ID of the current veranstaltung to query the last Veranstaltung.
+     *
+     * @return returns the queried Veranstaltung
+     */
+    VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId);
+
+    /**
      * Deletes a database entry depending on the id of the VeranstaltungDO property
      *
      * @param veranstaltungDO    Veranstaltung DataObject containing atleast an id
@@ -96,4 +105,5 @@ public interface VeranstaltungComponent extends ComponentFacade {
 
     List<VeranstaltungDO> findByLigaID(long ligaID);
 
+    List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr);
 }

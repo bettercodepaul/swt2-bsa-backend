@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Yann Philippczyk, eXXcellent solutions consulting & software gmbh
+ * @author Yann Philippczyk, BettercallPaul gmbh
  * @see <a href="http://joel-costigliola.github.io/assertj/">
  * AssertJ: Fluent assertions for java</a>
  * @see <a href="https://junit.org/junit4/">
@@ -32,6 +32,7 @@ public class UserBasicDAOTest {
     private static final long ID = 9999;
     private static final String EMAIL = "funktioniert@irgendwie.net";
     private static final long USER = 0;
+    private static final long DSBID = 33;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -99,6 +100,57 @@ public class UserBasicDAOTest {
         verify(basicDao).selectSingleEntity(any(), any(), any());
     }
 
+    @Test
+    public void findByEmail() {
+        // prepare test data
+        final UserBE expectedBE = new UserBE();
+        expectedBE.setUserId(ID);
+        expectedBE.setUserEmail(EMAIL);
+
+        // configure mocks
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        // call test method
+        final UserBE actual = underTest.findByEmail(EMAIL);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getUserId())
+                .isEqualTo(expectedBE.getUserId());
+        assertThat(actual.getUserEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+
+        // verify invocations
+        verify(basicDao).selectSingleEntity(any(), any(), any());
+    }
+
+    @Test
+    public void findByDsbMitgliedId() {
+        // prepare test data
+        final UserBE expectedBE = new UserBE();
+        expectedBE.setUserId(ID);
+        expectedBE.setUserEmail(EMAIL);
+        expectedBE.setDsbMitgliedId(DSBID);
+
+
+        // configure mocks
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        // call test method
+        final UserBE actual = underTest.findByDsbMitgliedId(DSBID);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getUserId())
+                .isEqualTo(expectedBE.getUserId());
+        assertThat(actual.getUserEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+
+        // verify invocations
+        verify(basicDao).selectSingleEntity(any(), any(), any());
+    }
 
     @Test
     public void create() {
@@ -106,7 +158,7 @@ public class UserBasicDAOTest {
         final UserBE input = new UserBE();
         input.setUserId(ID);
         input.setUserEmail(EMAIL);
-        input.setDsb_mitglied_id(USER);
+        input.setDsbMitgliedId(USER);
 
         // configure mocks
         when(basicDao.insertEntity(any(), any())).thenReturn(input);

@@ -55,6 +55,16 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     }
 
     @Override
+    public List<CompetitionClassDO> findBySearch(final String searchTerm) {
+        final List<CompetitionClassBE> competitionClassBEList = competitionClassDAO.findBySearch(searchTerm);
+
+        return competitionClassBEList
+                .stream()
+                    .map(CompetitionClassMapper.toCompetitionClassDO)
+                        .collect(Collectors.toList());
+    }
+
+    @Override
     public CompetitionClassDO findById(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_KLASSE_ID);
 

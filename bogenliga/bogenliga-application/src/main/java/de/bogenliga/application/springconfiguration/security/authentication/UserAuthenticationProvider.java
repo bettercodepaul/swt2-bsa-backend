@@ -26,7 +26,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
  * <p>
  * I authenticate the user credentials with the persisted user information from the database.
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  * @see <a href="https://www.baeldung.com/spring-security-authentication-provider">
  * Spring Security Authentication Provider</a>
  */

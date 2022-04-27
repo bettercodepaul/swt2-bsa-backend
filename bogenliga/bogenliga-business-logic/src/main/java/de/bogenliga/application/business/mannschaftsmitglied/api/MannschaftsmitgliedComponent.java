@@ -8,7 +8,7 @@ import de.bogenliga.application.common.component.ComponentFacade;
 /**
  * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Andre Lehnert, BettercallPaul gmbh
  */
 public interface MannschaftsmitgliedComponent extends ComponentFacade {
 
@@ -40,6 +40,18 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
     List<MannschaftsmitgliedDO> findAllSchuetzeInTeam(Long mannschaftsmitgliederMannschaftsId);
 
 
+    /**
+     *
+     * Die Funktion liefert alle erlaubten Schützen,
+     * abhängig ob sie schon aktiv geschossen haben. Z.B. für die Bogenkontrollliste.
+     * @param mannschaftsId
+     * @param wettkampfId
+     * @return list of mannschaftsmitglied entries with the given mitgliedsId
+     */
+
+    List<MannschaftsmitgliedDO> findSchuetzenInUebergelegenerLiga(Long mannschaftsId, Long wettkampfId);
+
+
 
     /**
      * Return all mannschaftsmitglied entries from one team.
@@ -62,6 +74,14 @@ public interface MannschaftsmitgliedComponent extends ComponentFacade {
      */
     MannschaftsmitgliedDO findByMemberAndTeamId(Long mannschaftsmitgliedMannschaftId, Long mannschaftsmitgliedMitgliedId);
 
+    /**
+     * Returns a mannschaftsmitglied entry with the given rueckennummer.
+     * @param mannschaftId of the mannschaftsmitglied
+     * @param rueckennummer of the mannschaftsmitglied
+     * @return single mannschaftsmitglied entry with the given rueckennummer;
+     * null, if no mannschaftsmitglied is found
+     */
+    MannschaftsmitgliedDO findByTeamIdAndRueckennummer(Long mannschaftId, Long rueckennummer);
 
     /**
      * return all mannschaftsmitglied entries from one dsbmitglied

@@ -1,9 +1,14 @@
 package de.bogenliga.application.business.user.api;
 
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
+import de.bogenliga.application.business.user.impl.entity.UserBE;
+import de.bogenliga.application.business.user.impl.mapper.UserMapper;
 import de.bogenliga.application.common.component.ComponentFacade;
+import de.bogenliga.application.common.validation.Preconditions;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Responsible for the user database requests.
@@ -18,6 +23,12 @@ public interface UserRoleComponent extends ComponentFacade {
      */
     List<UserRoleDO> findAll();
 
+    /**
+     * Return a list that contains the search Term
+     * @param searchTerm
+     * @return
+     */
+    List<UserRoleDO> findBySearch(final String searchTerm);
 
     /**
      * Return a user entry with the given id.
@@ -27,6 +38,15 @@ public interface UserRoleComponent extends ComponentFacade {
      * null, if no user is found
      */
     List<UserRoleDO> findById(Long id);
+
+
+    /**
+     * Return all users with the given role
+     * @param roleId
+     * @return
+     */
+    List<UserRoleDO> findByRoleId(Long roleId);
+
 
     /**
      * Return a user entry with the given id.

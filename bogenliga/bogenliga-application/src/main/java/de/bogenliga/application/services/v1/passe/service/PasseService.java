@@ -7,12 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -56,7 +51,7 @@ public class PasseService implements ServiceFacade {
     }
 
 
-    @RequestMapping(value = "", method = RequestMethod.GET,
+    @GetMapping(value = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<PasseDTO> findAll(){
@@ -67,8 +62,7 @@ public class PasseService implements ServiceFacade {
 
 
 
-    @RequestMapping(value = "/{id}",
-            method = RequestMethod.GET,
+    @GetMapping(value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public PasseDTO findById(@PathVariable("id") Long passeId) {
@@ -77,7 +71,7 @@ public class PasseService implements ServiceFacade {
         return passeDTO;
     }
 
-    @RequestMapping(value = "findByMatchId/matchid={matchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "findByMatchId/matchid={matchId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<PasseDTO> findByMatchId(@PathVariable("matchId") final long matchId) {
         Preconditions.checkArgument(matchId >= 0, "matchId must not be negative");
@@ -88,7 +82,7 @@ public class PasseService implements ServiceFacade {
         return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "findByWettkampfId/wettkampfid={wettkampfId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "findByWettkampfId/wettkampfid={wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<PasseDTO> findByWettkampfId(@PathVariable("wettkampfId") final long wettkampfId) {
         Preconditions.checkArgument(wettkampfId>= 0, "wettkampfId must not be negative");
@@ -99,7 +93,7 @@ public class PasseService implements ServiceFacade {
         return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    @RequestMapping(method = RequestMethod.POST,
+    @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
@@ -117,7 +111,7 @@ public class PasseService implements ServiceFacade {
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
@@ -130,7 +124,7 @@ public class PasseService implements ServiceFacade {
         return PasseDTOMapper.toDTO.apply(passeDO);
     }
 
-    @RequestMapping(path = "byWettkampfIdAndDsbMitgliedId/{wettkampfId}/{dsbMitgliedId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "byWettkampfIdAndDsbMitgliedId/{wettkampfId}/{dsbMitgliedId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_WETTKAMPF)
     public List<PasseDTO> findAllByWettkampfIdAndDsbMitgliedId(@PathVariable("wettkampfId") final long wettkampfId,
                                                             @PathVariable("dsbMitgliedId") final long dsbMitgliedId) {
