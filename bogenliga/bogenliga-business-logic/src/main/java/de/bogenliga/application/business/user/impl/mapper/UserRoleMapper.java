@@ -80,6 +80,7 @@ public class UserRoleMapper implements ValueObjectMapper {
         userRoleBE.setLastModifiedByUserId(vo.getLastModifiedByUserId());
         userRoleBE.setVersion(vo.getVersion());
 
+
         return userRoleBE;
     };
 
@@ -97,6 +98,8 @@ public class UserRoleMapper implements ValueObjectMapper {
         userRoleExtBE.setUserEmail(vo.getEmail());
         userRoleExtBE.setRoleName(vo.getRoleName());
         userRoleExtBE.setActive(vo.isActive());
+        userRoleExtBE.setDsbMitgliedNachname(vo.getDsbMitgliedNachname());
+        userRoleExtBE.setDsbMitgliedVorname(vo.getDsbMitgliedVorname());
 
         userRoleExtBE.setCreatedAtUtc(createdAtUtcTimestamp);
         userRoleExtBE.setCreatedByUserId(vo.getCreatedByUserId());
