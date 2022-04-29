@@ -40,7 +40,7 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
                 ", roleId='" + roleId + '\'' +
                 ", roleName='" + roleName + '\'' +
                 ", active='" + active + '\'' +
-                ", dsbMitgliedNachname='" + dsbMitgliedVorname + '\'' +
+                ", dsbMitgliedNachname='" + dsbMitgliedNachname + '\'' +
                 ", dsbMitgliedVorname='" + dsbMitgliedVorname + '\'' +
                 '}';
     }
