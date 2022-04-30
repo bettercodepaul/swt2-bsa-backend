@@ -1,12 +1,19 @@
 package de.bogenliga.application.services.v1.sync.service;
 
+import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
+import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 
+import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
+import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
+import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -15,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,11 +39,15 @@ import java.util.stream.Collectors;
 public class SyncService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
+    private static final String ERR_NOT_NULL_TEMPLATE = "MatchService: %s: %s must not be null.";
+    private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
+    private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
+    private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
 
     private final Logger logger = LoggerFactory.getLogger(de.bogenliga.application.services.v1.sync.service.SyncService.class);
 
     private final LigatabelleComponent ligatabelleComponent;
-
+    private final MatchComponent matchComponent;
 
     /**
      * Constructor with dependency injection
@@ -43,10 +55,12 @@ public class SyncService implements ServiceFacade {
      * @param ligatabelleComponent to handle the database access
      */
     @Autowired
-    public SyncService(final LigatabelleComponent ligatabelleComponent) {
+    public SyncService(final LigatabelleComponent ligatabelleComponent,
+                        final MatchComponentImpl matchComponentImpl,
+                       final MatchComponent matchComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
+        this.matchComponent = matchComponent;
     }
-
 
     /**
      * I return the current "ligatabelle" for a "wettkampftid (tag)" entries of the database.
@@ -57,7 +71,7 @@ public class SyncService implements ServiceFacade {
             value = "veranstaltung={id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<LigaSyncLigatabelleDTO> getLigatabelleVeranstaltung(@PathVariable("id") final long id) {
+    public List<LigaSyncLigatabelleDTO> getLigatabelleVeranstaltungOffline(@PathVariable("id") final long id) {
 
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
         logger.debug("Receive 'Ligatabelle für Veranstaltung' request with ID '{}'", id);
@@ -67,7 +81,6 @@ public class SyncService implements ServiceFacade {
         return ligatabelleDOList.stream().map(LigaSyncLigatabelleDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-
     /* TODO
      * I return the all Matches from "ligamatch"-Table for
      * a "wettkampftid (tag)" entries of the database.
@@ -76,6 +89,39 @@ public class SyncService implements ServiceFacade {
      * vermutlich die folgende Funktion:
      * list<ligamatchDO> ligamatchcomponent.findById(wetkkmapfID)
      **/
+
+    /**
+     * I return the all Matches from "ligamatch"-Table for * a "wettkampftid (tag)" entries of the database.
+     *
+     * @return list of {@link LigaSyncMatchDTO} as JSON
+     */
+
+    @GetMapping(
+            value = "findByWettkampfIdOffline/wettkampfid={id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<LigaSyncMatchDTO> findByWettkampfId(@PathVariable("id") final long wettkampfid) {
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        this.checkMatchId(wettkampfid);
+        logger.debug("Receive 'Wettkampfid for Matches' request with ID '{}'", wettkampfid);
+
+        List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
+
+        final List<MatchDO> matchDOs = new ArrayList<>();
+
+        for( LigamatchBE einmatch: wettkampfMatches) {
+            MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(einmatch);
+            matchDOs.add(matchDO);
+        }
+        return matchDOs.stream().map(LigaSyncMatchDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    private void checkMatchId(Long matchId) {
+        Preconditions.checkNotNull(matchId,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
+        Preconditions.checkArgument(matchId >= 0,
+                String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
+    }
 
     /* TODO
      * I return the all Passe Entries from "ligapasse"-Table for
