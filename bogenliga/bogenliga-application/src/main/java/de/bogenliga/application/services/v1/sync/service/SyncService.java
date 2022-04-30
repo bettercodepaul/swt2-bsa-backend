@@ -8,12 +8,8 @@ import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
-import de.bogenliga.application.business.match.impl.entity.MatchBE;
-import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.match.mapper.MatchDTOMapper;
-import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
@@ -51,7 +47,6 @@ public class SyncService implements ServiceFacade {
     private final Logger logger = LoggerFactory.getLogger(de.bogenliga.application.services.v1.sync.service.SyncService.class);
 
     private final LigatabelleComponent ligatabelleComponent;
-    private final MatchComponentImpl matchComponentImpl;
     private final MatchComponent matchComponent;
 
     /**
@@ -64,7 +59,6 @@ public class SyncService implements ServiceFacade {
                         final MatchComponentImpl matchComponentImpl,
                        final MatchComponent matchComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
-        this.matchComponentImpl = matchComponentImpl;
         this.matchComponent = matchComponent;
     }
 
@@ -107,14 +101,9 @@ public class SyncService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaSyncMatchDTO> findByWettkampfId(@PathVariable("id") final long wettkampfid) {
-        //getLigaMatchesByWettkampfId
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         this.checkMatchId(wettkampfid);
         logger.debug("Receive 'Wettkampfid for Matches' request with ID '{}'", wettkampfid);
-
-        //List<MatchDO> wettkampfMatches = matchComponentImpl.findByWettkampfId(id);
-
-        //final List<LigatabelleDO> ligatabelleDOList = matchComponentImpl.getLigatabelleVeranstaltung(wettkampfid);
 
         List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
 
@@ -124,7 +113,6 @@ public class SyncService implements ServiceFacade {
             MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(einmatch);
             matchDOs.add(matchDO);
         }
-
         return matchDOs.stream().map(LigaSyncMatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -134,23 +122,6 @@ public class SyncService implements ServiceFacade {
         Preconditions.checkArgument(matchId >= 0,
                 String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
     }
-
-    /*
-    @Override
-    public List<MatchDO> findByWettkampfId(Long wettkampfId) {
-        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
-
-        final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
-    }
-    @Override
-    public List<MatchDO> findByWettkampfId(Long wettkampfId) {
-        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
-
-        final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
-    }
-    */
 
     /* TODO
      * I return the all Passe Entries from "ligapasse"-Table for
