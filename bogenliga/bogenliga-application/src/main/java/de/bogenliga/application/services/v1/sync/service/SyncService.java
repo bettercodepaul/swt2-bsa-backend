@@ -7,7 +7,6 @@ import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
@@ -56,7 +55,6 @@ public class SyncService implements ServiceFacade {
      */
     @Autowired
     public SyncService(final LigatabelleComponent ligatabelleComponent,
-                        final MatchComponentImpl matchComponentImpl,
                        final MatchComponent matchComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
@@ -107,13 +105,17 @@ public class SyncService implements ServiceFacade {
 
         List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
 
-        final List<MatchDO> matchDOs = new ArrayList<>();
+        List<LigaSyncMatchDTO> ligaSyncMatchDTOList = new ArrayList<>();
 
-        for( LigamatchBE einmatch: wettkampfMatches) {
-            MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(einmatch);
-            matchDOs.add(matchDO);
+        for( LigamatchBE currentLigamatchBE: wettkampfMatches) {
+            MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(currentLigamatchBE);
+            LigaSyncMatchDTO ligaSyncMatchDTO = LigaSyncMatchDTOMapper.apply(matchDO);
+            ligaSyncMatchDTO.setMannschaftName(currentLigamatchBE.getMannschaftName());
+            ligaSyncMatchDTO.setNaechsteMatchId(currentLigamatchBE.getNaechsteMatchId());
+            ligaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(currentLigamatchBE.getNaechsteNaechsteMatchId());
+            ligaSyncMatchDTOList.add(ligaSyncMatchDTO);
         }
-        return matchDOs.stream().map(LigaSyncMatchDTOMapper.toDTO).collect(Collectors.toList());
+        return ligaSyncMatchDTOList;
     }
 
     private void checkMatchId(Long matchId) {

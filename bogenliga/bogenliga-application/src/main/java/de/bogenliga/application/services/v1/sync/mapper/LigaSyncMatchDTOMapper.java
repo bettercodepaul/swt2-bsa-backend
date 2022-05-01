@@ -20,7 +20,7 @@ public class LigaSyncMatchDTOMapper implements DataTransferObjectMapper {
         // empty private constructor
     }
 
-    private static LigaSyncMatchDTO apply(MatchDO matchDO) {
+    public static LigaSyncMatchDTO apply(MatchDO matchDO) {
 
         final Long id = matchDO.getId();
         final Long version = matchDO.getVersion();
@@ -34,11 +34,26 @@ public class LigaSyncMatchDTOMapper implements DataTransferObjectMapper {
         final Long matchIdGegner = null;
         final Long naechsteMatchId = null;
         final Long naechsteNaechsteMatchNrMatchId = null;
-        final Integer strafpunkteSatz1 = Math.toIntExact(matchDO.getStrafPunkteSatz1());
-        final Integer strafpunkteSatz2 = Math.toIntExact(matchDO.getStrafPunkteSatz2());
-        final Integer strafpunkteSatz3 = Math.toIntExact(matchDO.getStrafPunkteSatz3());
-        final Integer strafpunkteSatz4 = Math.toIntExact(matchDO.getStrafPunkteSatz4());
-        final Integer strafpunkteSatz5 = Math.toIntExact(matchDO.getStrafPunkteSatz5());
+        int strafpunkteSatz1=0;
+        if(matchDO.getStrafPunkteSatz1()!=null){
+            strafpunkteSatz1 = Math.toIntExact(matchDO.getStrafPunkteSatz1());
+        }
+        int strafpunkteSatz2=0;
+        if(matchDO.getStrafPunkteSatz2()!=null){
+            strafpunkteSatz2 = Math.toIntExact(matchDO.getStrafPunkteSatz2());
+        }
+        int strafpunkteSatz3=0;
+        if(matchDO.getStrafPunkteSatz3()!=null){
+            strafpunkteSatz3 = Math.toIntExact(matchDO.getStrafPunkteSatz3());
+        }
+        int strafpunkteSatz4=0;
+        if(matchDO.getStrafPunkteSatz4()!=null){
+            strafpunkteSatz4 = Math.toIntExact(matchDO.getStrafPunkteSatz4());
+        }
+        int strafpunkteSatz5=0;
+        if(matchDO.getStrafPunkteSatz5()!=null){
+            strafpunkteSatz5 = Math.toIntExact(matchDO.getStrafPunkteSatz5());
+        }
 
         return new LigaSyncMatchDTO(id, version, wettkampfId, matchNr, matchScheibennummer, mannschaftsId,
                 mannschaftName, nameGegner, scheibennummerGegner, matchIdGegner, naechsteMatchId,
