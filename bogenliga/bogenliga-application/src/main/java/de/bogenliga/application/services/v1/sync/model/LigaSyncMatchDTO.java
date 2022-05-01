@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.sync.model;
 
-public class LigaSyncMatchDTO {
+import de.bogenliga.application.common.service.types.DataTransferObject;
+
+public class LigaSyncMatchDTO implements DataTransferObject {
     private Long id; //match-Id
     private Long version;
     private Long wettkampfId;
@@ -59,5 +61,30 @@ public class LigaSyncMatchDTO {
         this.strafpunkteSatz3 = strafpunkteSatz3;
         this.strafpunkteSatz4 = strafpunkteSatz4;
         this.strafpunkteSatz5 = strafpunkteSatz5;
+    }
+
+    public void setMannschaftName(String mannschaftName) {
+        this.mannschaftName = mannschaftName;
+    }
+
+    public void setNameGegner(String nameGegner){
+        this.nameGegner = nameGegner;
+    }
+
+    public void setScheibennummerGegner(Integer scheibennummerGegner){
+        this.scheibennummerGegner = scheibennummerGegner;
+    }
+
+    public void setMatchIdGegner(Long matchIdGegner){
+        this.matchIdGegner = matchIdGegner;
+    }
+
+    public void setNaechsteMatchId(Long naechsteMatchId){
+        this.naechsteMatchId = naechsteMatchId;
+
+    }
+
+    public void setNaechsteNaechsteMatchNrMatchId(Long naechsteNaechsteMatchNrMatchId){
+        this.naechsteNaechsteMatchNrMatchId = naechsteNaechsteMatchNrMatchId;
     }
 }
