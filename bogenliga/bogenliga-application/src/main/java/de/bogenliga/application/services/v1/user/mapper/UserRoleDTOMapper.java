@@ -31,7 +31,7 @@ public final class UserRoleDTOMapper implements DataTransferObjectMapper {
         userRoleDO.setVersion(dto.getVersion());
         userRoleDO.setActive(dto.isActive());
         userRoleDO.setDsbMitgliedNachname(dto.getDsbMitgliedNachname());
-        userRoleDO.setDsbMitgliedVorname(dto.getDsbMitgliedNachname());
+        userRoleDO.setDsbMitgliedVorname(dto.getDsbMitgliedVorname());
         return userRoleDO;
     };
 
