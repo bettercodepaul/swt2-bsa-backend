@@ -49,10 +49,14 @@ public class UserRoleDTO implements DataTransferObject {
      *
      * @param userDTO to copy
      */
+    //Falls nötig dekommentieren
+
+    /**
     public UserRoleDTO(final UserRoleDTO userDTO) {
         this(userDTO.getId(), userDTO.getEmail(), userDTO.isActive(), userDTO.getRoleId(), userDTO.getRoleName(), userDTO.getVersion(),
                 userDTO.getDsbMitgliedVorname(), userDTO.getDsbMitgliedNachname());
     }
+     **/
 
 
     public Long getId() {
