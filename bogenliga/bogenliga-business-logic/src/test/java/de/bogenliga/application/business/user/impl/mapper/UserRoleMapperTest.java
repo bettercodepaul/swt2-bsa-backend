@@ -84,6 +84,8 @@ public class UserRoleMapperTest {
         assertThat(actual.getVersion()).isEqualTo(VERSION);
         assertThat(actual.getEmail()).isNull();
         assertThat(actual.getRoleName()).isNull();
+        assertThat(actual.getDsbMitgliedNachname()).isNull();
+        assertThat(actual.getDsbMitgliedVorname()).isNull();
     }
 
 
@@ -134,6 +136,8 @@ public class UserRoleMapperTest {
         assertThat(actual.getLastModifiedAtUtc()).isEqualTo(TIMESTAMP);
         assertThat(actual.getLastModifiedByUserId()).isEqualTo(OTHER_USER_ID);
         assertThat(actual.getVersion()).isEqualTo(VERSION);
+        assertThat(actual.getDsbMitgliedNachname()).isEqualTo(DSBMITGLIED_TABLE_SURNAME);
+        assertThat(actual.getDsbMitgliedVorname()).isEqualTo(DSBMITGLIED_TABLE_FORENAME);
     }
 
 }
