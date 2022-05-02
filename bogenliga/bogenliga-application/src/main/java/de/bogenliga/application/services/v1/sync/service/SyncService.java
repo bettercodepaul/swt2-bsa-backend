@@ -105,7 +105,7 @@ public class SyncService implements ServiceFacade {
 
         List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
 
-        List<LigaSyncMatchDTO> ligaSyncMatchDTOList = new ArrayList<>();
+        List<LigaSyncMatchDTO> ligaSyncMatchDTOList = new ArrayList<LigaSyncMatchDTO>() {};
 
         for( LigamatchBE currentLigamatchBE: wettkampfMatches) {
             MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(currentLigamatchBE);

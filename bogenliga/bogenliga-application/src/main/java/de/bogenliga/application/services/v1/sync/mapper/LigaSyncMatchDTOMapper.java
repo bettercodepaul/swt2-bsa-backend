@@ -34,26 +34,12 @@ public class LigaSyncMatchDTOMapper implements DataTransferObjectMapper {
         final Long matchIdGegner = null;
         final Long naechsteMatchId = null;
         final Long naechsteNaechsteMatchNrMatchId = null;
-        int strafpunkteSatz1=0;
-        if(matchDO.getStrafPunkteSatz1()!=null){
-            strafpunkteSatz1 = Math.toIntExact(matchDO.getStrafPunkteSatz1());
-        }
-        int strafpunkteSatz2=0;
-        if(matchDO.getStrafPunkteSatz2()!=null){
-            strafpunkteSatz2 = Math.toIntExact(matchDO.getStrafPunkteSatz2());
-        }
-        int strafpunkteSatz3=0;
-        if(matchDO.getStrafPunkteSatz3()!=null){
-            strafpunkteSatz3 = Math.toIntExact(matchDO.getStrafPunkteSatz3());
-        }
-        int strafpunkteSatz4=0;
-        if(matchDO.getStrafPunkteSatz4()!=null){
-            strafpunkteSatz4 = Math.toIntExact(matchDO.getStrafPunkteSatz4());
-        }
-        int strafpunkteSatz5=0;
-        if(matchDO.getStrafPunkteSatz5()!=null){
-            strafpunkteSatz5 = Math.toIntExact(matchDO.getStrafPunkteSatz5());
-        }
+        final Integer strafpunkteSatz1 = matchDO.getStrafPunkteSatz1()!=null ? Math.toIntExact(matchDO.getStrafPunkteSatz1()) : null;
+        final Integer strafpunkteSatz2 = matchDO.getStrafPunkteSatz2()!=null ? Math.toIntExact(matchDO.getStrafPunkteSatz2()) : null;
+        final Integer strafpunkteSatz3 = matchDO.getStrafPunkteSatz3()!=null ? Math.toIntExact(matchDO.getStrafPunkteSatz3()) : null;
+        final Integer strafpunkteSatz4 = matchDO.getStrafPunkteSatz4()!=null ? Math.toIntExact(matchDO.getStrafPunkteSatz4()) : null;
+        final Integer strafpunkteSatz5 = matchDO.getStrafPunkteSatz5()!=null ? Math.toIntExact(matchDO.getStrafPunkteSatz5()) : null;
+
 
         return new LigaSyncMatchDTO(id, version, wettkampfId, matchNr, matchScheibennummer, mannschaftsId,
                 mannschaftName, nameGegner, scheibennummerGegner, matchIdGegner, naechsteMatchId,
