@@ -31,6 +31,9 @@ public class UserRoleDTO implements DataTransferObject {
     /**
      * Constructor with mandatory parameters
      */
+
+    //Falls notwendig dekommentieren
+    /**
     public UserRoleDTO(final Long id, final String email, final boolean active, final Long roleId, final String RoleName, final Long version, final String dsbMitgliedVorname, final String dsbMitgliedNachname) {
         this.id = id;
         this.email = email;
@@ -41,6 +44,7 @@ public class UserRoleDTO implements DataTransferObject {
         this.dsbMitgliedVorname = dsbMitgliedVorname;
         this.dsbMitgliedNachname = dsbMitgliedNachname;
     }
+     **/
 
 
 
@@ -49,14 +53,15 @@ public class UserRoleDTO implements DataTransferObject {
      *
      * @param userDTO to copy
      */
-    //Falls nötig dekommentieren
 
-    /**
+    //Falls notwenig dekommentieren
+/**
     public UserRoleDTO(final UserRoleDTO userDTO) {
         this(userDTO.getId(), userDTO.getEmail(), userDTO.isActive(), userDTO.getRoleId(), userDTO.getRoleName(), userDTO.getVersion(),
                 userDTO.getDsbMitgliedVorname(), userDTO.getDsbMitgliedNachname());
     }
-     **/
+ **/
+
 
 
     public Long getId() {

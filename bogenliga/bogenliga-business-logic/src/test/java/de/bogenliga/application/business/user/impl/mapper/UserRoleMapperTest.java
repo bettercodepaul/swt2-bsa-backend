@@ -124,6 +124,8 @@ public class UserRoleMapperTest {
         userRoleDO.setVersion(VERSION);
         userRoleDO.setLastModifiedAtUtc(DateProvider.convertTimestamp(TIMESTAMP));
         userRoleDO.setLastModifiedByUserId(OTHER_USER_ID);
+        userRoleDO.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        userRoleDO.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
         final UserRoleExtBE actual = UserRoleMapper.toUserRoleExtBE.apply(userRoleDO);
 
