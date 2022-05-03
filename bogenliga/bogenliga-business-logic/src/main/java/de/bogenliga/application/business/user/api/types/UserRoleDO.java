@@ -57,7 +57,7 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
     /**
      * Constructor with business  parameters
      */
-    //Falls nötig dekommentieren
+    //Falls notwendig dekomentieren
     /**
     public UserRoleDO(final Long id, final String email, final boolean active, final Long roleId, final String roleName){
         this.id = id;
@@ -67,6 +67,7 @@ public class UserRoleDO extends CommonDataObject implements DataObject {
         this.active = active;
     }
      **/
+
 
     /**
      * Constructor with mandatory parameters
