@@ -14,7 +14,7 @@ public class LigaSyncMannschaftsmitgliedDTO {
     public Long version;
     public Long mannschaftId;
     public Long dsbMitgliedId;
-    public Integer rueckennummer;
+    public Long rueckennummer;
 
     public LigaSyncMannschaftsmitgliedDTO(){
 
@@ -22,7 +22,7 @@ public class LigaSyncMannschaftsmitgliedDTO {
 
     public LigaSyncMannschaftsmitgliedDTO(Long id, Long version,
                                           Long mannschaftId, Long dsbMitgliedId,
-                                          Integer rueckennummer) {
+                                          Long rueckennummer) {
         this.id = id;
         this.version = version;
         this.mannschaftId = mannschaftId;

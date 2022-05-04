@@ -96,7 +96,7 @@ public class LigaSyncMatchDTO implements DataTransferObject {
                             Long naechsteNaechsteMatchNrMatchId, Integer strafpunkteSatz1,
                             Integer strafpunkteSatz2, Integer strafpunkteSatz3,
                             Integer strafpunkteSatz4, Integer strafpunkteSatz5) {
-        new LigaSyncMatchDTO(id,version, wettkampfId, matchNr, matchScheibennummer, mannschaftId, mannschaftName,
+        this(id,version, wettkampfId, matchNr, matchScheibennummer, mannschaftId, mannschaftName,
                 nameGegner, scheibennummerGegner, matchIdGegner, naechsteMatchId, naechsteNaechsteMatchNrMatchId);
         this.setStrafpunkteSatz1(strafpunkteSatz1);
         this.setStrafpunkteSatz2(strafpunkteSatz2);
