@@ -35,12 +35,16 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
     private static final String USER_BE_EMAIL = "userEmail";
     private static final String ROLE_BE_NAME = "roleName";
     private static final String USER_BE_ACTIVE = "active";
+    private static final String DSBMITGLIED_BE_FORENAME = "dsbMitgliedVorname";
+    private static final String DSBMITGLIED_BE_SURNAME = "dsbMitgliedNachname";
 
     private static final String USER_TABLE_ID = "benutzer_rolle_benutzer_id";
     private static final String ROLE_TABLE_ID = "benutzer_rolle_rolle_id";
     private static final String USER_TABLE_EMAIL = "benutzer_email";
     private static final String ROLE_TABLE_NAME = "rolle_name";
     private static final String USER_TABLE_ACTIVE = "benutzer_active";
+    private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
+    private static final String DSBMITGLIED_TABLE_SURNAME = "dsb_mitglied_nachname";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<UserRoleExtBE> USERROLE = new BusinessEntityConfiguration<>(
@@ -51,10 +55,11 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
      */
     private static final String FIND_ALL =
             "SELECT benutzer_rolle.benutzer_rolle_benutzer_id, benutzer.benutzer_email, benutzer.benutzer_active, "
-                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name "
-                    + " FROM benutzer_rolle, benutzer, rolle "
+                    + " benutzer_rolle.benutzer_rolle_rolle_id, rolle.rolle_name, dsb_mitglied.dsb_mitglied_nachname, dsb_mitglied.dsb_mitglied_vorname "
+                    + " FROM benutzer_rolle, benutzer, rolle, dsb_mitglied"
                     + " WHERE benutzer_rolle.benutzer_rolle_benutzer_id = benutzer.benutzer_id "
                     + " AND benutzer_rolle.benutzer_rolle_rolle_id = rolle.rolle_id "
+                    + " AND benutzer.benutzer_dsb_mitglied_id = dsb_mitglied.dsb_mitglied_id"
                     + " AND benutzer.benutzer_active = TRUE";
 
     private static final String FIND_BY_SEARCH =
@@ -117,6 +122,8 @@ public class UserRoleExtDAO extends UserRoleDAO implements DataAccessObject {
         columnsToFieldsMap.put(USER_TABLE_EMAIL, USER_BE_EMAIL);
         columnsToFieldsMap.put(ROLE_TABLE_NAME, ROLE_BE_NAME);
         columnsToFieldsMap.put(USER_TABLE_ACTIVE, USER_BE_ACTIVE);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_SURNAME, DSBMITGLIED_BE_SURNAME);
+        columnsToFieldsMap.put(DSBMITGLIED_TABLE_FORENAME, DSBMITGLIED_BE_FORENAME);
 
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
