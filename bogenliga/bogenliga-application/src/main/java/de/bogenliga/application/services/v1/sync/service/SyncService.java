@@ -113,7 +113,7 @@ public class SyncService implements ServiceFacade {
      */
 
     @GetMapping(
-            value = "findByWettkampfIdOffline/wettkampfid={id}",
+            value = "match/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaSyncMatchDTO> findByWettkampfId(@PathVariable("id") final long wettkampfid) {
@@ -158,7 +158,7 @@ public class SyncService implements ServiceFacade {
      */
 
     @GetMapping(
-            value = "passe={id}",
+            value = "passe/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaSyncPasseDTO> getLigapassenOffline(@PathVariable("id") final long wettkampfid) {
@@ -169,10 +169,11 @@ public class SyncService implements ServiceFacade {
         //List<LigapasseBE> wettkampfPassen = passeComponent.getLigapassenByLigamatchId(wettkampfid);
         List<PasseDO> wettkampfPassenDO = passeComponent.findByWettkampfId(wettkampfid);
 
-        List<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<LigaSyncPasseDTO>();
+        List<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<>();
         for(PasseDO currentPasseDO: wettkampfPassenDO){
             //PasseDO passeDO = LigapasseToPasseMapper.ligapasseToPasseDO.apply(currentPasseDO);
-            LigaSyncPasseDTO ligaSyncPasseDTO = LigaSyncPasseDTOMapper.apply(currentPasseDO);
+            LigaSyncPasseDTO ligaSyncPasseDTO = LigaSyncPasseDTOMapper.toDTO.apply(currentPasseDO);
+            ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
             //ligaSyncPasseDTO.setDsbMigliedName(currentLigapasseBE.getDsbMitgliedName());
             //ligaSyncPasseDTO.setRueckennummer(currentLigapasseBE.getMannschaftsmitgliedRueckennummer());
         }
@@ -189,7 +190,7 @@ public class SyncService implements ServiceFacade {
      */
 
     @GetMapping(
-            value = "{wettkampfId}",
+            value = "mannschaftsmitglieder/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitgliedernOffline(@PathVariable final long wettkampfId) {
