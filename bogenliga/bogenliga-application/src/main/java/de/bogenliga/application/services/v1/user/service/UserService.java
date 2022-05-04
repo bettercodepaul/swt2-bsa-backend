@@ -469,7 +469,7 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(userCredentialsDTO, "User Credentials must not be null");
         Preconditions.checkNotNull(userCredentialsDTO.getUsername(), PRECONDITION_MSG_USER_ID);
         Preconditions.checkNotNull(userCredentialsDTO.getPassword(), PRECONDITION_MSG_USER_EMAIL);
-        Preconditions.checkNotNull(userCredentialsDTO.getDsb_mitglied_id(), PRECONDITION_MSG_DSB_MITGLIED_ID);
+        Preconditions.checkNotNull(userCredentialsDTO.getDsbMitgliedId(), PRECONDITION_MSG_DSB_MITGLIED_ID);
         // Check if password is valid by running it against the regular expression for the password
         Preconditions.checkArgument(userCredentialsDTO.getPassword().matches(PW_VALIDATION_REGEX), PRECONDITION_MSG_USER_PW);
 
@@ -482,7 +482,7 @@ public class UserService implements ServiceFacade {
         // user anlegen
 
         final UserDO userCreatedDO = userComponent.create(userCredentialsDTO.getUsername(),
-                userCredentialsDTO.getPassword(), userCredentialsDTO.getDsb_mitglied_id(), userId, userCredentialsDTO.isUsing2FA());
+                userCredentialsDTO.getPassword(), userCredentialsDTO.getDsbMitgliedId(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
         userRoleComponent.create(userCreatedDO.getId(), userId);
         return UserDTOMapper.toDTO.apply(userCreatedDO);

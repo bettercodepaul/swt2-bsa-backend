@@ -806,7 +806,7 @@ public class UserServiceTest {
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
         userCredentialsDTO.setUsername(USERNAME);
         userCredentialsDTO.setPassword(PASSWORD);
-        userCredentialsDTO.setDsb_mitglied_id(DSBMITGLIEDID);
+        userCredentialsDTO.setDsbMitgliedId(DSBMITGLIEDID);
 
         // configure mocks
         when(userComponent.create(anyString(), anyString(), anyLong(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
@@ -927,7 +927,7 @@ public class UserServiceTest {
 
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
         userCredentialsDTO.setUsername(USERNAME);
-        userCredentialsDTO.setDsb_mitglied_id(DSBMITGLIEDID);
+        userCredentialsDTO.setDsbMitgliedId(DSBMITGLIEDID);
 
         String[] invalidPasswords = new String[]{
                 "ABCabc0",
