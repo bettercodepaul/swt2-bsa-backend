@@ -29,6 +29,8 @@ public class UserRoleMapper implements ValueObjectMapper {
         final Long roleId = be.getRoleId();
         final String roleName = be.getRoleName();
         final boolean active = be.isActive();
+        final String dsbMitgliedVorname = be.getDsbMitgliedVorname();
+        final String dsbMitgliedNachname = be.getDsbMitgliedNachname();
 
         // technical parameter
         Long createdByUserId = be.getCreatedByUserId();
@@ -38,7 +40,7 @@ public class UserRoleMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new UserRoleDO(id, email, active, roleId, roleName, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version);
+        return new UserRoleDO(id, email, active, roleId, roleName, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId, version, dsbMitgliedNachname, dsbMitgliedVorname);
     };
 
     /**
@@ -78,6 +80,7 @@ public class UserRoleMapper implements ValueObjectMapper {
         userRoleBE.setLastModifiedByUserId(vo.getLastModifiedByUserId());
         userRoleBE.setVersion(vo.getVersion());
 
+
         return userRoleBE;
     };
 
@@ -95,6 +98,8 @@ public class UserRoleMapper implements ValueObjectMapper {
         userRoleExtBE.setUserEmail(vo.getEmail());
         userRoleExtBE.setRoleName(vo.getRoleName());
         userRoleExtBE.setActive(vo.isActive());
+        userRoleExtBE.setDsbMitgliedNachname(vo.getDsbMitgliedNachname());
+        userRoleExtBE.setDsbMitgliedVorname(vo.getDsbMitgliedVorname());
 
         userRoleExtBE.setCreatedAtUtc(createdAtUtcTimestamp);
         userRoleExtBE.setCreatedByUserId(vo.getCreatedByUserId());

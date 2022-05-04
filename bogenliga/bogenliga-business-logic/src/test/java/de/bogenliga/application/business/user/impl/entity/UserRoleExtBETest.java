@@ -21,6 +21,8 @@ public class UserRoleExtBETest {
     private static final long ROLE_ID = 777;
     private static final String EMAIL = "test@text.net";
     private static final String ROLE_NAME = "user.rolle";
+    private static final String DSBMITGLIED_TABLE_SURNAME = "Schmidt";
+    private static final String DSBMITGLIED_TABLE_FORENAME = "Hans";
 
 
     @Test
@@ -30,6 +32,8 @@ public class UserRoleExtBETest {
         underTest.setUserEmail(EMAIL);
         underTest.setRoleId(ROLE_ID);
         underTest.setRoleName(ROLE_NAME);
+        underTest.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        underTest.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
         final String actual = underTest.toString();
 
@@ -38,7 +42,9 @@ public class UserRoleExtBETest {
                 .contains(Long.toString(ID))
                 .contains(Long.toString(ROLE_ID))
                 .contains(EMAIL)
-                .contains(ROLE_NAME);
+                .contains(ROLE_NAME)
+                .contains(DSBMITGLIED_TABLE_SURNAME)
+                .contains(DSBMITGLIED_TABLE_FORENAME);
     }
 
 }
