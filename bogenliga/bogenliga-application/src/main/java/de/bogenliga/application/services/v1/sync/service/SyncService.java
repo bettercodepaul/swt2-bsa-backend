@@ -2,17 +2,25 @@ package de.bogenliga.application.services.v1.sync.service;
 
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
+import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
+import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.passe.api.PasseComponent;
+import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
+import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
+import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
+import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -47,6 +55,7 @@ public class SyncService implements ServiceFacade {
 
     private final LigatabelleComponent ligatabelleComponent;
     private final MatchComponent matchComponent;
+    private final PasseComponent passeComponent;
 
     /**
      * Constructor with dependency injection
@@ -55,9 +64,11 @@ public class SyncService implements ServiceFacade {
      */
     @Autowired
     public SyncService(final LigatabelleComponent ligatabelleComponent,
-                       final MatchComponent matchComponent) {
+                       final MatchComponent matchComponent,
+                       final PasseComponent passeComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
+        this.passeComponent = passeComponent;
     }
 
     /**
@@ -132,6 +143,35 @@ public class SyncService implements ServiceFacade {
      * list<ligapasseDO> ligapassecomponent.findById(wetkkmapfID)
      * @return list of {@link LigaSyncPasseDTO} as JSON
      */
+
+    /**
+     * I return the all Passe Entries from "ligapasse"-Table for a "wettkampftid (tag)" entries of the database.
+     *
+     * @return list of {@link LigaSyncPasseDTO} as JSON
+     */
+
+    @GetMapping(
+            value = "passe={id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<LigaSyncPasseDTO> getLigapassenOffline(@PathVariable("id") final long wettkampfid) {
+        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        this.checkMatchId(wettkampfid);
+        logger.debug("Receive 'Wettkampfid for Passen' request with ID '{}'", wettkampfid);
+
+        //List<LigapasseBE> wettkampfPassen = passeComponent.getLigapassenByLigamatchId(wettkampfid);
+        List<PasseDO> wettkampfPassenDO = passeComponent.findByWettkampfId(wettkampfid);
+
+        List<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<LigaSyncPasseDTO>();
+        for(PasseDO currentPasseDO: wettkampfPassenDO){
+            //PasseDO passeDO = LigapasseToPasseMapper.ligapasseToPasseDO.apply(currentPasseDO);
+            LigaSyncPasseDTO ligaSyncPasseDTO = LigaSyncPasseDTOMapper.apply(currentPasseDO);
+            //ligaSyncPasseDTO.setDsbMigliedName(currentLigapasseBE.getDsbMitgliedName());
+            //ligaSyncPasseDTO.setRueckennummer(currentLigapasseBE.getMannschaftsmitgliedRueckennummer());
+        }
+        return ligaSyncPasseDTOs;
+    }
+
 
     /* TODO
      * I return the all Mannschaftsmitglieder Entries for all Mannschaften
