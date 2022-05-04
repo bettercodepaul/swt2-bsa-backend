@@ -26,12 +26,12 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.liga.api.LigaComponent;
+
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.passe.api.PasseComponent;
+
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -316,7 +316,10 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                 .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(tableCheckbox2.setBorder(Border.NO_BORDER))
+
                         )
+
+
                 ;
 
                 tableBodyThirdPart
@@ -366,7 +369,21 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                             )
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
                             )
-                    ;
+                            //new empty cell if not more than 8 Teams
+
+                           ;
+                    //Add Space if not more than 8 Teams
+                    if (teamMemberMapping.size() <= 8) {
+                         tableBody
+                                 .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                .add(new Paragraph(" ").setBold().setLineThrough().setFontSize(10.0F)))
+                                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                        .add(new Paragraph(" ").setFontSize(10.0F)))
+
+                                .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
+                                        .add(new Paragraph(" ").setBold().setLineThrough().setFontSize(10.0F)));
+                    }
+
                 }
             }
 

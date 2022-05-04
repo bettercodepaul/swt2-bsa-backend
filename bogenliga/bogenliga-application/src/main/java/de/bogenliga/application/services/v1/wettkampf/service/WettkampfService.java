@@ -133,7 +133,7 @@ public class WettkampfService implements ServiceFacade {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
     public WettkampfDTO create(@RequestBody final WettkampfDTO wettkampfDTO, final Principal principal) {
 
         checkPreconditions(wettkampfDTO);
