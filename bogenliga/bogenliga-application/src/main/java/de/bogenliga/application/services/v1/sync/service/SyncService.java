@@ -5,6 +5,8 @@ import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchM
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 
@@ -17,8 +19,10 @@ import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
+import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
+import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -56,6 +60,7 @@ public class SyncService implements ServiceFacade {
     private final LigatabelleComponent ligatabelleComponent;
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     /**
      * Constructor with dependency injection
@@ -64,10 +69,12 @@ public class SyncService implements ServiceFacade {
      */
     @Autowired
     public SyncService(final LigatabelleComponent ligatabelleComponent,
-                       final MatchComponent matchComponent,
+                       final MatchComponent matchComponent, 
+                       final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, 
                        final PasseComponent passeComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.passeComponent = passeComponent;
     }
 
@@ -180,6 +187,25 @@ public class SyncService implements ServiceFacade {
      * Aufruf von WettkampfComponent -> getAllowedMitglieder(wettkampfID)
      * @return list of {@link LigaSyncMannschaftsmitgliedDTO} as JSON
      */
+
+    @GetMapping(
+            value = "{wettkampfId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitgliedernOffline(@PathVariable final long wettkampfId) {
+
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        logger.debug("Receive 'Mannschaftsmitgliedern für Wettkampf' request with WettkampfID '{}'", wettkampfId);
+
+        final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+
+        for(int i=0; i < 8; i++) {
+            MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfId, 1L, (long) i);
+            mannschaftsmitgliedDOList.addAll(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(matchDO.getMannschaftId(), wettkampfId));
+        }
+
+        return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(Collectors.toList());
+    }
 
     /* TODO
      * I will update the dataset of a single Wettkampf and set the OfflineToken
