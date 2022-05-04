@@ -38,6 +38,8 @@ public class UserRoleExtBasicDAOTest {
     private static final String EMAIL = "test@test.net";
     private static final String ROLE_NAME = "TEST_USER";
     private static final long USER = 0;
+    private static final String DSBMITGLIED_TABLE_SURNAME = "Schmidt";
+    private static final String DSBMITGLIED_TABLE_FORENAME = "Hans";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -56,6 +58,8 @@ public class UserRoleExtBasicDAOTest {
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        expectedBE.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        expectedBE.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -81,6 +85,9 @@ public class UserRoleExtBasicDAOTest {
         assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
+        assertThat(actual.get(0).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.get(0).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
+
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
 
@@ -95,6 +102,8 @@ public class UserRoleExtBasicDAOTest {
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        expectedBE.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        expectedBE.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -120,6 +129,9 @@ public class UserRoleExtBasicDAOTest {
         assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
+        assertThat(actual.get(0).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.get(0).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
+
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
@@ -134,6 +146,8 @@ public class UserRoleExtBasicDAOTest {
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        expectedBE.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        expectedBE.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
         // configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -154,6 +168,9 @@ public class UserRoleExtBasicDAOTest {
         assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
+        assertThat(actual.get(0).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.get(0).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
+
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
@@ -167,6 +184,8 @@ public class UserRoleExtBasicDAOTest {
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        expectedBE.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        expectedBE.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
         // configure mocks
         when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
@@ -187,6 +206,9 @@ public class UserRoleExtBasicDAOTest {
         assertThat(actual.getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
+        assertThat(actual.getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
+
         // verify invocations
         verify(basicDao).selectSingleEntity(any(), any(), any());
     }
@@ -199,11 +221,15 @@ public class UserRoleExtBasicDAOTest {
         expectedBE.setRoleId(ROLE_ID);
         expectedBE.setUserEmail(EMAIL);
         expectedBE.setRoleName(ROLE_NAME);
+        expectedBE.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        expectedBE.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
         final UserRoleExtBE expectedBE2 = new UserRoleExtBE();
         expectedBE2.setUserId(ID_2);
         expectedBE2.setRoleId(ROLE_ID2);
         expectedBE2.setUserEmail(EMAIL);
         expectedBE2.setRoleName(ROLE_NAME);
+        expectedBE.setDsbMitgliedNachname(DSBMITGLIED_TABLE_SURNAME);
+        expectedBE.setDsbMitgliedVorname(DSBMITGLIED_TABLE_FORENAME);
 
 
         // configure mocks
@@ -226,6 +252,9 @@ public class UserRoleExtBasicDAOTest {
                     .isEqualTo(expectedBE.getRoleId());
             assertThat(actual.get(i).getRoleName())
                     .isEqualTo(expectedBE.getRoleName());
+
+            assertThat(actual.get(i).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+            assertThat(actual.get(i).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
 
 
         }

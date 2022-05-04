@@ -20,6 +20,8 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
     private Long roleId;
     private String roleName;
     private boolean active;
+    private String dsbMitgliedVorname;
+    private String dsbMitgliedNachname;
 
 
     /**
@@ -38,6 +40,8 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
                 ", roleId='" + roleId + '\'' +
                 ", roleName='" + roleName + '\'' +
                 ", active='" + active + '\'' +
+                ", dsbMitgliedNachname='" + dsbMitgliedNachname + '\'' +
+                ", dsbMitgliedVorname='" + dsbMitgliedVorname + '\'' +
                 '}';
     }
 
@@ -72,5 +76,11 @@ public class UserRoleExtBE extends CommonBusinessEntity implements BusinessEntit
 
     public boolean isActive () {return this.active;}
     public void setActive (boolean active) {this.active = active;}
+
+    public String getDsbMitgliedNachname () {return dsbMitgliedNachname;}
+    public void setDsbMitgliedNachname (String dsbMitgliedNachname) {this.dsbMitgliedNachname = dsbMitgliedNachname;}
+
+    public String getDsbMitgliedVorname () {return dsbMitgliedVorname;}
+    public void setDsbMitgliedVorname (String dsbMitgliedVorname) {this.dsbMitgliedVorname = dsbMitgliedVorname;}
 
 }
