@@ -193,7 +193,7 @@ public class SyncService implements ServiceFacade {
             value = "mannschaftsmitglieder/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitgliedernOffline(@PathVariable final long wettkampfId) {
+    public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitgliedernOffline(@PathVariable("id") final long wettkampfId) {
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("Receive 'Mannschaftsmitgliedern für Wettkampf' request with WettkampfID '{}'", wettkampfId);
