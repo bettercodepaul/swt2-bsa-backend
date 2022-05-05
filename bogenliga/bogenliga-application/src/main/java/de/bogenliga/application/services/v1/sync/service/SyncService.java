@@ -200,7 +200,7 @@ public class SyncService implements ServiceFacade {
 
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
 
-        for(int i=0; i < 8; i++) {
+        for(int i=1; i <= 8; i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfId, 1L, (long) i);
             mannschaftsmitgliedDOList.addAll(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(matchDO.getMannschaftId(), wettkampfId));
         }
