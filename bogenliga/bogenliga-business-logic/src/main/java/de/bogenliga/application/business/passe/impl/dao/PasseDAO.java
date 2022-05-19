@@ -325,6 +325,7 @@ public class PasseDAO implements DataAccessObject {
      */
     public PasseBE create(final PasseBE passeBE, final Long currentKampfrichterUserId) {
         basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
+        basicDao.setCreationAttributes(passeBE, currentKampfrichterUserId);
 
         return basicDao.insertEntity(PASSE, passeBE);
     }
