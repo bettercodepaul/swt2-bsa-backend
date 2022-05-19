@@ -241,6 +241,7 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO1, SERVICE_FIND_MATCHES_BY_IDS);
         this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
 
+
         return matches;
     }
 
@@ -357,6 +358,8 @@ public class MatchService implements ServiceFacade {
     private void saveMatch(MatchDTO matchDTO, Long userId) {
 
         MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
+
+
         matchComponent.update(matchDO, userId);
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
@@ -369,9 +372,11 @@ public class MatchService implements ServiceFacade {
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
                 String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
 
+
         for (PasseDTO passeDTO : matchDTO.getPassen()) {
             createOrUpdatePasse(passeDTO, userId, mannschaftsmitgliedDOS);
         }
+
     }
 
 
@@ -386,11 +391,16 @@ public class MatchService implements ServiceFacade {
                                      List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS){
 
         checkPreconditions(passeDTO, passeConditionErrors);
+
+
         passeDTO.setDsbMitgliedId(getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
+
         Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
                 String.format(ERR_NOT_NULL_TEMPLATE, "createOrUpdatePasse", "dsbMitgliedId"));
 
         PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
+
+
         if (passeExists(passeDO)) {
             passeComponent.update(passeDO, userId);
         } else {
@@ -785,14 +795,19 @@ public class MatchService implements ServiceFacade {
 
 
             List<LigapasseBE> ligapasseBEList = passeComponent.getLigapassenByLigamatchId(matchId);
+
+
             List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+
 
             for (int i = 0; i < passeDTOs.size(); i++){
                 passeDTOs.get(i).setRueckennummer(ligapasseBEList.get(i).getMannschaftsmitgliedRueckennummer());
                 Preconditions.checkArgument(passeDTOs.get(i).getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
+
+
 
             matchDTO.setPassen(passeDTOs);
             return matchDTO;
