@@ -131,6 +131,21 @@ public class SyncService implements ServiceFacade {
             ligaSyncMatchDTO.setMannschaftName(currentLigamatchBE.getMannschaftName());
             ligaSyncMatchDTO.setNaechsteMatchId(currentLigamatchBE.getNaechsteMatchId());
             ligaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(currentLigamatchBE.getNaechsteNaechsteMatchId());
+            LigamatchBE gegnerLigaMatchBE = wettkampfMatches.stream().
+                    filter(t -> t.getMatchNr() == matchDO.getNr() &&
+                            t.getBegegnung() == matchDO.getBegegnung() &&
+                            t.getScheibennummer() != matchDO.getScheibenNummer()).
+                    findFirst().orElse(null);
+            if(gegnerLigaMatchBE != null &&
+                    ligaSyncMatchDTO.getMannschaftName() != null &&
+                    !ligaSyncMatchDTO.getMannschaftName().equals(gegnerLigaMatchBE.getMannschaftName()) &&
+                    ligaSyncMatchDTO.getId() != gegnerLigaMatchBE.getMatchId() &&
+                    gegnerLigaMatchBE.getScheibennummer() != null &&
+                    ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(gegnerLigaMatchBE.getScheibennummer())){
+                ligaSyncMatchDTO.setNameGegner(gegnerLigaMatchBE.getMannschaftName());
+                ligaSyncMatchDTO.setMatchIdGegner(gegnerLigaMatchBE.getMatchId());
+                ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(gegnerLigaMatchBE.getScheibennummer()));
+            }
             ligaSyncMatchDTOList.add(ligaSyncMatchDTO);
         }
         return ligaSyncMatchDTOList;
