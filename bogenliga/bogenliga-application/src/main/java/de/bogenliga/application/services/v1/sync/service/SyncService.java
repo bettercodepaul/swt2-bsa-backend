@@ -131,20 +131,26 @@ public class SyncService implements ServiceFacade {
             ligaSyncMatchDTO.setMannschaftName(currentLigamatchBE.getMannschaftName());
             ligaSyncMatchDTO.setNaechsteMatchId(currentLigamatchBE.getNaechsteMatchId());
             ligaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(currentLigamatchBE.getNaechsteNaechsteMatchId());
-            LigamatchBE gegnerLigaMatchBE = wettkampfMatches.stream().
-                    filter(t -> t.getMatchNr() == matchDO.getNr() &&
-                            t.getBegegnung() == matchDO.getBegegnung() &&
-                            t.getScheibennummer() != matchDO.getScheibenNummer()).
-                    findFirst().orElse(null);
-            if(gegnerLigaMatchBE != null &&
-                    ligaSyncMatchDTO.getMannschaftName() != null &&
-                    !ligaSyncMatchDTO.getMannschaftName().equals(gegnerLigaMatchBE.getMannschaftName()) &&
-                    ligaSyncMatchDTO.getId() != gegnerLigaMatchBE.getMatchId() &&
-                    gegnerLigaMatchBE.getScheibennummer() != null &&
-                    ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(gegnerLigaMatchBE.getScheibennummer())){
-                ligaSyncMatchDTO.setNameGegner(gegnerLigaMatchBE.getMannschaftName());
-                ligaSyncMatchDTO.setMatchIdGegner(gegnerLigaMatchBE.getMatchId());
-                ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(gegnerLigaMatchBE.getScheibennummer()));
+
+            List<LigamatchBE> ligaGegnerMatchBEList = wettkampfMatches.stream().
+                    filter(t -> (t.getMatchNr() != null ? t.getMatchNr().equals(matchDO.getNr()) : false) &&
+                            (t.getBegegnung() != null ? t.getBegegnung().equals(matchDO.getBegegnung()) : false) &&
+                            (t.getScheibennummer() != null ? !t.getScheibennummer().equals(matchDO.getScheibenNummer()) : false))
+                    .collect(Collectors.toList());
+
+            LigamatchBE gegnerLigaMatchBE = null;
+
+            if(ligaGegnerMatchBEList != null && ligaGegnerMatchBEList.size() == 1 && ligaGegnerMatchBEList.get(0) != null){
+                gegnerLigaMatchBE = ligaGegnerMatchBEList.get(0);
+                if(ligaSyncMatchDTO.getMannschaftName() != null &&
+                        !ligaSyncMatchDTO.getMannschaftName().equals(gegnerLigaMatchBE.getMannschaftName()) &&
+                        (ligaSyncMatchDTO.getId() != null ? !ligaSyncMatchDTO.getId().equals(gegnerLigaMatchBE.getMatchId()) : false) &&
+                        gegnerLigaMatchBE.getScheibennummer() != null &&
+                        ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(gegnerLigaMatchBE.getScheibennummer())){
+                    ligaSyncMatchDTO.setNameGegner(gegnerLigaMatchBE.getMannschaftName());
+                    ligaSyncMatchDTO.setMatchIdGegner(gegnerLigaMatchBE.getMatchId());
+                    ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(gegnerLigaMatchBE.getScheibennummer()));
+                }
             }
             ligaSyncMatchDTOList.add(ligaSyncMatchDTO);
         }
