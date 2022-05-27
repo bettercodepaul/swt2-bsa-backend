@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.sync.service;
 
+import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
@@ -132,29 +133,37 @@ public class SyncService implements ServiceFacade {
             ligaSyncMatchDTO.setNaechsteMatchId(currentLigamatchBE.getNaechsteMatchId());
             ligaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(currentLigamatchBE.getNaechsteNaechsteMatchId());
 
-            List<LigamatchBE> ligaGegnerMatchBEList = wettkampfMatches.stream().
-                    filter(t -> (t.getMatchNr() != null ? t.getMatchNr().equals(matchDO.getNr()) : false) &&
-                            (t.getBegegnung() != null ? t.getBegegnung().equals(matchDO.getBegegnung()) : false) &&
-                            (t.getScheibennummer() != null ? !t.getScheibennummer().equals(matchDO.getScheibenNummer()) : false))
-                    .collect(Collectors.toList());
+            LigamatchBE gegnerLigaMatchBE = getGegnerLigaMatchBE(matchDO,  wettkampfMatches);
 
-            LigamatchBE gegnerLigaMatchBE = null;
-
-            if(ligaGegnerMatchBEList != null && ligaGegnerMatchBEList.size() == 1 && ligaGegnerMatchBEList.get(0) != null){
-                gegnerLigaMatchBE = ligaGegnerMatchBEList.get(0);
-                if(ligaSyncMatchDTO.getMannschaftName() != null &&
-                        !ligaSyncMatchDTO.getMannschaftName().equals(gegnerLigaMatchBE.getMannschaftName()) &&
-                        (ligaSyncMatchDTO.getId() != null ? !ligaSyncMatchDTO.getId().equals(gegnerLigaMatchBE.getMatchId()) : false) &&
-                        gegnerLigaMatchBE.getScheibennummer() != null &&
-                        ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(gegnerLigaMatchBE.getScheibennummer())){
-                    ligaSyncMatchDTO.setNameGegner(gegnerLigaMatchBE.getMannschaftName());
-                    ligaSyncMatchDTO.setMatchIdGegner(gegnerLigaMatchBE.getMatchId());
-                    ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(gegnerLigaMatchBE.getScheibennummer()));
-                }
+            if(gegnerLigaMatchBE != null &&
+                    ligaSyncMatchDTO.getMannschaftName() != null &&
+                    !ligaSyncMatchDTO.getMannschaftName().equals(gegnerLigaMatchBE.getMannschaftName()) &&
+                    (ligaSyncMatchDTO.getId() != null && !ligaSyncMatchDTO.getId().equals(gegnerLigaMatchBE.getMatchId())) &&
+                    gegnerLigaMatchBE.getScheibennummer() != null &&
+                    ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(gegnerLigaMatchBE.getScheibennummer())){
+                ligaSyncMatchDTO.setNameGegner(gegnerLigaMatchBE.getMannschaftName());
+                ligaSyncMatchDTO.setMatchIdGegner(gegnerLigaMatchBE.getMatchId());
+                ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(gegnerLigaMatchBE.getScheibennummer()));
             }
             ligaSyncMatchDTOList.add(ligaSyncMatchDTO);
         }
         return ligaSyncMatchDTOList;
+    }
+
+    private LigamatchBE getGegnerLigaMatchBE(MatchDO matchDO, List<LigamatchBE> wettkampfMatches) {
+        List<LigamatchBE> ligaGegnerMatchBEList = wettkampfMatches.stream().
+                filter(t -> t.getMatchNr() != null && t.getMatchNr().equals(matchDO.getNr()) &&
+                        t.getBegegnung() != null && t.getBegegnung().equals(matchDO.getBegegnung()) &&
+                        t.getScheibennummer() != null && !t.getScheibennummer().equals(matchDO.getScheibenNummer()))
+                .collect(Collectors.toList());
+
+        LigamatchBE gegnerLigaMatchBE = null;
+
+        if (ligaGegnerMatchBEList != null && ligaGegnerMatchBEList.size() == 1 && ligaGegnerMatchBEList.get(
+                0) != null) {
+            gegnerLigaMatchBE = ligaGegnerMatchBEList.get(0);
+        }
+        return gegnerLigaMatchBE;
     }
 
     private void checkMatchId(Long matchId) {
