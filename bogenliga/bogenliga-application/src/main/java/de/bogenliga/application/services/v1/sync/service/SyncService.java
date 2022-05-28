@@ -1,6 +1,5 @@
 package de.bogenliga.application.services.v1.sync.service;
 
-import de.bogenliga.application.business.liga.impl.mapper.LigaMapper;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
@@ -132,7 +131,9 @@ public class SyncService implements ServiceFacade {
             ligaSyncMatchDTO.setMannschaftName(currentLigamatchBE.getMannschaftName());
             ligaSyncMatchDTO.setNaechsteMatchId(currentLigamatchBE.getNaechsteMatchId());
             ligaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(currentLigamatchBE.getNaechsteNaechsteMatchId());
-
+            /* to fill the last 3 missing attributes in ligaSyncMatchDTO the information of the opponent
+             ligamatchBE the team is playing against is used.
+            */
             LigamatchBE gegnerLigaMatchBE = getGegnerLigaMatchBE(matchDO,  wettkampfMatches);
 
             if(gegnerLigaMatchBE != null &&
@@ -150,7 +151,15 @@ public class SyncService implements ServiceFacade {
         return ligaSyncMatchDTOList;
     }
 
+    /**
+     * I return the the LigamatchBE-Objekt of the match the given MatchDO-team is fighting against
+     *
+     * @return LigamatchBE
+     */
     private LigamatchBE getGegnerLigaMatchBE(MatchDO matchDO, List<LigamatchBE> wettkampfMatches) {
+        /* In a Begegnung, two Teams play against each other. When a team is playing against another team in a competition,
+         it has the same matchNr and the same BegegnungNr but it uses a different Scheibennummer.
+        */
         List<LigamatchBE> ligaGegnerMatchBEList = wettkampfMatches.stream().
                 filter(t -> t.getMatchNr() != null && t.getMatchNr().equals(matchDO.getNr()) &&
                         t.getBegegnung() != null && t.getBegegnung().equals(matchDO.getBegegnung()) &&
