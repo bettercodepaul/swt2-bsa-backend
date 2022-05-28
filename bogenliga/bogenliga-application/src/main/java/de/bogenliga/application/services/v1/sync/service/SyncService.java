@@ -11,7 +11,10 @@ import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
@@ -22,6 +25,7 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgli
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
+import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -62,6 +66,7 @@ public class SyncService implements ServiceFacade {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final WettkampfComponent wettkampfComponent;
 
     /**
      * Constructor with dependency injection
@@ -72,11 +77,13 @@ public class SyncService implements ServiceFacade {
     public SyncService(final LigatabelleComponent ligatabelleComponent,
                        final MatchComponent matchComponent, 
                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, 
-                       final PasseComponent passeComponent) {
+                       final PasseComponent passeComponent,
+                       final WettkampfComponent wettkampfComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.passeComponent = passeComponent;
+        this.wettkampfComponent = wettkampfComponent;
     }
 
     /**
@@ -241,10 +248,11 @@ public class SyncService implements ServiceFacade {
         return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    /* TODO
+    /**
      * I will update the dataset of a single Wettkampf and set the OfflineToken
-     *
+     * Token is generated with current user's id + timestamp
      * @return WettkampfExtDTO as JSON
+     * @author Jonas Sigloch, SWT SoSe 2022
      */
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -253,8 +261,21 @@ public class SyncService implements ServiceFacade {
     public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
 
+        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
-        logger.debug("Received 'update' request with id '{}'", wettkampfDTO.getId());
+        logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
+        // No extra permission check needed as Ausrichter is not supposed to be able not use offline function
+
+        // TODO: create token, create wettkampfextdo and save it in db + return it
+        // create token in business layer
+        long userId = UserProvider.getCurrentUserId(principal); // + timestamp
+
+        //
+        final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+
+        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
+
+        //return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
         return new WettkampfExtDTO();
     }
 
