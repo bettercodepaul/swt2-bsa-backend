@@ -29,6 +29,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
     private Long wettkampfAusrichter;
+    private String offlineToken;
 
 
     /**
@@ -160,6 +161,16 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
     }
 
 
+    public void setOfflineToken(String offlineToken) {
+        this.offlineToken = offlineToken;
+    }
+
+
+    public String getOfflineToken() {
+        return this.offlineToken;
+    }
+
+
     @Override
     public String toString() {
         return "WettkampfBE {\n" +
@@ -175,6 +186,7 @@ public class WettkampfBE extends CommonBusinessEntity implements BusinessEntity 
                 "\tWettkampfdiziplinId = " + getWettkampfDisziplinId() + ",\n" +
                 "\tWettkampftypId = " + getWettkampfTypId() + ",\n" +
                 "\tWettkampfAusrichter = " + getWettkampfAusrichter() + "\n" +
+                "\tOfflineToken = " + getOfflineToken() + "\n" +
                 "}";
     }
 
