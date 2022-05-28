@@ -26,6 +26,9 @@ import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
+import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -34,9 +37,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.naming.NoPermissionException;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -243,8 +248,19 @@ public class SyncService implements ServiceFacade {
      *
      * @return WettkampfExtDTO as JSON
      */
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+    public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
+                                  final Principal principal) throws NoPermissionException {
 
-    /* TODO
+
+        logger.debug("Received 'update' request with id '{}'", wettkampfDTO.getId());
+        return new WettkampfExtDTO();
+    }
+
+        /* TODO
      * I will recieve the OfflineToken form Client
      * and a list of new Mannschaftmitglieder (identified by missing IDs)
      * the follwing checks will be performed:
