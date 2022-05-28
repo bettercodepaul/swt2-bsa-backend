@@ -120,7 +120,7 @@ public class LigapasseDAO implements DataAccessObject {
             .selectAll()
             .from(TABLE)
             .whereEquals(MATCH_TABLE_MATCH_ID)
-            .orderBy(MATCH_TABLE_PASSE_LFDNR)
+            .orderBy(MATCH_TABLE_PASSE_ID)
             .compose().toString();
 
 
@@ -129,9 +129,5 @@ public class LigapasseDAO implements DataAccessObject {
             .from(TABLE)
             .whereEquals(MATCH_TABLE_PASSE_ID)
             .compose().toString();
-
-
-
-
 
 }
