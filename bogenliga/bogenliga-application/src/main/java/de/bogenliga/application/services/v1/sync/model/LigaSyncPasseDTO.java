@@ -7,6 +7,7 @@ package de.bogenliga.application.services.v1.sync.model;
 // über die anderen IDs eindeutig gelesen/geschrieben werden
 // die IDs werden bei Snyc zum Backend dann initial vergeben.
 
+
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class LigaSyncPasseDTO implements DataTransferObject {
@@ -19,7 +20,7 @@ public class LigaSyncPasseDTO implements DataTransferObject {
     private Long wettkampfId;
     private Long lfdNr;
     private Long dsbMitgliedId;
-    private String dsbMigliedName;
+    private String dsbMitgliedName;
     private Integer[] ringzahl;
     private Integer rueckennummer;
 
@@ -43,7 +44,7 @@ public class LigaSyncPasseDTO implements DataTransferObject {
     //Original Constructor
     public LigaSyncPasseDTO(Long id, Long version, Long matchId, Long mannschaftId,
                             Long wettkampfId, Long lfdNr, Long dsbMitgliedId,
-                            String dsbMigliedName, Integer rueckennummer,
+                            String dsbMitgliedName, Integer rueckennummer,
                             Integer[] ringzahl) {
         this.id = id;
         this.version = version;
@@ -52,22 +53,70 @@ public class LigaSyncPasseDTO implements DataTransferObject {
         this.wettkampfId = wettkampfId;
         this.lfdNr = lfdNr;
         this.dsbMitgliedId = dsbMitgliedId;
-        this.dsbMigliedName = dsbMigliedName;
+        this.dsbMitgliedName = dsbMitgliedName;
         this.rueckennummer = rueckennummer;
         this.ringzahl = ringzahl;
     }
 
-    public String getDsbMigliedName() {
-        return dsbMigliedName;
+    public String getDsbMitgliedName() {
+        return dsbMitgliedName;
     }
-    public void setDsbMigliedName(String dsbMigliedName) {
-        this.dsbMigliedName = dsbMigliedName;
+    public void setDsbMitgliedName(String dsbMitgliedName) {
+        this.dsbMitgliedName = dsbMitgliedName;
     }
     public Integer getRueckennummer() {
         return rueckennummer;
     }
     public void setRueckennummer(Integer rueckennummer) {
         this.rueckennummer = rueckennummer;
+    }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public Long getVersion() {
+        return version;
+    }
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+    public Long getMatchId() {
+        return matchId;
+    }
+    public void setMatchId(Long matchId) {
+        this.matchId = matchId;
+    }
+    public Long getMannschaftId() {
+        return mannschaftId;
+    }
+    public void setMannschaftId(Long mannschaftId) {
+        this.mannschaftId = mannschaftId;
+    }
+    public Long getWettkampfId() {
+        return wettkampfId;
+    }
+    public void setWettkampfId(Long wettkampfId) {
+        this.wettkampfId = wettkampfId;
+    }
+    public Long getLfdNr() {
+        return lfdNr;
+    }
+    public void setLfdNr(Long lfdNr) {
+        this.lfdNr = lfdNr;
+    }
+    public Long getDsbMitgliedId() {
+        return dsbMitgliedId;
+    }
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
+        this.dsbMitgliedId = dsbMitgliedId;
+    }
+    public Integer[] getRingzahl() {
+        return ringzahl;
+    }
+    public void setRingzahl(Integer[] ringzahl) {
+        this.ringzahl = ringzahl;
     }
 }
 
