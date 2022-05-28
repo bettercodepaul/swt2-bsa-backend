@@ -204,17 +204,12 @@ public class SyncService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         this.checkMatchId(wettkampfid);
         logger.debug("Receive 'Wettkampfid for Passen' request with ID '{}'", wettkampfid);
-
-        //List<LigapasseBE> wettkampfPassen = passeComponent.getLigapassenByLigamatchId(wettkampfid);
         List<PasseDO> wettkampfPassenDO = passeComponent.findByWettkampfId(wettkampfid);
-
         List<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<>();
+
         for(PasseDO currentPasseDO: wettkampfPassenDO){
-            //PasseDO passeDO = LigapasseToPasseMapper.ligapasseToPasseDO.apply(currentPasseDO);
             LigaSyncPasseDTO ligaSyncPasseDTO = LigaSyncPasseDTOMapper.toDTO.apply(currentPasseDO);
             ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
-            //ligaSyncPasseDTO.setDsbMigliedName(currentLigapasseBE.getDsbMitgliedName());
-            //ligaSyncPasseDTO.setRueckennummer(currentLigapasseBE.getMannschaftsmitgliedRueckennummer());
         }
         return ligaSyncPasseDTOs;
     }
