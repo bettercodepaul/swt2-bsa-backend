@@ -24,6 +24,7 @@ import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
+import de.bogenliga.application.services.v1.sync.mapper.WettkampfExtDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
@@ -270,18 +271,17 @@ public class SyncService implements ServiceFacade {
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
         // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
 
-        // TODO: create token (BL), create wettkampfextdo and save it in db + return it
         // create token in business layer and persist it + return to frontend
         long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
 
         //
-        final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        wettkampfDO.setOfflineToken(offlineToken);
 
-        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(newWettkampfDO, userId);
+        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
 
-        //return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
-        return new WettkampfExtDTO();
+        return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 
         /* TODO
