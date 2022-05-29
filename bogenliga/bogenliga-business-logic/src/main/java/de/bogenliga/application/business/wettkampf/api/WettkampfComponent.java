@@ -112,4 +112,11 @@ public interface WettkampfComponent extends ComponentFacade {
     WettkampfDO findWT0byVeranstaltungsId(long veranstaltungsId);
 
     byte[] getUebersichtPDFasByteArray(long veranstaltungsid,long wettkampftag);
+
+    /**
+     * generates an offline token to mark a wettkampf as offline
+     * @param userId
+     * @return offline token as string
+     */
+    String generateOfflineToken(long userId);
 }

@@ -270,7 +270,7 @@ public class SyncService implements ServiceFacade {
         // TODO: create token (BL), create wettkampfextdo and save it in db + return it
         // create token in business layer and persist it + return to frontend
         long userId = UserProvider.getCurrentUserId(principal);
-        // String offlineToken = wettkampfComponent.createOfflineToken(userId);
+        String offlineToken = wettkampfComponent.generateOfflineToken(userId);
 
         //
         final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
