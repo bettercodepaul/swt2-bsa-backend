@@ -45,6 +45,42 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
             final OffsetDateTime createdAtUtc,
             final Long createdByUserId,
             final Long version,
+            final Long wettkampfAusrichter) {
+        this.id = id;
+        this.wettkampfVeranstaltungsId = veranstaltungsId;
+        this.wettkampfDatum = datum;
+        this.wettkampfStrasse = wettkampfStrasse;
+        this.wettkampfPlz = wettkampfPlz;
+        this.wettkampfOrtsname = wettkampfOrtsname;
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
+        this.wettkampfBeginn = wettkampfBeginn;
+        this.wettkampfTag = wettkampfTag;
+        this.wettkampfDisziplinId = wettkampfDisziplinId;
+        this.wettkampfTypId = wettkampfTypId;
+        this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
+        this.version = version;
+        this.wettkampfAusrichter = wettkampfAusrichter;
+        // no offlineToken
+        this.offlineToken = null;
+    }
+
+    // with offlineToken
+    public WettkampfDO(
+            final Long id,
+            final Long veranstaltungsId,
+            final Date datum,
+            final String wettkampfStrasse,
+            final String wettkampfPlz,
+            final String wettkampfOrtsname,
+            final String wettkampfOrtsinfo,
+            final String wettkampfBeginn,
+            final Long wettkampfTag,
+            final Long wettkampfDisziplinId,
+            final Long wettkampfTypId,
+            final OffsetDateTime createdAtUtc,
+            final Long createdByUserId,
+            final Long version,
             final Long wettkampfAusrichter,
             final String offlineToken) {
         this.id = id;
@@ -82,6 +118,31 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
      * @param wettkampfTypId
      * @param version
      */
+    public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum,
+                       final String wettkampfStrasse, final String wettkampfPlz,
+                       final String wettkampfOrtsname,
+                       final String wettkampfOrtsinfo,
+                       final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
+                       final Long wettkampfTypId,
+                       final Long version, final Long wettkampfAusrichter) {
+        this.id = id;
+        this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
+        this.wettkampfDatum = wettkampfDatum;
+        this.wettkampfStrasse = wettkampfStrasse;
+        this.wettkampfPlz = wettkampfPlz;
+        this.wettkampfOrtsname = wettkampfOrtsname;
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
+        this.wettkampfBeginn = wettkampfBeginn;
+        this.wettkampfTag = wettkampfTag;
+        this.wettkampfDisziplinId = wettkampfDisziplinId;
+        this.wettkampfTypId = wettkampfTypId;
+        this.version = version;
+        this.wettkampfAusrichter = wettkampfAusrichter;
+        // no offline token
+        this.offlineToken = null;
+    }
+
+    // with offlineToken
     public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum,
                        final String wettkampfStrasse, final String wettkampfPlz,
                        final String wettkampfOrtsname,
