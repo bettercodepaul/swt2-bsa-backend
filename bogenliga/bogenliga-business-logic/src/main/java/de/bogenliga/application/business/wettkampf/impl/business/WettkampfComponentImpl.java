@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -753,6 +754,15 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         average = average / count;
         return average;
+    }
+
+    /**
+     * generates an offline token for the passed user id to mark a wettkampf as offline
+     * token consists of user id plus current date and time as java.time.Instant
+     * @author Jonas Sigloch, SWT SoSe 2022
+     */
+    public String generateOfflineToken(long userId) {
+        return String.valueOf(userId) + Instant.now().toString();
     }
 
 }
