@@ -7,8 +7,8 @@ import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 
 /**
- * I map the {@link WettkampfExtDTO} to the {@link WettkampfDO} object
- *
+ *  I map the {@link WettkampfDO} to the {@link WettkampfExtDTO} object
+ *  one way because current implementation is read only
  * @author Jonas Sigloch, SWT SoSe 2022
  */
 public class WettkampfExtDTOMapper implements DataTransferObjectMapper {
