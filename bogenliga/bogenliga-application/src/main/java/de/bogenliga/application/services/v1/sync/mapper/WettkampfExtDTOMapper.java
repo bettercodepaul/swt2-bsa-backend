@@ -29,7 +29,7 @@ public class WettkampfExtDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfTypId = wettkampfDO.getWettkampfTypId();
         final Long version = wettkampfDO.getVersion();
         final Long ausrichter = wettkampfDO.getWettkampfAusrichter();
-        final String offlineToken = ""; // TODO
+        final String offlineToken = wettkampfDO.getOfflineToken();
 
         return new WettkampfExtDTO(id, veranstaltungsId, datum, strasse, plz, ortsname, ortsinfo, beginn, tag,
                 disziplinId, wettkampfTypId, version, ausrichter, offlineToken);
