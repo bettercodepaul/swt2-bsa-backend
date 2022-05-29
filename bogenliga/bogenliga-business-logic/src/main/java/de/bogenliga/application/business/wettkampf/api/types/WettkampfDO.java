@@ -27,6 +27,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
     private Long wettkampfAusrichter;
+    private String offlineToken;
 
 
     public WettkampfDO(
@@ -44,7 +45,8 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
             final OffsetDateTime createdAtUtc,
             final Long createdByUserId,
             final Long version,
-            final Long wettkampfAusrichter) {
+            final Long wettkampfAusrichter,
+            final String offlineToken) {
         this.id = id;
         this.wettkampfVeranstaltungsId = veranstaltungsId;
         this.wettkampfDatum = datum;
@@ -60,7 +62,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.createdByUserId = createdByUserId;
         this.version = version;
         this.wettkampfAusrichter = wettkampfAusrichter;
-
+        this.offlineToken = offlineToken;
     }
 
 
@@ -86,7 +88,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
                        final String wettkampfOrtsinfo,
                        final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
                        final Long wettkampfTypId,
-                       final Long version, final Long wettkampfAusrichter) {
+                       final Long version, final Long wettkampfAusrichter, final String offlineToken) {
         this.id = id;
         this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
         this.wettkampfDatum = wettkampfDatum;
@@ -100,7 +102,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.wettkampfTypId = wettkampfTypId;
         this.version = version;
         this.wettkampfAusrichter = wettkampfAusrichter;
-
+        this.offlineToken = offlineToken;
     }
 
 
@@ -233,6 +235,16 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
 
     public void setWettkampfAusrichter(Long wettkampfAusrichter) {
         this.wettkampfAusrichter = wettkampfAusrichter;
+    }
+
+
+    public String getOfflineToken() {
+        return offlineToken;
+    }
+
+
+    public void setOfflineToken(String offlineToken) {
+        this.offlineToken = offlineToken;
     }
 
 
