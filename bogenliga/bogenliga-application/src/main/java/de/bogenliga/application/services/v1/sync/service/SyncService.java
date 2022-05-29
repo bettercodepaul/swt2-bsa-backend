@@ -265,19 +265,24 @@ public class SyncService implements ServiceFacade {
                                   final Principal principal) throws NoPermissionException {
 
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-
+        logger.debug("principal tostring(): " + principal.toString());
+        logger.debug("principal getName(): " + principal.getName());
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
         // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
 
         // create token in business layer and persist it + return to frontend
-        long userId = UserProvider.getCurrentUserId(principal);
+        final long userId = UserProvider.getCurrentUserId(principal);
+        logger.debug("userid used to create offline token: " + userId);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
+        logger.debug("generated offline token: " + offlineToken);
 
         //
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         wettkampfDO.setOfflineToken(offlineToken);
+        logger.debug("offline token in wettkampf do before updating to db: " + wettkampfDO.getOfflineToken());
 
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
+        logger.debug("token in updatedwettkampf DO: " + updatedWettkampfDO.getOfflineToken());
 
         return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
