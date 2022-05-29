@@ -256,6 +256,7 @@ public class SyncService implements ServiceFacade {
      * @author Jonas Sigloch, SWT SoSe 2022
      */
     @PutMapping(
+            value = "offlinewettkampf",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
