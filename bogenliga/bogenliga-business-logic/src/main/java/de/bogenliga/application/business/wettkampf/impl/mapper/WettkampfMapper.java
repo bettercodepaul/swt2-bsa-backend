@@ -33,7 +33,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         final Long wettkampfDisziplinId = be.getWettkampfDisziplinId();
         final Long wettkampfTypId = be.getWettkampfTypId();
         final Long wettkampfAusrichter = be.getWettkampfAusrichter();
-
+        final String offlineToken = be.getOfflineToken();
         // technical parameter
         Long version = be.getVersion();
 
@@ -50,7 +50,8 @@ public class WettkampfMapper implements ValueObjectMapper {
                 wettkampfDisziplinId,
                 wettkampfTypId,
                 version,
-                wettkampfAusrichter);
+                wettkampfAusrichter,
+                offlineToken);
     };
 
     /**
@@ -73,7 +74,7 @@ public class WettkampfMapper implements ValueObjectMapper {
         wettkampfBe.setWettkampfTag(wettkampfDO.getWettkampfTag());
         wettkampfBe.setWettkampfDisziplinId(wettkampfDO.getWettkampfDisziplinId());
         wettkampfBe.setWettkampfTypId(wettkampfDO.getWettkampfTypId());
-
+        wettkampfBe.setOfflineToken(wettkampfDO.getOfflineToken());
 
         wettkampfBe.setCreatedAtUtc(createdAtUtcTimestamp);
         wettkampfBe.setCreatedByUserId(wettkampfDO.getCreatedByUserId());
