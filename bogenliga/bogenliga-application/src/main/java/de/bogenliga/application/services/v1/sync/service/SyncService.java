@@ -251,24 +251,26 @@ public class SyncService implements ServiceFacade {
     /**
      * I will update the dataset of a single Wettkampf and set the OfflineToken
      * Token is generated with current user's id + timestamp
+     * only a ligaleiter can go offline
      * @return WettkampfExtDTO as JSON
      * @author Jonas Sigloch, SWT SoSe 2022
      */
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
     public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
 
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
 
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
-        // No extra permission check needed as Ausrichter is not supposed to be able not use offline function
+        // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
 
-        // TODO: create token, create wettkampfextdo and save it in db + return it
-        // create token in business layer
-        long userId = UserProvider.getCurrentUserId(principal); // + timestamp
+        // TODO: create token (BL), create wettkampfextdo and save it in db + return it
+        // create token in business layer and persist it + return to frontend
+        long userId = UserProvider.getCurrentUserId(principal);
+        // String offlineToken = wettkampfComponent.createOfflineToken(userId);
 
         //
         final WettkampfDO newWettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
