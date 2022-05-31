@@ -11,7 +11,7 @@ package de.bogenliga.application.services.v1.sync.model;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class LigaSyncPasseDTO implements DataTransferObject {
-    private static final long serialVersionUID = -3582493648923927523L;
+    private static final long serialVersionUID = 8167439169583799814L;
 
     private Long id;
     private Long version;

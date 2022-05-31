@@ -2,8 +2,6 @@ package de.bogenliga.application.services.v1.sync.service;
 
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
-import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
-import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -15,8 +13,6 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
-import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
@@ -189,13 +185,11 @@ public class SyncService implements ServiceFacade {
      * list<ligapasseDO> ligapassecomponent.findById(wetkkmapfID)
      * @return list of {@link LigaSyncPasseDTO} as JSON
      */
-
     /**
-     * I return the all Passe Entries from "ligapasse"-Table for a "wettkampftid (tag)" entries of the database.
+     * I return the all Passe Entries for a "wettkampftid (tag)" entries of the database.
      *
      * @return list of {@link LigaSyncPasseDTO} as JSON
      */
-
     @GetMapping(
             value = "passe/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
