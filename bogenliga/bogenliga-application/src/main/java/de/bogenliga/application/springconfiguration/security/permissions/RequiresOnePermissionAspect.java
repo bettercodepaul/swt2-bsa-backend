@@ -122,7 +122,6 @@ public class RequiresOnePermissionAspect {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
 
             final HttpServletRequest request = servletRequestAttributes.getRequest();
-            if(request != null) { 
 
                 // parse json web token with roles
                 final String jwt = JwtTokenProvider.resolveToken(request);
@@ -134,7 +133,6 @@ public class RequiresOnePermissionAspect {
                 if (userPermissions.contains(toTest)) {
                     result = true;
                 }
-            }
         }
 
         return result;
@@ -153,24 +151,24 @@ public class RequiresOnePermissionAspect {
         if (requestAttributes != null) {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                // verify all jwt permissions are part of the required permissions
-                if (userPermissions.contains(toTest)) {
-                    Long userId = jwtTokenProvider.getUserId(jwt);
-                    for (VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userId)) {
-                        if (veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid) ){
-                            return true;
-                        }
+            //if a request is present
+            //parse the Webtoken and get the UserPermissions of the current User
+            final String jwt = JwtTokenProvider.resolveToken(request);
+            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+            //check if the current Users vereinsId equals the given vereinsId and if the User has
+            //the required Permission (if the permission is specifi
+            // verify all jwt permissions are part of the required permissions
+            if (userPermissions.contains(toTest)) {
+                Long userId = jwtTokenProvider.getUserId(jwt);
+                for (VeranstaltungDO veranstaltungDO : this.veranstaltungComponent.findByLigaleiterId(userId)) {
+                    if (veranstaltungDO.getVeranstaltungID().equals(veranstaltungsid) ){
+                        return true;
                     }
                 }
             }
+
         }
         return false;
     }
@@ -189,23 +187,23 @@ public class RequiresOnePermissionAspect {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
             //if a request is present:
-            if(request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                // verify all jwt permissions are part of the required permissions
-                if (userPermissions.contains(toTest)) {
-                    Long userId = jwtTokenProvider.getUserId(jwt);
-                    for (WettkampfDO wettkampfDO : this.wettkampfComponent.findByAusrichter(userId)) {
-                        if (wettkampfDO.getId().equals(wettkampfid) ) {
-                            return true;
-                        }
+            //parse the Webtoken and get the UserPermissions of the current User
+            final String jwt = JwtTokenProvider.resolveToken(request);
+            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+            //check if the current Users vereinsId equals the given vereinsId and if the User has
+            //the required Permission (if the permission is specifi
+            // verify all jwt permissions are part of the required permissions
+            if (userPermissions.contains(toTest)) {
+                Long userId = jwtTokenProvider.getUserId(jwt);
+                for (WettkampfDO wettkampfDO : this.wettkampfComponent.findByAusrichter(userId)) {
+                    if (wettkampfDO.getId().equals(wettkampfid) ) {
+                        return true;
                     }
                 }
             }
+
         }
         return false;
     }
@@ -223,24 +221,24 @@ public class RequiresOnePermissionAspect {
         if (requestAttributes != null) {
             final ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
             final HttpServletRequest request = servletRequestAttributes.getRequest();
-            //if a request is present:
-            if (request != null) {
-                //parse the Webtoken and get the UserPermissions of the current User
-                final String jwt = JwtTokenProvider.resolveToken(request);
-                final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
 
-                //check if the current Users vereinsId equals the given vereinsId and if the User has
-                //the required Permission (if the permission is specifi
-                // verify all jwt permissions are part of the required permissions
-                if (userPermissions.contains(toTest)) {
-                    Long userId = jwtTokenProvider.getUserId(jwt);
-                    UserDO userDO = this.userComponent.findById(userId);
-                    DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsbMitgliedId());
-                    if (dsbMitgliedDO.getVereinsId().equals(vereinsId)) {
-                        return true;
-                    }
+            //if a request is present:
+            //parse the Webtoken and get the UserPermissions of the current User
+            final String jwt = JwtTokenProvider.resolveToken(request);
+            final Set<UserPermission> userPermissions = jwtTokenProvider.getPermissions(jwt);
+
+            //check if the current Users vereinsId equals the given vereinsId and if the User has
+            //the required Permission (if the permission is specifi
+            // verify all jwt permissions are part of the required permissions
+            if (userPermissions.contains(toTest)) {
+                Long userId = jwtTokenProvider.getUserId(jwt);
+                UserDO userDO = this.userComponent.findById(userId);
+                DsbMitgliedDO dsbMitgliedDO = this.dsbMitgliedComponent.findById(userDO.getDsbMitgliedId());
+                if (dsbMitgliedDO.getVereinsId().equals(vereinsId)) {
+                    return true;
                 }
             }
+
         }
         return false;
     }
