@@ -259,11 +259,11 @@ public class SyncService implements ServiceFacade {
      * @author Jonas Sigloch, SWT SoSe 2022
      */
     @PutMapping(
-            value = "offlinewettkampf",
+            value = "wettkampf/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
-    public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
+    public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
     /*
     TODO: ALTERNATIV - wettkapmfid als URL Parameter und dann wettkampf holen, token erstellen, zurückgeben
