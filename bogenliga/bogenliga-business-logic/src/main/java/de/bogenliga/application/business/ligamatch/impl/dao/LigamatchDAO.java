@@ -39,7 +39,7 @@ public class LigamatchDAO implements DataAccessObject {
     private static final String MATCH_BE_MATCH_SCHEIBENNUMMER = "scheibennummer";
     private static final String MATCH_BE_MATCH_MANSCHAFT_ID = "mannschaftId";
     private static final String MATCH_BE_NAECHSTE_MATCH_ID = "naechsteMatchId";
-    private static final String MATCH_BE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "naechsteNaechsteMatchNrMatchId";
+    private static final String MATCH_BE_NAECHSTE_NAECHSTE_MATCH_NR_MATCH_ID = "naechsteNaechsteMatchId";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_1 = "strafpunkteSatz1";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_2 = "strafpunkteSatz2";
     private static final String MATCH_BE_MATCH_STRAFPUNKTE_SATZ_3 = "strafpunkteSatz3";
