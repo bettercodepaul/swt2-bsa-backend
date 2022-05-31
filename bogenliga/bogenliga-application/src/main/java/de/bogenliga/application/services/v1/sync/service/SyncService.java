@@ -266,8 +266,9 @@ public class SyncService implements ServiceFacade {
     public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
     /*
-    TODO: ALTERNATIV - wettkapmfid als URL Parameter und dann wettkampf holen, token erstellen, zurückgeben
+    TODO: ALTERNATIV - wettkapmfid als URL Parameter und dann wettkampf holen, token erstellen, zurückgeben (GET?)
      */
+        // check if pathvariable id == DTO.getId()
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("principal tostring(): " + principal.toString()); // immer 0
         logger.debug("principal getName(): " + principal.getName()); // immer 0
@@ -280,7 +281,6 @@ public class SyncService implements ServiceFacade {
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
         logger.debug("generated offline token: " + offlineToken); // generates correctly
 
-        //
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         wettkampfDO.setOfflineToken(offlineToken);
         logger.debug("offline token in wettkampf do before updating to db: " + wettkampfDO.getOfflineToken());
