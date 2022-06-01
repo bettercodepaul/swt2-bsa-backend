@@ -12,6 +12,9 @@ public class LigaSyncPasseDTOMapper implements DataTransferObjectMapper {
      * Map {@link PasseDO} to {@link LigaSyncPasseDTO}
      */
     public static final Function<PasseDO, LigaSyncPasseDTO> toDTO = LigaSyncPasseDTOMapper::apply;
+    /**
+     * Map {@link LigaSyncPasseDTO} to {@link PasseDO}
+     */
     public static final Function<LigaSyncPasseDTO, PasseDO> toDO = LigaSyncPasseDTOMapper::apply;
 
     private LigaSyncPasseDTOMapper() {
