@@ -12,6 +12,10 @@ public class LigaSyncPasseDTOMapper implements DataTransferObjectMapper {
      * Map {@link PasseDO} to {@link LigaSyncPasseDTO}
      */
     public static final Function<PasseDO, LigaSyncPasseDTO> toDTO = LigaSyncPasseDTOMapper::apply;
+    /**
+     * Map {@link LigaSyncPasseDTO} to {@link PasseDO}
+     */
+    public static final Function<LigaSyncPasseDTO, PasseDO> toDO = LigaSyncPasseDTOMapper::apply;
 
     private LigaSyncPasseDTOMapper() {
         // empty private constructor
@@ -25,5 +29,12 @@ public class LigaSyncPasseDTOMapper implements DataTransferObjectMapper {
         return new LigaSyncPasseDTO(passeDO.getId(), passeDO.getVersion(), passeDO.getPasseMatchId(),
                 passeDO.getPasseMannschaftId(), passeDO.getPasseWettkampfId(), passeDO.getPasseLfdnr(),
                 passeDO.getPasseDsbMitgliedId(), ringzahlen);
+    }
+
+    public static PasseDO apply(LigaSyncPasseDTO ligasyncpasseDTO) {
+        final Integer[] ringzahlen = ligasyncpasseDTO.getRingzahl();
+        return new PasseDO(ligasyncpasseDTO.getId(), ligasyncpasseDTO.getMannschaftId(),
+                ligasyncpasseDTO.getWettkampfId(), null, null, ligasyncpasseDTO.getLfdNr(),
+                ligasyncpasseDTO.getDsbMitgliedId(), ringzahlen[0], ringzahlen[1], ringzahlen[2], ringzahlen[3], ringzahlen[4], ringzahlen[5]);
     }
 }
