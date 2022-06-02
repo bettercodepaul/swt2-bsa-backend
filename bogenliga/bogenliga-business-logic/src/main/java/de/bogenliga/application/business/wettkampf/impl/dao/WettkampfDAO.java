@@ -106,6 +106,12 @@ public class WettkampfDAO implements DataAccessObject {
                     " FROM wettkampf" +
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " = 0 AND wettkampf_veranstaltung_id = ?";
 
+    private static final String CHECK_OFFLINE_TOKEN_BY_WETTKAMPF_ID =
+            SELECT +
+                    "FROM wettkampf" +
+                    "WHERE wettkampf_id = ?" +
+                    "AND offlinetoken = ?";
+
 
     private final BasicDAO basicDao;
 
@@ -170,6 +176,10 @@ public class WettkampfDAO implements DataAccessObject {
 
     public List<WettkampfBE> findAllByVeranstaltungId(final long id) {
         return basicDao.selectEntityList(WETTKAMPF, FIND_ALL_BY_VERANSTALTUNG_ID, id);
+    }
+
+    public WettkampfBE checkOfflineToken(final long wettkampfId, final String offlineToken){
+        return basicDao.selectSingleEntity(WETTKAMPF, CHECK_OFFLINE_TOKEN_BY_WETTKAMPF_ID, wettkampfId, offlineToken);
     }
 
     /**

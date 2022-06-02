@@ -61,6 +61,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
             case NO_PERMISSION_ERROR:
                 errorStatus = HttpStatus.FORBIDDEN;
                 break;
+            case INVALID_OFFLINE_TOKEN:
+                errorStatus = HttpStatus.CONFLICT;
+                break;
             default:
                 errorStatus = HttpStatus.BAD_REQUEST;
 
