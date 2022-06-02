@@ -30,6 +30,9 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private String offlineToken;
 
 
+    /**
+     * offline token is null since this is used in WettkampfDTO (no offlinetoken) -> WettkampfDO mapping
+     */
     public WettkampfDO(
             final Long id,
             final Long veranstaltungsId,
@@ -65,7 +68,10 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.offlineToken = null;
     }
 
-    // with offlineToken
+
+    /**
+     * used to map from WettkampfExtDTO with offlineToken -> WettkampfDO
+     */
     public WettkampfDO(
             final Long id,
             final Long veranstaltungsId,
@@ -104,7 +110,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
 
     /**
      * Constructor with optional parameters
-     *
+     * no offlinetoken
      * @param id
      * @param wettkampfVeranstaltungsId
      * @param wettkampfDatum
@@ -142,7 +148,10 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.offlineToken = null;
     }
 
-    // with offlineToken
+
+    /**
+     * optional params and offline token
+     */
     public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum,
                        final String wettkampfStrasse, final String wettkampfPlz,
                        final String wettkampfOrtsname,
