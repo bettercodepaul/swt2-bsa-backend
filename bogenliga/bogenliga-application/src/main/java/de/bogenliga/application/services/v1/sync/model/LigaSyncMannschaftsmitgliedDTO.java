@@ -10,11 +10,11 @@ package de.bogenliga.application.services.v1.sync.model;
 // Zuordnung der Datensätze (Passe) ist über die Rückennummer vorzunehmen.
 
 public class LigaSyncMannschaftsmitgliedDTO {
-    public Long id; //ID aus mannscjaftsmitglied_id
-    public Long version;
-    public Long mannschaftId;
-    public Long dsbMitgliedId;
-    public Long rueckennummer;
+    private Long id; //ID aus mannscjaftsmitglied_id
+    private Long version;
+    private Long mannschaftId;
+    private Long dsbMitgliedId;
+    private Long rueckennummer;
 
     public LigaSyncMannschaftsmitgliedDTO(){
 
@@ -29,4 +29,15 @@ public class LigaSyncMannschaftsmitgliedDTO {
         this.dsbMitgliedId = dsbMitgliedId;
         this.rueckennummer = rueckennummer;
     }
+
+
+    public Long getId() {return id;}
+
+    public Long getVersion() {return version;}
+
+    public Long getMannschaftId() {return mannschaftId;}
+
+    public Long getDsbMitgliedId() {return dsbMitgliedId;}
+
+    public Long getRueckennummer() {return rueckennummer;}
 }

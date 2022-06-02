@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.sync.service;
 
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
@@ -11,7 +12,9 @@ import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
@@ -21,17 +24,22 @@ import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.naming.NoPermissionException;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -51,12 +59,23 @@ public class SyncService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
 
+    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED = "MannschaftsMitglied must not be null";
+    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID = "MannschaftsMitglied ID must not be null";
+    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID = "MannschaftsMitglied DSB MITGLIED ID must not be null";
+    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE = "MannschaftsMitglied ID must not be negative";
+    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE = "MannschaftsMitglied DSB MITGLIED ID must not be negative";
+
+    private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
+
     private final Logger logger = LoggerFactory.getLogger(de.bogenliga.application.services.v1.sync.service.SyncService.class);
 
     private final LigatabelleComponent ligatabelleComponent;
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final WettkampfComponent wettkampfComponent;
 
     /**
      * Constructor with dependency injection
@@ -67,11 +86,17 @@ public class SyncService implements ServiceFacade {
     public SyncService(final LigatabelleComponent ligatabelleComponent,
                        final MatchComponent matchComponent, 
                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, 
-                       final PasseComponent passeComponent) {
+                       final PasseComponent passeComponent,
+                       final RequiresOnePermissionAspect requiresOnePermissionAspect,
+                       final DsbMannschaftComponent dsbMannschaftComponent,
+                       final WettkampfComponent wettkampfComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.passeComponent = passeComponent;
+        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.wettkampfComponent = wettkampfComponent;
     }
 
     /**
@@ -252,6 +277,67 @@ public class SyncService implements ServiceFacade {
      *   the most recent one --> Gero sould advised what to do.
      * @return ok or list of errors
      */
+
+    @PostMapping(
+            value = "mannschaftsmitglieder/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public ResponseEntity create(@PathVariable("id") final long wettkampfId,
+                                                                 @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
+                                                                 final Principal principal,
+                                                                 final String offlineToken) throws NoPermissionException { //@RequestBody
+
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
+
+        //Offline Token check
+        logger.debug("Offlinetoken check: {}", offlineToken);
+        wettkampfComponent.checkOfflineToken(wettkampfId, offlineToken);
+
+        // save new team members
+
+        final long currentUserId = UserProvider.getCurrentUserId(principal); //always 0
+        List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
+
+        for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
+
+            long tempId = this.dsbMannschaftComponent.findById(ligaSyncMannschaftsmitgliedDTO.getMannschaftId()).getVereinId();
+
+            if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
+                    && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
+                    UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
+                throw new NoPermissionException();
+            }
+
+            checkPreconditionsIncomingNewTeamMembers(ligaSyncMannschaftsmitgliedDTO);
+
+            MannschaftsmitgliedDO newMannschaftsMitgliedDO = LigaSyncMannschaftsmitgliedDTOMapper.toDO.apply(ligaSyncMannschaftsmitgliedDTO);
+
+            mannschaftsmitgliedComponent.create(newMannschaftsMitgliedDO, currentUserId);
+
+            savedMannschaftsMitglieder.add(newMannschaftsMitgliedDO);
+
+        }
+
+        logger.debug("Offlinetoken succes: {}", offlineToken);
+
+       return ResponseEntity.ok(
+               savedMannschaftsMitglieder.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
+                       Collectors.toList()));
+    }
+
+    private void checkPreconditionsIncomingNewTeamMembers(@RequestBody final LigaSyncMannschaftsmitgliedDTO mannschaftsMitgliedDTO) {
+        Preconditions.checkNotNull(mannschaftsMitgliedDTO, PRECONDITION_MSG_MANNSCHAFTSMITGLIED);
+        Preconditions.checkNotNull(mannschaftsMitgliedDTO.getMannschaftId(),
+                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID);
+        Preconditions.checkNotNull(mannschaftsMitgliedDTO.getDsbMitgliedId(),
+                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID);
+        Preconditions.checkArgument(mannschaftsMitgliedDTO.getMannschaftId() >= 0,
+                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE);
+        Preconditions.checkArgument(mannschaftsMitgliedDTO.getDsbMitgliedId() >= 0,
+                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE);
+    }
 
     /* TODO
      * I will recieve both lists: matches and passen to store data consistantly in a single transaction

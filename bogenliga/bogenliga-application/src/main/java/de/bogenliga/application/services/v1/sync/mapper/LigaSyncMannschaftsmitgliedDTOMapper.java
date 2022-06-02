@@ -9,6 +9,7 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgli
 public class LigaSyncMannschaftsmitgliedDTOMapper implements DataTransferObjectMapper {
 
     public static final Function<MannschaftsmitgliedDO, LigaSyncMannschaftsmitgliedDTO> toDTO = LigaSyncMannschaftsmitgliedDTOMapper::apply;
+    public static final Function<LigaSyncMannschaftsmitgliedDTO, MannschaftsmitgliedDO> toDO = LigaSyncMannschaftsmitgliedDTOMapper::apply;
 
     private LigaSyncMannschaftsmitgliedDTOMapper() {
         // empty private constructor
@@ -24,5 +25,18 @@ public class LigaSyncMannschaftsmitgliedDTOMapper implements DataTransferObjectM
 
 
         return new LigaSyncMannschaftsmitgliedDTO(id, version, mannschaftId, dsbMitgliedId, rueckennummer);
+    }
+
+    private static MannschaftsmitgliedDO apply(LigaSyncMannschaftsmitgliedDTO mannschaftmitgliedDTO){
+
+        final Long id = mannschaftmitgliedDTO.getId();
+        final Long version = mannschaftmitgliedDTO.getVersion();
+        final Long mannschaftId = mannschaftmitgliedDTO.getMannschaftId();
+        final Long dsbMitgliedId = mannschaftmitgliedDTO.getDsbMitgliedId();
+        final Long rueckennummer = mannschaftmitgliedDTO.getRueckennummer();
+
+
+        return new MannschaftsmitgliedDO(id, mannschaftId,
+                dsbMitgliedId, 0, "","", rueckennummer);
     }
 }

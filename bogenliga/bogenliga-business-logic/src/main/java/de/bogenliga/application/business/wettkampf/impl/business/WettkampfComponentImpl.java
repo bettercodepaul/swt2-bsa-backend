@@ -67,6 +67,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_WETTKAMPFTYP_ID = "wettkampfTypID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
+    private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
+    private static final String ERR_OFFLINE_TOKEN_CONFLICT = "Offlinetoken isn't the most recent one";
 
     private final WettkampfDAO wettkampfDAO;
     private final VeranstaltungDAO veranstaltungDAO;
@@ -213,6 +215,17 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
 
         wettkampfDAO.delete(wettkampfBE, currentUserID);
+    }
+
+
+    @Override
+    public void checkOfflineToken(long wettkampfId, String offlineToken) {
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
+
+        if(wettkampfDAO.checkOfflineToken(wettkampfId, offlineToken) == null){
+            throw new BusinessException( ErrorCode.INVALID_OFFLINE_TOKEN, ERR_OFFLINE_TOKEN_CONFLICT);
+        }
     }
 
 
@@ -454,7 +467,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         return bResult;
     }
-
     //Generiert Tabelle für Einzelstatistik
     public void generateEinzel(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
