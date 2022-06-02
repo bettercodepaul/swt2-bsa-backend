@@ -255,6 +255,7 @@ public class SyncService implements ServiceFacade {
      * only a ligaleiter can go offline
      * @return WettkampfExtDTO as JSON
      * @author Jonas Sigloch, SWT SoSe 2022
+     * TODO: ALTERNATIV - wettkapmfid als URL Parameter und dann wettkampf holen, token erstellen, zurückgeben
      */
     @PutMapping(
             value = "wettkampf/{id}",
@@ -263,9 +264,6 @@ public class SyncService implements ServiceFacade {
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
     public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
-    /*
-    TODO: ALTERNATIV - wettkapmfid als URL Parameter und dann wettkampf holen, token erstellen, zurückgeben (GET?)
-     */
         // check if pathvariable id == DTO.getId()
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("principal tostring(): " + principal.toString()); // immer 0
