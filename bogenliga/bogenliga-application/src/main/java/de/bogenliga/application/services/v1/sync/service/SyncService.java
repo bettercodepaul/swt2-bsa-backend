@@ -264,25 +264,19 @@ public class SyncService implements ServiceFacade {
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
     public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
-        // check if pathvariable id == DTO.getId()
+        // TODO: check if pathvariable id == DTO.getId()
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        logger.debug("principal tostring(): " + principal.toString()); // immer 0
-        logger.debug("principal getName(): " + principal.getName()); // immer 0
+
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
         // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
 
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
-        logger.debug("userid used to create offline token: " + userId); // immer 0
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
-        logger.debug("generated offline token: " + offlineToken); // generates correctly
 
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         wettkampfDO.setOfflineToken(offlineToken);
-        logger.debug("offline token in wettkampf do before updating to db: " + wettkampfDO.getOfflineToken());
-
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
-        logger.debug("token in updatedwettkampf DO: " + updatedWettkampfDO.getOfflineToken());
 
         return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
