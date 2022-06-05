@@ -27,8 +27,12 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     private Long wettkampfDisziplinId;
     private Long wettkampfTypId;
     private Long wettkampfAusrichter;
+    private String offlineToken;
 
 
+    /**
+     * offline token is null since this is used in WettkampfDTO (no offlinetoken) -> WettkampfDO mapping
+     */
     public WettkampfDO(
             final Long id,
             final Long veranstaltungsId,
@@ -60,13 +64,53 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.createdByUserId = createdByUserId;
         this.version = version;
         this.wettkampfAusrichter = wettkampfAusrichter;
+        // no offlineToken
+        this.offlineToken = null;
+    }
 
+
+    /**
+     * used to map from WettkampfExtDTO with offlineToken -> WettkampfDO
+     */
+    public WettkampfDO(
+            final Long id,
+            final Long veranstaltungsId,
+            final Date datum,
+            final String wettkampfStrasse,
+            final String wettkampfPlz,
+            final String wettkampfOrtsname,
+            final String wettkampfOrtsinfo,
+            final String wettkampfBeginn,
+            final Long wettkampfTag,
+            final Long wettkampfDisziplinId,
+            final Long wettkampfTypId,
+            final OffsetDateTime createdAtUtc,
+            final Long createdByUserId,
+            final Long version,
+            final Long wettkampfAusrichter,
+            final String offlineToken) {
+        this.id = id;
+        this.wettkampfVeranstaltungsId = veranstaltungsId;
+        this.wettkampfDatum = datum;
+        this.wettkampfStrasse = wettkampfStrasse;
+        this.wettkampfPlz = wettkampfPlz;
+        this.wettkampfOrtsname = wettkampfOrtsname;
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
+        this.wettkampfBeginn = wettkampfBeginn;
+        this.wettkampfTag = wettkampfTag;
+        this.wettkampfDisziplinId = wettkampfDisziplinId;
+        this.wettkampfTypId = wettkampfTypId;
+        this.createdAtUtc = createdAtUtc;
+        this.createdByUserId = createdByUserId;
+        this.version = version;
+        this.wettkampfAusrichter = wettkampfAusrichter;
+        this.offlineToken = offlineToken;
     }
 
 
     /**
      * Constructor with optional parameters
-     *
+     * no offlinetoken
      * @param id
      * @param wettkampfVeranstaltungsId
      * @param wettkampfDatum
@@ -100,7 +144,35 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.wettkampfTypId = wettkampfTypId;
         this.version = version;
         this.wettkampfAusrichter = wettkampfAusrichter;
+        // no offline token
+        this.offlineToken = null;
+    }
 
+
+    /**
+     * optional params and offline token
+     */
+    public WettkampfDO(final Long id, final Long wettkampfVeranstaltungsId, final Date wettkampfDatum,
+                       final String wettkampfStrasse, final String wettkampfPlz,
+                       final String wettkampfOrtsname,
+                       final String wettkampfOrtsinfo,
+                       final String wettkampfBeginn, final Long wettkampfTag, final Long wettkampfDisziplinId,
+                       final Long wettkampfTypId,
+                       final Long version, final Long wettkampfAusrichter, final String offlineToken) {
+        this.id = id;
+        this.wettkampfVeranstaltungsId = wettkampfVeranstaltungsId;
+        this.wettkampfDatum = wettkampfDatum;
+        this.wettkampfStrasse = wettkampfStrasse;
+        this.wettkampfPlz = wettkampfPlz;
+        this.wettkampfOrtsname = wettkampfOrtsname;
+        this.wettkampfOrtsinfo = wettkampfOrtsinfo;
+        this.wettkampfBeginn = wettkampfBeginn;
+        this.wettkampfTag = wettkampfTag;
+        this.wettkampfDisziplinId = wettkampfDisziplinId;
+        this.wettkampfTypId = wettkampfTypId;
+        this.version = version;
+        this.wettkampfAusrichter = wettkampfAusrichter;
+        this.offlineToken = offlineToken;
     }
 
 
@@ -233,6 +305,16 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
 
     public void setWettkampfAusrichter(Long wettkampfAusrichter) {
         this.wettkampfAusrichter = wettkampfAusrichter;
+    }
+
+
+    public String getOfflineToken() {
+        return offlineToken;
+    }
+
+
+    public void setOfflineToken(String offlineToken) {
+        this.offlineToken = offlineToken;
     }
 
 

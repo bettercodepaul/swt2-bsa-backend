@@ -11,16 +11,24 @@ import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
+import de.bogenliga.application.services.v1.sync.mapper.WettkampfExtDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
+import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
+import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -29,9 +37,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.naming.NoPermissionException;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -57,6 +67,7 @@ public class SyncService implements ServiceFacade {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final WettkampfComponent wettkampfComponent;
 
     /**
      * Constructor with dependency injection
@@ -67,11 +78,13 @@ public class SyncService implements ServiceFacade {
     public SyncService(final LigatabelleComponent ligatabelleComponent,
                        final MatchComponent matchComponent, 
                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, 
-                       final PasseComponent passeComponent) {
+                       final PasseComponent passeComponent,
+                       final WettkampfComponent wettkampfComponent) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.passeComponent = passeComponent;
+        this.wettkampfComponent = wettkampfComponent;
     }
 
     /**
@@ -236,11 +249,37 @@ public class SyncService implements ServiceFacade {
         return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    /* TODO
+    /**
      * I will update the dataset of a single Wettkampf and set the OfflineToken
-     *
+     * Token is generated with current user's id + timestamp
+     * only a ligaleiter can go offline
      * @return WettkampfExtDTO as JSON
+     * @author Jonas Sigloch, SWT SoSe 2022
+     * TODO: ALTERNATIV - wettkapmfid als URL Parameter und dann wettkampf holen, token erstellen, zurückgeben
      */
+    @PutMapping(
+            value = "wettkampf/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
+    public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
+                                  final Principal principal) throws NoPermissionException {
+        // TODO: check if pathvariable id == DTO.getId()
+        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+        logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
+        // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
+
+        // create token in business layer and persist it + return to frontend
+        final long userId = UserProvider.getCurrentUserId(principal);
+        String offlineToken = wettkampfComponent.generateOfflineToken(userId);
+
+        final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        wettkampfDO.setOfflineToken(offlineToken);
+        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
+
+        return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
+    }
 
     /* TODO
      * I will recieve the OfflineToken form Client
