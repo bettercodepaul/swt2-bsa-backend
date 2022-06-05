@@ -281,7 +281,7 @@ public class SyncService implements ServiceFacade {
         return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 
-        /* TODO
+    /* TODO
      * I will recieve the OfflineToken form Client
      * and a list of new Mannschaftmitglieder (identified by missing IDs)
      * the follwing checks will be performed:
