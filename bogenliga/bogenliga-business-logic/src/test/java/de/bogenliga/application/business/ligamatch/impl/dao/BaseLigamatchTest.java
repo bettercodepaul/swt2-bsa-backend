@@ -37,14 +37,14 @@ public class BaseLigamatchTest {
 
     protected static final Long WETTKAMPF_ID = 1L;
     protected static final Long MATCH_ID = 1L;
-    protected static final Long MATCH_ID_GEGNER = 3L;//
+    protected static final Long MATCH_ID_GEGNER = 3L;
     protected static final Long MATCH_NR = 1L;
     protected static final Long SCHEIBENNUMMER = 3L;
-    protected static final Long SCHEIBENNUMMER_GEGNER = 4L;//
+    protected static final Long SCHEIBENNUMMER_GEGNER = 4L;
     protected static final Long MANNSCHAFT_ID = 1L;
     protected static final Long BEGEGNUNG = 1L;
     protected static final Long NAECHSTE_MATCH_ID = 1L;
-    protected static final Long NAECHSTE_NAECHSTE_MATCH_ID = 2L;//
+    protected static final Long NAECHSTE_NAECHSTE_MATCH_ID = 2L;
     protected static final Long STRAFPUNKT_SATZ_1 = 0L;
     protected static final Long STRAFPUNKT_SATZ_2 = 10L;
     protected static final Long STRAFPUNKT_SATZ_3 = 0L;
@@ -126,10 +126,10 @@ public class BaseLigamatchTest {
     public BaseLigamatchTest(){
         valuesToMethodMap.put("getWettkampfId", WETTKAMPF_ID);
         valuesToMethodMap.put("getMatchId", MATCH_ID);
-        valuesToMethodMap.put("getMatchIdGegner", MATCH_ID_GEGNER);//
+        valuesToMethodMap.put("getMatchIdGegner", MATCH_ID_GEGNER);
         valuesToMethodMap.put("getMatchNr", MATCH_NR);
         valuesToMethodMap.put("getScheibennummer", SCHEIBENNUMMER);
-        valuesToMethodMap.put("getScheibennummerGegner", SCHEIBENNUMMER_GEGNER);//
+        valuesToMethodMap.put("getScheibennummerGegner", SCHEIBENNUMMER_GEGNER);
         valuesToMethodMap.put("getMannschaftId", MANNSCHAFT_ID);
         valuesToMethodMap.put("getBegegnung", BEGEGNUNG);
         valuesToMethodMap.put("getNaechsteMatchId", NAECHSTE_MATCH_ID);
@@ -142,7 +142,7 @@ public class BaseLigamatchTest {
         valuesToMethodMap.put("getWettkampftypId", WETTKAMP_TYP_ID);
         valuesToMethodMap.put("getWettkampfTag", WETTKAMPF_TAG);
         valuesToMethodMap.put("getMannschaftName", MANNSCHAFT_NAME);
-        valuesToMethodMap.put("getMannschaftNameGegner", MANNSCHAFT_NAME_GEGNER);//
+        valuesToMethodMap.put("getMannschaftNameGegner", MANNSCHAFT_NAME_GEGNER);
         valuesToMethodMap.put("getRueckennummer", RUECKENNUMMER);
         valuesToMethodMap.put("getSatzpunkte", SATZPUNKTE);
         valuesToMethodMap.put("getMatchpunkte", MATCHPUNKTE);
