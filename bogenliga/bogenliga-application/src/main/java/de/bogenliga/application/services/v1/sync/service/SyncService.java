@@ -140,20 +140,13 @@ public class SyncService implements ServiceFacade {
             ligaSyncMatchDTO.setMannschaftName(currentLigamatchBE.getMannschaftName());
             ligaSyncMatchDTO.setNaechsteMatchId(currentLigamatchBE.getNaechsteMatchId());
             ligaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(currentLigamatchBE.getNaechsteNaechsteMatchId());
-            /* to fill the last 3 missing attributes in ligaSyncMatchDTO the information of the opponent
-             ligamatchBE the team is playing against is used.
-            */
-            LigamatchBE gegnerLigaMatchBE = getGegnerLigaMatchBE(matchDO,  wettkampfMatches);
-
-            if(gegnerLigaMatchBE != null &&
-                    ligaSyncMatchDTO.getMannschaftName() != null &&
-                    !ligaSyncMatchDTO.getMannschaftName().equals(gegnerLigaMatchBE.getMannschaftName()) &&
-                    (ligaSyncMatchDTO.getId() != null && !ligaSyncMatchDTO.getId().equals(gegnerLigaMatchBE.getMatchId())) &&
-                    gegnerLigaMatchBE.getScheibennummer() != null &&
-                    ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(gegnerLigaMatchBE.getScheibennummer())){
-                ligaSyncMatchDTO.setNameGegner(gegnerLigaMatchBE.getMannschaftName());
-                ligaSyncMatchDTO.setMatchIdGegner(gegnerLigaMatchBE.getMatchId());
-                ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(gegnerLigaMatchBE.getScheibennummer()));
+            ligaSyncMatchDTO.setMatchIdGegner(currentLigamatchBE.getMatchIdGegner());
+            ligaSyncMatchDTO.setNameGegner(currentLigamatchBE.getMannschaftNameGegner());
+            if(currentLigamatchBE.getScheibennummerGegner() != null){
+                ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(currentLigamatchBE.getScheibennummerGegner()));
+            }else
+            {
+                ligaSyncMatchDTO.setScheibennummerGegner(null);
             }
             ligaSyncMatchDTOList.add(ligaSyncMatchDTO);
         }
@@ -165,24 +158,6 @@ public class SyncService implements ServiceFacade {
      *
      * @return LigamatchBE
      */
-    private LigamatchBE getGegnerLigaMatchBE(MatchDO matchDO, List<LigamatchBE> wettkampfMatches) {
-        /* In a Begegnung, two Teams play against each other. When a team is playing against another team in a competition,
-         it has the same matchNr and the same BegegnungNr but it uses a different Scheibennummer.
-        */
-        List<LigamatchBE> ligaGegnerMatchBEList = wettkampfMatches.stream().
-                filter(t -> t.getMatchNr() != null && t.getMatchNr().equals(matchDO.getNr()) &&
-                        t.getBegegnung() != null && t.getBegegnung().equals(matchDO.getBegegnung()) &&
-                        t.getScheibennummer() != null && !t.getScheibennummer().equals(matchDO.getScheibenNummer()))
-                .collect(Collectors.toList());
-
-        LigamatchBE gegnerLigaMatchBE = null;
-
-        if (ligaGegnerMatchBEList != null && ligaGegnerMatchBEList.size() == 1 && ligaGegnerMatchBEList.get(
-                0) != null) {
-            gegnerLigaMatchBE = ligaGegnerMatchBEList.get(0);
-        }
-        return gegnerLigaMatchBE;
-    }
 
     private void checkMatchId(Long matchId) {
         Preconditions.checkNotNull(matchId,
