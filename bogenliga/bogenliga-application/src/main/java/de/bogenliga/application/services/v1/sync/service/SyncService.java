@@ -11,8 +11,13 @@ import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.match.model.MatchDTO;
+import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
@@ -21,17 +26,23 @@ import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.naming.NoPermissionException;
+import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -48,15 +59,20 @@ public class SyncService implements ServiceFacade {
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
     private static final String ERR_NOT_NULL_TEMPLATE = "MatchService: %s: %s must not be null.";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
-    private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
+    private static final String SERVICE_SYNCHRONIZE_MATCHES_AND_PASSEN = "synchronizeMatchesAndPassen";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
 
-    private final Logger logger = LoggerFactory.getLogger(de.bogenliga.application.services.v1.sync.service.SyncService.class);
+    private final Logger logger = LoggerFactory.getLogger(
+            de.bogenliga.application.services.v1.sync.service.SyncService.class);
 
     private final LigatabelleComponent ligatabelleComponent;
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
+    private final WettkampfComponent wettkampfComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+    private final MatchService matchService;
+
 
     /**
      * Constructor with dependency injection
@@ -65,14 +81,21 @@ public class SyncService implements ServiceFacade {
      */
     @Autowired
     public SyncService(final LigatabelleComponent ligatabelleComponent,
-                       final MatchComponent matchComponent, 
-                       final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, 
-                       final PasseComponent passeComponent) {
+                       final MatchComponent matchComponent,
+                       final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
+                       final PasseComponent passeComponent,
+                       final WettkampfComponent wettkampfComponent,
+                       RequiresOnePermissionAspect requiresOnePermissionAspect,
+                       final MatchService matchService) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.passeComponent = passeComponent;
+        this.wettkampfComponent = wettkampfComponent;
+        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+        this.matchService = matchService;
     }
+
 
     /**
      * I return the current "ligatabelle" for a "wettkampftid (tag)" entries of the database.
@@ -102,6 +125,7 @@ public class SyncService implements ServiceFacade {
      * list<ligamatchDO> ligamatchcomponent.findById(wetkkmapfID)
      **/
 
+
     /**
      * I return the all Matches from "ligamatch"-Table for * a "wettkampftid (tag)" entries of the database.
      *
@@ -119,9 +143,10 @@ public class SyncService implements ServiceFacade {
 
         List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
 
-        List<LigaSyncMatchDTO> ligaSyncMatchDTOList = new ArrayList<LigaSyncMatchDTO>() {};
+        List<LigaSyncMatchDTO> ligaSyncMatchDTOList = new ArrayList<LigaSyncMatchDTO>() {
+        };
 
-        for( LigamatchBE currentLigamatchBE: wettkampfMatches) {
+        for (LigamatchBE currentLigamatchBE : wettkampfMatches) {
             MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(currentLigamatchBE);
             LigaSyncMatchDTO ligaSyncMatchDTO = LigaSyncMatchDTOMapper.apply(matchDO);
             ligaSyncMatchDTO.setMannschaftName(currentLigamatchBE.getMannschaftName());
@@ -130,14 +155,16 @@ public class SyncService implements ServiceFacade {
             /* to fill the last 3 missing attributes in ligaSyncMatchDTO the information of the opponent
              ligamatchBE the team is playing against is used.
             */
-            LigamatchBE gegnerLigaMatchBE = getGegnerLigaMatchBE(matchDO,  wettkampfMatches);
+            LigamatchBE gegnerLigaMatchBE = getGegnerLigaMatchBE(matchDO, wettkampfMatches);
 
-            if(gegnerLigaMatchBE != null &&
+            if (gegnerLigaMatchBE != null &&
                     ligaSyncMatchDTO.getMannschaftName() != null &&
                     !ligaSyncMatchDTO.getMannschaftName().equals(gegnerLigaMatchBE.getMannschaftName()) &&
-                    (ligaSyncMatchDTO.getId() != null && !ligaSyncMatchDTO.getId().equals(gegnerLigaMatchBE.getMatchId())) &&
+                    (ligaSyncMatchDTO.getId() != null && !ligaSyncMatchDTO.getId().equals(
+                            gegnerLigaMatchBE.getMatchId())) &&
                     gegnerLigaMatchBE.getScheibennummer() != null &&
-                    ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(gegnerLigaMatchBE.getScheibennummer())){
+                    ligaSyncMatchDTO.getMatchScheibennummer() != Math.toIntExact(
+                            gegnerLigaMatchBE.getScheibennummer())) {
                 ligaSyncMatchDTO.setNameGegner(gegnerLigaMatchBE.getMannschaftName());
                 ligaSyncMatchDTO.setMatchIdGegner(gegnerLigaMatchBE.getMatchId());
                 ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(gegnerLigaMatchBE.getScheibennummer()));
@@ -146,6 +173,7 @@ public class SyncService implements ServiceFacade {
         }
         return ligaSyncMatchDTOList;
     }
+
 
     /**
      * I return the the LigamatchBE-Objekt of the match the given MatchDO-team is fighting against
@@ -171,6 +199,7 @@ public class SyncService implements ServiceFacade {
         return gegnerLigaMatchBE;
     }
 
+
     private void checkMatchId(Long matchId) {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
@@ -185,6 +214,8 @@ public class SyncService implements ServiceFacade {
      * list<ligapasseDO> ligapassecomponent.findById(wetkkmapfID)
      * @return list of {@link LigaSyncPasseDTO} as JSON
      */
+
+
     /**
      * I return the all Passe Entries for a "wettkampftid (tag)" entries of the database.
      *
@@ -201,7 +232,7 @@ public class SyncService implements ServiceFacade {
         List<PasseDO> wettkampfPassenDO = passeComponent.findByWettkampfId(wettkampfid);
         List<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<>();
 
-        for(PasseDO currentPasseDO: wettkampfPassenDO){
+        for (PasseDO currentPasseDO : wettkampfPassenDO) {
             LigaSyncPasseDTO ligaSyncPasseDTO = LigaSyncPasseDTOMapper.toDTO.apply(currentPasseDO);
             ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
         }
@@ -217,23 +248,28 @@ public class SyncService implements ServiceFacade {
      * @return list of {@link LigaSyncMannschaftsmitgliedDTO} as JSON
      */
 
+
     @GetMapping(
             value = "mannschaftsmitglieder/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitgliedernOffline(@PathVariable("id") final long wettkampfId) {
+    public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitgliedernOffline(
+            @PathVariable("id") final long wettkampfId) {
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("Receive 'Mannschaftsmitgliedern für Wettkampf' request with WettkampfID '{}'", wettkampfId);
 
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
 
-        for(int i=1; i <= 8; i++) {
+        for (int i = 1; i <= 8; i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfId, 1L, (long) i);
-            mannschaftsmitgliedDOList.addAll(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(matchDO.getMannschaftId(), wettkampfId));
+            mannschaftsmitgliedDOList.addAll(
+                    mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(matchDO.getMannschaftId(),
+                            wettkampfId));
         }
 
-        return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(Collectors.toList());
+        return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
+                Collectors.toList());
     }
 
     /* TODO
@@ -243,7 +279,7 @@ public class SyncService implements ServiceFacade {
      */
 
     /* TODO
-     * I will recieve the OfflineToken form Client
+     * I will recieve the OfflineToken from Client
      * and a list of new Mannschaftmitglieder (identified by missing IDs)
      * the follwing checks will be performed:
      * - are all new Manschaftsmitglieder existing in Backend -> otherwise one Error per missing entry
@@ -254,10 +290,87 @@ public class SyncService implements ServiceFacade {
      */
 
     /* TODO
-     * I will recieve both lists: matches and passen to store data consistantly in a single transaction
+     * I will recieve both lists: matches and passen to store data consistently in a single transaction
      * when data successfully stored, the offlinetoken in wettkampf table is to be removed
      * @return ok or list of errors
      * in case of ok - client should delete offline data
      */
 
+
+    @PostMapping(value = "syncSchusszettel",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    //@RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public ResponseEntity synchronizeMatchesAndPassen(List<LigaSyncMatchDTO> ligaSyncMatchDTOs,
+                                                      List<LigaSyncPasseDTO> ligaSyncPasseDTOs,
+                                                      Principal principal) throws NoPermissionException {
+
+        // Check for valid Offline-Token
+
+        // No need to check for VersionID, already checked in Frontend OfflineDB
+        // Only Matches with new VersionID will be sent
+
+        // Get current UserId, who edited Matches in OfflineDB
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        // Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
+
+
+        List<MatchDTO> matchDTOs = new ArrayList<MatchDTO>();
+
+
+        // Map Matches and Passen
+        // Connect Passen to Matches
+        for (LigaSyncMatchDTO ligasyncmatchDTO : ligaSyncMatchDTOs) {
+
+            // Get MatchId and WettkampfId from LigaSyncMatchDTO
+            Long matchId = ligasyncmatchDTO.getId();
+            Long wettkampfId = ligasyncmatchDTO.getWettkampfId();
+
+            // Find Match and Wettkampf in DB
+            MatchDO matchDO = matchComponent.findById(matchId);
+            WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
+
+            // Get Begegnung from Match
+            Long begegnung = matchDO.getBegegnung();
+
+            // Map LigaSyncMatchDTO to MatchDTO
+            MatchDTO matchDTO = LigaSyncMatchDTOMapper.toMatchDTO.apply(ligasyncmatchDTO);
+
+            // Set begegnung and WettkampfTag in MatchDTO
+            matchDTO.setBegegnung(begegnung);
+            matchDTO.setWettkampfTag(wettkampfDO.getWettkampfTag());
+
+            // Map LigaSyncPasseDTO to PasseDTO
+            // Set List<PasseDTO> to MatchDTO where MatchId is the same
+            matchDTO.setPassen(ligaSyncPasseDTOs.stream().map(LigaSyncPasseDTOMapper.toPasseDTO)
+                    .filter(passeDTO -> passeDTO.getMatchId().equals(ligasyncmatchDTO.getId()))
+                    .collect(Collectors.toList()));
+
+            matchDTOs.add(matchDTO);
+        }
+
+
+        for (int i = 0; i < matchDTOs.size(); i++) {
+
+            List<MatchDTO> twoMatchesDTO = new ArrayList<MatchDTO>();
+            twoMatchesDTO.add(matchDTOs.get(i));
+
+            for (int j = i + 1; j < matchDTOs.size(); j++) {
+
+                if (twoMatchesDTO.get(0).getWettkampfId() == matchDTOs.get(j).getWettkampfId() &&
+                        twoMatchesDTO.get(0).getNr() == matchDTOs.get(j).getNr() &&
+                        twoMatchesDTO.get(0).getBegegnung() == matchDTOs.get(j).getBegegnung()) {
+
+                    twoMatchesDTO.add(matchDTOs.get(j));
+                    matchService.saveMatches(twoMatchesDTO, principal);
+                }
+            }
+        }
+
+        // Set Offline Token to null
+
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
