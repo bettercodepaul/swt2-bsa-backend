@@ -3,6 +3,7 @@ package de.bogenliga.application.services.v1.sync.mapper;
 import java.util.function.Function;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
+import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 
 
@@ -12,10 +13,11 @@ public class LigaSyncPasseDTOMapper implements DataTransferObjectMapper {
      * Map {@link PasseDO} to {@link LigaSyncPasseDTO}
      */
     public static final Function<PasseDO, LigaSyncPasseDTO> toDTO = LigaSyncPasseDTOMapper::apply;
+
     /**
-     * Map {@link LigaSyncPasseDTO} to {@link PasseDO}
+     * Map {@link LigaSyncPasseDTO} to {@link PasseDTO}
      */
-    public static final Function<LigaSyncPasseDTO, PasseDO> toDO = LigaSyncPasseDTOMapper::apply;
+    public static final Function<LigaSyncPasseDTO, PasseDTO> toPasseDTO = LigaSyncPasseDTOMapper::apply;
 
     private LigaSyncPasseDTOMapper() {
         // empty private constructor
@@ -31,10 +33,11 @@ public class LigaSyncPasseDTOMapper implements DataTransferObjectMapper {
                 passeDO.getPasseDsbMitgliedId(), ringzahlen);
     }
 
-    public static PasseDO apply(LigaSyncPasseDTO ligasyncpasseDTO) {
-        final Integer[] ringzahlen = ligasyncpasseDTO.getRingzahl();
-        return new PasseDO(ligasyncpasseDTO.getId(), ligasyncpasseDTO.getMannschaftId(),
-                ligasyncpasseDTO.getWettkampfId(), null, null, ligasyncpasseDTO.getLfdNr(),
-                ligasyncpasseDTO.getDsbMitgliedId(), ringzahlen[0], ringzahlen[1], ringzahlen[2], ringzahlen[3], ringzahlen[4], ringzahlen[5]);
+    public static PasseDTO apply(LigaSyncPasseDTO ligapassesyncDTO) {
+
+        return new PasseDTO(ligapassesyncDTO.getId(), ligapassesyncDTO.getMannschaftId(), ligapassesyncDTO.getWettkampfId(),
+                null, ligapassesyncDTO.getMatchId(), ligapassesyncDTO.getLfdNr(), ligapassesyncDTO.getRueckennummer(),
+                ligapassesyncDTO.getDsbMitgliedId(), ligapassesyncDTO.getRingzahl());
     }
+
 }
