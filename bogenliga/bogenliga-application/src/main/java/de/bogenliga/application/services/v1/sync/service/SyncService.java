@@ -1,13 +1,11 @@
 package de.bogenliga.application.services.v1.sync.service;
 
-import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
-import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
-
+import de.bogenliga.application.business.match.api.types.LigamatchDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
@@ -129,28 +127,9 @@ public class SyncService implements ServiceFacade {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         this.checkMatchId(wettkampfid);
         logger.debug("Receive 'Wettkampfid for Matches' request with ID '{}'", wettkampfid);
+        List<LigamatchDO> wettkampfMatches = matchComponent.getLigamatchDOsByWettkampfId(wettkampfid);
 
-        List<LigamatchBE> wettkampfMatches = matchComponent.getLigamatchesByWettkampfId(wettkampfid);
-
-        List<LigaSyncMatchDTO> ligaSyncMatchDTOList = new ArrayList<LigaSyncMatchDTO>() {};
-
-        for( LigamatchBE currentLigamatchBE: wettkampfMatches) {
-            MatchDO matchDO = LigamatchToMatchMapper.LigamatchToMatchDO.apply(currentLigamatchBE);
-            LigaSyncMatchDTO ligaSyncMatchDTO = LigaSyncMatchDTOMapper.apply(matchDO);
-            ligaSyncMatchDTO.setMannschaftName(currentLigamatchBE.getMannschaftName());
-            ligaSyncMatchDTO.setNaechsteMatchId(currentLigamatchBE.getNaechsteMatchId());
-            ligaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(currentLigamatchBE.getNaechsteNaechsteMatchId());
-            ligaSyncMatchDTO.setMatchIdGegner(currentLigamatchBE.getMatchIdGegner());
-            ligaSyncMatchDTO.setNameGegner(currentLigamatchBE.getMannschaftNameGegner());
-            if(currentLigamatchBE.getScheibennummerGegner() != null){
-                ligaSyncMatchDTO.setScheibennummerGegner(Math.toIntExact(currentLigamatchBE.getScheibennummerGegner()));
-            }else
-            {
-                ligaSyncMatchDTO.setScheibennummerGegner(null);
-            }
-            ligaSyncMatchDTOList.add(ligaSyncMatchDTO);
-        }
-        return ligaSyncMatchDTOList;
+        return wettkampfMatches.stream().map(LigaSyncMatchDTOMapper.toDTO).collect(Collectors.toList());
     }
 
     /**
