@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.match.api.types.LigamatchDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -122,6 +123,14 @@ public class BaseLigamatchTest {
         assertThat(actual.get(0)).isNotNull();
     }
 
+    public static void validateDOObjectList (List<LigamatchDO> actual) {
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+    }
 
     public BaseLigamatchTest(){
         valuesToMethodMap.put("getWettkampfId", WETTKAMPF_ID);
