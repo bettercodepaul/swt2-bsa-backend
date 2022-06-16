@@ -80,7 +80,7 @@ public enum UserPermission implements GrantedAuthority {
      */
     CAN_DELETE_STAMMDATEN,
 
-    /* Rechte zum Lesen/Ändern/LÖschen der System-Konfiguration
+    /* Rechte zum Lesen/Ändern/Löschen der System-Konfiguration
     * Entitäten
     * CONFIGURATION
      * BENUTZER
