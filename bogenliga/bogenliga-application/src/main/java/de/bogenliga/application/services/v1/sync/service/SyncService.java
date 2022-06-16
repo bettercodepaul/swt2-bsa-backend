@@ -303,9 +303,9 @@ public class SyncService implements ServiceFacade {
 
             for (int j = i + 1; j < matchDTOs.size(); j++) {
 
-                if (twoMatchesDTO.get(0).getWettkampfId() == matchDTOs.get(j).getWettkampfId() &&
-                        twoMatchesDTO.get(0).getNr() == matchDTOs.get(j).getNr() &&
-                        twoMatchesDTO.get(0).getBegegnung() == matchDTOs.get(j).getBegegnung()) {
+                if (twoMatchesDTO.get(0).getWettkampfId().equals(matchDTOs.get(j).getWettkampfId()) &&
+                        twoMatchesDTO.get(0).getNr().equals(matchDTOs.get(j).getNr()) &&
+                        twoMatchesDTO.get(0).getBegegnung().equals(matchDTOs.get(j).getBegegnung())) {
 
                     twoMatchesDTO.add(matchDTOs.get(j));
                     matchService.saveMatches(twoMatchesDTO, principal);
