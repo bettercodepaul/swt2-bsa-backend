@@ -58,6 +58,7 @@ public class SyncService implements ServiceFacade {
     private static final String ERR_NOT_NULL_TEMPLATE = "MatchService: %s: %s must not be null.";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
     private static final String SERVICE_SYNCHRONIZE_MATCHES_AND_PASSEN = "synchronizeMatchesAndPassen";
+    private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
 
     private final Logger logger = LoggerFactory.getLogger(
