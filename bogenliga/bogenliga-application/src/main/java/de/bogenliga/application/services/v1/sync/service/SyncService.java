@@ -144,31 +144,6 @@ public class SyncService implements ServiceFacade {
     }
 
 
-    /**
-     * I return the the LigamatchBE-Objekt of the match the given MatchDO-team is fighting against
-     *
-     * @return LigamatchBE
-     */
-    private LigamatchBE getGegnerLigaMatchBE(MatchDO matchDO, List<LigamatchBE> wettkampfMatches) {
-        /* In a Begegnung, two Teams play against each other. When a team is playing against another team in a competition,
-         it has the same matchNr and the same BegegnungNr but it uses a different Scheibennummer.
-        */
-        List<LigamatchBE> ligaGegnerMatchBEList = wettkampfMatches.stream().
-                filter(t -> t.getMatchNr() != null && t.getMatchNr().equals(matchDO.getNr()) &&
-                        t.getBegegnung() != null && t.getBegegnung().equals(matchDO.getBegegnung()) &&
-                        t.getScheibennummer() != null && !t.getScheibennummer().equals(matchDO.getScheibenNummer()))
-                .collect(Collectors.toList());
-
-        LigamatchBE gegnerLigaMatchBE = null;
-
-        if (ligaGegnerMatchBEList != null && ligaGegnerMatchBEList.size() == 1 && ligaGegnerMatchBEList.get(
-                0) != null) {
-            gegnerLigaMatchBE = ligaGegnerMatchBEList.get(0);
-        }
-        return gegnerLigaMatchBE;
-    }
-
-
     private void checkMatchId(Long matchId) {
         Preconditions.checkNotNull(matchId,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
