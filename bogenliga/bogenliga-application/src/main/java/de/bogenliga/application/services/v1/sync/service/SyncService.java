@@ -256,12 +256,8 @@ public class SyncService implements ServiceFacade {
         // No need to check for VersionID, already checked in Frontend OfflineDB
         // Only Matches with new VersionID will be sent
 
-        // Get current UserId, who edited Matches in OfflineDB
-        final Long userId = UserProvider.getCurrentUserId(principal);
-        // Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
 
-
-        List<MatchDTO> matchDTOs = new ArrayList<MatchDTO>();
+        List<MatchDTO> matchDTOs = new ArrayList<>();
 
 
         // Map Matches and Passen
@@ -298,7 +294,7 @@ public class SyncService implements ServiceFacade {
 
         for (int i = 0; i < matchDTOs.size(); i++) {
 
-            List<MatchDTO> twoMatchesDTO = new ArrayList<MatchDTO>();
+            List<MatchDTO> twoMatchesDTO = new ArrayList<>();
             twoMatchesDTO.add(matchDTOs.get(i));
 
             for (int j = i + 1; j < matchDTOs.size(); j++) {
