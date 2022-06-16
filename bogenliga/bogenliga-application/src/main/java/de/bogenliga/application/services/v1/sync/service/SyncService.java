@@ -11,6 +11,7 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -256,6 +257,7 @@ public class SyncService implements ServiceFacade {
         // No need to check for VersionID, already checked in Frontend OfflineDB
         // Only Matches with new VersionID will be sent
 
+        final Long userId = UserProvider.getCurrentUserId(principal);
 
         List<MatchDTO> matchDTOs = new ArrayList<>();
 
@@ -310,7 +312,8 @@ public class SyncService implements ServiceFacade {
         }
 
         // Set Offline Token to null
-
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDTOs.get(0).getWettkampfId());
+        wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

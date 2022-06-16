@@ -765,4 +765,17 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return String.valueOf(userId) + Instant.now().toString();
     }
 
+    /**
+     * Delete Offline Token from Wettkampf
+     * Set Offline Token to null
+     * @param wettkampfDO, userId
+     * @return offlinetoken
+     */
+    public void deleteOfflineToken(WettkampfDO wettkampfDO, long userId) {
+
+        WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
+
+        wettkampfDAO.update(wettkampfBE, userId);
+
+    }
 }
