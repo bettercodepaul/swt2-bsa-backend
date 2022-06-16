@@ -2,6 +2,7 @@ package de.bogenliga.application.business.match.api;
 
 import java.util.List;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.match.api.types.LigamatchDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 
 /**
@@ -40,6 +41,12 @@ public interface MatchComponent {
      */
     List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId);
 
+    /**
+     * optimized function for Syncservice
+     *
+     * @return a list of all Ligamatches with the wettkampfId looked for
+     */
+    List<LigamatchDO> getLigamatchDOsByWettkampfId(Long wettkampfId);
 
     /**
      * optimized function for schusszettel
