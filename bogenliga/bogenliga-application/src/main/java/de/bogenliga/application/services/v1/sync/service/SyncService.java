@@ -19,12 +19,17 @@ import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
+import de.bogenliga.application.services.v1.sync.mapper.WettkampfExtDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
+import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
+import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -217,11 +222,37 @@ public class SyncService implements ServiceFacade {
                 Collectors.toList());
     }
 
-    /* TODO
+    /**
      * I will update the dataset of a single Wettkampf and set the OfflineToken
-     *
+     * Token is generated with current user's id + timestamp
+     * only a ligaleiter can go offline
      * @return WettkampfExtDTO as JSON
+     * @author Jonas Sigloch, SWT SoSe 2022
      */
+    @PutMapping(
+            value = "wettkampf/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
+    public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
+                                  final Principal principal) throws NoPermissionException {
+        // TODO: check if pathvariable id == DTO.getId()
+        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+        logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
+        // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
+
+        // create token in business layer and persist it + return to frontend
+        final long userId = UserProvider.getCurrentUserId(principal);
+        String offlineToken = wettkampfComponent.generateOfflineToken(userId);
+
+        final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        wettkampfDO.setOfflineToken(offlineToken);
+        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
+
+        return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
+    }
+
 
     /* TODO
      * I will recieve the OfflineToken from Client
