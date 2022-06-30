@@ -119,4 +119,13 @@ public interface WettkampfComponent extends ComponentFacade {
      * @return offlinetoken
      */
     String generateOfflineToken(long userId);
+
+    /**
+     * Delete Offline Token from Wettkampf
+     * Set Offline Token to null
+     * @param wettkampfDO, userId
+     * @return offlinetoken
+     */
+    void deleteOfflineToken(WettkampfDO wettkampfDO, long userId);
+
 }
