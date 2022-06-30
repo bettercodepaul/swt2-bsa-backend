@@ -82,6 +82,7 @@ public class SyncServiceTest {
     @Captor
     private ArgumentCaptor<WettkampfDO> wettkampfDOArgumentCaptor;
 
+    private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     //private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
 
@@ -552,7 +553,7 @@ public class SyncServiceTest {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.findById(MATCH_ID));
     }
-    /*
+
         @Test
     public void testFindByWettkampfId() {
         final PasseDO passeDo = getPasseDO();
@@ -582,13 +583,22 @@ public class SyncServiceTest {
     public void testGetMannschaftsmitgliedernOffline() {
         MatchDO matchDO = getMatchDO();
         MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+        MannschaftsmitgliedComponent mannschaftsmitgliedComponentMock = mock(MannschaftsmitgliedComponent.class);
+        MatchComponent matchComponentMock = mock(MatchComponent.class);
+
         long scheibenNummer = 1;
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
-        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchDO);
+        when(matchComponentMock.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchDO);
         when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(anyLong(), anyLong())).thenReturn(mannschaftsmitgliedDOList);
-        final List<LigaSyncMannschaftsmitgliedDTO> actualMannschaftsmitgliedDOList = (List<LigaSyncMannschaftsmitgliedDTO>) underTest.getMannschaftsmitgliedernOffline(wettkampfId);
+
+        final List<LigaSyncMannschaftsmitgliedDTO> actualMannschaftsmitgliedDOList = underTest.getMannschaftsmitgliedernOffline(wettkampfId);
         LigaSyncMannschaftsmitgliedDTO mannschaftsmitgliedDTO = actualMannschaftsmitgliedDOList.get(0);
         assertThat(actualMannschaftsmitgliedDOList).isNotNull().hasSize(8);
+
+        //UserService userService = mock(UserService.class);
+        //User user = mock(User.class);
+        //when(userService.getUserById(anyLong())).thenReturn(user);
+
         assertThat(mannschaftsmitgliedDTO.id.equals(mannschaftsmitgliedDO.getId()));
         assertThat(mannschaftsmitgliedDTO.mannschaftId.equals(mannschaftsmitgliedDO.getMannschaftId()));
         assertThat(mannschaftsmitgliedDTO.dsbMitgliedId.equals(mannschaftsmitgliedDO.getDsbMitgliedId()));
@@ -598,7 +608,7 @@ public class SyncServiceTest {
         verify(mannschaftsmitgliedComponent).findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampfId);
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
     }
-    +/
+    */
 
     @Test
     public void update() {
