@@ -236,7 +236,7 @@ public class SyncService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
     public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
-                                  final Principal principal) {
+                                  final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
         // Check if it is the ligaleiter of the wettkampfs liga (not sure if possible); generic check done in permissions
