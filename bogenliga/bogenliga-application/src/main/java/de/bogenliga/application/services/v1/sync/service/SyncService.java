@@ -353,7 +353,7 @@ public class SyncService implements ServiceFacade {
     Only an admin can call this function
      */
     @PutMapping(
-            value = "wettkampf/{id}/",
+            value = "wettkampf/{id}/reset",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public ResponseEntity goOnlineUnconditionally(
@@ -365,6 +365,7 @@ public class SyncService implements ServiceFacade {
 
         final long userId = UserProvider.getCurrentUserId(principal);
         // delete offline token by setting it to null in the passed wettkampf
+        // TODO use Markus function in wettkampfComponent to do this
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         wettkampfDO.setOfflineToken(null);
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
