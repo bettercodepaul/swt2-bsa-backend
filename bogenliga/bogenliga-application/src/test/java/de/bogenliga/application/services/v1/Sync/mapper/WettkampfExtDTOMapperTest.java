@@ -8,9 +8,8 @@ import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Jonas Sigloch
  */
 public class WettkampfExtDTOMapperTest {
     private static final Long ID = 2010L;
