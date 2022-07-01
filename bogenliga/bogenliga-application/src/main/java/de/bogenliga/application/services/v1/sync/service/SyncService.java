@@ -273,28 +273,18 @@ public class SyncService implements ServiceFacade {
      * in case of ok - client should delete offline data
      */
 
-
     @PostMapping(value = "syncSchusszettel",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
-    //@RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public ResponseEntity synchronizeMatchesAndPassen(List<LigaSyncMatchDTO> ligaSyncMatchDTOs,
                                                       List<LigaSyncPasseDTO> ligaSyncPasseDTOs,
                                                       Principal principal) throws NoPermissionException {
-
-        // Check for valid Offline-Token
-
-        // No need to check for VersionID, already checked in Frontend OfflineDB
-        // Only Matches with new VersionID will be sent
 
         final Long userId = UserProvider.getCurrentUserId(principal);
 
         List<MatchDTO> matchDTOs = new ArrayList<>();
 
-
-        // Map Matches and Passen
-        // Connect Passen to Matches
         for (LigaSyncMatchDTO ligasyncmatchDTO : ligaSyncMatchDTOs) {
 
             // Get MatchId and WettkampfId from LigaSyncMatchDTO
@@ -324,7 +314,9 @@ public class SyncService implements ServiceFacade {
             matchDTOs.add(matchDTO);
         }
 
-
+        // Go through received matches (matchDTOs) and search for two matches with same wettkampfID, Nr, Begegnung
+        // Two Matches from the same Schusszettel
+        // Call MatchService
         for (int i = 0; i < matchDTOs.size(); i++) {
 
             List<MatchDTO> twoMatchesDTO = new ArrayList<>();
@@ -342,7 +334,7 @@ public class SyncService implements ServiceFacade {
             }
         }
 
-        // Set Offline Token to null
+        // Delete OfflineToken
         WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDTOs.get(0).getWettkampfId());
         wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
 
