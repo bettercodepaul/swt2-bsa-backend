@@ -348,4 +348,31 @@ public class SyncService implements ServiceFacade {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    /*
+    I delete the offline token of a wettkampf unconditionally
+    Necessary to reset a wettkampf that has been taken offline and for some reason can not be taken back online
+    any data saved offline will be lost
+    Only an admin can call this function
+     */
+    @PutMapping(
+            value = "wettkampf/{id}/reset",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    public ResponseEntity goOnlineUnconditionally(
+            @PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
+            final Principal principal) {
+
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        logger.debug("Admin Request to delete Offline Token of Wettkampf with WettkampfID '{}'", wettkampfId);
+
+        final long userId = UserProvider.getCurrentUserId(principal);
+        // delete offline token by setting it to null in the passed wettkampf
+        // TODO use Markus function in wettkampfComponent to do this
+        final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        wettkampfDO.setOfflineToken(null);
+        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
