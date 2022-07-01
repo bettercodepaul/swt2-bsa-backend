@@ -66,6 +66,7 @@ public class WettkampfComponentImplTest {
     private static final long wettkampf_Wettkampftyp_Id = 1;
     private static final long wettkampf_Ausrichter = 8;
     private static final long match_Begegnung = 1;
+    private static final String wettkampf_offlineToken = "offlineToken";
     public static final int PFEIL1 = 10;
     public static final int PFEIL2 = 9;
     public static final int PFEIL3 = 9;
@@ -122,7 +123,7 @@ public class WettkampfComponentImplTest {
         expectedBE.setWettkampfDisziplinId(wettkampf_Disziplin_Id);
         expectedBE.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
         expectedBE.setWettkampfAusrichter(wettkampf_Ausrichter);
-
+        expectedBE.setOfflineToken(wettkampf_offlineToken);
         return expectedBE;
     }
 
@@ -163,7 +164,8 @@ public class WettkampfComponentImplTest {
                 created_At_Utc,
                 user_Id,
                 version,
-                wettkampf_Ausrichter
+                wettkampf_Ausrichter,
+                wettkampf_offlineToken
         );
      }
 
@@ -262,7 +264,7 @@ public class WettkampfComponentImplTest {
         assertThat(actual.get(0).getWettkampfDisziplinId()).isEqualTo(expectedBE.getWettkampfDisziplinId());
         assertThat(actual.get(0).getWettkampfTypId()).isEqualTo(expectedBE.getWettkampfTypId());
         assertThat(actual.get(0).getWettkampfAusrichter()).isEqualTo(expectedBE.getWettkampfAusrichter());
-
+        assertThat(actual.get(0).getOfflineToken()).isEqualTo(expectedBE.getOfflineToken());
         // verify invocations
         verify(wettkampfDAO).findAll();
     }
@@ -299,7 +301,7 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfDisziplinId()).isEqualTo(expectedDO.getWettkampfDisziplinId());
         assertThat(actual.getWettkampfTypId()).isEqualTo(expectedDO.getWettkampfTypId());
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(expectedDO.getWettkampfAusrichter());
-
+        assertThat(actual.getOfflineToken()).isEqualTo(expectedDO.getOfflineToken());
         // verify invocations
         verify(wettkampfDAO).findById(wettkampf_Id);
     }
@@ -340,6 +342,7 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfDisziplinId()).isEqualTo(input.getWettkampfDisziplinId());
         assertThat(actual.getWettkampfTypId()).isEqualTo(input.getWettkampfTypId());
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(input.getWettkampfAusrichter());
+        assertThat(actual.getOfflineToken()).isEqualTo(input.getOfflineToken());
     }
 
 
@@ -376,6 +379,7 @@ public class WettkampfComponentImplTest {
         assertThat(actual.getWettkampfDisziplinId()).isEqualTo(input.getWettkampfDisziplinId());
         assertThat(actual.getWettkampfTypId()).isEqualTo(input.getWettkampfTypId());
         assertThat(actual.getWettkampfAusrichter()).isEqualTo(input.getWettkampfAusrichter());
+        assertThat(actual.getOfflineToken()).isEqualTo(input.getOfflineToken());
     }
 
 
@@ -439,7 +443,7 @@ public class WettkampfComponentImplTest {
         assertThat(actual.get(0).getWettkampfDisziplinId()).isEqualTo(expectedBE.getWettkampfDisziplinId());
         assertThat(actual.get(0).getWettkampfTypId()).isEqualTo(expectedBE.getWettkampfTypId());
         assertThat(actual.get(0).getWettkampfAusrichter()).isEqualTo(expectedBE.getWettkampfAusrichter());
-
+        assertThat(actual.get(0).getOfflineToken()).isEqualTo(expectedBE.getOfflineToken());
         // verify invocations
         verify(wettkampfDAO).findAllWettkaempfeByMannschaftsId(anyLong());
     }
@@ -474,7 +478,7 @@ public class WettkampfComponentImplTest {
         assertThat(actual.get(0).getWettkampfDisziplinId()).isEqualTo(expectedBE.getWettkampfDisziplinId());
         assertThat(actual.get(0).getWettkampfTypId()).isEqualTo(expectedBE.getWettkampfTypId());
         assertThat(actual.get(0).getWettkampfAusrichter()).isEqualTo(expectedBE.getWettkampfAusrichter());
-
+        assertThat(actual.get(0).getOfflineToken()).isEqualTo(expectedBE.getOfflineToken());
         // verify invocations
         verify(wettkampfDAO).findAllByVeranstaltungId(anyLong());
     }
@@ -723,6 +727,13 @@ public class WettkampfComponentImplTest {
         List<MatchDO> result = underTest.sortForDisplay(matches);
         
         assertThat(result).isNotNull();
+    }
+
+    @Test
+    public void generateOfflineToken() {
+            String token = underTest.generateOfflineToken(user_Id);
+            assertThat(token).isNotNull();
+            assertThat(token).contains(Long.toString(user_Id));
     }
 }
 
