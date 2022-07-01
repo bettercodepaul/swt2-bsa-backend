@@ -174,35 +174,6 @@ public class WettkampfExtDTO implements DataTransferObject {
 
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WettkampfExtDTO that = (WettkampfExtDTO) o;
-        return getId().equals(that.getId()) && getVeranstaltungsId().equals(
-                that.getVeranstaltungsId()) && getDatum().equals(that.getDatum()) && getStrasse().equals(
-                that.getStrasse()) && getPlz().equals(that.getPlz()) && getOrtsname().equals(
-                that.getOrtsname()) && getOrtsinfo().equals(that.getOrtsinfo()) && getBeginn().equals(
-                that.getBeginn()) && getTag().equals(that.getTag()) && getDisziplinId().equals(
-                that.getDisziplinId()) && getWettkampfTypId().equals(that.getWettkampfTypId()) && getVersion().equals(
-                that.getVersion()) && getAusrichter().equals(that.getAusrichter()) && getOfflineToken().equals(
-                that.getOfflineToken());
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getVeranstaltungsId(), getDatum(), getStrasse(), getPlz(), getOrtsname(),
-                getOrtsinfo(), getBeginn(), getTag(), getDisziplinId(), getWettkampfTypId(), getVersion(),
-                getAusrichter(),
-                getOfflineToken());
-    }
-
-
-    @Override
     public String toString() {
         return "WettkampfExtDTO{" +
                 "id='" + this.id + '\'' +

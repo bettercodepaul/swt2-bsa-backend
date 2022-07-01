@@ -2,10 +2,8 @@ package de.bogenliga.application.services.v1.Sync.model;
 
 import java.sql.Date;
 import org.junit.Test;
-import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 /**
  * @author Jonas Sigloch

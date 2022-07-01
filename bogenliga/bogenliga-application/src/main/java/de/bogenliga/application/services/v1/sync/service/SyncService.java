@@ -231,7 +231,7 @@ public class SyncService implements ServiceFacade {
      * @author Jonas Sigloch, SWT SoSe 2022
      */
     @PutMapping(
-            value = "wettkampf/{id}/",
+            value = "wettkampf/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
@@ -246,11 +246,11 @@ public class SyncService implements ServiceFacade {
         // once it works, we could allow the same user that went offline before to send a second token to cover
         // the edge case of and offline token being created and saved but not received by the frontend
         // TODO use Kathrins wettkampfComponent.checkOfflineToken() Function here; evtl so anpassen dass wenn nicht null token returned
-        final WettkampfDO checkWettkapmfDO = wettkampfComponent.findById(wettkampfDTO.getId());
-        if(checkWettkapmfDO.getOfflineToken() != null) {
+        final WettkampfDO checkWettkampfDO = wettkampfComponent.findById(wettkampfDTO.getId());
+        if(checkWettkampfDO.getOfflineToken() != null) {
             throw new NoPermissionException("Error going offline: Wettkampf is already offline.");
         }
-                // create token in business layer and persist it + return to frontend
+        // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
 
