@@ -635,7 +635,7 @@ public class SyncServiceTest {
     public void update() {
         // prepare test data
         WettkampfDTO input = getWettkampfDTO();
-        //final WettkampfExtDTO input = getWettkampfExtDTO();
+        final WettkampfExtDTO result = getWettkampfExtDTO();
         final WettkampfDO expected = getWettkampfDOWithToken();
 
         // configure mocks
@@ -651,6 +651,8 @@ public class SyncServiceTest {
             assertThat(actual).isNotNull();
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getOfflineToken()).isNotNull();
+            assertThat(actual.getOfflineToken()).isEqualTo(result.getOfflineToken());
+
             // verify invocations
             verify(wettkampfComponent).update(wettkampfDOArgumentCaptor.capture(), anyLong());
 
