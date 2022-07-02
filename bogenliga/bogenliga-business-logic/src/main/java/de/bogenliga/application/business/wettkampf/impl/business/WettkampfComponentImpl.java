@@ -778,4 +778,9 @@ public class WettkampfComponentImpl implements WettkampfComponent {
 
         wettkampfDAO.update(wettkampfBE, userId);
     }
+
+    public boolean wettkampfIsOffline(long wettkampfId) {
+        final WettkampfBE wettkampf = wettkampfDAO.findById(wettkampfId);
+        return wettkampf.getOfflineToken() != null;
+    }
 }

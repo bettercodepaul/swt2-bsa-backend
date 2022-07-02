@@ -245,11 +245,9 @@ public class SyncService implements ServiceFacade {
         // as getCurrentUserId does not work, it does so categorically: any wettkampf that is offline, can not be accessed.
         // once it works, we could allow the same user that went offline before to send a second token to cover
         // the edge case of and offline token being created and saved but not received by the frontend
-        // TODO refactor:
-        //  use Kathrins wettkampfComponent.checkOfflineToken() Function here; evtl so anpassen dass wenn nicht null token returned
-        //  current test does not handle case of not being able to update
-
-
+        if(wettkampfComponent.wettkampfIsOffline(wettkampfDTO.getId())){
+            throw new NoPermissionException();
+        }
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
