@@ -403,6 +403,27 @@ public class SyncServiceTest {
         );
     }
 
+    public static WettkampfDO getWettkampfDOWithToken() {
+        return new WettkampfDO(
+                wettkampf_Id,
+                wettkampf_Veranstaltung_Id,
+                wettkampf_Datum,
+                wettkampf_Strasse,
+                wettkampf_Plz,
+                wettkampf_Ortsname,
+                wettkampf_Ortsinfo,
+                wettkampf_Beginn,
+                wettkampf_Tag,
+                wettkampf_Disziplin_Id,
+                wettkampf_Wettkampftyp_Id,
+                created_At_Utc,
+                user_Id,
+                version,
+                wettkampfAusrichter,
+                offlineToken
+        );
+    }
+
     private static WettkampfDTO getWettkampfDTO() {
         return new WettkampfDTO(
                 wettkampf_Id,
@@ -615,7 +636,7 @@ public class SyncServiceTest {
         // prepare test data
         WettkampfDTO input = getWettkampfDTO();
         //final WettkampfExtDTO input = getWettkampfExtDTO();
-        final WettkampfDO expected = getWettkampfDO();
+        final WettkampfDO expected = getWettkampfDOWithToken();
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
@@ -624,12 +645,12 @@ public class SyncServiceTest {
 
         try {
             // call test method
-            final WettkampfExtDTO actual = underTest.update(wettkampfId, input, principal);
+            final WettkampfExtDTO actual = underTest.update(input, principal);
 
             // assert result
             assertThat(actual).isNotNull();
             assertThat(actual.getId()).isEqualTo(input.getId());
-
+            assertThat(actual.getOfflineToken()).isNotNull();
             // verify invocations
             verify(wettkampfComponent).update(wettkampfDOArgumentCaptor.capture(), anyLong());
 
@@ -645,7 +666,7 @@ public class SyncServiceTest {
     @Test
     public void update_Null() {
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.update(wettkampfId,null, principal));
+                .isThrownBy(() -> underTest.update(null, principal));
     }
 
     /*
