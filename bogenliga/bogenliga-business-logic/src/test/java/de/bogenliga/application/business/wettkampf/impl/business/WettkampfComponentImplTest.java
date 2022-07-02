@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -734,6 +735,26 @@ public class WettkampfComponentImplTest {
             String token = underTest.generateOfflineToken(user_Id);
             assertThat(token).isNotNull();
             assertThat(token).contains(Long.toString(user_Id));
+    }
+
+    @Test
+    public void isWettkampfOffline() {
+        WettkampfBE hasToken = getWettkampfBE();
+        when(wettkampfDAO.findById(wettkampf_Id)).thenReturn(hasToken);
+        boolean actual = underTest.wettkampfIsOffline(hasToken.getId());
+        assertThat(hasToken.getOfflineToken()).isNotNull();
+        assertThat(actual).isTrue();
+
+        WettkampfBE noTokenWettkampfBE = getWettkampfBE();
+        noTokenWettkampfBE.setOfflineToken(null);
+        when(wettkampfDAO.findById(wettkampf_Id)).thenReturn(noTokenWettkampfBE);
+        boolean actual2 = underTest.wettkampfIsOffline(hasToken.getId());
+        assertThat(noTokenWettkampfBE.getOfflineToken()).isNull();
+        assertThat(actual2).isFalse();
+
+        when(wettkampfDAO.findById(1234L)).thenReturn(null);
+        assertThatThrownBy(() -> underTest.wettkampfIsOffline(
+                1234L)).isInstanceOf(BusinessException.class);
     }
 }
 
