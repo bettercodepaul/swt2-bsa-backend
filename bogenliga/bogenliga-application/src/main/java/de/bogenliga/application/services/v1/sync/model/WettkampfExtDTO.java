@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.sync.model;
 
 import java.sql.Date;
-import java.util.Objects;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
