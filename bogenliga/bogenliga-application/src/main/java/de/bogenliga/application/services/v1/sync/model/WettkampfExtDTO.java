@@ -52,14 +52,6 @@ public class WettkampfExtDTO implements DataTransferObject {
     }
 
 
-    /**
-     * default constructor
-     */
-    public WettkampfExtDTO() {
-        // empty
-    }
-
-
     public Long getId() {
         return id;
     }
