@@ -752,9 +752,9 @@ public class WettkampfComponentImplTest {
         assertThat(noTokenWettkampfBE.getOfflineToken()).isNull();
         assertThat(actual2).isFalse();
 
-        when(wettkampfDAO.findById(1234L)).thenReturn(null);
+        when(wettkampfDAO.findById(anyLong())).thenReturn(null);
         assertThatThrownBy(() -> underTest.wettkampfIsOffline(
-                1234L)).isInstanceOf(BusinessException.class);
+                anyLong())).isInstanceOf(BusinessException.class);
     }
 }
 
