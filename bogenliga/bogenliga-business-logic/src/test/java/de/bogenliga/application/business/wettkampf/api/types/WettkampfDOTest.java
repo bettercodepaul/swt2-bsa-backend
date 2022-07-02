@@ -1,14 +1,14 @@
-package de.bogenliga.application.services.v1.Sync.model;
+package de.bogenliga.application.business.wettkampf.api.types;
 
 import java.sql.Date;
 import org.junit.Test;
-import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * @author Jonas Sigloch
  */
-public class WettkampfExtDTOTest {
+public class WettkampfDOTest {
     private static final Long ID = 2010L;
     private static final Long VERANSTALTUNGSID = 1002L;
     private static final Date DATUM = Date.valueOf("2022-06-06");
@@ -24,14 +24,33 @@ public class WettkampfExtDTOTest {
     private static final Long AUSRICHTER = 0L;
     private static final String OFFLINETOKEN = "offline";
 
-    private WettkampfExtDTO getExtDTO() {
-        return new WettkampfExtDTO(ID, VERANSTALTUNGSID, DATUM, STRASSE, PLZ, ORTSNAME, ORTSINFO, BEGINN, TAG, DISZIPLINID,
+    private WettkampfDO getTokenDO() {
+        return new WettkampfDO(ID, VERANSTALTUNGSID, DATUM, STRASSE, PLZ, ORTSNAME, ORTSINFO, BEGINN, TAG, DISZIPLINID,
                 WETTKAMPFTYPID, VERSION, AUSRICHTER, OFFLINETOKEN);
+    }
+
+    private WettkampfDO getNoTokenDO() {
+        return new WettkampfDO(ID, VERANSTALTUNGSID, DATUM, STRASSE, PLZ, ORTSNAME, ORTSINFO, BEGINN, TAG, DISZIPLINID,
+                WETTKAMPFTYPID, VERSION, AUSRICHTER);
+    }
+
+    @Test
+    public void noTokenDO() {
+        final WettkampfDO underTest = getNoTokenDO();
+        assertThat(underTest.getOfflineToken()).isNull();
+        assertThat(underTest.getId()).isEqualTo(ID);
+    }
+
+    @Test
+    public void tokenDO() {
+        final WettkampfDO underTest = getTokenDO();
+        assertThat(underTest.getOfflineToken()).isEqualTo(OFFLINETOKEN);
+        assertThat(underTest.getId()).isEqualTo(ID);
     }
 
     @Test
     public void assertToString() {
-        final WettkampfExtDTO underTest = getExtDTO();
+        final WettkampfDO underTest = getTokenDO();
         final String actual = underTest.toString();
 
         assertThat(actual)
