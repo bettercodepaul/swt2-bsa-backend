@@ -360,10 +360,8 @@ public class SyncService implements ServiceFacade {
 
         final long userId = UserProvider.getCurrentUserId(principal);
         // delete offline token by setting it to null in the passed wettkampf
-        // TODO use Markus function in wettkampfComponent to do this
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
-        wettkampfDO.setOfflineToken(null);
-        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
+        wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
 
         return new ResponseEntity(HttpStatus.OK);
     }
