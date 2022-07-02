@@ -235,7 +235,7 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
-    public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
+    public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
@@ -245,11 +245,8 @@ public class SyncService implements ServiceFacade {
         // as getCurrentUserId does not work, it does so categorically: any wettkampf that is offline, can not be accessed.
         // once it works, we could allow the same user that went offline before to send a second token to cover
         // the edge case of and offline token being created and saved but not received by the frontend
-        // TODO use Kathrins wettkampfComponent.checkOfflineToken() Function here; evtl so anpassen dass wenn nicht null token returned
-        final WettkampfDO checkWettkampfDO = wettkampfComponent.findById(wettkampfDTO.getId());
-        if(checkWettkampfDO.getOfflineToken() != null) {
-            throw new NoPermissionException("Error going offline: Wettkampf is already offline.");
-        }
+        // TODO refactor: use Kathrins wettkampfComponent.checkOfflineToken() Function here; evtl so anpassen dass wenn nicht null token returned
+
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
