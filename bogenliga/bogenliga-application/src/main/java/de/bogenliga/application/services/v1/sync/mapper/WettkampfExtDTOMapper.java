@@ -13,6 +13,10 @@ import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
  */
 public class WettkampfExtDTOMapper implements DataTransferObjectMapper {
 
+    private WettkampfExtDTOMapper() {
+        // private empty constructor
+    }
+
     public static final Function<WettkampfDO, WettkampfExtDTO> toDTO = WettkampfExtDTOMapper::apply;
 
     private static WettkampfExtDTO apply(WettkampfDO wettkampfDO) {

@@ -15,6 +15,9 @@ import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.mapper.MannschaftsMitgliedDTOMapper;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
@@ -67,6 +70,9 @@ public class SyncService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
 
+
+    private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
+
     private final Logger logger = LoggerFactory.getLogger(
             de.bogenliga.application.services.v1.sync.service.SyncService.class);
 
@@ -74,8 +80,9 @@ public class SyncService implements ServiceFacade {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final WettkampfComponent wettkampfComponent;
-    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+    private final MannschaftsMitgliedService mannschaftsMitgliedService;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final MatchService matchService;
 
 
@@ -89,16 +96,19 @@ public class SyncService implements ServiceFacade {
                        final MatchComponent matchComponent,
                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                        final PasseComponent passeComponent,
+                       final RequiresOnePermissionAspect requiresOnePermissionAspect,
                        final WettkampfComponent wettkampfComponent,
-                       RequiresOnePermissionAspect requiresOnePermissionAspect,
-                       final MatchService matchService) {
+                       final MannschaftsMitgliedService mannschaftsMitgliedService,
+                       final MatchService matchService
+                       ) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
-        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.passeComponent = passeComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
         this.matchService = matchService;
+        this.mannschaftsMitgliedService = mannschaftsMitgliedService;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
 
@@ -191,7 +201,7 @@ public class SyncService implements ServiceFacade {
     }
 
 
-    /* TODO
+    /**
      * I return the all Mannschaftsmitglieder Entries for all Mannschaften
      * participating a "wettkampftid (tag)" entries of the database.
      *
@@ -235,14 +245,19 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
-    public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
+    public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
-        // TODO: check if pathvariable id == DTO.getId()
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
-        // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
+        // Check if it is the ligaleiter of the wettkampfs liga (not sure if possible); generic check done in permissions
 
+        // prevent going offline for a wettkampf that is already offline
+        // as getCurrentUserId does not work, it does so categorically: any wettkampf that is offline, can not be accessed.
+        // once it works, we could allow the same user that went offline before to send a second token to cover
+        // the edge case of and offline token being created and saved but not received by the frontend
+        if(wettkampfComponent.wettkampfIsOffline(wettkampfDTO.getId())){
+            throw new NoPermissionException();
+        }
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
@@ -257,14 +272,56 @@ public class SyncService implements ServiceFacade {
 
     /* TODO
      * I will recieve the OfflineToken from Client
+    /**
+     * I will recieve the OfflineToken form Client
      * and a list of new Mannschaftmitglieder (identified by missing IDs)
      * the follwing checks will be performed:
      * - are all new Manschaftsmitglieder existing in Backend -> otherwise one Error per missing entry
-     *   including Rückennummern und Name der Mannschaft
+     *   including Rückennummern ugnd Name der Mannschaft
      * - is the Offline identical to the stored in Backend Wettkampf Table -> otherwise this Dataset is not
      *   the most recent one --> Gero sould advised what to do.
      * @return ok or list of errors
      */
+
+    @PostMapping(
+            value = "mannschaftsmitglieder/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
+    public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
+                                                                 @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
+                                                                 final Principal principal,
+                                                                 final String offlineToken) throws NoPermissionException { //@RequestBody
+
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
+
+        //Offline Token check
+        logger.debug("Offlinetoken check: {}", offlineToken);
+        wettkampfComponent.checkOfflineToken(wettkampfId, offlineToken);
+
+        // save new team members
+
+        final long currentUserId = UserProvider.getCurrentUserId(principal); //always 0
+        List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
+
+        for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
+
+            MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
+
+            MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
+
+
+            savedMannschaftsMitglieder.add( MannschaftsMitgliedDTOMapper.toDO.apply(addedNewMannschaftsMitgliedDO));
+
+        }
+
+        logger.debug("Offlinetoken succes: {}", offlineToken);
+
+       return ResponseEntity.ok(
+               savedMannschaftsMitglieder.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
+                       Collectors.toList()));
+    }
 
     /* TODO
      * I will recieve both lists: matches and passen to store data consistently in a single transaction
@@ -360,10 +417,8 @@ public class SyncService implements ServiceFacade {
 
         final long userId = UserProvider.getCurrentUserId(principal);
         // delete offline token by setting it to null in the passed wettkampf
-        // TODO use Markus function in wettkampfComponent to do this
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
-        wettkampfDO.setOfflineToken(null);
-        final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
+        wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
 
         return new ResponseEntity(HttpStatus.OK);
     }
