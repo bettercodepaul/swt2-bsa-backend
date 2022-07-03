@@ -235,14 +235,19 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
-    public WettkampfExtDTO update(@PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
+    public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
                                   final Principal principal) throws NoPermissionException {
-        // TODO: check if pathvariable id == DTO.getId()
         Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
-        // No extra permission check needed as Ausrichter is not supposed to be able to use offline function
+        // Check if it is the ligaleiter of the wettkampfs liga (not sure if possible); generic check done in permissions
 
+        // prevent going offline for a wettkampf that is already offline
+        // as getCurrentUserId does not work, it does so categorically: any wettkampf that is offline, can not be accessed.
+        // once it works, we could allow the same user that went offline before to send a second token to cover
+        // the edge case of and offline token being created and saved but not received by the frontend
+        if(wettkampfComponent.wettkampfIsOffline(wettkampfDTO.getId())){
+            throw new NoPermissionException();
+        }
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);

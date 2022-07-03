@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.sync.model;
 
 import java.sql.Date;
-import java.util.Objects;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
@@ -49,14 +48,6 @@ public class WettkampfExtDTO implements DataTransferObject {
         this.setVersion(version);
         this.setAusrichter(wettkampfAusrichter);
         this.setOfflineToken(offlineToken);
-    }
-
-
-    /**
-     * default constructor
-     */
-    public WettkampfExtDTO() {
-        // empty
     }
 
 
@@ -170,35 +161,6 @@ public class WettkampfExtDTO implements DataTransferObject {
 
     public void setOfflineToken(String offlineToken) {
         this.offlineToken = offlineToken;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WettkampfExtDTO that = (WettkampfExtDTO) o;
-        return getId().equals(that.getId()) && getVeranstaltungsId().equals(
-                that.getVeranstaltungsId()) && getDatum().equals(that.getDatum()) && getStrasse().equals(
-                that.getStrasse()) && getPlz().equals(that.getPlz()) && getOrtsname().equals(
-                that.getOrtsname()) && getOrtsinfo().equals(that.getOrtsinfo()) && getBeginn().equals(
-                that.getBeginn()) && getTag().equals(that.getTag()) && getDisziplinId().equals(
-                that.getDisziplinId()) && getWettkampfTypId().equals(that.getWettkampfTypId()) && getVersion().equals(
-                that.getVersion()) && getAusrichter().equals(that.getAusrichter()) && getOfflineToken().equals(
-                that.getOfflineToken());
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getVeranstaltungsId(), getDatum(), getStrasse(), getPlz(), getOrtsname(),
-                getOrtsinfo(), getBeginn(), getTag(), getDisziplinId(), getWettkampfTypId(), getVersion(),
-                getAusrichter(),
-                getOfflineToken());
     }
 
 
