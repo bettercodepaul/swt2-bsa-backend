@@ -34,8 +34,6 @@ import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
-import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import org.slf4j.Logger;
@@ -75,7 +73,6 @@ public class SyncService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
 
-    private final Logger logger = LoggerFactory.getLogger(de.bogenliga.application.services.v1.sync.service.SyncService.class);
     private final Logger logger = LoggerFactory.getLogger(
             de.bogenliga.application.services.v1.sync.service.SyncService.class);
 
@@ -84,10 +81,8 @@ public class SyncService implements ServiceFacade {
     private final PasseComponent passeComponent;
     private final WettkampfComponent wettkampfComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-    private final WettkampfComponent wettkampfComponent;
     private final MannschaftsMitgliedService mannschaftsMitgliedService;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
-    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
     private final MatchService matchService;
 
 
@@ -103,7 +98,8 @@ public class SyncService implements ServiceFacade {
                        final PasseComponent passeComponent,
                        final RequiresOnePermissionAspect requiresOnePermissionAspect,
                        final WettkampfComponent wettkampfComponent,
-                       final MannschaftsMitgliedService mannschaftsMitgliedService
+                       final MannschaftsMitgliedService mannschaftsMitgliedService,
+                       final MatchService matchService
                        ) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
@@ -111,8 +107,6 @@ public class SyncService implements ServiceFacade {
         this.wettkampfComponent = wettkampfComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
         this.matchService = matchService;
-        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
-        this.wettkampfComponent = wettkampfComponent;
         this.mannschaftsMitgliedService = mannschaftsMitgliedService;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
@@ -283,7 +277,7 @@ public class SyncService implements ServiceFacade {
      * and a list of new Mannschaftmitglieder (identified by missing IDs)
      * the follwing checks will be performed:
      * - are all new Manschaftsmitglieder existing in Backend -> otherwise one Error per missing entry
-     *   including Rückennummern und Name der Mannschaft
+     *   including Rückennummern ugnd Name der Mannschaft
      * - is the Offline identical to the stored in Backend Wettkampf Table -> otherwise this Dataset is not
      *   the most recent one --> Gero sould advised what to do.
      * @return ok or list of errors
@@ -294,7 +288,7 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
-    public ResponseEntity backOnlineSynchronization(@PathVariable("id") final long wettkampfId,
+    public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
                                                                  @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
                                                                  final Principal principal,
                                                                  final String offlineToken) throws NoPermissionException { //@RequestBody
