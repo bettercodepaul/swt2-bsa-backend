@@ -351,7 +351,7 @@ public class SyncService implements ServiceFacade {
             value = "wettkampf/{id}/reset",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public ResponseEntity goOnlineUnconditionally(
+    public ResponseEntity goOnlineUnconditionally (
             @PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
             final Principal principal) {
 
