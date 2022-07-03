@@ -1,6 +1,5 @@
 package de.bogenliga.application.services.v1.sync.service;
 
-import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
@@ -16,6 +15,9 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.mapper.MannschaftsMitgliedDTOMapper;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
@@ -59,11 +61,6 @@ public class SyncService implements ServiceFacade {
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
 
-    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED = "MannschaftsMitglied must not be null";
-    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID = "MannschaftsMitglied ID must not be null";
-    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID = "MannschaftsMitglied DSB MITGLIED ID must not be null";
-    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE = "MannschaftsMitglied ID must not be negative";
-    private static final String PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE = "MannschaftsMitglied DSB MITGLIED ID must not be negative";
 
     private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
 
@@ -72,10 +69,10 @@ public class SyncService implements ServiceFacade {
     private final LigatabelleComponent ligatabelleComponent;
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
-    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-    private final DsbMannschaftComponent dsbMannschaftComponent;
     private final WettkampfComponent wettkampfComponent;
+    private final MannschaftsMitgliedService mannschaftsMitgliedService;
+    private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     /**
      * Constructor with dependency injection
@@ -84,19 +81,20 @@ public class SyncService implements ServiceFacade {
      */
     @Autowired
     public SyncService(final LigatabelleComponent ligatabelleComponent,
-                       final MatchComponent matchComponent, 
+                       final MatchComponent matchComponent,
                        final MannschaftsmitgliedComponent mannschaftsmitgliedComponent, 
                        final PasseComponent passeComponent,
                        final RequiresOnePermissionAspect requiresOnePermissionAspect,
-                       final DsbMannschaftComponent dsbMannschaftComponent,
-                       final WettkampfComponent wettkampfComponent) {
+                       final WettkampfComponent wettkampfComponent,
+                       final MannschaftsMitgliedService mannschaftsMitgliedService
+                       ) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
-        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.passeComponent = passeComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.wettkampfComponent = wettkampfComponent;
+        this.mannschaftsMitgliedService = mannschaftsMitgliedService;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
 
     /**
@@ -234,7 +232,7 @@ public class SyncService implements ServiceFacade {
     }
 
 
-    /* TODO
+    /**
      * I return the all Mannschaftsmitglieder Entries for all Mannschaften
      * participating a "wettkampftid (tag)" entries of the database.
      *
@@ -267,7 +265,7 @@ public class SyncService implements ServiceFacade {
      * @return WettkampfExtDTO as JSON
      */
 
-    /* TODO
+    /**
      * I will recieve the OfflineToken form Client
      * and a list of new Mannschaftmitglieder (identified by missing IDs)
      * the follwing checks will be performed:
@@ -283,7 +281,7 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
-    public ResponseEntity create(@PathVariable("id") final long wettkampfId,
+    public ResponseEntity backOnlineSynchronization(@PathVariable("id") final long wettkampfId,
                                                                  @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
                                                                  final Principal principal,
                                                                  final String offlineToken) throws NoPermissionException { //@RequestBody
@@ -302,21 +300,12 @@ public class SyncService implements ServiceFacade {
 
         for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
 
-            long tempId = this.dsbMannschaftComponent.findById(ligaSyncMannschaftsmitgliedDTO.getMannschaftId()).getVereinId();
+            MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
 
-            if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)
-                    && !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(
-                    UserPermission.CAN_MODIFY_MY_VEREIN, tempId)) {
-                throw new NoPermissionException();
-            }
+            MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
 
-            checkPreconditionsIncomingNewTeamMembers(ligaSyncMannschaftsmitgliedDTO);
 
-            MannschaftsmitgliedDO newMannschaftsMitgliedDO = LigaSyncMannschaftsmitgliedDTOMapper.toDO.apply(ligaSyncMannschaftsmitgliedDTO);
-
-            mannschaftsmitgliedComponent.create(newMannschaftsMitgliedDO, currentUserId);
-
-            savedMannschaftsMitglieder.add(newMannschaftsMitgliedDO);
+            savedMannschaftsMitglieder.add( MannschaftsMitgliedDTOMapper.toDO.apply(addedNewMannschaftsMitgliedDO));
 
         }
 
@@ -325,18 +314,6 @@ public class SyncService implements ServiceFacade {
        return ResponseEntity.ok(
                savedMannschaftsMitglieder.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
                        Collectors.toList()));
-    }
-
-    private void checkPreconditionsIncomingNewTeamMembers(@RequestBody final LigaSyncMannschaftsmitgliedDTO mannschaftsMitgliedDTO) {
-        Preconditions.checkNotNull(mannschaftsMitgliedDTO, PRECONDITION_MSG_MANNSCHAFTSMITGLIED);
-        Preconditions.checkNotNull(mannschaftsMitgliedDTO.getMannschaftId(),
-                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID);
-        Preconditions.checkNotNull(mannschaftsMitgliedDTO.getDsbMitgliedId(),
-                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID);
-        Preconditions.checkArgument(mannschaftsMitgliedDTO.getMannschaftId() >= 0,
-                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_MANNSCHAFTS_ID_NEGATIVE);
-        Preconditions.checkArgument(mannschaftsMitgliedDTO.getDsbMitgliedId() >= 0,
-                PRECONDITION_MSG_MANNSCHAFTSMITGLIED_DSB_MITGLIED_ID_NEGATIVE);
     }
 
     /* TODO
