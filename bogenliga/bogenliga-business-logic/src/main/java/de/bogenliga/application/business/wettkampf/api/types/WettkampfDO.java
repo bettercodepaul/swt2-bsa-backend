@@ -345,4 +345,22 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
+    @Override
+    public String toString() {
+        return "WettkampfDO{" +
+                "id=" + id +
+                ", wettkampfVeranstaltungsId=" + wettkampfVeranstaltungsId +
+                ", wettkampfDatum=" + wettkampfDatum +
+                ", wettkampfStrasse='" + wettkampfStrasse + '\'' +
+                ", wettkampfPlz='" + wettkampfPlz + '\'' +
+                ", wettkampfOrtsname='" + wettkampfOrtsname + '\'' +
+                ", wettkampfOrtsinfo='" + wettkampfOrtsinfo + '\'' +
+                ", wettkampfBeginn='" + wettkampfBeginn + '\'' +
+                ", wettkampfTag=" + wettkampfTag +
+                ", wettkampfDisziplinId=" + wettkampfDisziplinId +
+                ", wettkampfTypId=" + wettkampfTypId +
+                ", wettkampfAusrichter=" + wettkampfAusrichter +
+                ", offlineToken='" + offlineToken + '\'' +
+                '}';
+    }
 }
