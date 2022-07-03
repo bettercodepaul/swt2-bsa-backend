@@ -11,11 +11,13 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity {
     private static final long serialVersionUID = 6766917935149997789L;
-    
+
     private Long wettkampfId;
     private Long matchId;
+    private Long matchIdGegner;
     private Long matchNr;
     private Long scheibennummer;
+    private Long scheibennummerGegner;
     private Long mannschaftId;
     private Long begegnung;
     private Long naechsteMatchId;
@@ -28,6 +30,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private String wettkampftypId;
     private Long wettkampfTag;
     private String mannschaftName;
+    private String mannschaftNameGegner;
     private Integer rueckennummer;
     private Long satzpunkte;
     private Long matchpunkte;
@@ -45,8 +48,10 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
         return "LigamatchBE{" +
                 "wettkampfId=" + wettkampfId +
                 ", matchId=" + matchId +
+                ", matchIdGegner=" + matchIdGegner +
                 ", matchNr=" + matchNr +
                 ", scheibennummer=" + scheibennummer +
+                ", scheibennummerGegner" + scheibennummerGegner +
                 ", mannschaftId=" + mannschaftId +
                 ",begegnung=" + begegnung +
                 ", naechsteMatchId=" + naechsteMatchId +
@@ -70,11 +75,17 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     public Long getMatchId() {return matchId;}
     public void setMatchId(Long matchId) {this.matchId = matchId;}
 
+    public Long getMatchIdGegner() {return matchIdGegner; }
+    public void setMatchIdGegner(Long matchIdGegner) {this.matchIdGegner = matchIdGegner;}
+
     public Long getMatchNr() {return matchNr;}
     public void setMatchNr(Long matchNr) {this.matchNr = matchNr;}
 
     public Long getScheibennummer() {return scheibennummer;}
     public void setScheibennummer(Long scheibennummer) {this.scheibennummer = scheibennummer;}
+
+    public Long getScheibennummerGegner() {return scheibennummerGegner;}
+    public void setScheibennummerGegner(Long scheibennummerGegner) {this.scheibennummerGegner = scheibennummerGegner; }
 
     public Long getMannschaftId() {return mannschaftId;}
     public void setMannschaftId(Long mannschaftId) {this.mannschaftId = mannschaftId;}
@@ -112,6 +123,11 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     public String getMannschaftName() {return mannschaftName;}
     public void setMannschaftName(String mannschaftName) {this.mannschaftName = mannschaftName;}
 
+    public String getMannschaftNameGegner() {return mannschaftNameGegner;}
+    public void setMannschaftNameGegner(String mannschaftNameGegner) {
+        this.mannschaftNameGegner = mannschaftNameGegner;
+    }
+
     public Integer getRueckennummer() {return rueckennummer;}
     public void setRueckennummer(Integer rueckennummer) {this.rueckennummer = rueckennummer;}
 
@@ -120,5 +136,4 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
 
     public Long getMatchpunkte() {return matchpunkte;}
     public void setMatchpunkte(Long matchpunkte) {this.matchpunkte = matchpunkte;}
-
 }

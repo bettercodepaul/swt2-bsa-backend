@@ -113,5 +113,26 @@ public interface WettkampfComponent extends ComponentFacade {
 
     byte[] getUebersichtPDFasByteArray(long veranstaltungsid,long wettkampftag);
 
+    /**
+     * generate offline token to mark a wettkampf as offline
+     * @param userId
+     * @return offlinetoken
+     */
+    String generateOfflineToken(long userId);
+
+    /**
+     * Delete Offline Token from Wettkampf
+     * Set Offline Token to null
+     * @param wettkampfDO, userId
+     * @return offlinetoken
+     */
+    void deleteOfflineToken(WettkampfDO wettkampfDO, long userId);
+
+    /**
+     * Checks if a wettkampf is offline
+     * @return true if the wettkampf is offline, false if not
+     */
+    boolean wettkampfIsOffline(long wettkampfId);
+
     void checkOfflineToken(long wettkampfId, String offlineToken);
 }

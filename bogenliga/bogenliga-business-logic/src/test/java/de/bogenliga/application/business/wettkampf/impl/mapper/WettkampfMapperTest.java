@@ -30,6 +30,7 @@ public class WettkampfMapperTest {
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
     private static final long wettkampf_Wettkampftyp_Id = 1;
+    private static final String wettkampf_offlineToken = "offlineToken";
 
 
 
@@ -43,6 +44,7 @@ public class WettkampfMapperTest {
 
         assertThat(actual.getId()).isEqualTo(wettkampf_Id);
         assertThat(actual.getWettkampfTypId()).isEqualTo(wettkampf_Wettkampftyp_Id);
+        assertThat(actual.getOfflineToken()).isEqualTo(wettkampf_offlineToken);
     }
 
     @Test
@@ -53,5 +55,6 @@ public class WettkampfMapperTest {
 
         assertThat(actual.getId()).isEqualTo(wettkampf_Id);
         assertThat(actual.getWettkampfTypId()).isEqualTo(wettkampf_Wettkampftyp_Id);
+        assertThat(actual.getOfflineToken()).isEqualTo(wettkampf_offlineToken);
     }
 }
