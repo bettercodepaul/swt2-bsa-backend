@@ -133,4 +133,6 @@ public interface WettkampfComponent extends ComponentFacade {
      * @return true if the wettkampf is offline, false if not
      */
     boolean wettkampfIsOffline(long wettkampfId);
+
+    void checkOfflineToken(long wettkampfId, String offlineToken);
 }
