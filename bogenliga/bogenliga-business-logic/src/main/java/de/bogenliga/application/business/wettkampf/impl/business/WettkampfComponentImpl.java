@@ -68,7 +68,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_WETTKAMPFTYP_ID = "wettkampfTypID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
-    private static final String ERR_OFFLINE_TOKEN_CONFLICT = "Offlinetoken isn't the most recent one";
+    private static final String ERR_OFFLINE_TOKEN_CONFLICT = "Can't save the given data, due to the invalidity of the current offline session.";
 
     private final WettkampfDAO wettkampfDAO;
     private final VeranstaltungDAO veranstaltungDAO;
