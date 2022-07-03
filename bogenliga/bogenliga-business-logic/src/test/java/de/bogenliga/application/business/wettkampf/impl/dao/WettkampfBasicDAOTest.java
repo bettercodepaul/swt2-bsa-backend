@@ -37,6 +37,7 @@ public class WettkampfBasicDAOTest {
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
     private static final long wettkampf_Wettkampftyp_Id = 1;
+    private static final String wettkampf_offlineToken = "offlinetoken";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

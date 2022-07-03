@@ -30,6 +30,7 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
@@ -43,6 +44,7 @@ import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -403,6 +405,27 @@ public class SyncServiceTest {
         );
     }
 
+    public static WettkampfDO getWettkampfDOWithToken() {
+        return new WettkampfDO(
+                wettkampf_Id,
+                wettkampf_Veranstaltung_Id,
+                wettkampf_Datum,
+                wettkampf_Strasse,
+                wettkampf_Plz,
+                wettkampf_Ortsname,
+                wettkampf_Ortsinfo,
+                wettkampf_Beginn,
+                wettkampf_Tag,
+                wettkampf_Disziplin_Id,
+                wettkampf_Wettkampftyp_Id,
+                created_At_Utc,
+                user_Id,
+                version,
+                wettkampfAusrichter,
+                offlineToken
+        );
+    }
+
     private static WettkampfDTO getWettkampfDTO() {
         return new WettkampfDTO(
                 wettkampf_Id,
@@ -614,8 +637,8 @@ public class SyncServiceTest {
     public void update() {
         // prepare test data
         WettkampfDTO input = getWettkampfDTO();
-        //final WettkampfExtDTO input = getWettkampfExtDTO();
-        final WettkampfDO expected = getWettkampfDO();
+        final WettkampfExtDTO result = getWettkampfExtDTO();
+        final WettkampfDO expected = getWettkampfDOWithToken();
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
@@ -624,11 +647,13 @@ public class SyncServiceTest {
 
         try {
             // call test method
-            final WettkampfExtDTO actual = underTest.update(wettkampfId, input, principal);
+            final WettkampfExtDTO actual = underTest.update(input, principal);
 
             // assert result
             assertThat(actual).isNotNull();
             assertThat(actual.getId()).isEqualTo(input.getId());
+            assertThat(actual.getOfflineToken()).isNotNull();
+            assertThat(actual.getOfflineToken()).isEqualTo(result.getOfflineToken());
 
             // verify invocations
             verify(wettkampfComponent).update(wettkampfDOArgumentCaptor.capture(), anyLong());
@@ -645,25 +670,20 @@ public class SyncServiceTest {
     @Test
     public void update_Null() {
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.update(wettkampfId,null, principal));
+                .isThrownBy(() -> underTest.update(null, principal));
     }
 
-    /*
+
     @Test
     public void updateNoPermission() {
         // prepare test data
         final WettkampfDTO input = getWettkampfDTO();
-
         final WettkampfDO expected = getWettkampfDO();
 
-        // configure mocks
-        when(wettkampfComponent.update(expected, anyLong())).thenReturn(expected);
-        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(false);
-        when(requiresOnePermissionAspect.hasSpecificPermissionAusrichter(any(), anyLong())).thenReturn(false);
-
+        // configure mocks: wettkampf is already offline
+        when(wettkampfComponent.wettkampfIsOffline(anyLong())).thenReturn(true);
         assertThatExceptionOfType(NoPermissionException.class)
-                .isThrownBy(()-> underTest.update(wettkampfId, input, principal));
-
+                .isThrownBy(() -> underTest.update(input, principal));
     }
-    */
+
 }
