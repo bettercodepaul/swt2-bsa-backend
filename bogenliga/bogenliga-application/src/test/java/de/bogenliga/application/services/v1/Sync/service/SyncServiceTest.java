@@ -31,6 +31,7 @@ import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
@@ -88,10 +89,12 @@ public class SyncServiceTest {
 
     protected static final Long MATCH_ID = 1L;
     protected static final Long MATCH_NR = 1L;
+    protected static final Integer MATCH_NR_INT = 111;
     protected static final Long MATCH_BEGEGNUNG = 1L;
     protected static final Long MATCH_WETTKAMPF_ID = 1L;
     protected static final Long MATCH_MANNSCHAFT_ID = 1L;
     protected static final Long MATCH_SCHEIBENNUMMER = 3L;
+    protected static final Integer MATCH_SCHEIBENNUMMER_INT = 333;
     protected static final Long MATCH_MATCHPUNKTE = 6L;
     protected static final Long MATCH_SATZPUNKTE = 3L;
     protected static final Long CURRENT_USER_ID = 1L;
@@ -112,6 +115,7 @@ public class SyncServiceTest {
 
     protected static final String MATCH_NAME_GEGNER = "TSV Grafenberg Gegner";
     protected static final Long MATCH_SCHEIBENNUMMER_GEGNER = 4L;
+    protected static final Integer MATCH_SCHEIBENNUMMER_GEGNER_INT = 444;
     protected static final Long MATCH_ID_GEGNER = 2L;
 
 /*
@@ -131,6 +135,7 @@ public class SyncServiceTest {
     private static final Integer PASSE_PFEIL_1 = 10;
     private static final Integer PASSE_PFEIL_2 = 8;
     private static final Long PASSE_DSB_MITGLIED_ID = 123L;
+    private static final Integer[] PASSE_RINGZAHL = new Integer[]{PASSE_PFEIL_1, PASSE_PFEIL_2};
 
     private static final Long MM_ID_1 = 1L;
     private static final Long MM_ID_2 = 2L;
@@ -442,6 +447,75 @@ public class SyncServiceTest {
 
     }
 
+    private static LigaSyncMatchDTO getLigaSyncMatchDTO() {
+        return new LigaSyncMatchDTO (
+                MATCH_ID,
+                version,
+                wettkampfId,
+                MATCH_NR_INT,
+                MATCH_SCHEIBENNUMMER_INT,
+                MATCH_MATCHPUNKTE,
+                MATCH_SATZPUNKTE,
+                MATCH_MANNSCHAFT_ID,
+                MATCH_MANNSCHAFT_NAME,
+                MATCH_NAME_GEGNER,
+                MATCH_SCHEIBENNUMMER_GEGNER_INT,
+                MATCH_ID_GEGNER,
+                MATCH_NAECHSTE_MATCH_ID,
+                MATCH_NAECHSTE_NAECHSTE_MATCH_ID
+        );
+    }
+
+    private static MatchDTO getMatchDTO () {
+        List<PasseDTO> passen = new ArrayList<>();
+        passen.add(getPasseDTO());
+        passen.add(getPasseDTO());
+
+        return new MatchDTO (
+                MATCH_ID,
+                MATCH_NR,
+                version,
+                wettkampfId,
+                MATCH_MANNSCHAFT_ID,
+                MATCH_BEGEGNUNG,
+                MATCH_SCHEIBENNUMMER,
+                MATCH_MATCHPUNKTE,
+                MATCH_SATZPUNKTE,
+                passen,
+                MATCH_STRAFPUNKTE_SATZ1,
+                MATCH_STRAFPUNKTE_SATZ2,
+                MATCH_STRAFPUNKTE_SATZ3,
+                MATCH_STRAFPUNKTE_SATZ4,
+                MATCH_STRAFPUNKTE_SATZ5
+        );
+    }
+
+    private static LigaSyncPasseDTO getLigaSyncPasseDTO() {
+        return new LigaSyncPasseDTO (
+                PASSE_ID,
+                VERSION,
+                MATCH_ID,
+                MATCH_MANNSCHAFT_ID,
+                MATCH_WETTKAMPF_ID,
+                PASSE_LFDR_NR,
+                dsbMitgliedId,
+                PASSE_RINGZAHL
+        );
+    }
+
+    private static PasseDTO getPasseDTO () {
+        return new PasseDTO (
+                PASSE_ID,
+                MATCH_MANNSCHAFT_ID,
+                MATCH_WETTKAMPF_ID,
+                MATCH_NR,
+                MATCH_ID,
+                PASSE_LFDR_NR,
+                PASSE_DSB_MITGLIED_ID,
+                PASSE_RINGZAHL
+        );
+    }
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
@@ -646,6 +720,118 @@ public class SyncServiceTest {
     public void update_Null() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.update(wettkampfId,null, principal));
+    }
+
+    @Test
+    public void testSynchronizeMatchesAndPassen() throws NoPermissionException {
+        LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
+        LigaSyncPasseDTO ligaSyncPasseDTO = getLigaSyncPasseDTO();
+
+        // Setting up incoming data for synchronizeMatchesAndPassen
+        // 4 Matches in total
+        ArrayList<LigaSyncMatchDTO> ligaSyncMatchDTOs = new ArrayList<LigaSyncMatchDTO>();
+        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
+        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
+        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
+        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
+
+        // Provide 4 different MatchIDs
+        Long[] matchIDs = new Long[] {MATCH_ID, 2L, 3L, 4L};
+
+        // Have 4 Matches with 4 different IDs to check, whether the Passen will get set correctly
+        ligaSyncMatchDTOs.get(1).setId(matchIDs[1]);
+        ligaSyncMatchDTOs.get(2).setId(matchIDs[2]);
+        ligaSyncMatchDTOs.get(3).setId(matchIDs[3]);
+
+        // Change two MatchNr and begenung to check if synchronizeMatchesAndPassen can seperate Matches
+        ligaSyncMatchDTOs.get(2).setMatchNr(112);
+        ligaSyncMatchDTOs.get(3).setMatchNr(112);
+
+        ArrayList<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<LigaSyncPasseDTO>();
+        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
+        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
+        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
+        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
+
+        // Change MatchID, so that every Match has one Passe
+        ligaSyncPasseDTOs.get(1).setMatchId(matchIDs[1]);
+        ligaSyncPasseDTOs.get(2).setMatchId(matchIDs[2]);
+        ligaSyncPasseDTOs.get(3).setMatchId(matchIDs[3]);
+
+        // Set up expected result
+        List<MatchDTO> expectedMatchDTOs = new ArrayList<>();
+        List<PasseDTO> expectedPasseDTOs = new ArrayList<>();
+
+        // Set up expected Passen
+        expectedPasseDTOs.add(getPasseDTO());
+        expectedPasseDTOs.add(getPasseDTO());
+        expectedPasseDTOs.add(getPasseDTO());
+        expectedPasseDTOs.add(getPasseDTO());
+
+        expectedPasseDTOs.get(1).setMatchId(matchIDs[1]);
+        expectedPasseDTOs.get(2).setMatchId(matchIDs[2]);
+        expectedPasseDTOs.get(3).setMatchId(matchIDs[3]);
+
+
+        // Set up expected Matches
+        expectedMatchDTOs.add(getMatchDTO());
+        expectedMatchDTOs.add(getMatchDTO());
+        expectedMatchDTOs.add(getMatchDTO());
+        expectedMatchDTOs.add(getMatchDTO());
+
+        expectedMatchDTOs.get(1).setId(matchIDs[1]);
+        expectedMatchDTOs.get(2).setId(matchIDs[2]);
+        expectedMatchDTOs.get(3).setId(matchIDs[3]);
+
+        expectedMatchDTOs.get(2).setNr(ligaSyncMatchDTOs.get(2).getMatchNr().longValue());
+        expectedMatchDTOs.get(3).setNr(ligaSyncMatchDTOs.get(3).getMatchNr().longValue());
+
+        // Set List<PasseDTO> in MatchDTO
+        for (int i = 0; i < expectedMatchDTOs.size(); i++) {
+            List<PasseDTO> passen = new ArrayList<>();
+            passen.add(expectedPasseDTOs.get(i));
+
+            expectedMatchDTOs.get(i).setPassen(passen);
+        }
+
+
+        try {
+            List<MatchDTO> actual = underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOs, ligaSyncPasseDTOs, principal);
+
+            assertThat(actual).isNotNull().isNotEmpty().hasSize(4);
+
+            for (int i = 0; i < expectedMatchDTOs.size(); i++) {
+                assertThat(actual.get(i).getPassen()).isNotNull().isNotEmpty().hasSize(1);
+                assertThat(actual.get(i).getId().equals(expectedMatchDTOs.get(i).getId()));
+                assertThat(actual.get(i).getPassen().get(0).getMatchId().equals(expectedMatchDTOs.get(i).getPassen().get(0).getMatchId()));
+                assertThat(actual.get(i).getNr().equals(expectedMatchDTOs.get(i).getNr()));
+            }
+
+        } catch (NoPermissionException e) {
+
+        }
+    }
+
+    @Test
+    public void synchronizeMatchesAndPassen_MatchesNull() {
+        LigaSyncPasseDTO ligaSyncPasseDTO = getLigaSyncPasseDTO();
+        ArrayList<LigaSyncPasseDTO> ligaSyncPasseDTOS = new ArrayList<>();
+        ligaSyncPasseDTOS.add(ligaSyncPasseDTO);
+        ligaSyncPasseDTOS.add(ligaSyncPasseDTO);
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(null, ligaSyncPasseDTOS, principal));
+    }
+
+    @Test
+    public void synchronizeMatchesAndPassen_PasseNull() {
+        LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
+        ArrayList<LigaSyncMatchDTO> ligaSyncMatchDTOS = new ArrayList<>();
+        ligaSyncMatchDTOS.add(ligaSyncMatchDTO);
+        ligaSyncMatchDTOS.add(ligaSyncMatchDTO);
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOS, null, principal));
     }
 
     /*

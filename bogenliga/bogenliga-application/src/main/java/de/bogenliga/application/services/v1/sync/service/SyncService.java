@@ -277,7 +277,7 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
-    public ResponseEntity synchronizeMatchesAndPassen(List<LigaSyncMatchDTO> ligaSyncMatchDTOs,
+    public List<MatchDTO> synchronizeMatchesAndPassen(List<LigaSyncMatchDTO> ligaSyncMatchDTOs,
                                                       List<LigaSyncPasseDTO> ligaSyncPasseDTOs,
                                                       Principal principal) throws NoPermissionException {
 
@@ -338,7 +338,7 @@ public class SyncService implements ServiceFacade {
         WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDTOs.get(0).getWettkampfId());
         wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return matchDTOs;
     }
 
     /*
