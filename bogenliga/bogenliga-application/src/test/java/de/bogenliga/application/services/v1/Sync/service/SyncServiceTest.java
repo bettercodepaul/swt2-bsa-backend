@@ -32,6 +32,7 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
+import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
@@ -72,6 +73,9 @@ public class SyncServiceTest {
 
     @Mock
     private MatchComponent matchComponent;
+
+    @Mock
+    private MatchService matchService;
 
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
@@ -724,16 +728,14 @@ public class SyncServiceTest {
 
     @Test
     public void testSynchronizeMatchesAndPassen() throws NoPermissionException {
-        LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
-        LigaSyncPasseDTO ligaSyncPasseDTO = getLigaSyncPasseDTO();
 
         // Setting up incoming data for synchronizeMatchesAndPassen
         // 4 Matches in total
-        ArrayList<LigaSyncMatchDTO> ligaSyncMatchDTOs = new ArrayList<LigaSyncMatchDTO>();
-        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
-        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
-        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
-        ligaSyncMatchDTOs.add(ligaSyncMatchDTO);
+        ArrayList<LigaSyncMatchDTO> ligaSyncMatchDTOs = new ArrayList<>();
+        ligaSyncMatchDTOs.add(getLigaSyncMatchDTO());
+        ligaSyncMatchDTOs.add(getLigaSyncMatchDTO());
+        ligaSyncMatchDTOs.add(getLigaSyncMatchDTO());
+        ligaSyncMatchDTOs.add(getLigaSyncMatchDTO());
 
         // Provide 4 different MatchIDs
         Long[] matchIDs = new Long[] {MATCH_ID, 2L, 3L, 4L};
@@ -743,15 +745,15 @@ public class SyncServiceTest {
         ligaSyncMatchDTOs.get(2).setId(matchIDs[2]);
         ligaSyncMatchDTOs.get(3).setId(matchIDs[3]);
 
-        // Change two MatchNr and begenung to check if synchronizeMatchesAndPassen can seperate Matches
+        // Change two MatchNr and begegnung to check if synchronizeMatchesAndPassen can seperate Matches
         ligaSyncMatchDTOs.get(2).setMatchNr(112);
         ligaSyncMatchDTOs.get(3).setMatchNr(112);
 
-        ArrayList<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<LigaSyncPasseDTO>();
-        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
-        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
-        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
-        ligaSyncPasseDTOs.add(ligaSyncPasseDTO);
+        ArrayList<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<>();
+        ligaSyncPasseDTOs.add(getLigaSyncPasseDTO());
+        ligaSyncPasseDTOs.add(getLigaSyncPasseDTO());
+        ligaSyncPasseDTOs.add(getLigaSyncPasseDTO());
+        ligaSyncPasseDTOs.add(getLigaSyncPasseDTO());
 
         // Change MatchID, so that every Match has one Passe
         ligaSyncPasseDTOs.get(1).setMatchId(matchIDs[1]);
@@ -794,6 +796,18 @@ public class SyncServiceTest {
             expectedMatchDTOs.get(i).setPassen(passen);
         }
 
+        when(matchComponent.findById(anyLong())).thenReturn(getMatchDO());
+
+        WettkampfDO w = getWettkampfDO();
+        w.setOfflineToken("OfflineTest");
+        when(wettkampfComponent.findById(anyLong())).thenReturn(w);
+        List<MatchDTO> matchDTOs = new ArrayList<>();
+        matchDTOs.add(getMatchDTO());
+        matchDTOs.add(getMatchDTO());
+        when(matchService.saveMatches(matchDTOs, principal)).thenReturn(matchDTOs);
+
+        //when(wettkampfComponent.deleteOfflineToken();)
+
 
         try {
             List<MatchDTO> actual = underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOs, ligaSyncPasseDTOs, principal);
@@ -812,7 +826,7 @@ public class SyncServiceTest {
         }
     }
 
-    @Test
+     @Test
     public void synchronizeMatchesAndPassen_MatchesNull() {
         LigaSyncPasseDTO ligaSyncPasseDTO = getLigaSyncPasseDTO();
         ArrayList<LigaSyncPasseDTO> ligaSyncPasseDTOS = new ArrayList<>();
@@ -823,7 +837,7 @@ public class SyncServiceTest {
                 .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(null, ligaSyncPasseDTOS, principal));
     }
 
-    @Test
+   @Test
     public void synchronizeMatchesAndPassen_PasseNull() {
         LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
         ArrayList<LigaSyncMatchDTO> ligaSyncMatchDTOS = new ArrayList<>();
@@ -833,7 +847,8 @@ public class SyncServiceTest {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOS, null, principal));
     }
-
+    /*
+*/
     /*
     @Test
     public void updateNoPermission() {
