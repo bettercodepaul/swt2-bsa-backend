@@ -95,7 +95,6 @@ public class SyncServiceTest {
 
     protected static final Long MATCH_ID = 1L;
     protected static final Long MATCH_NR = 1L;
-    protected static final Integer MATCH_NR_INT = 111;
     protected static final Long MATCH_BEGEGNUNG = 1L;
     protected static final Long MATCH_WETTKAMPF_ID = 1L;
     protected static final Long MATCH_MANNSCHAFT_ID = 1L;
@@ -479,7 +478,7 @@ public class SyncServiceTest {
                 MATCH_ID,
                 version,
                 wettkampfId,
-                MATCH_NR_INT,
+                MATCH_NR.intValue(),
                 MATCH_SCHEIBENNUMMER_INT,
                 MATCH_MATCHPUNKTE,
                 MATCH_SATZPUNKTE,
@@ -837,14 +836,14 @@ public class SyncServiceTest {
 
         try {
             List<MatchDTO> actual = underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOs, ligaSyncPasseDTOs, principal);
-
             assertThat(actual).isNotNull().isNotEmpty().hasSize(4);
 
             for (int i = 0; i < expectedMatchDTOs.size(); i++) {
+
                 assertThat(actual.get(i).getPassen()).isNotNull().isNotEmpty().hasSize(1);
-                assertThat(actual.get(i).getId().equals(expectedMatchDTOs.get(i).getId()));
-                assertThat(actual.get(i).getPassen().get(0).getMatchId().equals(expectedMatchDTOs.get(i).getPassen().get(0).getMatchId()));
-                assertThat(actual.get(i).getNr().equals(expectedMatchDTOs.get(i).getNr()));
+                assertThat(actual.get(i).getId()).isEqualTo(expectedMatchDTOs.get(i).getId());
+                assertThat(actual.get(i).getPassen().get(0).getMatchId()).isEqualTo(expectedMatchDTOs.get(i).getPassen().get(0).getMatchId());
+                assertThat(actual.get(i).getNr()).isEqualTo(expectedMatchDTOs.get(i).getNr());
             }
 
         } catch (NoPermissionException e) {
