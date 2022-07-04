@@ -408,17 +408,17 @@ public class SyncService implements ServiceFacade {
             value = "wettkampf/{id}/reset",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public WettkampfDTO goOnlineUnconditionally (
-            @PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
+    public WettkampfExtDTO goOnlineUnconditionally (
+            @RequestBody final WettkampfDTO wettkampfDTO,
             final Principal principal) {
 
-        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        logger.debug("Admin Request to delete Offline Token of Wettkampf with WettkampfID '{}'", wettkampfId);
+        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        logger.debug("Admin Request to delete Offline Token of Wettkampf with WettkampfID '{}'", wettkampfDTO.getId());
 
         final long userId = UserProvider.getCurrentUserId(principal);
         // delete offline token by setting it to null in the passed wettkampf
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
-        return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
+        return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 }
