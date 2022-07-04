@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.test.context.TestExecutionListeners;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -756,5 +757,19 @@ public class WettkampfComponentImplTest {
         assertThatThrownBy(() -> underTest.wettkampfIsOffline(
                 anyLong())).isInstanceOf(BusinessException.class);
     }
+
+    @Test
+    public void deleteOfflineToken() {
+        WettkampfDO input = getWettkampfDO();
+        WettkampfBE expected = getWettkampfBE();
+        expected.setOfflineToken(null);
+
+        when(wettkampfDAO.update(any(),anyLong())).thenReturn(expected);
+
+        WettkampfDO actual = underTest.deleteOfflineToken(input, user_Id);
+
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+        assertThat(actual.getOfflineToken()).isNull();
+;    }
 }
 
