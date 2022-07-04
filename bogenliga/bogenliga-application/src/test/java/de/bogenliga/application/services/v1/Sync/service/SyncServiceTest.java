@@ -878,12 +878,26 @@ public class SyncServiceTest {
     public void updateNoPermission() {
         // prepare test data
         final WettkampfDTO input = getWettkampfDTO();
-        final WettkampfDO expected = getWettkampfDO();
 
         // configure mocks: wettkampf is already offline
         when(wettkampfComponent.wettkampfIsOffline(anyLong())).thenReturn(true);
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(() -> underTest.update(input, principal));
+    }
+
+    @Test
+    public void goOnlineUnconditionally() {
+        WettkampfDTO input = getWettkampfDTO();
+        WettkampfDO expected = getWettkampfDO();
+
+        when(wettkampfComponent.deleteOfflineToken(any(), anyLong())).thenReturn(expected);
+
+        WettkampfExtDTO actual = underTest.goOnlineUnconditionally(input, principal);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(input.getId());
+        assertThat(actual.getOfflineToken()).isNull();
+
     }
 
 }
