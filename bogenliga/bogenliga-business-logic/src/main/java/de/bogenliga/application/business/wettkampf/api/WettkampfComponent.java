@@ -126,7 +126,7 @@ public interface WettkampfComponent extends ComponentFacade {
      * @param wettkampfDO, userId
      * @return offlinetoken
      */
-    void deleteOfflineToken(WettkampfDO wettkampfDO, long userId);
+    WettkampfDO deleteOfflineToken(WettkampfDO wettkampfDO, long userId);
 
     /**
      * Checks if a wettkampf is offline
