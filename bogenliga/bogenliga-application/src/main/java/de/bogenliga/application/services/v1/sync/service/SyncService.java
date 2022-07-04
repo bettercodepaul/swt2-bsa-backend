@@ -408,7 +408,7 @@ public class SyncService implements ServiceFacade {
             value = "wettkampf/{id}/reset",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-    public ResponseEntity goOnlineUnconditionally (
+    public WettkampfDTO goOnlineUnconditionally (
             @PathVariable("id") final long wettkampfId, @RequestBody final WettkampfDTO wettkampfDTO,
             final Principal principal) {
 
@@ -418,8 +418,7 @@ public class SyncService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
         // delete offline token by setting it to null in the passed wettkampf
         final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
-        wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
-
-        return new ResponseEntity(HttpStatus.OK);
+        final WettkampfDO updatedWettkampfDO = wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
+        return WettkampfDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 }
