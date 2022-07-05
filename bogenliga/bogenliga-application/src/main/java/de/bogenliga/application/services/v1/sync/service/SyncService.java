@@ -245,24 +245,24 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
-    public WettkampfExtDTO update(@RequestBody final WettkampfDTO wettkampfDTO,
-                                  final Principal principal) throws NoPermissionException {
-        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfDTO.getId());
+    public WettkampfExtDTO update(
+            @PathVariable("id") final long wettkampfId,
+            final Principal principal) throws NoPermissionException {
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfId);
         // Check if it is the ligaleiter of the wettkampfs liga (not sure if possible); generic check done in permissions
 
         // prevent going offline for a wettkampf that is already offline
         // as getCurrentUserId does not work, it does so categorically: any wettkampf that is offline, can not be accessed.
         // once it works, we could allow the same user that went offline before to send a second token to cover
         // the edge case of and offline token being created and saved but not received by the frontend
-        if(wettkampfComponent.wettkampfIsOffline(wettkampfDTO.getId())){
+        if(wettkampfComponent.wettkampfIsOffline(wettkampfId)){
             throw new NoPermissionException();
         }
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
-
-        final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
         wettkampfDO.setOfflineToken(offlineToken);
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
 
@@ -409,15 +409,15 @@ public class SyncService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public WettkampfExtDTO goOnlineUnconditionally (
-            @RequestBody final WettkampfDTO wettkampfDTO,
+            @PathVariable("id") final long wettkampfId,
             final Principal principal) {
 
-        Preconditions.checkArgument(wettkampfDTO.getId() >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        logger.debug("Admin Request to delete Offline Token of Wettkampf with WettkampfID '{}'", wettkampfDTO.getId());
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        logger.debug("Admin Request to delete Offline Token of Wettkampf with WettkampfID '{}'", wettkampfId);
 
         final long userId = UserProvider.getCurrentUserId(principal);
         // delete offline token by setting it to null in the passed wettkampf
-        final WettkampfDO wettkampfDO = WettkampfDTOMapper.toDO.apply(wettkampfDTO);
+        final WettkampfDO wettkampfDO =wettkampfComponent.findById(wettkampfId);
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
         return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
