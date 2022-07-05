@@ -75,7 +75,6 @@ public class SyncService implements ServiceFacade {
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final WettkampfComponent wettkampfComponent;
-    private final RequiresOnePermissionAspect requiresOnePermissionAspect;
     private final MannschaftsMitgliedService mannschaftsMitgliedService;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final MatchService matchService;
@@ -100,7 +99,6 @@ public class SyncService implements ServiceFacade {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.wettkampfComponent = wettkampfComponent;
-        this.requiresOnePermissionAspect = requiresOnePermissionAspect;
         this.matchService = matchService;
         this.mannschaftsMitgliedService = mannschaftsMitgliedService;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
@@ -393,12 +391,15 @@ public class SyncService implements ServiceFacade {
         return matchDTOs;
     }
 
-    /*
-    I delete the offline token of a wettkampf unconditionally
-    Necessary to reset a wettkampf that has been taken offline and for some reason can not be taken back online
-    any data saved offline will be lost
-    Only an admin can call this function
-     */
+    /**
+    * I delete the offline token of a wettkampf unconditionally
+    * Necessary to reset a wettkampf that has been taken offline and for some reason can not be taken back online
+    * any data saved offline will be lost
+    * Only an admin can call this function
+    * it will return wettkampf without token as confirmation
+    * @author Jonas Sigloch, SWT SoSe 2022
+    * @return WettkampfExtDTO as JSON
+    */
     @GetMapping(
             value = "wettkampf/{id}/reset",
             produces = MediaType.APPLICATION_JSON_VALUE)
