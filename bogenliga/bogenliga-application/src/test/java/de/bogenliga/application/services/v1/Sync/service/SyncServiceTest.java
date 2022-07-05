@@ -30,7 +30,6 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
@@ -38,7 +37,6 @@ import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
-import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import de.bogenliga.application.services.v1.sync.service.SyncService;
@@ -727,7 +725,7 @@ public class SyncServiceTest {
 
         try {
             // call test method
-            final WettkampfExtDTO actual = underTest.update(id, principal);
+            final WettkampfExtDTO actual = underTest.getToken(id, principal);
 
             // assert result
             assertThat(actual).isNotNull();
@@ -883,7 +881,7 @@ public class SyncServiceTest {
         // configure mocks: wettkampf is already offline
         when(wettkampfComponent.wettkampfIsOffline(anyLong())).thenReturn(true);
         assertThatExceptionOfType(NoPermissionException.class)
-                .isThrownBy(() -> underTest.update(anyLong(), principal));
+                .isThrownBy(() -> underTest.getToken(anyLong(), principal));
     }
 
     @Test
