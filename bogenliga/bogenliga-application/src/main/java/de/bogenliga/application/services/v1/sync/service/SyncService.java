@@ -11,7 +11,6 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
-import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -30,8 +29,6 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgli
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
-import de.bogenliga.application.services.v1.wettkampf.mapper.WettkampfDTOMapper;
-import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -39,7 +36,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
-import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -240,12 +235,12 @@ public class SyncService implements ServiceFacade {
      * @return WettkampfExtDTO as JSON
      * @author Jonas Sigloch, SWT SoSe 2022
      */
-    @PutMapping(
+    @GetMapping(
             value = "wettkampf/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
-    public WettkampfExtDTO update(
+    public WettkampfExtDTO getToken(
             @PathVariable("id") final long wettkampfId,
             final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
@@ -404,7 +399,7 @@ public class SyncService implements ServiceFacade {
     any data saved offline will be lost
     Only an admin can call this function
      */
-    @PutMapping(
+    @GetMapping(
             value = "wettkampf/{id}/reset",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
