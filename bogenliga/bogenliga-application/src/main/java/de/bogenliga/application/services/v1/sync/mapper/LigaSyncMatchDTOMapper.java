@@ -6,7 +6,6 @@ import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
-import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import java.util.List;
 import java.util.function.Function;
 

@@ -785,8 +785,7 @@ public class WettkampfComponentImpl implements WettkampfComponent {
      */
     public WettkampfDO deleteOfflineToken(WettkampfDO wettkampfDO, long userId) {
         wettkampfDO.setOfflineToken(null);
-        final WettkampfDO updatedWettkampf = update(wettkampfDO, userId);
-        return updatedWettkampf;
+        return update(wettkampfDO, userId);
     }
     /**
      * helper function
