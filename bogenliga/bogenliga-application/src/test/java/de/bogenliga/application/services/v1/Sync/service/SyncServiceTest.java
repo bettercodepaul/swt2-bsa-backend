@@ -715,17 +715,19 @@ public class SyncServiceTest {
     public void update() {
         // prepare test data
         WettkampfDTO input = getWettkampfDTO();
+        long id = input.getId();
+        final WettkampfDO getDO = getWettkampfDO();
         final WettkampfExtDTO result = getWettkampfExtDTO();
         final WettkampfDO expected = getWettkampfDOWithToken();
 
         // configure mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
-        //when(wettkampfComponent.findById(anyLong())).thenReturn(expected);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(getDO);
         when(wettkampfComponent.update(any(), anyLong())).thenReturn(expected);
 
         try {
             // call test method
-            final WettkampfExtDTO actual = underTest.update(input, principal);
+            final WettkampfExtDTO actual = underTest.update(id, principal);
 
             // assert result
             assertThat(actual).isNotNull();
@@ -745,11 +747,13 @@ public class SyncServiceTest {
         }
     }
 
+    /*
     @Test
     public void update_Null() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> underTest.update(null, principal));
     }
+     */
 
 
     @Test
@@ -876,23 +880,21 @@ public class SyncServiceTest {
 
     @Test
     public void updateNoPermission() {
-        // prepare test data
-        final WettkampfDTO input = getWettkampfDTO();
-
         // configure mocks: wettkampf is already offline
         when(wettkampfComponent.wettkampfIsOffline(anyLong())).thenReturn(true);
         assertThatExceptionOfType(NoPermissionException.class)
-                .isThrownBy(() -> underTest.update(input, principal));
+                .isThrownBy(() -> underTest.update(anyLong(), principal));
     }
 
     @Test
     public void goOnlineUnconditionally() {
         WettkampfDTO input = getWettkampfDTO();
+        long id = input.getId();
         WettkampfDO expected = getWettkampfDO();
 
         when(wettkampfComponent.deleteOfflineToken(any(), anyLong())).thenReturn(expected);
 
-        WettkampfExtDTO actual = underTest.goOnlineUnconditionally(input, principal);
+        WettkampfExtDTO actual = underTest.goOnlineUnconditionally(id, principal);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(input.getId());
