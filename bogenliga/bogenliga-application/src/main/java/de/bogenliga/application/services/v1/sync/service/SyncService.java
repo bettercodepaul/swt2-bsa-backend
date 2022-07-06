@@ -235,7 +235,6 @@ public class SyncService implements ServiceFacade {
      */
     @GetMapping(
             value = "wettkampf/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
     public WettkampfExtDTO getToken(
@@ -284,7 +283,7 @@ public class SyncService implements ServiceFacade {
     public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
                                                                  @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
                                                                  final Principal principal,
-                                                                 final String offlineToken) throws NoPermissionException { //@RequestBody
+                                                                 @RequestBody final String offlineToken) throws NoPermissionException { //@RequestBody
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
