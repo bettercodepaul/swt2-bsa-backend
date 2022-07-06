@@ -11,6 +11,8 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -64,6 +66,7 @@ public class SyncService implements ServiceFacade {
     private static final String SERVICE_SYNCHRONIZE_MATCHES_AND_PASSEN = "synchronizeMatchesAndPassen";
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
+    private static final String ERR_WETTKAMPF_ALREADY_OFFLINE = "Cannot got offline. Wettkampf is already offline";
 
 
     private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
@@ -249,7 +252,7 @@ public class SyncService implements ServiceFacade {
         // once it works, we could allow the same user that went offline before to send a second token to cover
         // the edge case of and offline token being created and saved but not received by the frontend
         if(wettkampfComponent.wettkampfIsOffline(wettkampfId)){
-            throw new NoPermissionException("Wettkampf is already offline");
+            throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERR_WETTKAMPF_ALREADY_OFFLINE);
         }
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
