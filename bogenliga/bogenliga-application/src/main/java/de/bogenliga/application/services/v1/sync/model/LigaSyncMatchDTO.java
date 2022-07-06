@@ -288,6 +288,7 @@ public class LigaSyncMatchDTO implements DataTransferObject {
                 getStrafpunkteSatz5());
     }
 
+
     @Override
     public String toString() {
         return "LigaSyncMatchDTO{" +
