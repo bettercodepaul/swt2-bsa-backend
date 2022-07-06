@@ -21,6 +21,7 @@ import de.bogenliga.application.services.v1.mannschaftsmitglied.model.Mannschaft
 import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
+import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
@@ -365,6 +366,9 @@ public class SyncService implements ServiceFacade {
                     .filter(passeDTO -> passeDTO.getMatchId().equals(ligasyncmatchDTO.getId()))
                     .collect(Collectors.toList()));
             logger.debug("match und passe id : {} {}", matchDTO.getId(), matchDTO.getPassen().get(0).getMatchId() );
+            for (PasseDTO passeDTO : matchDTO.getPassen()) {
+                passeDTO.setMatchNr(matchDTO.getNr());
+            }
             matchDTOs.add(matchDTO);
         }
         logger.debug("match list in snycmatches {}", matchDTOs);
