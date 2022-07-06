@@ -724,13 +724,13 @@ public class SyncServiceTest {
 
         try {
             // call test method
-            final WettkampfExtDTO actual = underTest.getToken(id, principal);
+            final List<WettkampfExtDTO> actual = underTest.getToken(id, principal);
 
             // assert result
             assertThat(actual).isNotNull();
-            assertThat(actual.getId()).isEqualTo(input.getId());
-            assertThat(actual.getOfflineToken()).isNotNull();
-            assertThat(actual.getOfflineToken()).isEqualTo(result.getOfflineToken());
+            assertThat(actual.get(0).getId()).isEqualTo(input.getId());
+            assertThat(actual.get(0).getOfflineToken()).isNotNull();
+            assertThat(actual.get(0).getOfflineToken()).isEqualTo(result.getOfflineToken());
 
             // verify invocations
             verify(wettkampfComponent).update(wettkampfDOArgumentCaptor.capture(), anyLong());
