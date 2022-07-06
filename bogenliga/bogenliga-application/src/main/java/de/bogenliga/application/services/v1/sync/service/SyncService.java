@@ -240,7 +240,7 @@ public class SyncService implements ServiceFacade {
             value = "wettkampf/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
-    public WettkampfExtDTO getToken(
+    public List<WettkampfExtDTO> getToken(
             @PathVariable("id") final long wettkampfId,
             final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
@@ -260,8 +260,9 @@ public class SyncService implements ServiceFacade {
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
         wettkampfDO.setOfflineToken(offlineToken);
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
-
-        return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
+        List<WettkampfExtDTO> payload = new ArrayList<>();
+        payload.add(WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO));
+        return payload;
     }
 
 
