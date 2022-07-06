@@ -110,9 +110,9 @@ public class WettkampfDAO implements DataAccessObject {
 
     private static final String CHECK_OFFLINE_TOKEN_BY_WETTKAMPF_ID =
             SELECT +
-                    "FROM wettkampf" +
-                    "WHERE wettkampf_id = ?" +
-                    "AND offlinetoken = ?";
+                    " FROM wettkampf" +
+                    " WHERE wettkampf_id = ?" +
+                    " AND offlinetoken = ?";
 
 
     private final BasicDAO basicDao;
