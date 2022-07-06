@@ -247,31 +247,6 @@ public class LigaSyncMatchDTO implements DataTransferObject {
         this.strafpunkteSatz5 = strafpunkteSatz5;
     }
 
-    @Override
-    public String toString() {
-        return "LigaSyncMatchDTO{" +
-                "id=" + id +
-                ", version=" + version +
-                ", wettkampfId=" + wettkampfId +
-                ", matchNr=" + matchNr +
-                ", matchScheibennummer=" + matchScheibennummer +
-                ", matchpunkte=" + matchpunkte +
-                ", satzpunkte=" + satzpunkte +
-                ", mannschaftId=" + mannschaftId +
-                ", mannschaftName='" + mannschaftName + '\'' +
-                ", nameGegner='" + nameGegner + '\'' +
-                ", scheibennummerGegner=" + scheibennummerGegner +
-                ", matchIdGegner=" + matchIdGegner +
-                ", naechsteMatchId=" + naechsteMatchId +
-                ", naechsteNaechsteMatchNrMatchId=" + naechsteNaechsteMatchNrMatchId +
-                ", strafpunkteSatz1=" + strafpunkteSatz1 +
-                ", strafpunkteSatz2=" + strafpunkteSatz2 +
-                ", strafpunkteSatz3=" + strafpunkteSatz3 +
-                ", strafpunkteSatz4=" + strafpunkteSatz4 +
-                ", strafpunkteSatz5=" + strafpunkteSatz5 +
-                '}';
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -311,5 +286,30 @@ public class LigaSyncMatchDTO implements DataTransferObject {
                 getNaechsteNaechsteMatchNrMatchId(),
                 getStrafpunkteSatz1(), getStrafpunkteSatz2(), getStrafpunkteSatz3(), getStrafpunkteSatz4(),
                 getStrafpunkteSatz5());
+    }
+
+    @Override
+    public String toString() {
+        return "LigaSyncMatchDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", wettkampfId=" + wettkampfId +
+                ", matchNr=" + matchNr +
+                ", matchScheibennummer=" + matchScheibennummer +
+                ", matchpunkte=" + matchpunkte +
+                ", satzpunkte=" + satzpunkte +
+                ", mannschaftId=" + mannschaftId +
+                ", mannschaftName='" + mannschaftName + '\'' +
+                ", nameGegner='" + nameGegner + '\'' +
+                ", scheibennummerGegner=" + scheibennummerGegner +
+                ", matchIdGegner=" + matchIdGegner +
+                ", naechsteMatchId=" + naechsteMatchId +
+                ", naechsteNaechsteMatchNrMatchId=" + naechsteNaechsteMatchNrMatchId +
+                ", strafpunkteSatz1=" + strafpunkteSatz1 +
+                ", strafpunkteSatz2=" + strafpunkteSatz2 +
+                ", strafpunkteSatz3=" + strafpunkteSatz3 +
+                ", strafpunkteSatz4=" + strafpunkteSatz4 +
+                ", strafpunkteSatz5=" + strafpunkteSatz5 +
+                '}';
     }
 }
