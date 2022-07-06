@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
+import javax.print.attribute.standard.Media;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -423,6 +424,7 @@ public class SyncService implements ServiceFacade {
 
     @PostMapping(
             value = "wettkampf/{id}/sync",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
     public void handleSync(@RequestBody SyncWrapper syncPayload, Principal principal) {
