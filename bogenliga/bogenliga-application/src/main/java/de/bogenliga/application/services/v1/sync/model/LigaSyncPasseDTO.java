@@ -8,6 +8,8 @@ package de.bogenliga.application.services.v1.sync.model;
 // die IDs werden bei Snyc zum Backend dann initial vergeben.
 
 
+import java.util.Arrays;
+import java.util.Objects;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class LigaSyncPasseDTO implements DataTransferObject {
@@ -20,7 +22,6 @@ public class LigaSyncPasseDTO implements DataTransferObject {
     private Long wettkampfId;
     private Long lfdNr;
     private Long dsbMitgliedId;
-    private String dsbMitgliedName;
     private Integer[] ringzahl;
     private Integer rueckennummer;
 
@@ -41,10 +42,10 @@ public class LigaSyncPasseDTO implements DataTransferObject {
         this.ringzahl = ringzahl;
     }
 
-    //Original Constructor
+    // Konstruktor mit allen Attributen
     public LigaSyncPasseDTO(Long id, Long version, Long matchId, Long mannschaftId,
                             Long wettkampfId, Long lfdNr, Long dsbMitgliedId,
-                            String dsbMitgliedName, Integer rueckennummer,
+                            Integer rueckennummer,
                             Integer[] ringzahl) {
         this.id = id;
         this.version = version;
@@ -53,17 +54,10 @@ public class LigaSyncPasseDTO implements DataTransferObject {
         this.wettkampfId = wettkampfId;
         this.lfdNr = lfdNr;
         this.dsbMitgliedId = dsbMitgliedId;
-        this.dsbMitgliedName = dsbMitgliedName;
         this.rueckennummer = rueckennummer;
         this.ringzahl = ringzahl;
     }
 
-    public String getDsbMitgliedName() {
-        return dsbMitgliedName;
-    }
-    public void setDsbMitgliedName(String dsbMitgliedName) {
-        this.dsbMitgliedName = dsbMitgliedName;
-    }
     public Integer getRueckennummer() {
         return rueckennummer;
     }
@@ -117,6 +111,49 @@ public class LigaSyncPasseDTO implements DataTransferObject {
     }
     public void setRingzahl(Integer[] ringzahl) {
         this.ringzahl = ringzahl;
+    }
+
+
+    @Override
+    public String toString() {
+        return "LigaSyncPasseDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", matchId=" + matchId +
+                ", mannschaftId=" + mannschaftId +
+                ", wettkampfId=" + wettkampfId +
+                ", lfdNr=" + lfdNr +
+                ", dsbMitgliedId=" + dsbMitgliedId +
+                ", ringzahl=" + Arrays.toString(ringzahl) +
+                ", rueckennummer=" + rueckennummer +
+                '}';
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LigaSyncPasseDTO)) {
+            return false;
+        }
+        LigaSyncPasseDTO that = (LigaSyncPasseDTO) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getVersion(),
+                that.getVersion()) && Objects.equals(getMatchId(), that.getMatchId()) && Objects.equals(
+                getMannschaftId(), that.getMannschaftId()) && Objects.equals(getWettkampfId(),
+                that.getWettkampfId()) && Objects.equals(getLfdNr(), that.getLfdNr()) && Objects.equals(
+                getDsbMitgliedId(), that.getDsbMitgliedId()) && Arrays.equals(getRingzahl(),
+                that.getRingzahl()) && Objects.equals(getRueckennummer(), that.getRueckennummer());
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getId(), getVersion(), getMatchId(), getMannschaftId(), getWettkampfId(), getLfdNr(),
+                getDsbMitgliedId(), getRueckennummer());
+        result = 31 * result + Arrays.hashCode(getRingzahl());
+        return result;
     }
 }
 

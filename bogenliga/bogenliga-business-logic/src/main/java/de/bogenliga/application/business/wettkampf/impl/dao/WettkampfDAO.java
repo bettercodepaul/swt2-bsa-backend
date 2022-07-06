@@ -42,6 +42,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinId";
     private static final String WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampfTypId";
     private static final String WETTKAMPF_BE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
+    private static final String WETTKAMPF_BE_OFFLINETOKEN = "offlineToken";
 
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
     private static final String WETTKAMPF_TABLE_VERANSTALTUNGS_ID= "wettkampf_veranstaltung_id";
@@ -55,6 +56,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampf_wettkampftyp_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
+    private static final String WETTKAMPF_TABLE_OFFLINETOKEN = "offlinetoken";
 
     //default Values for Wettkampftag 0
     private static final Date DEFAULT_DATUM = Date.valueOf("1900-01-01");
@@ -106,6 +108,12 @@ public class WettkampfDAO implements DataAccessObject {
                     " FROM wettkampf" +
                     " WHERE "+ WETTKAMPF_TABLE_WETTKAMPF_TAG + " = 0 AND wettkampf_veranstaltung_id = ?";
 
+    private static final String CHECK_OFFLINE_TOKEN_BY_WETTKAMPF_ID =
+            SELECT +
+                    " FROM wettkampf" +
+                    " WHERE wettkampf_id = ?" +
+                    " AND offlinetoken = ?";
+
 
     private final BasicDAO basicDao;
 
@@ -138,6 +146,7 @@ public class WettkampfDAO implements DataAccessObject {
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_TAG, WETTKAMPF_BE_WETTKAMPF_TAG);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID, WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID);
         columnsToFieldsMap.put(WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER, WETTKAMPF_BE_WETTKAMPF_AUSRICHTER);
+        columnsToFieldsMap.put(WETTKAMPF_TABLE_OFFLINETOKEN, WETTKAMPF_BE_OFFLINETOKEN);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
@@ -170,6 +179,10 @@ public class WettkampfDAO implements DataAccessObject {
 
     public List<WettkampfBE> findAllByVeranstaltungId(final long id) {
         return basicDao.selectEntityList(WETTKAMPF, FIND_ALL_BY_VERANSTALTUNG_ID, id);
+    }
+
+    public WettkampfBE checkOfflineToken(final long wettkampfId, final String offlineToken){
+        return basicDao.selectSingleEntity(WETTKAMPF, CHECK_OFFLINE_TOKEN_BY_WETTKAMPF_ID, wettkampfId, offlineToken);
     }
 
     /**
