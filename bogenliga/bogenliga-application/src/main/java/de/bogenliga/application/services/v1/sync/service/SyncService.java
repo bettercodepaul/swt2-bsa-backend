@@ -302,11 +302,11 @@ public class SyncService implements ServiceFacade {
 
         final long currentUserId = UserProvider.getCurrentUserId(principal); //always 0
         List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
-        logger.debug("list: {}", mannschaftsMitgliedDTOList);
+
         for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
 
             MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
-            logger.debug("creating mitgleid in db: {}", newMannschaftsMitgliedDTO);
+
             MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
 
 
@@ -374,7 +374,7 @@ public class SyncService implements ServiceFacade {
             }
             matchDTOs.add(matchDTO);
         }
-        logger.debug("match list in snycmatches {}", matchDTOs);
+
         // Go through received matches (matchDTOs) and search for two matches with same wettkampfID, Nr, Begegnung
         // Two Matches from the same Schusszettel
         // Call MatchService
@@ -382,7 +382,7 @@ public class SyncService implements ServiceFacade {
 
             List<MatchDTO> twoMatchesDTO = new ArrayList<>();
             twoMatchesDTO.add(matchDTOs.get(i));
-            logger.debug("twomatchdtos sync: {}", twoMatchesDTO);
+
             for (int j = i + 1; j < matchDTOs.size(); j++) {
 
                 if (twoMatchesDTO.get(0).getWettkampfId().equals(matchDTOs.get(j).getWettkampfId()) &&
@@ -390,10 +390,7 @@ public class SyncService implements ServiceFacade {
                         twoMatchesDTO.get(0).getBegegnung().equals(matchDTOs.get(j).getBegegnung())) {
 
                     twoMatchesDTO.add(matchDTOs.get(j));
-                    logger.debug("second match found: match 1 {} match 2 {} ", twoMatchesDTO.get(0).getId(), twoMatchesDTO.get(1).getId());
-                    logger.debug("second match found: matchnr 1 {} matchnr 2 {} ", twoMatchesDTO.get(0).getPassen().get(0).getMatchNr(), twoMatchesDTO.get(1).getPassen().get(0).getMatchNr());
                     matchService.saveMatches(twoMatchesDTO, principal);
-                    logger.debug("save matches");
                 }
             }
         }
