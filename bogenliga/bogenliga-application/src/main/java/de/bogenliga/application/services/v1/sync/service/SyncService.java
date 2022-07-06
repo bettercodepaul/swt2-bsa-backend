@@ -368,10 +368,6 @@ public class SyncService implements ServiceFacade {
             for (PasseDTO passeDTO : matchDTO.getPassen()) {
                 passeDTO.setMatchNr(matchDTO.getNr());
             }
-            logger.debug("match und passe id : {} {}", matchDTO.getId(), matchDTO.getPassen().get(0).getMatchId() );
-            for (PasseDTO passeDTO : matchDTO.getPassen()) {
-                passeDTO.setMatchNr(matchDTO.getNr());
-            }
             matchDTOs.add(matchDTO);
         }
 
