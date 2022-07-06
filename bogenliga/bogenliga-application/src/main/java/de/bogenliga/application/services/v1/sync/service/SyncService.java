@@ -302,11 +302,11 @@ public class SyncService implements ServiceFacade {
 
         final long currentUserId = UserProvider.getCurrentUserId(principal); //always 0
         List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
-
+        logger.debug("list: {}", mannschaftsMitgliedDTOList);
         for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
 
             MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
-
+            logger.debug("creating mitgleid in db: {}", newMannschaftsMitgliedDTO);
             MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
 
 
@@ -435,8 +435,15 @@ public class SyncService implements ServiceFacade {
         final long wettkampfId = syncPayload.getWettkampfId();
         final String offlineToken = syncPayload.getOfflineToken();
         // check token -> done in mannschaftsmitglied sync
+        logger.debug("token: {}", syncPayload.getOfflineToken());
+        logger.debug("id: {}", syncPayload.getWettkampfId());
+        logger.debug("match: {}", syncPayload.getMatch());
+        logger.debug("passe: {}", syncPayload.getPasse());
+        logger.debug("tomitglieder: {}",syncPayload.getMannschaftsmitglied());
 
 
+
+        logger.debug("saving mitgleider");
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
         try {
@@ -444,6 +451,7 @@ public class SyncService implements ServiceFacade {
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
         }
+        logger.debug("start match handling");
         // handle matches
         final List<LigaSyncMatchDTO> matchDTOS = syncPayload.getMatch();
         final List<LigaSyncPasseDTO> passeDTOS = syncPayload.getPasse();
@@ -452,6 +460,7 @@ public class SyncService implements ServiceFacade {
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
         }
+        logger.debug("done syncing");
         // delete token -> done in match sync
 
     }
