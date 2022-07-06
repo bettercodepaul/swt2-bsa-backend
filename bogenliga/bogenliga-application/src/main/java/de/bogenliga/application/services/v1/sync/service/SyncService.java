@@ -364,10 +364,10 @@ public class SyncService implements ServiceFacade {
             matchDTO.setPassen(ligaSyncPasseDTOs.stream().map(LigaSyncPasseDTOMapper.toPasseDTO)
                     .filter(passeDTO -> passeDTO.getMatchId().equals(ligasyncmatchDTO.getId()))
                     .collect(Collectors.toList()));
-
+            logger.debug("match und passe id : {} {}", matchDTO.getId(), matchDTO.getPassen().get(0).getMatchId() );
             matchDTOs.add(matchDTO);
         }
-
+        logger.debug("match list in snycmatches {}", matchDTOs);
         // Go through received matches (matchDTOs) and search for two matches with same wettkampfID, Nr, Begegnung
         // Two Matches from the same Schusszettel
         // Call MatchService
@@ -375,7 +375,7 @@ public class SyncService implements ServiceFacade {
 
             List<MatchDTO> twoMatchesDTO = new ArrayList<>();
             twoMatchesDTO.add(matchDTOs.get(i));
-
+            logger.debug("twomatchdtos sync: {}", twoMatchesDTO);
             for (int j = i + 1; j < matchDTOs.size(); j++) {
 
                 if (twoMatchesDTO.get(0).getWettkampfId().equals(matchDTOs.get(j).getWettkampfId()) &&
@@ -383,7 +383,10 @@ public class SyncService implements ServiceFacade {
                         twoMatchesDTO.get(0).getBegegnung().equals(matchDTOs.get(j).getBegegnung())) {
 
                     twoMatchesDTO.add(matchDTOs.get(j));
+                    logger.debug("second match found: match 1 {} match 2 {} ", twoMatchesDTO.get(0).getId(), twoMatchesDTO.get(1).getId());
+                    logger.debug("second match found: matchnr 1 {} matchnr 2 {} ", twoMatchesDTO.get(0).getPassen().get(0).getMatchNr(), twoMatchesDTO.get(1).getPassen().get(0).getMatchNr());
                     matchService.saveMatches(twoMatchesDTO, principal);
+                    logger.debug("save matches");
                 }
             }
         }
@@ -439,7 +442,7 @@ public class SyncService implements ServiceFacade {
 
 
 
-        logger.debug("saving mitgleider");
+        logger.debug("saving mitgleider------------------------------------------------------------------------------------------------------------");
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
         try {
@@ -447,7 +450,7 @@ public class SyncService implements ServiceFacade {
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
         }
-        logger.debug("start match handling");
+        logger.debug("start match handling -------------------------------------------------------------------------------------------------");
         // handle matches
         final List<LigaSyncMatchDTO> matchDTOS = syncPayload.getMatch();
         final List<LigaSyncPasseDTO> passeDTOS = syncPayload.getPasse();
@@ -456,7 +459,7 @@ public class SyncService implements ServiceFacade {
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
         }
-        logger.debug("done syncing");
+        logger.debug("done syncing--------------------------------------------------------------------------------------------------------------------");
         // delete token -> done in match sync
 
     }
