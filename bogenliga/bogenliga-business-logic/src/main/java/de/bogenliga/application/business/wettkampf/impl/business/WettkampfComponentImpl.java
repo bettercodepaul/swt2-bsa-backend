@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +68,8 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private static final String PRECONDITION_MSG_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_WETTKAMPFTYP_ID = "wettkampfTypID must not be null and must not be negative";
     private static final String PRECONDITION_MSG_WETTKAMPF_USER_ID = "CurrentUserID must not be null and must not be negative";
+    private static final String PRECONDITION_MSG_OFFLINE_TOKEN = "Offlinetoken must not be null";
+    private static final String ERR_OFFLINE_TOKEN_CONFLICT = "Can't save the given data, due to the invalidity of the current offline session.";
 
     private final WettkampfDAO wettkampfDAO;
     private final VeranstaltungDAO veranstaltungDAO;
@@ -213,6 +216,17 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         final WettkampfBE wettkampfBE = WettkampfMapper.toWettkampfBE.apply(wettkampfDO);
 
         wettkampfDAO.delete(wettkampfBE, currentUserID);
+    }
+
+
+    @Override
+    public void checkOfflineToken(long wettkampfId, String offlineToken) {
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
+
+        if(wettkampfDAO.checkOfflineToken(wettkampfId, offlineToken) == null){
+            throw new BusinessException( ErrorCode.INVALID_OFFLINE_TOKEN, ERR_OFFLINE_TOKEN_CONFLICT);
+        }
     }
 
 
@@ -454,7 +468,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         }
         return bResult;
     }
-
     //Generiert Tabelle für Einzelstatistik
     public void generateEinzel(Document doc, List<WettkampfBE> wettkampflisteBEList, long mannschaftsid)
     {
@@ -755,4 +768,32 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         return average;
     }
 
+    /**
+     * generates an offline token for the passed user id to mark a wettkampf as offline
+     * token consists of user id plus current date and time as java.time.Instant
+     * @author Jonas Sigloch, SWT SoSe 2022
+     */
+    public String generateOfflineToken(long userId) {
+        return String.valueOf(userId) + Instant.now().toString();
+    }
+
+    /**
+     * Delete Offline Token from Wettkampf
+     * Set Offline Token to null
+     * @param wettkampfDO, userId
+     * @return offlinetoken
+     */
+    public WettkampfDO deleteOfflineToken(WettkampfDO wettkampfDO, long userId) {
+        wettkampfDO.setOfflineToken(null);
+        return update(wettkampfDO, userId);
+    }
+    /**
+     * helper function
+     * checks if the wettkampf with the passed id is offline
+     * returns true if it is else false
+     */
+    public boolean wettkampfIsOffline(long wettkampfId) {
+        final WettkampfDO wettkampfDO = findById(wettkampfId);
+        return wettkampfDO.getOfflineToken() != null;
+    }
 }

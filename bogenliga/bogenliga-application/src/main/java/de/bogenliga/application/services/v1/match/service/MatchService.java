@@ -300,11 +300,11 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) throws NoPermissionException {
-        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        // darf der User die Funktion aufrufen, da er das allgemein Recht hat?
         final Long userId = UserProvider.getCurrentUserId(principal);
         Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
-        //wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
-        // wir für die rechte "_MY_..." die Datenprüfen müssen, d.h. die UserID mit
+        // wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
+        // wir für die rechte "_MY_..." die Daten prüfen müssen, d.h. die UserID mit
         // LigaleiterID bzw. AusrichterID vergleichen müssen
 
         //dazu bestimmen wir den Wettkampf-Datensatz
@@ -352,7 +352,7 @@ public class MatchService implements ServiceFacade {
 
     /**
      * Save a single match, also creates/updates related passe objects.
-     * @param matchDTO das einzelne Match, dass zu speichen ist
+     * @param matchDTO das einzelne Match, das zu speichern ist
      * @param userId des ändernden Users
      */
     private void saveMatch(MatchDTO matchDTO, Long userId) {
@@ -376,7 +376,6 @@ public class MatchService implements ServiceFacade {
         for (PasseDTO passeDTO : matchDTO.getPassen()) {
             createOrUpdatePasse(passeDTO, userId, mannschaftsmitgliedDOS);
         }
-
     }
 
 
@@ -392,7 +391,6 @@ public class MatchService implements ServiceFacade {
 
         checkPreconditions(passeDTO, passeConditionErrors);
 
-
         passeDTO.setDsbMitgliedId(getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
 
         Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
@@ -402,9 +400,10 @@ public class MatchService implements ServiceFacade {
 
 
         if (passeExists(passeDO)) {
+            LOG.debug("updating passe: {}", passeDO.getId());
             passeComponent.update(passeDO, userId);
         } else {
-            LOG.debug("Trying to create passe");
+            LOG.debug("Trying to create passe {}", passeDO.getId());
             // erst prüfen ob alle relevanten Parameter befüllt sind pk-passe!!
             if(passeDO.getPasseDsbMitgliedId()!=null &&
                     passeDO.getPasseMannschaftId()!= null &&
@@ -422,7 +421,6 @@ public class MatchService implements ServiceFacade {
                 passeComponent.create(passeDO, userId);
             }
         }
-
     }
 
 
@@ -846,6 +844,7 @@ public class MatchService implements ServiceFacade {
         if (passeDO.getId() != null) { // Is passeDO id already null
             // If no, check if it actually exists in DB
             PasseDO queriedPasseDO = passeComponent.findById(passeDO.getId());
+            LOG.debug("got passe ------------------------------------------------------------------- ");
             exists = queriedPasseDO != null;
         }
         return exists;

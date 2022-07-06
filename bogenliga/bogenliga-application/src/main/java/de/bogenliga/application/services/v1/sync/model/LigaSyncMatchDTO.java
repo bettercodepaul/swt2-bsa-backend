@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.sync.model;
 
+import java.util.Objects;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class LigaSyncMatchDTO implements DataTransferObject {
@@ -244,5 +245,72 @@ public class LigaSyncMatchDTO implements DataTransferObject {
 
     public void setStrafpunkteSatz5(Integer strafpunkteSatz5) {
         this.strafpunkteSatz5 = strafpunkteSatz5;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LigaSyncMatchDTO)) {
+            return false;
+        }
+        LigaSyncMatchDTO that = (LigaSyncMatchDTO) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getVersion(),
+                that.getVersion()) && Objects.equals(getWettkampfId(),
+                that.getWettkampfId()) && Objects.equals(getMatchNr(),
+                that.getMatchNr()) && Objects.equals(getMatchScheibennummer(),
+                that.getMatchScheibennummer()) && Objects.equals(getMatchpunkte(),
+                that.getMatchpunkte()) && Objects.equals(getSatzpunkte(),
+                that.getSatzpunkte()) && Objects.equals(getMannschaftId(),
+                that.getMannschaftId()) && Objects.equals(getMannschaftName(),
+                that.getMannschaftName()) && Objects.equals(getNameGegner(),
+                that.getNameGegner()) && Objects.equals(getScheibennummerGegner(),
+                that.getScheibennummerGegner()) && Objects.equals(getMatchIdGegner(),
+                that.getMatchIdGegner()) && Objects.equals(getNaechsteMatchId(),
+                that.getNaechsteMatchId()) && Objects.equals(getNaechsteNaechsteMatchNrMatchId(),
+                that.getNaechsteNaechsteMatchNrMatchId()) && Objects.equals(getStrafpunkteSatz1(),
+                that.getStrafpunkteSatz1()) && Objects.equals(getStrafpunkteSatz2(),
+                that.getStrafpunkteSatz2()) && Objects.equals(getStrafpunkteSatz3(),
+                that.getStrafpunkteSatz3()) && Objects.equals(getStrafpunkteSatz4(),
+                that.getStrafpunkteSatz4()) && Objects.equals(getStrafpunkteSatz5(), that.getStrafpunkteSatz5());
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getVersion(), getWettkampfId(), getMatchNr(), getMatchScheibennummer(),
+                getMatchpunkte(), getSatzpunkte(), getMannschaftId(), getMannschaftName(), getNameGegner(),
+                getScheibennummerGegner(), getMatchIdGegner(), getNaechsteMatchId(),
+                getNaechsteNaechsteMatchNrMatchId(),
+                getStrafpunkteSatz1(), getStrafpunkteSatz2(), getStrafpunkteSatz3(), getStrafpunkteSatz4(),
+                getStrafpunkteSatz5());
+    }
+
+
+    @Override
+    public String toString() {
+        return "LigaSyncMatchDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", wettkampfId=" + wettkampfId +
+                ", matchNr=" + matchNr +
+                ", matchScheibennummer=" + matchScheibennummer +
+                ", matchpunkte=" + matchpunkte +
+                ", satzpunkte=" + satzpunkte +
+                ", mannschaftId=" + mannschaftId +
+                ", mannschaftName='" + mannschaftName + '\'' +
+                ", nameGegner='" + nameGegner + '\'' +
+                ", scheibennummerGegner=" + scheibennummerGegner +
+                ", matchIdGegner=" + matchIdGegner +
+                ", naechsteMatchId=" + naechsteMatchId +
+                ", naechsteNaechsteMatchNrMatchId=" + naechsteNaechsteMatchNrMatchId +
+                ", strafpunkteSatz1=" + strafpunkteSatz1 +
+                ", strafpunkteSatz2=" + strafpunkteSatz2 +
+                ", strafpunkteSatz3=" + strafpunkteSatz3 +
+                ", strafpunkteSatz4=" + strafpunkteSatz4 +
+                ", strafpunkteSatz5=" + strafpunkteSatz5 +
+                '}';
     }
 }
