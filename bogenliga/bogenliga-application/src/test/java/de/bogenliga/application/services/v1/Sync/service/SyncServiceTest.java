@@ -30,6 +30,7 @@ import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
@@ -44,7 +45,7 @@ import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -87,7 +88,6 @@ public class SyncServiceTest {
     @Captor
     private ArgumentCaptor<WettkampfDO> wettkampfDOArgumentCaptor;
 
-    private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     //private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
 
@@ -97,7 +97,6 @@ public class SyncServiceTest {
     protected static final Long MATCH_WETTKAMPF_ID = 1L;
     protected static final Long MATCH_MANNSCHAFT_ID = 1L;
     protected static final Long MATCH_SCHEIBENNUMMER = 3L;
-    protected static final Integer MATCH_SCHEIBENNUMMER_INT = 333;
     protected static final Long MATCH_MATCHPUNKTE = 6L;
     protected static final Long MATCH_SATZPUNKTE = 3L;
     protected static final Long CURRENT_USER_ID = 1L;
@@ -108,30 +107,23 @@ public class SyncServiceTest {
     protected static final Long MATCH_STRAFPUNKTE_SATZ4 = 0L;
     protected static final Long MATCH_STRAFPUNKTE_SATZ5 = 0L;
 
-    protected static final Long MATCH_VERSION = 1L;
     protected static final String MATCH_MANNSCHAFT_NAME = "TSV_Grafenberg";
     protected static final Long MATCH_NAECHSTE_MATCH_ID = 1L;
     protected static final Long MATCH_NAECHSTE_NAECHSTE_MATCH_ID = 1L;
     protected static final String MATCH_WETTKAMP_TYP_ID = "0";
     protected static final Long MATCH_WETTKAMPF_TAG = 1L;
     protected static final Integer MATCH_RUECKENNUMMER = 2;
+    protected static final Integer STRAFPUNKTe_SATZ_1 = 1;
+    protected static final Integer STRAFPUNKTe_SATZ_2 = 2;
+    protected static final Integer STRAFPUNKTe_SATZ_3 = 3;
+    protected static final Integer STRAFPUNKTe_SATZ_4 = 4;
+    protected static final Integer STRAFPUNKTe_SATZ_5 = 5;
+
 
     protected static final String MATCH_NAME_GEGNER = "TSV Grafenberg Gegner";
     protected static final Long MATCH_SCHEIBENNUMMER_GEGNER = 4L;
-    protected static final Integer MATCH_SCHEIBENNUMMER_GEGNER_INT = 444;
     protected static final Long MATCH_ID_GEGNER = 2L;
 
-/*
-    private static final Long PASSE_ID = 1L;
-    private static final Long PASSE_ID_1 = 1L;
-    private static final Long PASSE_ID_2 = 2L;
-    private static final Long PASSE_LFDR_NR = 2L;
-    private static final Integer PASSE_SCHUETZE_NR_1 = 1;
-    private static final Integer PASSE_SCHUETZE_NR_2 = 2;
-    private static final Long PASSE_DSB_MITGLIED_ID = 1L;
-    private static final Integer PASSE_PFEIL_1 = 10;
-    private static final Integer PASSE_PFEIL_2 = 5;
-*/
     // Passe aus PassServiceTest
     private static final Long PASSE_ID = 1L;
     private static final Long PASSE_LFDR_NR = 2L;
@@ -486,7 +478,12 @@ public class SyncServiceTest {
                 MATCH_SCHEIBENNUMMER_GEGNER.intValue(),
                 MATCH_ID_GEGNER,
                 MATCH_NAECHSTE_MATCH_ID,
-                MATCH_NAECHSTE_NAECHSTE_MATCH_ID
+                MATCH_NAECHSTE_NAECHSTE_MATCH_ID,
+                STRAFPUNKTe_SATZ_1,
+                STRAFPUNKTe_SATZ_2,
+                STRAFPUNKTe_SATZ_3,
+                STRAFPUNKTe_SATZ_4,
+                STRAFPUNKTe_SATZ_5
         );
     }
 
@@ -588,43 +585,12 @@ public class SyncServiceTest {
         assertThat(actualLigaSyncMatchDTO.getWettkampfId()).isEqualTo(ligamatchDO.getWettkampfId());
         // verify invocations
         verify(matchComponent).getLigamatchDOsByWettkampfId(anyLong());
-        /*
-        assertThat(actualLigaSyncMatchDTO.getMannschaftId()).isEqualTo(ligatabelleDO.getmannschaftId());
-        assertThat(actualLigaSyncMatchDTO.get).isEqualTo(ligatabelleDO.getDsbMitgliedId());
-        assertThat(actualLigaSyncMatchDTO.getRueckennummer()).isEqualTo(ligatabelleDO.getRueckennummer());
-        */
-        //verify invocations
-        //verify(ligatabelleComponent).getLigatabelleVeranstaltung(wettkampfId);
-        //Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
-        // Passe findByWettkampfID
-        /*
-            final PasseDO passeDo = getPasseDO();
-            final List<PasseDO> passeDoList = Collections.singletonList(passeDo);
-            //configure Mocks
-            when(passeComponent.findByWettkampfId(anyLong())).thenReturn(passeDoList);
-            // call test method
-            final List<PasseDTO> actual = underTest.findByWettkampfId(1L);
-
-            // assert result
-            assertThat(actual)
-                    .isNotNull()
-                    .hasSize(1);
-
-            final PasseDTO actualDTO = actual.get(0);
-
-            assertThat(actualDTO).isNotNull();
-            assertThat(actualDTO.getId()).isEqualTo(passeDo.getId());
-
-            // verify invocations
-            verify(passeComponent).findByWettkampfId(anyLong());
-            */
     }
 
     @Test
     public void ligaSyncMatchDTOToString(){
         final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
-        final String string = ligaSyncMatchDTO.toString();
-        final String actual = underTest.toString();
+        final String actual = ligaSyncMatchDTO.toString();
 
         assertThat(actual)
                 .isNotEmpty()
@@ -655,51 +621,109 @@ public class SyncServiceTest {
         // verify invocations
         verify(passeComponent).findByWettkampfId(anyLong());
     }
-    /*
+
     @Test
-    public void findById_Null() {
-        when(matchComponent.findById(anyLong())).thenReturn(null);
+    public void ligaSyncMatchDTOGetterSetterTest(){
+        final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
+        LigaSyncMatchDTO newLigaSyncMatchDTO = new LigaSyncMatchDTO();
+        newLigaSyncMatchDTO.setMatchIdGegner(ligaSyncMatchDTO.getMatchIdGegner());
+        newLigaSyncMatchDTO.setMatchNr(ligaSyncMatchDTO.getMatchNr());
+        newLigaSyncMatchDTO.setWettkampfId(ligaSyncMatchDTO.getWettkampfId());
+        newLigaSyncMatchDTO.setVersion(ligaSyncMatchDTO.getVersion());
+        newLigaSyncMatchDTO.setId(ligaSyncMatchDTO.getId());
+        newLigaSyncMatchDTO.setMatchpunkte(ligaSyncMatchDTO.getMatchpunkte());
+        newLigaSyncMatchDTO.setMannschaftName(ligaSyncMatchDTO.getMannschaftName());
+        newLigaSyncMatchDTO.setMatchScheibennummer(ligaSyncMatchDTO.getMatchScheibennummer());
+        newLigaSyncMatchDTO.setMannschaftId(ligaSyncMatchDTO.getMannschaftId());
+        newLigaSyncMatchDTO.setNaechsteMatchId(ligaSyncMatchDTO.getNaechsteMatchId());
+        newLigaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(ligaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId());
+        newLigaSyncMatchDTO.setNameGegner(ligaSyncMatchDTO.getNameGegner());
+        newLigaSyncMatchDTO.setSatzpunkte(ligaSyncMatchDTO.getSatzpunkte());
+        newLigaSyncMatchDTO.setScheibennummerGegner(ligaSyncMatchDTO.getScheibennummerGegner());
+        newLigaSyncMatchDTO.setStrafpunkteSatz1(ligaSyncMatchDTO.getStrafpunkteSatz1());
+        newLigaSyncMatchDTO.setStrafpunkteSatz2(ligaSyncMatchDTO.getStrafpunkteSatz2());
+        newLigaSyncMatchDTO.setStrafpunkteSatz3(ligaSyncMatchDTO.getStrafpunkteSatz3());
+        newLigaSyncMatchDTO.setStrafpunkteSatz4(ligaSyncMatchDTO.getStrafpunkteSatz4());
+        newLigaSyncMatchDTO.setStrafpunkteSatz5(ligaSyncMatchDTO.getStrafpunkteSatz5());
+
+        assertThat(newLigaSyncMatchDTO.getId()).isEqualTo(ligaSyncMatchDTO.getId());
+        assertThat(newLigaSyncMatchDTO.getMatchIdGegner()).isEqualTo(ligaSyncMatchDTO.getMatchIdGegner());
+        assertThat(newLigaSyncMatchDTO.getMatchNr()).isEqualTo(ligaSyncMatchDTO.getMatchNr());
+        assertThat(newLigaSyncMatchDTO.getWettkampfId()).isEqualTo(ligaSyncMatchDTO.getWettkampfId());
+        assertThat(newLigaSyncMatchDTO.getVersion()).isEqualTo(ligaSyncMatchDTO.getVersion());
+        assertThat(newLigaSyncMatchDTO.getMatchIdGegner()).isEqualTo(ligaSyncMatchDTO.getMatchIdGegner());
+        assertThat(newLigaSyncMatchDTO.getMatchpunkte()).isEqualTo(ligaSyncMatchDTO.getMatchpunkte());
+        assertThat(newLigaSyncMatchDTO.getMannschaftName()).isEqualTo(ligaSyncMatchDTO.getMannschaftName());
+        assertThat(newLigaSyncMatchDTO.getMatchScheibennummer()).isEqualTo(ligaSyncMatchDTO.getMatchScheibennummer());
+        assertThat(newLigaSyncMatchDTO.getMannschaftId()).isEqualTo(ligaSyncMatchDTO.getMannschaftId());
+        assertThat(newLigaSyncMatchDTO.getMannschaftId()).isEqualTo(ligaSyncMatchDTO.getMannschaftId());
+        assertThat(newLigaSyncMatchDTO.getNaechsteMatchId()).isEqualTo(ligaSyncMatchDTO.getNaechsteMatchId());
+        assertThat(newLigaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId()).isEqualTo(ligaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId());
+        assertThat(newLigaSyncMatchDTO.getNameGegner()).isEqualTo(ligaSyncMatchDTO.getNameGegner());
+        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz1()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz1());
+        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz2()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz2());
+        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz3()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz3());
+        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz4()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz4());
+        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz5()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz5());
+        assertThat(newLigaSyncMatchDTO.getSatzpunkte()).isEqualTo(ligaSyncMatchDTO.getSatzpunkte());
+    }
+
+    @Test
+    public void ligaSyncMatchDTOEqualsTest(){
+        final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
+        LigaSyncMatchDTO newLigaSyncMatchDTO = new LigaSyncMatchDTO();
+        newLigaSyncMatchDTO.setMatchIdGegner(ligaSyncMatchDTO.getMatchIdGegner());
+        newLigaSyncMatchDTO.setMatchNr(ligaSyncMatchDTO.getMatchNr());
+        newLigaSyncMatchDTO.setId(ligaSyncMatchDTO.getId());
+        newLigaSyncMatchDTO.setWettkampfId(ligaSyncMatchDTO.getWettkampfId());
+        newLigaSyncMatchDTO.setVersion(ligaSyncMatchDTO.getVersion());
+        newLigaSyncMatchDTO.setMatchpunkte(ligaSyncMatchDTO.getMatchpunkte());
+        newLigaSyncMatchDTO.setMannschaftName(ligaSyncMatchDTO.getMannschaftName());
+        newLigaSyncMatchDTO.setMatchScheibennummer(ligaSyncMatchDTO.getMatchScheibennummer());
+        newLigaSyncMatchDTO.setMannschaftId(ligaSyncMatchDTO.getMannschaftId());
+        newLigaSyncMatchDTO.setNaechsteMatchId(ligaSyncMatchDTO.getNaechsteMatchId());
+        newLigaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(ligaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId());
+        newLigaSyncMatchDTO.setNameGegner(ligaSyncMatchDTO.getNameGegner());
+        newLigaSyncMatchDTO.setSatzpunkte(ligaSyncMatchDTO.getSatzpunkte());
+        newLigaSyncMatchDTO.setScheibennummerGegner(ligaSyncMatchDTO.getScheibennummerGegner());
+        newLigaSyncMatchDTO.setStrafpunkteSatz1(ligaSyncMatchDTO.getStrafpunkteSatz1());
+        newLigaSyncMatchDTO.setStrafpunkteSatz2(ligaSyncMatchDTO.getStrafpunkteSatz2());
+        newLigaSyncMatchDTO.setStrafpunkteSatz3(ligaSyncMatchDTO.getStrafpunkteSatz3());
+        newLigaSyncMatchDTO.setStrafpunkteSatz4(ligaSyncMatchDTO.getStrafpunkteSatz4());
+        newLigaSyncMatchDTO.setStrafpunkteSatz5(ligaSyncMatchDTO.getStrafpunkteSatz5());
+
+        assertTrue(newLigaSyncMatchDTO.equals(ligaSyncMatchDTO));
+    }
+
+
+    @Test
+    public void findByWettkampfIdNegative() {
+        LigamatchDO ligamatchDO = getLigamatchDO();
+
+        final List<LigamatchDO> ligatabelleDOList = Collections.singletonList(ligamatchDO);
+        when(matchComponent.getLigamatchDOsByWettkampfId(anyLong())).thenReturn(ligatabelleDOList);
         // expect a NPE as the null-state should be checked in MatchComponentImpl
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.findById(MATCH_ID));
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.findByWettkampfId(-1));
     }
-
-        @Test
-    public void testFindByWettkampfId() {
-        final PasseDO passeDo = getPasseDO();
-        final List<PasseDO> passeDoList = Collections.singletonList(passeDo);
-        //configure Mocks
-        when(passeComponent.findByWettkampfId(anyLong())).thenReturn(passeDoList);
-        // call test method
-        final List<PasseDTO> actual = underTest.findByWettkampfId(1L);
-
-        // assert result
-        assertThat(actual)
-                .isNotNull()
-                .hasSize(1);
-
-        final PasseDTO actualDTO = actual.get(0);
-
-        assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getId()).isEqualTo(passeDo.getId());
-
-        // verify invocations
-        verify(passeComponent).findByWettkampfId(anyLong());
-    }
-    */
 
     /*
     @Test
     public void testGetMannschaftsmitgliedernOffline() {
         MatchDO matchDO = getMatchDO();
+        //matchDOMock = mock(MatchDO);
         MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
+        MannschaftsmitgliedDO mannschaftsmitgliedDOMock = mock(mannschaftsmitgliedDO.getClass());
         MannschaftsmitgliedComponent mannschaftsmitgliedComponentMock = mock(MannschaftsmitgliedComponent.class);
         MatchComponent matchComponentMock = mock(MatchComponent.class);
 
         long scheibenNummer = 1;
-        final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
-        when(matchComponentMock.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchDO);
-        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(anyLong(), anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDOMock);
+        //when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchDO);
+        //when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(anyLong(), anyLong())).thenReturn(mannschaftsmitgliedDOList);
+
+        //Mockito.verify(matchComponent, times(8));
+        //Mockito.verify(mannschaftsmitgliedComponent, times(8));
 
         final List<LigaSyncMannschaftsmitgliedDTO> actualMannschaftsmitgliedDOList = underTest.getMannschaftsmitgliedernOffline(wettkampfId);
         LigaSyncMannschaftsmitgliedDTO mannschaftsmitgliedDTO = actualMannschaftsmitgliedDOList.get(0);
@@ -709,9 +733,9 @@ public class SyncServiceTest {
         //User user = mock(User.class);
         //when(userService.getUserById(anyLong())).thenReturn(user);
 
-        assertThat(mannschaftsmitgliedDTO.id.equals(mannschaftsmitgliedDO.getId()));
-        assertThat(mannschaftsmitgliedDTO.mannschaftId.equals(mannschaftsmitgliedDO.getMannschaftId()));
-        assertThat(mannschaftsmitgliedDTO.dsbMitgliedId.equals(mannschaftsmitgliedDO.getDsbMitgliedId()));
+        assertThat(mannschaftsmitgliedDTO.getId().equals(mannschaftsmitgliedDO.getId()));
+        assertThat(mannschaftsmitgliedDTO.getMannschaftId().equals(mannschaftsmitgliedDO.getMannschaftId()));
+        assertThat(mannschaftsmitgliedDTO.getDsbMitgliedId().equals(mannschaftsmitgliedDO.getDsbMitgliedId()));
 
         //verify invocations
         verify(matchComponent).findByWettkampfIDMatchNrScheibenNr(wettkampfId, 1L, scheibenNummer);
@@ -756,14 +780,12 @@ public class SyncServiceTest {
         }
     }
 
-    /*
-    @Test
-    public void update_Null() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.update(null, principal));
-    }
-     */
 
+    @Test
+    public void getTokenNegativeWettkampfIdTest() {
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.getToken(-1, principal));
+    }
 
     @Test
     public void testSynchronizeMatchesAndPassen() throws NoPermissionException {
@@ -844,7 +866,6 @@ public class SyncServiceTest {
         matchDTOs.add(getMatchDTO());
         matchDTOs.add(getMatchDTO());
         when(matchService.saveMatches(matchDTOs, principal)).thenReturn(matchDTOs);
-
         //when(wettkampfComponent.deleteOfflineToken();)
 
 
@@ -887,15 +908,13 @@ public class SyncServiceTest {
                 .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOS, null, principal));
     }
 
-    /*
     @Test
     public void updateNoPermission() {
         // configure mocks: wettkampf is already offline
         when(wettkampfComponent.wettkampfIsOffline(anyLong())).thenReturn(true);
-        assertThatExceptionOfType(NoPermissionException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> underTest.getToken(anyLong(), principal));
     }
-    */
 
     @Test
     public void goOnlineUnconditionally() {
@@ -910,7 +929,5 @@ public class SyncServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getOfflineToken()).isNull();
-
     }
-
 }
