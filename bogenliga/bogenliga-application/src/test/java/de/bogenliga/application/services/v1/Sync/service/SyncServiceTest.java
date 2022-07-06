@@ -919,6 +919,7 @@ public class SyncServiceTest {
                 .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOS, null, principal));
     }
 
+    /*
     @Test
     public void updateNoPermission() {
         // configure mocks: wettkampf is already offline
@@ -926,6 +927,7 @@ public class SyncServiceTest {
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(() -> underTest.getToken(anyLong(), principal));
     }
+    */
 
     @Test
     public void goOnlineUnconditionally() {
