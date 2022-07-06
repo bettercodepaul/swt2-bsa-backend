@@ -400,9 +400,10 @@ public class MatchService implements ServiceFacade {
 
 
         if (passeExists(passeDO)) {
+            LOG.debug("updating passe: {}", passeDO.getId());
             passeComponent.update(passeDO, userId);
         } else {
-            LOG.debug("Trying to create passe");
+            LOG.debug("Trying to create passe {}", passeDO.getId());
             // erst prüfen ob alle relevanten Parameter befüllt sind pk-passe!!
             if(passeDO.getPasseDsbMitgliedId()!=null &&
                     passeDO.getPasseMannschaftId()!= null &&
@@ -843,6 +844,7 @@ public class MatchService implements ServiceFacade {
         if (passeDO.getId() != null) { // Is passeDO id already null
             // If no, check if it actually exists in DB
             PasseDO queriedPasseDO = passeComponent.findById(passeDO.getId());
+            LOG.debug("got passe ------------------------------------------------------------------- ");
             exists = queriedPasseDO != null;
         }
         return exists;
