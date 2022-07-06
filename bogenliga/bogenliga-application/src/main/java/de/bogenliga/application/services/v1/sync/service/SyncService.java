@@ -249,7 +249,7 @@ public class SyncService implements ServiceFacade {
         // once it works, we could allow the same user that went offline before to send a second token to cover
         // the edge case of and offline token being created and saved but not received by the frontend
         if(wettkampfComponent.wettkampfIsOffline(wettkampfId)){
-            throw new NoPermissionException();
+            throw new NoPermissionException("Wettkampf is already offline");
         }
         // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
