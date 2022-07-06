@@ -619,7 +619,7 @@ public class SyncServiceTest {
             verify(passeComponent).findByWettkampfId(anyLong());
             */
     }
-
+    /*
     @Test
     public void ligaSyncMatchDTOToString(){
         final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
@@ -631,7 +631,7 @@ public class SyncServiceTest {
                 .contains(Long.toString(MATCH_ID))
                 .contains(Long.toString(wettkampfId));
     }
-
+    */
     /*
     @Test
     public void ligaSyncMatchDTOGetterSetterTest(){
