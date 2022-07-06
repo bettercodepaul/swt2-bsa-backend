@@ -621,6 +621,50 @@ public class SyncServiceTest {
     }
 
     @Test
+    public void ligaSyncMatchDTOToString(){
+        final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
+        final String string = ligaSyncMatchDTO.toString();
+        final String actual = underTest.toString();
+
+        assertThat(actual)
+                .isNotEmpty()
+                .contains(Long.toString(MATCH_ID))
+                .contains(Long.toString(wettkampfId));
+    }
+
+    /*
+    @Test
+    public void ligaSyncMatchDTOGetterSetterTest(){
+        final LigaSyncMatchDTO ligaSyncMatchDTO = new LigaSyncMatchDTO();
+        final LigaSyncMatchDTO ligaSyncMatchDTO2 = getLigaSyncMatchDTO();
+        ligaSyncMatchDTO.setMatchIdGegner();
+
+        MATCH_ID,
+                version,
+                wettkampfId,
+                MATCH_NR.intValue(),
+                MATCH_SCHEIBENNUMMER.intValue(),
+                MATCH_MATCHPUNKTE,
+                MATCH_SATZPUNKTE,
+                MATCH_MANNSCHAFT_ID,
+                MATCH_MANNSCHAFT_NAME,
+                MATCH_NAME_GEGNER,
+                MATCH_SCHEIBENNUMMER_GEGNER.intValue(),
+                MATCH_ID_GEGNER,
+                MATCH_NAECHSTE_MATCH_ID,
+                MATCH_NAECHSTE_NAECHSTE_MATCH_ID
+
+        final String string = ligaSyncMatchDTO.toString();
+        final String actual = underTest.toString();
+
+        assertThat(actual)
+                .isNotEmpty()
+                .contains(Long.toString(MATCH_ID)
+                        .contains(Long.toString(wettkampfId));
+    }
+    */
+
+    @Test
     public void testGetLigapassenOffline() {
         final PasseDO passeDo = getPasseDO();
         final List<PasseDO> passeDoList = Collections.singletonList(passeDo);

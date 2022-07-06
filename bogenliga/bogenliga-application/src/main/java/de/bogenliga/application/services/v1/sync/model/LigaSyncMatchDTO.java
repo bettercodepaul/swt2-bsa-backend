@@ -247,6 +247,45 @@ public class LigaSyncMatchDTO implements DataTransferObject {
         this.strafpunkteSatz5 = strafpunkteSatz5;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LigaSyncMatchDTO)) {
+            return false;
+        }
+        LigaSyncMatchDTO that = (LigaSyncMatchDTO) o;
+        return getId().equals(that.getId()) && getVersion().equals(that.getVersion()) && getWettkampfId().equals(
+                that.getWettkampfId()) && getMatchNr().equals(that.getMatchNr()) && getMatchScheibennummer().equals(
+                that.getMatchScheibennummer()) && getMatchpunkte().equals(
+                that.getMatchpunkte()) && getSatzpunkte().equals(
+                that.getSatzpunkte()) && getMannschaftId().equals(that.getMannschaftId()) && getMannschaftName().equals(
+                that.getMannschaftName()) && getNameGegner().equals(
+                that.getNameGegner()) && getScheibennummerGegner().equals(
+                that.getScheibennummerGegner()) && getMatchIdGegner().equals(
+                that.getMatchIdGegner()) && getNaechsteMatchId().equals(
+                that.getNaechsteMatchId()) && getNaechsteNaechsteMatchNrMatchId().equals(
+                that.getNaechsteNaechsteMatchNrMatchId()) && getStrafpunkteSatz1().equals(
+                that.getStrafpunkteSatz1()) && getStrafpunkteSatz2().equals(
+                that.getStrafpunkteSatz2()) && getStrafpunkteSatz3().equals(
+                that.getStrafpunkteSatz3()) && getStrafpunkteSatz4().equals(
+                that.getStrafpunkteSatz4()) && getStrafpunkteSatz5().equals(that.getStrafpunkteSatz5());
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getVersion(), getWettkampfId(), getMatchNr(), getMatchScheibennummer(),
+                getMatchpunkte(), getSatzpunkte(), getMannschaftId(), getMannschaftName(), getNameGegner(),
+                getScheibennummerGegner(), getMatchIdGegner(), getNaechsteMatchId(),
+                getNaechsteNaechsteMatchNrMatchId(),
+                getStrafpunkteSatz1(), getStrafpunkteSatz2(), getStrafpunkteSatz3(), getStrafpunkteSatz4(),
+                getStrafpunkteSatz5());
+    }
+
+
     @Override
     public String toString() {
         return "LigaSyncMatchDTO{" +
@@ -270,46 +309,5 @@ public class LigaSyncMatchDTO implements DataTransferObject {
                 ", strafpunkteSatz4=" + strafpunkteSatz4 +
                 ", strafpunkteSatz5=" + strafpunkteSatz5 +
                 '}';
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof LigaSyncMatchDTO)) {
-            return false;
-        }
-        LigaSyncMatchDTO that = (LigaSyncMatchDTO) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getVersion(),
-                that.getVersion()) && Objects.equals(getWettkampfId(),
-                that.getWettkampfId()) && Objects.equals(getMatchNr(),
-                that.getMatchNr()) && Objects.equals(getMatchScheibennummer(),
-                that.getMatchScheibennummer()) && Objects.equals(getMatchpunkte(),
-                that.getMatchpunkte()) && Objects.equals(getSatzpunkte(),
-                that.getSatzpunkte()) && Objects.equals(getMannschaftId(),
-                that.getMannschaftId()) && Objects.equals(getMannschaftName(),
-                that.getMannschaftName()) && Objects.equals(getNameGegner(),
-                that.getNameGegner()) && Objects.equals(getScheibennummerGegner(),
-                that.getScheibennummerGegner()) && Objects.equals(getMatchIdGegner(),
-                that.getMatchIdGegner()) && Objects.equals(getNaechsteMatchId(),
-                that.getNaechsteMatchId()) && Objects.equals(getNaechsteNaechsteMatchNrMatchId(),
-                that.getNaechsteNaechsteMatchNrMatchId()) && Objects.equals(getStrafpunkteSatz1(),
-                that.getStrafpunkteSatz1()) && Objects.equals(getStrafpunkteSatz2(),
-                that.getStrafpunkteSatz2()) && Objects.equals(getStrafpunkteSatz3(),
-                that.getStrafpunkteSatz3()) && Objects.equals(getStrafpunkteSatz4(),
-                that.getStrafpunkteSatz4()) && Objects.equals(getStrafpunkteSatz5(), that.getStrafpunkteSatz5());
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getVersion(), getWettkampfId(), getMatchNr(), getMatchScheibennummer(),
-                getMatchpunkte(), getSatzpunkte(), getMannschaftId(), getMannschaftName(), getNameGegner(),
-                getScheibennummerGegner(), getMatchIdGegner(), getNaechsteMatchId(),
-                getNaechsteNaechsteMatchNrMatchId(),
-                getStrafpunkteSatz1(), getStrafpunkteSatz2(), getStrafpunkteSatz3(), getStrafpunkteSatz4(),
-                getStrafpunkteSatz5());
     }
 }
