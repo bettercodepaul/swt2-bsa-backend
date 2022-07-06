@@ -302,11 +302,11 @@ public class SyncService implements ServiceFacade {
 
         final long currentUserId = UserProvider.getCurrentUserId(principal); //always 0
         List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
-
+        logger.debug("list: {}", mannschaftsMitgliedDTOList);
         for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
 
             MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
-
+            logger.debug("creating mitgleid in db: {}", newMannschaftsMitgliedDTO);
             MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
 
 
