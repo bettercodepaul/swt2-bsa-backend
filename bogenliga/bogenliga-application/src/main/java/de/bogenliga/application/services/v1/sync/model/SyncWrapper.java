@@ -10,18 +10,18 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class SyncWrapper implements DataTransferObject {
     private List<LigaSyncMatchDTO> match;
     private List<LigaSyncPasseDTO> passe;
-    private List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitglied;
+    private List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitglieder;
     private String offlineToken;
     private long wettkampfId;
 
-    public SyncWrapper(List<LigaSyncMatchDTO> ligaSyncMatchDTOList,
-                       List<LigaSyncPasseDTO> ligaSyncPasseDTOS,
-                       List<LigaSyncMannschaftsmitgliedDTO> ligaSyncMannschaftsmitgliedDTOS,
+    public SyncWrapper(List<LigaSyncMatchDTO> match,
+                       List<LigaSyncPasseDTO> passe,
+                       List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitglieder,
                        String offlineToken,
                        long wettkampfId) {
-        this.match = ligaSyncMatchDTOList;
-        this.passe = ligaSyncPasseDTOS;
-        this.mannschaftsmitglied = ligaSyncMannschaftsmitgliedDTOS;
+        this.match = match;
+        this.passe = passe;
+        this.mannschaftsMitglieder = mannschaftsMitglieder;
         this.offlineToken = offlineToken;
         this.wettkampfId = wettkampfId;
     }
@@ -48,13 +48,13 @@ public class SyncWrapper implements DataTransferObject {
 
 
     public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitglied() {
-        return mannschaftsmitglied;
+        return mannschaftsMitglieder;
     }
 
 
     public void setMannschaftsmitglied(
             List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitglied) {
-        this.mannschaftsmitglied = mannschaftsmitglied;
+        this.mannschaftsMitglieder = mannschaftsmitglied;
     }
 
 
