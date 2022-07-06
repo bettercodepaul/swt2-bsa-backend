@@ -39,5 +39,4 @@ public class LigaSyncPasseDTOMapper implements DataTransferObjectMapper {
                 null, ligapassesyncDTO.getMatchId(), ligapassesyncDTO.getLfdNr(), ligapassesyncDTO.getRueckennummer(),
                 ligapassesyncDTO.getDsbMitgliedId(), ligapassesyncDTO.getRingzahl());
     }
-
 }

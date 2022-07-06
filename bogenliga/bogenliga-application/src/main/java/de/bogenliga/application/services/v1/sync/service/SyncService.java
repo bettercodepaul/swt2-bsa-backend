@@ -21,6 +21,7 @@ import de.bogenliga.application.services.v1.mannschaftsmitglied.model.Mannschaft
 import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
+import de.bogenliga.application.services.v1.passe.model.PasseDTO;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
 import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
@@ -96,8 +97,7 @@ public class SyncService implements ServiceFacade {
                        final RequiresOnePermissionAspect requiresOnePermissionAspect,
                        final WettkampfComponent wettkampfComponent,
                        final MannschaftsMitgliedService mannschaftsMitgliedService,
-                       final MatchService matchService
-                       ) {
+                       final MatchService matchService) {
         this.ligatabelleComponent = ligatabelleComponent;
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
@@ -354,7 +354,7 @@ public class SyncService implements ServiceFacade {
             // Map LigaSyncMatchDTO to MatchDTO
             MatchDTO matchDTO = LigaSyncMatchDTOMapper.toMatchDTO.apply(ligasyncmatchDTO);
 
-            // Set begegnung and WettkampfTag in MatchDTO
+            // Set begegnung, WettkampfTag and WettkampfTyp in MatchDTO
             matchDTO.setBegegnung(begegnung);
             matchDTO.setWettkampfTag(wettkampfDO.getWettkampfTag());
 
@@ -363,6 +363,9 @@ public class SyncService implements ServiceFacade {
             matchDTO.setPassen(ligaSyncPasseDTOs.stream().map(LigaSyncPasseDTOMapper.toPasseDTO)
                     .filter(passeDTO -> passeDTO.getMatchId().equals(ligasyncmatchDTO.getId()))
                     .collect(Collectors.toList()));
+            for (PasseDTO passeDTO : matchDTO.getPassen()) {
+                passeDTO.setMatchNr(matchDTO.getNr());
+            }
 
             matchDTOs.add(matchDTO);
         }
