@@ -599,6 +599,17 @@ public class SyncServiceTest {
     }
 
     @Test
+    public void ligaSyncPasseDTOToString(){
+        final LigaSyncPasseDTO ligaSyncPasseDTO = getLigaSyncPasseDTO();
+        final String actual = ligaSyncPasseDTO.toString();
+
+        assertThat(actual)
+                .isNotEmpty()
+                .contains(Long.toString(PASSE_ID))
+                .contains(Long.toString(MATCH_ID));
+    }
+
+    @Test
     public void testGetLigapassenOffline() {
         final PasseDO passeDo = getPasseDO();
         final List<PasseDO> passeDoList = Collections.singletonList(passeDo);
@@ -695,6 +706,22 @@ public class SyncServiceTest {
         assertTrue(newLigaSyncMatchDTO.equals(ligaSyncMatchDTO));
     }
 
+    @Test
+    public void ligaSyncPasseDTOEqualsTest(){
+        final LigaSyncPasseDTO ligaSyncPasseDTO = getLigaSyncPasseDTO();
+        LigaSyncPasseDTO newLigaSyncPasseDTO = new LigaSyncPasseDTO();
+        newLigaSyncPasseDTO.setRueckennummer(ligaSyncPasseDTO.getRueckennummer());
+        newLigaSyncPasseDTO.setId(ligaSyncPasseDTO.getId());
+        newLigaSyncPasseDTO.setVersion(ligaSyncPasseDTO.getVersion());
+        newLigaSyncPasseDTO.setMatchId(ligaSyncPasseDTO.getMatchId());
+        newLigaSyncPasseDTO.setMannschaftId(ligaSyncPasseDTO.getMannschaftId());
+        newLigaSyncPasseDTO.setWettkampfId(ligaSyncPasseDTO.getWettkampfId());
+        newLigaSyncPasseDTO.setLfdNr(ligaSyncPasseDTO.getLfdNr());
+        newLigaSyncPasseDTO.setDsbMitgliedId(ligaSyncPasseDTO.getDsbMitgliedId());
+        newLigaSyncPasseDTO.setRingzahl(ligaSyncPasseDTO.getRingzahl());
+
+        assertTrue(newLigaSyncPasseDTO.equals(ligaSyncPasseDTO));
+    }
 
     @Test
     public void findByWettkampfIdNegative() {
