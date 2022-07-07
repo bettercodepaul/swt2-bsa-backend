@@ -463,7 +463,7 @@ public class SyncServiceTest {
 
     }
 
-    private static LigaSyncMatchDTO getLigaSyncMatchDTO() {
+    public static LigaSyncMatchDTO getLigaSyncMatchDTO() {
         return new LigaSyncMatchDTO (
                 MATCH_ID,
                 version,
@@ -511,7 +511,7 @@ public class SyncServiceTest {
         );
     }
 
-    private static LigaSyncPasseDTO getLigaSyncPasseDTO() {
+    public static LigaSyncPasseDTO getLigaSyncPasseDTO() {
         return new LigaSyncPasseDTO (
                 PASSE_ID,
                 VERSION,
