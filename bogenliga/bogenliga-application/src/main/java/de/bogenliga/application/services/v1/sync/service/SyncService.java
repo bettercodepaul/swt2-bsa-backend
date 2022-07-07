@@ -257,7 +257,9 @@ public class SyncService implements ServiceFacade {
      *   including Rückennummern ugnd Name der Mannschaft
      * - is the Offline identical to the stored in Backend Wettkampf Table -> otherwise this Dataset is not
      *   the most recent one --> Gero sould advised what to do.
+     * @author Katrin Kober
      * @return ok or list of errors
+     *
      */
     @PostMapping(
             value = "mannschaftsmitglieder/{id}",
@@ -265,25 +267,28 @@ public class SyncService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
     public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
-                                                                 @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
-                                                                 final Principal principal) throws NoPermissionException { //@RequestBody
+                                                                               @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
+                                                                               final Principal principal
+    ) throws NoPermissionException {
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+
+
         // save new team members
 
-        final long currentUserId = UserProvider.getCurrentUserId(principal); //always 0
         List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
-        logger.debug("list: {}", mannschaftsMitgliedDTOList);
+
         for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
 
             MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
-            logger.debug("creating mitgleid in db: {}", newMannschaftsMitgliedDTO);
+
             MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
 
 
             savedMannschaftsMitglieder.add( MannschaftsMitgliedDTOMapper.toDO.apply(addedNewMannschaftsMitgliedDO));
 
         }
+
 
        return ResponseEntity.ok(
                savedMannschaftsMitglieder.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
