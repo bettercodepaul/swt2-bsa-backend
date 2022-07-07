@@ -37,7 +37,7 @@ public class WettkampfBasicDAOTest {
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
     private static final long wettkampf_Wettkampftyp_Id = 1;
-    private static final String wettkampf_offlineToken = "offlinetoken";
+    private static final String wettkampf_offlineToken = "offlineToken";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -171,6 +171,27 @@ public class WettkampfBasicDAOTest {
         verify(basicDao).deleteEntity(any(), eq(input), any());
     }
 
+    @Test
+    public void checkOfflineToken() {
+
+        final WettkampfBE expectedBE = getWettkampfBE();
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn(expectedBE);
+
+        WettkampfBE actual = underTest.checkOfflineToken(wettkampf_Id, wettkampf_offlineToken);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getOfflineToken()).isEqualTo(wettkampf_offlineToken);
+        assertThat(actual.getId()).isEqualTo(wettkampf_Id);
+
+        final WettkampfBE invalidToken = getWettkampfBE();
+        invalidToken.setOfflineToken(null);
+        when(basicDao.selectSingleEntity(any(), any(), any(), any())).thenReturn(null);
+
+        WettkampfBE given = underTest.checkOfflineToken(wettkampf_Id, wettkampf_offlineToken);
+        assertThat(given).isNull();
+
+        verify(basicDao, times(2)).selectSingleEntity(any(), any(), any());
+    }
 
 
 }
