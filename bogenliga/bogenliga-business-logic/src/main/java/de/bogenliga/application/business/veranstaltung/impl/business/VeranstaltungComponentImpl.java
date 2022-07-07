@@ -26,7 +26,6 @@ import de.bogenliga.application.common.validation.Preconditions;
 /**
  * @author Daniel Schott, daniel.schott@student.reutlingen-university.de
  */
-@Lazy
 @Component
 public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
@@ -56,7 +55,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     @Autowired
     public VeranstaltungComponentImpl(final VeranstaltungDAO veranstaltungDAO,
-                                      final WettkampfComponent wettkampfComponent,
+                                      @Lazy final WettkampfComponent wettkampfComponent,
                                       final LigaComponent ligaComponent,
                                       final WettkampfTypComponent wettkampfTypComponent,
                                       final UserComponent userComponent) {
