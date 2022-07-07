@@ -98,11 +98,7 @@ public class LigaSyncMatchDTOMapper implements DataTransferObjectMapper {
         final Long wettkampfId = ligaSyncMatchDTO.getWettkampfId();
         final Long mannschaftId = ligaSyncMatchDTO.getMannschaftId();
 
-        // actually verein name...
-        final String mannschaftName = ligaSyncMatchDTO.getMannschaftName();
         final Long begegnung = null;
-        final String wettkampfTyp = null;
-        final Long wettkampfTag = null;
         final Long scheibenNummer = ligaSyncMatchDTO.getMatchScheibennummer().longValue();
         final Long matchpunkte = null;
         final Long satzpunkte = null;
