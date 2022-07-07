@@ -38,7 +38,7 @@ public class LigaSyncMatchDTOMapper implements DataTransferObjectMapper {
         final Long version = matchDO.getVersion();
         final Long wettkampfId = matchDO.getWettkampfId();
         final Integer matchNr = Math.toIntExact(matchDO.getNr());
-        final Integer matchScheibennummer = Math.toIntExact(matchDO.getScheibenNummer());
+        final Integer matchScheibennummer = matchDO.getScheibenNummer()!=null ? Math.toIntExact(matchDO.getScheibenNummer()) : null;
         final Long matchpunkte = matchDO.getMatchpunkte()!=null ? matchDO.getMatchpunkte() : null;
         final Long satzpunkte = matchDO.getSatzpunkte()!=null ? matchDO.getSatzpunkte() : null;
         final Long mannschaftsId = matchDO.getMannschaftId();
