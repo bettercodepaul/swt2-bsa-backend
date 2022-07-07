@@ -16,6 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
@@ -32,6 +37,8 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
@@ -49,6 +56,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Adrian Kempf, HSRT MKI SS22 - SWT2
@@ -82,12 +92,16 @@ public class SyncServiceTest {
     @Mock
     private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
+    @Mock
+    private MannschaftsMitgliedService mannschaftsMitgliedService;
+
 
     @InjectMocks
     private SyncService underTest;
 
     @Captor
     private ArgumentCaptor<WettkampfDO> wettkampfDOArgumentCaptor;
+
 
     private static final String PRECONDITION_MSG_VERANSTALTUNG_ID = "Veranstaltung Id must not be negative";
     //private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
@@ -211,6 +225,7 @@ public class SyncServiceTest {
     private static final String dsbMitgliedNachname = "Gomez";
     private static final Long rueckennummer = 5L;
     private static final Long wettkampId = 30L;
+
 
     //WettkampfExtDO
     private static final long user_Id = 13;
@@ -343,6 +358,12 @@ public class SyncServiceTest {
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         return new MannschaftsmitgliedDO(
                 id, mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, rueckennummer
+        );
+    }
+
+    public static MannschaftsMitgliedDTO getMannschaftsmitgliedDTO(){
+        return new MannschaftsMitgliedDTO(
+          id, mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt, rueckennummer
         );
     }
 
@@ -555,6 +576,24 @@ public class SyncServiceTest {
                 sortierung,
                 tabellenplatz
         );
+    }
+
+    private static LigaSyncMannschaftsmitgliedDTO getLigaSyncMannschaftsMitgliedDTO (Long id) {
+        return new LigaSyncMannschaftsmitgliedDTO(
+                id,
+                version,
+                mannschaftsId,
+                dsbMitgliedId,
+                rueckennummer
+        );
+    }
+
+    protected List<LigaSyncMannschaftsmitgliedDTO> getLigaSyncMannschaftsMitgliederDTO() {
+        List<LigaSyncMannschaftsmitgliedDTO> mm_sync_dtos = new ArrayList<>();
+        mm_sync_dtos.add(getLigaSyncMannschaftsMitgliedDTO(MM_ID_1));
+        mm_sync_dtos.add(getLigaSyncMannschaftsMitgliedDTO(MM_ID_2));
+        mm_sync_dtos.add(getLigaSyncMannschaftsMitgliedDTO(MM_ID_3));
+        return mm_sync_dtos;
     }
 
     @Before
@@ -977,4 +1016,34 @@ public class SyncServiceTest {
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getOfflineToken()).isNull();
     }
+
+    @Test
+    public void testCheckOfflineTokenAndSynchronizeMannschaftsMitglieder() throws Exception {
+
+        List<LigaSyncMannschaftsmitgliedDTO> input = getLigaSyncMannschaftsMitgliederDTO();
+        MannschaftsMitgliedDTO toBeSaved = getMannschaftsmitgliedDTO();
+
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.checkOfflineTokenAndSynchronizeMannschaftsMitglieder(-1, input, principal));
+
+
+        when(mannschaftsMitgliedService.create(any(), any())).thenReturn(toBeSaved);
+
+
+        ResponseEntity responseEntity = underTest.checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, input, principal);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertThat(responseEntity.getBody()).isNotNull();
+        List<LigaSyncMannschaftsmitgliedDTO> i = (List<LigaSyncMannschaftsmitgliedDTO>) responseEntity.getBody();
+        assertEquals(input.get(0).getId(),i.get(0).getId());
+
+    }
+
+    @Test
+    public void testSaveMannschaftsmitgliederNull() {
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> underTest.checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, null, principal));
+    }
 }
+
