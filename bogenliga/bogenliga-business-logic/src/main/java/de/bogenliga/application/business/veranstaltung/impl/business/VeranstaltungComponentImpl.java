@@ -55,7 +55,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     @Autowired
     public VeranstaltungComponentImpl(final VeranstaltungDAO veranstaltungDAO,
-                                      @Lazy final WettkampfComponent wettkampfComponent,
+                                      final WettkampfComponent wettkampfComponent,
                                       final LigaComponent ligaComponent,
                                       final WettkampfTypComponent wettkampfTypComponent,
                                       final UserComponent userComponent) {
