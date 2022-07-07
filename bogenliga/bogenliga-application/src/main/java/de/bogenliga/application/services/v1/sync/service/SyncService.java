@@ -129,15 +129,6 @@ public class SyncService implements ServiceFacade {
         return ligatabelleDOList.stream().map(LigaSyncLigatabelleDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    /* TODO
-     * I return the all Matches from "ligamatch"-Table for
-     * a "wettkampftid (tag)" entries of the database.
-     *
-     * @return list of {@link LigaSyncMatchDTO} as JSON
-     * vermutlich die folgende Funktion:
-     * list<ligamatchDO> ligamatchcomponent.findById(wetkkmapfID)
-     **/
-
 
     /**
      * I return the all Matches from "ligamatch"-Table for * a "wettkampftid (tag)" entries of the database.
@@ -165,14 +156,6 @@ public class SyncService implements ServiceFacade {
         Preconditions.checkArgument(matchId >= 0,
                 String.format(ERR_NOT_NEGATIVE_TEMPLATE, SERVICE_FIND_MATCHES_BY_IDS, CHECKED_PARAM_MATCH_ID));
     }
-
-    /* TODO
-     * I return the all Passe Entries from "ligapasse"-Table for
-     * a "wettkampftid (tag)" entries of the database.
-     *
-     * list<ligapasseDO> ligapassecomponent.findById(wetkkmapfID)
-     * @return list of {@link LigaSyncPasseDTO} as JSON
-     */
 
 
     /**
@@ -206,8 +189,6 @@ public class SyncService implements ServiceFacade {
      * Aufruf von WettkampfComponent -> getAllowedMitglieder(wettkampfID)
      * @return list of {@link LigaSyncMannschaftsmitgliedDTO} as JSON
      */
-
-
     @GetMapping(
             value = "mannschaftsmitglieder/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -235,7 +216,7 @@ public class SyncService implements ServiceFacade {
      * I will update the dataset of a single Wettkampf and set the OfflineToken
      * Token is generated with current user's id + timestamp
      * only a ligaleiter can go offline
-     * @return WettkampfExtDTO as JSON
+     * @return {@link WettkampfExtDTO} as JSON
      * @author Jonas Sigloch, SWT SoSe 2022
      */
     @GetMapping(
@@ -268,8 +249,6 @@ public class SyncService implements ServiceFacade {
     }
 
 
-    /* TODO
-     * I will recieve the OfflineToken from Client
     /**
      * I will recieve the OfflineToken form Client
      * and a list of new Mannschaftmitglieder (identified by missing IDs)
@@ -280,7 +259,6 @@ public class SyncService implements ServiceFacade {
      *   the most recent one --> Gero sould advised what to do.
      * @return ok or list of errors
      */
-
     @PostMapping(
             value = "mannschaftsmitglieder/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -327,7 +305,6 @@ public class SyncService implements ServiceFacade {
      * @return ok or list of errors
      * in case of ok - client should delete offline data
      */
-
     @PostMapping(value = "syncSchusszettel",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -409,7 +386,7 @@ public class SyncService implements ServiceFacade {
     * Only an admin can call this function
     * it will return wettkampf without token as confirmation
     * @author Jonas Sigloch, SWT SoSe 2022
-    * @return WettkampfExtDTO as JSON
+    * @return {@link WettkampfExtDTO} as JSON
     */
     @GetMapping(
             value = "wettkampf/{id}/reset",
@@ -429,24 +406,34 @@ public class SyncService implements ServiceFacade {
         return WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO);
     }
 
+
+    /**
+     * I handle synchronization by calling checkOfflineTokenAndSynchronizeMannschaftsMitglieder() and synchronizeMatchesAndPassen()
+     * @param syncPayload is {@link SyncWrapper}
+     * @return
+     */
     @PostMapping(
             value = "wettkampf/{id}/sync",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
+    @RequiresPermission({UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MANNSCHAFT})
     public void handleSync(@RequestBody SyncWrapper syncPayload, Principal principal) {
+
         final long wettkampfId = syncPayload.getWettkampfId();
         final String offlineToken = syncPayload.getOfflineToken();
+
+        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
         // check token -> done in mannschaftsmitglied sync
+        // TODO: refactor token check to here
+
         logger.debug("token: {}", syncPayload.getOfflineToken());
         logger.debug("id: {}", syncPayload.getWettkampfId());
         logger.debug("match: {}", syncPayload.getMatch());
         logger.debug("passe: {}", syncPayload.getPasse());
         logger.debug("tomitglieder: {}",syncPayload.getMannschaftsmitglied());
 
-
-
-        logger.debug("saving mitgleider------------------------------------------------------------------------------------------------------------");
+        logger.debug("saving mitglieder------------------------------------------------------------------------------------------------------------");
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
         try {
@@ -465,6 +452,8 @@ public class SyncService implements ServiceFacade {
         }
         logger.debug("done syncing--------------------------------------------------------------------------------------------------------------------");
         // delete token -> done in match sync
+        // TODO: refactor token deletion to here
 
+        // TODO: return value
     }
 }
