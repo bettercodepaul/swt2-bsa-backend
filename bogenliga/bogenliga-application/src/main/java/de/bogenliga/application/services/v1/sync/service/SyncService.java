@@ -243,6 +243,7 @@ public class SyncService implements ServiceFacade {
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
         wettkampfDO.setOfflineToken(offlineToken);
         final WettkampfDO updatedWettkampfDO = wettkampfComponent.update(wettkampfDO, userId);
+        // return als array für meine frontend homies
         List<WettkampfExtDTO> payload = new ArrayList<>();
         payload.add(WettkampfExtDTOMapper.toDTO.apply(updatedWettkampfDO));
         return payload;
@@ -266,16 +267,9 @@ public class SyncService implements ServiceFacade {
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
     public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
                                                                  @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
-                                                                 final Principal principal,
-                                                                 final String offlineToken) throws NoPermissionException { //@RequestBody
+                                                                 final Principal principal) throws NoPermissionException { //@RequestBody
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
-        Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
-
-        //Offline Token check
-        logger.debug("Offlinetoken check: {}", offlineToken);
-        wettkampfComponent.checkOfflineToken(wettkampfId, offlineToken);
-
         // save new team members
 
         final long currentUserId = UserProvider.getCurrentUserId(principal); //always 0
@@ -291,8 +285,6 @@ public class SyncService implements ServiceFacade {
             savedMannschaftsMitglieder.add( MannschaftsMitgliedDTOMapper.toDO.apply(addedNewMannschaftsMitgliedDO));
 
         }
-
-        logger.debug("Offlinetoken succes: {}", offlineToken);
 
        return ResponseEntity.ok(
                savedMannschaftsMitglieder.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
@@ -372,10 +364,6 @@ public class SyncService implements ServiceFacade {
             }
         }
 
-        // Delete OfflineToken
-        WettkampfDO wettkampfDO = wettkampfComponent.findById(matchDTOs.get(0).getWettkampfId());
-        wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
-
         return matchDTOs;
     }
 
@@ -421,11 +409,13 @@ public class SyncService implements ServiceFacade {
 
         final long wettkampfId = syncPayload.getWettkampfId();
         final String offlineToken = syncPayload.getOfflineToken();
+        long userId = UserProvider.getCurrentUserId(principal);
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
         // check token -> done in mannschaftsmitglied sync
         // TODO: refactor token check to here
+        wettkampfComponent.checkOfflineToken(wettkampfId, offlineToken);
 
         logger.debug("token: {}", syncPayload.getOfflineToken());
         logger.debug("id: {}", syncPayload.getWettkampfId());
@@ -437,7 +427,7 @@ public class SyncService implements ServiceFacade {
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
         try {
-            checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal, offlineToken);
+            checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal);
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
         }
@@ -453,6 +443,8 @@ public class SyncService implements ServiceFacade {
         logger.debug("done syncing--------------------------------------------------------------------------------------------------------------------");
         // delete token -> done in match sync
         // TODO: refactor token deletion to here
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
+        wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
 
         // TODO: return value
     }
