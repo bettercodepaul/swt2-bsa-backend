@@ -36,6 +36,7 @@ import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
@@ -260,9 +261,9 @@ public class SyncServiceTest {
         return new MatchDO(
                 MATCH_ID,
                 MATCH_NR,
-                MATCH_BEGEGNUNG,
-                MATCH_MANNSCHAFT_ID,
                 MATCH_WETTKAMPF_ID,
+                MATCH_MANNSCHAFT_ID,
+                MATCH_BEGEGNUNG,
                 MATCH_MATCHPUNKTE,
                 MATCH_SCHEIBENNUMMER,
                 MATCH_SATZPUNKTE,
@@ -734,42 +735,28 @@ public class SyncServiceTest {
                 .isThrownBy(() -> underTest.findByWettkampfId(-1));
     }
 
-    /*
     @Test
     public void testGetMannschaftsmitgliedernOffline() {
         MatchDO matchDO = getMatchDO();
-        //matchDOMock = mock(MatchDO);
         MannschaftsmitgliedDO mannschaftsmitgliedDO = getMannschaftsmitgliedDO();
-        MannschaftsmitgliedDO mannschaftsmitgliedDOMock = mock(mannschaftsmitgliedDO.getClass());
-        MannschaftsmitgliedComponent mannschaftsmitgliedComponentMock = mock(MannschaftsmitgliedComponent.class);
-        MatchComponent matchComponentMock = mock(MatchComponent.class);
 
         long scheibenNummer = 1;
-        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDOMock);
-        //when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchDO);
-        //when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(anyLong(), anyLong())).thenReturn(mannschaftsmitgliedDOList);
-
-        //Mockito.verify(matchComponent, times(8));
-        //Mockito.verify(mannschaftsmitgliedComponent, times(8));
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = Collections.singletonList(mannschaftsmitgliedDO);
+        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), eq(1L), anyLong())).thenReturn(matchDO);
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(anyLong(), anyLong())).thenReturn(mannschaftsmitgliedDOList);
 
         final List<LigaSyncMannschaftsmitgliedDTO> actualMannschaftsmitgliedDOList = underTest.getMannschaftsmitgliedernOffline(wettkampfId);
         LigaSyncMannschaftsmitgliedDTO mannschaftsmitgliedDTO = actualMannschaftsmitgliedDOList.get(0);
         assertThat(actualMannschaftsmitgliedDOList).isNotNull().hasSize(8);
 
-        //UserService userService = mock(UserService.class);
-        //User user = mock(User.class);
-        //when(userService.getUserById(anyLong())).thenReturn(user);
-
-        assertThat(mannschaftsmitgliedDTO.getId().equals(mannschaftsmitgliedDO.getId()));
-        assertThat(mannschaftsmitgliedDTO.getMannschaftId().equals(mannschaftsmitgliedDO.getMannschaftId()));
-        assertThat(mannschaftsmitgliedDTO.getDsbMitgliedId().equals(mannschaftsmitgliedDO.getDsbMitgliedId()));
+        assertThat(mannschaftsmitgliedDTO.getId()).isEqualTo(mannschaftsmitgliedDO.getId());
+        assertThat(mannschaftsmitgliedDTO.getMannschaftId()).isEqualTo(mannschaftsmitgliedDO.getMannschaftId());
+        assertThat(mannschaftsmitgliedDTO.getDsbMitgliedId()).isEqualTo(mannschaftsmitgliedDO.getDsbMitgliedId());
 
         //verify invocations
         verify(matchComponent).findByWettkampfIDMatchNrScheibenNr(wettkampfId, 1L, scheibenNummer);
-        verify(mannschaftsmitgliedComponent).findSchuetzenInUebergelegenerLiga(mannschaftsId, wettkampfId);
-        Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
+        verify(mannschaftsmitgliedComponent, times(8)).findSchuetzenInUebergelegenerLiga(any(), any());
     }
-    */
 
     @Test
     public void update() {
