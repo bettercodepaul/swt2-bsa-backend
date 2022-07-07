@@ -78,4 +78,15 @@ public class SyncWrapper implements DataTransferObject {
     public void setWettkampfId(long wettkampfId) {
         this.wettkampfId = wettkampfId;
     }
+
+    @Override
+    public String toString() {
+        return "SyncWrapper{" +
+                "match=" + match +
+                ", passe=" + passe +
+                ", mannschaftsMitglieder=" + mannschaftsMitglieder +
+                ", offlineToken='" + offlineToken + '\'' +
+                ", wettkampfId=" + wettkampfId +
+                '}';
+    }
 }

@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
-import javax.print.attribute.standard.Media;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -135,7 +134,6 @@ public class SyncService implements ServiceFacade {
      *
      * @return list of {@link LigaSyncMatchDTO} as JSON
      */
-
     @GetMapping(
             value = "match/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -211,6 +209,7 @@ public class SyncService implements ServiceFacade {
         return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
                 Collectors.toList());
     }
+
 
     /**
      * I will update the dataset of a single Wettkampf and set the OfflineToken
@@ -291,7 +290,7 @@ public class SyncService implements ServiceFacade {
                        Collectors.toList()));
     }
 
-    /* TODO
+    /**
      * I will recieve both lists: matches and passen to store data consistently in a single transaction
      * when data successfully stored, the offlinetoken in wettkampf table is to be removed
      * @return ok or list of errors
@@ -304,8 +303,6 @@ public class SyncService implements ServiceFacade {
     public List<MatchDTO> synchronizeMatchesAndPassen(List<LigaSyncMatchDTO> ligaSyncMatchDTOs,
                                                       List<LigaSyncPasseDTO> ligaSyncPasseDTOs,
                                                       Principal principal) throws NoPermissionException {
-
-        final Long userId = UserProvider.getCurrentUserId(principal);
 
         List<MatchDTO> matchDTOs = new ArrayList<>();
 
@@ -367,6 +364,7 @@ public class SyncService implements ServiceFacade {
         return matchDTOs;
     }
 
+
     /**
     * I delete the offline token of a wettkampf unconditionally
     * Necessary to reset a wettkampf that has been taken offline and for some reason can not be taken back online
@@ -398,7 +396,7 @@ public class SyncService implements ServiceFacade {
     /**
      * I handle synchronization by calling checkOfflineTokenAndSynchronizeMannschaftsMitglieder() and synchronizeMatchesAndPassen()
      * @param syncPayload is {@link SyncWrapper}
-     * @return
+     * @return {@link List<MatchDTO>}
      */
     @PostMapping(
             value = "wettkampf/{id}/sync",
@@ -413,17 +411,9 @@ public class SyncService implements ServiceFacade {
 
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         Preconditions.checkNotNullOrEmpty(offlineToken, PRECONDITION_MSG_OFFLINE_TOKEN);
-        // check token -> done in mannschaftsmitglied sync
-        // TODO: refactor token check to here
+        // check token validity
         wettkampfComponent.checkOfflineToken(wettkampfId, offlineToken);
 
-        logger.debug("token: {}", syncPayload.getOfflineToken());
-        logger.debug("id: {}", syncPayload.getWettkampfId());
-        logger.debug("match: {}", syncPayload.getMatch());
-        logger.debug("passe: {}", syncPayload.getPasse());
-        logger.debug("tomitglieder: {}",syncPayload.getMannschaftsmitglied());
-
-        logger.debug("saving mitglieder--------------------------------------------------------------------------------");
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
         try {
@@ -431,7 +421,6 @@ public class SyncService implements ServiceFacade {
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
         }
-        logger.debug("start match handling ----------------------------------------------------------------------------");
         // handle matches
         List<MatchDTO> response;
         final List<LigaSyncMatchDTO> matchDTOS = syncPayload.getMatch();
@@ -441,13 +430,10 @@ public class SyncService implements ServiceFacade {
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
         }
-        logger.debug("done syncing-------------------------------------------------------------------------------------");
-        // delete token -> done in match sync
-        // TODO: refactor token deletion to here
+        // delete offline token
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
         wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
-
-        // TODO: return value
+        // could return something more useful in the future like syncwrapper
         return response;
     }
 }

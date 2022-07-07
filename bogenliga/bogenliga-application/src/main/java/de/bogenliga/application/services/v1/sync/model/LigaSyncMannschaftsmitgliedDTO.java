@@ -9,7 +9,9 @@ package de.bogenliga.application.services.v1.sync.model;
 // ob zwichenzeitlich ein neues Mannschaftsmitgliled angelegt wurde - und die
 // Zuordnung der Datensätze (Passe) ist über die Rückennummer vorzunehmen.
 
-public class LigaSyncMannschaftsmitgliedDTO {
+import de.bogenliga.application.common.service.types.DataTransferObject;
+
+public class LigaSyncMannschaftsmitgliedDTO implements DataTransferObject {
     private Long id; //ID aus mannscjaftsmitglied_id
     private Long version;
     private Long mannschaftId;
@@ -27,6 +29,31 @@ public class LigaSyncMannschaftsmitgliedDTO {
         this.version = version;
         this.mannschaftId = mannschaftId;
         this.dsbMitgliedId = dsbMitgliedId;
+        this.rueckennummer = rueckennummer;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+
+    public void setMannschaftId(Long mannschaftId) {
+        this.mannschaftId = mannschaftId;
+    }
+
+
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
+        this.dsbMitgliedId = dsbMitgliedId;
+    }
+
+
+    public void setRueckennummer(Long rueckennummer) {
         this.rueckennummer = rueckennummer;
     }
 
