@@ -4,7 +4,9 @@ import java.util.List;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- *
+ * I wrap request body of the synchronization POST request that contains
+ * {@link List<LigaSyncMatchDTO>}, {@link List<LigaSyncPasseDTO>}, {@link List<LigaSyncMannschaftsmitgliedDTO>}
+ * offline token as string and the wettkampfID as long
  * @author Jonas Sigloch
  */
 public class SyncWrapper implements DataTransferObject {
