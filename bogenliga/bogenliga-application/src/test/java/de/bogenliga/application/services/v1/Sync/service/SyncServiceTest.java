@@ -189,6 +189,7 @@ public class SyncServiceTest {
     private static final Long wettkampfId = 2L;
     private static final int wettkampfTag = 3;
     private static final Long mannschaftId = 4L;
+    private static final String mannschaftName = "GegnerMannschaft";
     private static final int mannschaftNummer = 9;
     private static final Long vereinId = 7L;
     private static final String vereinName = "Name_Verein";
@@ -538,9 +539,39 @@ public class SyncServiceTest {
         );
     }
 
+    private static LigaSyncLigatabelleDTO getLigaSyncLigatabelleDTO() {
+        return new LigaSyncLigatabelleDTO (
+                veranstaltungId,
+                veranstaltungName,
+                wettkampfId,
+                wettkampfTag,
+                mannschaftId,
+                mannschaftName,
+                matchpkt,
+                matchpktGegen,
+                satzpkt,
+                satzpktGegen,
+                satzpktDifferenz,
+                sortierung,
+                tabellenplatz
+        );
+    }
+
     @Before
     public void initMocks() {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
+    }
+
+    @Test
+    public void testgetLigatabelleVeranstaltungToString() {
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
+        final String actual = ligaSyncLigatabelleDTO.toString();
+
+        assertThat(actual)
+                .isNotEmpty()
+                .contains(Long.toString(veranstaltungId))
+                .contains(Long.toString(wettkampfId))
+                .contains(Long.toString(mannschaftId));
     }
 
     @Test
@@ -570,6 +601,8 @@ public class SyncServiceTest {
         verify(ligatabelleComponent).getLigatabelleVeranstaltung(wettkampfId);
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
     }
+
+
 
     @Test
     public void testFindByWettkampfId() {
