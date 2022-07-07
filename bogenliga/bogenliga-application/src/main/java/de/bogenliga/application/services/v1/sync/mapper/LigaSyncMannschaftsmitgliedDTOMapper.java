@@ -31,7 +31,6 @@ public class LigaSyncMannschaftsmitgliedDTOMapper implements DataTransferObjectM
 
     private static MannschaftsMitgliedDTO apply(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO){
         final Long id = ligaSyncMannschaftsmitgliedDTO.getId();
-        final Long version = ligaSyncMannschaftsmitgliedDTO.getVersion();
         final Long mannschaftId = ligaSyncMannschaftsmitgliedDTO.getMannschaftId();
         final Long dsbMitgliedId = ligaSyncMannschaftsmitgliedDTO.getDsbMitgliedId();
         final Long rueckennummer = ligaSyncMannschaftsmitgliedDTO.getRueckennummer();

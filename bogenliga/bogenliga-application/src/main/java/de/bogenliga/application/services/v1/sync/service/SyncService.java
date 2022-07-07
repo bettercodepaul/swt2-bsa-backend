@@ -305,8 +305,6 @@ public class SyncService implements ServiceFacade {
                                                       List<LigaSyncPasseDTO> ligaSyncPasseDTOs,
                                                       Principal principal) throws NoPermissionException {
 
-        final Long userId = UserProvider.getCurrentUserId(principal);
-
         List<MatchDTO> matchDTOs = new ArrayList<>();
 
         for (LigaSyncMatchDTO ligasyncmatchDTO : ligaSyncMatchDTOs) {
