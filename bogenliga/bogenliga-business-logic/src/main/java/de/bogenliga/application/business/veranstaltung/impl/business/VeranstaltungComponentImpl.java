@@ -53,6 +53,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * @param veranstaltungDAO Data Access Object für Entität Veranstaltung
      */
 
+    @Lazy
     @Autowired
     public VeranstaltungComponentImpl(final VeranstaltungDAO veranstaltungDAO,
                                       final WettkampfComponent wettkampfComponent,
