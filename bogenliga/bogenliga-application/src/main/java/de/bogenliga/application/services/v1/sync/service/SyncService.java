@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.naming.NoPermissionException;
-import javax.print.attribute.standard.Media;
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
@@ -135,7 +134,6 @@ public class SyncService implements ServiceFacade {
      *
      * @return list of {@link LigaSyncMatchDTO} as JSON
      */
-
     @GetMapping(
             value = "match/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -211,6 +209,7 @@ public class SyncService implements ServiceFacade {
         return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
                 Collectors.toList());
     }
+
 
     /**
      * I will update the dataset of a single Wettkampf and set the OfflineToken
@@ -291,7 +290,7 @@ public class SyncService implements ServiceFacade {
                        Collectors.toList()));
     }
 
-    /* TODO
+    /**
      * I will recieve both lists: matches and passen to store data consistently in a single transaction
      * when data successfully stored, the offlinetoken in wettkampf table is to be removed
      * @return ok or list of errors
@@ -364,6 +363,7 @@ public class SyncService implements ServiceFacade {
 
         return matchDTOs;
     }
+
 
     /**
     * I delete the offline token of a wettkampf unconditionally
