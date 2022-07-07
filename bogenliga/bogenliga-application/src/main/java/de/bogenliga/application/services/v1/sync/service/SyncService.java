@@ -405,7 +405,7 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission({UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MANNSCHAFT})
-    public void handleSync(@RequestBody SyncWrapper syncPayload, Principal principal) {
+    public List<MatchDTO> handleSync(@RequestBody SyncWrapper syncPayload, Principal principal) {
 
         final long wettkampfId = syncPayload.getWettkampfId();
         final String offlineToken = syncPayload.getOfflineToken();
@@ -423,7 +423,7 @@ public class SyncService implements ServiceFacade {
         logger.debug("passe: {}", syncPayload.getPasse());
         logger.debug("tomitglieder: {}",syncPayload.getMannschaftsmitglied());
 
-        logger.debug("saving mitglieder------------------------------------------------------------------------------------------------------------");
+        logger.debug("saving mitglieder--------------------------------------------------------------------------------");
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
         try {
@@ -431,21 +431,23 @@ public class SyncService implements ServiceFacade {
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
         }
-        logger.debug("start match handling -------------------------------------------------------------------------------------------------");
+        logger.debug("start match handling ----------------------------------------------------------------------------");
         // handle matches
+        List<MatchDTO> response;
         final List<LigaSyncMatchDTO> matchDTOS = syncPayload.getMatch();
         final List<LigaSyncPasseDTO> passeDTOS = syncPayload.getPasse();
         try {
-            synchronizeMatchesAndPassen(matchDTOS, passeDTOS, principal);
+            response = synchronizeMatchesAndPassen(matchDTOS, passeDTOS, principal);
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
         }
-        logger.debug("done syncing--------------------------------------------------------------------------------------------------------------------");
+        logger.debug("done syncing-------------------------------------------------------------------------------------");
         // delete token -> done in match sync
         // TODO: refactor token deletion to here
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
         wettkampfComponent.deleteOfflineToken(wettkampfDO, userId);
 
         // TODO: return value
+        return response;
     }
 }
