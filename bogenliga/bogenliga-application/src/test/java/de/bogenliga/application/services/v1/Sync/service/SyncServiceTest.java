@@ -1024,13 +1024,13 @@ public class SyncServiceTest {
         MannschaftsMitgliedDTO toBeSaved = getMannschaftsmitgliedDTO();
 
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.checkOfflineTokenAndSynchronizeMannschaftsMitglieder(-1, input, principal));
+                .isThrownBy(() -> underTest.synchronizeMannschaftsMitglieder(-1, input, principal));
 
 
         when(mannschaftsMitgliedService.create(any(), any())).thenReturn(toBeSaved);
 
 
-        ResponseEntity responseEntity = underTest.checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, input, principal);
+        ResponseEntity responseEntity = underTest.synchronizeMannschaftsMitglieder(wettkampfId, input, principal);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertThat(responseEntity.getBody()).isNotNull();
@@ -1043,7 +1043,7 @@ public class SyncServiceTest {
     public void testSaveMannschaftsmitgliederNull() {
 
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, null, principal));
+                .isThrownBy(() -> underTest.synchronizeMannschaftsMitglieder(wettkampfId, null, principal));
     }
 }
 

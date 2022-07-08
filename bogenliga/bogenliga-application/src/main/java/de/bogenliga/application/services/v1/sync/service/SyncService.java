@@ -266,7 +266,7 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
-    public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
+    public ResponseEntity synchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
                                                                                @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
                                                                                final Principal principal
     ) throws NoPermissionException {
@@ -297,9 +297,7 @@ public class SyncService implements ServiceFacade {
 
     /**
      * I will recieve both lists: matches and passen to store data consistently in a single transaction
-     * when data successfully stored, the offlinetoken in wettkampf table is to be removed
      * @return ok or list of errors
-     * in case of ok - client should delete offline data
      */
     @PostMapping(value = "syncSchusszettel",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -399,7 +397,7 @@ public class SyncService implements ServiceFacade {
 
 
     /**
-     * I handle synchronization by calling checkOfflineTokenAndSynchronizeMannschaftsMitglieder() and synchronizeMatchesAndPassen()
+     * I handle synchronization by calling synchronizeMannschaftsMitglieder() and synchronizeMatchesAndPassen()
      * @param syncPayload is {@link SyncWrapper}
      * @return {@link List<MatchDTO>}
      */
@@ -422,7 +420,7 @@ public class SyncService implements ServiceFacade {
         // handle mannschaftsmitglieder
         final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
         try {
-            checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal);
+            synchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal);
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
         }
