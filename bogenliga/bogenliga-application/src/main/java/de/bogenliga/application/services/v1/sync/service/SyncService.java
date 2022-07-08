@@ -231,8 +231,8 @@ public class SyncService implements ServiceFacade {
 
         // prevent going offline for a wettkampf that is already offline
         // as getCurrentUserId does not work, it does so categorically: any wettkampf that is offline, can not be accessed.
-        // once it works, we could allow the same user that went offline before to send a second token to cover
-        // the edge case of and offline token being created and saved but not received by the frontend
+        // once it works, we could allow the same user, that went offline before, to send a second token to cover
+        // the edge case of an offline token being created and saved, but NOT received by the frontend -> inconsistency
         if(wettkampfComponent.wettkampfIsOffline(wettkampfId)){
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERR_WETTKAMPF_ALREADY_OFFLINE);
         }
@@ -250,10 +250,10 @@ public class SyncService implements ServiceFacade {
 
 
     /**
-     * I will recieve the OfflineToken form Client
-     * and a list of new Mannschaftmitglieder (identified by missing IDs)
-     * the follwing checks will be performed:
-     * - are all new Manschaftsmitglieder existing in Backend -> otherwise one Error per missing entry
+     * I will receive the OfflineToken from Client
+     * and a {@link List<LigaSyncMannschaftsmitgliedDTO>} (identified by missing IDs)
+     * the following checks will be performed:
+     * - are all new Mannschaftsmitglieder existing in Backend -> otherwise one Error per missing entry
      *   including Rückennummern ugnd Name der Mannschaft
      * @author Katrin Kober
      * @return ok or list of errors
@@ -330,7 +330,6 @@ public class SyncService implements ServiceFacade {
                     logger.debug("second match found: match 1 {} match 2 {} ", twoMatchesDTO.get(0).getId(), twoMatchesDTO.get(1).getId());
                     logger.debug("second match found: matchnr 1 {} matchnr 2 {} ", twoMatchesDTO.get(0).getPassen().get(0).getMatchNr(), twoMatchesDTO.get(1).getPassen().get(0).getMatchNr());
                     matchService.saveMatches(twoMatchesDTO, principal);
-                    logger.debug("save matches");
                 }
             }
         }
@@ -391,7 +390,7 @@ public class SyncService implements ServiceFacade {
         try {
             synchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal);
         } catch (NoPermissionException e) {
-            throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Error syncing MannschaftsMitglieder");
         }
         // handle matches
         List<MatchDTO> savedMatchDTOs;
@@ -400,7 +399,7 @@ public class SyncService implements ServiceFacade {
         try {
             savedMatchDTOs = synchronizeMatchesAndPassen(matchDTOS, passeDTOS, principal);
         } catch (NoPermissionException e) {
-            throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
+            throw new BusinessException(ErrorCode.NO_PERMISSION_ERROR, "Error syncing Matches and Passen");
         }
         // delete offline token
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
