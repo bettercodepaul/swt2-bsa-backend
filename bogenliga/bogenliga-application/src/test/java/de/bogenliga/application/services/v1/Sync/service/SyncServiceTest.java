@@ -486,27 +486,26 @@ public class SyncServiceTest {
 
     }
 
-    public static LigaSyncMatchDTO getLigaSyncMatchDTO() {
-        return new LigaSyncMatchDTO (
+    public static MatchDTO getLigaSyncMatchDTO() {
+        List<PasseDTO> passen = new ArrayList<>();
+        passen.add(getPasseDTO());
+        passen.add(getPasseDTO());
+        return new MatchDTO (
                 MATCH_ID,
+                MATCH_NR,
                 version,
                 wettkampfId,
-                MATCH_NR.intValue(),
-                MATCH_SCHEIBENNUMMER.intValue(),
+                MATCH_MANNSCHAFT_ID,
+                MATCH_BEGEGNUNG,
+                MATCH_SCHEIBENNUMMER,
                 MATCH_MATCHPUNKTE,
                 MATCH_SATZPUNKTE,
-                MATCH_MANNSCHAFT_ID,
-                MATCH_MANNSCHAFT_NAME,
-                MATCH_NAME_GEGNER,
-                MATCH_SCHEIBENNUMMER_GEGNER.intValue(),
-                MATCH_ID_GEGNER,
-                MATCH_NAECHSTE_MATCH_ID,
-                MATCH_NAECHSTE_NAECHSTE_MATCH_ID,
-                STRAFPUNKTe_SATZ_1,
-                STRAFPUNKTe_SATZ_2,
-                STRAFPUNKTe_SATZ_3,
-                STRAFPUNKTe_SATZ_4,
-                STRAFPUNKTe_SATZ_5
+                passen,
+                STRAFPUNKTe_SATZ_1.longValue(),
+                STRAFPUNKTe_SATZ_2.longValue(),
+                STRAFPUNKTe_SATZ_3.longValue(),
+                STRAFPUNKTe_SATZ_4.longValue(),
+                STRAFPUNKTe_SATZ_5.longValue()
         );
     }
 
@@ -578,18 +577,18 @@ public class SyncServiceTest {
         );
     }
 
-    private static LigaSyncMannschaftsmitgliedDTO getLigaSyncMannschaftsMitgliedDTO (Long id) {
-        return new LigaSyncMannschaftsmitgliedDTO(
+    private static MannschaftsMitgliedDTO getLigaSyncMannschaftsMitgliedDTO (Long id) {
+        return new MannschaftsMitgliedDTO(
                 id,
-                version,
                 mannschaftsId,
                 dsbMitgliedId,
+                dsbMitgliedEingesetzt,
                 rueckennummer
         );
     }
 
-    protected List<LigaSyncMannschaftsmitgliedDTO> getLigaSyncMannschaftsMitgliederDTO() {
-        List<LigaSyncMannschaftsmitgliedDTO> mm_sync_dtos = new ArrayList<>();
+    protected List<MannschaftsMitgliedDTO> getLigaSyncMannschaftsMitgliederDTO() {
+        List<MannschaftsMitgliedDTO> mm_sync_dtos = new ArrayList<>();
         mm_sync_dtos.add(getLigaSyncMannschaftsMitgliedDTO(MM_ID_1));
         mm_sync_dtos.add(getLigaSyncMannschaftsMitgliedDTO(MM_ID_2));
         mm_sync_dtos.add(getLigaSyncMannschaftsMitgliedDTO(MM_ID_3));
@@ -662,7 +661,7 @@ public class SyncServiceTest {
 
     @Test
     public void ligaSyncMatchDTOToString(){
-        final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
+        final MatchDTO ligaSyncMatchDTO = getMatchDTO();
         final String actual = ligaSyncMatchDTO.toString();
 
         assertThat(actual)
@@ -708,73 +707,53 @@ public class SyncServiceTest {
 
     @Test
     public void ligaSyncMatchDTOGetterSetterTest(){
-        final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
-        LigaSyncMatchDTO newLigaSyncMatchDTO = new LigaSyncMatchDTO();
-        newLigaSyncMatchDTO.setMatchIdGegner(ligaSyncMatchDTO.getMatchIdGegner());
-        newLigaSyncMatchDTO.setMatchNr(ligaSyncMatchDTO.getMatchNr());
+        final MatchDTO ligaSyncMatchDTO = getMatchDTO();
+        MatchDTO newLigaSyncMatchDTO = new MatchDTO();
         newLigaSyncMatchDTO.setWettkampfId(ligaSyncMatchDTO.getWettkampfId());
         newLigaSyncMatchDTO.setVersion(ligaSyncMatchDTO.getVersion());
         newLigaSyncMatchDTO.setId(ligaSyncMatchDTO.getId());
         newLigaSyncMatchDTO.setMatchpunkte(ligaSyncMatchDTO.getMatchpunkte());
         newLigaSyncMatchDTO.setMannschaftName(ligaSyncMatchDTO.getMannschaftName());
-        newLigaSyncMatchDTO.setMatchScheibennummer(ligaSyncMatchDTO.getMatchScheibennummer());
         newLigaSyncMatchDTO.setMannschaftId(ligaSyncMatchDTO.getMannschaftId());
-        newLigaSyncMatchDTO.setNaechsteMatchId(ligaSyncMatchDTO.getNaechsteMatchId());
-        newLigaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(ligaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId());
-        newLigaSyncMatchDTO.setNameGegner(ligaSyncMatchDTO.getNameGegner());
         newLigaSyncMatchDTO.setSatzpunkte(ligaSyncMatchDTO.getSatzpunkte());
-        newLigaSyncMatchDTO.setScheibennummerGegner(ligaSyncMatchDTO.getScheibennummerGegner());
-        newLigaSyncMatchDTO.setStrafpunkteSatz1(ligaSyncMatchDTO.getStrafpunkteSatz1());
-        newLigaSyncMatchDTO.setStrafpunkteSatz2(ligaSyncMatchDTO.getStrafpunkteSatz2());
-        newLigaSyncMatchDTO.setStrafpunkteSatz3(ligaSyncMatchDTO.getStrafpunkteSatz3());
-        newLigaSyncMatchDTO.setStrafpunkteSatz4(ligaSyncMatchDTO.getStrafpunkteSatz4());
-        newLigaSyncMatchDTO.setStrafpunkteSatz5(ligaSyncMatchDTO.getStrafpunkteSatz5());
+        newLigaSyncMatchDTO.setScheibenNummer(ligaSyncMatchDTO.getScheibenNummer());
+        newLigaSyncMatchDTO.setStrafPunkteSatz1(ligaSyncMatchDTO.getStrafPunkteSatz1());
+        newLigaSyncMatchDTO.setStrafPunkteSatz2(ligaSyncMatchDTO.getStrafPunkteSatz2());
+        newLigaSyncMatchDTO.setStrafPunkteSatz3(ligaSyncMatchDTO.getStrafPunkteSatz3());
+        newLigaSyncMatchDTO.setStrafPunkteSatz4(ligaSyncMatchDTO.getStrafPunkteSatz4());
+        newLigaSyncMatchDTO.setStrafPunkteSatz5(ligaSyncMatchDTO.getStrafPunkteSatz5());
 
         assertThat(newLigaSyncMatchDTO.getId()).isEqualTo(ligaSyncMatchDTO.getId());
-        assertThat(newLigaSyncMatchDTO.getMatchIdGegner()).isEqualTo(ligaSyncMatchDTO.getMatchIdGegner());
-        assertThat(newLigaSyncMatchDTO.getMatchNr()).isEqualTo(ligaSyncMatchDTO.getMatchNr());
         assertThat(newLigaSyncMatchDTO.getWettkampfId()).isEqualTo(ligaSyncMatchDTO.getWettkampfId());
         assertThat(newLigaSyncMatchDTO.getVersion()).isEqualTo(ligaSyncMatchDTO.getVersion());
-        assertThat(newLigaSyncMatchDTO.getMatchIdGegner()).isEqualTo(ligaSyncMatchDTO.getMatchIdGegner());
         assertThat(newLigaSyncMatchDTO.getMatchpunkte()).isEqualTo(ligaSyncMatchDTO.getMatchpunkte());
         assertThat(newLigaSyncMatchDTO.getMannschaftName()).isEqualTo(ligaSyncMatchDTO.getMannschaftName());
-        assertThat(newLigaSyncMatchDTO.getMatchScheibennummer()).isEqualTo(ligaSyncMatchDTO.getMatchScheibennummer());
         assertThat(newLigaSyncMatchDTO.getMannschaftId()).isEqualTo(ligaSyncMatchDTO.getMannschaftId());
         assertThat(newLigaSyncMatchDTO.getMannschaftId()).isEqualTo(ligaSyncMatchDTO.getMannschaftId());
-        assertThat(newLigaSyncMatchDTO.getNaechsteMatchId()).isEqualTo(ligaSyncMatchDTO.getNaechsteMatchId());
-        assertThat(newLigaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId()).isEqualTo(ligaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId());
-        assertThat(newLigaSyncMatchDTO.getNameGegner()).isEqualTo(ligaSyncMatchDTO.getNameGegner());
-        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz1()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz1());
-        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz2()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz2());
-        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz3()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz3());
-        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz4()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz4());
-        assertThat(newLigaSyncMatchDTO.getStrafpunkteSatz5()).isEqualTo(ligaSyncMatchDTO.getStrafpunkteSatz5());
+         assertThat(newLigaSyncMatchDTO.getStrafPunkteSatz1()).isEqualTo(ligaSyncMatchDTO.getStrafPunkteSatz1());
+        assertThat(newLigaSyncMatchDTO.getStrafPunkteSatz2()).isEqualTo(ligaSyncMatchDTO.getStrafPunkteSatz2());
+        assertThat(newLigaSyncMatchDTO.getStrafPunkteSatz3()).isEqualTo(ligaSyncMatchDTO.getStrafPunkteSatz3());
+        assertThat(newLigaSyncMatchDTO.getStrafPunkteSatz4()).isEqualTo(ligaSyncMatchDTO.getStrafPunkteSatz4());
+        assertThat(newLigaSyncMatchDTO.getStrafPunkteSatz5()).isEqualTo(ligaSyncMatchDTO.getStrafPunkteSatz5());
         assertThat(newLigaSyncMatchDTO.getSatzpunkte()).isEqualTo(ligaSyncMatchDTO.getSatzpunkte());
     }
 
     @Test
     public void ligaSyncMatchDTOEqualsTest(){
-        final LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
-        LigaSyncMatchDTO newLigaSyncMatchDTO = new LigaSyncMatchDTO();
-        newLigaSyncMatchDTO.setMatchIdGegner(ligaSyncMatchDTO.getMatchIdGegner());
-        newLigaSyncMatchDTO.setMatchNr(ligaSyncMatchDTO.getMatchNr());
+        final MatchDTO ligaSyncMatchDTO = getMatchDTO();
+        MatchDTO newLigaSyncMatchDTO = new MatchDTO();
         newLigaSyncMatchDTO.setId(ligaSyncMatchDTO.getId());
         newLigaSyncMatchDTO.setWettkampfId(ligaSyncMatchDTO.getWettkampfId());
         newLigaSyncMatchDTO.setVersion(ligaSyncMatchDTO.getVersion());
         newLigaSyncMatchDTO.setMatchpunkte(ligaSyncMatchDTO.getMatchpunkte());
         newLigaSyncMatchDTO.setMannschaftName(ligaSyncMatchDTO.getMannschaftName());
-        newLigaSyncMatchDTO.setMatchScheibennummer(ligaSyncMatchDTO.getMatchScheibennummer());
         newLigaSyncMatchDTO.setMannschaftId(ligaSyncMatchDTO.getMannschaftId());
-        newLigaSyncMatchDTO.setNaechsteMatchId(ligaSyncMatchDTO.getNaechsteMatchId());
-        newLigaSyncMatchDTO.setNaechsteNaechsteMatchNrMatchId(ligaSyncMatchDTO.getNaechsteNaechsteMatchNrMatchId());
-        newLigaSyncMatchDTO.setNameGegner(ligaSyncMatchDTO.getNameGegner());
         newLigaSyncMatchDTO.setSatzpunkte(ligaSyncMatchDTO.getSatzpunkte());
-        newLigaSyncMatchDTO.setScheibennummerGegner(ligaSyncMatchDTO.getScheibennummerGegner());
-        newLigaSyncMatchDTO.setStrafpunkteSatz1(ligaSyncMatchDTO.getStrafpunkteSatz1());
-        newLigaSyncMatchDTO.setStrafpunkteSatz2(ligaSyncMatchDTO.getStrafpunkteSatz2());
-        newLigaSyncMatchDTO.setStrafpunkteSatz3(ligaSyncMatchDTO.getStrafpunkteSatz3());
-        newLigaSyncMatchDTO.setStrafpunkteSatz4(ligaSyncMatchDTO.getStrafpunkteSatz4());
-        newLigaSyncMatchDTO.setStrafpunkteSatz5(ligaSyncMatchDTO.getStrafpunkteSatz5());
+        newLigaSyncMatchDTO.setStrafPunkteSatz1(ligaSyncMatchDTO.getStrafPunkteSatz1());
+        newLigaSyncMatchDTO.setStrafPunkteSatz2(ligaSyncMatchDTO.getStrafPunkteSatz2());
+        newLigaSyncMatchDTO.setStrafPunkteSatz3(ligaSyncMatchDTO.getStrafPunkteSatz3());
+        newLigaSyncMatchDTO.setStrafPunkteSatz4(ligaSyncMatchDTO.getStrafPunkteSatz4());
+        newLigaSyncMatchDTO.setStrafPunkteSatz5(ligaSyncMatchDTO.getStrafPunkteSatz5());
 
         assertTrue(newLigaSyncMatchDTO.equals(ligaSyncMatchDTO));
     }
@@ -878,7 +857,7 @@ public class SyncServiceTest {
 
         // Setting up incoming data for synchronizeMatchesAndPassen
         // 4 Matches in total
-        ArrayList<LigaSyncMatchDTO> ligaSyncMatchDTOs = new ArrayList<>();
+        ArrayList<MatchDTO> ligaSyncMatchDTOs = new ArrayList<>();
         ligaSyncMatchDTOs.add(getLigaSyncMatchDTO());
         ligaSyncMatchDTOs.add(getLigaSyncMatchDTO());
         ligaSyncMatchDTOs.add(getLigaSyncMatchDTO());
@@ -892,9 +871,6 @@ public class SyncServiceTest {
         ligaSyncMatchDTOs.get(2).setId(matchIDs[2]);
         ligaSyncMatchDTOs.get(3).setId(matchIDs[3]);
 
-        // Change two MatchNr and begegnung to check if synchronizeMatchesAndPassen can seperate Matches
-        ligaSyncMatchDTOs.get(2).setMatchNr(112);
-        ligaSyncMatchDTOs.get(3).setMatchNr(112);
 
         ArrayList<LigaSyncPasseDTO> ligaSyncPasseDTOs = new ArrayList<>();
         ligaSyncPasseDTOs.add(getLigaSyncPasseDTO());
@@ -932,8 +908,6 @@ public class SyncServiceTest {
         expectedMatchDTOs.get(2).setId(matchIDs[2]);
         expectedMatchDTOs.get(3).setId(matchIDs[3]);
 
-        expectedMatchDTOs.get(2).setNr(ligaSyncMatchDTOs.get(2).getMatchNr().longValue());
-        expectedMatchDTOs.get(3).setNr(ligaSyncMatchDTOs.get(3).getMatchNr().longValue());
 
         // Set List<PasseDTO> in MatchDTO
         for (int i = 0; i < expectedMatchDTOs.size(); i++) {
@@ -956,7 +930,7 @@ public class SyncServiceTest {
 
 
         try {
-            List<MatchDTO> actual = underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOs, ligaSyncPasseDTOs, principal);
+            List<MatchDTO> actual = underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOs, principal);
             assertThat(actual).isNotNull().isNotEmpty().hasSize(4);
 
             for (int i = 0; i < expectedMatchDTOs.size(); i++) {
@@ -980,18 +954,18 @@ public class SyncServiceTest {
         ligaSyncPasseDTOS.add(ligaSyncPasseDTO);
 
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(null, ligaSyncPasseDTOS, principal));
+                .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(null,  principal));
     }
 
    @Test
     public void synchronizeMatchesAndPassen_PasseNull() {
-        LigaSyncMatchDTO ligaSyncMatchDTO = getLigaSyncMatchDTO();
-        ArrayList<LigaSyncMatchDTO> ligaSyncMatchDTOS = new ArrayList<>();
+        MatchDTO ligaSyncMatchDTO = getMatchDTO();
+        ArrayList<MatchDTO> ligaSyncMatchDTOS = new ArrayList<>();
         ligaSyncMatchDTOS.add(ligaSyncMatchDTO);
         ligaSyncMatchDTOS.add(ligaSyncMatchDTO);
 
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOS, null, principal));
+                .isThrownBy(() -> underTest.synchronizeMatchesAndPassen(ligaSyncMatchDTOS, principal));
     }
 
     @Test
@@ -1020,7 +994,7 @@ public class SyncServiceTest {
     @Test
     public void testCheckOfflineTokenAndSynchronizeMannschaftsMitglieder() throws Exception {
 
-        List<LigaSyncMannschaftsmitgliedDTO> input = getLigaSyncMannschaftsMitgliederDTO();
+        List<MannschaftsMitgliedDTO> input = getLigaSyncMannschaftsMitgliederDTO();
         MannschaftsMitgliedDTO toBeSaved = getMannschaftsmitgliedDTO();
 
         assertThatExceptionOfType(BusinessException.class)

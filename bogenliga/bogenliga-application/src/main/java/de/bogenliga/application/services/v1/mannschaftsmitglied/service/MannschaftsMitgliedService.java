@@ -106,7 +106,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
     }
 
-    @GetMapping(value = "{mannschaftsId}/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{mannschaftsId}//byWettkampf/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findSchuetzenInUebergelegenerLiga(@PathVariable("mannschaftsId") final long mannschaftsId,
                                                                           @PathVariable("wettkampfId") final long wettkampfId) {

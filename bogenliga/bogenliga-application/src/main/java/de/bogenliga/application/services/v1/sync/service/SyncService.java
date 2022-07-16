@@ -233,10 +233,11 @@ public class SyncService implements ServiceFacade {
         // as getCurrentUserId does not work, it does so categorically: any wettkampf that is offline, can not be accessed.
         // once it works, we could allow the same user that went offline before to send a second token to cover
         // the edge case of and offline token being created and saved but not received by the frontend
-        if(wettkampfComponent.wettkampfIsOffline(wettkampfId)){
+//TODO workaround for TEST only - go offline even when offline token set
+/*        if(wettkampfComponent.wettkampfIsOffline(wettkampfId)){
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, ERR_WETTKAMPF_ALREADY_OFFLINE);
         }
-        // create token in business layer and persist it + return to frontend
+*/        // create token in business layer and persist it + return to frontend
         final long userId = UserProvider.getCurrentUserId(principal);
         String offlineToken = wettkampfComponent.generateOfflineToken(userId);
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
@@ -267,7 +268,7 @@ public class SyncService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_MANNSCHAFT, UserPermission.CAN_MODIFY_MY_VEREIN})
     public ResponseEntity checkOfflineTokenAndSynchronizeMannschaftsMitglieder(@PathVariable("id") final long wettkampfId,
-                                                                               @RequestBody final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitgliedDTOList,
+                                                                               @RequestBody final List<MannschaftsMitgliedDTO> mannschaftsMitgliedDTOList,
                                                                                final Principal principal
     ) throws NoPermissionException {
 
@@ -278,9 +279,9 @@ public class SyncService implements ServiceFacade {
 
         List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
 
-        for(LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
+        for(MannschaftsMitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
 
-            MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = LigaSyncMannschaftsmitgliedDTOMapper.toMannschaftsmitgliedDTO.apply(ligaSyncMannschaftsmitgliedDTO);
+            MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = ligaSyncMannschaftsmitgliedDTO;
 
             MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
 
@@ -305,13 +306,12 @@ public class SyncService implements ServiceFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_WETTKAMPF)
-    public List<MatchDTO> synchronizeMatchesAndPassen(List<LigaSyncMatchDTO> ligaSyncMatchDTOs,
-                                                      List<LigaSyncPasseDTO> ligaSyncPasseDTOs,
+    public List<MatchDTO> synchronizeMatchesAndPassen(List<MatchDTO> ligaSyncMatchDTOs,
                                                       Principal principal) throws NoPermissionException {
 
         List<MatchDTO> matchDTOs = new ArrayList<>();
 
-        for (LigaSyncMatchDTO ligasyncmatchDTO : ligaSyncMatchDTOs) {
+        for (MatchDTO ligasyncmatchDTO : ligaSyncMatchDTOs) {
 
             // Get MatchId and WettkampfId from LigaSyncMatchDTO
             Long matchId = ligasyncmatchDTO.getId();
@@ -325,7 +325,7 @@ public class SyncService implements ServiceFacade {
             Long begegnung = matchDO.getBegegnung();
 
             // Map LigaSyncMatchDTO to MatchDTO
-            MatchDTO matchDTO = LigaSyncMatchDTOMapper.toMatchDTO.apply(ligasyncmatchDTO);
+            MatchDTO matchDTO = ligasyncmatchDTO;
 
             // Set begegnung, WettkampfTag and WettkampfTyp in MatchDTO
             matchDTO.setBegegnung(begegnung);
@@ -333,14 +333,7 @@ public class SyncService implements ServiceFacade {
 
             // Map LigaSyncPasseDTO to PasseDTO
             // Set List<PasseDTO> to MatchDTO where MatchId is the same
-            matchDTO.setPassen(ligaSyncPasseDTOs.stream().map(LigaSyncPasseDTOMapper.toPasseDTO)
-                    .filter(passeDTO -> passeDTO.getMatchId().equals(ligasyncmatchDTO.getId()))
-                    .collect(Collectors.toList()));
-            logger.debug("match und passe id : {} {}", matchDTO.getId(), matchDTO.getPassen().get(0).getMatchId() );
-            for (PasseDTO passeDTO : matchDTO.getPassen()) {
-                passeDTO.setMatchNr(matchDTO.getNr());
-            }
-            matchDTOs.add(matchDTO);
+             matchDTOs.add(matchDTO);
         }
         logger.debug("match list in snycmatches {}", matchDTOs);
         // Go through received matches (matchDTOs) and search for two matches with same wettkampfID, Nr, Begegnung
@@ -420,18 +413,17 @@ public class SyncService implements ServiceFacade {
         wettkampfComponent.checkOfflineToken(wettkampfId, offlineToken);
 
         // handle mannschaftsmitglieder
-        final List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliedDTOS = syncPayload.getMannschaftsmitglied();
+        final List<MannschaftsMitgliedDTO> mannschaftsmitgliederDTO = syncPayload.getMannschaftsmitglied();
         try {
-            checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliedDTOS, principal);
+            checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliederDTO, principal);
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
         }
         // handle matches
         List<MatchDTO> response;
-        final List<LigaSyncMatchDTO> matchDTOS = syncPayload.getMatch();
-        final List<LigaSyncPasseDTO> passeDTOS = syncPayload.getPasse();
+        final List<MatchDTO> matchDTOS = syncPayload.getMatch();
         try {
-            response = synchronizeMatchesAndPassen(matchDTOS, passeDTOS, principal);
+            response = synchronizeMatchesAndPassen(matchDTOS, principal);
         } catch (NoPermissionException e) {
             throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
         }

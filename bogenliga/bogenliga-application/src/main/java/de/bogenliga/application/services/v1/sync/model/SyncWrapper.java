@@ -2,60 +2,49 @@ package de.bogenliga.application.services.v1.sync.model;
 
 import java.util.List;
 import de.bogenliga.application.common.service.types.DataTransferObject;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
+import de.bogenliga.application.services.v1.match.model.MatchDTO;
 
 /**
  * I wrap request body of the synchronization POST request that contains
- * {@link List<LigaSyncMatchDTO>}, {@link List<LigaSyncPasseDTO>}, {@link List<LigaSyncMannschaftsmitgliedDTO>}
+ * {@link List<MatchDTO>}, {@link List<MannschaftsMitgliedDTO>}
  * offline token as string and the wettkampfID as long
  * @author Jonas Sigloch
  */
 public class SyncWrapper implements DataTransferObject {
-    private List<LigaSyncMatchDTO> match;
-    private List<LigaSyncPasseDTO> passe;
-    private List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitglieder;
+    private List<MatchDTO> match;
+    private List<MannschaftsMitgliedDTO> mannschaftsMitglieder;
     private String offlineToken;
     private long wettkampfId;
 
-    public SyncWrapper(List<LigaSyncMatchDTO> match,
-                       List<LigaSyncPasseDTO> passe,
-                       List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitglieder,
+    public SyncWrapper(List<MatchDTO> match,
+                       List<MannschaftsMitgliedDTO> mannschaftsMitglieder,
                        String offlineToken,
                        long wettkampfId) {
         this.match = match;
-        this.passe = passe;
         this.mannschaftsMitglieder = mannschaftsMitglieder;
         this.offlineToken = offlineToken;
         this.wettkampfId = wettkampfId;
     }
 
 
-    public List<LigaSyncMatchDTO> getMatch() {
+    public List<MatchDTO> getMatch() {
         return match;
     }
 
 
-    public void setMatch(List<LigaSyncMatchDTO> match) {
+    public void setMatch(List<MatchDTO> match) {
         this.match = match;
     }
 
 
-    public List<LigaSyncPasseDTO> getPasse() {
-        return passe;
-    }
-
-
-    public void setPasse(List<LigaSyncPasseDTO> passe) {
-        this.passe = passe;
-    }
-
-
-    public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitglied() {
+     public List<MannschaftsMitgliedDTO> getMannschaftsmitglied() {
         return mannschaftsMitglieder;
     }
 
 
     public void setMannschaftsmitglied(
-            List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitglied) {
+            List<MannschaftsMitgliedDTO> mannschaftsmitglied) {
         this.mannschaftsMitglieder = mannschaftsmitglied;
     }
 
@@ -83,7 +72,6 @@ public class SyncWrapper implements DataTransferObject {
     public String toString() {
         return "SyncWrapper{" +
                 "match=" + match +
-                ", passe=" + passe +
                 ", mannschaftsMitglieder=" + mannschaftsMitglieder +
                 ", offlineToken='" + offlineToken + '\'' +
                 ", wettkampfId=" + wettkampfId +
