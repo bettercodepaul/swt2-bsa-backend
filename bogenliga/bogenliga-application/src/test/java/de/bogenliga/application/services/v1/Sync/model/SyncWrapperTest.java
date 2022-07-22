@@ -36,7 +36,7 @@ public class SyncWrapperTest {
 
 
     private SyncWrapper getSyncWrapper() {
-        return new SyncWrapper(matchList, mitgliedList, offlineToken, wettkampfId);
+        return new SyncWrapper(wettkampfId, offlineToken, matchList, mitgliedList);
     }
 
     @Test

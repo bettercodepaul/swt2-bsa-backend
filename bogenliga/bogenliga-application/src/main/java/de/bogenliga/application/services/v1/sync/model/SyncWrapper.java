@@ -12,40 +12,41 @@ import de.bogenliga.application.services.v1.match.model.MatchDTO;
  * @author Jonas Sigloch
  */
 public class SyncWrapper implements DataTransferObject {
-    private List<MatchDTO> match;
-    private List<MannschaftsMitgliedDTO> mannschaftsMitglieder;
-    private String offlineToken;
     private long wettkampfId;
+    private String offlineToken;
+    private List<MatchDTO> matchesDTO;
+    private List<MannschaftsMitgliedDTO> mannschaftsmitgliederDTO;
 
-    public SyncWrapper(List<MatchDTO> match,
-                       List<MannschaftsMitgliedDTO> mannschaftsMitglieder,
+    public SyncWrapper(long wettkampfId,
                        String offlineToken,
-                       long wettkampfId) {
-        this.match = match;
-        this.mannschaftsMitglieder = mannschaftsMitglieder;
+                       List<MatchDTO> matchesDTO,
+                       List<MannschaftsMitgliedDTO> mannschaftsmitgliederDTO
+                       ) {
+        this.matchesDTO = matchesDTO;
+        this.mannschaftsmitgliederDTO = mannschaftsmitgliederDTO;
         this.offlineToken = offlineToken;
         this.wettkampfId = wettkampfId;
     }
 
 
     public List<MatchDTO> getMatch() {
-        return match;
+        return matchesDTO;
     }
 
 
     public void setMatch(List<MatchDTO> match) {
-        this.match = match;
+        this.matchesDTO = match;
     }
 
 
      public List<MannschaftsMitgliedDTO> getMannschaftsmitglied() {
-        return mannschaftsMitglieder;
+        return mannschaftsmitgliederDTO;
     }
 
 
     public void setMannschaftsmitglied(
             List<MannschaftsMitgliedDTO> mannschaftsmitglied) {
-        this.mannschaftsMitglieder = mannschaftsmitglied;
+        this.mannschaftsmitgliederDTO = mannschaftsmitglied;
     }
 
 
@@ -71,8 +72,8 @@ public class SyncWrapper implements DataTransferObject {
     @Override
     public String toString() {
         return "SyncWrapper{" +
-                "match=" + match +
-                ", mannschaftsMitglieder=" + mannschaftsMitglieder +
+                "matchesDTO=" + matchesDTO +
+                ", mannschaftsmitgliederDTO=" + mannschaftsmitgliederDTO +
                 ", offlineToken='" + offlineToken + '\'' +
                 ", wettkampfId=" + wettkampfId +
                 '}';

@@ -280,13 +280,13 @@ public class SyncService implements ServiceFacade {
         List<MannschaftsmitgliedDO>  savedMannschaftsMitglieder = new ArrayList<>();
 
         for(MannschaftsMitgliedDTO ligaSyncMannschaftsmitgliedDTO: mannschaftsMitgliedDTOList){
-
-            MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = ligaSyncMannschaftsmitgliedDTO;
-
-            MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
-
-
-            savedMannschaftsMitglieder.add( MannschaftsMitgliedDTOMapper.toDO.apply(addedNewMannschaftsMitgliedDO));
+            // wenn offline ein neues Mannschaftsmitlgied anlegt wurde, dann hat es noch keine ID (da diese im Backend vergeben wird)
+            // daher muss man diese Datensätze neu anlegen.
+            if(ligaSyncMannschaftsmitgliedDTO.getId() == null) {
+                MannschaftsMitgliedDTO newMannschaftsMitgliedDTO = ligaSyncMannschaftsmitgliedDTO;
+                MannschaftsMitgliedDTO addedNewMannschaftsMitgliedDO = mannschaftsMitgliedService.create(newMannschaftsMitgliedDTO, principal);
+                savedMannschaftsMitglieder.add(MannschaftsMitgliedDTOMapper.toDO.apply(addedNewMannschaftsMitgliedDO));
+            }
 
         }
 
@@ -414,18 +414,22 @@ public class SyncService implements ServiceFacade {
 
         // handle mannschaftsmitglieder
         final List<MannschaftsMitgliedDTO> mannschaftsmitgliederDTO = syncPayload.getMannschaftsmitglied();
-        try {
-            checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliederDTO, principal);
-        } catch (NoPermissionException e) {
-            throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
+        if(mannschaftsmitgliederDTO.size() != 0) {
+            try {
+                checkOfflineTokenAndSynchronizeMannschaftsMitglieder(wettkampfId, mannschaftsmitgliederDTO, principal);
+            } catch (NoPermissionException e) {
+                throw new BusinessException(ErrorCode.UNDEFINED, "error syncing mitglieder");
+            }
         }
         // handle matches
-        List<MatchDTO> response;
+        List<MatchDTO> response = null;
         final List<MatchDTO> matchDTOS = syncPayload.getMatch();
-        try {
-            response = synchronizeMatchesAndPassen(matchDTOS, principal);
-        } catch (NoPermissionException e) {
-            throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
+        if(matchDTOS.size() != 0){
+            try {
+                response = synchronizeMatchesAndPassen(matchDTOS, principal);
+            } catch (NoPermissionException e) {
+                throw new BusinessException(ErrorCode.UNDEFINED, "error syncing matches and passen");
+            }
         }
         // delete offline token
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfId);
