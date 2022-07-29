@@ -6,7 +6,6 @@
 
 # Bogenliga Application
 
-
 ## Content
 
 - Spring Boot with REST services
