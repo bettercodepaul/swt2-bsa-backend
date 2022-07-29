@@ -840,6 +840,7 @@ public class MatchService implements ServiceFacade {
             throw new NoPermissionException();
         }
 
+
         Preconditions.checkNotNull(matchDTOs,
                 String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST));
         Preconditions.checkArgument(matchDTOs.size() == 2, String.format(
@@ -865,12 +866,54 @@ public class MatchService implements ServiceFacade {
 
         this.log(matchDTO1, SERVICE_SAVE_MATCHES);
         this.log(matchDTO2, SERVICE_SAVE_MATCHES);
+        if (true){
+            if(true){
+                if (true){
+                    if(true){
+                        if (true){
+                            if(true){
+                                if (true){
+                                    if(true){
+                                        if (true){
+                                            if(true){
+                                                if (true){
+                                                    if(true){
+                                                        if (true){
+                                                            if(true){
+                                                                if (true){
+                                                                    if(true){
+                                                                        if (true) {
+                                                                            if (true) {
+                                                                                Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                ;
+                                                            }
+                                                        }
+                                                        ;
+                                                    }
+                                                }
+                                                ;
+                                            }
+                                        }
+                                        ;
+                                    }
+                                }
+                                ;
+                            }
+                        }
+                        ;
+                    }
+                }
+            }
+        }
 
-        saveMatch(matchDTO1, userId);
+
+
+    saveMatch(matchDTO1, userId);
         saveMatch(matchDTO2, userId);
-
         return matchDTOs;
     }
-
-
 }
