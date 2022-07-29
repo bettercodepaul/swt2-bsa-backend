@@ -286,69 +286,6 @@ public class MatchService implements ServiceFacade {
 
 
 
-    /**
-     * Save the two edited matches from the findMatchesByIds service.
-     * Also save the passe objects in case there are some.
-     *
-     * @param matchDTOs die abzuspeichernden Matches
-     * @param principal User Id der ändernden Users
-     *
-     * @return Liste der gespeicherten MatchDTOs  (2 Stück)
-     */
-    @PostMapping(value = "schusszettel",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
-    public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) throws NoPermissionException {
-        // darf der User die Funktion aufrufen, da er das allgemein Recht hat?
-        final Long userId = UserProvider.getCurrentUserId(principal);
-        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
-        // wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
-        // wir für die rechte "_MY_..." die Daten prüfen müssen, d.h. die UserID mit
-        // LigaleiterID bzw. AusrichterID vergleichen müssen
-
-        //dazu bestimmen wir den Wettkampf-Datensatz
-        WettkampfDO wettkampfDO = this.wettkampfComponent.findById(matchDTOs.get(0).getWettkampfId());
-        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF)&&
-                !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
-                        UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, wettkampfDO.getWettkampfVeranstaltungsId())&&
-                !this.requiresOnePermissionAspect.hasSpecificPermissionAusrichter(
-                        UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDO.getWettkampfTypId())) {
-            throw new NoPermissionException();
-        }
-
-        Preconditions.checkNotNull(matchDTOs,
-                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST));
-        Preconditions.checkArgument(matchDTOs.size() == 2, String.format(
-                ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST, 2
-        ));
-        Preconditions.checkNotNull(principal,
-                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_PRINCIPAL));
-
-        MatchDTO matchDTO1 = matchDTOs.get(0);
-        MatchDTO matchDTO2 = matchDTOs.get(1);
-
-        checkPreconditions(matchDTO1, matchConditionErrors);
-        checkPreconditions(matchDTO2, matchConditionErrors);
-
-        // make sure the matches are from the same wettkampf, begegnung and have the same number.
-        // checkout the Setzliste example for more information
-        Preconditions.checkArgument(matchDTO1.getWettkampfId().equals(matchDTO2.getWettkampfId()),
-                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
-        Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
-                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Begegnung"));
-        Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()),
-                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Numbers"));
-
-        this.log(matchDTO1, SERVICE_SAVE_MATCHES);
-        this.log(matchDTO2, SERVICE_SAVE_MATCHES);
-
-        saveMatch(matchDTO1, userId);
-        saveMatch(matchDTO2, userId);
-
-        return matchDTOs;
-    }
-
 
     /**
      * Save a single match, also creates/updates related passe objects.
@@ -871,4 +808,69 @@ public class MatchService implements ServiceFacade {
                 matchDTO.getMatchpunkte()
         );
     }
- }
+
+    /**
+     * Save the two edited matches from the findMatchesByIds service.
+     * Also save the passe objects in case there are some.
+     *
+     * @param matchDTOs die abzuspeichernden Matches
+     * @param principal User Id der ändernden Users
+     *
+     * @return Liste der gespeicherten MatchDTOs  (2 Stück)
+     */
+    @PostMapping(value = "schusszettel",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
+    public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) throws NoPermissionException {
+        // darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        final Long userId = UserProvider.getCurrentUserId(principal);
+        Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
+        // wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
+        // wir für die rechte "_MY_..." die Daten prüfen müssen, d.h. die UserID mit
+        // LigaleiterID bzw. AusrichterID vergleichen müssen
+
+        //dazu bestimmen wir den Wettkampf-Datensatz
+        WettkampfDO wettkampfDO = this.wettkampfComponent.findById(matchDTOs.get(0).getWettkampfId());
+        if (!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_WETTKAMPF)&&
+                !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(
+                        UserPermission.CAN_MODIFY_MY_VERANSTALTUNG, wettkampfDO.getWettkampfVeranstaltungsId())&&
+                !this.requiresOnePermissionAspect.hasSpecificPermissionAusrichter(
+                        UserPermission.CAN_MODIFY_MY_WETTKAMPF, wettkampfDO.getWettkampfTypId())) {
+            throw new NoPermissionException();
+        }
+
+        Preconditions.checkNotNull(matchDTOs,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST));
+        Preconditions.checkArgument(matchDTOs.size() == 2, String.format(
+                ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_MATCH_DTO_LIST, 2
+        ));
+        Preconditions.checkNotNull(principal,
+                String.format(ERR_NOT_NULL_TEMPLATE, SERVICE_SAVE_MATCHES, CHECKED_PARAM_PRINCIPAL));
+
+        MatchDTO matchDTO1 = matchDTOs.get(0);
+        MatchDTO matchDTO2 = matchDTOs.get(1);
+
+        checkPreconditions(matchDTO1, matchConditionErrors);
+        checkPreconditions(matchDTO2, matchConditionErrors);
+
+        // make sure the matches are from the same wettkampf, begegnung and have the same number.
+        // checkout the Setzliste example for more information
+        Preconditions.checkArgument(matchDTO1.getWettkampfId().equals(matchDTO2.getWettkampfId()),
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "WettkampfId"));
+        Preconditions.checkArgument(matchDTO1.getBegegnung().equals(matchDTO2.getBegegnung()),
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Begegnung"));
+        Preconditions.checkArgument(matchDTO1.getNr().equals(matchDTO2.getNr()),
+                String.format(ERR_EQUAL_TEMPLATE, SERVICE_SAVE_MATCHES, "Numbers"));
+
+        this.log(matchDTO1, SERVICE_SAVE_MATCHES);
+        this.log(matchDTO2, SERVICE_SAVE_MATCHES);
+
+        saveMatch(matchDTO1, userId);
+        saveMatch(matchDTO2, userId);
+
+        return matchDTOs;
+    }
+
+
+}
