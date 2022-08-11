@@ -1,10 +1,10 @@
 package de.bogenliga.application.services.v1.sync.service;
 
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
+import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
-import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
 import de.bogenliga.application.business.match.api.types.LigamatchDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
@@ -21,18 +21,8 @@ import de.bogenliga.application.services.v1.mannschaftsmitglied.model.Mannschaft
 import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
-import de.bogenliga.application.services.v1.passe.model.PasseDTO;
-import de.bogenliga.application.services.v1.sync.mapper.LigaSyncLigatabelleDTOMapper;
-import de.bogenliga.application.services.v1.sync.mapper.LigaSyncPasseDTOMapper;
-import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMannschaftsmitgliedDTOMapper;
-import de.bogenliga.application.services.v1.sync.mapper.WettkampfExtDTOMapper;
-import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
-import de.bogenliga.application.services.v1.sync.mapper.LigaSyncMatchDTOMapper;
-import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
-import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
-import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
-import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
-import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
+import de.bogenliga.application.services.v1.sync.mapper.*;
+import de.bogenliga.application.services.v1.sync.model.*;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
@@ -44,11 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.naming.NoPermissionException;
+
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
