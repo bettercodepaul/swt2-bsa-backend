@@ -35,6 +35,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.naming.NoPermissionException;
+
 
 /**
  * I'm a REST resource and handle liga CRUD requests over the HTTP protocol
