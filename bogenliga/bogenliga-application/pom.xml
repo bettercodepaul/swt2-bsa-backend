@@ -237,6 +237,7 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
+                <version>9.2.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.postgresql</groupId>
@@ -245,6 +246,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
+                    <cleanDisabled>false</cleanDisabled>
                     <placeholderReplacement>false</placeholderReplacement>
                     <outOfOrder>false</outOfOrder>
                     <baselineOnMigrate>true</baselineOnMigrate>
