@@ -776,7 +776,7 @@ public class SyncServiceTest {
         newLigaSyncMatchDTO.setStrafpunkteSatz4(ligaSyncMatchDTO.getStrafpunkteSatz4());
         newLigaSyncMatchDTO.setStrafpunkteSatz5(ligaSyncMatchDTO.getStrafpunkteSatz5());
 
-        assertTrue(newLigaSyncMatchDTO.equals(ligaSyncMatchDTO));
+        assertEquals(newLigaSyncMatchDTO,ligaSyncMatchDTO);
     }
 
     @Test
@@ -793,7 +793,7 @@ public class SyncServiceTest {
         newLigaSyncPasseDTO.setDsbMitgliedId(ligaSyncPasseDTO.getDsbMitgliedId());
         newLigaSyncPasseDTO.setRingzahl(ligaSyncPasseDTO.getRingzahl());
 
-        assertTrue(newLigaSyncPasseDTO.equals(ligaSyncPasseDTO));
+        assertEquals(newLigaSyncPasseDTO,ligaSyncPasseDTO);
     }
 
     @Test
@@ -996,10 +996,11 @@ public class SyncServiceTest {
 
     @Test
     public void updateNoPermission() {
-        // configure mocks: wettkampf is already offline
+        // configure mocks: Wettkampf is already offline
         when(wettkampfComponent.wettkampfIsOffline(anyLong())).thenReturn(true);
+        long tmpLong = anyLong();
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.getToken(anyLong(), principal));
+                .isThrownBy(() -> underTest.getToken(tmpLong, principal));
     }
 
     @Test
