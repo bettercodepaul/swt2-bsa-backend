@@ -1,10 +1,6 @@
 package de.bogenliga.application.business.match.api.types;
 
-import org.junit.Rule;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 import junit.framework.TestCase;
-
 
 /**
  * TODO [AL] class documentation
@@ -31,9 +27,6 @@ public class LigamatchDOTest extends TestCase {
     private static Long strafpunkteSatz3 = 13L;
     private static Long strafpunkteSatz4 = 14L;
     private static Long strafpunkteSatz5 = 15L;
-
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 
     //create a final LigamatchDO-Object for the test with values
