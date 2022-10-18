@@ -27,6 +27,15 @@ public interface DsbMitgliedComponent extends ComponentFacade {
      */
     List<DsbMitgliedDO> findAllByTeamId(long id);
 
+    /**
+     * Returns all dsbmitglied entries where the member has not the same teamID as the given team
+     *
+     * @param id of the dsbmitglied
+     * @param vereinId the verein id of the team
+     * @return list of all dsbmitglied where the teamId does not equals the given teamId
+     */
+    List<DsbMitgliedDO> findAllNotInTeam(long id, long vereinId);
+
 
     /**
      * Return a dsbmitglied entry with the given id.
