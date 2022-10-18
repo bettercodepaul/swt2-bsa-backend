@@ -3,6 +3,7 @@ package de.bogenliga.application.business.dsbmitglied.impl.business;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Rule;
@@ -40,6 +41,7 @@ public class DsbMitgliedComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long ID = 1337L;
+    private static final Long ID_2 = 7331L;
     private static final String VORNAME = "Sorscha";
     private static final String NACHNAME = "Kratikoff";
     private static final Date GEBURTSDATUM = Date.valueOf("1991-09-01");
@@ -78,6 +80,36 @@ public class DsbMitgliedComponentImplTest {
         expectedBE.setDsbMitgliedUserId(USERID);
 
         return expectedBE;
+    }
+
+
+    public static List<DsbMitgliedBE> getDsbMitgliedBEList() {
+        List<DsbMitgliedBE> list = new ArrayList<>();
+
+        final DsbMitgliedBE expectedA = new DsbMitgliedBE();
+        expectedA.setDsbMitgliedId(ID);
+        expectedA.setDsbMitgliedVorname(VORNAME);
+        expectedA.setDsbMitgliedNachname(NACHNAME);
+        expectedA.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
+        expectedA.setDsbMitgliedNationalitaet(NATIONALITAET);
+        expectedA.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
+        expectedA.setDsbMitgliedVereinsId(VEREINSID);
+        expectedA.setDsbMitgliedUserId(USERID);
+
+        final DsbMitgliedBE expectedB = new DsbMitgliedBE();
+        expectedB.setDsbMitgliedId(ID_2);
+        expectedB.setDsbMitgliedVorname(VORNAME);
+        expectedB.setDsbMitgliedNachname(NACHNAME);
+        expectedB.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
+        expectedB.setDsbMitgliedNationalitaet(NATIONALITAET);
+        expectedB.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
+        expectedB.setDsbMitgliedVereinsId(VEREINSID);
+        expectedB.setDsbMitgliedUserId(USERID);
+
+        list.add(expectedA);
+        list.add(expectedB);
+
+        return list;
     }
 
 
@@ -146,6 +178,7 @@ public class DsbMitgliedComponentImplTest {
         verify(dsbMitgliedDAO).findAll();
     }
 
+
     @Test
     public void findBySearch() {
         // prepare test data
@@ -170,6 +203,7 @@ public class DsbMitgliedComponentImplTest {
         verify(dsbMitgliedDAO).findBySearch(expectedBE.getDsbMitgliedVorname());
     }
 
+
     @Test
     public void findById() {
         // prepare test data
@@ -189,6 +223,31 @@ public class DsbMitgliedComponentImplTest {
 
         // verify invocations
         verify(dsbMitgliedDAO).findById(ID);
+    }
+
+
+    @Test
+    public void findAllNotInTeam() {
+
+        final long UNIMPORTANT_TEAM_ID = 103L; final long UNIMPORTANT_VEREIN_ID = 11;
+
+        //prepare test data
+        final List<DsbMitgliedBE> expectedBEList = getDsbMitgliedBEList();
+
+        //configure mocks
+        when(dsbMitgliedDAO.findAllNotInTeamId(UNIMPORTANT_TEAM_ID, UNIMPORTANT_VEREIN_ID)).thenReturn(expectedBEList);
+
+        final List<DsbMitgliedDO> actualBEList = underTest.findAllNotInTeam(UNIMPORTANT_TEAM_ID, UNIMPORTANT_VEREIN_ID);
+
+        //check results
+        assertThat(actualBEList).isNotNull();
+
+        assertThat(actualBEList.size()).isEqualTo(2);
+
+        assertThat(actualBEList.get(1).getId()).isEqualTo(expectedBEList.get(1).getDsbMitgliedId());
+
+        //verify execution
+        verify(dsbMitgliedDAO).findAllNotInTeamId(UNIMPORTANT_TEAM_ID, UNIMPORTANT_VEREIN_ID);
     }
 
 
