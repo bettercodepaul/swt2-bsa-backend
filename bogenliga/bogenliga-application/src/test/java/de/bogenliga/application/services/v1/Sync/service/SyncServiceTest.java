@@ -44,7 +44,6 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
-import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import de.bogenliga.application.services.v1.sync.service.SyncService;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
@@ -610,9 +609,8 @@ public class SyncServiceTest {
         ligaSyncMannschaftsmitgliedDTO.setDsbMitgliedId(dsbMitgliedId);
         assertEquals(dsbMitgliedId, ligaSyncMannschaftsmitgliedDTO.getDsbMitgliedId());
 
-        final long version = 1234;
-        ligaSyncMannschaftsmitgliedDTO.setVersion(version);
-        assertTrue(version ==  ligaSyncMannschaftsmitgliedDTO.getVersion());
+        ligaSyncMannschaftsmitgliedDTO.setVersion(VERSION);
+        assertEquals(VERSION,  ligaSyncMannschaftsmitgliedDTO.getVersion());
 
         ligaSyncMannschaftsmitgliedDTO.setRueckennummer(rueckennummer);
         assertEquals(rueckennummer, ligaSyncMannschaftsmitgliedDTO.getRueckennummer());
@@ -674,10 +672,8 @@ public class SyncServiceTest {
         ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
         assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
 
-        assertEquals(ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO),ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO));
-
-        assertNotNull(ligaSyncLigatabelleDTO.hashCode());
-        assertNotNull(ligaSyncLigatabelleDTO.toString());
+        assertEquals(ligaSyncLigatabelleDTO.hashCode(),ligaSyncLigatabelleDTO.hashCode());
+        assertFalse(ligaSyncLigatabelleDTO.toString().isEmpty());
     }
 
     @Test
