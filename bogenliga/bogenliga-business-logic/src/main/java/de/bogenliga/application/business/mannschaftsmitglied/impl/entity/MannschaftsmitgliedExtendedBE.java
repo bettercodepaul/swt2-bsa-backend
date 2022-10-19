@@ -17,60 +17,59 @@ public class MannschaftsmitgliedExtendedBE extends MannschaftsmitgliedBE {
     // this results into failure within running the unit-tests
     @Override
     public Long getId() {
-        return super.getId();
+        return this.id;
     }
 
     @Override
     public Long getMannschaftId() {
-        return super.getMannschaftId();
+        return this.mannschaftId;
     }
-
 
     @Override
     public void setMannschaftId(Long mannschaftId) {
-        super.setMannschaftId(mannschaftId);
+        this.mannschaftId = mannschaftId;
     }
 
 
     @Override
     public Long getDsbMitgliedId() {
-        return super.getDsbMitgliedId();
+        return this.dsbMitgliedId;
     }
 
 
     @Override
     public void setDsbMitgliedId(Long dsbMitgliedId) {
-        super.setDsbMitgliedId(dsbMitgliedId);
+        this.dsbMitgliedId = dsbMitgliedId;
     }
 
 
     @Override
     public Integer getDsbMitgliedEingesetzt() {
-        return super.getDsbMitgliedEingesetzt();
+        return this.dsbMitgliedEingesetzt;
     }
 
 
     @Override
     public void setDsbMitgliedEingesetzt(Integer dsbMitgliedEingesetzt) {
-        super.setDsbMitgliedEingesetzt(dsbMitgliedEingesetzt);
+        this.dsbMitgliedEingesetzt = dsbMitgliedEingesetzt;
     }
 
 
     @Override
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
 
     @Override
     public Long getRueckennummer() {
-        return super.getRueckennummer();
+        return this.rueckennummer;
     }
 
 
     @Override
     public void setRueckennummer(Long rueckennummer) {
-        super.setRueckennummer(rueckennummer);
+        this.rueckennummer = rueckennummer;
     }
 
 
