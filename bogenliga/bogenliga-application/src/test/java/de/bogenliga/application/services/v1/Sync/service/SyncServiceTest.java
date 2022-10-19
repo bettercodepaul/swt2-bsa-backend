@@ -616,21 +616,7 @@ public class SyncServiceTest {
 
         ligaSyncMannschaftsmitgliedDTO.setRueckennummer(rueckennummer);
         assertEquals(rueckennummer, ligaSyncMannschaftsmitgliedDTO.getRueckennummer());
-
-
     }
-
-    /*
-    @Test
-    public void testSyncWrapper(){
-        final SyncWrapper syncWrapper = new SyncWrapper(LigaSyncMannschaftsmitgliedDTO,LigaSyncPasseDTO,LigaSyncMannschaftsmitgliedDTO,offlineToken,wettkampfId);
-    /*
-        ligaSyncMannschaftsmitgliedDTO.setId(id);
-        assertEquals(id, ligaSyncMannschaftsmitgliedDTO.getId());
-
-
-    }
-    */
 
     // Start of testing
     @Test
@@ -692,6 +678,30 @@ public class SyncServiceTest {
 
         assertNotNull(ligaSyncLigatabelleDTO.hashCode());
         assertNotNull(ligaSyncLigatabelleDTO.toString());
+    }
+
+    @Test
+    public void ligaSyncPasseTestDTO(){
+
+        Long match_id = 17L;
+        Long match_id_2 = 18L;
+        Long lfdnr = 31L;
+        Integer rueckennummer = 5;
+        Integer[] ringzahl = {10,9,8,7};
+        LigaSyncPasseDTO test = new LigaSyncPasseDTO(id, version, match_id, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
+        LigaSyncPasseDTO test_2 = new LigaSyncPasseDTO(id, version, match_id_2, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
+        assertThat(test.getId()).isEqualTo(id);
+        assertThat(test.getVersion()).isEqualTo(version);
+        assertThat(test.getMatchId()).isEqualTo(match_id);
+        assertThat(test.getMannschaftId()).isEqualTo(mannschaftId);
+        assertThat(test.getWettkampfId()).isEqualTo(wettkampfId);
+        assertThat(test.getLfdNr()).isEqualTo(lfdnr);
+        assertThat(test.getDsbMitgliedId()).isEqualTo(dsbMitgliedId);
+        assertThat(test.getRueckennummer()).isEqualTo(rueckennummer);
+        assertThat(test.getRingzahl()).isEqualTo(ringzahl);
+
+        assertEquals(test.equals(test),test.equals(test));
+        assertNotEquals(test.equals(test),test.equals(test_2 ));
 
     }
 
