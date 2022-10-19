@@ -44,6 +44,7 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import de.bogenliga.application.services.v1.sync.service.SyncService;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
@@ -595,6 +596,42 @@ public class SyncServiceTest {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
     }
 
+
+    @Test
+    public void testLigaSyncMannschaftsmitgliedDTO(){
+        final LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO = new LigaSyncMannschaftsmitgliedDTO(id,version,mannschaftId,dsbMitgliedId, rueckennummer);
+
+        ligaSyncMannschaftsmitgliedDTO.setId(id);
+        assertEquals(id, ligaSyncMannschaftsmitgliedDTO.getId());
+
+        ligaSyncMannschaftsmitgliedDTO.setMannschaftId(mannschaftId);
+        assertEquals(mannschaftId, ligaSyncMannschaftsmitgliedDTO.getMannschaftId());
+
+        ligaSyncMannschaftsmitgliedDTO.setDsbMitgliedId(dsbMitgliedId);
+        assertEquals(dsbMitgliedId, ligaSyncMannschaftsmitgliedDTO.getDsbMitgliedId());
+
+        final long version = 1234;
+        ligaSyncMannschaftsmitgliedDTO.setVersion(version);
+        assertTrue(version ==  ligaSyncMannschaftsmitgliedDTO.getVersion());
+
+        ligaSyncMannschaftsmitgliedDTO.setRueckennummer(rueckennummer);
+        assertEquals(rueckennummer, ligaSyncMannschaftsmitgliedDTO.getRueckennummer());
+
+
+    }
+
+    /*
+    @Test
+    public void testSyncWrapper(){
+        final SyncWrapper syncWrapper = new SyncWrapper(LigaSyncMannschaftsmitgliedDTO,LigaSyncPasseDTO,LigaSyncMannschaftsmitgliedDTO,offlineToken,wettkampfId);
+    /*
+        ligaSyncMannschaftsmitgliedDTO.setId(id);
+        assertEquals(id, ligaSyncMannschaftsmitgliedDTO.getId());
+
+
+    }
+    */
+
     // Start of testing
     @Test
     public void testLigaSyncLigatabelleDTO(){
@@ -605,7 +642,56 @@ public class SyncServiceTest {
         ligaSyncLigatabelleDTO.setVeranstaltungId(veranstaltungId);
         assertEquals(veranstaltungId, ligaSyncLigatabelleDTO.getVeranstaltungId());
 
-        //continue with other methods highlighted as to no be tested yet ...
+        //final String veranstalungsname =  "Test";
+        ligaSyncLigatabelleDTO.setVeranstaltungName(veranstaltungName);
+        assertEquals(veranstaltungName, ligaSyncLigatabelleDTO.getVeranstaltungName());
+
+        ligaSyncLigatabelleDTO.setWettkampfId(wettkampfId);
+        assertEquals(wettkampfId, ligaSyncLigatabelleDTO.getWettkampfId());
+
+        final Integer wettkampfTag = 3;
+        ligaSyncLigatabelleDTO.setWettkampfTag(wettkampfTag);
+        assertEquals(wettkampfTag, ligaSyncLigatabelleDTO.getWettkampfTag());
+
+        ligaSyncLigatabelleDTO.setMannschaftId(mannschaftsId);
+        assertEquals(mannschaftsId, ligaSyncLigatabelleDTO.getMannschaftId());
+
+        final String mannschaftName = "default_mannschaft";
+        ligaSyncLigatabelleDTO.setMannschaftName(mannschaftName);
+        assertEquals(mannschaftName, ligaSyncLigatabelleDTO.getMannschaftName());
+
+        final Integer matchPunkt = 17;
+        ligaSyncLigatabelleDTO.setMatchpkt(matchPunkt);
+        assertEquals(matchPunkt, ligaSyncLigatabelleDTO.getMatchpkt());
+
+        ligaSyncLigatabelleDTO.setMatchpkt(matchPunkt);
+        assertEquals(matchPunkt,ligaSyncLigatabelleDTO.getMatchpkt());
+
+        ligaSyncLigatabelleDTO.setMatchpktGegen(matchPunkt);
+        assertEquals(matchPunkt,ligaSyncLigatabelleDTO.getMatchpktGegen());
+
+        final Integer satzPunkt = 42;
+        ligaSyncLigatabelleDTO.setSatzpkt(satzPunkt);
+        assertEquals(satzPunkt,ligaSyncLigatabelleDTO.getSatzpkt());
+
+        ligaSyncLigatabelleDTO.setSatzpktGegen(satzPunkt);
+        assertEquals(satzPunkt,ligaSyncLigatabelleDTO.getSatzpktGegen());
+
+        ligaSyncLigatabelleDTO.setSatzpktDifferenz(satzPunkt);
+        assertEquals(satzPunkt,ligaSyncLigatabelleDTO.getSatzpktDifferenz());
+
+        final Integer sortierung = 0;
+        ligaSyncLigatabelleDTO.setSortierung(sortierung);
+        assertEquals(sortierung,ligaSyncLigatabelleDTO.getSortierung());
+
+        final Integer tabellenPlatz = 8;
+        ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
+        assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
+
+        assertEquals(ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO),ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO));
+
+        assertNotNull(ligaSyncLigatabelleDTO.hashCode());
+        assertNotNull(ligaSyncLigatabelleDTO.toString());
 
     }
 
