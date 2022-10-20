@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * DataAccessObject for the dsbmitglied entity in the database.
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods
  *
  * @author Yann Philippczyk, BettercallPaul gmbh
@@ -45,7 +45,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
     private static final String DSBMITGLIED_TABLE_FORENAME = "dsb_mitglied_vorname";
     private static final String DSBMITGLIED_TABLE_SURNAME = "dsb_mitglied_nachname";
     private static final String DSBMITGLIED_TABLE_BIRTHDATE = "dsb_mitglied_geburtsdatum";
-    private static final String DSBMITGLIED_TABLE_NATIONALITY  = "dsb_mitglied_nationalitaet";
+    private static final String DSBMITGLIED_TABLE_NATIONALITY = "dsb_mitglied_nationalitaet";
     private static final String DSBMITGLIED_TABLE_MEMBERNUMBER = "dsb_mitglied_mitgliedsnummer";
     private static final String DSBMITGLIED_TABLE_CLUB_ID = "dsb_mitglied_verein_id";
     private static final String DSBMITGLIED_TABLE_USER_ID = "dsb_mitglied_benutzer_id";
@@ -79,7 +79,6 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     + " ' ', LOWER(dsb_mitglied_nachname), ' ', LOWER(dsb_mitglied_mitgliedsnummer)) LIKE LOWER(?) ";
 
 
-
     private static final String FIND_DSB_KAMPFRICHTER =
             "SELECT * FROM dsb_mitglied" +
                     " WHERE dsb_mitglied_id = (" +
@@ -95,6 +94,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
                     " SELECT mannschaftsmitglied_dsb_mitglied_id" +
                     " FROM mannschaftsmitglied" +
                     " WHERE mannschaftsmitglied_mannschaft_id = ?)";
+
+    private static final String FIND_ALL_NOT_IN_TEAM_ID =
+            "SELECT * FROM dsb_mitglied " +
+                    "WHERE dsb_mitglied_id NOT IN (SELECT mannschaftsmitglied_dsb_mitglied_id " +
+                    "FROM mannschaftsmitglied " +
+                    "WHERE mannschaftsmitglied_mannschaft_id = ?) and dsb_mitglied_verein_id = ?";
 
     private final BasicDAO basicDao;
 
@@ -131,12 +136,12 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
-     *
      * @param id from DsbMitglied
+     *
      * @return boolean if dsbMitglied has a lizenz
      */
     public Boolean hasKampfrichterLizenz(final long id) {
-        return (basicDao.selectSingleEntity(DSBMITGLIED, FIND_DSB_KAMPFRICHTER, id)==null) ? false : true;
+        return (basicDao.selectSingleEntity(DSBMITGLIED, FIND_DSB_KAMPFRICHTER, id) == null) ? false : true;
     }
 
 
@@ -149,13 +154,19 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
 
     /**
-     *
      * @param id id of the team, in which the dsmitglied entries are used
+     *
      * @return list of all dsbmitglied entries with the given id
      */
     public List<DsbMitgliedBE> findAllByTeamId(final long id) {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_BY_TEAM_ID, id);
     }
+
+
+    public List<DsbMitgliedBE> findAllNotInTeamId(final long id, final long vereinId) {
+        return basicDao.selectEntityList(DSBMITGLIED, FIND_ALL_NOT_IN_TEAM_ID, id, vereinId);
+    }
+
 
     /**
      * Return dsbmitglied entry with specific id
@@ -165,6 +176,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
     public DsbMitgliedBE findById(final long id) {
         return basicDao.selectSingleEntity(DSBMITGLIED, FIND_BY_ID, id);
     }
+
 
     /**
      * Return dsbmitglied entry with specific user id
@@ -178,14 +190,15 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
     /**
      * @param searchTerm
+     *
      * @return dsbmitglied entries which contain the search term
      */
     public List<DsbMitgliedBE> findBySearch(final String searchTerm) {
         return basicDao.selectEntityList(DSBMITGLIED, FIND_BY_SEARCH, new StringBuilder()
-                                                                        .append("%")
-                                                                        .append(searchTerm)
-                                                                        .append("%")
-                                                                        .toString()
+                .append("%")
+                .append(searchTerm)
+                .append("%")
+                .toString()
         );
     }
 
@@ -195,6 +208,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
      *
      * @param dsbMitgliedBE
      * @param currentDsbMitgliedId
+     *
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
     public DsbMitgliedBE create(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
@@ -209,6 +223,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
      *
      * @param dsbMitgliedBE
      * @param currentDsbMitgliedId
+     *
      * @return Business Entity corresponding to the updated dsbmitglied entry
      */
     public DsbMitgliedBE update(final DsbMitgliedBE dsbMitgliedBE, final long currentDsbMitgliedId) {
@@ -218,7 +233,7 @@ public class DsbMitgliedDAO implements DataAccessObject {
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
         UserDAO UserDAO = new UserDAO(basicDao);
         UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
-        if(updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && UserBE != null) {
+        if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && UserBE != null) {
             updatedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
             updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
         }
