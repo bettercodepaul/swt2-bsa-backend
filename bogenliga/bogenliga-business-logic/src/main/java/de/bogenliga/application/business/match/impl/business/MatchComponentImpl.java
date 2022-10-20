@@ -9,9 +9,11 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
+import de.bogenliga.application.business.match.api.types.LigamatchDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
+import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchMapper;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -110,6 +112,16 @@ public class MatchComponentImpl implements MatchComponent {
     public List<LigamatchBE> getLigamatchesByWettkampfId(Long wettkampfId) {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
         return ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
+    }
+
+    /**
+     * optimized function for SynService
+     */
+    @Override
+    public List<LigamatchDO> getLigamatchDOsByWettkampfId(Long wettkampfId) {
+        checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
+        final List<LigamatchBE> ligaMatches = ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
+        return ligaMatches.stream().map(LigamatchMapper.toLigamatchDO).collect(Collectors.toList());
     }
 
     /**

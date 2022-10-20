@@ -174,9 +174,9 @@ public class MatchServiceTest {
         return new MatchDO(
                 MATCH_ID,
                 MATCH_NR,
-                MATCH_BEGEGNUNG,
-                MATCH_MANNSCHAFT_ID,
                 MATCH_WETTKAMPF_ID,
+                MATCH_MANNSCHAFT_ID,
+                MATCH_BEGEGNUNG,
                 MATCH_MATCHPUNKTE,
                 MATCH_SCHEIBENNUMMER,
                 MATCH_SATZPUNKTE,

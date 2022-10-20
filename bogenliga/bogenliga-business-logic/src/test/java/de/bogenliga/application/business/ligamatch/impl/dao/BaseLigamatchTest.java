@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.baseClass.impl.BasicTest;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.match.api.types.LigamatchDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,12 +38,14 @@ public class BaseLigamatchTest {
 
     protected static final Long WETTKAMPF_ID = 1L;
     protected static final Long MATCH_ID = 1L;
+    protected static final Long MATCH_ID_GEGNER = 3L;
     protected static final Long MATCH_NR = 1L;
     protected static final Long SCHEIBENNUMMER = 3L;
+    protected static final Long SCHEIBENNUMMER_GEGNER = 4L;
     protected static final Long MANNSCHAFT_ID = 1L;
     protected static final Long BEGEGNUNG = 1L;
     protected static final Long NAECHSTE_MATCH_ID = 1L;
-    protected static final Long NAECHSTE_NAECHSTE_MATCH_ID = 1L;
+    protected static final Long NAECHSTE_NAECHSTE_MATCH_ID = 2L;
     protected static final Long STRAFPUNKT_SATZ_1 = 0L;
     protected static final Long STRAFPUNKT_SATZ_2 = 10L;
     protected static final Long STRAFPUNKT_SATZ_3 = 0L;
@@ -51,6 +54,7 @@ public class BaseLigamatchTest {
     protected static final String WETTKAMP_TYP_ID = "0";
     protected static final Long WETTKAMPF_TAG = 1L;
     protected static final String MANNSCHAFT_NAME = "TSV_GRAFENBERG";
+    protected static final String MANNSCHAFT_NAME_GEGNER = "TSV_GRAFENBERG_GEGNER";
     protected static final Integer RUECKENNUMMER = 2;
     protected static final Long SATZPUNKTE = 1L;
     protected static final Long MATCHPUNKTE = 2L;
@@ -61,8 +65,10 @@ public class BaseLigamatchTest {
         LigamatchBE ligamatchBE = new LigamatchBE();
         ligamatchBE.setWettkampfId(WETTKAMPF_ID);
         ligamatchBE.setMatchId(MATCH_ID);
+        ligamatchBE.setMatchIdGegner(MATCH_ID_GEGNER);
         ligamatchBE.setMatchNr(MATCH_NR);
         ligamatchBE.setScheibennummer(SCHEIBENNUMMER);
+        ligamatchBE.setScheibennummerGegner(SCHEIBENNUMMER_GEGNER);
         ligamatchBE.setMannschaftId(MANNSCHAFT_ID);
         ligamatchBE.setBegegnung(BEGEGNUNG);
         ligamatchBE.setNaechsteMatchId(NAECHSTE_MATCH_ID);
@@ -75,6 +81,7 @@ public class BaseLigamatchTest {
         ligamatchBE.setWettkampftypId(WETTKAMP_TYP_ID);
         ligamatchBE.setWettkampfTag(WETTKAMPF_TAG);
         ligamatchBE.setMannschaftName(MANNSCHAFT_NAME);
+        ligamatchBE.setMannschaftNameGegner(MANNSCHAFT_NAME_GEGNER);
         ligamatchBE.setRueckennummer(RUECKENNUMMER);
         ligamatchBE.setSatzpunkte(SATZPUNKTE);
         ligamatchBE.setMatchpunkte(MATCHPUNKTE);
@@ -85,7 +92,9 @@ public class BaseLigamatchTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getMatchNr()).isEqualTo(ligamatchBE.getMatchNr()).isEqualTo(MATCH_NR);
         assertThat(actual.getMatchId()).isEqualTo(ligamatchBE.getMatchId()).isEqualTo(MATCH_ID);
+        assertThat(actual.getMatchIdGegner()).isEqualTo(ligamatchBE.getMatchIdGegner()).isEqualTo(MATCH_ID_GEGNER);
         assertThat(actual.getScheibennummer()).isEqualTo(ligamatchBE.getScheibennummer()).isEqualTo(SCHEIBENNUMMER);
+        assertThat(actual.getScheibennummerGegner()).isEqualTo(ligamatchBE.getScheibennummerGegner()).isEqualTo(SCHEIBENNUMMER_GEGNER);
         assertThat(actual.getMannschaftId()).isEqualTo(ligamatchBE.getMannschaftId()).isEqualTo(MANNSCHAFT_ID);
         assertThat(actual.getBegegnung()).isEqualTo(ligamatchBE.getBegegnung()).isEqualTo(BEGEGNUNG);
         assertThat(actual.getNaechsteMatchId()).isEqualTo(ligamatchBE.getNaechsteMatchId()).isEqualTo(NAECHSTE_MATCH_ID);
@@ -99,10 +108,10 @@ public class BaseLigamatchTest {
         assertThat(actual.getWettkampfId()).isEqualTo(ligamatchBE.getWettkampfId()).isEqualTo(WETTKAMPF_ID);
         assertThat(actual.getWettkampfTag()).isEqualTo(ligamatchBE.getWettkampfTag()).isEqualTo(WETTKAMPF_TAG);
         assertThat(actual.getMannschaftName()).isEqualTo(ligamatchBE.getMannschaftName()).isEqualTo(MANNSCHAFT_NAME);
+        assertThat(actual.getMannschaftNameGegner()).isEqualTo(ligamatchBE.getMannschaftNameGegner()).isEqualTo(MANNSCHAFT_NAME_GEGNER);
         assertThat(actual.getRueckennummer()).isEqualTo(ligamatchBE.getRueckennummer()).isEqualTo(RUECKENNUMMER);
         assertThat(actual.getSatzpunkte()).isEqualTo(ligamatchBE.getSatzpunkte()).isEqualTo(SATZPUNKTE);
         assertThat(actual.getMatchpunkte()).isEqualTo(ligamatchBE.getMatchpunkte()).isEqualTo(MATCHPUNKTE);
-
     }
 
     public static void validateObjectList (List<LigamatchBE> actual) {
@@ -114,12 +123,22 @@ public class BaseLigamatchTest {
         assertThat(actual.get(0)).isNotNull();
     }
 
+    public static void validateDOObjectList (List<LigamatchDO> actual) {
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+    }
 
     public BaseLigamatchTest(){
         valuesToMethodMap.put("getWettkampfId", WETTKAMPF_ID);
         valuesToMethodMap.put("getMatchId", MATCH_ID);
+        valuesToMethodMap.put("getMatchIdGegner", MATCH_ID_GEGNER);
         valuesToMethodMap.put("getMatchNr", MATCH_NR);
         valuesToMethodMap.put("getScheibennummer", SCHEIBENNUMMER);
+        valuesToMethodMap.put("getScheibennummerGegner", SCHEIBENNUMMER_GEGNER);
         valuesToMethodMap.put("getMannschaftId", MANNSCHAFT_ID);
         valuesToMethodMap.put("getBegegnung", BEGEGNUNG);
         valuesToMethodMap.put("getNaechsteMatchId", NAECHSTE_MATCH_ID);
@@ -132,6 +151,7 @@ public class BaseLigamatchTest {
         valuesToMethodMap.put("getWettkampftypId", WETTKAMP_TYP_ID);
         valuesToMethodMap.put("getWettkampfTag", WETTKAMPF_TAG);
         valuesToMethodMap.put("getMannschaftName", MANNSCHAFT_NAME);
+        valuesToMethodMap.put("getMannschaftNameGegner", MANNSCHAFT_NAME_GEGNER);
         valuesToMethodMap.put("getRueckennummer", RUECKENNUMMER);
         valuesToMethodMap.put("getSatzpunkte", SATZPUNKTE);
         valuesToMethodMap.put("getMatchpunkte", MATCHPUNKTE);
@@ -183,6 +203,4 @@ public class BaseLigamatchTest {
             e.printStackTrace();
         }
     }
-
-
 }
