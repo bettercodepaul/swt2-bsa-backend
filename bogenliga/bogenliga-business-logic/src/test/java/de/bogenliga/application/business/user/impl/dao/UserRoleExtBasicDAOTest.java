@@ -85,6 +85,9 @@ public class UserRoleExtBasicDAOTest {
         assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
+        assertThat(actual.get(0).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.get(0).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
+
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
 
@@ -126,6 +129,9 @@ public class UserRoleExtBasicDAOTest {
         assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
+        assertThat(actual.get(0).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.get(0).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
+
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
@@ -162,6 +168,9 @@ public class UserRoleExtBasicDAOTest {
         assertThat(actual.get(0).getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
 
+        assertThat(actual.get(0).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.get(0).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
+
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
     }
@@ -196,6 +205,9 @@ public class UserRoleExtBasicDAOTest {
                 .isEqualTo(expectedBE.getRoleId());
         assertThat(actual.getRoleName())
                 .isEqualTo(expectedBE.getRoleName());
+
+        assertThat(actual.getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+        assertThat(actual.getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
 
         // verify invocations
         verify(basicDao).selectSingleEntity(any(), any(), any());
@@ -240,6 +252,9 @@ public class UserRoleExtBasicDAOTest {
                     .isEqualTo(expectedBE.getRoleId());
             assertThat(actual.get(i).getRoleName())
                     .isEqualTo(expectedBE.getRoleName());
+
+            assertThat(actual.get(i).getDsbMitgliedNachname()).isEqualTo(expectedBE.getDsbMitgliedNachname());
+            assertThat(actual.get(i).getDsbMitgliedVorname()).isEqualTo(expectedBE.getDsbMitgliedVorname());
 
 
         }

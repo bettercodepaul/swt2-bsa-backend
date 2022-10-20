@@ -9,12 +9,14 @@ package de.bogenliga.application.services.v1.sync.model;
 // ob zwichenzeitlich ein neues Mannschaftsmitgliled angelegt wurde - und die
 // Zuordnung der Datensätze (Passe) ist über die Rückennummer vorzunehmen.
 
-public class LigaSyncMannschaftsmitgliedDTO {
-    public Long id; //ID aus mannscjaftsmitglied_id
-    public Long version;
-    public Long mannschaftId;
-    public Long dsbMitgliedId;
-    public Integer rueckennummer;
+import de.bogenliga.application.common.service.types.DataTransferObject;
+
+public class LigaSyncMannschaftsmitgliedDTO implements DataTransferObject {
+    private Long id; //ID aus mannscjaftsmitglied_id
+    private Long version;
+    private Long mannschaftId;
+    private Long dsbMitgliedId;
+    private Long rueckennummer;
 
     public LigaSyncMannschaftsmitgliedDTO(){
 
@@ -22,11 +24,47 @@ public class LigaSyncMannschaftsmitgliedDTO {
 
     public LigaSyncMannschaftsmitgliedDTO(Long id, Long version,
                                           Long mannschaftId, Long dsbMitgliedId,
-                                          Integer rueckennummer) {
+                                          Long rueckennummer) {
         this.id = id;
         this.version = version;
         this.mannschaftId = mannschaftId;
         this.dsbMitgliedId = dsbMitgliedId;
         this.rueckennummer = rueckennummer;
     }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+
+    public void setMannschaftId(Long mannschaftId) {
+        this.mannschaftId = mannschaftId;
+    }
+
+
+    public void setDsbMitgliedId(Long dsbMitgliedId) {
+        this.dsbMitgliedId = dsbMitgliedId;
+    }
+
+
+    public void setRueckennummer(Long rueckennummer) {
+        this.rueckennummer = rueckennummer;
+    }
+
+
+    public Long getId() {return id;}
+
+    public Long getVersion() {return version;}
+
+    public Long getMannschaftId() {return mannschaftId;}
+
+    public Long getDsbMitgliedId() {return dsbMitgliedId;}
+
+    public Long getRueckennummer() {return rueckennummer;}
 }

@@ -11,6 +11,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO
 import de.bogenliga.application.business.ligamatch.impl.dao.BaseLigamatchTest;
 import de.bogenliga.application.business.ligamatch.impl.dao.LigamatchDAO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
+import de.bogenliga.application.business.match.api.types.LigamatchDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
@@ -241,9 +242,22 @@ public class MatchComponentImplTest extends BaseMatchTest {
         verify(ligamatchDAO).findLigamatchesByWettkampfId(MATCH_WETTKAMPF_ID);
     }
 
+    @Test
+    public void getLigamatchDOsByWettkampfId(){
+        LigamatchBE expectedLigamatchBE = BaseLigamatchTest.getLigamatchBE();
 
+        final List<LigamatchBE> expectedBEList = Collections.singletonList(expectedLigamatchBE);
 
+        //configure mocks
+        when(ligamatchDAO.findLigamatchesByWettkampfId(anyLong())).thenReturn(expectedBEList);
 
+        //call test method
+        final List<LigamatchDO> actual = underTest.getLigamatchDOsByWettkampfId(MATCH_WETTKAMPF_ID);
+
+        //assert result
+        BaseLigamatchTest.validateDOObjectList(actual);
+        verify(ligamatchDAO).findLigamatchesByWettkampfId(MATCH_WETTKAMPF_ID);
+    }
 
     @Test
     public void getLigamatchById(){

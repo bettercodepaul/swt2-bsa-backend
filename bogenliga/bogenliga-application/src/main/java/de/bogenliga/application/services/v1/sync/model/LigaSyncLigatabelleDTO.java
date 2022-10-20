@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class LigaSyncLigatabelleDTO implements DataTransferObject {
     private static final long serialVersionUID = 432721597574336871L;
 
-    //Kritisch Hinterfragen... wir können nicht alle Funktionen offlien beritstellen
+    //Kritisch Hinterfragen... wir können nicht alle Funktionen offline beritstellen
     // Annahme: für die Steuerung im Wettkampf benötigen die Teams aktuelle Rückmeldung über ihre
     // derzeitige Tabellenposition - aber nur über diese.
     // wir lesen Ligatabelle intial und berechnen die aktuelle Ligatabelle im Client auf Basis der
@@ -24,9 +24,8 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
     private Integer sortierung;
     private Integer tabellenplatz;
 
-    public LigaSyncLigatabelleDTO(){
-
-    }
+    /*
+    No usages, should be deleted
 
     public LigaSyncLigatabelleDTO(Long veranstaltungId, String veranstaltungName,
                                   Long wettkampfId, Integer wettkampfTag,
@@ -45,7 +44,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         this.sortierung=0;
         this.tabellenplatz=0;
     }
-
+    */
     public LigaSyncLigatabelleDTO(Long veranstaltungId, String veranstaltungName,
                                   Long wettkampfId, Integer wettkampfTag,
                                   Long mannschaftId, String mannschaftName,

@@ -27,6 +27,7 @@ public class WettkampfBETest {
     private static final long wettkampf_Tag = 8;
     private static final long wettkampf_Disziplin_Id = 0;
     private static final long wettkampf_Wettkampftyp_Id = 1;
+    private static final String wettkampf_offlineToken = "offllineToken";
 
 
 
@@ -35,13 +36,14 @@ public class WettkampfBETest {
         final WettkampfBE underTest = getWettkampfBE();
         underTest.setId(wettkampf_Id);
         underTest.setWettkampfTypId(wettkampf_Wettkampftyp_Id);
-
+        underTest.setOfflineToken(wettkampf_offlineToken);
         final String actual = underTest.toString();
 
         assertThat(actual)
                 .isNotEmpty()
                 .contains(Long.toString(wettkampf_Id))
-                .contains(Long.toString(wettkampf_Wettkampftyp_Id));
+                .contains(Long.toString(wettkampf_Wettkampftyp_Id))
+                .contains(wettkampf_offlineToken);
     }
 
 }

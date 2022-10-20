@@ -52,7 +52,6 @@ public class MatchDO extends CommonDataObject {
         this.setLastModifiedByUserId(lastModifiedByUserId);
     }
 
-
     public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung,
                    Long scheibenNummer, Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
                    Long strafPunkteSatz3, Long strafPunkteSatz4, Long strafPunkteSatz5) {

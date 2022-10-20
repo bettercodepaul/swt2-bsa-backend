@@ -4,8 +4,6 @@ import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.services.v1.user.model.UserRoleDTO;
 import org.junit.Test;
 
-import java.sql.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserRoleDTOMapperTest {
@@ -45,7 +43,10 @@ public class UserRoleDTOMapperTest {
         assertThat(actual.getRoleName()).isEqualTo(ROLE_NAME);
         assertThat(actual.getEmail()).isEqualTo(EMAIL);
         assertThat(actual.equals(getDO()));
+        assertThat(actual.getDsbMitgliedNachname()).isEqualTo(DSBMITGLIED_TABLE_SURNAME);
+        assertThat(actual.getDsbMitgliedVorname()).isEqualTo(DSBMITGLIED_TABLE_FORENAME);
     }
+
 
     @Test
     public void toDTO() {

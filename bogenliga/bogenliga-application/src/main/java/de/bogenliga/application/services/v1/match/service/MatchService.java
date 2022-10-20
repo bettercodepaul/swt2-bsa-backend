@@ -241,6 +241,7 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO1, SERVICE_FIND_MATCHES_BY_IDS);
         this.log(matchDTO2, SERVICE_FIND_MATCHES_BY_IDS);
 
+
         return matches;
     }
 
@@ -299,11 +300,11 @@ public class MatchService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF, UserPermission.CAN_MODIFY_MY_WETTKAMPF,UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
     public List<MatchDTO> saveMatches(@RequestBody final List<MatchDTO> matchDTOs, final Principal principal) throws NoPermissionException {
-        //darf der User die Funktion aufrufen, da er das allgemein Recht hat?
+        // darf der User die Funktion aufrufen, da er das allgemein Recht hat?
         final Long userId = UserProvider.getCurrentUserId(principal);
         Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_USER_ID);
-        //wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
-        // wir für die rechte "_MY_..." die Datenprüfen müssen, d.h. die UserID mit
+        // wir müssen die Prüfung auf die Rechte ein zweites Mal durchführen, da
+        // wir für die rechte "_MY_..." die Daten prüfen müssen, d.h. die UserID mit
         // LigaleiterID bzw. AusrichterID vergleichen müssen
 
         //dazu bestimmen wir den Wettkampf-Datensatz
@@ -351,12 +352,14 @@ public class MatchService implements ServiceFacade {
 
     /**
      * Save a single match, also creates/updates related passe objects.
-     * @param matchDTO das einzelne Match, dass zu speichen ist
+     * @param matchDTO das einzelne Match, das zu speichern ist
      * @param userId des ändernden Users
      */
     private void saveMatch(MatchDTO matchDTO, Long userId) {
 
         MatchDO matchDO = MatchDTOMapper.toDO.apply(matchDTO);
+
+
         matchComponent.update(matchDO, userId);
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS =
                 mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDTO.getMannschaftId());
@@ -368,6 +371,7 @@ public class MatchService implements ServiceFacade {
 
         Preconditions.checkArgument(mannschaftsmitgliedDOS.size() >= 3,
                 String.format(ERR_SIZE_TEMPLATE, SERVICE_SAVE_MATCHES, "mannschaftsmitgliedDOS", 3));
+
 
         for (PasseDTO passeDTO : matchDTO.getPassen()) {
             createOrUpdatePasse(passeDTO, userId, mannschaftsmitgliedDOS);
@@ -386,15 +390,20 @@ public class MatchService implements ServiceFacade {
                                      List<MannschaftsmitgliedDO> mannschaftsmitgliedDOS){
 
         checkPreconditions(passeDTO, passeConditionErrors);
+
         passeDTO.setDsbMitgliedId(getMemberIdFor(passeDTO, mannschaftsmitgliedDOS));
+
         Preconditions.checkArgument(passeDTO.getDsbMitgliedId() != null,
                 String.format(ERR_NOT_NULL_TEMPLATE, "createOrUpdatePasse", "dsbMitgliedId"));
 
         PasseDO passeDO = PasseDTOMapper.toDO.apply(passeDTO);
+
+
         if (passeExists(passeDO)) {
+            LOG.debug("updating passe: {}", passeDO.getId());
             passeComponent.update(passeDO, userId);
         } else {
-            LOG.debug("Trying to create passe");
+            LOG.debug("Trying to create passe {}", passeDO.getId());
             // erst prüfen ob alle relevanten Parameter befüllt sind pk-passe!!
             if(passeDO.getPasseDsbMitgliedId()!=null &&
                     passeDO.getPasseMannschaftId()!= null &&
@@ -412,7 +421,6 @@ public class MatchService implements ServiceFacade {
                 passeComponent.create(passeDO, userId);
             }
         }
-
     }
 
 
@@ -785,14 +793,19 @@ public class MatchService implements ServiceFacade {
 
 
             List<LigapasseBE> ligapasseBEList = passeComponent.getLigapassenByLigamatchId(matchId);
+
+
             List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
             List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+
 
             for (int i = 0; i < passeDTOs.size(); i++){
                 passeDTOs.get(i).setRueckennummer(ligapasseBEList.get(i).getMannschaftsmitgliedRueckennummer());
                 Preconditions.checkArgument(passeDTOs.get(i).getDsbMitgliedId() != null,
                         String.format(ERR_NOT_NULL_TEMPLATE, "getMatchFromId", "dsbMitgliedId"));
             }
+
+
 
             matchDTO.setPassen(passeDTOs);
             return matchDTO;
@@ -831,6 +844,7 @@ public class MatchService implements ServiceFacade {
         if (passeDO.getId() != null) { // Is passeDO id already null
             // If no, check if it actually exists in DB
             PasseDO queriedPasseDO = passeComponent.findById(passeDO.getId());
+            LOG.debug("got passe ------------------------------------------------------------------- ");
             exists = queriedPasseDO != null;
         }
         return exists;
