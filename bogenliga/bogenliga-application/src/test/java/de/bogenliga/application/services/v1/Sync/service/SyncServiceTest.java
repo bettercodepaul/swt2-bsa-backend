@@ -708,6 +708,18 @@ public class SyncServiceTest {
         assertNotEquals(test.equals(test),test.equals(test_2 ));
 
     }
+    /*
+    Assert.assertTrue(x.equals(y) && y.equals(x));
+    Assert.assertTrue(x.hashCode() == y.hashCode());
+     */
+    @Test
+    public void testLigaSynchTabelleDTO(){
+        final LigaSyncLigatabelleDTO test01 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test02 = getLigaSyncLigatabelleDTO();
+        assertTrue(test01.equals(test02) && test02.equals(test01) );
+        assertEquals(test01.hashCode(), test02.hashCode());
+    }
+
 
     @Test
     public void testgetLigatabelleVeranstaltungToString() {
