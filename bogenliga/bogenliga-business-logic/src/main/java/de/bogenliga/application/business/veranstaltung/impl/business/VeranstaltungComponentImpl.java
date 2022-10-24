@@ -6,6 +6,7 @@ import java.util.List;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR = "veranstaltungsportjahr must be not null";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_NAME = "veranstaltungname must be not null";
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
 
     private final VeranstaltungDAO veranstaltungDAO;
     private final WettkampfComponent wettkampfComponent;
@@ -151,11 +153,15 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
 
+        Preconditions.checkArgument(
+              validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()),
+               PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
 
         //create Wettkampftag 0
+        final WettkampfDO wettkampfTag0 = wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltungId(), persistedVeranstaltungBE.getVeranstaltungLigaleiterId());
         //TODO die Bestiummung der User-ID im Service funktioniert nicht korrekt - daher kann diese nicht
         // als ID für den Ligaleiter genutzt werden - wir benötigen für die Fremdschlüsselbeziehung aber existierende
         // User-id - daher wird hier die Ligaleiter-Id als User-id übergeben
@@ -256,6 +262,25 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungSportJahr(),
                 PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
 
+    }
+
+    /**
+     * Checks if a Liga already has a Veranstaltung in a specific Sportjahr
+     *
+     * @param liga_id   The ID of the Liga to check
+     * @param sportjahr The Sportjahr to check
+     *
+     * @return true: when no Veranstaltung exists for Liga in Sportjahr false: when there already is a Veranstaltung for
+     * Liga in Sportjahr
+     */
+    private boolean validLiga(final long liga_id, final long sportjahr) {
+        List<VeranstaltungDO> all_veranstaltungen = this.findAll();
+        for (VeranstaltungDO vdo : all_veranstaltungen) {
+            if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
