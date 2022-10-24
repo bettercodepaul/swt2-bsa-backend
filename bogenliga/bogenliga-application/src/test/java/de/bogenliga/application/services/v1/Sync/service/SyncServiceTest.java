@@ -44,6 +44,7 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import de.bogenliga.application.services.v1.sync.service.SyncService;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
@@ -609,8 +610,14 @@ public class SyncServiceTest {
         ligaSyncMannschaftsmitgliedDTO.setDsbMitgliedId(dsbMitgliedId);
         assertEquals(dsbMitgliedId, ligaSyncMannschaftsmitgliedDTO.getDsbMitgliedId());
 
-        ligaSyncMannschaftsmitgliedDTO.setVersion(VERSION);
-        assertEquals(VERSION,  ligaSyncMannschaftsmitgliedDTO.getVersion());
+        final long version01 = version;
+
+        // test setter by setting instance.version to version01
+        ligaSyncMannschaftsmitgliedDTO.setVersion(version01);
+        // now create variable and set it to whatever instance.version is ( expected is version01 )
+        final long version02 = ligaSyncMannschaftsmitgliedDTO.getVersion();
+        // check if version of instance equals version01 variable
+        assertEquals(version01, version02);
 
         ligaSyncMannschaftsmitgliedDTO.setRueckennummer(rueckennummer);
         assertEquals(rueckennummer, ligaSyncMannschaftsmitgliedDTO.getRueckennummer());
@@ -672,8 +679,9 @@ public class SyncServiceTest {
         ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
         assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
 
-        assertEquals(ligaSyncLigatabelleDTO.hashCode(),ligaSyncLigatabelleDTO.hashCode());
-        assertFalse(ligaSyncLigatabelleDTO.toString().isEmpty());
+        assertEquals(ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO),ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO));
+
+        assertNotNull(ligaSyncLigatabelleDTO.toString());
     }
 
     @Test
