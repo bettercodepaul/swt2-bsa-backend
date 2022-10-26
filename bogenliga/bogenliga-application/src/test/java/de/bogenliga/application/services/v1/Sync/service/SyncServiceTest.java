@@ -624,11 +624,31 @@ public class SyncServiceTest {
     }
 
     // Start of testing
+    // cover equals cases by creating another ligasynchtabelle object and cover all cases ...
     @Test
     public void testLigaSyncLigatabelleDTO(){
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
+        //to make it more readable, I ll introduce the parameters for creating the instance
+        Long veranstaltungsID01 = 7L;
+        String veranstaltungsName01 = "neuerName";
+        Long wettkampfId01 = 3L;
+        Integer wettkampfTag01 = 1;
+        Long mannschaftId01 = 3L;
+        String mannschaftName01 = "neuererName";
+        Integer matchpkt01 = 5;
+        Integer matchpktGegen01 = 1;
+        Integer satzpkt01 = 17;
+        Integer satzpktGegen01 = 5;
+        Integer satzpktDifferenz01 = 14;
+        Integer sortierung01 = 2;
+        Integer tabellenplatz01 = 17;
+        // see, now this does look better!
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
+                veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
+                mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+        );
 
-        //maybe more elegant to use assertThat() in the end after using all setters?
         Long veranstaltungId = 17L;
         ligaSyncLigatabelleDTO.setVeranstaltungId(veranstaltungId);
         assertEquals(veranstaltungId, ligaSyncLigatabelleDTO.getVeranstaltungId());
@@ -679,9 +699,12 @@ public class SyncServiceTest {
         ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
         assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
 
+        //Testing equals
         assertEquals(ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO),ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO));
-
         assertNotNull(ligaSyncLigatabelleDTO.toString());
+
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+
     }
 
     @Test
