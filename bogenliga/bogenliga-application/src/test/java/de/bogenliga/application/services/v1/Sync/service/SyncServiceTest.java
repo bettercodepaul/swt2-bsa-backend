@@ -731,6 +731,8 @@ public class SyncServiceTest {
                 satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
         );
 
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO03 = getLigaSyncLigatabelleDTO();
+
         //a != b, -> false
         assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
         // a = a, -> true
@@ -738,6 +740,9 @@ public class SyncServiceTest {
 
         // a ia not instanceof b -> false
         assertNotEquals(ligaSyncLigatabelleDTO, new Object());
+
+        // a = b -> true
+        assertEquals(ligaSyncLigatabelleDTO03, ligaSyncLigatabelleDTO);
 
     }
 
