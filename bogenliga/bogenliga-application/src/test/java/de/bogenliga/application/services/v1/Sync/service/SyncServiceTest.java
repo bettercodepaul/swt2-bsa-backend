@@ -699,12 +699,63 @@ public class SyncServiceTest {
         ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
         assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
 
-        //Testing equals
+
+    }
+    @Test
+    public void testLigaSyncLigatabelleDTOEquals(){
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
+        //to make it more readable, I ll introduce the parameters for creating the instance
+        Long veranstaltungsID01 = 7L;
+        String veranstaltungsName01 = "neuerName";
+        Long wettkampfId01 = 3L;
+        Integer wettkampfTag01 = 1;
+        Long mannschaftId01 = 3L;
+        String mannschaftName01 = "neuererName";
+        Integer matchpkt01 = 5;
+        Integer matchpktGegen01 = 1;
+        Integer satzpkt01 = 17;
+        Integer satzpktGegen01 = 5;
+        Integer satzpktDifferenz01 = 14;
+        Integer sortierung01 = 2;
+        Integer tabellenplatz01 = 17;
+        // see, now this does look better!
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
+                veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
+                mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+        );
+
         assertEquals(ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO),ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO));
         assertNotNull(ligaSyncLigatabelleDTO.toString());
 
         assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
 
+        ligaSyncLigatabelleDTO02.setVeranstaltungName(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setVeranstaltungId(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setWettkampfId(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setWettkampfTag(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setMannschaftId(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setMannschaftName(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setMatchpkt(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setMatchpktGegen(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setSatzpkt(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setSatzpktGegen(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setSatzpktDifferenz(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setSortierung(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        ligaSyncLigatabelleDTO02.setTabellenplatz(null);
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
     }
 
     @Test
@@ -730,11 +781,10 @@ public class SyncServiceTest {
         assertEquals(test.equals(test),test.equals(test));
         assertNotEquals(test.equals(test),test.equals(test_2 ));
 
+
+
     }
-    /*
-    Assert.assertTrue(x.equals(y) && y.equals(x));
-    Assert.assertTrue(x.hashCode() == y.hashCode());
-     */
+
     @Test
     public void testLigaSynchTabelleDTO(){
         final LigaSyncLigatabelleDTO test01 = getLigaSyncLigatabelleDTO();
@@ -747,6 +797,8 @@ public class SyncServiceTest {
         assertNotEquals(test02,(new Object()));
         assertEquals(test01.hashCode(), test02.hashCode());
 
+        test01.setVeranstaltungName(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
         test01.setVeranstaltungId(null);
         assertNotEquals(test01.hashCode(), test02.hashCode());
         test01.setWettkampfId(null);
@@ -770,7 +822,6 @@ public class SyncServiceTest {
         test01.setSortierung(null);
         assertNotEquals(test01.hashCode(), test02.hashCode());
         test01.setTabellenplatz(null);
-
         assertNotEquals(test01.hashCode(), test02.hashCode());
     }
 
