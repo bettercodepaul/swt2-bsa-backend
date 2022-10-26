@@ -749,6 +749,29 @@ public class SyncServiceTest {
 
         test01.setVeranstaltungId(null);
         assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setWettkampfId(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setWettkampfTag(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMannschaftId(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMannschaftName(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMatchpkt(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMatchpktGegen(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSatzpkt(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSatzpktGegen(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSatzpktDifferenz(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSortierung(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setTabellenplatz(null);
+
+        assertNotEquals(test01.hashCode(), test02.hashCode());
     }
 
 
