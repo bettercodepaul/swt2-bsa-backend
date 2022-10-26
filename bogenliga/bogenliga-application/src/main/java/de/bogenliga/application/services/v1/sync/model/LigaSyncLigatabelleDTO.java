@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.sync.model;
 
+import java.util.Objects;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class LigaSyncLigatabelleDTO implements DataTransferObject {
@@ -24,27 +25,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
     private Integer sortierung;
     private Integer tabellenplatz;
 
-    /*
-    No usages, should be deleted
 
-    public LigaSyncLigatabelleDTO(Long veranstaltungId, String veranstaltungName,
-                                  Long wettkampfId, Integer wettkampfTag,
-                                  Long mannschaftId, String mannschaftName) {
-        this.veranstaltungId = veranstaltungId;
-        this.veranstaltungName = veranstaltungName;
-        this.wettkampfId = wettkampfId;
-        this.wettkampfTag = wettkampfTag;
-        this.mannschaftId = mannschaftId;
-        this.mannschaftName = mannschaftName;
-        this.matchpkt =0;
-        this.matchpktGegen = 0;
-        this.satzpkt =0;
-        this.satzpktGegen=0;
-        this.satzpktDifferenz=0;
-        this.sortierung=0;
-        this.tabellenplatz=0;
-    }
-    */
     public LigaSyncLigatabelleDTO(Long veranstaltungId, String veranstaltungName,
                                   Long wettkampfId, Integer wettkampfTag,
                                   Long mannschaftId, String mannschaftName,
@@ -171,6 +152,32 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         this.tabellenplatz = tabellenplatz;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LigaSyncLigatabelleDTO)) {
+            return false;
+        }
+        LigaSyncLigatabelleDTO that = (LigaSyncLigatabelleDTO) o;
+        return Objects.equals(getVeranstaltungId(), that.getVeranstaltungId()) && Objects.equals(
+                getVeranstaltungName(), that.getVeranstaltungName()) && Objects.equals(getWettkampfId(),
+                that.getWettkampfId()) && Objects.equals(getWettkampfTag(),
+                that.getWettkampfTag()) && Objects.equals(getMannschaftId(),
+                that.getMannschaftId()) && Objects.equals(getMannschaftName(),
+                that.getMannschaftName()) && Objects.equals(getMatchpkt(),
+                that.getMatchpkt()) && Objects.equals(getMatchpktGegen(),
+                that.getMatchpktGegen()) && Objects.equals(getSatzpkt(),
+                that.getSatzpkt()) && Objects.equals(getSatzpktGegen(),
+                that.getSatzpktGegen()) && Objects.equals(getSatzpktDifferenz(),
+                that.getSatzpktDifferenz()) && Objects.equals(getSortierung(),
+                that.getSortierung()) && Objects.equals(getTabellenplatz(), that.getTabellenplatz());
+    }
+
+    // former equals was hardly readable. Why was auto generate not used int the first place?
+    /*
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -180,7 +187,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
 
         LigaSyncLigatabelleDTO that = (LigaSyncLigatabelleDTO) o;
 
-        if (this.veranstaltungId != null ? !this.veranstaltungId.equals(that.veranstaltungId) : that.veranstaltungId != null)
+        if (!Objects.equals(this.veranstaltungId, that.veranstaltungId))
             return false;
         if (this.veranstaltungName != null ? !this.veranstaltungName.equals(that.veranstaltungName) : that.veranstaltungName != null)
             return false;
@@ -206,6 +213,7 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
             return false;
         return this.tabellenplatz != null ? this.tabellenplatz.equals(that.tabellenplatz) : that.tabellenplatz == null;
     }
+    */
 
     @Override
     public int hashCode() {

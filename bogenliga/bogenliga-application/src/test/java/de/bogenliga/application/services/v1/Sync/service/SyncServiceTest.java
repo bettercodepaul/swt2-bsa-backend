@@ -705,19 +705,19 @@ public class SyncServiceTest {
     public void testLigaSyncLigatabelleDTOEquals(){
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
         //to make it more readable, I ll introduce the parameters for creating the instance
-        Long veranstaltungsID01 = 7L;
+        Long veranstaltungsID01 = 77L;
         String veranstaltungsName01 = "neuerName";
-        Long wettkampfId01 = 3L;
-        Integer wettkampfTag01 = 1;
-        Long mannschaftId01 = 3L;
+        Long wettkampfId01 = 33L;
+        Integer wettkampfTag01 = 99;
+        Long mannschaftId01 = 33L;
         String mannschaftName01 = "neuererName";
-        Integer matchpkt01 = 5;
-        Integer matchpktGegen01 = 1;
-        Integer satzpkt01 = 17;
-        Integer satzpktGegen01 = 5;
-        Integer satzpktDifferenz01 = 14;
-        Integer sortierung01 = 2;
-        Integer tabellenplatz01 = 17;
+        Integer matchpkt01 = 99;
+        Integer matchpktGegen01 = 99;
+        Integer satzpkt01 = 99;
+        Integer satzpktGegen01 = 99;
+        Integer satzpktDifferenz01 = 99;
+        Integer sortierung01 = 99;
+        Integer tabellenplatz01 = 99;
         // see, now this does look better!
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
                 veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
