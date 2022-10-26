@@ -701,6 +701,12 @@ public class SyncServiceTest {
 
 
     }
+
+    @Test
+    public void testLigaSyncLigatabelleDTOToString(){
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
+        assertNotNull(ligaSyncLigatabelleDTO.toString());
+    }
     @Test
     public void testLigaSyncLigatabelleDTOEquals(){
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
@@ -725,49 +731,14 @@ public class SyncServiceTest {
                 satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
         );
 
-        assertEquals(ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO),ligaSyncLigatabelleDTO.equals(ligaSyncLigatabelleDTO));
-        assertNotNull(ligaSyncLigatabelleDTO.toString());
+        //a != b, -> false
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        // a = a, -> true
+        assertEquals(ligaSyncLigatabelleDTO02, ligaSyncLigatabelleDTO02);
 
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        // a ia not instanceof b -> false
+        assertNotEquals(ligaSyncLigatabelleDTO, new Object());
 
-        ligaSyncLigatabelleDTO02.setVeranstaltungName(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setVeranstaltungId(null);
-        ligaSyncLigatabelleDTO.setVeranstaltungId(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setWettkampfId(null);
-        ligaSyncLigatabelleDTO.setWettkampfId(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setWettkampfTag(null);
-        ligaSyncLigatabelleDTO.setWettkampfTag(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setMannschaftId(null);
-        ligaSyncLigatabelleDTO.setMannschaftName(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setMannschaftName(null);
-        ligaSyncLigatabelleDTO.setMannschaftName(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setMatchpkt(null);
-        ligaSyncLigatabelleDTO.setMatchpkt(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setMatchpktGegen(null);
-        ligaSyncLigatabelleDTO.setMatchpktGegen(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setSatzpkt(null);
-        ligaSyncLigatabelleDTO.setSatzpkt(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setSatzpktGegen(null);
-        ligaSyncLigatabelleDTO.setSatzpktGegen(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setSatzpktDifferenz(null);
-        ligaSyncLigatabelleDTO.setSatzpktDifferenz(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setSortierung(null);
-        ligaSyncLigatabelleDTO.setSortierung(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
-        ligaSyncLigatabelleDTO02.setTabellenplatz(null);
-        ligaSyncLigatabelleDTO.setTabellenplatz(null);
-        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
     }
 
     @Test

@@ -176,44 +176,6 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
                 that.getSortierung()) && Objects.equals(getTabellenplatz(), that.getTabellenplatz());
     }
 
-    // former equals was hardly readable. Why was auto generate not used int the first place?
-    /*
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        LigaSyncLigatabelleDTO that = (LigaSyncLigatabelleDTO) o;
-
-        if (!Objects.equals(this.veranstaltungId, that.veranstaltungId))
-            return false;
-        if (this.veranstaltungName != null ? !this.veranstaltungName.equals(that.veranstaltungName) : that.veranstaltungName != null)
-            return false;
-        if (this.wettkampfId != null ? !this.wettkampfId.equals(that.wettkampfId) : that.wettkampfId != null)
-            return false;
-        if (this.wettkampfTag != null ? !this.wettkampfTag.equals(that.wettkampfTag) : that.wettkampfTag != null)
-            return false;
-        if (this.mannschaftId != null ? !this.mannschaftId.equals(that.mannschaftId) : that.mannschaftId != null)
-            return false;
-        if (this.mannschaftName != null ? !this.mannschaftName.equals(that.mannschaftName) : that.mannschaftName != null)
-            return false;
-        if (this.matchpkt != null ? !this.matchpkt.equals(that.matchpkt) : that.matchpkt != null)
-            return false;
-        if (this.matchpktGegen != null ? !this.matchpktGegen.equals(that.matchpktGegen) : that.matchpktGegen != null)
-            return false;
-        if (this.satzpkt != null ? !this.satzpkt.equals(that.satzpkt) : that.satzpkt != null)
-            return false;
-        if (this.satzpktGegen != null ? !this.satzpktGegen.equals(that.satzpktGegen) : that.satzpktGegen != null)
-            return false;
-        if (this.satzpktDifferenz != null ? !this.satzpktDifferenz.equals(that.satzpktDifferenz) : that.satzpktDifferenz != null)
-            return false;
-        if (this.sortierung != null ? !this.sortierung.equals(that.sortierung) : that.sortierung != null)
-            return false;
-        return this.tabellenplatz != null ? this.tabellenplatz.equals(that.tabellenplatz) : that.tabellenplatz == null;
-    }
-    */
 
     @Override
     public int hashCode() {
