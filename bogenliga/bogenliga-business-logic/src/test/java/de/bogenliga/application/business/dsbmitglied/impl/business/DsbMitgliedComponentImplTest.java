@@ -134,6 +134,13 @@ public class DsbMitgliedComponentImplTest {
                 KAMPFRICHTER);
     }
 
+    @Test
+    public void findAlleByTeamTest(){
+        assertThat(underTest.findAllByTeamId(ID))
+                .isNotNull();
+
+    }
+
 
     @Test
     public void findAll() {
@@ -179,6 +186,7 @@ public class DsbMitgliedComponentImplTest {
     }
 
 
+
     @Test
     public void findBySearch() {
         // prepare test data
@@ -217,6 +225,14 @@ public class DsbMitgliedComponentImplTest {
 
         // assert result
         assertThat(actual).isNotNull();
+
+        // call test method a 2nd time, get null as result to test exception
+        try {
+            final DsbMitgliedDO testException = underTest.findById(99L);
+            assertThat(testException).isNull();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         assertThat(actual.getId())
                 .isEqualTo(expectedBE.getDsbMitgliedId());
