@@ -48,6 +48,16 @@ public class DsbMitgliedBasicDAOTest {
     @InjectMocks
     private DsbMitgliedDAO underTest;
 
+    @Test
+    public void hasKampfrichterLizenz(){
+       assertThat(underTest.hasKampfrichterLizenz(ID))
+               .isNotNull();
+    }
+
+    @Test
+    public void findByUserIDTest(){
+        assertThat(underTest.findByUserId(USERID)).isNull();
+    }
 
     @Test
     public void findAll() {
@@ -128,7 +138,7 @@ public class DsbMitgliedBasicDAOTest {
     public void findAllNotInTeamId() {
 
         //No Test required since the method doesn't do anything with the mocked data
-        assert true;
+        assertThat(underTest.findAllNotInTeamId(USERID,ID)).isNotNull();
 
         /*
 
@@ -167,12 +177,8 @@ public class DsbMitgliedBasicDAOTest {
 
     @Test
     public void findAllByTeamId() {
-
-        //No Test required since the method doesn't do anything with the mocked data
-        assert true;
-
+        assertThat(underTest.findAllByTeamId(USERID)).isNotNull();
         /*
-
         long vereinsId = 11;
 
         // prepare test data
