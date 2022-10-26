@@ -739,12 +739,16 @@ public class SyncServiceTest {
     public void testLigaSynchTabelleDTO(){
         final LigaSyncLigatabelleDTO test01 = getLigaSyncLigatabelleDTO();
         final LigaSyncLigatabelleDTO test02 = getLigaSyncLigatabelleDTO();
+
         assertTrue(test01.equals(test02) && test02.equals(test01) );
         assertNotEquals(test01, null);
         assertNotEquals(test02, null);
         assertNotEquals(test01, new Object());
         assertNotEquals(test02,(new Object()));
         assertEquals(test01.hashCode(), test02.hashCode());
+
+        test01.setVeranstaltungId(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
     }
 
 
