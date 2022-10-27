@@ -174,7 +174,7 @@ public class DsbMitgliedComponentImplTest {
     }
 
     @Test
-    public void updatePreconditionTest(){
+    public void updatePreconditionTest1(){
         try {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.setId(-1L);
@@ -190,10 +190,31 @@ public class DsbMitgliedComponentImplTest {
         }catch(Exception e){
             e.printStackTrace();
         }
-
-
     }
 
+    @Test
+    public void updatePreconditionTest2(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setKampfrichter(false);
+            assertThat(underTest.update(test, 1L)).isNotNull();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void updatePreconditionTest3(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setKampfrichter(true);
+            assertThat(underTest.update(test, 1L)).isNotNull();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void findAll() {
