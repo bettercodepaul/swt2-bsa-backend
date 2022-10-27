@@ -638,7 +638,28 @@ public class SyncServiceTest {
         assertNotEquals(test1.getVeranstaltungName(),test2.getVeranstaltungName());
     }
 
+    @Test
+    public void equals0(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
 
+        assertEquals(test1.getVeranstaltungName(),test2.getVeranstaltungName());
+    }
+
+    @Test
+    public void equals3(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        assertEquals(test1.getVeranstaltungId(),test2.getVeranstaltungId());
+    }
+    @Test
+    public void equals4(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setVeranstaltungId(99L);
+
+        assertNotEquals(test1.getVeranstaltungId(),test2.getVeranstaltungId());
+    }
 
     // Start of testing
     // cover equals cases by creating another ligasynchtabelle object and cover all cases ...
