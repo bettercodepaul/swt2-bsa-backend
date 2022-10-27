@@ -133,8 +133,8 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         if (dsbMitgliedDO.isKampfrichter() && !dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId())) {
             final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
             lizenzDAO.create(lizenzBE, currentDsbMitgliedId);
-        } else if (!dsbMitgliedDO.isKampfrichter() && dsbMitgliedDAO.hasKampfrichterLizenz(
-                dsbMitgliedDOResponse.getId())) {
+        } else if (Boolean.TRUE.equals(!dsbMitgliedDO.isKampfrichter()) && Boolean.TRUE.equals(dsbMitgliedDAO.hasKampfrichterLizenz(
+                dsbMitgliedDOResponse.getId()))) {
             lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDOResponse.getId()),
                     currentDsbMitgliedId);
         }
