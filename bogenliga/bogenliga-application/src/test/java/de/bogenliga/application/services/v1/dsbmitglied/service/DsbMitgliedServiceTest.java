@@ -154,6 +154,43 @@ public class DsbMitgliedServiceTest {
         verify(dsbMitgliedComponent).findAllByTeamId(ID);
     }
 
+    @Test
+    public void findAllByTeamIdPreconditionTest(){
+        try {
+            assertThat(underTest.findAllByTeamId(-1L)).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findAllNotInTeamIdPreconditionTest(){
+        try {
+            assertThat(underTest.findAllNotInTeamId(-1L, -1L)).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void insertUserIdPreconditionTest(){
+        try {
+            assertThat(underTest.insertUserId(-1L, -1L, principal )).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void findByIdPreconditionTest(){
+        try {
+            assertThat(underTest.findById(-1L)).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     @Test
     public void findAllNotInTeamId() {
