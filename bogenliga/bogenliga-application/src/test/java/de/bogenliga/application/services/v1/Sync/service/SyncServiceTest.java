@@ -657,9 +657,158 @@ public class SyncServiceTest {
         final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
         final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
         test2.setVeranstaltungId(99L);
-
         assertNotEquals(test1.getVeranstaltungId(),test2.getVeranstaltungId());
     }
+
+    @Test
+    public void equals5(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getWettkampfId(),test2.getWettkampfId());
+    }
+    @Test
+    public void equals6(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setWettkampfId(99L);
+        assertNotEquals(test1.getWettkampfId(),test2.getWettkampfId());
+    }
+
+    @Test
+    public void equals7(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getWettkampfTag(),test2.getWettkampfTag());
+    }
+    @Test
+    public void equals8(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setWettkampfTag(17);
+        assertNotEquals(test1.getWettkampfTag(),test2.getWettkampfTag());
+    }
+
+    @Test
+    public void equals9(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMannschaftId(),test2.getMannschaftId());
+    }
+    @Test
+    public void equals10(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMannschaftId(99L);
+        assertNotEquals(test1.getMannschaftId(),test2.getMannschaftId());
+    }
+
+    @Test
+    public void equals11(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMannschaftName(),test2.getMannschaftName());
+    }
+    @Test
+    public void equals12(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMannschaftName("XXXX");
+        assertNotEquals(test1.getMannschaftName(),test2.getMannschaftName());
+    }
+
+    @Test
+    public void equals13(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMatchpkt(),test2.getMatchpkt());
+    }
+    @Test
+    public void equals14(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMatchpkt(99);
+        assertNotEquals(test1.getMatchpkt(),test2.getMatchpkt());
+    }
+    @Test
+    public void equals15(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMatchpktGegen(),test2.getMatchpktGegen());
+    }
+    @Test
+    public void equals16(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMatchpktGegen(99);
+        assertNotEquals(test1.getMatchpktGegen(),test2.getMatchpktGegen());
+    }
+
+    @Test
+    public void equals17(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSatzpkt(),test2.getSatzpkt());
+    }
+    @Test
+    public void equals18(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSatzpkt(99);
+        assertNotEquals(test1.getSatzpkt(),test2.getSatzpkt());
+    }
+
+    @Test
+    public void equals19(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSatzpktGegen(),test2.getSatzpktGegen());
+    }
+    @Test
+    public void equals20(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSatzpktGegen(99);
+        assertNotEquals(test1.getSatzpktGegen(),test2.getSatzpktGegen());
+    }
+
+    @Test
+    public void equals21(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSatzpktDifferenz(),test2.getSatzpktDifferenz());
+    }
+    @Test
+    public void equals22(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSatzpktDifferenz(99);
+        assertNotEquals(test1.getSatzpktDifferenz(),test2.getSatzpktDifferenz());
+    }
+
+    @Test
+    public void equals23(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSortierung(),test2.getSortierung());
+    }
+    @Test
+    public void equals24(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSortierung(99);
+        assertNotEquals(test1.getSortierung(),test2.getSortierung());
+    }
+
 
     // Start of testing
     // cover equals cases by creating another ligasynchtabelle object and cover all cases ...
@@ -780,33 +929,6 @@ public class SyncServiceTest {
 
         // a = b -> true
         assertEquals(ligaSyncLigatabelleDTO03, ligaSyncLigatabelleDTO);
-
-        // test cases for true equals
-        assertThat(ligaSyncLigatabelleDTO.getVeranstaltungId())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getVeranstaltungId());
-        assertThat(ligaSyncLigatabelleDTO.getVeranstaltungName())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getVeranstaltungName());
-        assertThat(ligaSyncLigatabelleDTO.getWettkampfId())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getWettkampfId());
-        assertThat(ligaSyncLigatabelleDTO.getWettkampfTag())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getWettkampfTag());
-        assertThat(ligaSyncLigatabelleDTO.getMannschaftId())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getMannschaftId());
-        assertThat(ligaSyncLigatabelleDTO.getMannschaftName())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getMannschaftName());
-        assertThat(ligaSyncLigatabelleDTO.getMatchpkt())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getMatchpkt());
-        assertThat(ligaSyncLigatabelleDTO.getMatchpktGegen())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getMatchpktGegen());
-        assertThat(ligaSyncLigatabelleDTO.getSatzpkt())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getSatzpkt());
-        assertThat(ligaSyncLigatabelleDTO.getSatzpktGegen())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getSatzpktGegen());
-        assertThat(ligaSyncLigatabelleDTO.getSatzpktDifferenz())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getSatzpktDifferenz());
-        assertThat(ligaSyncLigatabelleDTO.getSortierung())
-                .isNotEqualTo(ligaSyncLigatabelleDTO02.getSortierung());
-
     }
 
     @Test
