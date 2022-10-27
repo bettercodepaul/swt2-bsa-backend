@@ -623,6 +623,23 @@ public class SyncServiceTest {
         assertEquals(rueckennummer, ligaSyncMannschaftsmitgliedDTO.getRueckennummer());
     }
 
+    @Test
+    public void equals1(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getVeranstaltungName(),test2.getVeranstaltungName());
+    }
+    @Test
+    public void equals2(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setVeranstaltungName("xxx");
+        assertNotEquals(test1.getVeranstaltungName(),test2.getVeranstaltungName());
+    }
+
+
+
     // Start of testing
     // cover equals cases by creating another ligasynchtabelle object and cover all cases ...
     @Test

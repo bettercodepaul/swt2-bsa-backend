@@ -174,18 +174,27 @@ public class DsbMitgliedComponentImplTest {
     }
 
     @Test
+    public void updatePreconditionTest0(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.isKampfrichter();
+
+            assertThat(underTest.update(test,1L)).isNotNull();
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void updatePreconditionTest1(){
         try {
             DsbMitgliedDO test = getDsbMitgliedDO();
             test.setId(-1L);
             assertThat(underTest.update(test,1L)).isNotNull();
 
-            test.setKampfrichter(false);
 
-            assertThat(underTest.update(test, 1L)).isNotNull();
-
-            test.setKampfrichter(true);
-            assertThat(underTest.update(test, 1L)).isNotNull();
 
         }catch(Exception e){
             e.printStackTrace();
