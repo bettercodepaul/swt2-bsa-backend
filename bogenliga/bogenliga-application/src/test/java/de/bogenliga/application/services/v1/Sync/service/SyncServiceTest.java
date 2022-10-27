@@ -732,7 +732,6 @@ public class SyncServiceTest {
         );
 
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO03 = getLigaSyncLigatabelleDTO();
-
         //a != b, -> false
         assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
         // a = a, -> true
@@ -745,27 +744,27 @@ public class SyncServiceTest {
         assertEquals(ligaSyncLigatabelleDTO03, ligaSyncLigatabelleDTO);
 
         assertThat(ligaSyncLigatabelleDTO.getVeranstaltungName())
-                .isEqualTo(ligaSyncLigatabelleDTO.getVeranstaltungName());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getVeranstaltungName());
         assertThat(ligaSyncLigatabelleDTO.getWettkampfId())
-                .isEqualTo(ligaSyncLigatabelleDTO.getWettkampfId());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getWettkampfId());
         assertThat(ligaSyncLigatabelleDTO.getWettkampfTag())
-                .isEqualTo(ligaSyncLigatabelleDTO.getWettkampfTag());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getWettkampfTag());
         assertThat(ligaSyncLigatabelleDTO.getMannschaftId())
-                .isEqualTo(ligaSyncLigatabelleDTO.getMannschaftId());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getMannschaftId());
         assertThat(ligaSyncLigatabelleDTO.getMannschaftName())
-                .isEqualTo(ligaSyncLigatabelleDTO.getMannschaftName());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getMannschaftName());
         assertThat(ligaSyncLigatabelleDTO.getMatchpkt())
-                .isEqualTo(ligaSyncLigatabelleDTO.getMatchpkt());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getMatchpkt());
         assertThat(ligaSyncLigatabelleDTO.getMatchpktGegen())
-                .isEqualTo(ligaSyncLigatabelleDTO.getMatchpktGegen());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getMatchpktGegen());
         assertThat(ligaSyncLigatabelleDTO.getSatzpkt())
-                .isEqualTo(ligaSyncLigatabelleDTO.getSatzpkt());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getSatzpkt());
         assertThat(ligaSyncLigatabelleDTO.getSatzpktGegen())
-                .isEqualTo(ligaSyncLigatabelleDTO.getSatzpktGegen());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getSatzpktGegen());
         assertThat(ligaSyncLigatabelleDTO.getSatzpktDifferenz())
-                .isEqualTo(ligaSyncLigatabelleDTO.getSatzpktDifferenz());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getSatzpktDifferenz());
         assertThat(ligaSyncLigatabelleDTO.getSortierung())
-                .isEqualTo(ligaSyncLigatabelleDTO.getSortierung());
+                .isEqualTo(ligaSyncLigatabelleDTO03.getSortierung());
 
     }
 
