@@ -138,7 +138,39 @@ public class DsbMitgliedComponentImplTest {
     public void findAlleByTeamTest(){
         assertThat(underTest.findAllByTeamId(ID))
                 .isNotNull();
+        try{
+            assertThat(underTest.findAllByTeamId(-1L))
+                    .isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    @Test
+    public void findAllNotInTeamTest(){
+        try {
+            assertThat(underTest.findAllNotInTeam(-1L, VEREINSID)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findAllByTeamIdTest(){
+        try {
+            assertThat(underTest.findAllByTeamId(-1L)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findByIdTest(){
+        try {
+            assertThat(underTest.findById(-1L)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 
