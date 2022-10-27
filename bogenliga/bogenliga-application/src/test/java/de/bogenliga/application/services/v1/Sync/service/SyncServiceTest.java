@@ -743,6 +743,8 @@ public class SyncServiceTest {
         // a = b -> true
         assertEquals(ligaSyncLigatabelleDTO03, ligaSyncLigatabelleDTO);
 
+        assertThat(ligaSyncLigatabelleDTO.getVeranstaltungId())
+                .isEqualTo(ligaSyncLigatabelleDTO03.getVeranstaltungId());
         assertThat(ligaSyncLigatabelleDTO.getVeranstaltungName())
                 .isEqualTo(ligaSyncLigatabelleDTO03.getVeranstaltungName());
         assertThat(ligaSyncLigatabelleDTO.getWettkampfId())
