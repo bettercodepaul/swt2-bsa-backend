@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.sync.model;
 
 import java.util.Objects;
+
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class LigaSyncLigatabelleDTO implements DataTransferObject {
@@ -162,6 +163,12 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
             return false;
         }
         LigaSyncLigatabelleDTO that = (LigaSyncLigatabelleDTO) o;
+
+        Boolean condition1 = this.getVeranstaltungName().equals(((LigaSyncLigatabelleDTO) o).getVeranstaltungName());
+        Boolean condition2 = this.getVeranstaltungId().equals(((LigaSyncLigatabelleDTO) o).getVeranstaltungId());
+        Boolean conditon3 = this.getWettkampfId().equals(((LigaSyncLigatabelleDTO) o).getWettkampfId());
+
+        /*
         return Objects.equals(getVeranstaltungId(), that.getVeranstaltungId()) && Objects.equals(
                 getVeranstaltungName(), that.getVeranstaltungName()) && Objects.equals(getWettkampfId(),
                 that.getWettkampfId()) && Objects.equals(getWettkampfTag(),
@@ -174,6 +181,13 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
                 that.getSatzpktGegen()) && Objects.equals(getSatzpktDifferenz(),
                 that.getSatzpktDifferenz()) && Objects.equals(getSortierung(),
                 that.getSortierung()) && Objects.equals(getTabellenplatz(), that.getTabellenplatz());
+
+         */
+        if((condition1 && condition2 && conditon3)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 
