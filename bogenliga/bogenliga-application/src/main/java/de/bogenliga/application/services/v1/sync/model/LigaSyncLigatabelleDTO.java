@@ -1,7 +1,5 @@
 package de.bogenliga.application.services.v1.sync.model;
 
-import java.util.Objects;
-
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 public class LigaSyncLigatabelleDTO implements DataTransferObject {
@@ -164,30 +162,24 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         }
         LigaSyncLigatabelleDTO that = (LigaSyncLigatabelleDTO) o;
 
-        Boolean condition1 = this.getVeranstaltungName().equals(((LigaSyncLigatabelleDTO) o).getVeranstaltungName());
-        Boolean condition2 = this.getVeranstaltungId().equals(((LigaSyncLigatabelleDTO) o).getVeranstaltungId());
-        Boolean conditon3 = this.getWettkampfId().equals(((LigaSyncLigatabelleDTO) o).getWettkampfId());
+        Boolean condition1 = this.getVeranstaltungName().equals(that.getVeranstaltungName());
+        Boolean condition2 = this.getVeranstaltungId().equals(that.getVeranstaltungId());
+        Boolean condition3 = this.getWettkampfId().equals(that.getWettkampfId());
+        Boolean condition4 = this.getWettkampfTag().equals(that.getWettkampfTag());
+        Boolean condition5 = this.getMannschaftId().equals(that.getMannschaftId());
+        Boolean condition6 = this.getMannschaftName().equals(that.getMannschaftName());
+        Boolean condition7 = this.getMatchpkt().equals(that.getMatchpkt());
+        Boolean condition8 = this.getMatchpktGegen().equals(that.getMatchpktGegen());
+        Boolean condition9 = this.getSatzpkt().equals(that.getSatzpkt());
+        Boolean condition10 = this.getSatzpktGegen().equals(that.getSatzpktGegen());
+        Boolean condition11 = this.getSatzpktDifferenz().equals(that.getSatzpktDifferenz());
+        Boolean condition12 = this.getSortierung().equals(that.getSortierung());
 
-        /*
-        return Objects.equals(getVeranstaltungId(), that.getVeranstaltungId()) && Objects.equals(
-                getVeranstaltungName(), that.getVeranstaltungName()) && Objects.equals(getWettkampfId(),
-                that.getWettkampfId()) && Objects.equals(getWettkampfTag(),
-                that.getWettkampfTag()) && Objects.equals(getMannschaftId(),
-                that.getMannschaftId()) && Objects.equals(getMannschaftName(),
-                that.getMannschaftName()) && Objects.equals(getMatchpkt(),
-                that.getMatchpkt()) && Objects.equals(getMatchpktGegen(),
-                that.getMatchpktGegen()) && Objects.equals(getSatzpkt(),
-                that.getSatzpkt()) && Objects.equals(getSatzpktGegen(),
-                that.getSatzpktGegen()) && Objects.equals(getSatzpktDifferenz(),
-                that.getSatzpktDifferenz()) && Objects.equals(getSortierung(),
-                that.getSortierung()) && Objects.equals(getTabellenplatz(), that.getTabellenplatz());
-
-         */
-        if((condition1 && condition2 && conditon3)){
-            return true;
-        }else{
-            return false;
-        }
+        return condition1 && condition2 && condition3
+                && condition4 && condition5
+                && condition6 && condition7
+                && condition8 &&condition9
+                && condition10 && condition11 && condition12;
     }
 
 
