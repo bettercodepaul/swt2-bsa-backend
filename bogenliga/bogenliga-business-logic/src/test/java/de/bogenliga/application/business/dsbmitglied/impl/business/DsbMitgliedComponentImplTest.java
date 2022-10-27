@@ -173,6 +173,27 @@ public class DsbMitgliedComponentImplTest {
         }
     }
 
+    @Test
+    public void updatePreconditionTest(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setId(-1L);
+            assertThat(underTest.update(test,1L)).isNotNull();
+
+            test.setKampfrichter(false);
+
+            assertThat(underTest.update(test, 1L)).isNotNull();
+
+            test.setKampfrichter(true);
+            assertThat(underTest.update(test, 1L)).isNotNull();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
 
     @Test
     public void findAll() {
@@ -500,6 +521,41 @@ public class DsbMitgliedComponentImplTest {
         verifyZeroInteractions(dsbMitgliedDAO);
     }
 
+    @Test
+    public void deletePreconditions1(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setId(-1L);
+            underTest.delete(test, 1L);
+            assertThat(test).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void deletePreconditions2(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            underTest.delete(test, -1L);
+            assertThat(test).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void deletePreconditions3(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setKampfrichter(true);
+            test.isKampfrichter();
+            underTest.delete(test, 1L);
+            assertThat(test).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void delete() {
