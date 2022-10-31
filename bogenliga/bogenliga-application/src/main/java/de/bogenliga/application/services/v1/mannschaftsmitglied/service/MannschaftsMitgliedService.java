@@ -106,7 +106,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
         return MannschaftsMitgliedDTOMapper.toDTO.apply(mannschaftsmitgliedDO);
     }
 
-    @GetMapping(value = "{mannschaftsId}/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "findSchuetzenInUebergelegenerLiga/{mannschaftsId}/{wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<MannschaftsMitgliedDTO> findSchuetzenInUebergelegenerLiga(@PathVariable("mannschaftsId") final long mannschaftsId,
                                                                           @PathVariable("wettkampfId") final long wettkampfId) {
@@ -204,7 +204,7 @@ public class MannschaftsMitgliedService implements ServiceFacade {
      **/
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN})
-    public void delete(@PathVariable("id") final long id, final Principal principal) throws NoPermissionException {
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "Id must not be negative.");
 
         LOG.debug("Receive 'delete' request with Id '{}'", id);
