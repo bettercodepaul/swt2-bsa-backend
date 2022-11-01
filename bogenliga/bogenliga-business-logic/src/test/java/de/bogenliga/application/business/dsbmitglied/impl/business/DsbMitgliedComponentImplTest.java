@@ -510,7 +510,73 @@ public class DsbMitgliedComponentImplTest {
         assertThat(persistedBE.getDsbMitgliedVorname())
                 .isEqualTo(input.getVorname());
     }
+    @Test
+    public void delete_inclKampfrichterlizenz() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
 
+        final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
+        final LizenzBE inputLizenzBE = getLizenzBE();
+
+        // configure mocks
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(true);
+        when(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(anyLong())).thenReturn(inputLizenzBE);
+
+        // call test method
+        underTest.delete(input, USER);
+
+        // assert result
+
+        // verify invocations
+        verify(dsbMitgliedDAO).delete(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getDsbMitgliedId())
+                .isEqualTo(input.getId());
+    }
+
+    @Test
+    public void update_deletekampfrichterlizenez() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
+        // wir benötigen einen "Nicht-Kampfrichter"
+        input.setKampfrichter(false);
+
+        final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
+        final LizenzBE inputLizenzBE = getLizenzBE();
+
+        // configure mocks
+        when(dsbMitgliedDAO.update(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        //when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(true);
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.update(input, USER);
+
+        //underTest.delete(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(input.getId());
+        assertThat(actual.getNachname())
+                .isEqualTo(input.getNachname());
+
+        // verify invocations
+        verify(dsbMitgliedDAO).update(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getDsbMitgliedId())
+                .isEqualTo(input.getId());
+        assertThat(persistedBE.getDsbMitgliedVorname())
+                .isEqualTo(input.getVorname());
+    }
 
     @Test
     public void update_withoutInput_shouldThrowException() {
