@@ -18,9 +18,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
@@ -43,10 +40,11 @@ import de.bogenliga.application.services.v1.match.model.MatchDTO;
 import de.bogenliga.application.services.v1.match.service.MatchService;
 import de.bogenliga.application.services.v1.passe.mapper.PasseDTOMapper;
 import de.bogenliga.application.services.v1.passe.model.PasseDTO;
+import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMatchDTO;
-import de.bogenliga.application.services.v1.sync.model.LigaSyncLigatabelleDTO;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
+import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import de.bogenliga.application.services.v1.sync.service.SyncService;
 import de.bogenliga.application.services.v1.wettkampf.model.WettkampfDTO;
@@ -56,9 +54,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Adrian Kempf, HSRT MKI SS22 - SWT2
@@ -601,6 +596,409 @@ public class SyncServiceTest {
         when(principal.getName()).thenReturn(String.valueOf(CURRENT_USER_ID));
     }
 
+
+    @Test
+    public void testLigaSyncMannschaftsmitgliedDTO(){
+        final LigaSyncMannschaftsmitgliedDTO ligaSyncMannschaftsmitgliedDTO = new LigaSyncMannschaftsmitgliedDTO(id,version,mannschaftId,dsbMitgliedId, rueckennummer);
+
+        ligaSyncMannschaftsmitgliedDTO.setId(id);
+        assertEquals(id, ligaSyncMannschaftsmitgliedDTO.getId());
+
+        ligaSyncMannschaftsmitgliedDTO.setMannschaftId(mannschaftId);
+        assertEquals(mannschaftId, ligaSyncMannschaftsmitgliedDTO.getMannschaftId());
+
+        ligaSyncMannschaftsmitgliedDTO.setDsbMitgliedId(dsbMitgliedId);
+        assertEquals(dsbMitgliedId, ligaSyncMannschaftsmitgliedDTO.getDsbMitgliedId());
+
+        final long version01 = version;
+
+        // test setter by setting instance.version to version01
+        ligaSyncMannschaftsmitgliedDTO.setVersion(version01);
+        // now create variable and set it to whatever instance.version is ( expected is version01 )
+        final long version02 = ligaSyncMannschaftsmitgliedDTO.getVersion();
+        // check if version of instance equals version01 variable
+        assertEquals(version01, version02);
+
+        ligaSyncMannschaftsmitgliedDTO.setRueckennummer(rueckennummer);
+        assertEquals(rueckennummer, ligaSyncMannschaftsmitgliedDTO.getRueckennummer());
+    }
+
+    @Test
+    public void equals1(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getVeranstaltungName(),test2.getVeranstaltungName());
+    }
+    @Test
+    public void equals2(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setVeranstaltungName("xxx");
+        assertNotEquals(test1.getVeranstaltungName(),test2.getVeranstaltungName());
+    }
+
+    @Test
+    public void equals0(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getVeranstaltungName(),test2.getVeranstaltungName());
+    }
+
+    @Test
+    public void equals3(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        assertEquals(test1.getVeranstaltungId(),test2.getVeranstaltungId());
+    }
+    @Test
+    public void equals4(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setVeranstaltungId(99L);
+        assertNotEquals(test1.getVeranstaltungId(),test2.getVeranstaltungId());
+    }
+
+    @Test
+    public void equals5(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getWettkampfId(),test2.getWettkampfId());
+    }
+    @Test
+    public void equals6(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setWettkampfId(99L);
+        assertNotEquals(test1.getWettkampfId(),test2.getWettkampfId());
+    }
+
+    @Test
+    public void equals7(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getWettkampfTag(),test2.getWettkampfTag());
+    }
+    @Test
+    public void equals8(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setWettkampfTag(17);
+        assertNotEquals(test1.getWettkampfTag(),test2.getWettkampfTag());
+    }
+
+    @Test
+    public void equals9(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMannschaftId(),test2.getMannschaftId());
+    }
+    @Test
+    public void equals10(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMannschaftId(99L);
+        assertNotEquals(test1.getMannschaftId(),test2.getMannschaftId());
+    }
+
+    @Test
+    public void equals11(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMannschaftName(),test2.getMannschaftName());
+    }
+    @Test
+    public void equals12(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMannschaftName("XXXX");
+        assertNotEquals(test1.getMannschaftName(),test2.getMannschaftName());
+    }
+
+    @Test
+    public void equals13(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMatchpkt(),test2.getMatchpkt());
+    }
+    @Test
+    public void equals14(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMatchpkt(99);
+        assertNotEquals(test1.getMatchpkt(),test2.getMatchpkt());
+    }
+    @Test
+    public void equals15(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getMatchpktGegen(),test2.getMatchpktGegen());
+    }
+    @Test
+    public void equals16(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setMatchpktGegen(99);
+        assertNotEquals(test1.getMatchpktGegen(),test2.getMatchpktGegen());
+    }
+
+    @Test
+    public void equals17(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSatzpkt(),test2.getSatzpkt());
+    }
+    @Test
+    public void equals18(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSatzpkt(99);
+        assertNotEquals(test1.getSatzpkt(),test2.getSatzpkt());
+    }
+
+    @Test
+    public void equals19(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSatzpktGegen(),test2.getSatzpktGegen());
+    }
+    @Test
+    public void equals20(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSatzpktGegen(99);
+        assertNotEquals(test1.getSatzpktGegen(),test2.getSatzpktGegen());
+    }
+
+    @Test
+    public void equals21(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSatzpktDifferenz(),test2.getSatzpktDifferenz());
+    }
+    @Test
+    public void equals22(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSatzpktDifferenz(99);
+        assertNotEquals(test1.getSatzpktDifferenz(),test2.getSatzpktDifferenz());
+    }
+
+    @Test
+    public void equals23(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+
+        assertEquals(test1.getSortierung(),test2.getSortierung());
+    }
+    @Test
+    public void equals24(){
+        final LigaSyncLigatabelleDTO test1 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test2 = getLigaSyncLigatabelleDTO();
+        test2.setSortierung(99);
+        assertNotEquals(test1.getSortierung(),test2.getSortierung());
+    }
+
+
+    // Start of testing
+    // cover equals cases by creating another ligasynchtabelle object and cover all cases ...
+    @Test
+    public void testLigaSyncLigatabelleDTO(){
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
+        //to make it more readable, I ll introduce the parameters for creating the instance
+        Long veranstaltungsID01 = 7L;
+        String veranstaltungsName01 = "neuerName";
+        Long wettkampfId01 = 3L;
+        Integer wettkampfTag01 = 1;
+        Long mannschaftId01 = 3L;
+        String mannschaftName01 = "neuererName";
+        Integer matchpkt01 = 5;
+        Integer matchpktGegen01 = 1;
+        Integer satzpkt01 = 17;
+        Integer satzpktGegen01 = 5;
+        Integer satzpktDifferenz01 = 14;
+        Integer sortierung01 = 2;
+        Integer tabellenplatz01 = 17;
+        // see, now this does look better!
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
+                veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
+                mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+        );
+
+        Long veranstaltungId = 17L;
+        ligaSyncLigatabelleDTO.setVeranstaltungId(veranstaltungId);
+        assertEquals(veranstaltungId, ligaSyncLigatabelleDTO.getVeranstaltungId());
+
+        //final String veranstalungsname =  "Test";
+        ligaSyncLigatabelleDTO.setVeranstaltungName(veranstaltungName);
+        assertEquals(veranstaltungName, ligaSyncLigatabelleDTO.getVeranstaltungName());
+
+        ligaSyncLigatabelleDTO.setWettkampfId(wettkampfId);
+        assertEquals(wettkampfId, ligaSyncLigatabelleDTO.getWettkampfId());
+
+        final Integer wettkampfTag = 3;
+        ligaSyncLigatabelleDTO.setWettkampfTag(wettkampfTag);
+        assertEquals(wettkampfTag, ligaSyncLigatabelleDTO.getWettkampfTag());
+
+        ligaSyncLigatabelleDTO.setMannschaftId(mannschaftsId);
+        assertEquals(mannschaftsId, ligaSyncLigatabelleDTO.getMannschaftId());
+
+        final String mannschaftName = "default_mannschaft";
+        ligaSyncLigatabelleDTO.setMannschaftName(mannschaftName);
+        assertEquals(mannschaftName, ligaSyncLigatabelleDTO.getMannschaftName());
+
+        final Integer matchPunkt = 17;
+        ligaSyncLigatabelleDTO.setMatchpkt(matchPunkt);
+        assertEquals(matchPunkt, ligaSyncLigatabelleDTO.getMatchpkt());
+
+        ligaSyncLigatabelleDTO.setMatchpkt(matchPunkt);
+        assertEquals(matchPunkt,ligaSyncLigatabelleDTO.getMatchpkt());
+
+        ligaSyncLigatabelleDTO.setMatchpktGegen(matchPunkt);
+        assertEquals(matchPunkt,ligaSyncLigatabelleDTO.getMatchpktGegen());
+
+        final Integer satzPunkt = 42;
+        ligaSyncLigatabelleDTO.setSatzpkt(satzPunkt);
+        assertEquals(satzPunkt,ligaSyncLigatabelleDTO.getSatzpkt());
+
+        ligaSyncLigatabelleDTO.setSatzpktGegen(satzPunkt);
+        assertEquals(satzPunkt,ligaSyncLigatabelleDTO.getSatzpktGegen());
+
+        ligaSyncLigatabelleDTO.setSatzpktDifferenz(satzPunkt);
+        assertEquals(satzPunkt,ligaSyncLigatabelleDTO.getSatzpktDifferenz());
+
+        final Integer sortierung = 0;
+        ligaSyncLigatabelleDTO.setSortierung(sortierung);
+        assertEquals(sortierung,ligaSyncLigatabelleDTO.getSortierung());
+
+        final Integer tabellenPlatz = 8;
+        ligaSyncLigatabelleDTO.setTabellenplatz(tabellenPlatz);
+        assertEquals(tabellenPlatz,ligaSyncLigatabelleDTO.getTabellenplatz());
+
+
+    }
+
+    @Test
+    public void testLigaSyncLigatabelleDTOToString(){
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
+        assertNotNull(ligaSyncLigatabelleDTO.toString());
+    }
+    @Test
+    public void testLigaSyncLigatabelleDTOEquals(){
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
+        //to make it more readable, I ll introduce the parameters for creating the instance
+        Long veranstaltungsID01 = 77L;
+        String veranstaltungsName01 = "neuerName";
+        Long wettkampfId01 = 33L;
+        Integer wettkampfTag01 = 99;
+        Long mannschaftId01 = 33L;
+        String mannschaftName01 = "neuererName";
+        Integer matchpkt01 = 99;
+        Integer matchpktGegen01 = 99;
+        Integer satzpkt01 = 99;
+        Integer satzpktGegen01 = 99;
+        Integer satzpktDifferenz01 = 99;
+        Integer sortierung01 = 99;
+        Integer tabellenplatz01 = 99;
+        // see, now this does look better!
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO02 = new LigaSyncLigatabelleDTO(
+                veranstaltungsID01, veranstaltungsName01, wettkampfId01, wettkampfTag01,
+                mannschaftId01, mannschaftName01, matchpkt01, matchpktGegen01, satzpkt01,
+                satzpktGegen01, satzpktDifferenz01, sortierung01, tabellenplatz01
+        );
+
+        final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO03 = getLigaSyncLigatabelleDTO();
+        //a != b, -> false
+        assertNotEquals(ligaSyncLigatabelleDTO, ligaSyncLigatabelleDTO02);
+        // a = a, -> true
+        assertEquals(ligaSyncLigatabelleDTO02, ligaSyncLigatabelleDTO02);
+
+        // a ia not instanceof b -> false
+        assertNotEquals(ligaSyncLigatabelleDTO, new Object());
+
+        // a = b -> true
+        assertEquals(ligaSyncLigatabelleDTO03, ligaSyncLigatabelleDTO);
+    }
+
+    @Test
+    public void ligaSyncPasseTestDTO(){
+
+        Long match_id = 17L;
+        Long match_id_2 = 18L;
+        Long lfdnr = 31L;
+        Integer rueckennummer = 5;
+        Integer[] ringzahl = {10,9,8,7};
+        LigaSyncPasseDTO test = new LigaSyncPasseDTO(id, version, match_id, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
+        LigaSyncPasseDTO test_2 = new LigaSyncPasseDTO(id, version, match_id_2, mannschaftId, wettkampfId, lfdnr, dsbMitgliedId, rueckennummer, ringzahl);
+        assertThat(test.getId()).isEqualTo(id);
+        assertThat(test.getVersion()).isEqualTo(version);
+        assertThat(test.getMatchId()).isEqualTo(match_id);
+        assertThat(test.getMannschaftId()).isEqualTo(mannschaftId);
+        assertThat(test.getWettkampfId()).isEqualTo(wettkampfId);
+        assertThat(test.getLfdNr()).isEqualTo(lfdnr);
+        assertThat(test.getDsbMitgliedId()).isEqualTo(dsbMitgliedId);
+        assertThat(test.getRueckennummer()).isEqualTo(rueckennummer);
+        assertThat(test.getRingzahl()).isEqualTo(ringzahl);
+
+        assertEquals(test.equals(test),test.equals(test));
+        assertNotEquals(test.equals(test),test.equals(test_2 ));
+
+
+
+    }
+
+    @Test
+    public void testLigaSynchTabelleDTO(){
+        final LigaSyncLigatabelleDTO test01 = getLigaSyncLigatabelleDTO();
+        final LigaSyncLigatabelleDTO test02 = getLigaSyncLigatabelleDTO();
+
+        assertTrue(test01.equals(test02) && test02.equals(test01) );
+        assertNotEquals(test01, null);
+        assertNotEquals(test02, null);
+        assertNotEquals(test01, new Object());
+        assertNotEquals(test02,(new Object()));
+        assertEquals(test01.hashCode(), test02.hashCode());
+
+        test01.setVeranstaltungName(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setVeranstaltungId(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setWettkampfId(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setWettkampfTag(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMannschaftId(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMannschaftName(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMatchpkt(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setMatchpktGegen(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSatzpkt(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSatzpktGegen(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSatzpktDifferenz(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setSortierung(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+        test01.setTabellenplatz(null);
+        assertNotEquals(test01.hashCode(), test02.hashCode());
+    }
+
+
     @Test
     public void testgetLigatabelleVeranstaltungToString() {
         final LigaSyncLigatabelleDTO ligaSyncLigatabelleDTO = getLigaSyncLigatabelleDTO();
@@ -776,7 +1174,7 @@ public class SyncServiceTest {
         newLigaSyncMatchDTO.setStrafpunkteSatz4(ligaSyncMatchDTO.getStrafpunkteSatz4());
         newLigaSyncMatchDTO.setStrafpunkteSatz5(ligaSyncMatchDTO.getStrafpunkteSatz5());
 
-        assertTrue(newLigaSyncMatchDTO.equals(ligaSyncMatchDTO));
+        assertEquals(newLigaSyncMatchDTO,ligaSyncMatchDTO);
     }
 
     @Test
@@ -793,7 +1191,7 @@ public class SyncServiceTest {
         newLigaSyncPasseDTO.setDsbMitgliedId(ligaSyncPasseDTO.getDsbMitgliedId());
         newLigaSyncPasseDTO.setRingzahl(ligaSyncPasseDTO.getRingzahl());
 
-        assertTrue(newLigaSyncPasseDTO.equals(ligaSyncPasseDTO));
+        assertEquals(newLigaSyncPasseDTO,ligaSyncPasseDTO);
     }
 
     @Test
@@ -996,10 +1394,11 @@ public class SyncServiceTest {
 
     @Test
     public void updateNoPermission() {
-        // configure mocks: wettkampf is already offline
+        // configure mocks: Wettkampf is already offline
         when(wettkampfComponent.wettkampfIsOffline(anyLong())).thenReturn(true);
+        long tmpLong = anyLong();
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> underTest.getToken(anyLong(), principal));
+                .isThrownBy(() -> underTest.getToken(tmpLong, principal));
     }
 
     @Test
