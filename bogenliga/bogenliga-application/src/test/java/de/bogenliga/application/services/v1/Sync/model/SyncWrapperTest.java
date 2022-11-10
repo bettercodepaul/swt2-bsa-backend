@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.Test;
 import de.bogenliga.application.services.v1.Sync.service.SyncServiceTest;
 import de.bogenliga.application.services.v1.sync.model.LigaSyncMannschaftsmitgliedDTO;
@@ -12,6 +13,7 @@ import de.bogenliga.application.services.v1.sync.model.LigaSyncPasseDTO;
 import de.bogenliga.application.services.v1.sync.model.SyncWrapper;
 import de.bogenliga.application.services.v1.sync.model.WettkampfExtDTO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * @author Jonas Sigloch
@@ -51,4 +53,25 @@ public class SyncWrapperTest {
                 .contains(Long.toString(wettkampfId))
                 .contains(offlineToken);
     }
+
+    @Test
+    public void testSyncWrapper(){
+        final SyncWrapper syncWrapper = getSyncWrapper();
+
+        syncWrapper.setMatch(matchList);
+        Assert.assertEquals(syncWrapper.getMatch(), matchList);
+
+        syncWrapper.setPasse(passeList);
+        Assert.assertEquals(syncWrapper.getPasse(), passeList);
+
+        syncWrapper.setOfflineToken(offlineToken);
+        Assert.assertEquals(syncWrapper.getOfflineToken(), offlineToken);
+
+        syncWrapper.setWettkampfId(wettkampfId);
+        Assert.assertEquals(syncWrapper.getWettkampfId(), wettkampfId);
+
+        syncWrapper.setMannschaftsmitglied(mitgliedList);
+        Assert.assertEquals(syncWrapper.getMannschaftsmitglied(), mitgliedList);
+    }
+
 }
