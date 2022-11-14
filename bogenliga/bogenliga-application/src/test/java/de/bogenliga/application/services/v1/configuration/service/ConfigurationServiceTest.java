@@ -38,7 +38,7 @@ public class ConfigurationServiceTest {
     private static final String VALUE = "noreply@bsapp.de";
     private static final String REGEX =
             "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
-    private static final String VALUE_NOT_MATCHING_REGEX = "noreply.bsapp.de";
+    private static final String VALUE_NOT_MATCHING_REGEX = "noreplybsapp.de";
     private static final long USER = 0;
 
     @Rule
@@ -273,13 +273,21 @@ public class ConfigurationServiceTest {
         input.setValue(VALUE);
         input.setRegex(REGEX);
 
+        final ConfigurationDO toBeReturned = new ConfigurationDO();
+        toBeReturned.setId(ID);
+        toBeReturned.setKey(KEY);
+        toBeReturned.setValue(VALUE);
+        toBeReturned.setRegex(REGEX);
+
         final ConfigurationDO expected = new ConfigurationDO();
         expected.setId(input.getId());
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
+        expected.setRegex(input.getRegex());
 
         // configure mocks
         when(configurationComponent.update(any(), anyLong())).thenReturn(expected);
+        when(configurationComponent.findById(anyLong())).thenReturn(toBeReturned);
 
         // call test method
         final ConfigurationDTO actual = underTest.update(input, principal);
@@ -289,9 +297,7 @@ public class ConfigurationServiceTest {
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getKey()).isEqualTo(input.getKey());
         assertThat(actual.getValue()).isEqualTo(input.getValue());
-        assertThat(actual.getValue()).isEqualTo(input.getValue());
-        assertThat(actual.getValue()).matches(input.getRegex());
-
+        assertThat(actual.getRegex()).isEqualTo(input.getRegex());
 
         // verify invocations
         verify(configurationComponent).update(configurationVOArgumentCaptor.capture(), anyLong());
@@ -303,7 +309,6 @@ public class ConfigurationServiceTest {
         assertThat(updatedConfiguration.getKey()).isEqualTo(input.getKey());
         assertThat(updatedConfiguration.getValue()).isEqualTo(input.getValue());
         assertThat(updatedConfiguration.getRegex()).isEqualTo(updatedConfiguration.getRegex());
-        assertThat(updatedConfiguration.getValue()).matches(updatedConfiguration.getRegex());
     }
 
     @Test
@@ -314,6 +319,15 @@ public class ConfigurationServiceTest {
         input.setKey(KEY);
         input.setValue(VALUE_NOT_MATCHING_REGEX);
         input.setRegex(REGEX);
+
+        final ConfigurationDO toBeReturned = new ConfigurationDO();
+        toBeReturned.setId(ID);
+        toBeReturned.setKey(KEY);
+        toBeReturned.setValue(VALUE);
+        toBeReturned.setRegex(REGEX);
+
+        // configure mocks
+        when(configurationComponent.findById(anyLong())).thenReturn(toBeReturned);
 
         // call test method
         assertThatExceptionOfType(BusinessException.class)
