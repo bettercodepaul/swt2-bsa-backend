@@ -17,7 +17,7 @@ import de.bogenliga.application.business.configuration.api.types.ConfigurationDO
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.configuration.model.ConfigurationDTO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 /**
@@ -35,7 +35,10 @@ public class ConfigurationServiceTest {
 
     private static final long ID = 63455;
     private static final String KEY = "key";
-    private static final String VALUE = "value";
+    private static final String VALUE = "noreply@bsapp.de";
+    private static final String REGEX =
+            "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+    private static final String VALUE_NOT_MATCHING_REGEX = "noreplybsapp.de";
     private static final long USER = 0;
 
     @Rule
@@ -262,20 +265,29 @@ public class ConfigurationServiceTest {
     }
 
     @Test
-    public void update() {
+    public void update_regex_matching() {
         // prepare test data
         final ConfigurationDTO input = new ConfigurationDTO();
         input.setId(ID);
         input.setKey(KEY);
         input.setValue(VALUE);
+        input.setRegex(REGEX);
+
+        final ConfigurationDO toBeReturned = new ConfigurationDO();
+        toBeReturned.setId(ID);
+        toBeReturned.setKey(KEY);
+        toBeReturned.setValue(VALUE);
+        toBeReturned.setRegex(REGEX);
 
         final ConfigurationDO expected = new ConfigurationDO();
         expected.setId(input.getId());
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
+        expected.setRegex(input.getRegex());
 
         // configure mocks
         when(configurationComponent.update(any(), anyLong())).thenReturn(expected);
+        when(configurationComponent.findById(anyLong())).thenReturn(toBeReturned);
 
         // call test method
         final ConfigurationDTO actual = underTest.update(input, principal);
@@ -285,6 +297,7 @@ public class ConfigurationServiceTest {
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getKey()).isEqualTo(input.getKey());
         assertThat(actual.getValue()).isEqualTo(input.getValue());
+        assertThat(actual.getRegex()).isEqualTo(input.getRegex());
 
         // verify invocations
         verify(configurationComponent).update(configurationVOArgumentCaptor.capture(), anyLong());
@@ -295,6 +308,32 @@ public class ConfigurationServiceTest {
         assertThat(updatedConfiguration.getId()).isEqualTo(input.getId());
         assertThat(updatedConfiguration.getKey()).isEqualTo(input.getKey());
         assertThat(updatedConfiguration.getValue()).isEqualTo(input.getValue());
+        assertThat(updatedConfiguration.getRegex()).isEqualTo(updatedConfiguration.getRegex());
+    }
+
+    @Test
+    public void update_regex_not_matching() {
+        // prepare test data
+        final ConfigurationDTO input = new ConfigurationDTO();
+        input.setId(ID);
+        input.setKey(KEY);
+        input.setValue(VALUE_NOT_MATCHING_REGEX);
+        input.setRegex(REGEX);
+
+        final ConfigurationDO toBeReturned = new ConfigurationDO();
+        toBeReturned.setId(ID);
+        toBeReturned.setKey(KEY);
+        toBeReturned.setValue(VALUE);
+        toBeReturned.setRegex(REGEX);
+
+        // configure mocks
+        when(configurationComponent.findById(anyLong())).thenReturn(toBeReturned);
+
+        // call test method
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(() -> underTest.update(input, principal))
+                .withMessageContaining("ConfigurationDTO value must match the ConfigurationDTO regex expression.")
+                .withNoCause();
     }
 
 
