@@ -234,8 +234,6 @@ public class VeranstaltungService implements ServiceFacade {
     public void delete (@PathVariable("id") final Long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
-
-        System.out.println(principal.getName());
         final VeranstaltungDO veranstaltungDO = new VeranstaltungDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
         veranstaltungComponent.delete(veranstaltungDO,userId);
