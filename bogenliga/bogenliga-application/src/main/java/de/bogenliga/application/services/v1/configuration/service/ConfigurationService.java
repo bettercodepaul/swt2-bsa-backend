@@ -174,6 +174,9 @@ public class ConfigurationService implements ServiceFacade {
         Preconditions.checkArgument(configurationDTO.getId() >= 0, "ConfigurationDTO id must not be negative");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
+        Preconditions.checkArgument((configurationDTO.getRegex() == null ||
+                        configurationDTO.getValue().matches(findById(configurationDTO.getId()).getRegex())),
+                "ConfigurationDTO value must match the ConfigurationDTO regex expression.");
 
         final ConfigurationDO newConfigurationDO = ConfigurationDTOMapper.toDO.apply(configurationDTO);
         final long userId = UserProvider.getCurrentUserId(principal);

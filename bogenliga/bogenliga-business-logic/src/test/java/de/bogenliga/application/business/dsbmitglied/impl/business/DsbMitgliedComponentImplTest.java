@@ -3,6 +3,7 @@ package de.bogenliga.application.business.dsbmitglied.impl.business;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Rule;
@@ -40,6 +41,7 @@ public class DsbMitgliedComponentImplTest {
     private static final Long VERSION = 0L;
 
     private static final Long ID = 1337L;
+    private static final Long ID_2 = 7331L;
     private static final String VORNAME = "Sorscha";
     private static final String NACHNAME = "Kratikoff";
     private static final Date GEBURTSDATUM = Date.valueOf("1991-09-01");
@@ -81,6 +83,36 @@ public class DsbMitgliedComponentImplTest {
     }
 
 
+    public static List<DsbMitgliedBE> getDsbMitgliedBEList() {
+        List<DsbMitgliedBE> list = new ArrayList<>();
+
+        final DsbMitgliedBE expectedA = new DsbMitgliedBE();
+        expectedA.setDsbMitgliedId(ID);
+        expectedA.setDsbMitgliedVorname(VORNAME);
+        expectedA.setDsbMitgliedNachname(NACHNAME);
+        expectedA.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
+        expectedA.setDsbMitgliedNationalitaet(NATIONALITAET);
+        expectedA.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
+        expectedA.setDsbMitgliedVereinsId(VEREINSID);
+        expectedA.setDsbMitgliedUserId(USERID);
+
+        final DsbMitgliedBE expectedB = new DsbMitgliedBE();
+        expectedB.setDsbMitgliedId(ID_2);
+        expectedB.setDsbMitgliedVorname(VORNAME);
+        expectedB.setDsbMitgliedNachname(NACHNAME);
+        expectedB.setDsbMitgliedGeburtsdatum(GEBURTSDATUM);
+        expectedB.setDsbMitgliedNationalitaet(NATIONALITAET);
+        expectedB.setDsbMitgliedMitgliedsnummer(MITGLIEDSNUMMER);
+        expectedB.setDsbMitgliedVereinsId(VEREINSID);
+        expectedB.setDsbMitgliedUserId(USERID);
+
+        list.add(expectedA);
+        list.add(expectedB);
+
+        return list;
+    }
+
+
     public static LizenzBE getLizenzBE() {
         final LizenzBE expectedBe = new LizenzBE();
         expectedBe.setLizenzId(1L);
@@ -102,6 +134,96 @@ public class DsbMitgliedComponentImplTest {
                 KAMPFRICHTER);
     }
 
+    @Test
+    public void findAlleByTeamTest(){
+        assertThat(underTest.findAllByTeamId(ID))
+                .isNotNull();
+        try{
+            assertThat(underTest.findAllByTeamId(-1L))
+                    .isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findAllNotInTeamTest(){
+        try {
+            assertThat(underTest.findAllNotInTeam(-1L, VEREINSID)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findAllByTeamIdTest(){
+        try {
+            assertThat(underTest.findAllByTeamId(-1L)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findByIdTest(){
+        try {
+            assertThat(underTest.findById(-1L)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void updatePreconditionTest0(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.isKampfrichter();
+
+            assertThat(underTest.update(test,1L)).isNotNull();
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void updatePreconditionTest1(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setId(-1L);
+            assertThat(underTest.update(test,1L)).isNotNull();
+
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void updatePreconditionTest2(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setKampfrichter(false);
+            assertThat(underTest.update(test, 1L)).isNotNull();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void updatePreconditionTest3(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setKampfrichter(true);
+            assertThat(underTest.update(test, 1L)).isNotNull();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void findAll() {
@@ -146,6 +268,8 @@ public class DsbMitgliedComponentImplTest {
         verify(dsbMitgliedDAO).findAll();
     }
 
+
+
     @Test
     public void findBySearch() {
         // prepare test data
@@ -170,6 +294,7 @@ public class DsbMitgliedComponentImplTest {
         verify(dsbMitgliedDAO).findBySearch(expectedBE.getDsbMitgliedVorname());
     }
 
+
     @Test
     public void findById() {
         // prepare test data
@@ -184,11 +309,44 @@ public class DsbMitgliedComponentImplTest {
         // assert result
         assertThat(actual).isNotNull();
 
+        // call test method a 2nd time, get null as result to test exception
+        try {
+            final DsbMitgliedDO testException = underTest.findById(99L);
+            assertThat(testException).isNull();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         assertThat(actual.getId())
                 .isEqualTo(expectedBE.getDsbMitgliedId());
 
         // verify invocations
         verify(dsbMitgliedDAO).findById(ID);
+    }
+
+
+    @Test
+    public void findAllNotInTeam() {
+
+        final long UNIMPORTANT_TEAM_ID = 103L; final long UNIMPORTANT_VEREIN_ID = 11;
+
+        //prepare test data
+        final List<DsbMitgliedBE> expectedBEList = getDsbMitgliedBEList();
+
+        //configure mocks
+        when(dsbMitgliedDAO.findAllNotInTeamId(UNIMPORTANT_TEAM_ID, UNIMPORTANT_VEREIN_ID)).thenReturn(expectedBEList);
+
+        final List<DsbMitgliedDO> actualBEList = underTest.findAllNotInTeam(UNIMPORTANT_TEAM_ID, UNIMPORTANT_VEREIN_ID);
+
+        //check results
+        assertThat(actualBEList).isNotNull();
+
+        assertThat(actualBEList.size()).isEqualTo(2);
+
+        assertThat(actualBEList.get(1).getId()).isEqualTo(expectedBEList.get(1).getDsbMitgliedId());
+
+        //verify execution
+        verify(dsbMitgliedDAO).findAllNotInTeamId(UNIMPORTANT_TEAM_ID, UNIMPORTANT_VEREIN_ID);
     }
 
 
@@ -352,7 +510,73 @@ public class DsbMitgliedComponentImplTest {
         assertThat(persistedBE.getDsbMitgliedVorname())
                 .isEqualTo(input.getVorname());
     }
+    @Test
+    public void delete_inclKampfrichterlizenz() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
 
+        final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
+        final LizenzBE inputLizenzBE = getLizenzBE();
+
+        // configure mocks
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(true);
+        when(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(anyLong())).thenReturn(inputLizenzBE);
+
+        // call test method
+        underTest.delete(input, USER);
+
+        // assert result
+
+        // verify invocations
+        verify(dsbMitgliedDAO).delete(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getDsbMitgliedId())
+                .isEqualTo(input.getId());
+    }
+
+    @Test
+    public void update_deletekampfrichterlizenez() {
+        // prepare test data
+        final DsbMitgliedDO input = getDsbMitgliedDO();
+        // wir benötigen einen "Nicht-Kampfrichter"
+        input.setKampfrichter(false);
+
+        final DsbMitgliedBE expectedBE = getDsbMitgliedBE();
+        final LizenzBE inputLizenzBE = getLizenzBE();
+
+        // configure mocks
+        when(dsbMitgliedDAO.update(any(DsbMitgliedBE.class), anyLong())).thenReturn(expectedBE);
+        //when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(true);
+
+        // call test method
+        final DsbMitgliedDO actual = underTest.update(input, USER);
+
+        //underTest.delete(input, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getId())
+                .isEqualTo(input.getId());
+        assertThat(actual.getNachname())
+                .isEqualTo(input.getNachname());
+
+        // verify invocations
+        verify(dsbMitgliedDAO).update(dsbMitgliedBEArgumentCaptor.capture(), anyLong());
+
+        final DsbMitgliedBE persistedBE = dsbMitgliedBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getDsbMitgliedId())
+                .isEqualTo(input.getId());
+        assertThat(persistedBE.getDsbMitgliedVorname())
+                .isEqualTo(input.getVorname());
+    }
 
     @Test
     public void update_withoutInput_shouldThrowException() {
@@ -393,6 +617,41 @@ public class DsbMitgliedComponentImplTest {
         verifyZeroInteractions(dsbMitgliedDAO);
     }
 
+    @Test
+    public void deletePreconditions1(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setId(-1L);
+            underTest.delete(test, 1L);
+            assertThat(test).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void deletePreconditions2(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            underTest.delete(test, -1L);
+            assertThat(test).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void deletePreconditions3(){
+        try {
+            DsbMitgliedDO test = getDsbMitgliedDO();
+            test.setKampfrichter(true);
+            test.isKampfrichter();
+            underTest.delete(test, 1L);
+            assertThat(test).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void delete() {
