@@ -230,7 +230,7 @@ public class VeranstaltungService implements ServiceFacade {
      * I delete an existing Veranstaltung entry from the DB.
      */
     @DeleteMapping(value = "{id}")
-    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_READ_MY_VERANSTALTUNG})
+    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete (@PathVariable("id") final Long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
