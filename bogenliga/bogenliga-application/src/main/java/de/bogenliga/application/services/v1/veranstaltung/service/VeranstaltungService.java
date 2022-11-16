@@ -166,18 +166,25 @@ public class VeranstaltungService implements ServiceFacade {
      * @return list of {@link VeranstaltungDTO} as JSON
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VERANSTALTUNG})
-    public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
+    public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) throws NoPermissionException {
+
+        // Überprüfung ob Ligaleiter Veranstaltung erstellen darf
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER,veranstaltungDTO.getId())){
+            throw new NoPermissionException();
+        }
 
         checkPreconditions(veranstaltungDTO);
-
 
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
 
         final VeranstaltungDO savedVeranstaltungDO = veranstaltungComponent.create(newVeranstaltungDO,
-                currentDsbMitglied);
+                currentDsbMitglied)
+        //savedVeranstlatungsDO Ligaleiter is wrong change it to the correct one it should have
+        savedVeranstaltungDO.setVeranstaltungLigaleiterID(veranstaltungDTO.getLigaleiterId());
         return VeranstaltungDTOMapper.toDTO.apply(savedVeranstaltungDO);
     }
 
@@ -228,11 +235,12 @@ public class VeranstaltungService implements ServiceFacade {
      * I delete an existing Veranstaltung entry from the DB.
      */
     @DeleteMapping(value = "{id}")
-    @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-    public void delete (@PathVariable("id") final Long id, final Principal principal){
+    @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_READ_MY_VERANSTALTUNG})
+    public void delete (@PathVariable("id") final Long id, final Principal principal) throws NoPermissionException {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
 
+        System.out.println(principal.getName());
         final VeranstaltungDO veranstaltungDO = new VeranstaltungDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
         veranstaltungComponent.delete(veranstaltungDO,userId);
