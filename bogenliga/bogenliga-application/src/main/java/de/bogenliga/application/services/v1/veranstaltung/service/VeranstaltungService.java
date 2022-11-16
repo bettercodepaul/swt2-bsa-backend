@@ -231,7 +231,7 @@ public class VeranstaltungService implements ServiceFacade {
      */
     @DeleteMapping(value = "{id}")
     @RequiresOnePermissions(perm = {UserPermission.CAN_DELETE_STAMMDATEN, UserPermission.CAN_READ_MY_VERANSTALTUNG})
-    public void delete (@PathVariable("id") final Long id, final Principal principal) throws NoPermissionException {
+    public void delete (@PathVariable("id") final Long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
 
