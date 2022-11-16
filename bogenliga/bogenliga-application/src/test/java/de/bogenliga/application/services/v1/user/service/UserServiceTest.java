@@ -5,8 +5,10 @@ import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
 import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.role.api.RoleComponent;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
+import de.bogenliga.application.business.role.api.types.RoleDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -88,6 +90,9 @@ public class UserServiceTest {
     private HttpServletRequest requestWithHeader;
     @Mock
     private UserComponent userComponent;
+
+    @Mock
+    private RoleComponent roleComponent;
     @Mock
     private UserProfileComponent userProfileComponent;
     @Mock
@@ -803,6 +808,10 @@ public class UserServiceTest {
         userCreatedDO.setDsbMitgliedId(DSBMITGLIEDID);
         userCreatedDO.setVersion(VERSION);
 
+        final RoleDO roleDO = new RoleDO();
+        roleDO.setId(ROLE_ID);
+        roleDO.setRoleName(ROLE_NAME);
+
         final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
         userCredentialsDTO.setUsername(USERNAME);
         userCredentialsDTO.setPassword(PASSWORD);
@@ -811,7 +820,9 @@ public class UserServiceTest {
         // configure mocks
         when(userComponent.create(anyString(), anyString(), anyLong(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
         when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
-
+        when(roleComponent.findByName(anyString())).thenReturn(roleDO);
+        when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
+        when(userRoleComponent.create(anyLong(),anyLong(), anyLong())).thenReturn(createdUserRoleDO);
         // call test method
         final UserDTO actual = underTest.create(requestWithHeader, userCredentialsDTO);
 

@@ -2,6 +2,7 @@ package de.bogenliga.application.business.dsbmitglied.api;
 
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.component.ComponentFacade;
+import de.bogenliga.application.common.validation.Preconditions;
 import java.util.List;
 
 
@@ -26,6 +27,7 @@ public interface DsbMitgliedComponent extends ComponentFacade {
      * @return list of all dsbmitlgied entries with the given id.
      */
     List<DsbMitgliedDO> findAllByTeamId(long id);
+
 
     /**
      * Returns all dsbmitglied entries where the member has not the same teamID as the given team
@@ -52,6 +54,17 @@ public interface DsbMitgliedComponent extends ComponentFacade {
      * @return a list of dsbmitglied entries
      */
     List<DsbMitgliedDO> findBySearch(String searchItem);
+
+    /*
+     * Die Funktion prüft, ob ein DsbMitglied eine Kampfrichterlizenz besitzt
+     * und gibt true zurück wenn die Kampfrichterlizenz existiert.
+     * @param id from DsbMitglied
+     * @return boolean if dsbMitglied has a lizenz
+     */
+    public Boolean hasKampfrichterLizenz(final long id);
+
+
+
 
     /**
      * Create a new dsbmitglied in the database.

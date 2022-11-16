@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.user.service;
 
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.role.api.RoleComponent;
+import de.bogenliga.application.business.role.api.types.RoleDO;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
@@ -9,6 +11,8 @@ import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserRoleDO;
 import de.bogenliga.application.business.user.api.types.UserWithPermissionsDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.role.api.RoleComponent;
+import de.bogenliga.application.business.role.api.types.RoleDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -41,6 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
  *
@@ -70,6 +76,7 @@ public class UserService implements ServiceFacade {
 
     private static final String PW_VALIDATION_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d#$^+=!*()@%&?]{8,}$";
 
+    private static final String ROLE_KAMPFRICHTER = "KAMPFRICHTER";
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -83,6 +90,8 @@ public class UserService implements ServiceFacade {
     private final UserProfileComponent userProfileComponent;
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final VeranstaltungComponent veranstaltungComponent;
+
+    private final RoleComponent roleComponent;
     @Autowired
     public UserService(final JwtTokenProvider jwtTokenProvider,
                        //final AuthenticationManager authenticationManager
@@ -91,7 +100,8 @@ public class UserService implements ServiceFacade {
                        final UserRoleComponent userRoleComponent,
                        final UserProfileComponent userProfileComponent,
                        final DsbMitgliedComponent dsbMitgliedComponent,
-                       final VeranstaltungComponent veranstaltungComponent) {
+                       final VeranstaltungComponent veranstaltungComponent,
+                       final RoleComponent roleComponent) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.webSecurityConfiguration = webSecurityConfiguration;
         this.userComponent = userComponent;
@@ -99,6 +109,7 @@ public class UserService implements ServiceFacade {
         this.userProfileComponent = userProfileComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
         this.veranstaltungComponent = veranstaltungComponent;
+        this.roleComponent = roleComponent;
     }
 
 
@@ -485,6 +496,11 @@ public class UserService implements ServiceFacade {
                 userCredentialsDTO.getPassword(), userCredentialsDTO.getDsbMitgliedId(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
         userRoleComponent.create(userCreatedDO.getId(), userId);
+
+       final RoleDO roleDO = roleComponent.findByName(ROLE_KAMPFRICHTER);
+        if(dsbMitgliedComponent.hasKampfrichterLizenz(userCreatedDO.getDsbMitgliedId())){
+            userRoleComponent.create(userCreatedDO.getId(),roleDO.getId(),userId);
+        }
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
 
