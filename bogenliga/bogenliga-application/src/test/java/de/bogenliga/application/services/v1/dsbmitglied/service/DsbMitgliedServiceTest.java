@@ -68,7 +68,6 @@ public class DsbMitgliedServiceTest {
     private ArgumentCaptor<DsbMitgliedDO> dsbMitgliedVOArgumentCaptor;
 
 
-
     private static DsbMitgliedDO getDsbMitgliedDO() {
         return new DsbMitgliedDO(
                 ID,
@@ -131,7 +130,7 @@ public class DsbMitgliedServiceTest {
 
 
     @Test
-    public void findAllByTeamId(){
+    public void findAllByTeamId() {
         // prepare test data
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
         final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
@@ -155,6 +154,82 @@ public class DsbMitgliedServiceTest {
         verify(dsbMitgliedComponent).findAllByTeamId(ID);
     }
 
+    @Test
+    public void findAllByTeamIdPreconditionTest(){
+        try {
+            assertThat(underTest.findAllByTeamId(-1L)).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void findAllNotInTeamIdPreconditionTest(){
+        try {
+            assertThat(underTest.findAllNotInTeamId(-1L, -1L)).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void insertUserIdPreconditionTest(){
+        try {
+            assertThat(underTest.insertUserId(-1L, -1L, principal )).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void findByIdPreconditionTest(){
+        try {
+            assertThat(underTest.findById(-1L)).isNotNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void findAllNotInTeamId() {
+
+        long teamId = 103, vereinsId = 11;
+
+        // prepare test data
+        final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(
+                ID,
+                VORNAME,
+                NACHNAME,
+                GEBURTSDATUM,
+                NATIONALITAET,
+                MITGLIEDSNUMMER,
+                vereinsId,
+                USERID,
+                KAMPFRICHTER);
+
+        final List<DsbMitgliedDO> dsbMitgliedDOList = Collections.singletonList(dsbMitgliedDO);
+
+        // configure mocks
+        when(dsbMitgliedComponent.findAllNotInTeam(anyLong(), anyLong())).thenReturn(dsbMitgliedDOList);
+
+        // call test method
+        final List<DsbMitgliedDTO> actual = underTest.findAllNotInTeamId(vereinsId, teamId);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final DsbMitgliedDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(dsbMitgliedDO.getId());
+        assertThat(actualDTO.getVereinsId()).isEqualTo(vereinsId);
+
+        // verify invocations
+        verify(dsbMitgliedComponent).findAllNotInTeam(teamId, vereinsId);
+    }
+
 
     @Test
     public void findById() {
@@ -175,6 +250,7 @@ public class DsbMitgliedServiceTest {
         // verify invocations
         verify(dsbMitgliedComponent).findById(ID);
     }
+
 
     @Test
     public void findBySearch() {
@@ -200,8 +276,9 @@ public class DsbMitgliedServiceTest {
         verify(dsbMitgliedComponent).findBySearch(dsbMitgliedDO.getVorname());
     }
 
+
     @Test
-    public void insertUserId(){
+    public void insertUserId() {
         // prepare test data
         final DsbMitgliedDTO input = getDsbMitgliedDTO();
         final DsbMitgliedDO expected = getDsbMitgliedDO();
@@ -223,7 +300,7 @@ public class DsbMitgliedServiceTest {
         verify(dsbMitgliedComponent).findById(anyLong());
         verify(dsbMitgliedComponent).update(any(), anyLong());
     }
-    
+
 
     @Test
     public void create() {
@@ -281,7 +358,8 @@ public class DsbMitgliedServiceTest {
             assertThat(updatedDsbMitglied.getId()).isEqualTo(input.getId());
             assertThat(updatedDsbMitglied.getVorname()).isEqualTo(input.getVorname());
 
-        } catch (NoPermissionException e) { }
+        } catch (NoPermissionException e) {
+        }
     }
 
 
@@ -297,7 +375,7 @@ public class DsbMitgliedServiceTest {
         when(requiresOnePermissionAspect.hasSpecificPermissionSportleiter(any(), anyLong())).thenReturn(false);
 
         assertThatExceptionOfType(NoPermissionException.class)
-                .isThrownBy(()-> underTest.update(input, principal));
+                .isThrownBy(() -> underTest.update(input, principal));
     }
 
 
