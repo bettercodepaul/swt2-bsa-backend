@@ -5,7 +5,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class LigaSyncLigatabelleDTO implements DataTransferObject {
     private static final long serialVersionUID = 432721597574336871L;
 
-    //Kritisch Hinterfragen... wir können nicht alle Funktionen offlien beritstellen
+    //Kritisch Hinterfragen... wir können nicht alle Funktionen offline beritstellen
     // Annahme: für die Steuerung im Wettkampf benötigen die Teams aktuelle Rückmeldung über ihre
     // derzeitige Tabellenposition - aber nur über diese.
     // wir lesen Ligatabelle intial und berechnen die aktuelle Ligatabelle im Client auf Basis der
@@ -24,27 +24,6 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
     private Integer sortierung;
     private Integer tabellenplatz;
 
-    public LigaSyncLigatabelleDTO(){
-
-    }
-
-    public LigaSyncLigatabelleDTO(Long veranstaltungId, String veranstaltungName,
-                                  Long wettkampfId, Integer wettkampfTag,
-                                  Long mannschaftId, String mannschaftName) {
-        this.veranstaltungId = veranstaltungId;
-        this.veranstaltungName = veranstaltungName;
-        this.wettkampfId = wettkampfId;
-        this.wettkampfTag = wettkampfTag;
-        this.mannschaftId = mannschaftId;
-        this.mannschaftName = mannschaftName;
-        this.matchpkt =0;
-        this.matchpktGegen = 0;
-        this.satzpkt =0;
-        this.satzpktGegen=0;
-        this.satzpktDifferenz=0;
-        this.sortierung=0;
-        this.tabellenplatz=0;
-    }
 
     public LigaSyncLigatabelleDTO(Long veranstaltungId, String veranstaltungName,
                                   Long wettkampfId, Integer wettkampfTag,
@@ -172,41 +151,37 @@ public class LigaSyncLigatabelleDTO implements DataTransferObject {
         this.tabellenplatz = tabellenplatz;
     }
 
+
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (!(o instanceof LigaSyncLigatabelleDTO)) {
             return false;
-
+        }
         LigaSyncLigatabelleDTO that = (LigaSyncLigatabelleDTO) o;
 
-        if (this.veranstaltungId != null ? !this.veranstaltungId.equals(that.veranstaltungId) : that.veranstaltungId != null)
-            return false;
-        if (this.veranstaltungName != null ? !this.veranstaltungName.equals(that.veranstaltungName) : that.veranstaltungName != null)
-            return false;
-        if (this.wettkampfId != null ? !this.wettkampfId.equals(that.wettkampfId) : that.wettkampfId != null)
-            return false;
-        if (this.wettkampfTag != null ? !this.wettkampfTag.equals(that.wettkampfTag) : that.wettkampfTag != null)
-            return false;
-        if (this.mannschaftId != null ? !this.mannschaftId.equals(that.mannschaftId) : that.mannschaftId != null)
-            return false;
-        if (this.mannschaftName != null ? !this.mannschaftName.equals(that.mannschaftName) : that.mannschaftName != null)
-            return false;
-        if (this.matchpkt != null ? !this.matchpkt.equals(that.matchpkt) : that.matchpkt != null)
-            return false;
-        if (this.matchpktGegen != null ? !this.matchpktGegen.equals(that.matchpktGegen) : that.matchpktGegen != null)
-            return false;
-        if (this.satzpkt != null ? !this.satzpkt.equals(that.satzpkt) : that.satzpkt != null)
-            return false;
-        if (this.satzpktGegen != null ? !this.satzpktGegen.equals(that.satzpktGegen) : that.satzpktGegen != null)
-            return false;
-        if (this.satzpktDifferenz != null ? !this.satzpktDifferenz.equals(that.satzpktDifferenz) : that.satzpktDifferenz != null)
-            return false;
-        if (this.sortierung != null ? !this.sortierung.equals(that.sortierung) : that.sortierung != null)
-            return false;
-        return this.tabellenplatz != null ? this.tabellenplatz.equals(that.tabellenplatz) : that.tabellenplatz == null;
+        Boolean condition1 = this.getVeranstaltungName().equals(that.getVeranstaltungName());
+        Boolean condition2 = this.getVeranstaltungId().equals(that.getVeranstaltungId());
+        Boolean condition3 = this.getWettkampfId().equals(that.getWettkampfId());
+        Boolean condition4 = this.getWettkampfTag().equals(that.getWettkampfTag());
+        Boolean condition5 = this.getMannschaftId().equals(that.getMannschaftId());
+        Boolean condition6 = this.getMannschaftName().equals(that.getMannschaftName());
+        Boolean condition7 = this.getMatchpkt().equals(that.getMatchpkt());
+        Boolean condition8 = this.getMatchpktGegen().equals(that.getMatchpktGegen());
+        Boolean condition9 = this.getSatzpkt().equals(that.getSatzpkt());
+        Boolean condition10 = this.getSatzpktGegen().equals(that.getSatzpktGegen());
+        Boolean condition11 = this.getSatzpktDifferenz().equals(that.getSatzpktDifferenz());
+        Boolean condition12 = this.getSortierung().equals(that.getSortierung());
+
+        return condition1 && condition2 && condition3
+                && condition4 && condition5
+                && condition6 && condition7
+                && condition8 &&condition9
+                && condition10 && condition11 && condition12;
     }
+
 
     @Override
     public int hashCode() {
