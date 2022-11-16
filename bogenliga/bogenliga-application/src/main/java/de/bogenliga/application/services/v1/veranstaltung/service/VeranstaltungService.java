@@ -168,12 +168,8 @@ public class VeranstaltungService implements ServiceFacade {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
     public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) throws NoPermissionException {
-
+        System.out.println(veranstaltungDTO.getLigaleiterId());
         // Überprüfung ob Ligaleiter Veranstaltung erstellen darf
-        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
-                && !this.requiresOnePermissionAspect.hasSpecificPermissionLigaLeiterID(UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER,veranstaltungDTO.getId())){
-            throw new NoPermissionException();
-        }
 
         checkPreconditions(veranstaltungDTO);
 
@@ -182,7 +178,7 @@ public class VeranstaltungService implements ServiceFacade {
 
 
         final VeranstaltungDO savedVeranstaltungDO = veranstaltungComponent.create(newVeranstaltungDO,
-                currentDsbMitglied)
+                currentDsbMitglied);
         //savedVeranstlatungsDO Ligaleiter is wrong change it to the correct one it should have
         savedVeranstaltungDO.setVeranstaltungLigaleiterID(veranstaltungDTO.getLigaleiterId());
         return VeranstaltungDTOMapper.toDTO.apply(savedVeranstaltungDO);
