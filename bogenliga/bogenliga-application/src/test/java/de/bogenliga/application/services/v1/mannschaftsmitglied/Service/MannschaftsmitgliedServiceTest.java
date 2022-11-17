@@ -440,7 +440,7 @@ public class MannschaftsmitgliedServiceTest {
             // verify invocations
             verify(mannschaftsmitgliedComponent).delete(mannschaftsmitgliedVOArgumentCaptor.capture(), anyLong());
 
-        } catch (NoPermissionException | NullPointerException e) { }
+        } catch (NullPointerException e) { }
     }
 
 

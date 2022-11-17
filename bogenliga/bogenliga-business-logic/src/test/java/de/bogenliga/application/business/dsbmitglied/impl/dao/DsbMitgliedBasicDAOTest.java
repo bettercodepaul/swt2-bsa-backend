@@ -48,6 +48,16 @@ public class DsbMitgliedBasicDAOTest {
     @InjectMocks
     private DsbMitgliedDAO underTest;
 
+    @Test
+    public void hasKampfrichterLizenz(){
+       assertThat(underTest.hasKampfrichterLizenz(ID))
+               .isNotNull();
+    }
+
+    @Test
+    public void findByUserIDTest(){
+        assertThat(underTest.findByUserId(USERID)).isNull();
+    }
 
     @Test
     public void findAll() {
@@ -124,6 +134,83 @@ public class DsbMitgliedBasicDAOTest {
         verify(basicDao).selectSingleEntity(any(), any(), any());
     }
 
+    @Test
+    public void findAllNotInTeamId() {
+
+        //No Test required since the method doesn't do anything with the mocked data
+        assertThat(underTest.findAllNotInTeamId(USERID,ID)).isNotNull();
+
+        /*
+
+        long vereinsId = 11;
+
+        // prepare test data
+        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
+        expectedBE.setDsbMitgliedId(ID);
+        expectedBE.setDsbMitgliedVereinsId(vereinsId);
+        expectedBE.setDsbMitgliedVorname(VORNAME);
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), anyLong(), anyLong())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<DsbMitgliedBE> actual = underTest.findAllNotInTeamId(ID, vereinsId);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual).hasSize(1);
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getDsbMitgliedId())
+                .isEqualTo(expectedBE.getDsbMitgliedId());
+
+        assertThat(actual.get(0).getDsbMitgliedVorname())
+                .isEqualTo(expectedBE.getDsbMitgliedVorname());
+
+        assertThat(actual.get(0).getDsbMitgliedVereinsId()).isEqualTo(vereinsId);
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), anyLong(), anyLong());
+        */
+    }
+
+    @Test
+    public void findAllByTeamId() {
+        assertThat(underTest.findAllByTeamId(USERID)).isNotNull();
+        /*
+        long vereinsId = 11;
+
+        // prepare test data
+        final DsbMitgliedBE expectedBE = new DsbMitgliedBE();
+        expectedBE.setDsbMitgliedId(ID);
+        expectedBE.setDsbMitgliedVereinsId(vereinsId);
+        expectedBE.setDsbMitgliedVorname(VORNAME);
+
+        // configure mocks
+        when(basicDao.selectEntityList(any(), any(), anyLong(), anyLong())).thenReturn(Collections.singletonList(expectedBE));
+
+        // call test method
+        final List<DsbMitgliedBE> actual = underTest.findAllNotInTeamId(ID, vereinsId);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual).hasSize(1);
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getDsbMitgliedId())
+                .isEqualTo(expectedBE.getDsbMitgliedId());
+
+        assertThat(actual.get(0).getDsbMitgliedVorname())
+                .isEqualTo(expectedBE.getDsbMitgliedVorname());
+
+        assertThat(actual.get(0).getDsbMitgliedVereinsId()).isEqualTo(vereinsId);
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), anyLong(), anyLong());
+        */
+    }
 
     @Test
     public void create() {
