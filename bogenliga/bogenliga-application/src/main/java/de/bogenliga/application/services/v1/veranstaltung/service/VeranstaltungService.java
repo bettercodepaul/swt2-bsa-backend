@@ -166,11 +166,11 @@ public class VeranstaltungService implements ServiceFacade {
      * @return list of {@link VeranstaltungDTO} as JSON
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
-    public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal) {
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
+    public VeranstaltungDTO create(@RequestBody final VeranstaltungDTO veranstaltungDTO, final Principal principal)  {
+
 
         checkPreconditions(veranstaltungDTO);
-
 
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
@@ -178,6 +178,8 @@ public class VeranstaltungService implements ServiceFacade {
 
         final VeranstaltungDO savedVeranstaltungDO = veranstaltungComponent.create(newVeranstaltungDO,
                 currentDsbMitglied);
+        // savedVeranstlatungsDO Ligaleiter ist falsch und sollte der vom empfangenen veranstaltungsDTO sein
+        savedVeranstaltungDO.setVeranstaltungLigaleiterID(veranstaltungDTO.getLigaleiterId());
         return VeranstaltungDTOMapper.toDTO.apply(savedVeranstaltungDO);
     }
 
@@ -229,9 +231,8 @@ public class VeranstaltungService implements ServiceFacade {
      */
     @DeleteMapping(value = "{id}")
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
-    public void delete (@PathVariable("id") final Long id, final Principal principal){
+    public void delete (@PathVariable("id") final Long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
-
 
         final VeranstaltungDO veranstaltungDO = new VeranstaltungDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
