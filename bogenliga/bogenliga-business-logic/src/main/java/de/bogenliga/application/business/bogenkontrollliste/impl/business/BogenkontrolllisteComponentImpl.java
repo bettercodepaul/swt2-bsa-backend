@@ -99,35 +99,40 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         byte[] bResult;
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
-
+        // Initialisierung Dsb Mitglied Hashmap und DsbMitglied, boolean Hashmap.
         HashMap<String, List<DsbMitgliedDO>> teamMemberMapping = new HashMap<>();
         HashMap<DsbMitgliedDO, Boolean> allowedMapping = new HashMap<>();
 
-        // Collect Information
+        // Informationen sammeln Wettkampf und zugehoerige Veranstaltung
         WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
 
+        // Veranstaltungsname einer konketen Veranstalung
         String eventName = veranstaltungDO.getVeranstaltungName();
 
         List<Boolean> allowedList = new ArrayList<>();
 
+        // Fuer Jedes Match eines wettkampfs -> List.add alle Schuetzen
         for (int i = 1; i <= 8; i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
             LOGGER.info("Teamname {} wurde gefunden ", teamName);
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(
                     matchDO.getMannschaftId());
+
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
             List<LigaDO> ligen = this.ligaComponent.findAll();
+
             int count = 0;
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
                 DsbMitgliedDO dsbMitglied = dsbMitgliedComponent.findById(mannschaftsmitglied.getDsbMitgliedId());
                 long thisLiga = this.veranstaltungComponent.findById(this.wettkampfComponent.findById(
                         matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
-
-                //finde Stufe der aktuellen Liga
+                // Find step of the actual League
                 int thisLigaStufe = 0;
                 int currentLiga = (int) thisLiga;
+
+                // Finde und Setze die Ligastufe falls diese nicht 0 ist -> ansonsten thisLigaStufe = 0
                 while (currentLiga != 0) {
                     if (ligen.get(currentLiga - 1).getLigaUebergeordnetId() != null) {
                         currentLiga = ligen.get(currentLiga - 1).getLigaUebergeordnetId().intValue();
@@ -136,22 +141,31 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                         currentLiga = 0;
                     }
                 }
+
+                // Finde Wettkampftag über Matchcomponenet-> wettkampfID -> .getWettkampftag
                 long thisWettkamptag = this.wettkampfComponent.findById(matchDO.getWettkampfId()).getWettkampfTag();
+
+                // Finde thisSportjahr über veranstaltungsComponend -> match -> wettkampfID -> WettkampfveranstaltungsId -> getVeranstaltungSportJahr
                 long thisSportjahr = this.veranstaltungComponent.findById(this.wettkampfComponent.findById(
                         matchDO.getWettkampfId()).getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
                 boolean darfSchiessen = true;
 
-                //find highest Liga and check if mitglied has already shot on this Wettkampftag
+                //Finde die höchste Liga und prüfe ob das Mitglied bereits am Wettkapftag geschossen hat
                 List<MannschaftsmitgliedDO> mitgliedIn = this.mannschaftsmitgliedComponent.findByMemberId(
                         dsbMitglied.getId());
+
+                // Finde alle Wettkämpfe einer Mannschaft
                 for (MannschaftsmitgliedDO mitglied : mitgliedIn) {
                     List<WettkampfDO> wettkaempfe = this.wettkampfComponent.findAllWettkaempfeByMannschaftsId(
                             mitglied.getMannschaftId());
+
+                    // für jeden Wettkampf einer Mannschaft
                     for (WettkampfDO wettkampf : wettkaempfe) {
 
-                        //check Sportjahr of Veranstaltung
+                        //Prüfe das Sportjahr der Veranstaltung
                         long wettkampfSportjahr = this.veranstaltungComponent.findById(
                                 wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungSportJahr();
+
                         if (thisSportjahr == wettkampfSportjahr) {
                             long liga = this.veranstaltungComponent.findById(
                                     wettkampf.getWettkampfVeranstaltungsId()).getVeranstaltungLigaID();
@@ -176,6 +190,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                         }
                     }
                 }
+                // Füge mitglieder mit schusserlaubnis hinzu
                 dsbMitgliedDOList.add(dsbMitglied);
                 allowedMapping.put(dsbMitglied, darfSchiessen);
                 if (darfSchiessen) {
@@ -192,6 +207,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
 
 
         }
+        // Erstelle den byte output Stream
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
@@ -320,7 +336,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 final Table tableBodyForthPart = new Table(UnitValue.createPercentArray(new float[]{25.0F, 75.0F}),
                         true);
 
-
                 //Create tables for checkboxes
                 final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(new float[]{40.0F, 60.0F}), true);
                 final Table tableCheckbox2 = new Table(UnitValue.createPercentArray(new float[]{75.0F, 25.0F}), true);
@@ -343,6 +358,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 if (allowedMapping.get(teamMemberMapping.get(
                         teamNameList[manschaftCounter]).get(
                         mitgliedCounter - 1))) {
+
                     tableBodyFirstPart
                             .addCell(new Cell().setBorder(Border.NO_BORDER)
                                     .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
