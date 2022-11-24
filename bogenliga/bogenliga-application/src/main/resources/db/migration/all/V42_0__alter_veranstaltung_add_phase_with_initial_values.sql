@@ -1,5 +1,5 @@
 alter table veranstaltung
-add veranstaltung_phase varchar(600);
+add veranstaltung_phase varchar(20);
 
 --Initial values
 update veranstaltung
