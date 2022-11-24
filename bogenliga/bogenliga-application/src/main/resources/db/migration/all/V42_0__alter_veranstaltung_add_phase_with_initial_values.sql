@@ -5,17 +5,17 @@ add veranstaltung_phase varchar(600);
 update veranstaltung
 set veranstaltung_phase = 'Geplant'
 where veranstaltung_sportjahr >= (
-        extract(year from CURRENT_DATE))
+        select CAST(configuration_value as int)from configuration where configuration_key = 'aktives-Sportjahr')
 and veranstaltung_meldedeadline > CURRENT_DATE;
 
 update veranstaltung
 set veranstaltung_phase = 'Laufend'
 where veranstaltung_sportjahr >= (
-        extract(year from CURRENT_DATE))
+        select CAST(configuration_value as int)from configuration where configuration_key = 'aktives-Sportjahr')
 and veranstaltung_meldedeadline < CURRENT_DATE;
 
 update veranstaltung
 set veranstaltung_phase = 'Abgeschlossen'
 where veranstaltung_sportjahr < (
-        extract(year from CURRENT_DATE))
+        select CAST(configuration_value as int)from configuration where configuration_key = 'aktives-Sportjahr')
 and veranstaltung_meldedeadline < CURRENT_DATE;
