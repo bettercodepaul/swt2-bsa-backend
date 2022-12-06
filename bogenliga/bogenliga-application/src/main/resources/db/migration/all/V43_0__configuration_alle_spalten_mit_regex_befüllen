@@ -1,0 +1,15 @@
+UPDATE configuration
+SET configuration_regex = ''
+WHERE configuration_key = 'app.bogenliga.frontend.autorefresh.active';
+
+UPDATE configuration
+SET configuration_regex = ''
+WHERE configuration_key = 'app.bogenliga.frontend.autorefresh.interval';
+
+UPDATE configuration
+SET configuration_regex = ''
+WHERE configuration_key = 'MaxWettkampfTage';
+
+UPDATE configuration
+SET configuration_regex = ''
+WHERE configuration_key = 'aktives-Sportjahr';
