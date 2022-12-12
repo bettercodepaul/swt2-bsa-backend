@@ -209,6 +209,8 @@ public class VeranstaltungComponentImplTest {
                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
        assertThat(actual.get(0).getVeranstaltungLigaName())
                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+       assertThat(actual.get(0).getVeranstaltungPhase())
+               .isEqualTo(expectedDO.getVeranstaltungPhase());
 
 
         // verify invocations
@@ -254,6 +256,8 @@ public class VeranstaltungComponentImplTest {
                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
        assertThat(actual.getVeranstaltungLigaName())
                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+       assertThat(actual.getVeranstaltungPhase())
+               .isEqualTo(expectedDO.getVeranstaltungPhase());
 
 
        // verify invocations
