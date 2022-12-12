@@ -401,6 +401,11 @@ public class VeranstaltungComponentImplTest {
                  VERANSTALTUNG_LIGA_NAME,
                  VERANSTALTUNG_PHASE);
          assertThat(underTest.getVeranstaltungWettkampftypName()).isEqualTo(getVeranstaltungDO().getVeranstaltungWettkampftypName());
+         assertThat(underTest.getVeranstaltungSportJahr()).isEqualTo(getVeranstaltungDO().getVeranstaltungSportJahr());
+         assertThat(underTest.getVeranstaltungID()).isEqualTo(getVeranstaltungDO().getVeranstaltungID());
+         assertThat(underTest.getVeranstaltungLigaleiterEmail()).isEqualTo(getVeranstaltungDO().getVeranstaltungLigaleiterEmail());
+         assertThat(underTest.getVeranstaltungLigaName()).isEqualTo(getVeranstaltungDO().getVeranstaltungLigaName());
+         assertThat(underTest.getVeranstaltungPhase()).isEqualTo(getVeranstaltungDO().getVeranstaltungPhase());
          assertEquals(underTest,getVeranstaltungDO());
     }
 
