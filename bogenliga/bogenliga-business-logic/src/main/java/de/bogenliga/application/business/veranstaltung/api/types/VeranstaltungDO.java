@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
-import de.bogenliga.application.common.validation.Preconditions;
 
 
 public class VeranstaltungDO extends CommonDataObject implements DataObject {
@@ -28,7 +27,6 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     private String veranstaltungWettkampftypName;
     private String veranstaltungLigaName;
 
-    private static final String PRECONDITIONS_MSG_PHASE = "Phase must not be null";
 
 
     public VeranstaltungDO() {
@@ -66,8 +64,6 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                            final String wettkampftypName,
                            final String ligaName,
                            final String phase) {
-
-        Preconditions.checkNotNull(phase, PRECONDITIONS_MSG_PHASE);
 
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
