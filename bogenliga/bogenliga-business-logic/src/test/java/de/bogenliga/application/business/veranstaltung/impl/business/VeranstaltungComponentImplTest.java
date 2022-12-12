@@ -49,6 +49,7 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
     private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
     private static final Long VERANSTALTUNG_LIGA_ID = 0L;
+    private static final String VERANSTALTUNG_PHASE = "Geplant";
 
     private static final String VERANSTALTUNG_LIGALEITER_EMAIL = "a@b.c";
     private static final String VERANSTALTUNG_WETTKAMPFTYP_NAME = "abc";
@@ -102,6 +103,7 @@ public class VeranstaltungComponentImplTest {
         expectedBE.setVeranstaltungMeldedeadline(VERANSTALTUNG_MELDEDEADLINE);
         expectedBE.setVeranstaltungLigaleiterId(VERANSTALTUNG_LIGALEITER_ID);
         expectedBE.setVeranstaltungLigaId(VERANSTALTUNG_LIGA_ID);
+        expectedBE.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
 
         return expectedBE;
     }
@@ -117,7 +119,8 @@ public class VeranstaltungComponentImplTest {
                 VERANSTALTUNG_LIGA_ID,
                 VERANSTALTUNG_LIGALEITER_EMAIL,
                 VERANSTALTUNG_WETTKAMPFTYP_NAME,
-                VERANSTALTUNG_LIGA_NAME);
+                VERANSTALTUNG_LIGA_NAME,
+                VERANSTALTUNG_PHASE);
     }
 
 
@@ -298,6 +301,8 @@ public class VeranstaltungComponentImplTest {
                 .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
         assertThat(actual.getVeranstaltungLigaName())
                 .isEqualTo(expectedDO.getVeranstaltungLigaName());
+        assertThat(actual.getVeranstaltungPhase())
+                .isEqualTo(expectedDO.getVeranstaltungPhase());
 
         // verify invocations
         verify(veranstaltungDAO).findById(VERANSTALTUNG_ID);
@@ -338,6 +343,8 @@ public class VeranstaltungComponentImplTest {
               .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
         assertThat(actual.getVeranstaltungLigaName())
               .isEqualTo(expectedDO.getVeranstaltungLigaName());
+        assertThat(actual.getVeranstaltungPhase())
+              .isEqualTo(expectedDO.getVeranstaltungPhase());
 
         // verify invocations
         verify(veranstaltungDAO).update(veranstaltungBEArgumentCaptor.capture(), anyLong());
@@ -387,7 +394,8 @@ public class VeranstaltungComponentImplTest {
                  VERANSTALTUNG_LIGA_ID,
                  VERANSTALTUNG_LIGALEITER_EMAIL,
                  VERANSTALTUNG_WETTKAMPFTYP_NAME,
-                 VERANSTALTUNG_LIGA_NAME);
+                 VERANSTALTUNG_LIGA_NAME,
+                 VERANSTALTUNG_PHASE);
          assertThat(underTest.getVeranstaltungWettkampftypName()).isEqualTo(getVeranstaltungDO().getVeranstaltungWettkampftypName());
          assertEquals(underTest,getVeranstaltungDO());
     }

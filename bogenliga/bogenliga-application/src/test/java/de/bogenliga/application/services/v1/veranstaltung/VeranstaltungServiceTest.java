@@ -47,6 +47,7 @@ public class VeranstaltungServiceTest {
     private static final String LIGANAME = "";
     private static final long SPORTJAHR_ID = 0;
     private static final long SPORTJAHR_JAHR = 0;
+    private static final String PHASE = "Geplant";
 
 
    
@@ -81,7 +82,8 @@ public class VeranstaltungServiceTest {
             LIGAID ,
             LIGALEITER_EMAIL ,
             WETTKAMPTYP_NAME ,
-            LIGANAME
+            LIGANAME,
+            PHASE
         );
     }
 
@@ -97,6 +99,7 @@ public class VeranstaltungServiceTest {
         veranstaltungDTO.setLigaleiterEmail(LIGALEITER_EMAIL);
         veranstaltungDTO.setWettkampftypName(WETTKAMPTYP_NAME);
         veranstaltungDTO.setLigaName(LIGANAME);
+        veranstaltungDTO.setPhase(PHASE);
         return veranstaltungDTO;
     }
 
@@ -283,6 +286,7 @@ public class VeranstaltungServiceTest {
             assertThat(actual.getLigaleiterEmail()).isEqualTo(input.getLigaleiterEmail());
             assertThat(actual.getWettkampftypName()).isEqualTo(input.getWettkampftypName());
             assertThat(actual.getLigaName()).isEqualTo(input.getLigaName());
+            assertThat(actual.getPhase()).isEqualTo(input.getPhase());
 
             // verify invocations
             verify(VeranstaltungComponent).update(VeranstaltungDOArgumentCaptor.capture(), anyLong());
@@ -361,6 +365,7 @@ public class VeranstaltungServiceTest {
         assertThat(testObject.getLigaleiterEmail()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterEmail());
         assertThat(testObject.getWettkampftypName()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypName());
         assertThat(testObject.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
+        assertThat(testObject.getPhase()).isEqualTo(VeranstaltungDO.getVeranstaltungPhase());
 
         //verifying invocations
         verify(VeranstaltungComponent).findBySportjahrDestinct(anyLong());
