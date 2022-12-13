@@ -93,6 +93,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param sportJahr
      * @param meldeDeadline
      * @param ligaleiterID
+     * @param phase
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
                            final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,
@@ -120,6 +121,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param sportJahr
      * @param meldeDeadline
      * @param ligaleiterID
+     * @param phase
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
                            final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,
