@@ -400,7 +400,6 @@ public class VeranstaltungComponentImplTest {
                  VERANSTALTUNG_WETTKAMPFTYP_NAME,
                  VERANSTALTUNG_LIGA_NAME,
                  VERANSTALTUNG_PHASE);
-         assertThat(underTest.equals(underTest));
          assertEquals(underTest,getVeranstaltungDO());
     }
 
