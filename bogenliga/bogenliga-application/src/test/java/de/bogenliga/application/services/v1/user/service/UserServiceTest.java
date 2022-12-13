@@ -817,12 +817,13 @@ public class UserServiceTest {
         userCredentialsDTO.setPassword(PASSWORD);
         userCredentialsDTO.setDsbMitgliedId(DSBMITGLIEDID);
 
-        // configure mocks
+        // configure mocks.
         when(userComponent.create(anyString(), anyString(), anyLong(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
         when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
         when(roleComponent.findByName(anyString())).thenReturn(roleDO);
         when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
         when(userRoleComponent.create(anyLong(),anyLong(), anyLong())).thenReturn(createdUserRoleDO);
+
         // call test method
         final UserDTO actual = underTest.create(requestWithHeader, userCredentialsDTO);
 

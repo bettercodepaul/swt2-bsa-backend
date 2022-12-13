@@ -104,7 +104,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     */
     @Override
     public Boolean hasKampfrichterLizenz(final long id) {
-        // Id muss gültig sein und damit >= null.
+        // Id muss gültig sein und damit >= null sein.
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
         return (dsbMitgliedDAO.hasKampfrichterLizenz(id) );
     }

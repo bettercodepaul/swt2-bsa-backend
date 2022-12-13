@@ -91,7 +91,7 @@ public class UserService implements ServiceFacade {
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final VeranstaltungComponent veranstaltungComponent;
 
-    private final RoleComponent roleComponent;
+    private final RoleComponent roleComponent; 
     @Autowired
     public UserService(final JwtTokenProvider jwtTokenProvider,
                        //final AuthenticationManager authenticationManager
