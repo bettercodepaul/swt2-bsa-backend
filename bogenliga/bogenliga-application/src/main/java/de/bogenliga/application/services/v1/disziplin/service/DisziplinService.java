@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -117,6 +118,25 @@ public class DisziplinService implements ServiceFacade {
 
         final DisziplinDO updatedDiziplinDO = disziplinComponent.update(newDisziplinDO, userId);
         return DisziplinDTOMapper.toDTO.apply(updatedDiziplinDO);
+    }
+
+    /**
+     * I delete an existing Disziplin entry from the database.
+     *
+     */
+    @DeleteMapping(value = "{id}")
+    @RequiresPermission(UserPermission.CAN_DELETE_SYSTEMDATEN)
+    public void delete(@PathVariable("id") final long id, final Principal principal) {
+        Preconditions.checkArgument(id >= 0, "ID must not be negative.");
+
+        LOG.debug("Receive 'delete' request with id '{}'", id);
+
+        // allow value == null, the value will be ignored
+        final DisziplinDO disziplinDO = new DisziplinDO();
+        disziplinDO.setDisziplinID(id);
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+        disziplinComponent.delete(disziplinDO, userId);
     }
 
 }

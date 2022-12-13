@@ -13,6 +13,8 @@ public class DisziplinDO extends CommonDataObject implements DataObject {
     private Long disziplinID;
     private String disziplinName;
 
+    public DisziplinDO(){}
+
     public DisziplinDO(Long disziplinID)
     {
         this.disziplinID = disziplinID;
