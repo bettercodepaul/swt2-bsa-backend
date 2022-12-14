@@ -18,6 +18,8 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     private Date veranstaltungMeldedeadline;
     private Long veranstaltungLigaleiterId;
 
+    private String veranstaltungPhase;
+
 
     /**
      * Default Constructor of VeranstaltungBE
@@ -38,6 +40,7 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
                 ", veranstaltungLigaId=" + veranstaltungLigaId +
                 ", veranstaltungMeldeDeadline=" + veranstaltungMeldedeadline +
                 ", veranstaltungLigaleiterID=" + veranstaltungLigaleiterId +
+                ", veranstaltungPhase=" + veranstaltungPhase +
                 '}';
     }
 
@@ -95,6 +98,12 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
 
     public void setVeranstaltungLigaleiterId(Long veranstaltungLigaleiterId) {
         this.veranstaltungLigaleiterId = veranstaltungLigaleiterId;
+    }
+
+    public String getVeranstaltungPhase() { return veranstaltungPhase;}
+
+    public void setVeranstaltungPhase(String veranstaltungPhase){
+        this.veranstaltungPhase = veranstaltungPhase;
     }
 
 }
