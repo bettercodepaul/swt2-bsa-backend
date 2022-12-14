@@ -152,7 +152,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      * Return all Veranstaltung entries from the database specified by the phases attributes
      */
     public List<VeranstaltungBE> findAll(String[] phaseList) {
-        List<VeranstaltungBE> veranstaltungList = new ArrayList<VeranstaltungBE>();
+        List<VeranstaltungBE> veranstaltungList;
         switch (phaseList.length) {
             case 0:
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
@@ -195,7 +195,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      */
     public List<VeranstaltungBE> findBySportjahr(final long sportjahr, String[] phaseList) {
 
-        List<VeranstaltungBE> veranstaltungList = new ArrayList<VeranstaltungBE>();
+        List<VeranstaltungBE> veranstaltungList;
         switch (phaseList.length) {
             case 0:
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR, sportjahr);
