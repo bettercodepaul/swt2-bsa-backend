@@ -48,11 +48,13 @@ public class VeranstaltungServiceTest {
     private static final long SPORTJAHR_JAHR = 0;
     private static final String PHASE = "Geplant";
 
-    private static final String[] PHASELIST_2 = {"Geplant", "Laufend"};
+    private static final String[] PHASELIST_GEPLANT_LAUFEND = {"Geplant", "Laufend"};
+
+    private static final String[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {"Laufend", "Abgeschlossen"};
 
     private static final String[] PHASELIST_0 = {};
 
-    private static final String[] PHASELIST_1 = {"Laufend"};
+    private static final String[] PHASELIST_LAUFEND = {"Laufend"};
 
 
     @Rule
@@ -126,7 +128,7 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findAll(PHASELIST_2)).thenReturn(VeranstaltungDOList);
+        when(VeranstaltungComponent.findAll(PHASELIST_GEPLANT_LAUFEND)).thenReturn(VeranstaltungDOList);
         // call test method
         final List<VeranstaltungDTO> actual = underTest.findAllGeplantLaufend();
 
@@ -150,7 +152,7 @@ public class VeranstaltungServiceTest {
         */
 
         // verify invocations
-        verify(VeranstaltungComponent).findAll(PHASELIST_2);
+        verify(VeranstaltungComponent).findAll(PHASELIST_GEPLANT_LAUFEND);
     }
 
 
@@ -161,7 +163,7 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findAll(PHASELIST_2)).thenReturn(VeranstaltungDOList);
+        when(VeranstaltungComponent.findAll(PHASELIST_LAUFEND_ABGESCHLOSSEN)).thenReturn(VeranstaltungDOList);
 
         // call test method
         final List<VeranstaltungDTO> actual = underTest.findAllLaufendAbgeschlossen();
@@ -186,7 +188,7 @@ public class VeranstaltungServiceTest {
         */
 
         // verify invocations
-        verify(VeranstaltungComponent).findAll(PHASELIST_2);
+        verify(VeranstaltungComponent).findAll(PHASELIST_LAUFEND_ABGESCHLOSSEN);
     }
 
 
@@ -287,7 +289,7 @@ public class VeranstaltungServiceTest {
         assertThat(actual).isNotNull().hasSize(1);
 
         // verify invocations
-        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR, PHASELIST_1);
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR, PHASELIST_LAUFEND);
     }
 
 
@@ -307,7 +309,7 @@ public class VeranstaltungServiceTest {
         assertThat(actual).isNotNull().hasSize(1);
 
         // verify invocations
-        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR, PHASELIST_2);
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR, PHASELIST_GEPLANT_LAUFEND);
     }
 
 
