@@ -1,32 +1,31 @@
 package de.bogenliga.application.services.v1.veranstaltung;
 
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
-import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
-import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
-import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
-
+import java.security.Principal;
+import java.sql.Date;
+import java.util.Collections;
+import java.util.List;
+import javax.naming.NoPermissionException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
+import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
+import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
-
-import java.security.Principal;
-
-import java.util.*;
-import java.sql.Date;
-
-import javax.naming.NoPermissionException;
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 
 
@@ -49,8 +48,15 @@ public class VeranstaltungServiceTest {
     private static final long SPORTJAHR_JAHR = 0;
     private static final String PHASE = "Geplant";
 
+    private static final String[] PHASELIST_GEPLANT_LAUFEND = {"Geplant", "Laufend"};
 
-   
+    private static final String[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {"Laufend", "Abgeschlossen"};
+
+    private static final String[] PHASELIST_0 = {};
+
+    private static final String[] PHASELIST_LAUFEND = {"Laufend"};
+
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -116,16 +122,15 @@ public class VeranstaltungServiceTest {
 
 
     @Test
-    public void findAll() {
+    public void findAllGeplantLaufend() {
         // prepare test data
         final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findAll()).thenReturn(VeranstaltungDOList);
-
+        when(VeranstaltungComponent.findAll(PHASELIST_GEPLANT_LAUFEND)).thenReturn(VeranstaltungDOList);
         // call test method
-        final List<VeranstaltungDTO> actual = underTest.findAll();
+        final List<VeranstaltungDTO> actual = underTest.findAllGeplantLaufend();
 
         // assert result
         assertThat(actual).isNotNull().hasSize(1);
@@ -147,8 +152,45 @@ public class VeranstaltungServiceTest {
         */
 
         // verify invocations
-        verify(VeranstaltungComponent).findAll();
+        verify(VeranstaltungComponent).findAll(PHASELIST_GEPLANT_LAUFEND);
     }
+
+
+    @Test
+    public void findAllLaufendAbgeschlossen() {
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+        final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findAll(PHASELIST_LAUFEND_ABGESCHLOSSEN)).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findAllLaufendAbgeschlossen();
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        final VeranstaltungDTO actualDTO = actual.get(0);
+
+        assertThat(actualDTO).isNotNull();
+        assertThat(actualDTO.getId()).isEqualTo(VeranstaltungDO.getVeranstaltungID());
+        assertThat(actualDTO.getName()).isEqualTo(VeranstaltungDO.getVeranstaltungName());
+        /*
+        assertThat(actualDTO.getWettkampfTypId()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypID());
+        assertThat(actualDTO.getSportjahr()).isEqualTo(VeranstaltungDO.getVeranstaltungSportJahr());
+        assertThat(actualDTO.getMeldeDeadline()).isEqualTo(VeranstaltungDO.getVeranstaltungMeldeDeadline());
+        assertThat(actualDTO.getLigaleiterID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterID());
+        assertThat(actualDTO.getLigaID()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaID());
+        assertThat(actualDTO.getLigaleiterEmail()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actualDTO.getWettkampftypName()).isEqualTo(VeranstaltungDO.getVeranstaltungWettkampftypName());;
+        assertThat(actualDTO.getLigaName()).isEqualTo(VeranstaltungDO.getVeranstaltungLigaName());
+        */
+
+        // verify invocations
+        verify(VeranstaltungComponent).findAll(PHASELIST_LAUFEND_ABGESCHLOSSEN);
+    }
+
 
     @Test
     public void findById() {
@@ -218,7 +260,7 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findBySportjahr(anyLong())).thenReturn(VeranstaltungDOList);
+        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(String[].class))).thenReturn(VeranstaltungDOList);
 
         // call test method
         final List<VeranstaltungDTO> actual = underTest.findBySportjahr(SPORTJAHR);
@@ -227,7 +269,47 @@ public class VeranstaltungServiceTest {
         assertThat(actual).isNotNull().hasSize(1);
 
         // verify invocations
-        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR);
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR, PHASELIST_0);
+    }
+
+
+    @Test
+    public void findBySportjahrLaufend() {
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+        final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(String[].class))).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findBySportjahrLaufend(SPORTJAHR);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        // verify invocations
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR, PHASELIST_LAUFEND);
+    }
+
+
+    @Test
+    public void findBySportjahrGeplantLaufend() {
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+        final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
+
+        // configure mocks
+        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(String[].class))).thenReturn(VeranstaltungDOList);
+
+        // call test method
+        final List<VeranstaltungDTO> actual = underTest.findBySportjahrGeplantLaufend(SPORTJAHR);
+
+        // assert result
+        assertThat(actual).isNotNull().hasSize(1);
+
+        // verify invocations
+        verify(VeranstaltungComponent).findBySportjahr(SPORTJAHR, PHASELIST_GEPLANT_LAUFEND);
     }
 
 
@@ -378,7 +460,8 @@ public class VeranstaltungServiceTest {
         VeranstaltungDO expectedVeranstaltung = getVeranstaltungDO();
 
         // configure mocks
-        when(VeranstaltungComponent.findLastVeranstaltungById(anyLong())).thenReturn(expectedVeranstaltung);
+        when(VeranstaltungComponent.findLastVeranstaltungById(anyLong(), any(String[].class))).thenReturn(
+                expectedVeranstaltung);
 
         // call test method
         final VeranstaltungDTO actual = underTest.findLastVeranstaltungById(VERANSTALTUNG_ID);
@@ -390,7 +473,7 @@ public class VeranstaltungServiceTest {
         assertThat(actual.getSportjahr()).isEqualTo(expectedVeranstaltung.getVeranstaltungSportJahr());
 
         // verify invocations
-        verify(VeranstaltungComponent).findLastVeranstaltungById(anyLong());
+        verify(VeranstaltungComponent).findLastVeranstaltungById(anyLong(), any(String[].class));
 
     }
 }
