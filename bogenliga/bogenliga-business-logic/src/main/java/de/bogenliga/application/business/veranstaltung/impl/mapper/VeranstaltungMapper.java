@@ -36,7 +36,8 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 veranstaltungBE.getVeranstaltungLigaId(),
                 userDO.getEmail(),
                 wettkamptypDO.getName(),
-                ligaDO.getName()
+                ligaDO.getName(),
+                veranstaltungBE.getVeranstaltungPhase()
         );
         veranstaltungDO.setCreatedAtUtc(createdAtUtc);
         veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);
@@ -61,7 +62,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
        veranstaltungBE.setVeranstaltungLigaleiterId(veranstaltungDO.getVeranstaltungLigaleiterID());
        veranstaltungBE.setVeranstaltungLigaId(veranstaltungDO.getVeranstaltungLigaID());
        veranstaltungBE.setVeranstaltungSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
-
+       veranstaltungBE.setVeranstaltungPhase(veranstaltungDO.getVeranstaltungPhase());
 
        veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
        veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());
