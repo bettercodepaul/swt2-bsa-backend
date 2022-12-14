@@ -71,7 +71,7 @@ public class VeranstaltungService implements ServiceFacade {
     }
 
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAll() {
 
@@ -81,7 +81,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
                 Collectors.toList());
-    }
+    }*/
 
 
     /**
