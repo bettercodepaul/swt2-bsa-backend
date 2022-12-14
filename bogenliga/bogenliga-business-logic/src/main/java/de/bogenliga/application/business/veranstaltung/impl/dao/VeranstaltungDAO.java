@@ -28,6 +28,8 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterId";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltungLigaId";
 
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_PHASE = "veranstaltungPhase";
+
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
     private static final String VERANSTALTUNG_TABLE_NAME= "veranstaltung_name";
@@ -35,6 +37,8 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_TABLE_MELDEDEADLINE = "veranstaltung_meldedeadline";
     private static final String VERANSTALTUNG_TABLE_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
     private static final String VERANSTALTUNG_TABLE_LIGA_ID = "veranstaltung_liga_id";
+
+    private static final String VERANSTALTUNG_TABLE_PHASE = "veranstaltung_phase";
 
 
 
@@ -120,7 +124,7 @@ public class VeranstaltungDAO implements DataAccessObject{
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_MELDEDEADLINE, VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGALEITER_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
-
+        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_PHASE, VERANSTALTUNG_BE_VERANSTALTUNG_PHASE);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
