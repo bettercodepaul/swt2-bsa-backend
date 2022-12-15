@@ -2,23 +2,22 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.bogenliga.application.business.liga.api.types.LigaDO;
-import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
-import de.bogenliga.application.business.user.api.types.UserDO;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
-import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
+import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.liga.api.LigaComponent;
-import de.bogenliga.application.business.user.api.UserComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
+import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -78,7 +77,21 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * @return liefert die Liste aller Veranstaltungen
      */
     @Override
-    public List<VeranstaltungDO> findAll() {
+    public List<VeranstaltungDO> findAll(String[] phaseList) {
+        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
+        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll(phaseList);
+
+
+        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+
+            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
+
+        }
+
+        return returnList;
+    }
+
+    /*public List<VeranstaltungDO> findAll() {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll();
 
@@ -91,9 +104,10 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         }
 
         return returnList;
-    }
+    }*/
 
-    public List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr){
+
+    public List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahrDestinct(sportjahr);
 
@@ -184,16 +198,35 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     }
 
 
+    /**
+     * returns the last Veranstaltung by using the current Veranstaltung ID
+     *
+     * @param veranstaltungId ID of the current veranstaltung to query the last Veranstaltung.
+     *
+     * @return last Veranstaltung based on current one
+     */
     @Override
-    public List<VeranstaltungDO> findBySportjahr(long sportjahr) {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahr(sportjahr);
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
+    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId, String[] phaseList) {
+        Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
+        VeranstaltungDO currentVeranstaltung = this.findById(veranstaltungId);
+        Long targetSportjahr = currentVeranstaltung.getVeranstaltungSportJahr();
+        Long targetLiga = currentVeranstaltung.getVeranstaltungLigaID();
+        Long targetWettkampf = currentVeranstaltung.getVeranstaltungWettkampftypID();
 
+        // targeting last year's Veranstaltung with last sportjahr, liga id and wettkampftyp id
+        List<VeranstaltungDO> targetVeranstaltungen = this.findBySportjahr(targetSportjahr - 1, phaseList);
+        VeranstaltungDO lastVeranstaltung = new VeranstaltungDO();
+        for(VeranstaltungDO t : targetVeranstaltungen){
+            if(t.getVeranstaltungLigaID().equals(targetLiga) && t.getVeranstaltungWettkampftypID().equals(targetWettkampf)) {
+                lastVeranstaltung = t;
+            }
         }
-        return returnList;
+        if (lastVeranstaltung.getVeranstaltungID() == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No last Veranstaltung found for ID '%s'", veranstaltungId));
+        }
+        return lastVeranstaltung;
     }
 
 
@@ -202,6 +235,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return veranstaltungDAO.findAllSportjahreDestinct();
 
     }
+
 
     @Override
     public List<VeranstaltungDO> findByLigaID(long ligaID) {
@@ -216,35 +250,18 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     }
 
 
-    /**
-     * returns the last Veranstaltung by using the current Veranstaltung ID
-     * @param veranstaltungId ID of the current veranstaltung to query the last Veranstaltung.
-     *
-     * @return last Veranstaltung based on current one
-     */
     @Override
-    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId){
-        Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+    public List<VeranstaltungDO> findBySportjahr(long sportjahr, String[] phaseList) {
+        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
+        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahr(sportjahr, phaseList);
+        for (int i = 0; i < veranstaltungBEList.size(); i++) {
 
-        VeranstaltungDO currentVeranstaltung = this.findById(veranstaltungId);
-        Long targetSportjahr = currentVeranstaltung.getVeranstaltungSportJahr();
-        Long targetLiga = currentVeranstaltung.getVeranstaltungLigaID();
-        Long targetWettkampf = currentVeranstaltung.getVeranstaltungWettkampftypID();
+            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
 
-        // targeting last year's Veranstaltung with last sportjahr, liga id and wettkampftyp id
-        List<VeranstaltungDO> targetVeranstaltungen = this.findBySportjahr(targetSportjahr - 1);
-        VeranstaltungDO lastVeranstaltung = new VeranstaltungDO();
-        for(VeranstaltungDO t : targetVeranstaltungen){
-            if(t.getVeranstaltungLigaID().equals(targetLiga) && t.getVeranstaltungWettkampftypID().equals(targetWettkampf)){
-                lastVeranstaltung = t;
-            }
         }
-        if(lastVeranstaltung.getVeranstaltungID() == null){
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No last Veranstaltung found for ID '%s'", veranstaltungId));
-        }
-        return lastVeranstaltung;
+        return returnList;
     }
+
 
     private void checkVeranstaltungDO(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         Preconditions.checkNotNull(veranstaltungDO, PRECONDITION_MSG_VERANSTALTUNG);
@@ -264,6 +281,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     }
 
+
     /**
      * Checks if a Liga already has a Veranstaltung in a specific Sportjahr
      *
@@ -274,7 +292,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * Liga in Sportjahr
      */
     private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_veranstaltungen = this.findAll();
+        List<VeranstaltungDO> all_veranstaltungen = this.findAll(new String[0]);
         for (VeranstaltungDO vdo : all_veranstaltungen) {
             if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
                 return false;

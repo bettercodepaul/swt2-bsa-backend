@@ -28,6 +28,8 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID= "veranstaltungLigaleiterId";
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltungLigaId";
 
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_PHASE = "veranstaltungPhase";
+
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
     private static final String VERANSTALTUNG_TABLE_NAME= "veranstaltung_name";
@@ -35,6 +37,8 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_TABLE_MELDEDEADLINE = "veranstaltung_meldedeadline";
     private static final String VERANSTALTUNG_TABLE_LIGALEITER_ID= "veranstaltung_ligaleiter_id";
     private static final String VERANSTALTUNG_TABLE_LIGA_ID = "veranstaltung_liga_id";
+
+    private static final String VERANSTALTUNG_TABLE_PHASE = "veranstaltung_phase";
 
 
 
@@ -54,6 +58,12 @@ public class VeranstaltungDAO implements DataAccessObject{
     /*
      * SQL queries
      */
+    private static final String FIND_ALL_PHASE =
+            "SELECT * "
+                    + " FROM veranstaltung"
+                    + " WHERE veranstaltung_phase IN (?, ?)"
+                    + " ORDER BY veranstaltung.veranstaltung_id";
+
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM veranstaltung"
@@ -72,7 +82,17 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String FIND_BY_SPORTJAHR =
             "SELECT * "
                     + "FROM veranstaltung "
-                    + "WHERE veranstaltung_sportjahr = ?";
+                    + "WHERE veranstaltung_sportjahr = ? ";
+
+    private static final String FIND_BY_SPORTJAHR_EINE_PHASE =
+            "SELECT * "
+                    + "FROM veranstaltung "
+                    + "WHERE veranstaltung_sportjahr = ? AND veranstaltung_phase = ?";
+
+    private static final String FIND_BY_SPORTJAHR_ZWEI_PHASEN =
+            "SELECT * "
+                    + "FROM veranstaltung "
+                    + "WHERE veranstaltung_sportjahr = ? AND veranstaltung_phase in (?, ?)";
 
     private static final String FIND_ALL_SPORTJAHR_DESTINCT =
             "SELECT veranstaltung_sportjahr, min(veranstaltung_id) as veranstaltung_id, min(version) as version "
@@ -90,7 +110,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA =
             "SELECT veranstaltung_liga_id, veranstaltung_name, veranstaltung_id "
                     + "FROM liga, veranstaltung,ligatabelle, match "
-                    + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id) "
+                    + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id AND veranstaltung_phase IN ('Laufend', 'Abgeschlossen')) "
                     + "GROUP BY veranstaltung_id "
                     + "ORDER BY max(match.last_modified_at_utc) DESC NULLS LAST, veranstaltung_id ";
 
@@ -120,7 +140,7 @@ public class VeranstaltungDAO implements DataAccessObject{
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_MELDEDEADLINE, VERANSTALTUNG_BE_VERANSTALTUNG_MELDEDEADLINE);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGALEITER_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
-
+        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_PHASE, VERANSTALTUNG_BE_VERANSTALTUNG_PHASE);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
@@ -129,12 +149,32 @@ public class VeranstaltungDAO implements DataAccessObject{
 
 
     /**
+     * Return all Veranstaltung entries from the database specified by the phases attributes
+     */
+    public List<VeranstaltungBE> findAll(String[] phaseList) {
+        List<VeranstaltungBE> veranstaltungList;
+        switch (phaseList.length) {
+            case 0:
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
+                break;
+            case 2:
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_PHASE, phaseList[0],
+                        phaseList[1]);
+                break;
+            default:
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
+                break;
+        }
+        return veranstaltungList;
+    }
+
+    /**
      * Return all Veranstaltung entries from the database
      */
-    public List<VeranstaltungBE> findAll()
+    /*public List<VeranstaltungBE> findAll()
     {
         return basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
-    }
+    }*/
 
 
     /**
@@ -145,20 +185,42 @@ public class VeranstaltungDAO implements DataAccessObject{
     public VeranstaltungBE findById(final long id) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
+
+
     /**
-     Return Veranstaltungen with the same Sportjahr
-     @param sportjahr
+     * Return Veranstaltungen with the same Sportjahr specified by the amount of passed phases (even none passed
+     * phases)
+     *
+     * @param sportjahr
      */
-    public List<VeranstaltungBE> findBySportjahr(final long sportjahr){
-        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR, sportjahr);
+    public List<VeranstaltungBE> findBySportjahr(final long sportjahr, String[] phaseList) {
+
+        List<VeranstaltungBE> veranstaltungList;
+        switch (phaseList.length) {
+            case 0:
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR, sportjahr);
+                break;
+            case 1:
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR_EINE_PHASE, sportjahr,
+                        phaseList[0]);
+                break;
+            case 2:
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR_ZWEI_PHASEN, sportjahr,
+                        phaseList[0], phaseList[1]);
+                break;
+            default:
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR, sportjahr);
+                break;
+        }
+        return veranstaltungList;
     }
+
 
     /**
      * find all sportyears destinct
      * returns a Long list with sportyears
      *
      */
-
     public List<SportjahrDO> findAllSportjahreDestinct() {
         List<VeranstaltungBE> veranstaltungen = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_SPORTJAHR_DESTINCT);
         ArrayList<SportjahrDO> sportjahre = new ArrayList<>();
@@ -171,17 +233,26 @@ public class VeranstaltungDAO implements DataAccessObject{
 
     }
 
-    public List<VeranstaltungBE> findByLigaID(long ligaID){
+
+    public List<VeranstaltungBE> findByLigaID(long ligaID) {
         return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGAID, ligaID);
     }
 
 
     public List<VeranstaltungBE> findByLigaleiterId(long ligaleiterId) {
-        return basicDao.selectEntityList(VERANSTALTUNG,FIND_BY_LIGALEITER_ID, ligaleiterId);
+        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGALEITER_ID, ligaleiterId);
     }
 
-    public List<VeranstaltungBE> findBySportjahrDestinct(long sportjahr){
-        return basicDao.selectEntityList(VERANSTALTUNG,FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA,sportjahr);
+
+    /**
+     * The sql query filters also for (veranstaltungen) with the phase 'Laufend' and 'Abgeschlossen'.
+     *
+     * @param sportjahr
+     *
+     * @return
+     */
+    public List<VeranstaltungBE> findBySportjahrDestinct(long sportjahr) {
+        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA, sportjahr);
     }
 
 
