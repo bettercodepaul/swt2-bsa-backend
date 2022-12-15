@@ -8,10 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -57,22 +65,58 @@ public class VeranstaltungService implements ServiceFacade {
      */
     @Autowired
     public VeranstaltungService(final VeranstaltungComponent veranstaltungComponent,
-                                RequiresOnePermissionAspect requiresOnePermissionAspect){
+                                RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.veranstaltungComponent = veranstaltungComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
 
 
+    /*@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findAll() {
+
+        String[] phaseList = new String[2];
+        phaseList[0] = "Geplant";
+        phaseList[1] = "Laufend";
+
+        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
+                Collectors.toList());
+    }*/
+
+
     /**
-     * I return all the teams (veranstaltung) of the database.
+     * I return all the teams (veranstaltung) specified by the phase 'Geplant' and 'Laufend' of the database.
+     *
      * @return List of VeranstaltungDTOs
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "GeplantLaufend", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<VeranstaltungDTO> findAll(){
+    public List<VeranstaltungDTO> findAllGeplantLaufend() {
+
+        String[] phaseList = new String[2];
+        phaseList[0] = "Geplant";
+        phaseList[1] = "Laufend";
+
+        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
+                Collectors.toList());
+    }
 
 
-        return veranstaltungComponent.findAll().stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    /**
+     * I return all the veranstaltung specified by the Phase 'Laufend' and 'Abgeschlossen' of the database
+     *
+     * @return List of VeranstaltungDTOs
+     */
+    @GetMapping(value = "LaufendAbgeschlossen", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findAllLaufendAbgeschlossen() {
+
+        String[] phaseList = new String[2];
+        phaseList[0] = "Laufend";
+        phaseList[1] = "Abgeschlossen";
+
+        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
+                Collectors.toList());
     }
 
 
@@ -123,16 +167,59 @@ public class VeranstaltungService implements ServiceFacade {
 
 
     /**
+     * It returns a list of all Veranstaltungen, which has the passed sportyear as parameter in the data, from the
+     * database.
      *
-     * @param sportjahr - filterr for sql-abfrage
+     * @param sportjahr - filter for sql-abfrage
+     *
      * @return return Veranstaltungen with the same Sportjahr
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "find/by/year/{sportjahr}")
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<VeranstaltungDTO> findBySportjahr(@PathVariable ("sportjahr") final long sportjahr){
+    public List<VeranstaltungDTO> findBySportjahr(@PathVariable("sportjahr") final long sportjahr) {
+
+        String[] phaseList = new String[0];
+        return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
+                VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    }
 
 
-        return veranstaltungComponent.findBySportjahr(sportjahr).stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    /**
+     * It returns a list of all Veranstaltungen with parameters in the data from the database. These parameters are the
+     * passed sportyear and 'Laufend' as phase.
+     *
+     * @param sportjahr - filter for sql-abfrage
+     *
+     * @return return Veranstaltungen with the same Sportjahr
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "find/by/year/{sportjahr}/Laufend")
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findBySportjahrLaufend(@PathVariable("sportjahr") final long sportjahr) {
+
+        String[] phaseList = new String[1];
+        phaseList[0] = "Laufend";
+        return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
+                VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+
+    /**
+     * It returns a list of all Veranstaltungen with parameters in the data from the database. These parameters are the
+     * passed sportyear and 'Geplant' and 'Laufend' as phase.
+     *
+     * @param sportjahr - filter for sql-abfrage
+     *
+     * @return return Veranstaltungen with the same Sportjahr
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "find/by/year/{sportjahr}/GeplantLaufend")
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findBySportjahrGeplantLaufend(@PathVariable("sportjahr") final long sportjahr) {
+
+        String[] phaseList = new String[2];
+        phaseList[0] = "Geplant";
+        phaseList[1] = "Laufend";
+        return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
+                VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
 
@@ -217,12 +304,14 @@ public class VeranstaltungService implements ServiceFacade {
      */
     @GetMapping(value = "findLastVeranstaltungBy/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public VeranstaltungDTO findLastVeranstaltungById(@PathVariable ("id") final long id){
-        Preconditions.checkArgument(id >= 0 , "Veranstaltung ID must not be negative");
+    public VeranstaltungDTO findLastVeranstaltungById(@PathVariable("id") final long id) {
+        Preconditions.checkArgument(id >= 0, "Veranstaltung ID must not be negative");
 
         LOG.debug("Receive 'findLastVeranstaltungById' with requested ID '{}'", id);
 
-        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findLastVeranstaltungById(id);
+        String[] phaseList = new String[0];
+
+        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findLastVeranstaltungById(id, phaseList);
         return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
     }
 
