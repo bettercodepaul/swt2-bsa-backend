@@ -91,22 +91,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return returnList;
     }
 
-    /*public List<VeranstaltungDO> findAll() {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll();
-
-
-
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
-
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
-
-        }
-
-        return returnList;
-    }*/
-
-
     public List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahrDestinct(sportjahr);

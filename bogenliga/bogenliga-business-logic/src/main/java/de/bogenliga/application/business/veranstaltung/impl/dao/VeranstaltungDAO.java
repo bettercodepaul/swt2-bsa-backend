@@ -40,8 +40,6 @@ public class VeranstaltungDAO implements DataAccessObject{
 
     private static final String VERANSTALTUNG_TABLE_PHASE = "veranstaltung_phase";
 
-
-
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(VeranstaltungDAO.class);
 
