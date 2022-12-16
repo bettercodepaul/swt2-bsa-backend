@@ -13,10 +13,13 @@ import de.bogenliga.application.common.component.ComponentFacade;
 public interface VeranstaltungComponent extends ComponentFacade {
 
     /**
-     * Return all Veranstaltung entries with phases in the data.
+     * Return all Veranstaltung entries with the given phases as String[]. It can give a String[] of length 0 to length
+     * 2
      *
-     * @return list of all Veranstaltung  with phases in the data in the database. empty list if no Veranstaltung was
+     * @return list of all Veranstaltung  with the given phases in the database. empty list if no Veranstaltung was
      * found in the database.
+     *
+     * @params phaseList String[] filled or not filled with given Phases as Strings.
      */
     List<VeranstaltungDO> findAll(String[] phaseList);
 
@@ -64,9 +67,11 @@ public interface VeranstaltungComponent extends ComponentFacade {
     VeranstaltungDO update(VeranstaltungDO veranstaltungDO, long currentDsbMitglied);
 
     /**
-     * Returns the last "Veranstaltung" of the given current Veranstaltung id
+     * Returns the last "Veranstaltung" of the given current Veranstaltung id and the given Phaselist as String[]. The
+     * given String[] will have 0, 1 or 2 Phases as Strings.
      *
      * @param veranstaltungId ID of the current veranstaltung to query the last Veranstaltung.
+     * @param phaseList       String[] filled or not filled with Phases
      *
      * @return returns the queried Veranstaltung
      */
@@ -91,7 +96,11 @@ public interface VeranstaltungComponent extends ComponentFacade {
      */
 
     /**
+     * Returns all Veranstaltungen by the given sportjahr and the given phaseList as String[]. The String[] can have
+     * length of 0 to 2.
+     *
      * @param sportjahr
+     * @param phaseList String[] filled or not filled with Phases
      *
      * @return a list with Veranstaltungen with the same Sportjahr
      */
