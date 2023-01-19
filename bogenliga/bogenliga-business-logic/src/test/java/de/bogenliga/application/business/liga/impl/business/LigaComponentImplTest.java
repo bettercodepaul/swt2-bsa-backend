@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.dao.LigaDAO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
@@ -102,6 +103,14 @@ public class LigaComponentImplTest {
         expectedUserDO.setId(1L);
 
         return expectedUserDO;
+    }
+
+    public static DisziplinDO getDisziplinDO() {
+        final DisziplinDO expectedDisziplinDO = new DisziplinDO();
+        expectedDisziplinDO.setDisziplinName("Recurve");
+        expectedDisziplinDO.setDisziplinID(0L);
+
+        return expectedDisziplinDO;
     }
 
     @Test
