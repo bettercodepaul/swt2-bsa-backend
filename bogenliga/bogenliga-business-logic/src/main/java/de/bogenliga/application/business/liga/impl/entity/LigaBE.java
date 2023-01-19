@@ -14,6 +14,7 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
 
     private Long ligaId;
     private String ligaName;
+    private Long ligaDisziplinÍd;
     private Long ligaRegionId;
     private Long ligaUebergeordnetId;
     private Long ligaVerantwortlichId;
@@ -31,6 +32,9 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
     public void setLigaId(Long ligaId) {
         this.ligaId = ligaId;
     }
+
+    public Long getLigaDisziplinId() { return ligaDisziplinÍd; }
+    public void setLigaDisziplinId(Long ligaDisziplinId) { this.ligaDisziplinÍd = ligaDisziplinId; }
 
 
     public String getLigaName() {
@@ -77,6 +81,7 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
     public String toString(){
         return "LigaBE{" +
                 "ligaId=" + ligaId +
+                ", ligaDisziplin'" + ligaDisziplinÍd + '\'' +
                 ", ligaName='" + ligaName + '\'' +
                 ", ligaRegionId='" + ligaRegionId + '\'' +
                 ", ligaUebergeordnetId='" + ligaUebergeordnetId + '\'' +

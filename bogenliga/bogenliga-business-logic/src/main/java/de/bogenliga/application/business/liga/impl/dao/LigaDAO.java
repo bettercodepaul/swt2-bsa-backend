@@ -31,12 +31,14 @@ public class LigaDAO implements DataAccessObject {
     //business entity parameter names
     private static final String LIGA_BE_ID = "ligaId";
     private static final String LIGA_BE_NAME = "ligaName";
+    private static final String LIGA_BE_DISZIPLIN_ID = "ligaDisziplinId";
     private static final String LIGA_BE_REGION_ID = "ligaRegionId";
     private static final String LIGA_BE_UEBERGEORDNET_ID = "ligaUebergeordnetId";
     private static final String LIGA_BE_VERANTWORTLICH_ID = "ligaVerantwortlichId";
 
     private static final String LIGA_TABLE_ID = "liga_id";
     private static final String LIGA_TABLE_NAME = "liga_name";
+    private static final String LIGA_TABLE_DISZIPLIN_ID = "liga_disziplin_id";
     private static final String LIGA_TABLE_REGION_ID = "liga_region_id";
     private static final String LIGA_TABLE_UEBERGEORDNET = "liga_uebergeordnet";
     private static final String LIGA_TABLE_VERANTWORTLICH = "liga_verantwortlich";
@@ -83,6 +85,7 @@ public class LigaDAO implements DataAccessObject {
         final Map<String, String> columnsToFieldsMap = new HashMap<>();
 
         columnsToFieldsMap.put(LIGA_TABLE_ID, LIGA_BE_ID);
+        columnsToFieldsMap.put(LIGA_TABLE_DISZIPLIN_ID, LIGA_BE_DISZIPLIN_ID);
         columnsToFieldsMap.put(LIGA_TABLE_NAME, LIGA_BE_NAME);
         columnsToFieldsMap.put(LIGA_TABLE_REGION_ID, LIGA_BE_REGION_ID);
         columnsToFieldsMap.put(LIGA_TABLE_UEBERGEORDNET, LIGA_BE_UEBERGEORDNET_ID);
@@ -152,7 +155,7 @@ public class LigaDAO implements DataAccessObject {
      */
     public LigaBE create(final LigaBE ligaBE, final long currentLigaId) {
         basicDao.setCreationAttributes(ligaBE, currentLigaId);
-
+        System.out.println(ligaBE);
         return basicDao.insertEntity(LIGA, ligaBE);
     }
 }
