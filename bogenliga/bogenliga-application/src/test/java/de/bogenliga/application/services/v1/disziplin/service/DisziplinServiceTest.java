@@ -48,7 +48,7 @@ public class DisziplinServiceTest {
     public void findAll() {
         // prepare test data
         final DisziplinDO disziplinDO = new DisziplinDO();
-        disziplinDO.setDisziplinID(disziplinId);
+        disziplinDO.setDisziplinId(disziplinId);
         disziplinDO.setDisziplinName(disziplinName);
 
         final List<DisziplinDO> disziplinDOList = Collections.singletonList(disziplinDO);
@@ -67,7 +67,7 @@ public class DisziplinServiceTest {
         final DisziplinDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinID());
+        assertThat(actualDTO.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinId());
         assertThat(actualDTO.getDisziplinName()).isEqualTo(disziplinDO.getDisziplinName());
 
 
@@ -79,7 +79,7 @@ public class DisziplinServiceTest {
     public void findByKey() {
         // prepare test data
         final DisziplinDO disziplinDO = new DisziplinDO();
-        disziplinDO.setDisziplinID(disziplinId);
+        disziplinDO.setDisziplinId(disziplinId);
         disziplinDO.setDisziplinName(disziplinName);
 
         // configure mocks
@@ -90,7 +90,7 @@ public class DisziplinServiceTest {
 
         // assert result
         assertThat(actual).isNotNull();
-        assertThat(actual.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinID());
+        assertThat(actual.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinId());
         assertThat(actual.getDisziplinName()).isEqualTo(disziplinDO.getDisziplinName());
 
 

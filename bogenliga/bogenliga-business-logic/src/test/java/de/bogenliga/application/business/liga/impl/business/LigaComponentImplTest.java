@@ -108,7 +108,7 @@ public class LigaComponentImplTest {
     public static DisziplinDO getDisziplinDO() {
         final DisziplinDO expectedDisziplinDO = new DisziplinDO();
         expectedDisziplinDO.setDisziplinName("Recurve");
-        expectedDisziplinDO.setDisziplinID(0L);
+        expectedDisziplinDO.setDisziplinId(0L);
 
         return expectedDisziplinDO;
     }
