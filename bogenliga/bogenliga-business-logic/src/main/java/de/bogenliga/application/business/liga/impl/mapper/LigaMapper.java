@@ -31,12 +31,12 @@ public class LigaMapper implements ValueObjectMapper {
         System.out.println(disziplinDO.getDisziplinName());
 
         if (disziplinDO.getDisziplinId() != 0) {
-            disziplinName = disziplinDO.getDisziplinName();
+            disziplinName = " " + disziplinDO.getDisziplinName();
         }
 
         LigaDO ligaDO = new LigaDO(
                 ligaBE.getLigaId(),
-                ligaBE.getLigaName() + " " + disziplinName,
+                ligaBE.getLigaName() + disziplinName,
                 regionenDO.getId(),
                 regionenDO.getRegionName(),
                 ligaBE.getLigaUebergeordnetId(),

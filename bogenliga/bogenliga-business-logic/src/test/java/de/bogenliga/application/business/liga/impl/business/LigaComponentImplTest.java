@@ -46,6 +46,8 @@ public class LigaComponentImplTest {
     private static final Long LIGAVERANTWORTLICH = 1L;
     private static final String LIGAVERANTWORTLICHMAIL = "Verantwortlich Mail";
 
+    private static final Long DISZIPLINID = 0L;
+
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -80,6 +82,7 @@ public class LigaComponentImplTest {
         expectedLigaBE.setLigaRegionId(LIGAREGIONID);
         expectedLigaBE.setLigaUebergeordnetId(LIGAUEBERGEORDNETID);
         expectedLigaBE.setLigaVerantwortlichId(LIGAVERANTWORTLICH);
+        expectedLigaBE.setLigaDisziplinId(DISZIPLINID);
 
         return expectedLigaBE;
     }
@@ -92,6 +95,7 @@ public class LigaComponentImplTest {
         expectedLigaDO.setRegionId(LIGAREGIONID);
         expectedLigaDO.setLigaUebergeordnetId(LIGAUEBERGEORDNETID);
         expectedLigaDO.setLigaVerantwortlichId(LIGAVERANTWORTLICH);
+        expectedLigaDO.setDisziplinId(LIGAID);
 
         return expectedLigaDO;
     }
@@ -108,7 +112,7 @@ public class LigaComponentImplTest {
     public static DisziplinDO getDisziplinDO() {
         final DisziplinDO expectedDisziplinDO = new DisziplinDO();
         expectedDisziplinDO.setDisziplinName("Recurve");
-        expectedDisziplinDO.setDisziplinId(0L);
+        expectedDisziplinDO.setDisziplinId(DISZIPLINID);
 
         return expectedDisziplinDO;
     }
