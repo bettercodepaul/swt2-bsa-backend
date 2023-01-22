@@ -10,27 +10,27 @@ import de.bogenliga.application.common.component.types.DataObject;
  * @author Robin Mueller, robin.mueller@student.reutlingen-university.de
  */
 public class DisziplinDO extends CommonDataObject implements DataObject {
-    private Long disziplinID;
+    private Long id;
     private String disziplinName;
 
     public DisziplinDO(){}
 
-    public DisziplinDO(Long disziplinID)
+    public DisziplinDO(Long id)
     {
-        this.disziplinID = disziplinID;
+        this.id = id;
     }
 
-    public DisziplinDO(Long disziplinID, String disziplinName)
+    public DisziplinDO(Long id, String disziplinName)
     {
-        this.disziplinID = disziplinID;
+        this.id = id;
         this.disziplinName = disziplinName;
     }
 
-    public DisziplinDO(Long disziplinID, String disziplinName, final OffsetDateTime createdAtUtc,
+    public DisziplinDO(Long id, String disziplinName, final OffsetDateTime createdAtUtc,
                        final Long createdByUserId, final OffsetDateTime lastModifiedUtc,
                        final Long lastModifiedByUserId, final Long version)
     {
-        this.disziplinID = disziplinID;
+        this.id = id;
         this.disziplinName = disziplinName;
 
         this.setCreatedAtUtc(createdAtUtc);
@@ -40,13 +40,13 @@ public class DisziplinDO extends CommonDataObject implements DataObject {
         this.setVersion(version);
     }
 
-    public Long getDisziplinID() {
-        return disziplinID;
+    public Long getDisziplinId() {
+        return this.id;
     }
 
 
-    public void setDisziplinID(Long disziplinID) {
-        this.disziplinID = disziplinID;
+    public void setDisziplinId(Long id) {
+        this.id = id;
     }
 
 
