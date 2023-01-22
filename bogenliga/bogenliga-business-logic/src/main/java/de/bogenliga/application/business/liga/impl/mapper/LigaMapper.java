@@ -28,7 +28,6 @@ public class LigaMapper implements ValueObjectMapper {
 
         String disziplinName = "";
 
-        System.out.println(disziplinDO.getDisziplinName());
 
         if (disziplinDO.getDisziplinId() != 0) {
             disziplinName = " " + disziplinDO.getDisziplinName();
