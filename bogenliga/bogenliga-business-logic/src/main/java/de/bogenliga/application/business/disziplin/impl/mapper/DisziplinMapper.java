@@ -32,7 +32,7 @@ public class DisziplinMapper {
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(disziplinDO.getLastModifiedAtUtc());
 
         DisziplinBE disziplinBE = new DisziplinBE();
-        disziplinBE.setId(disziplinDO.getDisziplinID());
+        disziplinBE.setId(disziplinDO.getDisziplinId());
         disziplinBE.setName(disziplinDO.getDisziplinName());
 
         disziplinBE.setCreatedAtUtc(createdAtUtcTimestamp);

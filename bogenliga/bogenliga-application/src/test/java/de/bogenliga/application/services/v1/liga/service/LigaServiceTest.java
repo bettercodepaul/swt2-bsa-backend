@@ -31,6 +31,7 @@ public class LigaServiceTest {
     private static final long ID =0;
     private static final String NAME ="Liga B";
     private static final long REGIONID = 1;
+    private static final long DISZIPLINID = 0;
     private static final String REGIONNAME ="Region A";
     private static final long LIGAUEBERGEORDNETID = 2;
     private static final String LIGAUEBERGEORDNETNAME ="Liga A";
@@ -64,6 +65,7 @@ public class LigaServiceTest {
         expectedBE.setLigaRegionId(REGIONID);
         expectedBE.setLigaVerantwortlichId(VERANTWORTLICHERID);
         expectedBE.setLigaUebergeordnetId(LIGAUEBERGEORDNETID);
+        expectedBE.setLigaDisziplinId(DISZIPLINID);
         return expectedBE;
     }
 
@@ -76,7 +78,8 @@ public class LigaServiceTest {
                 LIGAUEBERGEORDNETID,
                 LIGAUEBERGEORDNETNAME,
                 VERANTWORTLICHERID,
-                VERANTWORTLICHEREMAIL
+                VERANTWORTLICHEREMAIL,
+                DISZIPLINID
         );
     }
 

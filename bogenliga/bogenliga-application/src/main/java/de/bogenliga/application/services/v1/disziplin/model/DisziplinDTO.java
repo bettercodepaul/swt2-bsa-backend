@@ -11,24 +11,24 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class DisziplinDTO implements DataTransferObject {
 
-    private long disziplinId;
+    private long id;
     private String disziplinName;
 
     public DisziplinDTO(){}
 
-    public DisziplinDTO(final Long disziplinId, final String disziplinName){
-        this.disziplinId = disziplinId;
+    public DisziplinDTO(final Long id, final String disziplinName){
+        this.id = id;
         this.disziplinName = disziplinName;
     }
 
 
     public long getDisziplinId() {
-        return disziplinId;
+        return this.id;
     }
 
 
-    public void setDisziplinId(long disziplinId) {
-        this.disziplinId = disziplinId;
+    public void setDisziplinId(long id) {
+        this.id = id;
     }
 
 

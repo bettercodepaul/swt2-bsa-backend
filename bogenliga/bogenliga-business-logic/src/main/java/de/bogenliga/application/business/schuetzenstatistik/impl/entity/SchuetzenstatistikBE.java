@@ -65,7 +65,12 @@ public class SchuetzenstatistikBE extends CommonBusinessEntity implements Busine
     }
 
     public long getWettkampfId() {
-        return wettkampfId;
+        //bei der Schützenstatistik über mehr als einen Wettkampf gibt es keine gültige WettkampfID
+        if (wettkampfId == null) {
+            this.wettkampfTag = 0;
+            return 0;
+        }
+        else return wettkampfId;
     }
     public void setWettkampfId(final long wettkampfId) {
         this.wettkampfId = wettkampfId;

@@ -218,6 +218,7 @@ public class VeranstaltungService implements ServiceFacade {
         String[] phaseList = new String[2];
         phaseList[0] = "Geplant";
         phaseList[1] = "Laufend";
+
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
                 VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }

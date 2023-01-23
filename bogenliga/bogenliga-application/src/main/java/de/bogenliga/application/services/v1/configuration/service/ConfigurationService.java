@@ -80,7 +80,7 @@ public class ConfigurationService implements ServiceFacade {
      * @return list of {@link ConfigurationDTO} as JSON
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<ConfigurationDTO> findAll() {
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
         LOG.debug("Received Configuration request");

@@ -104,8 +104,8 @@ public class DisziplinComponentImpl implements DisziplinComponent {
     private void checkDisziplin(DisziplinDO disziplinDO) {
         Preconditions.checkNotNull(disziplinDO, PRECONDITION_MSG_DISZIPLIN_DO);
 
-        Preconditions.checkNotNull(disziplinDO.getDisziplinID(), PRECONDITION_MSG_CURRENT_DISZIPLIN_ID);
-        Preconditions.checkArgument(disziplinDO.getDisziplinID() >= 0, PRECONDITION_MSG_CURRENT_DISZIPLIN_ID);
+        Preconditions.checkNotNull(disziplinDO.getDisziplinId(), PRECONDITION_MSG_CURRENT_DISZIPLIN_ID);
+        Preconditions.checkArgument(disziplinDO.getDisziplinId() >= 0, PRECONDITION_MSG_CURRENT_DISZIPLIN_ID);
 
         Preconditions.checkNotNull(disziplinDO.getDisziplinName(), PRECONDITION_MSG_CURRENT_DISZIPLIN_NAME);
         Preconditions.checkArgument(!disziplinDO.getDisziplinName().equals(""), PRECONDITION_MSG_CURRENT_DISZIPLIN_NAME);

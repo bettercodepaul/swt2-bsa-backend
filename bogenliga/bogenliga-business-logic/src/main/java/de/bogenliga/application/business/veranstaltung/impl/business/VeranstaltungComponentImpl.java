@@ -41,11 +41,11 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
 
-    private final VeranstaltungDAO veranstaltungDAO;
-    private final WettkampfComponent wettkampfComponent;
-    private final LigaComponent ligaComponent;
-    private final WettkampfTypComponent wettkampfTypComponent;
-    private final UserComponent userComponent;
+    private  VeranstaltungDAO veranstaltungDAO;
+    private  WettkampfComponent wettkampfComponent;
+    private  LigaComponent ligaComponent;
+    private  WettkampfTypComponent wettkampfTypComponent;
+    private  UserComponent userComponent;
 
 
     /**
@@ -55,19 +55,33 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      */
 
     @Autowired
-    public VeranstaltungComponentImpl(final VeranstaltungDAO veranstaltungDAO,
-                                      final WettkampfComponent wettkampfComponent,
-                                      final LigaComponent ligaComponent,
-                                      final WettkampfTypComponent wettkampfTypComponent,
-                                      final UserComponent userComponent) {
+    public VeranstaltungComponentImpl() {
 
+    }
 
+    @Autowired
+    public void setWettkampfComponent(final WettkampfComponent wettkampfComponent){
         this.wettkampfComponent = wettkampfComponent;
-        this.ligaComponent = ligaComponent;
-        this.wettkampfTypComponent = wettkampfTypComponent;
-        this.userComponent = userComponent;
+    }
 
+    @Autowired
+    public void setVeranstaltungDAO(final VeranstaltungDAO veranstaltungDAO){
         this.veranstaltungDAO = veranstaltungDAO;
+    }
+
+    @Autowired
+    public void setLigaComponent(final LigaComponent ligaComponent){
+        this.ligaComponent = ligaComponent;
+    }
+
+    @Autowired
+    public void setWettkampfTypComponent(final WettkampfTypComponent wettkampfTypComponent){
+        this.wettkampfTypComponent = wettkampfTypComponent;
+    }
+
+    @Autowired
+    public void setUserComponent(final UserComponent userComponent){
+        this.userComponent = userComponent;
     }
 
 
@@ -90,22 +104,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
         return returnList;
     }
-
-    /*public List<VeranstaltungDO> findAll() {
-        final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
-        final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll();
-
-
-
-        for (int i = 0; i < veranstaltungBEList.size(); i++) {
-
-            returnList.add(i, completeNames(veranstaltungBEList.get(i)));
-
-        }
-
-        return returnList;
-    }*/
-
 
     public List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
