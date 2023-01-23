@@ -38,7 +38,7 @@ public class DisziplinComponentImplTest extends BaseDisziplinTest {
 
     private void assertValid(DisziplinBE expectedDisziplinBE, DisziplinDO actual) {
         assertThat(actual).isNotNull();
-        assertThat(actual.getDisziplinID()).isEqualTo(expectedDisziplinBE.getId()).isEqualTo(DISZIPLIN_ID);
+        assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinBE.getId()).isEqualTo(DISZIPLIN_ID);
         assertThat(actual.getDisziplinName()).isEqualTo(expectedDisziplinBE.getName()).isEqualTo(DISZIPLIN_NAME);
     }
 

@@ -19,20 +19,20 @@ public class DisziplinDTOMapper implements DataTransferObjectMapper {
      * I map the {@link DisziplinDO} object to the {@link DisziplinDTO} object
      */
     public static final Function<DisziplinDO, DisziplinDTO> toDTO = vo -> {
-        final Long disziplinID = vo.getDisziplinID();
+        final Long id = vo.getDisziplinId();
         final String disziplinName = vo.getDisziplinName();
 
-        return new DisziplinDTO(disziplinID,disziplinName);
+        return new DisziplinDTO(id,disziplinName);
     };
 
     /**
      * I map the {@link DisziplinDTO} object to the {@link DisziplinDO} object
      */
     public static final Function<DisziplinDTO, DisziplinDO> toDO = dto -> {
-        final Long disziplinId = dto.getDisziplinId();
+        final Long id = dto.getDisziplinId();
         final String disziplinName = dto.getDisziplinName();
 
 
-        return new DisziplinDO(disziplinId,disziplinName);
+        return new DisziplinDO(id,disziplinName);
     };
 }
