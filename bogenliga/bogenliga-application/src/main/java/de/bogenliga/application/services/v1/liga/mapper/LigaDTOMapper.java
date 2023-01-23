@@ -24,10 +24,11 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
         final String liga_uebergeordnet_name = ligaDO.getLigaUebergeordnetName();
         final Long liga_verantwortlich_id = ligaDO.getLigaVerantwortlichId();
         final String liga_verantwortlich_mail = ligaDO.getLigaVerantwortlichMail();
+        final Long liga_disziplin_id = ligaDO.getDisziplinId();
 
 
         return new LigaDTO(ligaId, ligaName, regionId, regionName, liga_uebergeordnet_id, liga_uebergeordnet_name,
-                liga_verantwortlich_id, liga_verantwortlich_mail);
+                liga_verantwortlich_id, liga_verantwortlich_mail,liga_disziplin_id);
     };
     /**
      * I map the {@link LigaDTO} object to the {@link LigaDO} object
@@ -40,6 +41,7 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
         ligaDO.setRegionId(dto.getRegionId());
         ligaDO.setLigaUebergeordnetId(dto.getLigaUebergeordnetId());
         ligaDO.setLigaVerantwortlichId(dto.getLigaVerantwortlichId());
+        ligaDO.setDisziplinId(dto.getDisziplinId());
 
 
         return ligaDO;

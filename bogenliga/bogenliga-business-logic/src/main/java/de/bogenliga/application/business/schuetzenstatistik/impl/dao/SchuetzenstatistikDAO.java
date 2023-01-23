@@ -65,19 +65,18 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
      * SQL queries
      */
 
-    /* der Select liefert die aktuelle Schuetzenstatistik zur Veranstaltung -
+    /* der Select liefert die aktuelle Schuetzenstatistik zur Veranstaltung
+    hierbei wird über die Wettkämpfe hinweg gemittelt - eigentlich falsch, da jeder Wettkampf abweiochende
+    Pfeilanzahlne hat --> Änderung an DB-View notwendig.-
+    Hier wird der Group by jetzt ohne WettkampfID und WettkampfTag gemacht -> werden zu 0 gesetzt
      */
     private static final String GET_SCHUETZENSTATISTIK = new QueryBuilder().selectFields(
             VERANSTALTUNGID_TABLE,
             VERANSTALTUNGNAME_TABLE,
-            WETTKAMPFID_TABLE,
-            WETTKAMPFTAG_TABLE,
             MANNSCHAFTID_TABLE,
             MANNSCHAFTNUMMER_TABLE,
             VEREINID_TABLE,
             VEREINNAME_TABLE,
-            MATCHID_TABLE,
-            MATCHNR_TABLE,
             DSBMITGLIEDID_TABLE,
             DSBMITGLIEDNAME_TABLE,
             RUECKENNUMMER_TABLE,
@@ -89,18 +88,13 @@ public class SchuetzenstatistikDAO implements DataAccessObject {
             .groupBy(
                     VERANSTALTUNGID_TABLE,
                     VERANSTALTUNGNAME_TABLE,
-                    WETTKAMPFID_TABLE,
-                    WETTKAMPFTAG_TABLE,
                     MANNSCHAFTID_TABLE,
                     MANNSCHAFTNUMMER_TABLE,
                     VEREINID_TABLE,
                     VEREINNAME_TABLE,
-                    MATCHID_TABLE,
-                    MATCHNR_TABLE,
                     DSBMITGLIEDID_TABLE,
                     DSBMITGLIEDNAME_TABLE,
-                    RUECKENNUMMER_TABLE,
-                    PFEILPUNKTESCHNITT_TABLE
+                    RUECKENNUMMER_TABLE
             )
             .orderBy("SUM("+PFEILPUNKTESCHNITT_TABLE+")/COUNT("+PFEILPUNKTESCHNITT_TABLE+")")
             .compose().toString();
