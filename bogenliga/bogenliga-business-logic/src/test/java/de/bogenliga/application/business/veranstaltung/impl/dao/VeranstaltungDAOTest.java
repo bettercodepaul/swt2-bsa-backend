@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,15 +34,16 @@ public class VeranstaltungDAOTest {
     private static final String VERANSTALTUNGSNAME = "Test Veranstaltung";
     private static final long SPORTJAHR = 2018L;
 
-    private static final String[] PHASELIST_GEPLANT_LAUFEND = {"Geplant", "Laufend"};
+    private static final String PHASE = "1";
+    private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND};
 
-    private static final String[] PHASELIST_GEPLANT_LAUFEND_ABGESCHLOSSEN = {"Geplant", "Laufend", "Abgeschlossen"};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND_ABGESCHLOSSEN = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND, VeranstaltungPhase.Phase.ABGESCHLOSSEN};
 
-    private static final String[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {"Laufend", "Abgeschlossen"};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {VeranstaltungPhase.Phase.LAUFEND, VeranstaltungPhase.Phase.ABGESCHLOSSEN};
 
-    private static final String[] PHASELIST_0 = {};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_0 = {};
 
-    private static final String[] PHASELIST_LAUFEND = {"Laufend"};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_LAUFEND = {VeranstaltungPhase.Phase.LAUFEND};
 
 
     @Test
@@ -51,6 +53,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(),any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -71,6 +74,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -84,6 +89,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -104,6 +110,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -117,6 +125,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -137,6 +146,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -150,6 +161,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -170,6 +182,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -183,6 +197,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -203,6 +218,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -216,6 +233,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -236,6 +254,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -249,6 +269,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -269,6 +290,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -282,6 +305,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -303,6 +327,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
@@ -316,6 +342,7 @@ public class VeranstaltungDAOTest {
         expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
         expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
         expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
 
         //mock the methode
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
@@ -336,6 +363,8 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungName());
         assertThat(actual.get(0).getVeranstaltungLigaId())
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
