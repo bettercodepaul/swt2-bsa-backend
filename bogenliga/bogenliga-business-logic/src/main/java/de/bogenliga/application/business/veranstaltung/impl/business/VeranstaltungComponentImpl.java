@@ -285,6 +285,28 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         return true;
     }
 
+    /**
+     * Changes Phase for a Veranstaltung
+     *
+     * @param veranstaltungId   The ID of the Veranstaltung to check
+     * @param phase phase Veranstaltung needs to  be changed to
+     * @param currentDsbMitgliedId current userID
+     *
+     * @return true: when no Veranstaltung exists for Liga in Sportjahr false: when there already is a Veranstaltung for
+     * Liga in Sportjahr
+     */
+    @Override
+    public VeranstaltungDO changePhase(final long veranstaltungId, String phase, final long currentDsbMitgliedId){
+
+        VeranstaltungDO veranstaltungDO = findById(veranstaltungId);
+        veranstaltungDO.setVeranstaltungPhase(phase);
+        final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
+        final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.update(veranstaltungBE, currentDsbMitgliedId);
+
+        return completeNames(persistedVeranstaltungBE);
+    }
+
+
 
     // we will add all information required in VeranstaltungDO which are not stored in the entity
     // especially names in addition to IDs
