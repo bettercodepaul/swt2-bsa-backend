@@ -124,8 +124,8 @@ public interface VeranstaltungComponent extends ComponentFacade {
      * @param phase phase Veranstaltung needs to  be changed to
      * @param currentDsbMitgliedId current userID
      *
-     * @return true: when no Veranstaltung exists for Liga in Sportjahr false: when there already is a Veranstaltung for
-     * Liga in Sportjahr
+     * @return VeranstaltungDO for specified Veranstlatung
+     *
      */
 
     VeranstaltungDO changePhase(final long veranstaltungId, String phase, long currentDsbMitgliedId );

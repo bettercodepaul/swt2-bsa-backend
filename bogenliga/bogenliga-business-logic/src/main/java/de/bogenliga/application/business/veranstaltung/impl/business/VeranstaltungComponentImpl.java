@@ -292,8 +292,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * @param phase phase Veranstaltung needs to  be changed to
      * @param currentDsbMitgliedId current userID
      *
-     * @return true: when no Veranstaltung exists for Liga in Sportjahr false: when there already is a Veranstaltung for
-     * Liga in Sportjahr
+     * @return VeranstaltungsDO
+     *
      */
     @Override
     public VeranstaltungDO changePhase(final long veranstaltungId, String phase, final long currentDsbMitgliedId){
