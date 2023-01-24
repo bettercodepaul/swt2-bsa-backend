@@ -116,4 +116,17 @@ public interface VeranstaltungComponent extends ComponentFacade {
     List<VeranstaltungDO> findByLigaID(long ligaID);
 
     List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr);
+
+    /**
+     * Changes Phase for a Veranstaltung
+     *
+     * @param veranstaltungId   The ID of the Veranstaltung to check
+     * @param phase phase Veranstaltung needs to  be changed to
+     * @param currentDsbMitgliedId current userID
+     *
+     * @return true: when no Veranstaltung exists for Liga in Sportjahr false: when there already is a Veranstaltung for
+     * Liga in Sportjahr
+     */
+
+    VeranstaltungDO changePhase(final long veranstaltungId, String phase, long currentDsbMitgliedId );
 }
