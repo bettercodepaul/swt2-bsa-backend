@@ -13,6 +13,7 @@ import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponen
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
@@ -91,7 +92,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * @return liefert die Liste aller Veranstaltungen
      */
     @Override
-    public List<VeranstaltungDO> findAll(String[] phaseList) {
+    public List<VeranstaltungDO> findAll(VeranstaltungPhase.Phase[] phaseList) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll(phaseList);
 
@@ -204,7 +205,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * @return last Veranstaltung based on current one
      */
     @Override
-    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId, String[] phaseList) {
+    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId, VeranstaltungPhase.Phase[] phaseList) {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
         VeranstaltungDO currentVeranstaltung = this.findById(veranstaltungId);
@@ -249,7 +250,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
 
     @Override
-    public List<VeranstaltungDO> findBySportjahr(long sportjahr, String[] phaseList) {
+    public List<VeranstaltungDO> findBySportjahr(long sportjahr, VeranstaltungPhase.Phase[] phaseList) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahr(sportjahr, phaseList);
         for (int i = 0; i < veranstaltungBEList.size(); i++) {
@@ -290,7 +291,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * Liga in Sportjahr
      */
     private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_veranstaltungen = this.findAll(new String[0]);
+        List<VeranstaltungDO> all_veranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
         for (VeranstaltungDO vdo : all_veranstaltungen) {
             if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
                 return false;

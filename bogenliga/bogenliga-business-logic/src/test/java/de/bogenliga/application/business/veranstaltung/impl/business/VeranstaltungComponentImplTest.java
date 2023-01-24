@@ -2,13 +2,11 @@ package de.bogenliga.application.business.veranstaltung.impl.business;
 
 import java.sql.Date;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.api.ThrowableTypeAssert;
-import org.assertj.core.data.Offset;
 import org.assertj.core.util.CheckReturnValue;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,6 +24,7 @@ import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
@@ -78,12 +77,12 @@ public class VeranstaltungComponentImplTest {
 
     private static final String WETTKAMPF_BEGINN = "13:00";
 
-    private static final String[] PHASELIST_3 = {"Geplant", "Laufend", "Abgeschlossen"};
-    private static final String[] PHASELIST_2 = {"Geplant", "Laufend"};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_3 = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND, VeranstaltungPhase.Phase.ABGESCHLOSSEN};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_2 = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND};
 
-    private static final String[] PHASELIST_1 = {"Laufend"};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_1 = {VeranstaltungPhase.Phase.LAUFEND};
 
-    private static final String[] PHASELIST_0 = {};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_0 = {};
 
 
     @Rule
@@ -790,7 +789,8 @@ public class VeranstaltungComponentImplTest {
 
         // configure mocks
         when(veranstaltungDAO.findById(anyLong())).thenReturn(currentVeranstaltungBE);
-        when(veranstaltungDAO.findBySportjahr(anyLong(), any(String[].class))).thenReturn(veranstaltungBEList);
+        when(veranstaltungDAO.findBySportjahr(anyLong(), any(VeranstaltungPhase.Phase[].class))).thenReturn(
+                veranstaltungBEList);
         when(userComponent.findById(anyLong())).thenReturn(getUserDO());
         when(wettkampfTypComponent.findById(anyLong())).thenReturn(getWettkampfTypDO());
         when(ligaComponent.findById(anyLong())).thenReturn(getLigaDO());
@@ -807,7 +807,7 @@ public class VeranstaltungComponentImplTest {
 
         // verify invocations
         verify(veranstaltungDAO).findById(anyLong());
-        verify(veranstaltungDAO).findBySportjahr(anyLong(), any(String[].class));
+        verify(veranstaltungDAO).findBySportjahr(anyLong(), any(VeranstaltungPhase.Phase[].class));
     }
 
 
@@ -820,7 +820,8 @@ public class VeranstaltungComponentImplTest {
 
         // configure mocks
         when(veranstaltungDAO.findById(anyLong())).thenReturn(currentVeranstaltungBE);
-        when(veranstaltungDAO.findBySportjahr(anyLong(), any(String[].class))).thenReturn(veranstaltungBEList);
+        when(veranstaltungDAO.findBySportjahr(anyLong(), any(VeranstaltungPhase.Phase[].class))).thenReturn(
+                veranstaltungBEList);
         when(userComponent.findById(anyLong())).thenReturn(getUserDO());
         when(wettkampfTypComponent.findById(anyLong())).thenReturn(getWettkampfTypDO());
         when(ligaComponent.findById(anyLong())).thenReturn(getLigaDO());
@@ -831,7 +832,7 @@ public class VeranstaltungComponentImplTest {
 
         // verify invocations
         verify(veranstaltungDAO).findById(anyLong());
-        verify(veranstaltungDAO).findBySportjahr(anyLong(), any(String[].class));
+        verify(veranstaltungDAO).findBySportjahr(anyLong(), any(VeranstaltungPhase.Phase[].class));
     }
 
 
