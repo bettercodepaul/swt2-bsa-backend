@@ -18,10 +18,59 @@ public class VeranstaltungMapper implements ValueObjectMapper {
 
 
     /**
-     * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
-     *
+     * mapps a Veranstaltung Data Object into a Veranstaltung Business Entity
      */
-    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserDO userDO, WettkampfTypDO wettkamptypDO, LigaDO ligaDO){
+    public static final Function<VeranstaltungDO, VeranstaltungBE> toVeranstaltungBE= veranstaltungDO -> {
+
+        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(veranstaltungDO.getCreatedAtUtc());
+        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(
+                veranstaltungDO.getLastModifiedAtUtc());
+
+        VeranstaltungBE veranstaltungBE = new VeranstaltungBE();
+        veranstaltungBE.setVeranstaltungId(veranstaltungDO.getVeranstaltungID());
+        veranstaltungBE.setVeranstaltungWettkampftypId(veranstaltungDO.getVeranstaltungWettkampftypID());
+        veranstaltungBE.setVeranstaltungName(veranstaltungDO.getVeranstaltungName());
+        veranstaltungBE.setVeranstaltungMeldedeadline(veranstaltungDO.getVeranstaltungMeldeDeadline());
+        veranstaltungBE.setVeranstaltungLigaleiterId(veranstaltungDO.getVeranstaltungLigaleiterID());
+        veranstaltungBE.setVeranstaltungLigaId(veranstaltungDO.getVeranstaltungLigaID());
+        veranstaltungBE.setVeranstaltungSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
+
+        int phase = 1;
+        switch (veranstaltungDO.getVeranstaltungPhase()) {
+            case "Geplant":
+                phase = 1;
+                break;
+            case "Laufend":
+                phase = 2;
+                break;
+            case "Abgeschlossen":
+                phase = 3;
+        }
+        veranstaltungBE.setVeranstaltungPhase(phase);
+
+        //veranstaltungBE.setVeranstaltungPhase(veranstaltungDO.getVeranstaltungPhase());
+
+        veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());
+        veranstaltungBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+        veranstaltungBE.setLastModifiedByUserId(veranstaltungDO.getLastModifiedByUserId());
+        veranstaltungBE.setVersion(veranstaltungDO.getVersion());
+
+        return veranstaltungBE;
+    };
+
+
+    private VeranstaltungMapper() {
+        //empty Constructor
+    }
+
+
+    /**
+     * Converts a {@link VeranstaltungBE} to a {@link VeranstaltungDO}
+     */
+    public static final VeranstaltungDO toVeranstaltungDO(VeranstaltungBE veranstaltungBE, UserDO userDO,
+                                                          WettkampfTypDO wettkamptypDO, LigaDO ligaDO,
+                                                          VeranstaltungDO tempVeranstaltungDO) {
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(veranstaltungBE.getLastModifiedAtUtc());
@@ -37,44 +86,12 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 userDO.getEmail(),
                 wettkamptypDO.getName(),
                 ligaDO.getName(),
-                veranstaltungBE.getVeranstaltungPhase()
+                tempVeranstaltungDO.getVeranstaltungPhase()
+                //veranstaltungBE.getVeranstaltungPhase()
         );
         veranstaltungDO.setCreatedAtUtc(createdAtUtc);
         veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);
         return veranstaltungDO;
 
-    }
-
-
-    /**
-     * mapps a Veranstaltung Data Object into a Veranstaltung Business Entity
-     */
-    public static final Function<VeranstaltungDO, VeranstaltungBE> toVeranstaltungBE= veranstaltungDO -> {
-
-        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(veranstaltungDO.getCreatedAtUtc());
-        Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(veranstaltungDO.getLastModifiedAtUtc());
-
-       VeranstaltungBE veranstaltungBE = new VeranstaltungBE();
-       veranstaltungBE.setVeranstaltungId(veranstaltungDO.getVeranstaltungID());
-       veranstaltungBE.setVeranstaltungWettkampftypId(veranstaltungDO.getVeranstaltungWettkampftypID());
-       veranstaltungBE.setVeranstaltungName(veranstaltungDO.getVeranstaltungName());
-       veranstaltungBE.setVeranstaltungMeldedeadline(veranstaltungDO.getVeranstaltungMeldeDeadline());
-       veranstaltungBE.setVeranstaltungLigaleiterId(veranstaltungDO.getVeranstaltungLigaleiterID());
-       veranstaltungBE.setVeranstaltungLigaId(veranstaltungDO.getVeranstaltungLigaID());
-       veranstaltungBE.setVeranstaltungSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
-       veranstaltungBE.setVeranstaltungPhase(veranstaltungDO.getVeranstaltungPhase());
-
-       veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
-       veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());
-       veranstaltungBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
-       veranstaltungBE.setLastModifiedByUserId(veranstaltungDO.getLastModifiedByUserId());
-       veranstaltungBE.setVersion(veranstaltungDO.getVersion());
-
-        return veranstaltungBE;
-    };
-
-
-    private VeranstaltungMapper(){
-        //empty Constructor
     }
 }

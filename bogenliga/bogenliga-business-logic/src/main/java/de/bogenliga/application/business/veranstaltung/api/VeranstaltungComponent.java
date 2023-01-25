@@ -3,6 +3,7 @@ package de.bogenliga.application.business.veranstaltung.api;
 import java.util.List;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.common.component.ComponentFacade;
 
 /**
@@ -21,7 +22,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      * @params phaseList String[] filled or not filled with given Phases as Strings.
      */
-    List<VeranstaltungDO> findAll(String[] phaseList);
+    List<VeranstaltungDO> findAll(VeranstaltungPhase.Phase[] phaseList);
 
     /**
      * Returns a "Veranstaltung" with the given id
@@ -75,7 +76,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      * @return returns the queried Veranstaltung
      */
-    VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId, String[] phaseList);
+    VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId, VeranstaltungPhase.Phase[] phaseList);
 
     /**
      * Deletes a database entry depending on the id of the VeranstaltungDO property
@@ -104,7 +105,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      * @return a list with Veranstaltungen with the same Sportjahr
      */
-    List<VeranstaltungDO> findBySportjahr(long sportjahr, String[] phaseList);
+    List<VeranstaltungDO> findBySportjahr(long sportjahr, VeranstaltungPhase.Phase[] phaseList);
 
     /**
      *
