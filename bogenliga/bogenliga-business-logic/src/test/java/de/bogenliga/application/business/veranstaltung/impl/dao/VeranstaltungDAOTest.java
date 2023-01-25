@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -31,8 +32,12 @@ public class VeranstaltungDAOTest {
 
     private static final long VERANSTALTUNGSID = 1L;
     private static final long LIGAID = 2L;
+
+    private static final long LIGALEITERID = 2L;
     private static final String VERANSTALTUNGSNAME = "Test Veranstaltung";
     private static final long SPORTJAHR = 2018L;
+
+    private static final long SPORTJAHR_ID = 1;
 
     private static final String PHASE = "1";
     private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND};
@@ -365,6 +370,115 @@ public class VeranstaltungDAOTest {
                 .isEqualTo(expectedBE.getVeranstaltungLigaId());
         assertThat(actual.get(0).getVeranstaltungPhase())
                 .isEqualTo(expectedBE.getVeranstaltungPhase());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+
+    @Test
+    public void testFindById() {
+        //create test data
+        VeranstaltungBE expectedBE = new VeranstaltungBE();
+        expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
+        expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
+        expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
+
+        //mock the methode
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        // call test method
+        final List<VeranstaltungBE> actual = underTest.findByLigaID(VERANSTALTUNGSID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedBE.getVeranstaltungName());
+        assertThat(actual.get(0).getVeranstaltungLigaId())
+                .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+
+    @Test
+    public void testFindByLigaleiterId() {
+        //create test data
+        VeranstaltungBE expectedBE = new VeranstaltungBE();
+        expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
+        expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
+        expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
+
+        //mock the methode
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        // call test method
+        final List<VeranstaltungBE> actual = underTest.findByLigaleiterId(LIGALEITERID);
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getVeranstaltungId())
+                .isEqualTo(expectedBE.getVeranstaltungId());
+        assertThat(actual.get(0).getVeranstaltungName())
+                .isEqualTo(expectedBE.getVeranstaltungName());
+        assertThat(actual.get(0).getVeranstaltungLigaId())
+                .isEqualTo(expectedBE.getVeranstaltungLigaId());
+        assertThat(actual.get(0).getVeranstaltungPhase())
+                .isEqualTo(expectedBE.getVeranstaltungPhase());
+
+        // verify invocations
+        verify(basicDao).selectEntityList(any(), any(), any());
+    }
+
+
+    @Test
+    public void testFindAllSportjahrDestinct() {
+        //create test data
+        SportjahrDO sportjahrDO = new SportjahrDO();
+        sportjahrDO.setId(SPORTJAHR_ID);
+        sportjahrDO.setSportjahr(SPORTJAHR);
+
+        VeranstaltungBE expectedBE = new VeranstaltungBE();
+        expectedBE.setVeranstaltungId(VERANSTALTUNGSID);
+        expectedBE.setVeranstaltungName(VERANSTALTUNGSNAME);
+        expectedBE.setVeranstaltungLigaId(LIGAID);
+        expectedBE.setVeranstaltungPhase(PHASE);
+        expectedBE.setVeranstaltungSportjahr(SPORTJAHR);
+
+        //mock the methode
+        when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+        // call test method
+        final List<SportjahrDO> actual = underTest.findAllSportjahreDestinct();
+
+        // assert result
+        assertThat(actual)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+
+        assertThat(actual.get(0)).isNotNull();
+
+        assertThat(actual.get(0).getId())
+                .isEqualTo(sportjahrDO.getId());
+        assertThat(actual.get(0).getSportjahr())
+                .isEqualTo(sportjahrDO.getSportjahr());
 
         // verify invocations
         verify(basicDao).selectEntityList(any(), any(), any());
