@@ -337,4 +337,30 @@ public class DsbMannschaftServiceTest {
         assertThat(deletedDsbMannschaft.getVereinId()).isNull();
         }catch (NoPermissionException e) { }
     }
+
+    @Test
+    public void testInsertMannschaftIntoVeranstaltung() {
+
+        // Prepare test data
+        final DsbMannschaftDO expectedDsbMannschaftDO = getDsbMannschaftDO();
+        final long inputVeranstaltungsId = 2222;
+
+        // configure mocks
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+
+        // call test method
+        underTest.insertMannschaftIntoVeranstaltung(inputVeranstaltungsId, expectedDsbMannschaftDO.getId(),
+                principal);
+
+        // verify invocations
+        verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+        // assert result
+        DsbMannschaftDO capturedDsbMannschaftDO = dsbMannschaftVOArgumentCaptor.getValue();
+        assertThat(capturedDsbMannschaftDO).isNotNull();
+        assertThat(capturedDsbMannschaftDO.getId()).isEqualTo(expectedDsbMannschaftDO.getId());
+        assertThat(capturedDsbMannschaftDO.getVeranstaltungId()).isEqualTo(inputVeranstaltungsId);
+    }
+
 }
