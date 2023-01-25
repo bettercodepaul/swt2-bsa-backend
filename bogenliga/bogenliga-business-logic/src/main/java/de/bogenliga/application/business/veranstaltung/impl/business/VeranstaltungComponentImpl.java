@@ -13,6 +13,7 @@ import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponen
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
@@ -91,7 +92,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * @return liefert die Liste aller Veranstaltungen
      */
     @Override
-    public List<VeranstaltungDO> findAll(String[] phaseList) {
+    public List<VeranstaltungDO> findAll(VeranstaltungPhase.Phase[] phaseList) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findAll(phaseList);
 
@@ -164,10 +165,10 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     @Override
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
-
+        System.out.println("Service Phase DO Impl: " + veranstaltungDO.getVeranstaltungPhase());
         Preconditions.checkArgument(
-              validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()),
-               PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
+                validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()),
+                PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
 
         final VeranstaltungBE veranstaltungBE = VeranstaltungMapper.toVeranstaltungBE.apply(veranstaltungDO);
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
@@ -204,7 +205,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * @return last Veranstaltung based on current one
      */
     @Override
-    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId, String[] phaseList) {
+    public VeranstaltungDO findLastVeranstaltungById(final long veranstaltungId, VeranstaltungPhase.Phase[] phaseList) {
         Preconditions.checkArgument(veranstaltungId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
 
         VeranstaltungDO currentVeranstaltung = this.findById(veranstaltungId);
@@ -249,7 +250,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
 
     @Override
-    public List<VeranstaltungDO> findBySportjahr(long sportjahr, String[] phaseList) {
+    public List<VeranstaltungDO> findBySportjahr(long sportjahr, VeranstaltungPhase.Phase[] phaseList) {
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
         final List<VeranstaltungBE> veranstaltungBEList = veranstaltungDAO.findBySportjahr(sportjahr, phaseList);
         for (int i = 0; i < veranstaltungBEList.size(); i++) {
@@ -290,7 +291,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * Liga in Sportjahr
      */
     private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_veranstaltungen = this.findAll(new String[0]);
+        List<VeranstaltungDO> all_veranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
         for (VeranstaltungDO vdo : all_veranstaltungen) {
             if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
                 return false;
@@ -307,18 +308,33 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         LigaDO tempLigaDO = new LigaDO();
         WettkampfTypDO tempWettkampfTypDO = new WettkampfTypDO(0L);
         UserDO tempUserDO = new UserDO();
+        VeranstaltungDO tempVeranstaltungDO = new VeranstaltungDO();
 
         if (veranstaltungBE.getVeranstaltungLigaId() != null) {
-              tempLigaDO = ligaComponent.findById(veranstaltungBE.getVeranstaltungLigaId());
+            tempLigaDO = ligaComponent.findById(veranstaltungBE.getVeranstaltungLigaId());
         }
         if (veranstaltungBE.getVeranstaltungWettkampftypId() != null) {
-             tempWettkampfTypDO = wettkampfTypComponent.findById(veranstaltungBE.getVeranstaltungWettkampftypId());
+            tempWettkampfTypDO = wettkampfTypComponent.findById(veranstaltungBE.getVeranstaltungWettkampftypId());
         }
         if (veranstaltungBE.getVeranstaltungLigaleiterId() != null) {
-             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
+            tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
+        }
+        if (veranstaltungBE.getVeranstaltungPhase() instanceof Integer) {
+            switch (veranstaltungBE.getVeranstaltungPhase()) {
+                case 1:
+                    tempVeranstaltungDO.setVeranstaltungPhase("Geplant");
+                    break;
+                case 2:
+                    tempVeranstaltungDO.setVeranstaltungPhase("Laufend");
+                    break;
+                case 3:
+                    tempVeranstaltungDO.setVeranstaltungPhase("Abgeschlossen");
+            }
+
         }
 
-        return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO);
+        return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO,
+                tempVeranstaltungDO);
     }
 
 
