@@ -39,7 +39,7 @@ public class VeranstaltungDAOTest {
 
     private static final long SPORTJAHR_ID = 1;
 
-    private static final String PHASE = "1";
+    private static final Integer PHASE = 1;
     private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND};
 
     private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND_ABGESCHLOSSEN = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND, VeranstaltungPhase.Phase.ABGESCHLOSSEN};

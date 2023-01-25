@@ -147,6 +147,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         final List<VeranstaltungDO> veranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
 
+
         return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -258,7 +259,6 @@ public class VeranstaltungService implements ServiceFacade {
 
 
         checkPreconditions(veranstaltungDTO);
-
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
