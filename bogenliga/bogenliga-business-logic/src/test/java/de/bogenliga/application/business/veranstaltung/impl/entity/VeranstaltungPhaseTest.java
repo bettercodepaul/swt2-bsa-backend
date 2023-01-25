@@ -27,7 +27,6 @@ public class VeranstaltungPhaseTest extends TestCase {
         final int actual = underTest.getPhaseAsInt(PHASE);
 
         // assert result
-        assertThat(actual).isNotNull();
 
         assertThat(actual).isEqualTo(PHASE_INTEGER);
     }
