@@ -8,6 +8,7 @@ package de.bogenliga.application.business.veranstaltung.impl.entity;
 
 
 public class VeranstaltungPhase {
+
     /**
      * This method converts the phase from Enum to integer. The phase is a enum to specify what phases a veranstaltung
      * can have. In the database the phase is a number as Integer, so that new phases can be added.
