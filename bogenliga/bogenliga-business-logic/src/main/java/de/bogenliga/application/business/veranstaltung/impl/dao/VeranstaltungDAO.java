@@ -186,8 +186,8 @@ public class VeranstaltungDAO implements DataAccessObject{
     public VeranstaltungBE findById(final long id) {
         VeranstaltungBE veranstaltung = basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
         VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
-        veranstaltung.setVeranstaltungPhase(
-                veranstaltungPhase.getPhaseAsString(Integer.parseInt(veranstaltung.getVeranstaltungPhase())));
+        //veranstaltung.setVeranstaltungPhase(
+        //veranstaltungPhase.getPhaseAsString(veranstaltung.getVeranstaltungPhase()));
         return veranstaltung;
     }
 
@@ -286,8 +286,8 @@ public class VeranstaltungDAO implements DataAccessObject{
         for (VeranstaltungBE veranstaltung : veranstaltungList) {
             VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
             if (veranstaltung.getVeranstaltungPhase() != null) {
-                veranstaltung.setVeranstaltungPhase(
-                        veranstaltungPhase.getPhaseAsString(Integer.parseInt(veranstaltung.getVeranstaltungPhase())));
+                //veranstaltung.setVeranstaltungPhase(
+                //veranstaltungPhase.getPhaseAsString(String.valueOf(veranstaltung.getVeranstaltungPhase())));
             }
         }
         return veranstaltungList;
