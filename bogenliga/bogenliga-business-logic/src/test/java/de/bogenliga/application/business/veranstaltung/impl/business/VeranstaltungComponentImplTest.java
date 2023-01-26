@@ -503,7 +503,7 @@ public class VeranstaltungComponentImplTest {
         when(veranstaltungDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final VeranstaltungDO actual = underTest.changePhase(VERANSTALTUNG_ID, input.getVeranstaltungPhase(), USER);
+        final VeranstaltungDO actual = underTest.changePhase(input.getVeranstaltungID(), VERANSTALTUNG_PHASE, USER);
 
         // assert result
         assertThat(actual).isNotNull();
