@@ -503,7 +503,7 @@ public class VeranstaltungComponentImplTest {
         when(veranstaltungDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final VeranstaltungDO actual = underTest.changePhase(VERANSTALTUNG_ID, VERANSTALTUNG_PHASE, USER);
+        final VeranstaltungDO actual = underTest.changePhase(VERANSTALTUNG_ID, VERANSTALTUNG_PHASE_GEPLANT, USER);
 
         // assert result
         assertThat(actual).isNotNull();
@@ -520,7 +520,7 @@ public class VeranstaltungComponentImplTest {
                 .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
         assertThat(actual.getVeranstaltungLigaName())
                 .isEqualTo(expectedDO.getVeranstaltungLigaName());
-        assertThat(actual.getVeranstaltungPhase())
+        assertThat(actual.getVeranstaltungPhase().toUpperCase())
                 .isEqualTo(expectedDO.getVeranstaltungPhase());
 
         // verify invocations
