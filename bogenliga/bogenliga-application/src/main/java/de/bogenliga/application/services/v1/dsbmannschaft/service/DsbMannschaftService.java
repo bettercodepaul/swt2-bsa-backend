@@ -244,6 +244,7 @@ public class DsbMannschaftService implements ServiceFacade {
     public void copyMannschaftFromVeranstaltung(@PathVariable("lastVeranstaltungsId") final long lastVeranstaltungsId,
                                               @PathVariable("currentVeranstaltungsId") final long currentVeranstaltungsId,
                                               final Principal principal) {
+
         Preconditions.checkArgument(lastVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         Preconditions.checkArgument(currentVeranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
@@ -252,6 +253,30 @@ public class DsbMannschaftService implements ServiceFacade {
         LOG.debug("Receive 'copyMannschaftOnVeranstaltung' request with ID '{}'", currentVeranstaltungsId);
         dsbMannschaftComponent.copyMannschaftFromVeranstaltung(lastVeranstaltungsId, currentVeranstaltungsId, userId);
 
+    }
+
+    /**
+     * I insert the mannschaft with the given manschaft id into the veranstaltung with the given veranstaltung id.
+     * @param veranstaltungsId
+     * @param mannschaftId
+     * @param principal
+     */
+    @GetMapping(value = "copyMannschaftToVeranstaltung/{VeranstaltungsId}/{MannschaftId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    public void insertMannschaftIntoVeranstaltung(@PathVariable("VeranstaltungsId") final long veranstaltungsId,
+                                              @PathVariable("MannschaftId") final long mannschaftId,
+                                              final Principal principal) {
+
+        Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+        dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
+
+        dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
+
+        LOG.debug("Mannschaft " + dsbMannschaftDO.getName() + "in Veranstaltung mit id " + veranstaltungsId + " kopiert.");
     }
 
     /**
