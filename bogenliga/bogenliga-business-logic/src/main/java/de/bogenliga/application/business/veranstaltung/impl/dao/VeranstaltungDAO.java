@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.component.dao.DataAccessObject;
@@ -108,7 +109,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String FIND_BY_SPORTJAHR_SORTED_DESTINCT_LIGA =
             "SELECT veranstaltung_liga_id, veranstaltung_name, veranstaltung_id "
                     + "FROM liga, veranstaltung,ligatabelle, match "
-                    + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id AND veranstaltung_phase IN ('Laufend', 'Abgeschlossen')) "
+                    + "WHERE (veranstaltung_id = ligatabelle_veranstaltung_id AND veranstaltung_sportjahr= ? AND ligatabelle_mannschaft_id = match_mannschaft_id AND veranstaltung_phase IN (2, 3)) "
                     + "GROUP BY veranstaltung_id "
                     + "ORDER BY max(match.last_modified_at_utc) DESC NULLS LAST, veranstaltung_id ";
 
@@ -149,15 +150,16 @@ public class VeranstaltungDAO implements DataAccessObject{
     /**
      * Return all Veranstaltung entries from the database specified by the phases attributes
      */
-    public List<VeranstaltungBE> findAll(String[] phaseList) {
+    public List<VeranstaltungBE> findAll(VeranstaltungPhase.Phase[] phaseList) {
+        int[] phaseListInt = phaseEnumToInteger(phaseList);
         List<VeranstaltungBE> veranstaltungList;
         switch (phaseList.length) {
             case 0:
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
                 break;
             case 2:
-                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_PHASE, phaseList[0],
-                        phaseList[1]);
+                veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_PHASE, phaseListInt[0],
+                        phaseListInt[1]);
                 break;
             default:
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
@@ -191,8 +193,9 @@ public class VeranstaltungDAO implements DataAccessObject{
      *
      * @param sportjahr
      */
-    public List<VeranstaltungBE> findBySportjahr(final long sportjahr, String[] phaseList) {
+    public List<VeranstaltungBE> findBySportjahr(final long sportjahr, VeranstaltungPhase.Phase[] phaseList) {
 
+        int[] phaseListInt = phaseEnumToInteger(phaseList);
         List<VeranstaltungBE> veranstaltungList;
         switch (phaseList.length) {
             case 0:
@@ -200,35 +203,17 @@ public class VeranstaltungDAO implements DataAccessObject{
                 break;
             case 1:
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR_EINE_PHASE, sportjahr,
-                        phaseList[0]);
+                        phaseListInt[0]);
                 break;
             case 2:
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR_ZWEI_PHASEN, sportjahr,
-                        phaseList[0], phaseList[1]);
+                        phaseListInt[0], phaseListInt[1]);
                 break;
             default:
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR, sportjahr);
                 break;
         }
         return veranstaltungList;
-    }
-
-
-    /**
-     * find all sportyears destinct
-     * returns a Long list with sportyears
-     *
-     */
-    public List<SportjahrDO> findAllSportjahreDestinct() {
-        List<VeranstaltungBE> veranstaltungen = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_SPORTJAHR_DESTINCT);
-        ArrayList<SportjahrDO> sportjahre = new ArrayList<>();
-        for(int i = 0; i < veranstaltungen.size(); i++){
-            sportjahre.add(new SportjahrDO(veranstaltungen.get(i).getVeranstaltungId(),
-                    veranstaltungen.get(i).getVeranstaltungSportjahr(),
-                    veranstaltungen.get(i).getVersion()));
-        }
-        return sportjahre;
-
     }
 
 
@@ -239,6 +224,41 @@ public class VeranstaltungDAO implements DataAccessObject{
 
     public List<VeranstaltungBE> findByLigaleiterId(long ligaleiterId) {
         return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGALEITER_ID, ligaleiterId);
+    }
+
+
+    /**
+     * find all sportyears destinct returns a Long list with sportyears
+     */
+    public List<SportjahrDO> findAllSportjahreDestinct() {
+        List<VeranstaltungBE> veranstaltungen = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL_SPORTJAHR_DESTINCT);
+        ArrayList<SportjahrDO> sportjahre = new ArrayList<>();
+        for (int i = 0; i < veranstaltungen.size(); i++) {
+            sportjahre.add(new SportjahrDO(veranstaltungen.get(i).getVeranstaltungId(),
+                    veranstaltungen.get(i).getVeranstaltungSportjahr(),
+                    veranstaltungen.get(i).getVersion()));
+        }
+        return sportjahre;
+
+    }
+
+
+    /**
+     * This method get a Enum Phase-Array and returns an array of integer. That is needed, because the phase in the
+     * backend is an enum. The phase in the database is an integer. To select veranstaltungen in the database, int
+     * values are needed.
+     *
+     * @param phaseList
+     *
+     * @return phaseListInteger
+     */
+    private int[] phaseEnumToInteger(VeranstaltungPhase.Phase[] phaseList) {
+        int[] phaseListInteger = new int[phaseList.length];
+        VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
+        for (int index = 0; index < phaseList.length; index++) {
+            phaseListInteger[index] = veranstaltungPhase.getPhaseAsInt(phaseList[index]);
+        }
+        return phaseListInteger;
     }
 
 

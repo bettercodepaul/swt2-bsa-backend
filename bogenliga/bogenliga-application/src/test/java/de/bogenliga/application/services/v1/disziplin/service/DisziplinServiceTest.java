@@ -6,8 +6,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
@@ -40,9 +38,6 @@ public class DisziplinServiceTest {
     @InjectMocks
     private DisziplinService underTest;
 
-    @Captor
-    private ArgumentCaptor<DisziplinDO> disziplinVOArgumentCaptor;
-
 
     @Before
     public void initMocks() {
@@ -53,7 +48,7 @@ public class DisziplinServiceTest {
     public void findAll() {
         // prepare test data
         final DisziplinDO disziplinDO = new DisziplinDO();
-        disziplinDO.setDisziplinID(disziplinId);
+        disziplinDO.setDisziplinId(disziplinId);
         disziplinDO.setDisziplinName(disziplinName);
 
         final List<DisziplinDO> disziplinDOList = Collections.singletonList(disziplinDO);
@@ -72,7 +67,7 @@ public class DisziplinServiceTest {
         final DisziplinDTO actualDTO = actual.get(0);
 
         assertThat(actualDTO).isNotNull();
-        assertThat(actualDTO.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinID());
+        assertThat(actualDTO.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinId());
         assertThat(actualDTO.getDisziplinName()).isEqualTo(disziplinDO.getDisziplinName());
 
 
@@ -84,7 +79,7 @@ public class DisziplinServiceTest {
     public void findByKey() {
         // prepare test data
         final DisziplinDO disziplinDO = new DisziplinDO();
-        disziplinDO.setDisziplinID(disziplinId);
+        disziplinDO.setDisziplinId(disziplinId);
         disziplinDO.setDisziplinName(disziplinName);
 
         // configure mocks
@@ -95,7 +90,7 @@ public class DisziplinServiceTest {
 
         // assert result
         assertThat(actual).isNotNull();
-        assertThat(actual.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinID());
+        assertThat(actual.getDisziplinId()).isEqualTo(disziplinDO.getDisziplinId());
         assertThat(actual.getDisziplinName()).isEqualTo(disziplinDO.getDisziplinName());
 
 
@@ -103,100 +98,5 @@ public class DisziplinServiceTest {
         verify(disziplinComponent).findById(disziplinId);
     }
 
-
-    @Test
-    public void create() {
-        // prepare test data
-        final DisziplinDTO input = new DisziplinDTO();
-        input.setDisziplinId(disziplinId);
-        input.setDisziplinName(disziplinName);
-
-        final DisziplinDO expected = new DisziplinDO();
-        expected.setDisziplinID(input.getDisziplinId());
-        expected.setDisziplinName(input.getDisziplinName());
-
-        // configure mocks
-        when(disziplinComponent.create(any(), anyLong())).thenReturn(expected);
-
-        // call test method
-        final DisziplinDTO actual = underTest.create(input, principal);
-
-        // assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.getDisziplinId()).isEqualTo(input.getDisziplinId());
-        assertThat(actual.getDisziplinName()).isEqualTo(input.getDisziplinName());
-
-        // verify invocations
-        verify(disziplinComponent).create(disziplinVOArgumentCaptor.capture(), anyLong());
-
-        final DisziplinDO createdConfiguration = disziplinVOArgumentCaptor.getValue();
-
-        assertThat(createdConfiguration).isNotNull();
-        assertThat(createdConfiguration.getDisziplinID()).isEqualTo(input.getDisziplinId());
-        assertThat(createdConfiguration.getDisziplinName()).isEqualTo(input.getDisziplinName());
-
-    }
-
-    @Test
-    public void update() {
-        // prepare test data
-        final DisziplinDTO input = new DisziplinDTO();
-        input.setDisziplinId(disziplinId);
-        input.setDisziplinName(disziplinName);
-
-
-        final DisziplinDO toBeReturned = new DisziplinDO();
-        toBeReturned.setDisziplinID(disziplinId);
-        toBeReturned.setDisziplinName(disziplinName);
-
-
-        final DisziplinDO expected = new DisziplinDO();
-        expected.setDisziplinID(input.getDisziplinId());
-        expected.setDisziplinName(input.getDisziplinName());
-
-        // configure mocks
-        when(disziplinComponent.update(any(), anyLong())).thenReturn(expected);
-        when(disziplinComponent.findById(anyLong())).thenReturn(toBeReturned);
-
-        // call test method
-        final DisziplinDTO actual = underTest.update(input, principal);
-
-        // assert result
-        assertThat(actual).isNotNull();
-        assertThat(actual.getDisziplinId()).isEqualTo(input.getDisziplinId());
-        assertThat(actual.getDisziplinName()).isEqualTo(input.getDisziplinName());
-
-
-        // verify invocations
-        verify(disziplinComponent).update(disziplinVOArgumentCaptor.capture(), anyLong());
-
-        final DisziplinDO updatedDisziplin = disziplinVOArgumentCaptor.getValue();
-
-        assertThat(updatedDisziplin).isNotNull();
-        assertThat(updatedDisziplin.getDisziplinID()).isEqualTo(input.getDisziplinId());
-        assertThat(updatedDisziplin.getDisziplinName()).isEqualTo(input.getDisziplinName());
-    }
-
-
-    @Test
-    public void delete() {
-        // prepare test data
-        final DisziplinDO expected = new DisziplinDO();
-        expected.setDisziplinID(disziplinId);
-
-
-        // call test method
-        underTest.delete(disziplinId, principal);
-
-
-        // verify invocations
-        verify(disziplinComponent).delete(disziplinVOArgumentCaptor.capture(), anyLong());
-
-        final DisziplinDO deletedDisziplin =disziplinVOArgumentCaptor.getValue();
-
-        assertThat(deletedDisziplin).isNotNull();
-        assertThat(deletedDisziplin.getDisziplinID()).isEqualTo(expected.getDisziplinID());
-        assertThat(deletedDisziplin.getDisziplinName()).isEqualTo(expected.getDisziplinName());
-    }
 
 }

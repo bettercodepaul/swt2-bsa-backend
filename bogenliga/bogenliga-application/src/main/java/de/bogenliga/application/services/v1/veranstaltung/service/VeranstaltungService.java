@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
@@ -75,9 +76,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAll() {
 
-        String[] phaseList = new String[2];
-        phaseList[0] = "Geplant";
-        phaseList[1] = "Laufend";
+        VeranstaltungPhase[] phaseList = new VeranstaltungPhase[];
 
         return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
                 Collectors.toList());
@@ -93,9 +92,9 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAllGeplantLaufend() {
 
-        String[] phaseList = new String[2];
-        phaseList[0] = "Geplant";
-        phaseList[1] = "Laufend";
+        VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[2];
+        phaseList[0] = VeranstaltungPhase.Phase.GEPLANT;
+        phaseList[1] = VeranstaltungPhase.Phase.LAUFEND;
 
         return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
                 Collectors.toList());
@@ -111,9 +110,9 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findAllLaufendAbgeschlossen() {
 
-        String[] phaseList = new String[2];
-        phaseList[0] = "Laufend";
-        phaseList[1] = "Abgeschlossen";
+        VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[2];
+        phaseList[0] = VeranstaltungPhase.Phase.LAUFEND;
+        phaseList[1] = VeranstaltungPhase.Phase.ABGESCHLOSSEN;
 
         return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
                 Collectors.toList());
@@ -148,6 +147,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         final List<VeranstaltungDO> veranstaltungDOList = veranstaltungComponent.findByLigaID(ligaID);
 
+
         return veranstaltungDOList.stream().map(VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
@@ -178,7 +178,7 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahr(@PathVariable("sportjahr") final long sportjahr) {
 
-        String[] phaseList = new String[0];
+        VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[0];
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
                 VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -196,8 +196,8 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahrLaufend(@PathVariable("sportjahr") final long sportjahr) {
 
-        String[] phaseList = new String[1];
-        phaseList[0] = "Laufend";
+        VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[1];
+        phaseList[0] = VeranstaltungPhase.Phase.LAUFEND;
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
                 VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -215,9 +215,9 @@ public class VeranstaltungService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<VeranstaltungDTO> findBySportjahrGeplantLaufend(@PathVariable("sportjahr") final long sportjahr) {
 
-        String[] phaseList = new String[2];
-        phaseList[0] = "Geplant";
-        phaseList[1] = "Laufend";
+        VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[2];
+        phaseList[0] = VeranstaltungPhase.Phase.GEPLANT;
+        phaseList[1] = VeranstaltungPhase.Phase.LAUFEND;
 
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
                 VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
@@ -259,7 +259,6 @@ public class VeranstaltungService implements ServiceFacade {
 
 
         checkPreconditions(veranstaltungDTO);
-
         final VeranstaltungDO newVeranstaltungDO = VeranstaltungDTOMapper.toDO.apply(veranstaltungDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
@@ -310,7 +309,7 @@ public class VeranstaltungService implements ServiceFacade {
 
         LOG.debug("Receive 'findLastVeranstaltungById' with requested ID '{}'", id);
 
-        String[] phaseList = new String[0];
+        VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[0];
 
         final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findLastVeranstaltungById(id, phaseList);
         return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);

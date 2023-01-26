@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.sportjahr.api.types.SportjahrDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
@@ -46,15 +47,18 @@ public class VeranstaltungServiceTest {
     private static final String LIGANAME = "";
     private static final long SPORTJAHR_ID = 0;
     private static final long SPORTJAHR_JAHR = 0;
+
     private static final String PHASE = "Geplant";
 
-    private static final String[] PHASELIST_GEPLANT_LAUFEND = {"Geplant", "Laufend"};
+    private static final VeranstaltungPhase.Phase PHASE_GEPLANT = VeranstaltungPhase.Phase.GEPLANT;
 
-    private static final String[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {"Laufend", "Abgeschlossen"};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_GEPLANT_LAUFEND = {VeranstaltungPhase.Phase.GEPLANT, VeranstaltungPhase.Phase.LAUFEND};
 
-    private static final String[] PHASELIST_0 = {};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_LAUFEND_ABGESCHLOSSEN = {VeranstaltungPhase.Phase.LAUFEND, VeranstaltungPhase.Phase.ABGESCHLOSSEN};
 
-    private static final String[] PHASELIST_LAUFEND = {"Laufend"};
+    private static final VeranstaltungPhase.Phase[] PHASELIST_0 = {};
+
+    private static final VeranstaltungPhase.Phase[] PHASELIST_LAUFEND = {VeranstaltungPhase.Phase.LAUFEND};
 
 
     @Rule
@@ -260,7 +264,8 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(String[].class))).thenReturn(VeranstaltungDOList);
+        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(VeranstaltungPhase.Phase[].class))).thenReturn(
+                VeranstaltungDOList);
 
         // call test method
         final List<VeranstaltungDTO> actual = underTest.findBySportjahr(SPORTJAHR);
@@ -280,7 +285,8 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(String[].class))).thenReturn(VeranstaltungDOList);
+        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(VeranstaltungPhase.Phase[].class))).thenReturn(
+                VeranstaltungDOList);
 
         // call test method
         final List<VeranstaltungDTO> actual = underTest.findBySportjahrLaufend(SPORTJAHR);
@@ -300,7 +306,8 @@ public class VeranstaltungServiceTest {
         final List<VeranstaltungDO> VeranstaltungDOList = Collections.singletonList(VeranstaltungDO);
 
         // configure mocks
-        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(String[].class))).thenReturn(VeranstaltungDOList);
+        when(VeranstaltungComponent.findBySportjahr(anyLong(), any(VeranstaltungPhase.Phase[].class))).thenReturn(
+                VeranstaltungDOList);
 
         // call test method
         final List<VeranstaltungDTO> actual = underTest.findBySportjahrGeplantLaufend(SPORTJAHR);
@@ -455,12 +462,13 @@ public class VeranstaltungServiceTest {
     }
 
     @Test
-    public void findLastVeranstaltungById(){
+    public void findLastVeranstaltungById() {
         // prepare test data
         VeranstaltungDO expectedVeranstaltung = getVeranstaltungDO();
 
         // configure mocks
-        when(VeranstaltungComponent.findLastVeranstaltungById(anyLong(), any(String[].class))).thenReturn(
+        when(VeranstaltungComponent.findLastVeranstaltungById(anyLong(),
+                any(VeranstaltungPhase.Phase[].class))).thenReturn(
                 expectedVeranstaltung);
 
         // call test method
@@ -473,7 +481,7 @@ public class VeranstaltungServiceTest {
         assertThat(actual.getSportjahr()).isEqualTo(expectedVeranstaltung.getVeranstaltungSportJahr());
 
         // verify invocations
-        verify(VeranstaltungComponent).findLastVeranstaltungById(anyLong(), any(String[].class));
+        verify(VeranstaltungComponent).findLastVeranstaltungById(anyLong(), any(VeranstaltungPhase.Phase[].class));
 
     }
 }

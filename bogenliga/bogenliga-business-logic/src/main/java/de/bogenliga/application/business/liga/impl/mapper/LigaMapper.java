@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.liga.impl.mapper;
 
+import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
@@ -20,20 +21,28 @@ public class LigaMapper implements ValueObjectMapper {
      * Converts a {@link LigaBE} to a {@link LigaDO}
      *
      */
-    public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenDO regionenDO, UserDO userDO){
+    public static final LigaDO toLigaDO(LigaBE ligaBE, LigaBE uebergeordnetLiga, RegionenDO regionenDO, UserDO userDO, DisziplinDO disziplinDO){
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(ligaBE.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(ligaBE.getLastModifiedAtUtc());
 
+        String disziplinName = "";
+
+
+        if (disziplinDO.getDisziplinId() != 0) {
+            disziplinName = " " + disziplinDO.getDisziplinName();
+        }
+
         LigaDO ligaDO = new LigaDO(
                 ligaBE.getLigaId(),
-                ligaBE.getLigaName(),
+                ligaBE.getLigaName() + disziplinName,
                 regionenDO.getId(),
                 regionenDO.getRegionName(),
                 ligaBE.getLigaUebergeordnetId(),
                 uebergeordnetLiga.getLigaName(),
                 userDO.getId(),
-                userDO.getEmail()
+                userDO.getEmail(),
+                disziplinDO.getDisziplinId()
 
         );
         ligaDO.setCreatedAtUtc(createdAtUtc);
@@ -54,6 +63,7 @@ public class LigaMapper implements ValueObjectMapper {
 
         LigaBE ligaBE = new LigaBE();
         ligaBE.setLigaId(ligaDO.getId());
+        ligaBE.setLigaDisziplinId(ligaDO.getDisziplinId());
         ligaBE.setLigaName(ligaDO.getName());
         ligaBE.setLigaRegionId(ligaDO.getRegionId());
         ligaBE.setLigaUebergeordnetId(ligaDO.getLigaUebergeordnetId());
