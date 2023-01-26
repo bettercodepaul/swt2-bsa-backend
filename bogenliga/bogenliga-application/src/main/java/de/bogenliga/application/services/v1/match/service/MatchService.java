@@ -16,6 +16,8 @@ import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
 import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchMapper;
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import org.slf4j.Logger;
@@ -113,11 +115,13 @@ public class MatchService implements ServiceFacade {
     private final DsbMannschaftComponent mannschaftComponent;
     private final VereinComponent vereinComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
-
+    private final VeranstaltungComponent veranstaltungComponent;
 
     /**
      * Constructor with dependency injection
-     * @param matchComponent to handle the database CRUD requests
+     *
+     * @param matchComponent          to handle the database CRUD requests
+     * @param veranstaltungComponent
      */
     @Autowired
     public MatchService(final MatchComponent matchComponent,
@@ -127,6 +131,7 @@ public class MatchService implements ServiceFacade {
                         final DsbMannschaftComponent mannschaftComponent,
                         final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                         final WettkampfTypComponent wettkampftypComponent,
+                        final VeranstaltungComponent veranstaltungComponent,
                         RequiresOnePermissionAspect requiresOnePermissionAspect) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
@@ -136,6 +141,7 @@ public class MatchService implements ServiceFacade {
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.wettkampfTypComponent = wettkampftypComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
     /**
@@ -732,6 +738,7 @@ public class MatchService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         matchComponent.createInitialMatchesWT0(veranstaltungDTO.getId(), userId);
+        veranstaltungComponent.changePhase(veranstaltungDTO.getId(),"Laufend" , userId);
         return veranstaltungDTO;
     }
 

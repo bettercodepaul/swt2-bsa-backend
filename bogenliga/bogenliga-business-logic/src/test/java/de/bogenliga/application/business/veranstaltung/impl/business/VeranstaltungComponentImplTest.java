@@ -485,6 +485,60 @@ public class VeranstaltungComponentImplTest {
     }
 
     @Test
+    public void testchangePhase() {
+        // prepare test data
+        final VeranstaltungDO input = getVeranstaltungDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+
+        // configure mocks
+        when(veranstaltungDAO.update(any(VeranstaltungBE.class), anyLong())).thenReturn(expectedBE);
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+        when(veranstaltungDAO.findById(anyLong())).thenReturn(expectedBE);
+
+        // call test method
+        final VeranstaltungDO actual = underTest.changePhase(VERANSTALTUNG_ID, VERANSTALTUNG_PHASE_GEPLANT, USER);
+
+        // assert result
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getVeranstaltungID())
+                .isEqualTo(expectedDO.getVeranstaltungID());
+
+        assertThat(actual.getVeranstaltungName())
+                .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.getVeranstaltungWettkampftypName())
+                .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.getVeranstaltungLigaleiterEmail())
+                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.getVeranstaltungLigaName())
+                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+        assertThat(actual.getVeranstaltungPhase().toUpperCase())
+                .isEqualTo(expectedDO.getVeranstaltungPhase());
+
+        // verify invocations
+        verify(veranstaltungDAO).update(veranstaltungBEArgumentCaptor.capture(), anyLong());
+
+        final VeranstaltungBE persistedBE = veranstaltungBEArgumentCaptor.getValue();
+
+        assertThat(persistedBE).isNotNull();
+
+        assertThat(persistedBE.getVeranstaltungId())
+                .isEqualTo(input.getVeranstaltungID());
+        assertThat(persistedBE.getVeranstaltungName())
+                .isEqualTo(input.getVeranstaltungName());
+    }
+
+
+
+    @Test
     public void testFindByLigaleiterId() {
         // prepare test data
         final VeranstaltungBE expectedBE = getVeranstaltungBE();
