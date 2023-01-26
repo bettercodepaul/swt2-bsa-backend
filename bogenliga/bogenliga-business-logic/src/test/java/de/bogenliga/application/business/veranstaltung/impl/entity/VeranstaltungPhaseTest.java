@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
- * TODO [AL] class documentation
+ * A test class for the methods of the class VeranstaltungPhase.
  *
  * @author Manuel Lange, student
  */
@@ -79,5 +79,43 @@ public class VeranstaltungPhaseTest extends TestCase {
         assertThat(actual_4).isNotNull();
 
         assertThat(actual_4).isEqualTo(PHASE_STRING_GEPLANT);
+    }
+
+
+    /**
+     * This is a test-method to test all possibilities in the method getPhaseFromStringToInt in the class
+     * VeranstaltungPhase. Because the method has a switch(case) every case need to test.
+     *
+     * @Author: Manuel Lange
+     */
+    public void testGetPhaseFromStringToInt() {
+
+        /**
+         * Test 1: Case 1 Phase: 1
+         */
+        final int actual = underTest.getPhaseFromStringToInt(PHASE_STRING_GEPLANT);
+
+        assertThat(actual).isEqualTo(PHASE_INTEGER);
+
+        /**
+         * Test 2: Case 2 Phase: 2
+         */
+        final int actual_2 = underTest.getPhaseFromStringToInt(PHASE_STRING_LAUFEND);
+
+        assertThat(actual_2).isEqualTo(PHASE_INTEGER_2);
+
+        /**
+         * Test 3: Case 3 Phase: 3
+         */
+        final int actual_3 = underTest.getPhaseFromStringToInt(PHASE_STRING_ABGESCHLOSSEN);
+
+        assertThat(actual_3).isEqualTo(PHASE_INTEGER_3);
+
+        /**
+         * Test 4: Case Default Phase: 1
+         */
+        final int actual_4 = underTest.getPhaseFromStringToInt("");
+
+        assertThat(actual_4).isEqualTo(PHASE_INTEGER);
     }
 }
