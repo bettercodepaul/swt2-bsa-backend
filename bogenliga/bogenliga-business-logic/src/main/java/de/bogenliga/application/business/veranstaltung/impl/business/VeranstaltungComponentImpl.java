@@ -165,7 +165,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     @Override
     public VeranstaltungDO create(final VeranstaltungDO veranstaltungDO, final long currentDsbMitgliedId) {
         checkVeranstaltungDO(veranstaltungDO, currentDsbMitgliedId);
-        System.out.println("Service Phase DO Impl: " + veranstaltungDO.getVeranstaltungPhase());
         Preconditions.checkArgument(
                 validLiga(veranstaltungDO.getVeranstaltungLigaID(), veranstaltungDO.getVeranstaltungSportJahr()),
                 PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG);
@@ -291,8 +290,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * Liga in Sportjahr
      */
     private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_veranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
-        for (VeranstaltungDO vdo : all_veranstaltungen) {
+        List<VeranstaltungDO> all_Veranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
+        for (VeranstaltungDO vdo : all_Veranstaltungen) {
             if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
                 return false;
             }
@@ -303,7 +302,10 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     // we will add all information required in VeranstaltungDO which are not stored in the entity
     // especially names in addition to IDs
+
     private VeranstaltungDO completeNames(VeranstaltungBE veranstaltungBE) {
+
+        VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
 
         LigaDO tempLigaDO = new LigaDO();
         WettkampfTypDO tempWettkampfTypDO = new WettkampfTypDO(0L);
@@ -319,18 +321,14 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         if (veranstaltungBE.getVeranstaltungLigaleiterId() != null) {
             tempUserDO = userComponent.findById(veranstaltungBE.getVeranstaltungLigaleiterId());
         }
-        if (veranstaltungBE.getVeranstaltungPhase() instanceof Integer) {
-            switch (veranstaltungBE.getVeranstaltungPhase()) {
-                case 1:
-                    tempVeranstaltungDO.setVeranstaltungPhase("Geplant");
-                    break;
-                case 2:
-                    tempVeranstaltungDO.setVeranstaltungPhase("Laufend");
-                    break;
-                case 3:
-                    tempVeranstaltungDO.setVeranstaltungPhase("Abgeschlossen");
-            }
 
+        /** the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
+         *  The phase will convert from Integer to String, because the phase is stored in the database as Integer,
+         *  but in the dialogs of the frontend it should show the phase as text.
+         */
+        if (veranstaltungBE.getVeranstaltungPhase() instanceof Integer) {
+            tempVeranstaltungDO.setVeranstaltungPhase(
+                    veranstaltungPhase.getPhaseAsString(veranstaltungBE.getVeranstaltungPhase()));
         }
 
         return VeranstaltungMapper.toVeranstaltungDO(veranstaltungBE, tempUserDO, tempWettkampfTypDO, tempLigaDO,

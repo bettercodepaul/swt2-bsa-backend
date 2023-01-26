@@ -7,6 +7,7 @@ import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
+import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.time.DateProvider;
@@ -22,6 +23,8 @@ public class VeranstaltungMapper implements ValueObjectMapper {
      */
     public static final Function<VeranstaltungDO, VeranstaltungBE> toVeranstaltungBE= veranstaltungDO -> {
 
+        VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
+
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(veranstaltungDO.getCreatedAtUtc());
         Timestamp lastModifiedAtUtcTimestamp = DateProvider.convertOffsetDateTime(
                 veranstaltungDO.getLastModifiedAtUtc());
@@ -35,20 +38,12 @@ public class VeranstaltungMapper implements ValueObjectMapper {
         veranstaltungBE.setVeranstaltungLigaId(veranstaltungDO.getVeranstaltungLigaID());
         veranstaltungBE.setVeranstaltungSportjahr(veranstaltungDO.getVeranstaltungSportJahr());
 
-        int phase = 1;
-        switch (veranstaltungDO.getVeranstaltungPhase()) {
-            case "Geplant":
-                phase = 1;
-                break;
-            case "Laufend":
-                phase = 2;
-                break;
-            case "Abgeschlossen":
-                phase = 3;
-        }
-        veranstaltungBE.setVeranstaltungPhase(phase);
-
-        //veranstaltungBE.setVeranstaltungPhase(veranstaltungDO.getVeranstaltungPhase());
+        /** the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
+         *  The phase will convert from String to Integer, because the phase is stored in the database as Integer,
+         *  but in the dialogs of the frontend it should show the phase as text.
+         */
+        veranstaltungBE.setVeranstaltungPhase(veranstaltungPhase.getPhaseFromStringToInt(
+                veranstaltungDO.getVeranstaltungPhase()));
 
         veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
         veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());

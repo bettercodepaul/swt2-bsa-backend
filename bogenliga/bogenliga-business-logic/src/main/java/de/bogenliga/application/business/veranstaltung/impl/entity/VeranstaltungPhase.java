@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.veranstaltung.impl.entity;
 
 /**
- * TODO [AL] class documentation
+ * The class stored the Phase ENUM for backend and also convert the enum to integer, when a veranstaltung is called.
  *
  * @author Manuel Lange, student
  */
@@ -62,6 +62,26 @@ public class VeranstaltungPhase {
                 break;
         }
         return phaseAsString;
+    }
+
+
+    public int getPhaseFromStringToInt(String phase) {
+        int phaseInt;
+        switch (phase) {
+            case "Geplant":
+                phaseInt = 1;
+                break;
+            case "Laufend":
+                phaseInt = 2;
+                break;
+            case "Abgeschlossen":
+                phaseInt = 3;
+                break;
+            default:
+                phaseInt = 1;
+                break;
+        }
+        return phaseInt;
     }
 
 
