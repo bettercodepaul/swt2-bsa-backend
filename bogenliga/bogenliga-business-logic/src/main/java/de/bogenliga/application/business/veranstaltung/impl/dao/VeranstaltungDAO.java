@@ -151,7 +151,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      * Return all Veranstaltung entries from the database specified by the phases attributes
      */
     public List<VeranstaltungBE> findAll(VeranstaltungPhase.Phase[] phaseList) {
-        int[] phaseListInt = PhaseEnumToInteger(phaseList);
+        int[] phaseListInt = phaseEnumToInteger(phaseList);
         List<VeranstaltungBE> veranstaltungList;
         switch (phaseList.length) {
             case 0:
@@ -165,7 +165,6 @@ public class VeranstaltungDAO implements DataAccessObject{
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_ALL);
                 break;
         }
-        veranstaltungList = changePhaseIntegerToText(veranstaltungList);
         return veranstaltungList;
     }
 
@@ -184,11 +183,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      * @param id - selected ID of Veranstaltung you want to recieve
      */
     public VeranstaltungBE findById(final long id) {
-        VeranstaltungBE veranstaltung = basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
-        VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
-        //veranstaltung.setVeranstaltungPhase(
-        //veranstaltungPhase.getPhaseAsString(veranstaltung.getVeranstaltungPhase()));
-        return veranstaltung;
+        return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
 
 
@@ -200,7 +195,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      */
     public List<VeranstaltungBE> findBySportjahr(final long sportjahr, VeranstaltungPhase.Phase[] phaseList) {
 
-        int[] phaseListInt = PhaseEnumToInteger(phaseList);
+        int[] phaseListInt = phaseEnumToInteger(phaseList);
         List<VeranstaltungBE> veranstaltungList;
         switch (phaseList.length) {
             case 0:
@@ -218,23 +213,17 @@ public class VeranstaltungDAO implements DataAccessObject{
                 veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_SPORTJAHR, sportjahr);
                 break;
         }
-        veranstaltungList = changePhaseIntegerToText(veranstaltungList);
         return veranstaltungList;
     }
 
 
     public List<VeranstaltungBE> findByLigaID(long ligaID) {
-        List<VeranstaltungBE> veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGAID, ligaID);
-        veranstaltungList = changePhaseIntegerToText(veranstaltungList);
-        return veranstaltungList;
+        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGAID, ligaID);
     }
 
 
     public List<VeranstaltungBE> findByLigaleiterId(long ligaleiterId) {
-        List<VeranstaltungBE> veranstaltungList = basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGALEITER_ID,
-                ligaleiterId);
-        veranstaltungList = changePhaseIntegerToText(veranstaltungList);
-        return veranstaltungList;
+        return basicDao.selectEntityList(VERANSTALTUNG, FIND_BY_LIGALEITER_ID, ligaleiterId);
     }
 
 
@@ -263,34 +252,13 @@ public class VeranstaltungDAO implements DataAccessObject{
      *
      * @return phaseListInteger
      */
-    private int[] PhaseEnumToInteger(VeranstaltungPhase.Phase[] phaseList) {
+    private int[] phaseEnumToInteger(VeranstaltungPhase.Phase[] phaseList) {
         int[] phaseListInteger = new int[phaseList.length];
         VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
         for (int index = 0; index < phaseList.length; index++) {
             phaseListInteger[index] = veranstaltungPhase.getPhaseAsInt(phaseList[index]);
         }
         return phaseListInteger;
-    }
-
-
-    /**
-     * This method change the phases from all veranstaltungen in the list from Integer to String In the database the
-     * phase is a number as Integer and in the frontend the phases are shown as words. This method calls the class
-     * VeranstaltungPhase to convert one phase from Integer to String.
-     *
-     * @param veranstaltungList
-     *
-     * @return veranstaltungList
-     */
-    private List<VeranstaltungBE> changePhaseIntegerToText(List<VeranstaltungBE> veranstaltungList) {
-        for (VeranstaltungBE veranstaltung : veranstaltungList) {
-            VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
-            if (veranstaltung.getVeranstaltungPhase() != null) {
-                //veranstaltung.setVeranstaltungPhase(
-                //veranstaltungPhase.getPhaseAsString(String.valueOf(veranstaltung.getVeranstaltungPhase())));
-            }
-        }
-        return veranstaltungList;
     }
 
 
