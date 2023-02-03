@@ -53,6 +53,9 @@ public class JwtTokenFilter extends GenericFilterBean {
                 final String refreshedToken = jwtTokenProvider.refreshToken(token);
                 ((HttpServletResponse) res).addHeader("Authorization", "Bearer " + refreshedToken);
             }
+            else{
+                ((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED,"SESSION_ERROR");
+            }
         } else {
             // do not block OPTIONS requests with 403 "no permission"
             final Authentication auth = jwtTokenProvider.getOptionsAuthentication();
