@@ -134,7 +134,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     public UsernamePasswordAuthenticationToken createAuthenticationPlaceholder(final String username,
                                                                                final Set<UserPermission> userPermissions) {
         LOG.trace("Create placeholder for authentication. Username = {}", username);
+        UserDO user = userComponent.findByEmail(username);
 
-        return new UsernamePasswordAuthenticationToken(0, "", userPermissions);
+        return new UsernamePasswordAuthenticationToken(user.getId(), "", userPermissions);
     }
 }
