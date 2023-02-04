@@ -158,10 +158,16 @@ public class UserAuthenticationProviderTest {
     @Test
     public void createAuthenticationPlaceholder() {
 
+        UserDO userDo = new UserDO();
+        userDo.setEmail(EMAIL);
+        userDo.setId(USER_ID);
+        userDo.setUsing2FA(false);
+        when(userComponent.findByEmail(any())).thenReturn(userDo);
+
         final UsernamePasswordAuthenticationToken actual = underTest.createAuthenticationPlaceholder(EMAIL,
                 Collections.singleton(PERMISSION));
 
-        assertThat(actual.getPrincipal()).isEqualTo(0);
+        assertThat(actual.getPrincipal()).isEqualTo(userDo.getId().toString());
 
         assertThat(actual.getAuthorities()).isNotNull();
         final Collection<GrantedAuthority> actualPermissions = actual.getAuthorities();
