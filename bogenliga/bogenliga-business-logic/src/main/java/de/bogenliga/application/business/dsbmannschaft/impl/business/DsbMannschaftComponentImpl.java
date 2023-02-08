@@ -319,7 +319,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     @Override
     public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID) {
 
-        List<MannschaftsmitgliedDO> alteMitglieder = mannschaftsmitgliedComponent.findByTeamId((long) oldMannschaftsID);
+        List<MannschaftsmitgliedDO> alteMitglieder = mannschaftsmitgliedComponent.findByTeamId(oldMannschaftsID);
 
         MannschaftsmitgliedDO neuesMitglied;
         for(MannschaftsmitgliedDO altesMitglied : alteMitglieder) {
