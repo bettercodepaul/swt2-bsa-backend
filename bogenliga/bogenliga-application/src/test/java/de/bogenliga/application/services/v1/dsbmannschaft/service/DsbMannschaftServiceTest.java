@@ -348,6 +348,7 @@ public class DsbMannschaftServiceTest {
         // configure mocks
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(expectedDsbMannschaftDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expectedDsbMannschaftDO);
 
         // call test method
         underTest.insertMannschaftIntoVeranstaltung(inputVeranstaltungsId, expectedDsbMannschaftDO.getId(),
