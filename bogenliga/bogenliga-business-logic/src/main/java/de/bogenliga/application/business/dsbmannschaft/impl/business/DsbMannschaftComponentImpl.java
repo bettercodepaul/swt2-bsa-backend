@@ -314,4 +314,21 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
         return addedMannschaftenList;
     }
+
+
+    @Override
+    public void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID) {
+
+        List<MannschaftsmitgliedDO> alteMitglieder = mannschaftsmitgliedComponent.findByTeamId((long) oldMannschaftsID);
+
+        MannschaftsmitgliedDO neuesMitglied;
+        for(MannschaftsmitgliedDO altesMitglied : alteMitglieder) {
+            neuesMitglied = altesMitglied;
+            neuesMitglied.setMannschaftId(newMannschaftsID);
+            mannschaftsmitgliedComponent.create(neuesMitglied, 0L);
+        }
+
+    }
+
+
 }
