@@ -274,7 +274,8 @@ public class DsbMannschaftService implements ServiceFacade {
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
-        dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
+        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
+        dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId());
 
         LOG.debug("Mannschaft " + dsbMannschaftDO.getName() + "in Veranstaltung mit id " + veranstaltungsId + " kopiert.");
     }
