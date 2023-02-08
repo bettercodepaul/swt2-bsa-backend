@@ -101,4 +101,11 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @return
      */
     List<DsbMannschaftDO> copyMannschaftFromVeranstaltung(final long lastVeranstaltungsId, final long currentVeranstaltungsId, final long userId);
+
+    /**
+     * Copys the Mitglieder of an old Mannschaft into a new Mannschaft
+     * @param oldMannschaftsID
+     * @param newMannschaftsID
+     */
+    void copyMitgliederFromMannschaft(long oldMannschaftsID, long newMannschaftsID);
 }

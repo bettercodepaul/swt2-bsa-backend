@@ -3,6 +3,7 @@ package de.bogenliga.application.business.dsbmannschaft.impl.business;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmannschaft.impl.dao.DsbMannschaftDAO;
 import de.bogenliga.application.business.dsbmannschaft.impl.entity.DsbMannschaftBE;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.business.MannschaftsmitgliedComponentImpl;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -23,6 +24,7 @@ import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -63,6 +65,8 @@ public class DsbMannschaftComponentImplTest {
     private DsbMannschaftComponentImpl underTest;
     @Captor
     private ArgumentCaptor<DsbMannschaftBE> dsbMannschaftBEArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<MannschaftsmitgliedDO> mannschaftsmitgliedDOArgumentCaptor;
 
 
 
@@ -868,6 +872,26 @@ public class DsbMannschaftComponentImplTest {
         verify(vereinComponent).findById(anyLong());
         verify(mannschaftsmitgliedComponent).findByTeamId(anyLong());
         verify(mannschaftsmitgliedComponent).create(any(), anyLong());
+    }
+
+    @Test
+    public void copyMitgliederFromMannschaftTest(){
+
+        // prepare test data
+        final long oldMannschaftId = 0;
+        final long newMannschaftId = 1;
+        List<MannschaftsmitgliedDO> alteMitglieder = new LinkedList<>();
+        alteMitglieder.add(new MannschaftsmitgliedDO(1L));
+
+        // configure mocks
+        when(mannschaftsmitgliedComponent.findByTeamId(any())).thenReturn(alteMitglieder);
+
+        // call test method
+        underTest.copyMitgliederFromMannschaft(oldMannschaftId, newMannschaftId);
+
+        // verify result
+        verify(mannschaftsmitgliedComponent).create(mannschaftsmitgliedDOArgumentCaptor.capture(), any());
+        assertThat(mannschaftsmitgliedDOArgumentCaptor.getValue().getMannschaftId()).isEqualTo(newMannschaftId);
     }
 
 }
