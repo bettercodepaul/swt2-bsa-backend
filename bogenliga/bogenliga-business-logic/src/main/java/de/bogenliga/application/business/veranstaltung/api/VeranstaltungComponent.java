@@ -129,5 +129,5 @@ public interface VeranstaltungComponent extends ComponentFacade {
      *
      */
 
-    VeranstaltungDO changePhase(final long veranstaltungId, String phase, long currentDsbMitgliedId );
+    VeranstaltungDO setPhase(final long veranstaltungId, String phase, long currentDsbMitgliedId );
 }
