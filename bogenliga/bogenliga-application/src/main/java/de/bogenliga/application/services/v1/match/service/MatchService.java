@@ -17,7 +17,6 @@ import de.bogenliga.application.business.ligamatch.impl.mapper.LigamatchToMatchM
 import de.bogenliga.application.business.ligapasse.impl.entity.LigapasseBE;
 import de.bogenliga.application.business.ligapasse.impl.mapper.LigapasseToPasseMapper;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
-import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
 import org.slf4j.Logger;
@@ -738,7 +737,7 @@ public class MatchService implements ServiceFacade {
         final long userId = UserProvider.getCurrentUserId(principal);
 
         matchComponent.createInitialMatchesWT0(veranstaltungDTO.getId(), userId);
-        veranstaltungComponent.changePhase(veranstaltungDTO.getId(),"Laufend" , userId);
+        veranstaltungComponent.setPhase(veranstaltungDTO.getId(),"Laufend" , userId);
         return veranstaltungDTO;
     }
 
