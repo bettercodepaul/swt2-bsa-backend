@@ -485,7 +485,7 @@ public class VeranstaltungComponentImplTest {
     }
 
     @Test
-    public void testchangePhase() {
+    public void testSetPhase() {
         // prepare test data
         final VeranstaltungDO input = getVeranstaltungDO();
         final VeranstaltungDO expectedDO = getVeranstaltungDO();
@@ -503,7 +503,7 @@ public class VeranstaltungComponentImplTest {
         when(veranstaltungDAO.findById(anyLong())).thenReturn(expectedBE);
 
         // call test method
-        final VeranstaltungDO actual = underTest.changePhase(VERANSTALTUNG_ID, VERANSTALTUNG_PHASE_GEPLANT, USER);
+        final VeranstaltungDO actual = underTest.setPhase(VERANSTALTUNG_ID, VERANSTALTUNG_PHASE_GEPLANT, USER);
 
         // assert result
         assertThat(actual).isNotNull();

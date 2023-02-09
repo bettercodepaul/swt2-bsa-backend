@@ -310,7 +310,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      *
      */
     @Override
-    public VeranstaltungDO changePhase(final long veranstaltungId, String phase, final long currentDsbMitgliedId){
+    public VeranstaltungDO setPhase(final long veranstaltungId, String phase, final long currentDsbMitgliedId){
 
         VeranstaltungDO veranstaltungDO = findById(veranstaltungId);
         veranstaltungDO.setVeranstaltungPhase(phase);
