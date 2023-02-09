@@ -134,6 +134,15 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     public UsernamePasswordAuthenticationToken createAuthenticationPlaceholder(final String username,
                                                                                final Set<UserPermission> userPermissions) {
         LOG.trace("Create placeholder for authentication. Username = {}", username);
+        // wir müssen hier den System-Fall separat behandeln -
+        // das Token muss bereits vor der ersten Anmeldung funktionieren
+        // daher wird der User 0 für das System reserviert und direkt zugewiesen
+        // für alle anderen schreiben wir die USER-ID rein.
+
+        if(!username.equals("SYSTEM")) {
+            UserDO user = userComponent.findByEmail(username);
+            return new UsernamePasswordAuthenticationToken(user.getId().toString(), "", userPermissions);
+        }
 
         return new UsernamePasswordAuthenticationToken(0, "", userPermissions);
     }
