@@ -53,6 +53,16 @@ public interface DsbMitgliedComponent extends ComponentFacade {
      */
     List<DsbMitgliedDO> findBySearch(String searchItem);
 
+
+    /*
+     * Die Funktion prüft, ob ein DsbMitglied eine Kampfrichterlizenz besitzt.
+     * Sie gibt true zurück wenn die Kampfrichterlizenz existiert.
+     * @param id from DsbMitglied
+     * @return boolean if dsbMitglied has a lizenz
+     */
+    Boolean hasKampfrichterLizenz(final long id);
+
+
     /**
      * Create a new dsbmitglied in the database.
      * and create an lizens if needed

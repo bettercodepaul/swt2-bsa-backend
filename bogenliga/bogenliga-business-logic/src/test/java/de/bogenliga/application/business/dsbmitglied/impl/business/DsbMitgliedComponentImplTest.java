@@ -351,6 +351,22 @@ public class DsbMitgliedComponentImplTest {
 
 
     @Test
+    public void hasKampfrichterLizenz(){
+        when(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
+        assertThat(dsbMitgliedDAO.hasKampfrichterLizenz(anyLong())).isFalse();
+
+    }
+
+    public void hasKampfrichterLizenzMinusEins(){
+        try {
+            assertThat(underTest.hasKampfrichterLizenz(-1L)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void create() {
         // prepare test data
         final DsbMitgliedDO input = getDsbMitgliedDO();
