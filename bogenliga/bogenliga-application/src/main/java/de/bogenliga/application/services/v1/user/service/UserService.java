@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.user.service;
 
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.role.api.RoleComponent;
+import de.bogenliga.application.business.role.api.types.RoleDO;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
@@ -70,6 +72,8 @@ public class UserService implements ServiceFacade {
 
     private static final String PW_VALIDATION_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d#$^+=!*()@%&?]{8,}$";
 
+    private static final String ROLE_KAMPFRICHTER = "KAMPFRICHTER";
+
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -79,6 +83,7 @@ public class UserService implements ServiceFacade {
     private final UserComponent userComponent;
 
     private final UserRoleComponent userRoleComponent;
+    private final RoleComponent roleComponent;
 
     private final UserProfileComponent userProfileComponent;
     private final DsbMitgliedComponent dsbMitgliedComponent;
@@ -89,6 +94,7 @@ public class UserService implements ServiceFacade {
                        final WebSecurityConfiguration webSecurityConfiguration,
                        final UserComponent userComponent,
                        final UserRoleComponent userRoleComponent,
+                       final RoleComponent roleComponent,
                        final UserProfileComponent userProfileComponent,
                        final DsbMitgliedComponent dsbMitgliedComponent,
                        final VeranstaltungComponent veranstaltungComponent) {
@@ -96,6 +102,7 @@ public class UserService implements ServiceFacade {
         this.webSecurityConfiguration = webSecurityConfiguration;
         this.userComponent = userComponent;
         this.userRoleComponent = userRoleComponent;
+        this.roleComponent = roleComponent;
         this.userProfileComponent = userProfileComponent;
         this.dsbMitgliedComponent = dsbMitgliedComponent;
         this.veranstaltungComponent = veranstaltungComponent;
@@ -485,6 +492,10 @@ public class UserService implements ServiceFacade {
                 userCredentialsDTO.getPassword(), userCredentialsDTO.getDsbMitgliedId(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
         userRoleComponent.create(userCreatedDO.getId(), userId);
+        if(dsbMitgliedComponent.hasKampfrichterLizenz(userCreatedDO.getDsbMitgliedId())){
+            final RoleDO roleDO = roleComponent.findByName(ROLE_KAMPFRICHTER);
+            userRoleComponent.create(userCreatedDO.getId(),roleDO.getId(),userId);
+        }
         return UserDTOMapper.toDTO.apply(userCreatedDO);
     }
 
