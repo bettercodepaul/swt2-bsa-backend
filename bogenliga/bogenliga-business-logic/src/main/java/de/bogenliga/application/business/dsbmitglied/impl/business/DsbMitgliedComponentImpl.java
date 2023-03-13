@@ -101,6 +101,20 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
     }
 
+    /*
+     * Die Funktion prüft, ob ein DsbMitglied eine Kampfrichterlizenz besitzt
+     * und gibt true zurück wenn die Kampfrichterlizenz existiert.
+     * @param id from DsbMitglied
+     * @return boolean if dsbMitglied has a lizenz
+     */
+    @Override
+    public Boolean hasKampfrichterLizenz(final long id) {
+        // Id muss gültig sein und damit >= null sein.
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
+        return (dsbMitgliedDAO.hasKampfrichterLizenz(id) );
+    }
+
+
 
     @Override
     public DsbMitgliedDO create(final DsbMitgliedDO dsbMitgliedDO, final long currentDsbMitgliedId) {
