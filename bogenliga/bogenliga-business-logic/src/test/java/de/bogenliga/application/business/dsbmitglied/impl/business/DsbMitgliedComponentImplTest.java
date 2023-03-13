@@ -357,6 +357,14 @@ public class DsbMitgliedComponentImplTest {
 
     }
 
+    public void hasKampfrichterLizenzMinusEins(){
+        try {
+            assertThat(underTest.hasKampfrichterLizenz(-1L)).isNull();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     @Test
     public void create() {
