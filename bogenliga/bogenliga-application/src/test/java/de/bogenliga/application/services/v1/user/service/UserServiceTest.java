@@ -2,8 +2,10 @@ package de.bogenliga.application.services.v1.user.service;
 
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.role.api.types.RoleDO;
 import de.bogenliga.application.business.user.api.UserRoleComponent;
 import de.bogenliga.application.business.user.api.UserProfileComponent;
+import de.bogenliga.application.business.role.api.RoleComponent;
 import de.bogenliga.application.business.user.api.UserComponent;
 import de.bogenliga.application.business.user.api.types.UserProfileDO;
 import de.bogenliga.application.business.user.api.types.UserDO;
@@ -88,6 +90,8 @@ public class UserServiceTest {
     private HttpServletRequest requestWithHeader;
     @Mock
     private UserComponent userComponent;
+    @Mock
+    private RoleComponent roleComponent;
     @Mock
     private UserProfileComponent userProfileComponent;
     @Mock
@@ -808,9 +812,74 @@ public class UserServiceTest {
         userCredentialsDTO.setPassword(PASSWORD);
         userCredentialsDTO.setDsbMitgliedId(DSBMITGLIEDID);
 
+        final RoleDO roleDO = new RoleDO();
+        roleDO.setId(ROLE_ID);
+        roleDO.setRoleName(ROLE_NAME);
+
         // configure mocks
         when(userComponent.create(anyString(), anyString(), anyLong(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
         when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
+        when(roleComponent.findByName(anyString())).thenReturn(roleDO);
+        when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
+        when(userRoleComponent.create(anyLong(),anyLong(), anyLong())).thenReturn(createdUserRoleDO);
+
+        // call test method
+        final UserDTO actual = underTest.create(requestWithHeader, userCredentialsDTO);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(expecteduserDTO.getId());
+        assertThat(actual.getEmail()).isEqualTo(expecteduserDTO.getEmail());
+
+    }
+
+    public void create_success_kampfrichter() {
+
+        // prepare test data identity user
+        final UserSignInDTO userSignInDTO = new UserSignInDTO();
+        userSignInDTO.setJwt(JWT);
+        userSignInDTO.setEmail(USERNAME);
+        userSignInDTO.setId(ID);
+
+        // configure mocks
+        when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
+        when(jwtTokenProvider.resolveUserSignInDTO(anyString())).thenReturn(userSignInDTO);
+        when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
+
+        //prepare test data newUser
+        final UserDTO expecteduserDTO = new UserDTO();
+        expecteduserDTO.setEmail(USERNAME);
+        expecteduserDTO.setId(ID);
+        expecteduserDTO.setVersion(VERSION);
+
+        final UserRoleDO createdUserRoleDO = new UserRoleDO();
+        createdUserRoleDO.setEmail(USERNAME);
+        createdUserRoleDO.setId(ID);
+        createdUserRoleDO.setRoleName(ROLE_NAME);
+        createdUserRoleDO.setRoleId(ROLE_ID);
+        createdUserRoleDO.setVersion(VERSION);
+
+        final UserDO userCreatedDO = new UserDO();
+        userCreatedDO.setEmail(USERNAME);
+        userCreatedDO.setId(ID);
+        userCreatedDO.setDsbMitgliedId(DSBMITGLIEDID);
+        userCreatedDO.setVersion(VERSION);
+
+        final UserCredentialsDTO userCredentialsDTO = new UserCredentialsDTO();
+        userCredentialsDTO.setUsername(USERNAME);
+        userCredentialsDTO.setPassword(PASSWORD);
+        userCredentialsDTO.setDsbMitgliedId(DSBMITGLIEDID);
+
+        final RoleDO roleDO = new RoleDO();
+        roleDO.setId(ROLE_ID);
+        roleDO.setRoleName(ROLE_NAME);
+
+        // configure mocks
+        when(userComponent.create(anyString(), anyString(), anyLong(), anyLong(), anyBoolean())).thenReturn(userCreatedDO);
+        when(userRoleComponent.create(anyLong(), anyLong())).thenReturn(createdUserRoleDO);
+        when(roleComponent.findByName(anyString())).thenReturn(roleDO);
+        when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.TRUE);
+        when(userRoleComponent.create(anyLong(),anyLong(), anyLong())).thenReturn(createdUserRoleDO);
 
         // call test method
         final UserDTO actual = underTest.create(requestWithHeader, userCredentialsDTO);
@@ -835,6 +904,7 @@ public class UserServiceTest {
         when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
         when(jwtTokenProvider.resolveUserSignInDTO(anyString())).thenReturn(userSignInDTO);
         when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
+        when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
 
         //prepare test data newUser
 
@@ -864,6 +934,7 @@ public class UserServiceTest {
         when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
         when(jwtTokenProvider.resolveUserSignInDTO(anyString())).thenReturn(userSignInDTO);
         when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
+        when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
 
         //prepare test data newUser
 
@@ -893,6 +964,7 @@ public class UserServiceTest {
         when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
         when(jwtTokenProvider.resolveUserSignInDTO(anyString())).thenReturn(userSignInDTO);
         when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
+        when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
 
         //prepare test data newUser
 
@@ -922,6 +994,7 @@ public class UserServiceTest {
         when(requestWithHeader.getHeader(anyString())).thenReturn("Bearer " + JWT);
         when(jwtTokenProvider.resolveUserSignInDTO(anyString())).thenReturn(userSignInDTO);
         when(jwtTokenProvider.getUserId(any())).thenReturn(ID);
+        when(dsbMitgliedComponent.hasKampfrichterLizenz(anyLong())).thenReturn(Boolean.FALSE);
 
         //prepare test data newUser
 
