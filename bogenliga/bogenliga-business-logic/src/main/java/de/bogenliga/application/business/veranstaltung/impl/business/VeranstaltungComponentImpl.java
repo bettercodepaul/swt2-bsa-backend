@@ -16,7 +16,6 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
