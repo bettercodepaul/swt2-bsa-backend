@@ -173,7 +173,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
 
         //create Wettkampftag 0
-        final WettkampfDO wettkampfTag0 = wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltungId(), persistedVeranstaltungBE.getVeranstaltungLigaleiterId());
+        wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltungId(), persistedVeranstaltungBE.getVeranstaltungLigaleiterId());
         //TODO die Bestiummung der User-ID im Service funktioniert nicht korrekt - daher kann diese nicht
         // als ID für den Ligaleiter genutzt werden - wir benötigen für die Fremdschlüsselbeziehung aber existierende
         // User-id - daher wird hier die Ligaleiter-Id als User-id übergeben
