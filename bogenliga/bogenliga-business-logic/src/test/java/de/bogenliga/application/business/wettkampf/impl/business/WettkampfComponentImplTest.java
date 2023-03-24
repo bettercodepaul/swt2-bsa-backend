@@ -3,6 +3,7 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.Array;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,8 +26,11 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -37,6 +41,7 @@ import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
@@ -44,6 +49,7 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 import static org.assertj.core.api.Java6Assertions.anyOf;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -79,6 +85,7 @@ public class WettkampfComponentImplTest {
     public static final int PFEIL8 = 6;
 
     private static final long mannschaft_id = 77;
+    private static final long mannschaft_id2 = 99;
 
 
     @Rule
@@ -89,6 +96,8 @@ public class WettkampfComponentImplTest {
     private WettkampfDAO wettkampfDAO;
     @Mock
     private MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
+    @Mock
+    private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     @Mock
     private PasseComponent passeComponent;
     @Mock
@@ -105,6 +114,7 @@ public class WettkampfComponentImplTest {
     private ArgumentCaptor<WettkampfBE> wettkampfBEArgumentCaptor;
     @Mock
     private MatchDO matchDO;
+
 
 
     /***
@@ -800,7 +810,54 @@ public class WettkampfComponentImplTest {
 
         verify(wettkampfDAO, times(2)).checkOfflineToken(anyLong(), anyString());
 
+    }
+
+    @Test
+    public void getAllowedMitglieder() {
+        assertThatThrownBy(() -> underTest.getAllowedMitglieder(-1, mannschaft_id, mannschaft_id2)).isInstanceOf(BusinessException.class);
+
+        //Testet den Fall das man in der höchsten Liga ist und deshalb eine leere Liste zurückgegeben wird, weil es keine Übergelegene Liga gibt
+        List<MannschaftsmitgliedDO> ListWithoutMitglieder = new ArrayList<>();
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id, wettkampf_Id)).thenReturn(ListWithoutMitglieder);
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id2, wettkampf_Id)).thenReturn(ListWithoutMitglieder);
+
+        List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id, mannschaft_id, mannschaft_id2);
+
+        assertTrue(allowedList.isEmpty());
+
+        //Testet den Fall das es eine Übergelegene Liga gibt
+        MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
+        MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
+        MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
+        MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
+
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id, wettkampf_Id)).thenReturn(mannschaftsmitgliedDOList);
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id2, wettkampf_Id)).thenReturn(mannschaftsmitgliedDOList);
+
+        assertThat(mannschaftsmitgliedDOList).isNotEmpty();
+        assertThat(mannschaftsmitgliedDOList).containsExactlyInAnyOrder(mannschaftsmitglied1, mannschaftsmitglied2, mannschaftsmitglied3, mannschaftsmitglied4);
+        assertEquals(4, mannschaftsmitgliedDOList.size());
+        verify(mannschaftsmitgliedComponent, times(2)).findSchuetzenInUebergelegenerLiga(anyLong(), anyLong());
+    }
+
+    @Test
+    public void getAllowedMitgliederOldVersion(){
+        assertThatThrownBy(() -> underTest.getAllowedMitglieder(-1)).isInstanceOf(BusinessException.class);
+
 
     }
+
+    @Test
+    public void getAllowedMitgliederList(){
+        //Code folgt
+    }
+
+
 }
 
