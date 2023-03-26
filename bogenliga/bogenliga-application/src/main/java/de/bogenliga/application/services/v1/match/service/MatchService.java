@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
@@ -864,17 +865,39 @@ public class MatchService implements ServiceFacade {
      * @param fromService: name of the service the log came from
      */
     private void log(MatchDTO matchDTO, String fromService) {
+
+        String id = matchDTO.getId().toString();
+        String wettkampfId = matchDTO.getWettkampfId().toString();
+        String begegnung = matchDTO.getBegegnung().toString();
+        String mannschaftId = matchDTO.getMannschaftId().toString();
+        String scheibenNummer = matchDTO.getScheibenNummer().toString();
+        String satzpunkte = matchDTO.getSatzpunkte().toString();
+        String matchpunkte = matchDTO.getMatchpunkte().toString();
+
+        String regex="[\n\r]";
+
+        fromService = fromService.replaceAll(regex, "_");
+        id = id.replaceAll(regex, "_");
+        wettkampfId = wettkampfId.replaceAll(regex, "_");
+        begegnung = begegnung.replaceAll(regex, "_");
+        mannschaftId = mannschaftId.replaceAll(regex, "_");
+        scheibenNummer = scheibenNummer.replaceAll(regex, "_");
+        satzpunkte = satzpunkte.replaceAll(regex, "_");
+        matchpunkte = matchpunkte.replaceAll(regex, "_");
+
+
+
         LOG.debug(
                 "Received '{}' request for match with id: '{}', WettkampfID: '{}', Begegnung: '{}', MannschaftId: '{}'," +
                         " ScheibenNummer: '{}', Satzpunkte: '{}', Matchpunkte: '{}'",
                 fromService,
-                matchDTO.getId(),
-                matchDTO.getWettkampfId(),
-                matchDTO.getBegegnung(),
-                matchDTO.getMannschaftId(),
-                matchDTO.getScheibenNummer(),
-                matchDTO.getSatzpunkte(),
-                matchDTO.getMatchpunkte()
+                id,
+                wettkampfId,
+                begegnung,
+                mannschaftId,
+                scheibenNummer,
+                satzpunkte,
+                matchpunkte
         );
     }
  }
