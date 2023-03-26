@@ -75,12 +75,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final VeranstaltungDAO veranstaltungDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
   
-    private final LigaComponent ligaComponent;
+    private LigaComponent ligaComponent;
     private MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final VereinComponent vereinComponent;
     private VeranstaltungComponent veranstaltungComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private  DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private LigatabelleComponent ligatabelleComponent;
@@ -116,6 +116,16 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     @Autowired
     public void setMatchComponent(final MatchComponent matchComponent){
         this.matchComponent = matchComponent;
+    }
+
+    @Autowired
+    public void setLigaComponent(final LigaComponent ligaComponent){
+        this.ligaComponent = ligaComponent;
+    }
+
+    @Autowired
+    public void setDsbMitgliedComponent(final DsbMitgliedComponent dsbMitgliedComponent){
+        this.dsbMitgliedComponent = dsbMitgliedComponent;
     }
 
     @Autowired
