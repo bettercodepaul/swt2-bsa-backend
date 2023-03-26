@@ -875,9 +875,12 @@ public class WettkampfComponentImplTest {
     }
 
     @Test
-    public void getAllowedMitgliederOldVersion(){
+    public void getAllowedMitgliederOldVersionUnvalidWettkampfID(){
         assertThatThrownBy(() -> underTest.getAllowedMitglieder(-1)).isInstanceOf(BusinessException.class);
+    }
 
+    @Test
+    public void getAllowedMitgliederOldVersion(){
         MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
         MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
         MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
@@ -889,10 +892,7 @@ public class WettkampfComponentImplTest {
         mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
 
-        underTest.setLigaComponent(ligaComponent);
         underTest.setMatchComponent(matchComponent);
-        underTest.setDsbMitgliedComponent(dsbMitgliedComponent);
-        underTest.setVeranstaltungComponent(veranstaltungComponent);
 
         when(matchComponent.findByMannschaftId(anyLong())).thenReturn(Collections.singletonList(getMatchDO()));
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(mannschaft_id)).thenReturn(mannschaftsmitgliedDOList);
@@ -903,8 +903,6 @@ public class WettkampfComponentImplTest {
         assertThat(allowedList).isNotEmpty();
         assertEquals(8, allowedList.size());
         verify(mannschaftsmitgliedComponent, times(2)).findAllSchuetzeInTeam(anyLong());
-
-
     }
 
     @Test
