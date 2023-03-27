@@ -251,6 +251,7 @@ public class WettkampfComponentImplTest {
                 0l,wettkampf_Veranstaltung_Id,0l);
         return neueMannschaft;
     }
+
     public static VereinDO getVereinDO()
     {
         VereinDO neuerVerein = new VereinDO(1l, "Bogensport Muster Hausen", "bmh",0l,"example.com",
@@ -920,21 +921,6 @@ public class WettkampfComponentImplTest {
 
         List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
 
-        underTest.setLigaComponent(ligaComponent);
-
-
-        /*
-        // arrange
-        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
-        MannschaftsmitgliedDO mannschaftsmitgliedDO1 = new MannschaftsmitgliedDO(user_Id);
-        MannschaftsmitgliedDO mannschaftsmitgliedDO2 = new MannschaftsmitgliedDO(user_Id);
-        mannschaftsmitgliedDO1.setDsbMitgliedId(1L);
-        mannschaftsmitgliedDO2.setDsbMitgliedId(2L);
-        mannschaftsmitgliedDOList.add(mannschaftsmitgliedDO1);
-        mannschaftsmitgliedDOList.add(mannschaftsmitgliedDO2);
-
-        List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
-
         List<LigaDO> ligen = new ArrayList<>();
         LigaDO ligaDO1 = new LigaDO();
         LigaDO ligaDO2 = new LigaDO();
@@ -944,33 +930,34 @@ public class WettkampfComponentImplTest {
         ligaDO2.setId(2L);
         ligen.add(ligaDO1);
         ligen.add(ligaDO2);
-        when(ligaComponent.findAll()).thenReturn(ligen);
 
         DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
         DsbMitgliedDO dsbMitgliedDO2 = new DsbMitgliedDO();
         dsbMitgliedDO1.setId(1L);
         dsbMitgliedDO2.setId(2L);
-        when(dsbMitgliedComponent.findById(1L)).thenReturn(dsbMitgliedDO1);
-        when(dsbMitgliedComponent.findById(2L)).thenReturn(dsbMitgliedDO2);
+        dsbMitgliedDO1.setUserId(3L);
+        dsbMitgliedDO2.setUserId(4L);
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
         veranstaltungDO.setVeranstaltungID(wettkampf_Veranstaltung_Id);
+        veranstaltungDO.setVeranstaltungSportJahr(veranstaltungDO.getVeranstaltungSportJahr());
+
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO2);
         when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(veranstaltungDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        //when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(getWettkampfBE());
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(), anyLong())).thenReturn(getPassenDO());
 
-        WettkampfDO wettkampfDO = getWettkampfDO();
-        when(passeComponent.findByMannschaftMatchId(mannschaft_id, match_Begegnung)).thenReturn(null);
-
+        underTest.setLigaComponent(ligaComponent);
         underTest.setVeranstaltungComponent(veranstaltungComponent);
-        // act
+
         List<Long> result = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
 
-        // assert
-        assertEquals(2, result.size());
-        assertEquals(dsbMitgliedDO1, result.get(0));
-        assertEquals(dsbMitgliedDO2, result.get(1));
-        verify(ligaComponent, times(1)).findAll();
-        verify(dsbMitgliedComponent, times(2)).findById(anyLong());
-        */
+        assertEquals(4, result.size());
+
     }
 
 
