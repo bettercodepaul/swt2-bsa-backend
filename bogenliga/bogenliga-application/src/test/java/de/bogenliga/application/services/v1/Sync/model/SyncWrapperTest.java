@@ -59,19 +59,19 @@ public class SyncWrapperTest {
         final SyncWrapper syncWrapper = getSyncWrapper();
 
         syncWrapper.setMatch(matchList);
-        Assert.assertEquals(syncWrapper.getMatch(), matchList);
+        Assert.assertEquals(matchList, syncWrapper.getMatch());
 
         syncWrapper.setPasse(passeList);
-        Assert.assertEquals(syncWrapper.getPasse(), passeList);
+        Assert.assertEquals(passeList, syncWrapper.getPasse());
 
         syncWrapper.setOfflineToken(offlineToken);
-        Assert.assertEquals(syncWrapper.getOfflineToken(), offlineToken);
+        Assert.assertEquals(offlineToken, syncWrapper.getOfflineToken());
 
         syncWrapper.setWettkampfId(wettkampfId);
-        Assert.assertEquals(syncWrapper.getWettkampfId(), wettkampfId);
+        Assert.assertEquals(wettkampfId, syncWrapper.getWettkampfId());
 
         syncWrapper.setMannschaftsmitglied(mitgliedList);
-        Assert.assertEquals(syncWrapper.getMannschaftsmitglied(), mitgliedList);
+        Assert.assertEquals(mitgliedList, syncWrapper.getMannschaftsmitglied());
     }
 
 }
