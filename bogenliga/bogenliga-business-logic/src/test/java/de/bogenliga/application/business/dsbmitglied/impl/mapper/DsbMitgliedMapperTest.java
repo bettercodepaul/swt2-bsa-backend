@@ -42,7 +42,7 @@ public class DsbMitgliedMapperTest {
 
         final DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO(ID, VORNAME, NACHNAME, GEBURTSDATUM, NATIONALITAET,
                 MITGLIEDSNUMMER, VEREINSID, USERID, false);
-        assertThat(actual.equals(dsbMitgliedDO));
+        assertThat(actual.getNachname()).isEqualTo(NACHNAME);
     }
 
 
