@@ -24,7 +24,7 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
-import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
+import de.bogenliga.application.services.v1.sportjahr.model.SportjahrDTO;
 import de.bogenliga.application.services.v1.sportjahr.mapper.SportjahrDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.mapper.VeranstaltungDTOMapper;
 import de.bogenliga.application.services.v1.veranstaltung.model.VeranstaltungDTO;
