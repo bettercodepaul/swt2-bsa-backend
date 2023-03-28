@@ -289,8 +289,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * Liga in Sportjahr
      */
     private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_Veranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
-        for (VeranstaltungDO vdo : all_Veranstaltungen) {
+        List<VeranstaltungDO> allVeranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
+        for (VeranstaltungDO vdo : allVeranstaltungen) {
             if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
                 return false;
             }
