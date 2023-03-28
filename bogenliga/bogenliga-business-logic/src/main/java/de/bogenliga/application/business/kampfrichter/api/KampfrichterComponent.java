@@ -11,12 +11,7 @@ import de.bogenliga.application.common.component.ComponentFacade;
  */
 public interface KampfrichterComponent extends ComponentFacade {
 
-    /*
-     * Return all kampfrichter entries.
-     *
-     * @return list of all kampfrichter kampfrichter in the database;
-     * empty list, if no kampfrichter is found
-     */
+
     List<KampfrichterDO> findAll();
 
 
