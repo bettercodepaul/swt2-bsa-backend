@@ -50,7 +50,7 @@ public class UserProfileDTOMapperTest {
         final UserProfileDO actual = UserProfileDTOMapper.toDO.apply(userProfileDTO);
         assertThat(actual.getVorname()).isEqualTo(VORNAME);
         assertThat(actual.getEmail()).isEqualTo(EMAIL);
-        assertThat(actual.equals(getDO()));
+        assertThat(actual.getMitgliedsnummer()).isEqualTo(MITGLIEDSNUMMER);
     }
 
     @Test
@@ -59,6 +59,6 @@ public class UserProfileDTOMapperTest {
         final UserProfileDTO actual = UserProfileDTOMapper.toDTO.apply(userProfileDO);
         assertThat(actual.getVorname()).isEqualTo(VORNAME);
         assertThat(actual.getEmail()).isEqualTo(EMAIL);
-        assertThat(actual.equals(getDTO()));
+        assertThat(actual.getMitgliedsnummer()).isEqualTo(MITGLIEDSNUMMER);
     }
 }

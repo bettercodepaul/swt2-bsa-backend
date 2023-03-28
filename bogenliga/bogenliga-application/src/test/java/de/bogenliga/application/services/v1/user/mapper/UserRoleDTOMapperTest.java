@@ -41,8 +41,9 @@ public class UserRoleDTOMapperTest {
         UserRoleDTO userRoleDTO = getDTO();
         final UserRoleDO actual = UserRoleDTOMapper.toDO.apply(userRoleDTO);
         assertThat(actual.getRoleName()).isEqualTo(ROLE_NAME);
+        assertThat(actual.getRoleId()).isEqualTo(ROLE_ID);
         assertThat(actual.getEmail()).isEqualTo(EMAIL);
-        assertThat(actual.equals(getDO()));
+        assertThat(actual.getId()).isEqualTo(ID);
         assertThat(actual.getDsbMitgliedNachname()).isEqualTo(DSBMITGLIED_TABLE_SURNAME);
         assertThat(actual.getDsbMitgliedVorname()).isEqualTo(DSBMITGLIED_TABLE_FORENAME);
     }
@@ -53,9 +54,10 @@ public class UserRoleDTOMapperTest {
         UserRoleDO userRoleDO = getDO();
         final UserRoleDTO actual = UserRoleDTOMapper.toDTO.apply(userRoleDO);
         assertThat(actual.getRoleName()).isEqualTo(ROLE_NAME);
+        assertThat(actual.getRoleId()).isEqualTo(ROLE_ID);
         assertThat(actual.getEmail()).isEqualTo(EMAIL);
         assertThat(actual.getDsbMitgliedNachname()).isEqualTo(DSBMITGLIED_TABLE_SURNAME);
         assertThat(actual.getDsbMitgliedVorname()).isEqualTo(DSBMITGLIED_TABLE_FORENAME);
-        assertThat(actual.equals(getDTO()));
+
     }
 }
