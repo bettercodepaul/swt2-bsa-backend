@@ -947,6 +947,7 @@ public class WettkampfComponentImplTest {
 
         when(matchComponent.findByMannschaftId(anyLong())).thenReturn(Collections.singletonList(matchdo));
         when(matchDO.getMannschaftId()).thenReturn(mannschaft_id);
+        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchdo);
 
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
@@ -960,12 +961,13 @@ public class WettkampfComponentImplTest {
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(), anyLong())).thenReturn(getPassenDO());
 
         underTest.setMatchComponent(matchComponent);
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
 
         List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id);
 
         assertThat(allowedList).isNotEmpty();
-        assertEquals(8, allowedList.size());
-        verify(mannschaftsmitgliedComponent, times(2)).findAllSchuetzeInTeam(anyLong());
+        assertEquals(32, allowedList.size());
+        verify(mannschaftsmitgliedComponent, times(8)).findAllSchuetzeInTeam(anyLong());
     }
 
     @Test
