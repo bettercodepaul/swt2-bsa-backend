@@ -119,16 +119,6 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     }
 
     @Autowired
-    public void setLigaComponent(final LigaComponent ligaComponent){
-        this.ligaComponent = ligaComponent;
-    }
-
-    @Autowired
-    public void setDsbMitgliedComponent(final DsbMitgliedComponent dsbMitgliedComponent){
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
-    }
-
-    @Autowired
     public void setVeranstaltungComponent(final VeranstaltungComponent veranstaltungComponent){
         this.veranstaltungComponent = veranstaltungComponent;
     }
