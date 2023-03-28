@@ -96,6 +96,17 @@ public class WettkampfComponentImplTest {
 
     private static final long mannschaft_id = 77;
     private static final long mannschaft_id2 = 99;
+    private static final Long VERANSTALTUNG_ID = 1L;
+    private static final Long VERANSTALTUNG_WETTKAMPFTYP_ID = 1L;
+    private static final String VERANSTALTUNG_NAME = "";
+    private static final Long VERANSTALTUNG_SPORTJAHR = 2018L;
+    private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
+    private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
+    private static final Long VERANSTALTUNG_LIGA_ID = 2L;
+    private static final String VERANSTALTUNG_PHASE_GEPLANT = "GEPLANT";
+    private static final String VERANSTALTUNG_LIGALEITER_EMAIL = "a@b.c";
+    private static final String VERANSTALTUNG_WETTKAMPFTYP_NAME = "abc";
+    private static final String VERANSTALTUNG_LIGA_NAME = "def";
 
 
     @Rule
@@ -155,6 +166,20 @@ public class WettkampfComponentImplTest {
         return expectedBE;
     }
 
+    public static VeranstaltungDO getVeranstaltungDO(){
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO(VERANSTALTUNG_ID,
+                VERANSTALTUNG_WETTKAMPFTYP_ID,
+                VERANSTALTUNG_NAME,
+                VERANSTALTUNG_SPORTJAHR,
+                VERANSTALTUNG_MELDEDEADLINE,
+                VERANSTALTUNG_LIGALEITER_ID,
+                VERANSTALTUNG_LIGA_ID,
+                VERANSTALTUNG_LIGALEITER_EMAIL,
+                VERANSTALTUNG_WETTKAMPFTYP_NAME,
+                VERANSTALTUNG_LIGA_NAME,
+                VERANSTALTUNG_PHASE_GEPLANT);
+        return veranstaltungDO;
+    }
     public static MatchDO getMatchDO()
     {
         final MatchDO expectedDO = new MatchDO(0l,0l,
@@ -913,6 +938,14 @@ public class WettkampfComponentImplTest {
         MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
         MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
 
+        mannschaftsmitglied1.setDsbMitgliedId(1L);
+        mannschaftsmitglied2.setDsbMitgliedId(2L);
+        mannschaftsmitglied3.setDsbMitgliedId(3L);
+        mannschaftsmitglied4.setDsbMitgliedId(4L);
+        mannschaftsmitglied1.setMannschaftId(1L);
+        mannschaftsmitglied2.setMannschaftId(2L);
+        mannschaftsmitglied3.setMannschaftId(3L);
+        mannschaftsmitglied4.setMannschaftId(4L);
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
         mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
@@ -935,29 +968,23 @@ public class WettkampfComponentImplTest {
         DsbMitgliedDO dsbMitgliedDO2 = new DsbMitgliedDO();
         dsbMitgliedDO1.setId(1L);
         dsbMitgliedDO2.setId(2L);
-        dsbMitgliedDO1.setUserId(3L);
-        dsbMitgliedDO2.setUserId(4L);
 
-        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
-        veranstaltungDO.setVeranstaltungID(wettkampf_Veranstaltung_Id);
-        veranstaltungDO.setVeranstaltungSportJahr(veranstaltungDO.getVeranstaltungSportJahr());
+        underTest.setLigaComponent(ligaComponent);
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+        underTest.setDsbMitgliedComponent(dsbMitgliedComponent);
 
         when(ligaComponent.findAll()).thenReturn(ligen);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO2);
-        when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(veranstaltungDO);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
+        when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
         when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
-        //when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(getWettkampfBE());
         when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(), anyLong())).thenReturn(getPassenDO());
-
-        underTest.setLigaComponent(ligaComponent);
-        underTest.setVeranstaltungComponent(veranstaltungComponent);
 
         List<Long> result = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
 
         assertEquals(4, result.size());
-
+        assertThat(result).isNotEmpty();
     }
 
 
