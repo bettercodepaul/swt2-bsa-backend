@@ -912,17 +912,54 @@ public class WettkampfComponentImplTest {
         MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
         MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
 
+        mannschaftsmitglied1.setDsbMitgliedId(1L);
+        mannschaftsmitglied2.setDsbMitgliedId(2L);
+        mannschaftsmitglied3.setDsbMitgliedId(3L);
+        mannschaftsmitglied4.setDsbMitgliedId(4L);
+
+        mannschaftsmitglied1.setMannschaftId(1L);
+        mannschaftsmitglied2.setMannschaftId(2L);
+        mannschaftsmitglied3.setMannschaftId(3L);
+        mannschaftsmitglied4.setMannschaftId(4L);
+
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
         mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
 
-        underTest.setMatchComponent(matchComponent);
+        List<LigaDO> ligen = new ArrayList<>();
+        LigaDO ligaDO1 = new LigaDO();
+        LigaDO ligaDO2 = new LigaDO();
+        ligaDO1.setLigaUebergeordnetId(ligaDO1.getId());
+        ligaDO2.setLigaUebergeordnetId(ligaDO2.getId());
+        ligaDO1.setId(1L);
+        ligaDO2.setId(2L);
+        ligen.add(ligaDO1);
+        ligen.add(ligaDO2);
 
-        when(matchComponent.findByMannschaftId(anyLong())).thenReturn(Collections.singletonList(getMatchDO()));
-        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(mannschaft_id)).thenReturn(mannschaftsmitgliedDOList);
+        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
+        DsbMitgliedDO dsbMitgliedDO2 = new DsbMitgliedDO();
+        dsbMitgliedDO1.setId(1L);
+        dsbMitgliedDO2.setId(2L);
+
+        MatchDO matchdo = getMatchDO();
+
+        when(matchComponent.findByMannschaftId(anyLong())).thenReturn(Collections.singletonList(matchdo));
+        when(matchDO.getMannschaftId()).thenReturn(mannschaft_id);
+
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
+
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO2);
+        when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
+        when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
+        when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(), anyLong())).thenReturn(getPassenDO());
+
+        underTest.setMatchComponent(matchComponent);
 
         List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id);
 
@@ -942,10 +979,12 @@ public class WettkampfComponentImplTest {
         mannschaftsmitglied2.setDsbMitgliedId(2L);
         mannschaftsmitglied3.setDsbMitgliedId(3L);
         mannschaftsmitglied4.setDsbMitgliedId(4L);
+
         mannschaftsmitglied1.setMannschaftId(1L);
         mannschaftsmitglied2.setMannschaftId(2L);
         mannschaftsmitglied3.setMannschaftId(3L);
         mannschaftsmitglied4.setMannschaftId(4L);
+
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
         mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
@@ -969,9 +1008,7 @@ public class WettkampfComponentImplTest {
         dsbMitgliedDO1.setId(1L);
         dsbMitgliedDO2.setId(2L);
 
-        underTest.setLigaComponent(ligaComponent);
         underTest.setVeranstaltungComponent(veranstaltungComponent);
-        underTest.setDsbMitgliedComponent(dsbMitgliedComponent);
 
         when(ligaComponent.findAll()).thenReturn(ligen);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
