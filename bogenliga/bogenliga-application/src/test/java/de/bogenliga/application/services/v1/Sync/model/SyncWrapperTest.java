@@ -65,7 +65,7 @@ public class SyncWrapperTest {
         Assert.assertEquals(syncWrapper.getPasse(), passeList);
 
         syncWrapper.setOfflineToken(offlineToken);
-        Assert.assertEquals(syncWrapper.getOfflineToken(), offlineToken);
+        Assert.assertEquals(offlineToken, syncWrapper.getOfflineToken());
 
         syncWrapper.setWettkampfId(wettkampfId);
         Assert.assertEquals(syncWrapper.getWettkampfId(), wettkampfId);
