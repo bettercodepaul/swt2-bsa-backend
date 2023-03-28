@@ -3,6 +3,7 @@ package de.bogenliga.application.services.common.errorhandling;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -26,6 +27,10 @@ public class CustomizedResponseEntityExceptionHandlerTest {
 
     @Test
     public void handleMethodArgumentNotValid() {
+        //prepare test data
+        // configure mocks
+        // call test method
+        // verify invocations
 
     }
 
