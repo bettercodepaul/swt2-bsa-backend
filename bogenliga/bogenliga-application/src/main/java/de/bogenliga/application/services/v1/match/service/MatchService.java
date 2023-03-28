@@ -866,38 +866,21 @@ public class MatchService implements ServiceFacade {
      */
     private void log(MatchDTO matchDTO, String fromService) {
 
-        String id = matchDTO.getId().toString();
-        String wettkampfId = matchDTO.getWettkampfId().toString();
-        String begegnung = matchDTO.getBegegnung().toString();
-        String mannschaftId = matchDTO.getMannschaftId().toString();
-        String scheibenNummer = matchDTO.getScheibenNummer().toString();
-        String satzpunkte = matchDTO.getSatzpunkte().toString();
-        String matchpunkte = matchDTO.getMatchpunkte().toString();
-
-        String regex="[\n\r]";
-
-        fromService = fromService.replaceAll(regex, "_");
-        id = id.replaceAll(regex, "_");
-        wettkampfId = wettkampfId.replaceAll(regex, "_");
-        begegnung = begegnung.replaceAll(regex, "_");
-        mannschaftId = mannschaftId.replaceAll(regex, "_");
-        scheibenNummer = scheibenNummer.replaceAll(regex, "_");
-        satzpunkte = satzpunkte.replaceAll(regex, "_");
-        matchpunkte = matchpunkte.replaceAll(regex, "_");
-
-
+        fromService=fromService.replaceAll("[\n\r]", "_");
 
         LOG.debug(
-                "Received '{}' request for match with id: '{}', WettkampfID: '{}', Begegnung: '{}', MannschaftId: '{}'," +
-                        " ScheibenNummer: '{}', Satzpunkte: '{}', Matchpunkte: '{}'",
+        "Received '{}' request for match with id: '{}', WettkampfID: '{}', Begegnung: '{}', MannschaftId: '{}'," +
+                " ScheibenNummer: '{}', Satzpunkte: '{}', Matchpunkte: '{}'",
                 fromService,
-                id,
-                wettkampfId,
-                begegnung,
-                mannschaftId,
-                scheibenNummer,
-                satzpunkte,
-                matchpunkte
+                matchDTO.getId(),
+                matchDTO.getWettkampfId(),
+                matchDTO.getBegegnung(),
+                matchDTO.getMannschaftId(),
+                matchDTO.getScheibenNummer(),
+                matchDTO.getSatzpunkte(),
+
+
+        matchDTO.getMatchpunkte()
         );
     }
- }
+}
