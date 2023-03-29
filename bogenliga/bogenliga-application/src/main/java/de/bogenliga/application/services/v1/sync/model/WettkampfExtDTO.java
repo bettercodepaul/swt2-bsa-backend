@@ -50,7 +50,6 @@ public class WettkampfExtDTO implements DataTransferObject {
         this.setOfflineToken(offlineToken);
     }
 
-
     public Long getId() {
         return id;
     }

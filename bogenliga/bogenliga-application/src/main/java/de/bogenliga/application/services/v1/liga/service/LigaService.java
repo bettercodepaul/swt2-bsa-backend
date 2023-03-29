@@ -27,7 +27,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class LigaService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIGA = "Liga must not be null";
     private static final String PRECONDITION_MSG_LIGA_ID = "Liga Id must not be negative";
-    private static final String PRECONDITION_MSG_LIGA_DISZIPLIN_ID = "Disziplin Id must not be null";
     private static final String PRECONDITION_MSG_LIGA_REGION = "Region can not be null";
     private static final String PRECONDITION_MSG_LIGA_REGION_ID_NEG = "Region id can not be negative";
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID_NEG = "Region id can not be negative";

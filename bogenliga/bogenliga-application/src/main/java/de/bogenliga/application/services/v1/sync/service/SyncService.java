@@ -65,7 +65,6 @@ public class SyncService implements ServiceFacade {
     private static final String PRECONDITION_MSG_WETTKAMPF_ID = "Wettkampf Id must not be negative";
     private static final String ERR_NOT_NULL_TEMPLATE = "MatchService: %s: %s must not be null.";
     private static final String SERVICE_FIND_MATCHES_BY_IDS = "findMatchesByIds";
-    private static final String SERVICE_SYNCHRONIZE_MATCHES_AND_PASSEN = "synchronizeMatchesAndPassen";
     private static final String CHECKED_PARAM_MATCH_ID = "Match ID";
     private static final String ERR_NOT_NEGATIVE_TEMPLATE = "MatchService: %s: %s must not be negative.";
     private static final String ERR_WETTKAMPF_ALREADY_OFFLINE = "Cannot got offline. Wettkampf is already offline";
@@ -224,7 +223,7 @@ public class SyncService implements ServiceFacade {
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_WETTKAMPF})
     public List<WettkampfExtDTO> getToken(
             @PathVariable("id") final long wettkampfId,
-            final Principal principal) throws NoPermissionException {
+            final Principal principal) {
         Preconditions.checkArgument(wettkampfId >= 0, PRECONDITION_MSG_WETTKAMPF_ID);
         logger.debug("Received 'update' request with id '{}' to add offline token", wettkampfId);
         // Check if it is the ligaleiter of the wettkampfs liga (not sure if possible); generic check done in permissions

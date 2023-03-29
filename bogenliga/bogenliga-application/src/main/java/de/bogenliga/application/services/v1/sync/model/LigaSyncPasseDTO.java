@@ -156,4 +156,3 @@ public class LigaSyncPasseDTO implements DataTransferObject {
         return result;
     }
 }
-
