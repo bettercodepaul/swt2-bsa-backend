@@ -87,6 +87,7 @@ public class LigaServiceTest {
         final LigaDTO ligaDTO = new LigaDTO();
         ligaDTO.setId(ID);
         ligaDTO.setName(NAME);
+        ligaDTO.setDisziplinId(DISZIPLINID);
         ligaDTO.setRegionId(REGIONID);
         ligaDTO.setRegionName(REGIONNAME);
         ligaDTO.setLigaUebergeordnetId(LIGAUEBERGEORDNETID);
