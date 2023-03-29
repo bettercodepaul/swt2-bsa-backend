@@ -933,9 +933,7 @@ public class WettkampfComponentImplTest {
         mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
 
         DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
-        DsbMitgliedDO dsbMitgliedDO2 = new DsbMitgliedDO();
         dsbMitgliedDO1.setId(1L);
-        dsbMitgliedDO2.setId(2L);
 
         List<LigaDO> ligen = new ArrayList<>();
         LigaDO ligaDO1 = new LigaDO();
@@ -953,7 +951,7 @@ public class WettkampfComponentImplTest {
         when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchdo);
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(ligaComponent.findAll()).thenReturn(ligen);
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO2);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
         when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
         when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
 
@@ -971,6 +969,7 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void getAllowedMitgliederList(){
+        //prepare data
         MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
         MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
         MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
@@ -994,6 +993,9 @@ public class WettkampfComponentImplTest {
 
         List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
 
+        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
+        dsbMitgliedDO1.setId(1L);
+
         List<LigaDO> ligen = new ArrayList<>();
         LigaDO ligaDO1 = new LigaDO();
         LigaDO ligaDO2 = new LigaDO();
@@ -1004,25 +1006,92 @@ public class WettkampfComponentImplTest {
         ligen.add(ligaDO1);
         ligen.add(ligaDO2);
 
-        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
-        DsbMitgliedDO dsbMitgliedDO2 = new DsbMitgliedDO();
-        dsbMitgliedDO1.setId(1L);
-        dsbMitgliedDO2.setId(2L);
-
+        //configure Mocks
         underTest.setVeranstaltungComponent(veranstaltungComponent);
 
         when(ligaComponent.findAll()).thenReturn(ligen);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO2);
+        when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
+        when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
+
+        //call test method
+        List<Long> result = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
+
+        //assert result
+        assertThat(result).isNotEmpty();
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    public void getAllowedMitgliederListWithOtherWettkampf(){
+        //prepare data
+        MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
+        MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
+        MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
+        MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
+
+        mannschaftsmitglied1.setDsbMitgliedId(1L);
+        mannschaftsmitglied2.setDsbMitgliedId(2L);
+        mannschaftsmitglied3.setDsbMitgliedId(3L);
+        mannschaftsmitglied4.setDsbMitgliedId(4L);
+
+        mannschaftsmitglied1.setMannschaftId(1L);
+        mannschaftsmitglied2.setMannschaftId(2L);
+        mannschaftsmitglied3.setMannschaftId(3L);
+        mannschaftsmitglied4.setMannschaftId(4L);
+
+        mannschaftsmitglied1.setDsbMitgliedEingesetzt(1);
+        mannschaftsmitglied2.setDsbMitgliedEingesetzt(2);
+        mannschaftsmitglied3.setDsbMitgliedEingesetzt(3);
+        mannschaftsmitglied4.setDsbMitgliedEingesetzt(4);
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
+
+        List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+
+        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
+        dsbMitgliedDO1.setId(1L);
+
+        List<LigaDO> ligen = new ArrayList<>();
+        LigaDO ligaDO1 = new LigaDO();
+        LigaDO ligaDO2 = new LigaDO();
+        ligaDO1.setLigaUebergeordnetId(ligaDO1.getId());
+        ligaDO2.setLigaUebergeordnetId(ligaDO2.getId());
+        ligaDO1.setId(1L);
+        ligaDO2.setId(2L);
+        ligen.add(ligaDO1);
+        ligen.add(ligaDO2);
+
+        LigaDO ligaDO3 = new LigaDO();
+        ligaDO3.setId(3L);
+        ligaDO3.setLigaUebergeordnetId(ligaDO1.getId());
+        ligen.add(ligaDO3);
+
+        final WettkampfBE expectedBE = getWettkampfBE();
+        final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
+
+        //configure Mocks
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
         when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
         when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
         when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
-        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(), anyLong())).thenReturn(getPassenDO());
 
+        //call test method
         List<Long> result = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
 
-        assertEquals(4, result.size());
+        //assert result
         assertThat(result).isNotEmpty();
+        assertEquals(4, result.size());
     }
 
 
