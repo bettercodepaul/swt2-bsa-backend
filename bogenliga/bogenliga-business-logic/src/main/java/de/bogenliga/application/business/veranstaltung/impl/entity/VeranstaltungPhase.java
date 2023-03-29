@@ -17,6 +17,10 @@ public class VeranstaltungPhase {
      *
      * @return phaseAsInt
      */
+
+    private final String strPlanned = "Geplant";
+    private final String strRunning = "Laufend";
+    private final String strCompleted = "Abgeschlossen";
     public int getPhaseAsInt(Phase phase) {
         int phaseAsInt;
         switch (phase) {
@@ -49,16 +53,16 @@ public class VeranstaltungPhase {
         String phaseAsString;
         switch (phase) {
             case 1:
-                phaseAsString = "Geplant";
+                phaseAsString = strPlanned;
                 break;
             case 2:
-                phaseAsString = "Laufend";
+                phaseAsString = strRunning;
                 break;
             case 3:
-                phaseAsString = "Abgeschlossen";
+                phaseAsString = strCompleted;
                 break;
             default:
-                phaseAsString = "Geplant";
+                phaseAsString = strPlanned;
                 break;
         }
         return phaseAsString;
@@ -68,13 +72,13 @@ public class VeranstaltungPhase {
     public int getPhaseFromStringToInt(String phase) {
         int phaseInt;
         switch (phase) {
-            case "Geplant":
+            case strPlanned:
                 phaseInt = 1;
                 break;
-            case "Laufend":
+            case strRunning:
                 phaseInt = 2;
                 break;
-            case "Abgeschlossen":
+            case strCompleted:
                 phaseInt = 3;
                 break;
             default:
