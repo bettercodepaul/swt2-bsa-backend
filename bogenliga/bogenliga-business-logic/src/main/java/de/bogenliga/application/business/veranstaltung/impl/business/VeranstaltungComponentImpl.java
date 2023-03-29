@@ -16,7 +16,6 @@ import de.bogenliga.application.business.veranstaltung.impl.entity.Veranstaltung
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungPhase;
 import de.bogenliga.application.business.veranstaltung.impl.mapper.VeranstaltungMapper;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
@@ -173,7 +172,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
         final VeranstaltungBE persistedVeranstaltungBE = veranstaltungDAO.create(veranstaltungBE, currentDsbMitgliedId);
 
         //create Wettkampftag 0
-        final WettkampfDO wettkampfTag0 = wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltungId(), persistedVeranstaltungBE.getVeranstaltungLigaleiterId());
+        wettkampfComponent.createWT0(persistedVeranstaltungBE.getVeranstaltungId(), persistedVeranstaltungBE.getVeranstaltungLigaleiterId());
         //TODO die Bestiummung der User-ID im Service funktioniert nicht korrekt - daher kann diese nicht
         // als ID für den Ligaleiter genutzt werden - wir benötigen für die Fremdschlüsselbeziehung aber existierende
         // User-id - daher wird hier die Ligaleiter-Id als User-id übergeben
@@ -290,8 +289,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
      * Liga in Sportjahr
      */
     private boolean validLiga(final long liga_id, final long sportjahr) {
-        List<VeranstaltungDO> all_Veranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
-        for (VeranstaltungDO vdo : all_Veranstaltungen) {
+        List<VeranstaltungDO> allVeranstaltungen = this.findAll(new VeranstaltungPhase.Phase[0]);
+        for (VeranstaltungDO vdo : allVeranstaltungen) {
             if (vdo.getVeranstaltungLigaID() == liga_id && vdo.getVeranstaltungSportJahr() == sportjahr) {
                 return false;
             }
