@@ -153,7 +153,7 @@ public class UserService implements ServiceFacade {
                             temp.add(veranstaltungDO.getVeranstaltungID().intValue());
                         }
                         userSignInDTO.setVeranstaltungenIds(temp);
-                        ArrayList<Integer> wettkampftemp = new ArrayList<Integer>();
+                        ArrayList<Integer> wettkampftemp = new ArrayList<>();
                         userSignInDTO.setWettkampfIds(wettkampftemp);
                     } catch (Exception ignore) {
                        LOG.warn("Failed to define additional user information", ignore);
