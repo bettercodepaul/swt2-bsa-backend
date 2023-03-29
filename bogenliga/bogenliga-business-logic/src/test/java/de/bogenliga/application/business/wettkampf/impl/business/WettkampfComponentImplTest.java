@@ -873,6 +873,7 @@ public class WettkampfComponentImplTest {
 
         //assert result
         assertTrue(allowedList.isEmpty());
+        verify(mannschaftsmitgliedComponent, times(2)).findSchuetzenInUebergelegenerLiga(anyLong(), anyLong());
     }
 
 
@@ -1007,19 +1008,19 @@ public class WettkampfComponentImplTest {
         ligen.add(ligaDO2);
 
         //configure Mocks
-        underTest.setVeranstaltungComponent(veranstaltungComponent);
-
         when(ligaComponent.findAll()).thenReturn(ligen);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
         when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
         when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
 
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+
         //call test method
-        List<Long> result = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
+        List<Long> allowedList = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
 
         //assert result
-        assertThat(result).isNotEmpty();
-        assertEquals(4, result.size());
+        assertThat(allowedList).isNotEmpty();
+        assertEquals(4, allowedList.size());
     }
 
     @Test
@@ -1062,21 +1063,18 @@ public class WettkampfComponentImplTest {
         List<LigaDO> ligen = new ArrayList<>();
         LigaDO ligaDO1 = new LigaDO();
         LigaDO ligaDO2 = new LigaDO();
+        LigaDO ligaDO3 = new LigaDO();
         ligaDO1.setLigaUebergeordnetId(ligaDO1.getId());
         ligaDO2.setLigaUebergeordnetId(ligaDO2.getId());
         ligaDO1.setId(1L);
         ligaDO2.setId(2L);
+        ligaDO3.setId(3L);
         ligen.add(ligaDO1);
         ligen.add(ligaDO2);
-
-        LigaDO ligaDO3 = new LigaDO();
-        ligaDO3.setId(3L);
-        ligaDO3.setLigaUebergeordnetId(ligaDO1.getId());
         ligen.add(ligaDO3);
+        ligaDO3.setLigaUebergeordnetId(ligaDO1.getId());
 
         //configure Mocks
-        underTest.setVeranstaltungComponent(veranstaltungComponent);
-
         when(ligaComponent.findAll()).thenReturn(ligen);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
         when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
@@ -1084,12 +1082,14 @@ public class WettkampfComponentImplTest {
         when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
         when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
 
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+
         //call test method
-        List<Long> result = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
+        List<Long> allowedList = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
 
         //assert result
-        assertThat(result).isNotEmpty();
-        assertEquals(4, result.size());
+        assertThat(allowedList).isNotEmpty();
+        assertEquals(4, allowedList.size());
     }
 
 
