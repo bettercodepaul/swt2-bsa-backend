@@ -178,7 +178,7 @@ public class BasicComponentTest<T, B> {
             try {
                 method.invoke(expectedEntity, value);
                 //Should not be reachable assert
-                assertThat(1).isEqualTo(0);
+                assertThat(1).isZero();
             } catch (InvocationTargetException e) {
                 assertThat(e.getCause()).hasMessageContaining("not be null");
             }

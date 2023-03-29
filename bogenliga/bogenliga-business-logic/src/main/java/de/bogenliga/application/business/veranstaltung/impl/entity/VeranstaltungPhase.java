@@ -18,9 +18,9 @@ public class VeranstaltungPhase {
      * @return phaseAsInt
      */
 
-    private final String strPlanned = "Geplant";
-    private final String strRunning = "Laufend";
-    private final String strCompleted = "Abgeschlossen";
+    private static final String strPlanned = "Geplant";
+    private static final String strRunning = "Laufend";
+    private static final String strCompleted = "Abgeschlossen";
     public int getPhaseAsInt(Phase phase) {
         int phaseAsInt;
         switch (phase) {
