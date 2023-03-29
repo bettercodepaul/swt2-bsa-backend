@@ -83,8 +83,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();
 
-        //http.formLogin().authenticationDetailsSource(authenticationDetailsSource);
-
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -101,6 +99,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/v1/configuration/*").permitAll() // TODO allow all in pupose of the failing angular application
                 // Disallow everything else...
                 .anyRequest().authenticated();
-
     }
 }
