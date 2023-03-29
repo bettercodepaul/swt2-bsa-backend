@@ -72,17 +72,6 @@ public class VeranstaltungService implements ServiceFacade {
     }
 
 
-    /*@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<VeranstaltungDTO> findAll() {
-
-        VeranstaltungPhase[] phaseList = new VeranstaltungPhase[];
-
-        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
-                Collectors.toList());
-    }*/
-
-
     /**
      * I return all the teams (veranstaltung) specified by the phase 'Geplant' and 'Laufend' of the database.
      *
