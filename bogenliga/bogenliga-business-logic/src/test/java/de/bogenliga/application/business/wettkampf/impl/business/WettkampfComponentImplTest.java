@@ -855,12 +855,16 @@ public class WettkampfComponentImplTest {
     }
 
     @Test
-    public void getAllowedMitgliederEmptyList() {
+    public void getAllowedMitgliederUnvalidWettkampfID(){
         assertThatThrownBy(() -> underTest.getAllowedMitglieder(-1, mannschaft_id, mannschaft_id2)).isInstanceOf(BusinessException.class);
+    }
 
-        //Testet den Fall das man in der höchsten Liga ist und deshalb eine leere Liste zurückgegeben wird, weil es keine Übergelegene Liga gibt
+    @Test
+    public void getAllowedMitgliederEmptyList() {
         //prepare test data
         List<MannschaftsmitgliedDO> ListWithoutMitglieder = new ArrayList<>();
+
+        //configure mocks
         when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id, wettkampf_Id)).thenReturn(ListWithoutMitglieder);
         when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id2, wettkampf_Id)).thenReturn(ListWithoutMitglieder);
 
@@ -874,8 +878,6 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void getAllowedMitgliederListwithMembers(){
-        assertThatThrownBy(() -> underTest.getAllowedMitglieder(-1, mannschaft_id, mannschaft_id2)).isInstanceOf(BusinessException.class);
-
         //prepare test data
         MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
         MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
@@ -888,10 +890,11 @@ public class WettkampfComponentImplTest {
         mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
 
+        //configure mocks
         when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id, wettkampf_Id)).thenReturn(mannschaftsmitgliedDOList);
         when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id2, wettkampf_Id)).thenReturn(mannschaftsmitgliedDOList);
 
-        //call test methode
+        //call test method
         List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id, mannschaft_id, mannschaft_id2);
 
         //assert result
@@ -907,6 +910,7 @@ public class WettkampfComponentImplTest {
 
     @Test
     public void getAllowedMitgliederOldVersion(){
+        //prepare test data
         MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
         MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
         MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
@@ -928,6 +932,11 @@ public class WettkampfComponentImplTest {
         mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
         mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
 
+        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
+        DsbMitgliedDO dsbMitgliedDO2 = new DsbMitgliedDO();
+        dsbMitgliedDO1.setId(1L);
+        dsbMitgliedDO2.setId(2L);
+
         List<LigaDO> ligen = new ArrayList<>();
         LigaDO ligaDO1 = new LigaDO();
         LigaDO ligaDO2 = new LigaDO();
@@ -938,33 +947,23 @@ public class WettkampfComponentImplTest {
         ligen.add(ligaDO1);
         ligen.add(ligaDO2);
 
-        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
-        DsbMitgliedDO dsbMitgliedDO2 = new DsbMitgliedDO();
-        dsbMitgliedDO1.setId(1L);
-        dsbMitgliedDO2.setId(2L);
-
         MatchDO matchdo = getMatchDO();
 
-        when(matchComponent.findByMannschaftId(anyLong())).thenReturn(Collections.singletonList(matchdo));
-        when(matchDO.getMannschaftId()).thenReturn(mannschaft_id);
+        //configure mocks
         when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchdo);
-
         when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
-        when(veranstaltungDAO.findById(anyLong())).thenReturn(getVeranstaltungBE());
-
         when(ligaComponent.findAll()).thenReturn(ligen);
-        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
         when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO2);
         when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
         when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
-        when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
-        when(passeComponent.findByWettkampfIdAndMitgliedId(anyLong(), anyLong())).thenReturn(getPassenDO());
 
         underTest.setMatchComponent(matchComponent);
         underTest.setVeranstaltungComponent(veranstaltungComponent);
 
+        //call test method
         List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id);
 
+        //assert result
         assertThat(allowedList).isNotEmpty();
         assertEquals(32, allowedList.size());
         verify(mannschaftsmitgliedComponent, times(8)).findAllSchuetzeInTeam(anyLong());
