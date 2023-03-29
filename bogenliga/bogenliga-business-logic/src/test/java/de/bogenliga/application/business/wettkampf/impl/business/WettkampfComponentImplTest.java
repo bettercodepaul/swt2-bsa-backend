@@ -1025,6 +1025,9 @@ public class WettkampfComponentImplTest {
     @Test
     public void getAllowedMitgliederListWithOtherWettkampf(){
         //prepare data
+        final WettkampfBE expectedBE = getWettkampfBE();
+        final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
+
         MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
         MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
         MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
@@ -1071,12 +1074,6 @@ public class WettkampfComponentImplTest {
         ligaDO3.setLigaUebergeordnetId(ligaDO1.getId());
         ligen.add(ligaDO3);
 
-        final WettkampfBE expectedBE = getWettkampfBE();
-        final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
-
-        // configure mocks
-        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
-
         //configure Mocks
         underTest.setVeranstaltungComponent(veranstaltungComponent);
 
@@ -1085,6 +1082,7 @@ public class WettkampfComponentImplTest {
         when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
         when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
         when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
 
         //call test method
         List<Long> result = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
