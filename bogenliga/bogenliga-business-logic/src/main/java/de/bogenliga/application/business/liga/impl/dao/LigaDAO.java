@@ -153,9 +153,14 @@ public class LigaDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
+    //create a logger object
+    private static final Logger myLogger = LoggerFactory.getLogger("MyLogger");
     public LigaBE create(final LigaBE ligaBE, final long currentLigaId) {
         basicDao.setCreationAttributes(ligaBE, currentLigaId);
-        System.out.println(ligaBE);
+        //Add a condition that checks if the logger is in info mode before calling the method
+        if(myLogger.isInfoEnabled()) {
+            myLogger.info(String.valueOf(ligaBE));
+        }
         return basicDao.insertEntity(LIGA, ligaBE);
     }
 }
