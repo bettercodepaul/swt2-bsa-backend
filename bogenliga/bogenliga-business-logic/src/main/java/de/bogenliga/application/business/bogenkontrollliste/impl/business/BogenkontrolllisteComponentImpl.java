@@ -110,8 +110,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         // Veranstaltungsname einer konketen Veranstalung
         String eventName = veranstaltungDO.getVeranstaltungName();
 
-        List<Boolean> allowedList = new ArrayList<>();
-
         // Fuer Jedes Match eines wettkampfs -> List.add alle Schuetzen
         for (int i = 1; i <= 8; i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
