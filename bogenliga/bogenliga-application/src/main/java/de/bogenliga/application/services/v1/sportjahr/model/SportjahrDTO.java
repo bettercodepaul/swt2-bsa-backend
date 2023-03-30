@@ -1,4 +1,4 @@
-package de.bogenliga.application.services.v1.sportjahr;
+package de.bogenliga.application.services.v1.sportjahr.model;
 
 import de.bogenliga.application.common.service.types.DataTransferObject;
 /**
