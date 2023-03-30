@@ -283,6 +283,7 @@ public class UserRoleComponentImpl implements UserRoleComponent {
 
         Session session = Session.getDefaultInstance(props,
                 new javax.mail.Authenticator() {
+                    @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(username, password);
                     }

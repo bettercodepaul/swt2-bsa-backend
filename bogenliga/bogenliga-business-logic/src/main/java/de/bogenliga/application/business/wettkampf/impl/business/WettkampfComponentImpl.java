@@ -75,12 +75,12 @@ public class WettkampfComponentImpl implements WettkampfComponent {
     private final VeranstaltungDAO veranstaltungDAO;
     private final MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
   
-    private final LigaComponent ligaComponent;
+    private LigaComponent ligaComponent;
     private MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final VereinComponent vereinComponent;
     private VeranstaltungComponent veranstaltungComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
+    private  DsbMitgliedComponent dsbMitgliedComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private LigatabelleComponent ligatabelleComponent;
