@@ -52,7 +52,7 @@ public class JwtTokenFilterTest {
         underTest.doFilter(servletRequest, servletResponse, filterChain);
 
         // assert result
-
+        
         // verify invocations
     }
 

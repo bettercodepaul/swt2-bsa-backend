@@ -1,7 +1,7 @@
 package de.bogenliga.application.services.v1.sportjahr.model;
 
 import org.junit.Test;
-import de.bogenliga.application.services.v1.sportjahr.SportjahrDTO;
+import de.bogenliga.application.services.v1.sportjahr.model.SportjahrDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
