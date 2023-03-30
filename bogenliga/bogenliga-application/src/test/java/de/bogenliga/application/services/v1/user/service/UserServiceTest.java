@@ -160,7 +160,7 @@ public class UserServiceTest {
         assertThat(actual.getBody().getVereinId()).isEqualTo(VEREINID);
 
         assertThat(actual.getHeaders()).isNotNull();
-        assertThat(actual.getHeaders().containsKey(AUTHORIZATION_HEADER)).isTrue();
+        assertThat(actual.getHeaders()).containsKey(AUTHORIZATION_HEADER);
         assertThat(actual.getHeaders().get(AUTHORIZATION_HEADER)).contains("Bearer " + JWT);
 
         assertThat(actual.getStatusCode()).isNotNull();
