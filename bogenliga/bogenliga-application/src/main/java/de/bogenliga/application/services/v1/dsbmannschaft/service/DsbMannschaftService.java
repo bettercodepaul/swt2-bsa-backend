@@ -43,6 +43,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
@@ -270,6 +271,8 @@ public class DsbMannschaftService implements ServiceFacade {
 
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
+        Preconditions.checkArgument(findAllByVeranstaltungsId(veranstaltungsId).size()<8, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+        // TODO: instead of limiting to 8 Mannschaften, check the size of that specific Veranstaltung
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
