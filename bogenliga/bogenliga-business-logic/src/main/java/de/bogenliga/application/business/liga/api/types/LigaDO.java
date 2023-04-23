@@ -24,6 +24,8 @@ public class LigaDO extends CommonDataObject implements DataObject {
     private String ligaUebergeordnetName;
     private Long ligaVerantwortlichId;
     private String ligaVerantwortlichMail;
+    private Long ligaDetailId;
+    private String ligaDetail;
 
 
     public LigaDO() {
@@ -62,7 +64,7 @@ public class LigaDO extends CommonDataObject implements DataObject {
                   final Long ligaVerantwortlichId, final String ligaVerantwortlichMail,
                   final OffsetDateTime createdAtUtc, final Long createdByUserId,
                   final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId,
-                  final Long version) {
+                  final Long version, final Long ligaDetailId, final String ligaDetail) {
         this.id=id;
         this.name = name;
         this.disziplinId = disziplinId;
@@ -77,6 +79,8 @@ public class LigaDO extends CommonDataObject implements DataObject {
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
+        this.ligaDetailId = ligaDetailId;
+        this.ligaDetail = ligaDetail;
     }
 
 
@@ -205,6 +209,26 @@ public class LigaDO extends CommonDataObject implements DataObject {
 
     public String getLigaVerantwortlichMail() {
         return ligaVerantwortlichMail;
+    }
+
+
+    public Long getLigaDetailId() {
+        return ligaDetailId;
+    }
+
+
+    public void setLigaDetailId(Long ligaDetailId) {
+        this.ligaDetailId = ligaDetailId;
+    }
+
+
+    public String getLigaDetail() {
+        return ligaDetail;
+    }
+
+
+    public void setLigaDetail(String ligaDetail) {
+        this.ligaDetail = ligaDetail;
     }
 
 
