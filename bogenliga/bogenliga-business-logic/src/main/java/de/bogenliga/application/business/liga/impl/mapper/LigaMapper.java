@@ -42,7 +42,8 @@ public class LigaMapper implements ValueObjectMapper {
                 uebergeordnetLiga.getLigaName(),
                 userDO.getId(),
                 userDO.getEmail(),
-                disziplinDO.getDisziplinId()
+                disziplinDO.getDisziplinId(),
+                ligaBE.getLigaDetail()
 
         );
         ligaDO.setCreatedAtUtc(createdAtUtc);
@@ -70,6 +71,7 @@ public class LigaMapper implements ValueObjectMapper {
         ligaBE.setLigaVerantwortlichId(ligaDO.getLigaVerantwortlichId());
         ligaBE.setCreatedAtUtc(createdAtUtcTimestamp);
         ligaBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
+        ligaBE.setLigaDetail(ligaDO.getLigaDetail());
 
         return ligaBE;
     };
