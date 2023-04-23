@@ -32,7 +32,7 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
 
 
         return new LigaDTO(ligaId, ligaName, regionId, regionName, liga_uebergeordnet_id, liga_uebergeordnet_name,
-                liga_verantwortlich_id, liga_verantwortlich_mail,liga_disziplin_id);
+                liga_verantwortlich_id, liga_verantwortlich_mail,liga_disziplin_id, liga_detail_id, liga_detail);
     };
     /**
      * I map the {@link LigaDTO} object to the {@link LigaDO} object
