@@ -31,8 +31,9 @@ public final class ConfigurationDTOMapper implements DataTransferObjectMapper {
         final String key = vo.getKey();
         final String value = vo.getValue();
         final String regex = vo.getRegex();
+        final Boolean isHidden = vo.getHidden();
 
-        return new ConfigurationDTO(id, key, value, regex);
+        return new ConfigurationDTO(id, key, value, regex, isHidden);
     };
 
     /**
@@ -43,7 +44,8 @@ public final class ConfigurationDTOMapper implements DataTransferObjectMapper {
         final String key = dto.getKey();
         final String value = dto.getValue();
         final String regex = dto.getRegex();
+        final Boolean isHidden = dto.getHidden();
 
-        return new ConfigurationDO(id, key, value, regex);
+        return new ConfigurationDO(id, key, value, regex, isHidden);
     };
 }
