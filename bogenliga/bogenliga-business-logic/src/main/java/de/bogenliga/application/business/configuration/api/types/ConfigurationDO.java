@@ -35,14 +35,13 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
         this.key = key;
         this.value = value;
         this.regex = regex;
+        this.isHidden = isHidden;
 
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.lastModifiedAtUtc = lastModifiedAtUtc;
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
-
-        this.isHidden = isHidden;
     }
 
 
@@ -109,12 +108,12 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Boolean getHidden() {
+    public Boolean getIsHidden() {
         return isHidden;
     }
 
 
-    public void setHidden(Boolean hidden) {
+    public void setIsHidden(Boolean hidden) {
         isHidden = hidden;
     }
 
@@ -132,7 +131,7 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
                 Objects.equals(getKey(), configurationDO.getKey()) &&
                 Objects.equals(getValue(), configurationDO.getValue()) &&
                 Objects.equals(getRegex(), configurationDO.getRegex()) &&
-                Objects.equals(getHidden(), configurationDO.getHidden());
+                Objects.equals(getIsHidden(), configurationDO.getIsHidden());
     }
 
 

@@ -14,7 +14,7 @@ import de.bogenliga.application.common.component.dao.DataAccessObject;
 
 /**
  * DataAccessObject for the configuration entity in the database.
- *
+ * <p>
  * Use a {@link BusinessEntityConfiguration} for each entity to configure the generic {@link BasicDAO} methods.
  *
  * @author Andre Lehnert, BettercallPaul gmbh
@@ -33,11 +33,13 @@ public class ConfigurationDAO implements DataAccessObject {
     private static final String CONFIGURATION_BE_KEY = "configurationKey";
     private static final String CONFIGURATION_BE_VALUE = "configurationValue";
     private static final String CONFIGURATION_BE_REGEX = "configurationRegex";
+    private static final String CONFIGURATION_BE_IS_HIDDEN = "configurationIsHidden";
 
     private static final String CONFIGURATION_TABLE_ID = "configuration_id";
     private static final String CONFIGURATION_TABLE_KEY = "configuration_key";
     private static final String CONFIGURATION_TABLE_VALUE = "configuration_value";
     private static final String CONFIGURATION_TABLE_REGEX = "configuration_regex";
+    private static final String CONFIGURATION_TABLE_IS_HIDDEN = "configuration_is_hidden";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<ConfigurationBE> CONFIG = new BusinessEntityConfiguration<>(
@@ -79,6 +81,7 @@ public class ConfigurationDAO implements DataAccessObject {
         columnsToFieldsMap.put(CONFIGURATION_TABLE_KEY, CONFIGURATION_BE_KEY);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_VALUE, CONFIGURATION_BE_VALUE);
         columnsToFieldsMap.put(CONFIGURATION_TABLE_REGEX, CONFIGURATION_BE_REGEX);
+        columnsToFieldsMap.put(CONFIGURATION_TABLE_IS_HIDDEN, CONFIGURATION_BE_IS_HIDDEN);
 
         //fill null fields
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
@@ -96,6 +99,7 @@ public class ConfigurationDAO implements DataAccessObject {
         return basicDao.selectEntityList(CONFIG, FIND_ALL);
     }
 
+
     public ConfigurationBE findByKey(final String key) {
         return basicDao.selectSingleEntity(CONFIG, FIND_BY_KEY, key);
     }
@@ -105,13 +109,16 @@ public class ConfigurationDAO implements DataAccessObject {
         return basicDao.insertEntity(CONFIG, configurationBE);
     }
 
+
     public ConfigurationBE findById(final long id) {
         return basicDao.selectSingleEntity(CONFIG, FIND_BY_ID, id);
     }
 
+
     public ConfigurationBE update(final ConfigurationBE configurationBE) {
         return basicDao.updateEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
     }
+
 
     public void delete(final ConfigurationBE configurationBE) {
         basicDao.deleteEntity(CONFIG, configurationBE, CONFIGURATION_BE_KEY);
