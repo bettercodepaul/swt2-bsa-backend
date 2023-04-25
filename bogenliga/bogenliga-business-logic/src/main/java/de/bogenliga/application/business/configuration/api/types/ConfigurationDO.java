@@ -26,6 +26,7 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
         // empty constructor
     }
 
+
     public ConfigurationDO(final Long id, final String key, final String value, final String regex,
                            final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
@@ -130,7 +131,8 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
         return Objects.equals(getId(), configurationDO.getId()) &&
                 Objects.equals(getKey(), configurationDO.getKey()) &&
                 Objects.equals(getValue(), configurationDO.getValue()) &&
-                Objects.equals(getRegex(), configurationDO.getRegex());
+                Objects.equals(getRegex(), configurationDO.getRegex()) &&
+                Objects.equals(getHidden(), configurationDO.getHidden());
     }
 
 
