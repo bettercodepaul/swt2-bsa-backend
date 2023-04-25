@@ -60,7 +60,7 @@ public class ConfigurationService implements ServiceFacade {
 
     /**
      * I return all configuration entries of the database.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: GET /v1/configuration}</pre>
      * <pre>{@code Response:
@@ -84,13 +84,19 @@ public class ConfigurationService implements ServiceFacade {
     public List<ConfigurationDTO> findAll() {
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
         LOG.debug("Received Configuration request");
-        return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).collect(Collectors.toList());
+        return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).map(dto -> {
+            if (Boolean.TRUE.equals(dto.getIsHidden())) {
+                dto.setValue("<VALUE_IS_HIDDEN>");
+            }
+            return dto;
+        }).collect(
+                Collectors.toList());
     }
 
 
     /**
      * I return the configuration entry of the database with a specific key.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: GET /v1/configuration/app.bogenliga.frontend.autorefresh.active}</pre>
      * <pre>{@code Response:
@@ -111,14 +117,19 @@ public class ConfigurationService implements ServiceFacade {
         LOG.debug("Receive 'findById' request with id '{}'", id);
 
         final ConfigurationDO configurationDO = configurationComponent.findById(id);
+        if (configurationDO.getIsHidden()) {
+            configurationDO.setValue("<VALUE_IS_HIDDEN>");
+        }
         return ConfigurationDTOMapper.toDTO.apply(configurationDO);
     }
 
 
     //Endpoint not in use
+
+
     /**
      * I persist a new configuration and return this configuration entry.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: POST /v1/configuration
      * Body:
@@ -133,8 +144,10 @@ public class ConfigurationService implements ServiceFacade {
      *    "value": "true"
      *  }
      * }</pre>
+     *
      * @param configurationDTO of the request body
-     * @param principal authenticated user
+     * @param principal        authenticated user
+     *
      * @return list of {@link ConfigurationDTO} as JSON
      */
     @PostMapping(
@@ -157,7 +170,7 @@ public class ConfigurationService implements ServiceFacade {
 
     /**
      * I persist a newer version of the configuration in the database.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: PUT /v1/configuration
      * Body:
@@ -189,7 +202,7 @@ public class ConfigurationService implements ServiceFacade {
 
     /**
      * I delete an existing configuration entry from the database.
-     *
+     * <p>
      * Usage:
      * <pre>{@code Request: DELETE /v1/configuration/app.bogenliga.frontend.autorefresh.active}</pre>
      */
