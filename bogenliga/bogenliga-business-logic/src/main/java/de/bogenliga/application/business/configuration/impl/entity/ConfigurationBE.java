@@ -31,13 +31,7 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
      */
     @Override
     public String toString() {
-        return "ConfigurationBE{" +
-                ", id=" + configurationId + '\'' +
-                ", key=" + configurationKey + '\'' +
-                ", value=" + configurationValue + '\'' +
-                ", regex=" + configurationRegex + '\'' +
-                ", isHidden=" + configurationIsHidden + '\'' +
-                "}";
+        return "ConfigurationBE{" + ", id=" + configurationId + '\'' + ", key=" + configurationKey + '\'' + ", value=" + configurationValue + '\'' + ", regex=" + configurationRegex + '\'' + ", isHidden=" + configurationIsHidden + '\'' + "}";
     }
 
 
@@ -85,7 +79,13 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
         return configurationIsHidden;
     }
 
+
     public void setConfigurationIsHidden(Boolean configurationIsHidden) {
         this.configurationIsHidden = configurationIsHidden;
+    }
+
+
+    public Boolean isConfigurationIsHidden() {
+        return configurationIsHidden;
     }
 }
