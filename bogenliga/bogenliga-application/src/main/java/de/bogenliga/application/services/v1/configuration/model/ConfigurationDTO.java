@@ -40,11 +40,6 @@ public class ConfigurationDTO implements DataTransferObject {
         this.value = value;
         this.regex = regex;
         this.isHidden = isHidden;
-
-        // Hide Values from webclient when transforming
-        if (Boolean.TRUE.equals(this.getHidden())) {
-            this.setValue("<VALUE_IS_HIDDEN>");
-        }
     }
 
 
@@ -88,12 +83,12 @@ public class ConfigurationDTO implements DataTransferObject {
     }
 
 
-    public Boolean getHidden() {
+    public Boolean getIsHidden() {
         return isHidden;
     }
 
 
-    public void setHidden(Boolean hidden) {
+    public void setIsHidden(Boolean hidden) {
         isHidden = hidden;
     }
 }
