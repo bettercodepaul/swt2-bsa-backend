@@ -57,8 +57,13 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     /**
      * Structure of setzliste for team size 8,6,4
      * dim 1, row: Match
-     * dim 2, column: Scheibe
+     * dim 2: Teams (with Scheibe as columns)
+     *
+     * Every two teams in each match form one Begegnung.
+     *
+     * Constructor returns array from enum as matrix.
      */
+
     private enum SETZLISTE_STRUCTURE_SIZE_8_6_4 {
         SETZLISTE_STRUCTURE_8TEAM (new int[][] {
                 {5, 4, 2, 7, 1, 8, 3, 6},
@@ -83,6 +88,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 {4, 1, 2, 3},
                 {1, 3, 4, 2},
                 {3, 4, 2, 1}});
+
 
         int[][] SETZLISTE_STRUCTURE;
         SETZLISTE_STRUCTURE_SIZE_8_6_4(int[][] SETZLISTE_STRUCTURE) {
@@ -138,34 +144,63 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         return bResult;
     }
 
+    /**
+     * Generates list with all competing teams, forms Begegnungen and assigns them to match and Scheibe.
+     * @param wettkampfid [...]
+     * @return matchDOList a list of all matches and Begegnungen in structure of SETZLISTE_STRUCTURE
+     * */
     @Override
     public List<MatchDO> generateMatchesBySetzliste(long wettkampfid) {
         Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
         List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
-        if (!setzlisteBEList.isEmpty()){
-            if (matchDOList.isEmpty()){
-                //itarate thorugh matches
-                for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE.length; i++){
-                    //iterate through target boards
-                    for (int j = 0; j < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i].length; j++) {
-                        long begegnung = Math.round((float) (j + 1) / 2);
-                        long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
-                        MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
-                        matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
-                    }
+        int indexStructure = sizeOfTeams(setzlisteBEList, wettkampfid);
+        if (matchDOList.isEmpty()){
+            //itarate thorugh matches
+            for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE.length; i++){
+                //iterate through target boards
+                for (int j = 0; j < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i].length; j++) {
+                    long begegnung = Math.round((float) (j + 1) / 2);
+                    long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
+                    MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
+                    matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
                 }
-            }
-            else{
-                LOGGER.debug("Matches existieren bereits");
             }
         }
         else{
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+            LOGGER.debug("Matches existieren bereits");
         }
         return matchDOList;
     }
+
+    /**
+     * Returns specified index for the correct team size structure.
+     * @param setzlisteBEList [...]
+     * @param wettkampfid [...]
+     * @return index for size of Match
+     * */
+    private int sizeOfTeams(List<SetzlisteBE> setzlisteBEList, long wettkampfid){
+        int numberOfTeams = setzlisteBEList.size();
+        if (setzlisteBEList.isEmpty()){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
+        if (numberOfTeams >= 7 && numberOfTeams <= 8){
+            return 0;
+
+        } else if (numberOfTeams >= 5 && numberOfTeams <= 6){
+            return 1;
+
+        } else if (numberOfTeams >= 3 && numberOfTeams <= 4){
+            return 2;
+
+        } else{
+            LOGGER.debug("Number of teams can not form match ups.");
+        }
+        return numberOfTeams;
+    }
+
+
 
 
     /**
