@@ -43,6 +43,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
@@ -216,6 +217,8 @@ public class DsbMannschaftService implements ServiceFacade {
             checkPreconditions(dsbMannschaftDTO);
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
+            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size()<8, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+            // TODO: instead of limiting to 8 Mannschaften, check the size of that specific Veranstaltung
 
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
@@ -256,7 +259,7 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
     /**
-     * I insert the mannschaft with the given manschaft id into the veranstaltung with the given veranstaltung id.
+     * I insert the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
      * @param veranstaltungsId
      * @param mannschaftId
      * @param principal
@@ -272,12 +275,15 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
         DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
         dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId());
 
+
         LOG.debug("Mannschaft '{}' in Veranstaltung mit id '{}' kopiert.", dsbMannschaftDO.getName(), veranstaltungsId);
+
     }
 
     /**
@@ -313,6 +319,8 @@ public class DsbMannschaftService implements ServiceFacade {
         }
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+        Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size()<8, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+        // TODO: instead of limiting to 8 Mannschaften, check the size of that specific Veranstaltung
 
         LOG.debug(
                 "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
