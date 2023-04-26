@@ -67,6 +67,8 @@ public class SetzlisteComponentImplTest {
 
     @Test
     public void getPDFasByteArray() {
+        sizeTeam = 8;
+
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
@@ -109,6 +111,7 @@ public class SetzlisteComponentImplTest {
     }
     @Test
     public void generateMatchesBySetzliste8Team() {
+        sizeTeam = 8;
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         final List<MatchDO> matchDOList = new ArrayList<>();
         final MatchDO matchDO = MatchComponentImplTest.getMatchDO();
@@ -211,6 +214,8 @@ public class SetzlisteComponentImplTest {
 
     @Test
     public void generateMatchesBySetzliste_MatchesExist() {
+        sizeTeam = 8;
+
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         final List<MatchDO> matchDOList = new ArrayList<>();
         for(int i=1;i<5;i++){
