@@ -90,9 +90,9 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 {3, 4, 2, 1}});
 
 
-        int[][] SETZLISTE_STRUCTURE;
-        SETZLISTE_STRUCTURE_SIZE_8_6_4(int[][] SETZLISTE_STRUCTURE) {
-            this.SETZLISTE_STRUCTURE = SETZLISTE_STRUCTURE;
+        int[][] setzlisteStructure;
+        SETZLISTE_STRUCTURE_SIZE_8_6_4(int[][] setzlisteStructure) {
+            this.setzlisteStructure = setzlisteStructure;
         }
     }
     /**
@@ -133,7 +133,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 LOGGER.debug("Setzliste erstellt");
 
             } catch (IOException e) {
-                LOGGER.error("PDF Setzliste konnte nicht erstellt werden: " + e);
                 throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                         "PDF Setzliste konnte nicht erstellt werden: " + e);
             }
@@ -161,11 +160,11 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         int indexStructure = numberOfTeams(setzlisteBEList);
         if (matchDOList.isEmpty()){
             //itarate through matches
-            for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE.length; i++){
+            for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++){
                 //iterate through target boards
-                for (int j = 0; j < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[i].length; j++) {
+                for (int j = 0; j < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[i].length; j++) {
                     long begegnung = Math.round((float) (j + 1) / 2);
-                    long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
+                    long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[i][j], setzlisteBEList);
                     MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfID, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
                     matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
                 }
@@ -219,7 +218,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
         // iterate through the number of matches
-        for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE.length; i++) {
+        for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++) {
             table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / 8));
             // iterate through the number of teams
             for (int j = 0; j < numberOfTeams/2 ; j++) {
@@ -250,12 +249,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         int indexStructure = numberOfTeams(setzlisteBEList);
 
-        String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos1], setzlisteBEList);
+        String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.setzlisteStructure[index][pos1], setzlisteBEList);
         if (firstTwoLines.length() <= 26) {
             firstTwoLines += "\n";
         }
         return firstTwoLines + "\n" +
-                SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos2], setzlisteBEList);
+                SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.setzlisteStructure[index][pos2], setzlisteBEList);
     }
 
     /**
