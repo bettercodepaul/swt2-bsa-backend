@@ -221,8 +221,16 @@ public class DsbMannschaftService implements ServiceFacade {
             checkPreconditions(dsbMannschaftDTO);
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
-            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() <
-                    veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse(), PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+
+
+            // Check size of Veranstaltung and if it is full
+            // If Veranstaltung does not exist choose 8 as its default size
+            int veranstaltung_groesse = 8;
+            try {
+                veranstaltung_groesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
+            } catch (NullPointerException ignored){}
+            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltung_groesse
+                    , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
@@ -323,8 +331,14 @@ public class DsbMannschaftService implements ServiceFacade {
         }
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
-        Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() <
-                veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse(), PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+        // Check size of Veranstaltung and if it is full
+        // If Veranstaltung does not exist choose 8 as its default size
+        int veranstaltung_groesse = 8;
+        try {
+            veranstaltung_groesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
+        } catch (NullPointerException ignored){}
+        Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltung_groesse
+                , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
         LOG.debug(
                 "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
