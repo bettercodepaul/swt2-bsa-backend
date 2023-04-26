@@ -157,12 +157,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfID);
         int indexStructure = sizeOfTeams(setzlisteBEList, wettkampfID);
         if (matchDOList.isEmpty()){
-            //itarate thorugh matches
-            for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE.length; i++){
+            //itarate through matches
+            for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE.length; i++){
                 //iterate through target boards
-                for (int j = 0; j < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i].length; j++) {
+                for (int j = 0; j < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[i].length; j++) {
                     long begegnung = Math.round((float) (j + 1) / 2);
-                    long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
+                    long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
                     MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfID, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
                     matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
                 }
@@ -199,9 +199,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         }
         return numberOfTeams;
     }
-
-
-
 
     /**
      * <p>writes a document with a table containing information from given Setzliste
