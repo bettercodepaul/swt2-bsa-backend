@@ -52,6 +52,7 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERANSTALTUNG_LIGA_ID = 0L;
     private static final Integer VERANSTALTUNG_PHASE = 1;
     private static final String VERANSTALTUNG_PHASE_GEPLANT = "GEPLANT";
+    private static final Integer VERANSTALTUNG_GROESSE = 8;
 
     private static final OffsetDateTime VERANSTALTUNG_CREATEDATUTC = OffsetDateTime.now();
 
@@ -119,6 +120,7 @@ public class VeranstaltungComponentImplTest {
         expectedBE.setVeranstaltungLigaleiterId(VERANSTALTUNG_LIGALEITER_ID);
         expectedBE.setVeranstaltungLigaId(VERANSTALTUNG_LIGA_ID);
         expectedBE.setVeranstaltungPhase(VERANSTALTUNG_PHASE);
+        expectedBE.setVeranstaltungGroesse(VERANSTALTUNG_GROESSE);
 
         return expectedBE;
     }
@@ -135,7 +137,8 @@ public class VeranstaltungComponentImplTest {
                 VERANSTALTUNG_LIGALEITER_EMAIL,
                 VERANSTALTUNG_WETTKAMPFTYP_NAME,
                 VERANSTALTUNG_LIGA_NAME,
-                VERANSTALTUNG_PHASE_GEPLANT);
+                VERANSTALTUNG_PHASE_GEPLANT,
+                VERANSTALTUNG_GROESSE);
     }
 
 
@@ -479,7 +482,8 @@ public class VeranstaltungComponentImplTest {
                  VERANSTALTUNG_LIGALEITER_EMAIL,
                  VERANSTALTUNG_WETTKAMPFTYP_NAME,
                  VERANSTALTUNG_LIGA_NAME,
-                 VERANSTALTUNG_PHASE_GEPLANT);
+                 VERANSTALTUNG_PHASE_GEPLANT,
+                 VERANSTALTUNG_GROESSE);
 
         assertEquals(underTest,getVeranstaltungDO());
     }
