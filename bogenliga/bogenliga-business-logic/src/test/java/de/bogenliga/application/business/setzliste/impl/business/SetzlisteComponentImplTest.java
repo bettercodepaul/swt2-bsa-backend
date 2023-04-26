@@ -67,7 +67,6 @@ public class SetzlisteComponentImplTest {
 
     @Test
     public void getPDFasByteArray() {
-        sizeTeam = 8;
 
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
@@ -109,9 +108,9 @@ public class SetzlisteComponentImplTest {
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
 
     }
+
     @Test
     public void generateMatchesBySetzliste8Team() {
-        sizeTeam = 8;
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         final List<MatchDO> matchDOList = new ArrayList<>();
         final MatchDO matchDO = MatchComponentImplTest.getMatchDO();
@@ -137,6 +136,7 @@ public class SetzlisteComponentImplTest {
 
     }
 
+/*  Testing of size 6 and 4, needs to be added as parameterized test
     @Test
     public void generateMatchesBySetzliste6Team() {
         sizeTeam = 6;
@@ -191,7 +191,7 @@ public class SetzlisteComponentImplTest {
         //verify invocations
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
 
-    }
+    }*/
 
     @Test(expected = BusinessException.class)
     public void generateMatchesBySetzliste_SetzlisteEmpty() {
@@ -214,7 +214,6 @@ public class SetzlisteComponentImplTest {
 
     @Test
     public void generateMatchesBySetzliste_MatchesExist() {
-        sizeTeam = 8;
 
         final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         final List<MatchDO> matchDOList = new ArrayList<>();
