@@ -35,8 +35,8 @@ public class SetzlisteDAOTest {
         //Prepare testdata
         final SetzlisteBE setzlisteBE = new SetzlisteBE();
         setzlisteBE.setLigatabelleTabellenplatz(LIGATABELLE_TABELLENPLATZ);
-        setzlisteBE.setWettkampfid(WETTKAMPFID);
-        setzlisteBE.setMannschaftid(MANNSCHAFTSID);
+        setzlisteBE.setWettkampfID(WETTKAMPFID);
+        setzlisteBE.setMannschaftID(MANNSCHAFTSID);
 
         //configure mocks
         when(basicDao.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(setzlisteBE));
@@ -53,8 +53,8 @@ public class SetzlisteDAOTest {
 
             assertThat(actual).isNotNull();
             assertThat(actual.get(0).getLigatabelleTabellenplatz()).isEqualTo(setzlisteBE.getLigatabelleTabellenplatz());
-            assertThat(actual.get(0).getMannschaftid()).isEqualTo(setzlisteBE.getMannschaftid());
-            assertThat(actual.get(0).getWettkampfid()).isEqualTo(setzlisteBE.getWettkampfid());
+            assertThat(actual.get(0).getMannschaftID()).isEqualTo(setzlisteBE.getMannschaftID());
+            assertThat(actual.get(0).getWettkampfID()).isEqualTo(setzlisteBE.getWettkampfID());
 
 
         //Verify invocations
