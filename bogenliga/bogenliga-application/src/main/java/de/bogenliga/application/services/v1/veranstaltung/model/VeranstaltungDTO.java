@@ -27,6 +27,7 @@ public class VeranstaltungDTO implements DataTransferObject {
     private String ligaName;
 
     private String phase;
+    private Integer groesse;
 
 
     public VeranstaltungDTO() {
@@ -38,7 +39,7 @@ public class VeranstaltungDTO implements DataTransferObject {
      */
     public VeranstaltungDTO(Long id, Long wettkampfTypId, String name, Long sportjahr,
                             Date meldeDeadline, Long ligaleiterId, Long ligaId, String ligaleiterEmail,
-                            String wettkampftypName, String ligaName, String phase) {
+                            String wettkampftypName, String ligaName, String phase, Integer groesse) {
         this.setId(id);
         this.setWettkampfTypId(wettkampfTypId);
         this.setName(name);
@@ -51,6 +52,7 @@ public class VeranstaltungDTO implements DataTransferObject {
         this.setLigaleiterEmail(ligaleiterEmail);
         this.setVersion(1L);
         this.setPhase(phase);
+        this.setGroesse(groesse);
     }
 
 
@@ -69,6 +71,7 @@ public class VeranstaltungDTO implements DataTransferObject {
                 ", ligaName='" + ligaName + '\'' +
                 ", ligaId=" + ligaId +
                 ", phase=" + phase +
+                ", groesse=" + groesse +
                 '}';
     }
 
@@ -164,4 +167,12 @@ public class VeranstaltungDTO implements DataTransferObject {
     public String getPhase() {return phase;}
 
     public void setPhase(String phase) {this.phase = phase; }
+
+    public Integer getGroesse() {
+        return groesse;
+    }
+
+    public void setGroesse(Integer groesse) {
+        this.groesse = groesse;
+    }
 }
