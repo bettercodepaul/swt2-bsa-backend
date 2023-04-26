@@ -39,6 +39,7 @@ public class SetzlisteComponentImplTest {
 
     private static final long MANNSCHAFTSID = 5;
     private static final long WETTKAMPFID = 30;
+    private static int sizeTeam = 8;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -66,8 +67,7 @@ public class SetzlisteComponentImplTest {
 
     @Test
     public void getPDFasByteArray() {
-
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
         DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
@@ -107,11 +107,9 @@ public class SetzlisteComponentImplTest {
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
 
     }
-
-
     @Test
-    public void generateMatchesBySetzliste() {
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+    public void generateMatchesBySetzliste8Team() {
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         final List<MatchDO> matchDOList = new ArrayList<>();
         final MatchDO matchDO = MatchComponentImplTest.getMatchDO();
         matchDO.setWettkampfId(WETTKAMPFID);
@@ -127,6 +125,62 @@ public class SetzlisteComponentImplTest {
 
         //assert
         Assertions.assertThat(actual).hasSize(56);
+        for (MatchDO actualMatchDO: actual) {
+            Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
+        }
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
+    @Test
+    public void generateMatchesBySetzliste6Team() {
+        sizeTeam = 6;
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
+        final List<MatchDO> matchDOList = new ArrayList<>();
+        final MatchDO matchDO = MatchComponentImplTest.getMatchDO();
+        matchDO.setWettkampfId(WETTKAMPFID);
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+        when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).hasSize(30);
+        for (MatchDO actualMatchDO: actual) {
+            Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
+        }
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
+    @Test
+    public void generateMatchesBySetzliste4Team() {
+        sizeTeam = 4;
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
+        final List<MatchDO> matchDOList = new ArrayList<>();
+        final MatchDO matchDO = MatchComponentImplTest.getMatchDO();
+        matchDO.setWettkampfId(WETTKAMPFID);
+
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+        when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).hasSize(24);
         for (MatchDO actualMatchDO: actual) {
             Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
         }
@@ -157,7 +211,7 @@ public class SetzlisteComponentImplTest {
 
     @Test
     public void generateMatchesBySetzliste_MatchesExist() {
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         final List<MatchDO> matchDOList = new ArrayList<>();
         for(int i=1;i<5;i++){
             MatchDO matchDO = MatchComponentImplTest.getMatchDO();
@@ -185,9 +239,9 @@ public class SetzlisteComponentImplTest {
     }
 
 
-    public static List<SetzlisteBE> getSetzlisteBEList(){
+    public static List<SetzlisteBE> getSetzlisteBEList(int sizeTeam){
         List<SetzlisteBE> result = new ArrayList<>();
-        for (int i = 1; i <= 8; i++){
+        for (int i = 1; i <= sizeTeam ; i++){
             SetzlisteBE element = new SetzlisteBE();
             element.setLigatabelleTabellenplatz(i);
             element.setMannschaftID(MANNSCHAFTSID+i);
