@@ -155,7 +155,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfID);
         List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfID);
-        int indexStructure = sizeOfTeams(setzlisteBEList, wettkampfID);
+        if (setzlisteBEList.isEmpty()){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+        }
+        int indexStructure = numberOfTeams(setzlisteBEList);
         if (matchDOList.isEmpty()){
             //itarate through matches
             for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE.length; i++){
@@ -175,32 +178,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
     /**
-     * Returns specified index for the correct team size structure.
-     * @param setzlisteBEList List of all competing teams in Wettkampf with context to Ligaplatz
-     * @param wettkampfID Key number of a Wettkampf
-     * @return index for size of Match
-     * */
-    private int sizeOfTeams(List<SetzlisteBE> setzlisteBEList, long wettkampfID){
-        int numberOfTeams = setzlisteBEList.size();
-        if (setzlisteBEList.isEmpty()){
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
-        }
-        if (numberOfTeams >= 7 && numberOfTeams <= 8){
-            return 0;
-
-        } else if (numberOfTeams >= 5 && numberOfTeams <= 6){
-            return 1;
-
-        } else if (numberOfTeams >= 3 && numberOfTeams <= 4){
-            return 2;
-
-        } else{
-            LOGGER.debug("Number of teams can not form match ups.");
-        }
-        return numberOfTeams;
-    }
-
-    /**
      * <p>writes a document with a table containing information from given Setzliste
      * </p>
      * @param doc document to write
@@ -209,6 +186,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
 
         doc.setFontSize(9.2f);
+        int numberOfTeams = setzlisteBEList.size();
 
         // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
@@ -230,34 +208,26 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         //Table header
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 1 + 2")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 3 + 4")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 5 + 6")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe 7 + 8")));
-        table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
+
+        for (int i = 1; i <= numberOfTeams/2; i++) {
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe " + (i * 2 - 1) + " + " + (i * 2))));
+            table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
+        }
 
         int mpkteSpacing = 25;
+        int indexStructure = numberOfTeams(setzlisteBEList);
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
-        for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE.length; i++) {
+        // iterate through the number of matches
+        for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE.length; i++) {
             table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / 8));
+            // iterate through the number of teams
+            for (int j = 0; j < numberOfTeams/2 ; j++) {
 
-            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 0, 1, setzlisteBEList)))
-                    .setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 2, 3, setzlisteBEList)))
-                    .setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 4, 5, setzlisteBEList)))
-                    .setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-            table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, 6, 7, setzlisteBEList)))
-                    .setHeight(table.getHeight().getValue() / 8));
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-
+                table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, (j * 2), (j * 2 + 1), setzlisteBEList)))
+                        .setHeight(table.getHeight().getValue() / 8));
+                table.addCell(new Cell().setHeight(mpkteSpacing));
+            }
             table.addCell(new Cell().setHeight(mpkteSpacing));
             table.addCell(new Cell().setHeight(mpkteSpacing));
             table.addCell(new Cell().setHeight(mpkteSpacing));
@@ -277,12 +247,15 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @return String with 2 Teams where each team has two lines of space with a line width of X chars
      * */
     private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList) {
-        String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos1], setzlisteBEList);
+
+        int indexStructure = numberOfTeams(setzlisteBEList);
+
+        String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos1], setzlisteBEList);
         if (firstTwoLines.length() <= 26) {
             firstTwoLines += "\n";
         }
         return firstTwoLines + "\n" +
-                SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos2], setzlisteBEList);
+                SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].SETZLISTE_STRUCTURE[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[index][pos2], setzlisteBEList);
     }
 
     /**
@@ -298,6 +271,28 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             }
         }
         return -1;
+    }
+
+    /**
+     * Returns specified index for the correct team size structure.
+     * @param setzlisteBEList List of all competing teams in Wettkampf with context to Ligaplatz
+     * @return index for size of Match
+     * */
+    private int numberOfTeams(List<SetzlisteBE> setzlisteBEList){
+        int numberOfTeams = setzlisteBEList.size();
+        if (numberOfTeams >= 7 && numberOfTeams <= 8){
+            return 0;
+
+        } else if (numberOfTeams >= 5 && numberOfTeams <= 6){
+            return 1;
+
+        } else if (numberOfTeams >= 3 && numberOfTeams <= 4){
+            return 2;
+
+        } else{
+            LOGGER.debug("Number of teams can not form match ups.");
+        }
+        return numberOfTeams;
     }
 
     /**
