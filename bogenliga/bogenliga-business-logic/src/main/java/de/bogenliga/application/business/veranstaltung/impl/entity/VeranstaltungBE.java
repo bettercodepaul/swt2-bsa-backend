@@ -19,6 +19,7 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
     private Long veranstaltungLigaleiterId;
 
     private Integer veranstaltungPhase;
+    private Integer veranstaltungGroesse;
 
 
     /**
@@ -35,12 +36,13 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
         return "VeranstaltungBE{" +
                 "veranstaltungID=" + veranstaltungId +
                 ", veranstaltungWettkampftypID=" + veranstaltungWettkampftypId +
-                ", veranstaltungName='" + veranstaltungName + '\'' +
+                ", veranstaltungName='" + veranstaltungName +
                 ", veranstaltungSportJahr=" + veranstaltungSportjahr +
                 ", veranstaltungLigaId=" + veranstaltungLigaId +
                 ", veranstaltungMeldeDeadline=" + veranstaltungMeldedeadline +
                 ", veranstaltungLigaleiterID=" + veranstaltungLigaleiterId +
                 ", veranstaltungPhase=" + veranstaltungPhase +
+                ", veranstaltungGroesse=" + veranstaltungGroesse +
                 '}';
     }
 
@@ -110,6 +112,14 @@ public class VeranstaltungBE extends CommonBusinessEntity implements BusinessEnt
 
     public void setVeranstaltungPhase(Integer veranstaltungPhase) {
         this.veranstaltungPhase = veranstaltungPhase;
+    }
+
+    public Integer getVeranstaltungGroesse() {
+        return veranstaltungGroesse;
+    }
+
+    public void setVeranstaltungGroesse(Integer veranstaltungGroesse) {
+        this.veranstaltungGroesse = veranstaltungGroesse;
     }
 
 }
