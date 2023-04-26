@@ -116,10 +116,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
 
     @Override
-    public byte[] getPDFasByteArray(long wettkampfid) {
-        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+    public byte[] getPDFasByteArray(long wettkampfID) {
+        Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_WETTKAMPFID);
 
-        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
+        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfID);
         byte[] bResult;
         if (!setzlisteBEList.isEmpty()) {
             try (ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -139,23 +139,23 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             }
         }
         else{
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
         return bResult;
     }
 
     /**
      * Generates list with all competing teams, forms Begegnungen and assigns them to match and Scheibe.
-     * @param wettkampfid [...]
+     * @param wettkampfID Key number of a Wettkampf
      * @return matchDOList a list of all matches and Begegnungen in structure of SETZLISTE_STRUCTURE
      * */
     @Override
-    public List<MatchDO> generateMatchesBySetzliste(long wettkampfid) {
-        Preconditions.checkArgument(wettkampfid >= 0, PRECONDITION_WETTKAMPFID);
+    public List<MatchDO> generateMatchesBySetzliste(long wettkampfID) {
+        Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_WETTKAMPFID);
 
-        List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
-        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfid);
-        int indexStructure = sizeOfTeams(setzlisteBEList, wettkampfid);
+        List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfID);
+        List<SetzlisteBE> setzlisteBEList = setzlisteDAO.getTableByWettkampfID(wettkampfID);
+        int indexStructure = sizeOfTeams(setzlisteBEList, wettkampfID);
         if (matchDOList.isEmpty()){
             //itarate thorugh matches
             for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE.length; i++){
@@ -163,7 +163,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                 for (int j = 0; j < SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i].length; j++) {
                     long begegnung = Math.round((float) (j + 1) / 2);
                     long currentTeamID = getTeamIDByTablePos(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.SETZLISTE_STRUCTURE[i][j], setzlisteBEList);
-                    MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfid, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
+                    MatchDO newMatchDO = new MatchDO(null, (long) i + 1, wettkampfID, currentTeamID, begegnung, (long) j + 1, null, null,null,null,null,null,null);
                     matchDOList.add(matchComponent.create(newMatchDO, (long) 0));
                 }
             }
@@ -176,14 +176,14 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     /**
      * Returns specified index for the correct team size structure.
-     * @param setzlisteBEList [...]
-     * @param wettkampfid [...]
+     * @param setzlisteBEList List of all competing teams in Wettkampf with context to Ligaplatz
+     * @param wettkampfID Key number of a Wettkampf
      * @return index for size of Match
      * */
-    private int sizeOfTeams(List<SetzlisteBE> setzlisteBEList, long wettkampfid){
+    private int sizeOfTeams(List<SetzlisteBE> setzlisteBEList, long wettkampfID){
         int numberOfTeams = setzlisteBEList.size();
         if (setzlisteBEList.isEmpty()){
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfid +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
         if (numberOfTeams >= 7 && numberOfTeams <= 8){
             return 0;
@@ -215,7 +215,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
-        WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid());
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfID());
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
         String dateFormatted = sdF2.format(wettkampfDO.getWettkampfDatum());
         doc.add(new Paragraph("Setzliste " +
@@ -290,14 +290,14 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     /**
      * help function to get table entry
-     * @param tablepos Postition in table
+     * @param tablePos Postition in table
      * @param setzlisteBEList list with data
      * @return index if found, otherwise -1
      */
-    private long getTeamIDByTablePos(int tablepos, List<SetzlisteBE> setzlisteBEList) {
+    private long getTeamIDByTablePos(int tablePos, List<SetzlisteBE> setzlisteBEList) {
         for (SetzlisteBE setzlisteBE : setzlisteBEList) {
-            if (setzlisteBE.getLigatabelleTabellenplatz() == tablepos) {
-                return setzlisteBE.getMannschaftid();
+            if (setzlisteBE.getLigatabelleTabellenplatz() == tablePos) {
+                return setzlisteBE.getMannschaftID();
             }
         }
         return -1;
@@ -305,12 +305,12 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     /**
      * help funktion to get team name
-     * @param tablepos index in table
+     * @param tablePos index in table
      * @param setzlisteBEList list with data
      * @return name of the team
      */
-    private String getTeamName(int tablepos, List<SetzlisteBE> setzlisteBEList) {
-        long teamID = getTeamIDByTablePos(tablepos,setzlisteBEList);
+    private String getTeamName(int tablePos, List<SetzlisteBE> setzlisteBEList) {
+        long teamID = getTeamIDByTablePos(tablePos,setzlisteBEList);
         if (teamID == -1) {
             LOGGER.error("Cannot find team for tablepos");
             return "ERROR";
