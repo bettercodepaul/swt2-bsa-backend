@@ -136,7 +136,7 @@ public class SetzlisteComponentImplTest {
 
     }
 
-/*  Testing of size 6 and 4, needs to be added as parameterized test
+    //Testing of size 6 and 4, needs to be added as parameterized test
     @Test
     public void generateMatchesBySetzliste6Team() {
         sizeTeam = 6;
@@ -191,7 +191,7 @@ public class SetzlisteComponentImplTest {
         //verify invocations
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
 
-    }*/
+    }
 
     @Test(expected = BusinessException.class)
     public void generateMatchesBySetzliste_SetzlisteEmpty() {
