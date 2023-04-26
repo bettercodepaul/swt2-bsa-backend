@@ -257,7 +257,7 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
     /**
-     * I insert the mannschaft with the given manschaft id into the veranstaltung with the given veranstaltung id.
+     * I insert the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
      * @param veranstaltungsId
      * @param mannschaftId
      * @param principal
@@ -280,7 +280,7 @@ public class DsbMannschaftService implements ServiceFacade {
         DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
         dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId());
 
-        LOG.debug("Manschaft {} in Veranstaltung mit id {} kopiert.", dsbMannschaftDO.getName(), veranstaltungsId);
+        LOG.debug("Mannschaft {} in Veranstaltung mit id {} kopiert.", dsbMannschaftDO.getName(), veranstaltungsId);
     }
 
     /**
