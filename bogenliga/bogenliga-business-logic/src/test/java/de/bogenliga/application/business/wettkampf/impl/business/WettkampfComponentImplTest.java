@@ -3,6 +3,7 @@ package de.bogenliga.application.business.wettkampf.impl.business;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.Array;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +11,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.sql.Date;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -25,25 +28,38 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.ligatabelle.api.LigatabelleComponent;
 import de.bogenliga.application.business.ligatabelle.api.types.LigatabelleDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.dao.MannschaftsmitgliedDAO;
 import de.bogenliga.application.business.mannschaftsmitglied.impl.entity.MannschaftsmitgliedExtendedBE;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.match.impl.business.MatchComponentImpl;
+import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.dao.VeranstaltungDAO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.business.wettkampf.impl.dao.WettkampfDAO;
 import de.bogenliga.application.business.wettkampf.impl.entity.WettkampfBE;
+import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import static org.assertj.core.api.Java6Assertions.anyOf;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -79,6 +95,18 @@ public class WettkampfComponentImplTest {
     public static final int PFEIL8 = 6;
 
     private static final long mannschaft_id = 77;
+    private static final long mannschaft_id2 = 99;
+    private static final Long VERANSTALTUNG_ID = 1L;
+    private static final Long VERANSTALTUNG_WETTKAMPFTYP_ID = 1L;
+    private static final String VERANSTALTUNG_NAME = "";
+    private static final Long VERANSTALTUNG_SPORTJAHR = 2018L;
+    private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
+    private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
+    private static final Long VERANSTALTUNG_LIGA_ID = 2L;
+    private static final String VERANSTALTUNG_PHASE_GEPLANT = "GEPLANT";
+    private static final String VERANSTALTUNG_LIGALEITER_EMAIL = "a@b.c";
+    private static final String VERANSTALTUNG_WETTKAMPFTYP_NAME = "abc";
+    private static final String VERANSTALTUNG_LIGA_NAME = "def";
 
 
     @Rule
@@ -90,6 +118,8 @@ public class WettkampfComponentImplTest {
     @Mock
     private MannschaftsmitgliedDAO mannschaftsmitgliedDAO;
     @Mock
+    private MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
+    @Mock
     private PasseComponent passeComponent;
     @Mock
     private DsbMannschaftComponent dsbManschaftComponent;
@@ -98,6 +128,8 @@ public class WettkampfComponentImplTest {
     @Mock
     private MatchComponent matchComponent;
     @Mock
+    private LigaComponent ligaComponent;
+    @Mock
     private LigatabelleComponent ligatabelleComponent;
     @InjectMocks
     private WettkampfComponentImpl underTest;
@@ -105,6 +137,11 @@ public class WettkampfComponentImplTest {
     private ArgumentCaptor<WettkampfBE> wettkampfBEArgumentCaptor;
     @Mock
     private MatchDO matchDO;
+    @Mock
+    private DsbMitgliedComponent dsbMitgliedComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+
 
 
     /***
@@ -129,6 +166,20 @@ public class WettkampfComponentImplTest {
         return expectedBE;
     }
 
+    public static VeranstaltungDO getVeranstaltungDO(){
+        final VeranstaltungDO veranstaltungDO = new VeranstaltungDO(VERANSTALTUNG_ID,
+                VERANSTALTUNG_WETTKAMPFTYP_ID,
+                VERANSTALTUNG_NAME,
+                VERANSTALTUNG_SPORTJAHR,
+                VERANSTALTUNG_MELDEDEADLINE,
+                VERANSTALTUNG_LIGALEITER_ID,
+                VERANSTALTUNG_LIGA_ID,
+                VERANSTALTUNG_LIGALEITER_EMAIL,
+                VERANSTALTUNG_WETTKAMPFTYP_NAME,
+                VERANSTALTUNG_LIGA_NAME,
+                VERANSTALTUNG_PHASE_GEPLANT);
+        return veranstaltungDO;
+    }
     public static MatchDO getMatchDO()
     {
         final MatchDO expectedDO = new MatchDO(0l,0l,
@@ -225,6 +276,7 @@ public class WettkampfComponentImplTest {
                 0l,wettkampf_Veranstaltung_Id,0l);
         return neueMannschaft;
     }
+
     public static VereinDO getVereinDO()
     {
         VereinDO neuerVerein = new VereinDO(1l, "Bogensport Muster Hausen", "bmh",0l,"example.com",
@@ -800,7 +852,246 @@ public class WettkampfComponentImplTest {
 
         verify(wettkampfDAO, times(2)).checkOfflineToken(anyLong(), anyString());
 
-
     }
+
+    @Test
+    public void getAllowedMitgliederUnvalidWettkampfID(){
+        assertThatThrownBy(() -> underTest.getAllowedMitglieder(-1, mannschaft_id, mannschaft_id2)).isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    public void getAllowedMitgliederEmptyList() {
+        //prepare test data
+        List<MannschaftsmitgliedDO> ListWithoutMitglieder = new ArrayList<>();
+
+        //configure mocks
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id, wettkampf_Id)).thenReturn(ListWithoutMitglieder);
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id2, wettkampf_Id)).thenReturn(ListWithoutMitglieder);
+
+        //call test method
+        List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id, mannschaft_id, mannschaft_id2);
+
+        //assert result
+        assertTrue(allowedList.isEmpty());
+        verify(mannschaftsmitgliedComponent, times(2)).findSchuetzenInUebergelegenerLiga(anyLong(), anyLong());
+    }
+
+
+    @Test
+    public void getAllowedMitgliederListwithMembers(){
+        //prepare test data
+        MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
+        MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
+        MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
+        MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
+
+        //configure mocks
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id, wettkampf_Id)).thenReturn(mannschaftsmitgliedDOList);
+        when(mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(mannschaft_id2, wettkampf_Id)).thenReturn(mannschaftsmitgliedDOList);
+
+        //call test method
+        List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id, mannschaft_id, mannschaft_id2);
+
+        //assert result
+        assertThat(allowedList).isNotEmpty();
+        assertEquals(8, allowedList.size());
+        verify(mannschaftsmitgliedComponent, times(2)).findSchuetzenInUebergelegenerLiga(anyLong(), anyLong());
+    }
+
+    @Test
+    public void getAllowedMitgliederOldVersionUnvalidWettkampfID(){
+        assertThatThrownBy(() -> underTest.getAllowedMitglieder(-1)).isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    public void getAllowedMitgliederOldVersion(){
+        //prepare test data
+        MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
+        MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
+        MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
+        MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
+
+        mannschaftsmitglied1.setDsbMitgliedId(1L);
+        mannschaftsmitglied2.setDsbMitgliedId(2L);
+        mannschaftsmitglied3.setDsbMitgliedId(3L);
+        mannschaftsmitglied4.setDsbMitgliedId(4L);
+
+        mannschaftsmitglied1.setMannschaftId(1L);
+        mannschaftsmitglied2.setMannschaftId(2L);
+        mannschaftsmitglied3.setMannschaftId(3L);
+        mannschaftsmitglied4.setMannschaftId(4L);
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
+
+        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
+        dsbMitgliedDO1.setId(1L);
+
+        List<LigaDO> ligen = new ArrayList<>();
+        LigaDO ligaDO1 = new LigaDO();
+        LigaDO ligaDO2 = new LigaDO();
+        ligaDO1.setLigaUebergeordnetId(ligaDO1.getId());
+        ligaDO2.setLigaUebergeordnetId(ligaDO2.getId());
+        ligaDO1.setId(1L);
+        ligaDO2.setId(2L);
+        ligen.add(ligaDO1);
+        ligen.add(ligaDO2);
+
+        MatchDO matchdo = getMatchDO();
+
+        //configure mocks
+        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(matchdo);
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeam(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
+        when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
+        when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
+
+        underTest.setMatchComponent(matchComponent);
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+
+        //call test method
+        List<Long> allowedList = underTest.getAllowedMitglieder(wettkampf_Id);
+
+        //assert result
+        assertThat(allowedList).isNotEmpty();
+        assertEquals(32, allowedList.size());
+        verify(mannschaftsmitgliedComponent, times(8)).findAllSchuetzeInTeam(anyLong());
+    }
+
+    @Test
+    public void getAllowedMitgliederList(){
+        //prepare data
+        MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
+        MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
+        MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
+        MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
+
+        mannschaftsmitglied1.setDsbMitgliedId(1L);
+        mannschaftsmitglied2.setDsbMitgliedId(2L);
+        mannschaftsmitglied3.setDsbMitgliedId(3L);
+        mannschaftsmitglied4.setDsbMitgliedId(4L);
+
+        mannschaftsmitglied1.setMannschaftId(1L);
+        mannschaftsmitglied2.setMannschaftId(2L);
+        mannschaftsmitglied3.setMannschaftId(3L);
+        mannschaftsmitglied4.setMannschaftId(4L);
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
+
+        List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+
+        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
+        dsbMitgliedDO1.setId(1L);
+
+        List<LigaDO> ligen = new ArrayList<>();
+        LigaDO ligaDO1 = new LigaDO();
+        LigaDO ligaDO2 = new LigaDO();
+        ligaDO1.setLigaUebergeordnetId(ligaDO1.getId());
+        ligaDO2.setLigaUebergeordnetId(ligaDO2.getId());
+        ligaDO1.setId(1L);
+        ligaDO2.setId(2L);
+        ligen.add(ligaDO1);
+        ligen.add(ligaDO2);
+
+        //configure Mocks
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
+        when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
+        when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
+
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+
+        //call test method
+        List<Long> allowedList = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
+
+        //assert result
+        assertThat(allowedList).isNotEmpty();
+        assertEquals(4, allowedList.size());
+    }
+
+    @Test
+    public void getAllowedMitgliederListWithOtherWettkampf(){
+        //prepare data
+        final WettkampfBE expectedBE = getWettkampfBE();
+        final List<WettkampfBE> expectedBEList = Collections.singletonList(expectedBE);
+
+        MannschaftsmitgliedDO mannschaftsmitglied1 = new MannschaftsmitgliedDO(1L);
+        MannschaftsmitgliedDO mannschaftsmitglied2 = new MannschaftsmitgliedDO(2L);
+        MannschaftsmitgliedDO mannschaftsmitglied3 = new MannschaftsmitgliedDO(3L);
+        MannschaftsmitgliedDO mannschaftsmitglied4 = new MannschaftsmitgliedDO(4L);
+
+        mannschaftsmitglied1.setDsbMitgliedId(1L);
+        mannschaftsmitglied2.setDsbMitgliedId(2L);
+        mannschaftsmitglied3.setDsbMitgliedId(3L);
+        mannschaftsmitglied4.setDsbMitgliedId(4L);
+
+        mannschaftsmitglied1.setMannschaftId(1L);
+        mannschaftsmitglied2.setMannschaftId(2L);
+        mannschaftsmitglied3.setMannschaftId(3L);
+        mannschaftsmitglied4.setMannschaftId(4L);
+
+        mannschaftsmitglied1.setDsbMitgliedEingesetzt(1);
+        mannschaftsmitglied2.setDsbMitgliedEingesetzt(2);
+        mannschaftsmitglied3.setDsbMitgliedEingesetzt(3);
+        mannschaftsmitglied4.setDsbMitgliedEingesetzt(4);
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied1);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied2);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied3);
+        mannschaftsmitgliedDOList.add(mannschaftsmitglied4);
+
+        List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
+
+        DsbMitgliedDO dsbMitgliedDO1 = new DsbMitgliedDO();
+        dsbMitgliedDO1.setId(1L);
+
+        List<LigaDO> ligen = new ArrayList<>();
+        LigaDO ligaDO1 = new LigaDO();
+        LigaDO ligaDO2 = new LigaDO();
+        LigaDO ligaDO3 = new LigaDO();
+        ligaDO1.setLigaUebergeordnetId(ligaDO1.getId());
+        ligaDO2.setLigaUebergeordnetId(ligaDO2.getId());
+        ligaDO1.setId(1L);
+        ligaDO2.setId(2L);
+        ligaDO3.setId(3L);
+        ligen.add(ligaDO1);
+        ligen.add(ligaDO2);
+        ligen.add(ligaDO3);
+        ligaDO3.setLigaUebergeordnetId(ligaDO1.getId());
+
+        //configure Mocks
+        when(ligaComponent.findAll()).thenReturn(ligen);
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(dsbMitgliedDO1);
+        when(veranstaltungComponent.findById(wettkampf_Veranstaltung_Id)).thenReturn(getVeranstaltungDO());
+        when(wettkampfDAO.findById(anyLong())).thenReturn(getWettkampfBE());
+        when(mannschaftsmitgliedComponent.findByMemberId(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        when(wettkampfDAO.findAllWettkaempfeByMannschaftsId(anyLong())).thenReturn(expectedBEList);
+
+        underTest.setVeranstaltungComponent(veranstaltungComponent);
+
+        //call test method
+        List<Long> allowedList = underTest.getAllowedMitgliederList(mannschaftsmitgliedDOList, dsbMitgliedDOList, wettkampf_Id);
+
+        //assert result
+        assertThat(allowedList).isNotEmpty();
+        assertEquals(4, allowedList.size());
+    }
+
+
 }
 

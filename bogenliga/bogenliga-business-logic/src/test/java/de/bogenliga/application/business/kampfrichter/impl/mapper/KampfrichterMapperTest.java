@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.kampfrichter.impl.mapper;
 
+import org.apache.catalina.User;
 import org.junit.Test;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.business.kampfrichter.impl.entity.KampfrichterBE;
@@ -68,7 +69,7 @@ public class KampfrichterMapperTest {
 
         final KampfrichterDO actual = KampfrichterMapper.toKampfrichterDO.apply(kampfrichterBE);
 
-        assertThat(actual.getUserId() == USERID);
+        assertThat(actual.getUserId()).isEqualTo(USERID);
     }
 
 
@@ -78,6 +79,6 @@ public class KampfrichterMapperTest {
 
         final KampfrichterBE actual = KampfrichterMapper.toKampfrichterBE.apply(kampfrichterDO);
 
-        assertThat(actual.getKampfrichterUserId() == USERID);
+        assertThat(actual.getKampfrichterUserId()).isEqualTo(USERID);
     }
 }

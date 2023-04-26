@@ -492,7 +492,9 @@ public class UserService implements ServiceFacade {
                 userCredentialsDTO.getPassword(), userCredentialsDTO.getDsbMitgliedId(), userId, userCredentialsDTO.isUsing2FA());
         //default rolle anlegen (User)
         userRoleComponent.create(userCreatedDO.getId(), userId);
-        if(dsbMitgliedComponent.hasKampfrichterLizenz(userCreatedDO.getDsbMitgliedId())){
+        //add a primitve boolean expression
+        boolean hasKampfrichterLizenz = dsbMitgliedComponent.hasKampfrichterLizenz(userCreatedDO.getDsbMitgliedId());
+        if(Boolean.TRUE.equals(hasKampfrichterLizenz)){
             final RoleDO roleDO = roleComponent.findByName(ROLE_KAMPFRICHTER);
             userRoleComponent.create(userCreatedDO.getId(),roleDO.getId(),userId);
         }
