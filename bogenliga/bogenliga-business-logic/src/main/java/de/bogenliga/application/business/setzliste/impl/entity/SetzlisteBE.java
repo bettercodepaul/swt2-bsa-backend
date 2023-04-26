@@ -14,8 +14,8 @@ public class SetzlisteBE extends CommonBusinessEntity {
     private static final long serialVersionUID = -76389969048178948L;
 
     private Integer ligatabelleTabellenplatz;
-    private Long wettkampfid;
-    private Long mannschaftid;
+    private Long wettkampfID;
+    private Long mannschaftID;
 
     public SetzlisteBE(){
         // empty constructor
@@ -33,23 +33,23 @@ public class SetzlisteBE extends CommonBusinessEntity {
         this.ligatabelleTabellenplatz = ligatabelleTabellenplatz;
     }
 
-    public Long getWettkampfid() { return wettkampfid; }
+    public Long getWettkampfID() { return wettkampfID; }
 
-    public void setWettkampfid(Long wettkampfid) { this.wettkampfid = wettkampfid; }
+    public void setWettkampfID(Long wettkampfID) { this.wettkampfID = wettkampfID; }
 
-    public Long getMannschaftid() {
-        return mannschaftid;
+    public Long getMannschaftID() {
+        return mannschaftID;
     }
 
-    public void setMannschaftid(Long mannschaftid) {
-        this.mannschaftid = mannschaftid;
+    public void setMannschaftID(Long mannschaftID) {
+        this.mannschaftID = mannschaftID;
     }
 
     @Override
     public String toString() {
         return "setzliste{ligatabelleTabellenplatz='" + ligatabelleTabellenplatz +
-                "', WettkampfID='" + wettkampfid +
-                "', MannschaftID='" + mannschaftid +
+                "', WettkampfID='" + wettkampfID +
+                "', MannschaftID='" + mannschaftID +
                 "'}";
     }
 }
