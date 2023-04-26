@@ -75,7 +75,7 @@ public class SetzlisteComponentImplTest {
 
         //configure Mocks
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
-        when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid())).thenReturn(wettkampfDO);
+        when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfID())).thenReturn(wettkampfDO);
         when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
@@ -190,8 +190,8 @@ public class SetzlisteComponentImplTest {
         for (int i = 1; i <= 8; i++){
             SetzlisteBE element = new SetzlisteBE();
             element.setLigatabelleTabellenplatz(i);
-            element.setMannschaftid(MANNSCHAFTSID+i);
-            element.setWettkampfid(WETTKAMPFID);
+            element.setMannschaftID(MANNSCHAFTSID+i);
+            element.setWettkampfID(WETTKAMPFID);
             result.add(element);
         }
         return result;
