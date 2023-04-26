@@ -217,6 +217,8 @@ public class DsbMannschaftService implements ServiceFacade {
             checkPreconditions(dsbMannschaftDTO);
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
+            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size()<8, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+            // TODO: instead of limiting to 8 Mannschaften, check the size of that specific Veranstaltung
 
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
@@ -271,10 +273,9 @@ public class DsbMannschaftService implements ServiceFacade {
 
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
-        Preconditions.checkArgument(findAllByVeranstaltungsId(veranstaltungsId).size()<8, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
-        // TODO: instead of limiting to 8 Mannschaften, check the size of that specific Veranstaltung
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
         DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
@@ -316,6 +317,8 @@ public class DsbMannschaftService implements ServiceFacade {
         }
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+        Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size()<8, PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+        // TODO: instead of limiting to 8 Mannschaften, check the size of that specific Veranstaltung
 
         LOG.debug(
                 "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
