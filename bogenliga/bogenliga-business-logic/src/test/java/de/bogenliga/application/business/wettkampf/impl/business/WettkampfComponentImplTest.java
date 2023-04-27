@@ -107,6 +107,7 @@ public class WettkampfComponentImplTest {
     private static final String VERANSTALTUNG_LIGALEITER_EMAIL = "a@b.c";
     private static final String VERANSTALTUNG_WETTKAMPFTYP_NAME = "abc";
     private static final String VERANSTALTUNG_LIGA_NAME = "def";
+    private static final Integer VERANSTALTUNG_GROESSE = 8;
 
 
     @Rule
@@ -177,7 +178,8 @@ public class WettkampfComponentImplTest {
                 VERANSTALTUNG_LIGALEITER_EMAIL,
                 VERANSTALTUNG_WETTKAMPFTYP_NAME,
                 VERANSTALTUNG_LIGA_NAME,
-                VERANSTALTUNG_PHASE_GEPLANT);
+                VERANSTALTUNG_PHASE_GEPLANT,
+                VERANSTALTUNG_GROESSE);
         return veranstaltungDO;
     }
     public static MatchDO getMatchDO()
