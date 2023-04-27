@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +43,7 @@ public class DsbMannschaftServiceTest {
     private static final String NAME = null; //empty
     private static final long NUMMER = 22222;
     private static final long BENUTZER_ID = 33333;
-    private static final long VERANSTALTUNG_ID = 44444;
+    private static final long VERANSTALTUNG_ID = 4444;
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
 
@@ -51,6 +52,9 @@ public class DsbMannschaftServiceTest {
 
     @Mock
     private DsbMannschaftComponent dsbMannschaftComponent;
+
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
 
     @Mock
     private RequiresOnePermissionAspect requiresOnePermissionAspect;
@@ -214,6 +218,7 @@ public class DsbMannschaftServiceTest {
             assertThat(actual.getId()).isEqualTo(input.getId());
             assertThat(actual.getVereinId()).isEqualTo(input.getVereinId());
             assertThat(actual.getSortierung()).isEqualTo(input.getSortierung());
+
 
             // verify invocations
             verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
