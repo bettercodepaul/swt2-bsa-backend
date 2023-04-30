@@ -16,8 +16,8 @@ public class SetzlisteBETest {
     private SetzlisteBE getSetzlisteBE(){
         final SetzlisteBE setzlisteBE = new SetzlisteBE();
         setzlisteBE.setLigatabelleTabellenplatz(LIGATABELLENPLATZ);
-        setzlisteBE.setMannschaftid(MANNSCHAFTSID);
-        setzlisteBE.setWettkampfid(WETTKAMPFID);
+        setzlisteBE.setMannschaftID(MANNSCHAFTSID);
+        setzlisteBE.setWettkampfID(WETTKAMPFID);
         return setzlisteBE;
     }
 
