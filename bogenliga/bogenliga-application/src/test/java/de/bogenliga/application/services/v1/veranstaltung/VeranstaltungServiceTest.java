@@ -47,6 +47,7 @@ public class VeranstaltungServiceTest {
     private static final String LIGANAME = "";
     private static final long SPORTJAHR_ID = 0;
     private static final long SPORTJAHR_JAHR = 0;
+    private static final int GROESSE = 8;
 
     private static final String PHASE = "Geplant";
 
@@ -93,7 +94,8 @@ public class VeranstaltungServiceTest {
             LIGALEITER_EMAIL ,
             WETTKAMPTYP_NAME ,
             LIGANAME,
-            PHASE
+            PHASE,
+            GROESSE
         );
     }
 
@@ -110,6 +112,7 @@ public class VeranstaltungServiceTest {
         veranstaltungDTO.setWettkampftypName(WETTKAMPTYP_NAME);
         veranstaltungDTO.setLigaName(LIGANAME);
         veranstaltungDTO.setPhase(PHASE);
+        veranstaltungDTO.setGroesse(GROESSE);
         return veranstaltungDTO;
     }
 
