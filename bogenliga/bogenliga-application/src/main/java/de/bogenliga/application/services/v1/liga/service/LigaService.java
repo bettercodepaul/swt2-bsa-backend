@@ -154,7 +154,7 @@ public class LigaService implements ServiceFacade {
     private void checkPreconditions(@RequestBody final LigaDTO ligaDTO) {
         Preconditions.checkNotNull(ligaDTO, PRECONDITION_MSG_LIGA);
         Preconditions.checkNotNull(ligaDTO.getRegionId(), PRECONDITION_MSG_LIGA_REGION);
-
+        Preconditions.checkNotNull(ligaDTO.getDisziplinId(), PRECONDITION_MSG_LIGA_DISZIPLIN_ID);
         Preconditions.checkArgument(ligaDTO.getRegionId() >= 0, PRECONDITION_MSG_LIGA_REGION_ID_NEG);
 
         // These are not mandatory fields. Only check if filled.

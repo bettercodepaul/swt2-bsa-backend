@@ -36,7 +36,7 @@ public class LizenzMapperTest {
         final DsbMitgliedDO dsbMitgliedDO = getDsbMitgliedDO();
 
         final LizenzBE actual = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDO);
-        assertThat(actual.getLizenzDsbMitgliedId() == LIZENZDSBMITGLIEDID);
+        assertThat(actual.getLizenzDsbMitgliedId()).isEqualTo(LIZENZDSBMITGLIEDID);
     }
 
     @Test
