@@ -21,7 +21,7 @@ public class VeranstaltungMapper implements ValueObjectMapper {
     /**
      * mapps a Veranstaltung Data Object into a Veranstaltung Business Entity
      */
-    public static final Function<VeranstaltungDO, VeranstaltungBE> toVeranstaltungBE= veranstaltungDO -> {
+    public static final Function<VeranstaltungDO, VeranstaltungBE> toVeranstaltungBE = veranstaltungDO -> {
 
         VeranstaltungPhase veranstaltungPhase = new VeranstaltungPhase();
 
@@ -41,9 +41,11 @@ public class VeranstaltungMapper implements ValueObjectMapper {
         /** the phase in veranstaltungBE is from type Integer and the phase of tempVeranstaltungDO is from type String.
          *  The phase will convert from String to Integer, because the phase is stored in the database as Integer,
          *  but in the dialogs of the frontend it should show the phase as text.
-         */
+         **/
         veranstaltungBE.setVeranstaltungPhase(veranstaltungPhase.getPhaseFromStringToInt(
                 veranstaltungDO.getVeranstaltungPhase()));
+
+        veranstaltungBE.setVeranstaltungGroesse(veranstaltungDO.getVeranstaltungGroesse());
 
         veranstaltungBE.setCreatedAtUtc(createdAtUtcTimestamp);
         veranstaltungBE.setCreatedByUserId(veranstaltungDO.getCreatedByUserId());
@@ -81,8 +83,9 @@ public class VeranstaltungMapper implements ValueObjectMapper {
                 userDO.getEmail(),
                 wettkamptypDO.getName(),
                 ligaDO.getName(),
-                tempVeranstaltungDO.getVeranstaltungPhase()
+                tempVeranstaltungDO.getVeranstaltungPhase(),
                 //veranstaltungBE.getVeranstaltungPhase()
+                veranstaltungBE.getVeranstaltungGroesse()
         );
         veranstaltungDO.setCreatedAtUtc(createdAtUtc);
         veranstaltungDO.setLastModifiedAtUtc(lastModifiedAtUtc);

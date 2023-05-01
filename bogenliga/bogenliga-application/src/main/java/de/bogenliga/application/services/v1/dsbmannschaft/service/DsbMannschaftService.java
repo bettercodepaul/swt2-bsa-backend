@@ -12,11 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
+import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
@@ -43,6 +45,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE = "DsbMannschaft Nummer must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE = "DsbMannschaft Benutzer Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
+    private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
 
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
@@ -55,6 +58,7 @@ public class DsbMannschaftService implements ServiceFacade {
      * dependency injection with {@link Autowired}
      */
     private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
 
     /**
@@ -64,7 +68,8 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @Autowired
     public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent,
-                                final RequiresOnePermissionAspect requiresOnePermissionAspect) {
+                                final RequiresOnePermissionAspect requiresOnePermissionAspect, final VeranstaltungComponent veranstaltungComponent) {
+        this.veranstaltungComponent = veranstaltungComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
     }
@@ -217,6 +222,16 @@ public class DsbMannschaftService implements ServiceFacade {
             final Long userId = UserProvider.getCurrentUserId(principal);
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
+
+            // Check size of Veranstaltung and if it is full
+            // If Veranstaltung does not exist choose 8 as its default size
+            int veranstaltung_groesse = 8;
+            try {
+                veranstaltung_groesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
+            } catch (NullPointerException ignored){}
+            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltung_groesse
+                    , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
 
                     dsbMannschaftDTO.getVereinId(),
@@ -256,7 +271,7 @@ public class DsbMannschaftService implements ServiceFacade {
     }
 
     /**
-     * I insert the mannschaft with the given manschaft id into the veranstaltung with the given veranstaltung id.
+     * I insert the mannschaft with the given mannschaft id into the veranstaltung with the given veranstaltung id.
      * @param veranstaltungsId
      * @param mannschaftId
      * @param principal
@@ -272,12 +287,15 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftId);
+
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
         DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
         dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId());
 
+
         LOG.debug("Mannschaft '{}' in Veranstaltung mit id '{}' kopiert.", dsbMannschaftDO.getName(), veranstaltungsId);
+
     }
 
     /**
@@ -313,6 +331,14 @@ public class DsbMannschaftService implements ServiceFacade {
         }
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
+        // Check size of Veranstaltung and if it is full
+        // If Veranstaltung does not exist choose 8 as its default size
+        int veranstaltung_groesse = 8;
+        try {
+            veranstaltung_groesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
+        } catch (NullPointerException ignored){}
+        Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltung_groesse
+                , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
         LOG.debug(
                 "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
