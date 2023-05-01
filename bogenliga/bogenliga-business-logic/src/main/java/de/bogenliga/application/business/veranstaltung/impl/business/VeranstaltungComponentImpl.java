@@ -40,6 +40,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     private static final String PRECONDITION_MSG_VERANSTALTUNG_NAME = "veranstaltungname must be not null";
     private static final String PRECONDITION_MSG_CURRENT_DSBMITGLIED = "Current dsbmitglied id must not be negative";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_LIGA_ALREADY_HAS_VERANSTALTUNG = "liga already has a veranstaltung assigned for this year";
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_GROESSE = "veranstaltunggroesse must be not null";
 
     private  VeranstaltungDAO veranstaltungDAO;
     private  WettkampfComponent wettkampfComponent;
@@ -50,8 +51,6 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
     /**
      * Constructor for VeranstaltungComponentImpl - Autowired by springboot
-     *
-     * @param veranstaltungDAO Data Access Object für Entität Veranstaltung
      */
 
     @Autowired
@@ -275,6 +274,8 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
                 PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
         Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungSportJahr(),
                 PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
+        Preconditions.checkNotNull(veranstaltungDO.getVeranstaltungGroesse(),
+                PRECONDITION_MSG_VERANSTALTUNG_GROESSE);
 
     }
 
