@@ -30,6 +30,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID = "veranstaltungLigaId";
 
     private static final String VERANSTALTUNG_BE_VERANSTALTUNG_PHASE = "veranstaltungPhase";
+    private static final String VERANSTALTUNG_BE_VERANSTALTUNG_GROESSE = "veranstaltungGroesse";
 
     private static final String VERANSTALTUNG_TABLE_ID = "veranstaltung_id";
     private static final String VERANSTALTUNG_TABLE_WETTKAMPFTYP_ID= "veranstaltung_wettkampftyp_id";
@@ -40,6 +41,7 @@ public class VeranstaltungDAO implements DataAccessObject{
     private static final String VERANSTALTUNG_TABLE_LIGA_ID = "veranstaltung_liga_id";
 
     private static final String VERANSTALTUNG_TABLE_PHASE = "veranstaltung_phase";
+    private static final String VERANSTALTUNG_TABLE_GROESSE = "veranstaltung_groesse";
 
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(VeranstaltungDAO.class);
@@ -140,6 +142,7 @@ public class VeranstaltungDAO implements DataAccessObject{
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGALEITER_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGALEITER_ID);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_LIGA_ID, VERANSTALTUNG_BE_VERANSTALTUNG_LIGA_ID);
         columnsToFieldsMap.put(VERANSTALTUNG_TABLE_PHASE, VERANSTALTUNG_BE_VERANSTALTUNG_PHASE);
+        columnsToFieldsMap.put(VERANSTALTUNG_TABLE_GROESSE, VERANSTALTUNG_BE_VERANSTALTUNG_GROESSE);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
@@ -260,7 +263,6 @@ public class VeranstaltungDAO implements DataAccessObject{
         }
         return phaseListInteger;
     }
-
 
     /**
      * The sql query filters also for (veranstaltungen) with the phase 'Laufend' and 'Abgeschlossen'.

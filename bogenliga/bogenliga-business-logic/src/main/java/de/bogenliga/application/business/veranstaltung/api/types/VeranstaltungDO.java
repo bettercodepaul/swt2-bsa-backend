@@ -26,6 +26,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
     private String veranstaltungLigaleiterEmail;
     private String veranstaltungWettkampftypName;
     private String veranstaltungLigaName;
+    private Integer veranstaltungGroesse;
 
 
 
@@ -53,6 +54,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param lastModifiedByUserId
      * @param version
      * @param phase
+     * @param groesse
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
                            final Date meldeDeadline,
@@ -63,7 +65,8 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                            final String ligaleiterEmail,
                            final String wettkampftypName,
                            final String ligaName,
-                           final String phase) {
+                           final String phase,
+                           final Integer groesse) {
 
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
@@ -81,6 +84,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.veranstaltungWettkampftypName = wettkampftypName;
         this.veranstaltungLigaName = ligaName;
         this.veranstaltungPhase = phase;
+        this.veranstaltungGroesse = groesse;
     }
 
 
@@ -94,10 +98,12 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param meldeDeadline
      * @param ligaleiterID
      * @param phase
+     * @param groesse
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
                            final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,
-                           final String ligaleiterEmail, final String wettkampftypName, final String ligaName, final String phase) {
+                           final String ligaleiterEmail, final String wettkampftypName, final String ligaName, final String phase,
+                           final Integer groesse) {
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
         this.veranstaltungName = name;
@@ -109,6 +115,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.veranstaltungWettkampftypName = wettkampftypName;
         this.veranstaltungLigaName = ligaName;
         this.veranstaltungPhase = phase;
+        this.veranstaltungGroesse = groesse;
     }
 
 
@@ -122,10 +129,12 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
      * @param meldeDeadline
      * @param ligaleiterID
      * @param phase
+     * @param groesse
      */
     public VeranstaltungDO(final Long id, final Long wettkampfTypID, final String name, final Long sportJahr,
                            final Date meldeDeadline, final Long ligaleiterID, final Long ligaID,
-                           final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version, final String phase) {
+                           final OffsetDateTime createdAtUtc, Long createdByUserId, final Long version, final String phase,
+                           final Integer groesse) {
 
         this.veranstaltungID = id;
         this.veranstaltungWettkampftypID = wettkampfTypID;
@@ -138,6 +147,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.createdByUserId = createdByUserId;
         this.version = version;
         this.veranstaltungPhase = phase;
+        this.veranstaltungGroesse = groesse;
     }
 
 
@@ -148,7 +158,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                 veranstaltungLigaleiterID, veranstaltungLigaID, veranstaltungLigaleiterEmail,
                 veranstaltungWettkampftypName, veranstaltungLigaName,
                 createdByUserId, lastModifiedAtUtc,
-                lastModifiedByUserId, version, veranstaltungPhase);
+                lastModifiedByUserId, version, veranstaltungPhase, veranstaltungGroesse);
     }
 
 
@@ -166,7 +176,8 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                     this.getVeranstaltungLigaleiterEmail().equals(that.getVeranstaltungLigaleiterEmail()) &&
                     this.getVeranstaltungWettkampftypName().equals(that.getVeranstaltungWettkampftypName()) &&
                     this.getVeranstaltungLigaName().equals(that.getVeranstaltungLigaName()) &&
-                    this.getVeranstaltungPhase().equals(that.getVeranstaltungPhase()));
+                    this.getVeranstaltungPhase().equals(that.getVeranstaltungPhase()) &&
+                    this.getVeranstaltungGroesse().equals(that.getVeranstaltungGroesse()));
         }
         return false;
     }
@@ -325,6 +336,11 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
         this.veranstaltungPhase = veranstaltungPhase;
     }
 
+    public Integer getVeranstaltungGroesse() {return veranstaltungGroesse;}
+    public void setVeranstaltungGroesse(Integer veranstaltungGroesse){
+        this.veranstaltungGroesse = veranstaltungGroesse;
+    }
+
 
     @Override
     public String toString() {
@@ -340,6 +356,7 @@ public class VeranstaltungDO extends CommonDataObject implements DataObject {
                 ", veranstaltungWettkampftypName ='" + this.veranstaltungWettkampftypName + '\'' +
                 ", veranstaltungLigaName ='" + this.veranstaltungLigaName + '\'' +
                 ", veranstaltungPhase ='" + this.veranstaltungPhase + '\'' +
+                ", veranstaltungGroesse ='" + this.veranstaltungGroesse + '\'' +
                 "}";
     }
 }
