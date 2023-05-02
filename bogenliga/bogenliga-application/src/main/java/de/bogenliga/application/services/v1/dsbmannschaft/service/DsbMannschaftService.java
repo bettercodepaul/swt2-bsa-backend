@@ -229,6 +229,18 @@ public class DsbMannschaftService implements ServiceFacade {
             try {
                 veranstaltung_groesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
             } catch (NullPointerException ignored){}
+
+            // Check if an Auffuellmannschaft is already in the Veranstaltung, delete if it is true
+            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(9999);
+            for (DsbMannschaftDO dsbMannschaftDO : list) {
+                long auffuellmannschaftId = dsbMannschaftDO.getId();
+                long auffuellmannschaftVeranstaltungsId = dsbMannschaftDO.getVeranstaltungId();
+
+                if (auffuellmannschaftVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()) {
+                    delete(auffuellmannschaftId, principal);
+                }
+            }
+
             Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltung_groesse
                     , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
