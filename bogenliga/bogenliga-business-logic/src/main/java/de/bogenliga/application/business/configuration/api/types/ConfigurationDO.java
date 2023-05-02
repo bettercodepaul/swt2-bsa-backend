@@ -16,7 +16,7 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
     private String key;
     private String value;
     private String regex;
-    private Boolean isHidden;
+    private Boolean hidden;
 
 
     /**
@@ -30,12 +30,12 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
     public ConfigurationDO(final Long id, final String key, final String value, final String regex,
                            final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
-                           final Long lastModifiedByUserId, final Long version, final Boolean isHidden) {
+                           final Long lastModifiedByUserId, final Long version, final Boolean hidden) {
         this.id = id;
         this.key = key;
         this.value = value;
         this.regex = regex;
-        this.isHidden = isHidden;
+        this.hidden = hidden;
 
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
@@ -46,19 +46,19 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
 
 
     public ConfigurationDO(final Long id, final String key, final String value, final String regex,
-                           final Boolean isHidden) {
+                           final Boolean hidden) {
         this.id = id;
         this.key = key;
         this.value = value;
         this.regex = regex;
-        this.isHidden = isHidden;
+        this.hidden = hidden;
     }
 
 
-    public ConfigurationDO(final String key, final String value, final Boolean isHidden) {
+    public ConfigurationDO(final String key, final String value, final Boolean hidden) {
         this.key = key;
         this.value = value;
-        this.isHidden = isHidden;
+        this.hidden = hidden;
     }
 
 
@@ -108,13 +108,13 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Boolean getIsHidden() {
-        return isHidden;
+    public Boolean isHidden() {
+        return hidden;
     }
 
 
-    public void setIsHidden(Boolean hidden) {
-        isHidden = hidden;
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 
 
@@ -131,7 +131,7 @@ public class ConfigurationDO extends CommonDataObject implements DataObject {
                 Objects.equals(getKey(), configurationDO.getKey()) &&
                 Objects.equals(getValue(), configurationDO.getValue()) &&
                 Objects.equals(getRegex(), configurationDO.getRegex()) &&
-                Objects.equals(getIsHidden(), configurationDO.getIsHidden());
+                Objects.equals(isHidden(), configurationDO.isHidden());
     }
 
 

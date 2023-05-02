@@ -33,13 +33,13 @@ public class ConfigurationDAO implements DataAccessObject {
     private static final String CONFIGURATION_BE_KEY = "configurationKey";
     private static final String CONFIGURATION_BE_VALUE = "configurationValue";
     private static final String CONFIGURATION_BE_REGEX = "configurationRegex";
-    private static final String CONFIGURATION_BE_IS_HIDDEN = "configurationIsHidden";
+    private static final String CONFIGURATION_BE_IS_HIDDEN = "configurationHidden";
 
     private static final String CONFIGURATION_TABLE_ID = "configuration_id";
     private static final String CONFIGURATION_TABLE_KEY = "configuration_key";
     private static final String CONFIGURATION_TABLE_VALUE = "configuration_value";
     private static final String CONFIGURATION_TABLE_REGEX = "configuration_regex";
-    private static final String CONFIGURATION_TABLE_IS_HIDDEN = "configuration_is_hidden";
+    private static final String CONFIGURATION_TABLE_IS_HIDDEN = "configuration_hidden";
 
     // wrap all specific config parameters
     private static final BusinessEntityConfiguration<ConfigurationBE> CONFIG = new BusinessEntityConfiguration<>(

@@ -85,12 +85,11 @@ public class ConfigurationService implements ServiceFacade {
         final List<ConfigurationDO> configurationDOList = configurationComponent.findAll();
         LOG.debug("Received Configuration request");
         return configurationDOList.stream().map(ConfigurationDTOMapper.toDTO).map(dto -> {
-            if (Boolean.TRUE.equals(dto.getIsHidden())) {
+            if (Boolean.TRUE.equals(dto.isHidden())) {
                 dto.setValue("<VALUE_IS_HIDDEN>");
             }
             return dto;
-        }).collect(
-                Collectors.toList());
+        }).collect(Collectors.toList());
     }
 
 
@@ -117,10 +116,11 @@ public class ConfigurationService implements ServiceFacade {
         LOG.debug("Receive 'findById' request with id '{}'", id);
 
         final ConfigurationDO configurationDO = configurationComponent.findById(id);
-        if (configurationDO.getIsHidden()) {
-            configurationDO.setValue("<VALUE_IS_HIDDEN>");
+        final ConfigurationDTO dto = ConfigurationDTOMapper.toDTO.apply(configurationDO);
+        if (Boolean.TRUE.equals(dto.isHidden())) {
+            dto.setValue("<VALUE_IS_HIDDEN>");
         }
-        return ConfigurationDTOMapper.toDTO.apply(configurationDO);
+        return dto;
     }
 
 
@@ -187,7 +187,7 @@ public class ConfigurationService implements ServiceFacade {
         Preconditions.checkArgument(configurationDTO.getId() >= 0, "ConfigurationDTO id must not be negative");
         Preconditions.checkNotNullOrEmpty(configurationDTO.getKey(), "ConfigurationDTO key must not null or empty");
         Preconditions.checkNotNull(configurationDTO.getValue(), "ConfigurationDTO value must not null");
-        Preconditions.checkNotNull(configurationDTO.getIsHidden(), "ConfigurationDTO isHidden must not null");
+        Preconditions.checkNotNull(configurationDTO.isHidden(), "ConfigurationDTO isHidden must not null");
         Preconditions.checkArgument((configurationDTO.getRegex() == null ||
                         configurationDTO.getValue().matches(findById(configurationDTO.getId()).getRegex())),
                 "ConfigurationDTO value must match the ConfigurationDTO regex expression.");

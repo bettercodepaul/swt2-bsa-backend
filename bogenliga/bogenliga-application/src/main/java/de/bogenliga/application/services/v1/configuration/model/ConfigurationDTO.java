@@ -15,7 +15,7 @@ public class ConfigurationDTO implements DataTransferObject {
     private String key;
     private String value;
     private String regex;
-    private Boolean isHidden;
+    private Boolean hidden;
 
 
     /**
@@ -34,12 +34,12 @@ public class ConfigurationDTO implements DataTransferObject {
      */
 
     public ConfigurationDTO(final Long id, final String key, final String value, final String regex,
-                            final Boolean isHidden) {
+                            final Boolean hidden) {
         this.id = id;
         this.key = key;
         this.value = value;
         this.regex = regex;
-        this.isHidden = isHidden;
+        this.hidden = hidden;
     }
 
 
@@ -83,12 +83,12 @@ public class ConfigurationDTO implements DataTransferObject {
     }
 
 
-    public Boolean getIsHidden() {
-        return isHidden;
+    public Boolean isHidden() {
+        return hidden;
     }
 
 
-    public void setIsHidden(Boolean hidden) {
-        isHidden = hidden;
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }

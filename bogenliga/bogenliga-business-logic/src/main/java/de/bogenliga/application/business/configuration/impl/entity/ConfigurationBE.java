@@ -15,7 +15,7 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
     private String configurationKey;
     private String configurationValue;
     private String configurationRegex;
-    private Boolean configurationIsHidden;
+    private Boolean configurationHidden;
 
 
     /**
@@ -31,7 +31,7 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
      */
     @Override
     public String toString() {
-        return "ConfigurationBE{" + ", id=" + configurationId + '\'' + ", key=" + configurationKey + '\'' + ", value=" + configurationValue + '\'' + ", regex=" + configurationRegex + '\'' + ", isHidden=" + configurationIsHidden + '\'' + "}";
+        return "ConfigurationBE{" + ", id=" + configurationId + '\'' + ", key=" + configurationKey + '\'' + ", value=" + configurationValue + '\'' + ", regex=" + configurationRegex + '\'' + ", hidden=" + configurationHidden + '\'' + "}";
     }
 
 
@@ -75,17 +75,12 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
-    public Boolean getConfigurationIsHidden() {
-        return configurationIsHidden;
+    public Boolean isConfigurationHidden() {
+        return configurationHidden;
     }
 
 
-    public void setConfigurationIsHidden(Boolean configurationIsHidden) {
-        this.configurationIsHidden = configurationIsHidden;
-    }
-
-
-    public Boolean isConfigurationIsHidden() {
-        return configurationIsHidden;
+    public void setConfigurationHidden(Boolean configurationHidden) {
+        this.configurationHidden = configurationHidden;
     }
 }
