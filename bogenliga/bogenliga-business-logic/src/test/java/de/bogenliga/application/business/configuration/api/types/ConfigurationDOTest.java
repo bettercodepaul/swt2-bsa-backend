@@ -13,9 +13,11 @@ public class ConfigurationDOTest {
     String value = "Value";
     String regex = null;
 
+    Boolean hidden = false;
+
 
     ConfigurationDO getConfigurationDO() {
-        return new ConfigurationDO(id, key, value, null);
+        return new ConfigurationDO(id, key, value, null, false);
     }
 
 
@@ -26,11 +28,13 @@ public class ConfigurationDOTest {
         assertThat(underTest.getId()).isEqualTo(id);
         assertThat(underTest.getKey()).isEqualTo(key);
         assertThat(underTest.getValue()).isEqualTo(value);
+        assertThat(underTest.isHidden()).isEqualTo(hidden);
 
-        underTest = new ConfigurationDO(key, value);
+        underTest = new ConfigurationDO(key, value, false);
 
         assertThat(underTest.getKey()).isEqualTo(key);
         assertThat(underTest.getValue()).isEqualTo(value);
+        assertThat(underTest.isHidden()).isEqualTo(hidden);
     }
 
 
@@ -49,6 +53,10 @@ public class ConfigurationDOTest {
         underTest.setValue(value);
 
         assertThat(underTest.getValue()).isEqualTo(value);
+
+        underTest.setHidden(hidden);
+
+        assertThat(underTest.isHidden()).isEqualTo(Boolean.FALSE);
     }
 
 
