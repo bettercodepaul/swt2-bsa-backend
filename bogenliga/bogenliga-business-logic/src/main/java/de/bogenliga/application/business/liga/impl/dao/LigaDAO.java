@@ -35,6 +35,8 @@ public class LigaDAO implements DataAccessObject {
     private static final String LIGA_BE_REGION_ID = "ligaRegionId";
     private static final String LIGA_BE_UEBERGEORDNET_ID = "ligaUebergeordnetId";
     private static final String LIGA_BE_VERANTWORTLICH_ID = "ligaVerantwortlichId";
+    private static final String LIGA_BE_LIGADETAIL = "ligaDetail";
+
 
     private static final String LIGA_TABLE_ID = "liga_id";
     private static final String LIGA_TABLE_NAME = "liga_name";
@@ -42,6 +44,7 @@ public class LigaDAO implements DataAccessObject {
     private static final String LIGA_TABLE_REGION_ID = "liga_region_id";
     private static final String LIGA_TABLE_UEBERGEORDNET = "liga_uebergeordnet";
     private static final String LIGA_TABLE_VERANTWORTLICH = "liga_verantwortlich";
+    private static final String LIGA_TABLE_DETAIL = "liga_detail";
 
     //wrap all specific config parameters
     private static final BusinessEntityConfiguration<LigaBE> LIGA = new BusinessEntityConfiguration<>(
@@ -90,7 +93,7 @@ public class LigaDAO implements DataAccessObject {
         columnsToFieldsMap.put(LIGA_TABLE_REGION_ID, LIGA_BE_REGION_ID);
         columnsToFieldsMap.put(LIGA_TABLE_UEBERGEORDNET, LIGA_BE_UEBERGEORDNET_ID);
         columnsToFieldsMap.put(LIGA_TABLE_VERANTWORTLICH, LIGA_BE_VERANTWORTLICH_ID);
-
+        columnsToFieldsMap.put(LIGA_TABLE_DETAIL, LIGA_BE_LIGADETAIL);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 

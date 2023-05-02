@@ -21,6 +21,7 @@ public class LigaDTO implements DataTransferObject {
     private String ligaUebergeordnetName;
     private Long ligaVerantwortlichId;
     private String ligaVerantwortlichMail;
+    private String ligaDetail;
 
 
     /**
@@ -34,7 +35,8 @@ public class LigaDTO implements DataTransferObject {
      * @param ligaVerantwortlichMail
      */
     public LigaDTO(Long id, String name, Long regionId, String regionName, Long ligaUebergeordnetId,
-                   String ligaUebergeordnetName, Long ligaVerantwortlichId, String ligaVerantwortlichMail, Long disziplinId) {
+                   String ligaUebergeordnetName, Long ligaVerantwortlichId, String ligaVerantwortlichMail, Long disziplinId,
+                   String ligaDetail) {
         this.id = id;
         this.name = name;
         this.regionId = regionId;
@@ -44,6 +46,7 @@ public class LigaDTO implements DataTransferObject {
         this.ligaVerantwortlichId = ligaVerantwortlichId;
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
         this.disziplinId = disziplinId;
+        this.ligaDetail = ligaDetail;
     }
 
 
@@ -133,5 +136,15 @@ public class LigaDTO implements DataTransferObject {
 
     public void setLigaVerantwortlichMail(String ligaVerantwortlichMail) {
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
+    }
+
+
+    public String getLigaDetail() {
+        return ligaDetail;
+    }
+
+
+    public void setLigaDetail(String ligaDetail) {
+        this.ligaDetail = ligaDetail;
     }
 }
