@@ -72,16 +72,6 @@ public class VeranstaltungService implements ServiceFacade {
     }
 
 
-    /*@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public List<VeranstaltungDTO> findAll() {
-
-        VeranstaltungPhase[] phaseList = new VeranstaltungPhase[];
-
-        return veranstaltungComponent.findAll(phaseList).stream().map(VeranstaltungDTOMapper.toDTO).collect(
-                Collectors.toList());
-    }*/
-
 
     /**
      * I return all the teams (veranstaltung) specified by the phase 'Geplant' and 'Laufend' of the database.
@@ -180,6 +170,15 @@ public class VeranstaltungService implements ServiceFacade {
 
         VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[0];
         return veranstaltungComponent.findBySportjahr(sportjahr, phaseList).stream().map(
+                VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "")
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public List<VeranstaltungDTO> findAll() {
+
+        VeranstaltungPhase.Phase[] phaseList = new VeranstaltungPhase.Phase[0];
+        return veranstaltungComponent.findAll(phaseList).stream().map(
                 VeranstaltungDTOMapper.toDTO).collect(Collectors.toList());
     }
 
