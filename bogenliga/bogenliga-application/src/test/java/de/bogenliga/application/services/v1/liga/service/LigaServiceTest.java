@@ -38,6 +38,7 @@ public class LigaServiceTest {
     private static final long VERANTWORTLICHERID= 3;
     private static final String VERANTWORTLICHEREMAIL="test@test.de";
     private static final long USER = 4;
+    private static final String LIGADETAIL = "ein Detail";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -79,7 +80,8 @@ public class LigaServiceTest {
                 LIGAUEBERGEORDNETNAME,
                 VERANTWORTLICHERID,
                 VERANTWORTLICHEREMAIL,
-                DISZIPLINID
+                DISZIPLINID,
+                LIGADETAIL
         );
     }
 
@@ -87,6 +89,7 @@ public class LigaServiceTest {
         final LigaDTO ligaDTO = new LigaDTO();
         ligaDTO.setId(ID);
         ligaDTO.setName(NAME);
+        ligaDTO.setDisziplinId(DISZIPLINID);
         ligaDTO.setRegionId(REGIONID);
         ligaDTO.setRegionName(REGIONNAME);
         ligaDTO.setLigaUebergeordnetId(LIGAUEBERGEORDNETID);
