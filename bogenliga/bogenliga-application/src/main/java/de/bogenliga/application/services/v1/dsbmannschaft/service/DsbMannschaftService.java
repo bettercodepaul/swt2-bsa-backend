@@ -225,11 +225,11 @@ public class DsbMannschaftService implements ServiceFacade {
 
             // Check size of Veranstaltung and if it is full
             // If Veranstaltung does not exist choose 8 as its default size
-            int veranstaltung_groesse = 8;
+            int veranstaltungsgroesse = 8;
             try {
-                veranstaltung_groesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
+                veranstaltungsgroesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
             } catch (NullPointerException ignored){}
-            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltung_groesse
+            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltungsgroesse
                     , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
@@ -322,6 +322,7 @@ public class DsbMannschaftService implements ServiceFacade {
             throw new NoPermissionException();
         }
             //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
+
         if(this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) &&
                 !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
             DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
@@ -331,14 +332,21 @@ public class DsbMannschaftService implements ServiceFacade {
         }
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
-        // Check size of Veranstaltung and if it is full
-        // If Veranstaltung does not exist choose 8 as its default size
-        int veranstaltung_groesse = 8;
-        try {
-            veranstaltung_groesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
-        } catch (NullPointerException ignored){}
-        Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltung_groesse
-                , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+        // If VeranstaltungsId was changed, check size of new Veranstaltung and if it is at capacity
+        // If Veranstaltung does not exist choose 8 as its default capacity
+        List<DsbMannschaftDTO> mannschaftenInZielveranstaltung = findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId());
+        int veranstaltungsgroesse = 8;
+        if(!dsbMannschaftDTO.getVeranstaltungId().equals(this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId()).getVeranstaltungId())) {
+            try {
+                veranstaltungsgroesse = veranstaltungComponent.findById(
+                        dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
+            } catch (NullPointerException ignored) {
+
+            }
+            Preconditions.checkArgument(
+                    mannschaftenInZielveranstaltung.size() < veranstaltungsgroesse
+                    , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
+        }
 
         LOG.debug(
                 "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
@@ -389,13 +397,11 @@ public class DsbMannschaftService implements ServiceFacade {
         Preconditions.checkNotNull(dsbMannschaftDTO.getVeranstaltungId(), PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID);
 
 
-
         Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getNummer() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER_NEGATIVE);
         Preconditions.checkArgument(dsbMannschaftDTO.getVeranstaltungId() >= 0,
                 PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE);
-
     }
 }
