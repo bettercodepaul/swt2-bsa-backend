@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
-import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungService;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
@@ -226,9 +226,10 @@ public class DsbMannschaftService implements ServiceFacade {
             // Check size of Veranstaltung and if it is full
             // If Veranstaltung does not exist choose 8 as its default size
             int veranstaltungsgroesse = 8;
-            try {
-                veranstaltungsgroesse = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
-            } catch (NullPointerException ignored){}
+            VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId());
+            if (veranstaltungDO != null){
+                veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
+            }
             Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltungsgroesse
                     , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
@@ -317,18 +318,16 @@ public class DsbMannschaftService implements ServiceFacade {
         //check if his vereinId equals the vereinId of the mannschaft he wants to modify a Team in
         //and if the user has the permission to modify his verein.
 
-        if( !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) &&
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) &&
                 !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
             throw new NoPermissionException();
         }
             //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
-
+        DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
         if(this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) &&
-                !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT)) {
-            DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
-            if(!dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
-                throw new NoPermissionException();
-            }
+                !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) &&
+                !dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
+            throw new NoPermissionException();
         }
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
@@ -336,21 +335,18 @@ public class DsbMannschaftService implements ServiceFacade {
         // If Veranstaltung does not exist choose 8 as its default capacity
         List<DsbMannschaftDTO> mannschaftenInZielveranstaltung = findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId());
         int veranstaltungsgroesse = 8;
-        if(!dsbMannschaftDTO.getVeranstaltungId().equals(this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId()).getVeranstaltungId())) {
-            try {
-                veranstaltungsgroesse = veranstaltungComponent.findById(
-                        dsbMannschaftDTO.getVeranstaltungId()).getVeranstaltungGroesse();
-            } catch (NullPointerException ignored) {
-
+        if(dsbMannschaftDO != null && (!dsbMannschaftDTO.getVeranstaltungId().equals(dsbMannschaftDO.getVeranstaltungId()))) {
+            VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDTO.getVeranstaltungId());
+            if(veranstaltungDO != null) {
+                veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
             }
-            Preconditions.checkArgument(
-                    mannschaftenInZielveranstaltung.size() < veranstaltungsgroesse
+            Preconditions.checkArgument(mannschaftenInZielveranstaltung.size() < veranstaltungsgroesse
                     , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
         }
 
+
         LOG.debug(
                 "Receive 'create' request with verein nummer '{}', mannschaft-nr '{}',  benutzer id '{}', veranstaltung id '{}',",
-
                 // dsbMannschaftDTO.getId(),
                 dsbMannschaftDTO.getVereinId(),
                 dsbMannschaftDTO.getNummer(),
