@@ -1,7 +1,9 @@
 package de.bogenliga.application.business.setzliste.impl.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +41,7 @@ public class SetzlisteComponentImplTest {
 
     private static final long MANNSCHAFTSID = 5;
     private static final long WETTKAMPFID = 30;
+    private static int sizeTeam = 8;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -67,7 +70,7 @@ public class SetzlisteComponentImplTest {
     @Test
     public void getPDFasByteArray() {
 
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
         DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
@@ -75,7 +78,7 @@ public class SetzlisteComponentImplTest {
 
         //configure Mocks
         when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
-        when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfid())).thenReturn(wettkampfDO);
+        when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfID())).thenReturn(wettkampfDO);
         when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
@@ -108,32 +111,36 @@ public class SetzlisteComponentImplTest {
 
     }
 
-
     @Test
     public void generateMatchesBySetzliste() {
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
-        final List<MatchDO> matchDOList = new ArrayList<>();
-        final MatchDO matchDO = MatchComponentImplTest.getMatchDO();
-        matchDO.setWettkampfId(WETTKAMPFID);
+
+        HashMap<Integer, Integer> parameters = new HashMap<Integer, Integer>();
+        parameters.put(8, 56);
+        parameters.put(6, 30);
+        parameters.put(4, 24);
 
 
-        //configure Mocks
-        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
-        when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
-        when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
+        for (Map.Entry<Integer, Integer> entry : parameters.entrySet()) {
+            List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(entry.getKey());
+            List<MatchDO> matchDOList = new ArrayList<>();
+            MatchDO matchDO = MatchComponentImplTest.getMatchDO();
+            matchDO.setWettkampfId(WETTKAMPFID);
 
-        //call test method
-        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
 
-        //assert
-        Assertions.assertThat(actual).hasSize(56);
-        for (MatchDO actualMatchDO: actual) {
-            Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
+            //configure Mocks
+            when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+            when(matchComponent.findByWettkampfId(WETTKAMPFID)).thenReturn(matchDOList);
+            when(matchComponent.create(any(), anyLong())).thenReturn(matchDO);
+
+            //call test method
+            List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+            //assert
+            Assertions.assertThat(actual).hasSize(entry.getValue());
+            for (MatchDO actualMatchDO : actual) {
+                Assertions.assertThat(actualMatchDO.getWettkampfId()).isEqualTo(WETTKAMPFID);
+            }
         }
-
-        //verify invocations
-        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
-
     }
 
     @Test(expected = BusinessException.class)
@@ -157,7 +164,8 @@ public class SetzlisteComponentImplTest {
 
     @Test
     public void generateMatchesBySetzliste_MatchesExist() {
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList();
+
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
         final List<MatchDO> matchDOList = new ArrayList<>();
         for(int i=1;i<5;i++){
             MatchDO matchDO = MatchComponentImplTest.getMatchDO();
@@ -185,13 +193,13 @@ public class SetzlisteComponentImplTest {
     }
 
 
-    public static List<SetzlisteBE> getSetzlisteBEList(){
+    public static List<SetzlisteBE> getSetzlisteBEList(int sizeTeam){
         List<SetzlisteBE> result = new ArrayList<>();
-        for (int i = 1; i <= 8; i++){
+        for (int i = 1; i <= sizeTeam ; i++){
             SetzlisteBE element = new SetzlisteBE();
             element.setLigatabelleTabellenplatz(i);
-            element.setMannschaftid(MANNSCHAFTSID+i);
-            element.setWettkampfid(WETTKAMPFID);
+            element.setMannschaftID(MANNSCHAFTSID+i);
+            element.setWettkampfID(WETTKAMPFID);
             result.add(element);
         }
         return result;
