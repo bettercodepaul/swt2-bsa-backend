@@ -125,7 +125,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
 
         DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
 
-        if (dsbMitgliedDO.isKampfrichter()) {
+        if (Boolean.FALSE.equals(dsbMitgliedDO.isKampfrichter())) {
             final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
             lizenzDAO.create(lizenzBE, currentDsbMitgliedId);
             dsbMitgliedDOResponse.setKampfrichter(true);
@@ -144,10 +144,10 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         final DsbMitgliedBE persistedDsbMitgliedBE = dsbMitgliedDAO.update(dsbMitgliedBE, currentDsbMitgliedId);
         DsbMitgliedDO dsbMitgliedDOResponse = DsbMitgliedMapper.toDsbMitgliedDO.apply(persistedDsbMitgliedBE);
 
-        if (dsbMitgliedDO.isKampfrichter() && !dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId())) {
+        if (Boolean.FALSE.equals(dsbMitgliedDO.isKampfrichter()) && !Boolean.FALSE.equals(dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDOResponse.getId()))) {
             final LizenzBE lizenzBE = KampfrichterlizenzMapper.toKampfrichterlizenz.apply(dsbMitgliedDOResponse);
             lizenzDAO.create(lizenzBE, currentDsbMitgliedId);
-        } else if (Boolean.TRUE.equals(!dsbMitgliedDO.isKampfrichter()) && Boolean.TRUE.equals(dsbMitgliedDAO.hasKampfrichterLizenz(
+        } else if (Boolean.FALSE.equals(!dsbMitgliedDO.isKampfrichter()) && Boolean.FALSE.equals(dsbMitgliedDAO.hasKampfrichterLizenz(
                 dsbMitgliedDOResponse.getId()))) {
             lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDOResponse.getId()),
                     currentDsbMitgliedId);
@@ -161,7 +161,8 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         Preconditions.checkNotNull(dsbMitgliedDO, PRECONDITION_MSG_DSBMITGLIED);
         Preconditions.checkArgument(dsbMitgliedDO.getId() >= 0, PRECONDITION_MSG_DSBMITGLIED_ID);
         Preconditions.checkArgument(currentDsbMitgliedId >= 0, PRECONDITION_MSG_CURRENT_DSBMITGLIED);
-        if (dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId())) {
+
+        if (Boolean.FALSE.equals(dsbMitgliedDAO.hasKampfrichterLizenz(dsbMitgliedDO.getId()))) {
             lizenzDAO.delete(lizenzDAO.findKampfrichterLizenzByDsbMitgliedId(dsbMitgliedDO.getId()),
                     currentDsbMitgliedId);
         }

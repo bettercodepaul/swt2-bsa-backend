@@ -3,7 +3,7 @@ package de.bogenliga.application.business.dsbmannschaft.api.types;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
-import java.sql.Date;
+
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
