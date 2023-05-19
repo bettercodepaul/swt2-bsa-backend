@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
@@ -73,6 +74,12 @@ public class DsbMannschaftServiceTest {
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
                 ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
+        );
+    }
+
+    public static DsbMannschaftDO getAuffuellmannschaft() {
+        return new DsbMannschaftDO(
+                6969L, "Auffuellmannschaft", 9999L, 696969L, 01274L, 4444L, 8L
         );
     }
 
@@ -204,10 +211,16 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaft();
+
+        // Mock the findAllByVereinsId method
+        List<DsbMannschaftDO> list = new ArrayList<>();
+        list.add(auffuellmannschaft);
 
         // configure mocks
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
 
         // call test method
         try {
