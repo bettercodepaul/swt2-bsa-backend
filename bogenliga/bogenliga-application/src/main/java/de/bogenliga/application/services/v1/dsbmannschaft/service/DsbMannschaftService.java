@@ -330,17 +330,13 @@ public class DsbMannschaftService implements ServiceFacade {
         //Check if the User has a General Permission or,
         //check if his vereinId equals the vereinId of the mannschaft he wants to modify a Team in
         //and if the user has the permission to modify his verein.
-
-        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) &&
-                !this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
-            throw new NoPermissionException();
-        }
-            //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
+        //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
         DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
-        if(this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) &&
-                !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) && !dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
-            throw new NoPermissionException();
+        if(!this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) && (!this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())
+                    ||!dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId()))) {
+                throw new NoPermissionException();
         }
+
         checkPreconditions(dsbMannschaftDTO);
         Preconditions.checkArgument(dsbMannschaftDTO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         // If VeranstaltungsId was changed, check size of new Veranstaltung and if it is at capacity

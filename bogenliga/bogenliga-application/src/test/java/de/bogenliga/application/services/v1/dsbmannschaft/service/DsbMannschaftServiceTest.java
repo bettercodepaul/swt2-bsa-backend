@@ -226,6 +226,8 @@ public class DsbMannschaftServiceTest {
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
         final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaft();
+        final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
+
 
         // Mock the findAllByVereinsId method
         List<DsbMannschaftDO> list = new ArrayList<>();
@@ -235,6 +237,7 @@ public class DsbMannschaftServiceTest {
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
 
         // call test method
         try {
@@ -329,7 +332,6 @@ public class DsbMannschaftServiceTest {
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
     }
-
 
     @Test
     public void update_Null() {
