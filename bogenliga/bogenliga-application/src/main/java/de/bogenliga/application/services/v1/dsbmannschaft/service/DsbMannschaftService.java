@@ -338,8 +338,7 @@ public class DsbMannschaftService implements ServiceFacade {
             //if the My_Permission is used, the User is not allowed to change the Liga of the Mannschaft
         DsbMannschaftDO dsbMannschaftDO = this.dsbMannschaftComponent.findById(dsbMannschaftDTO.getId());
         if(this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId()) &&
-                !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) &&
-                !dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
+                !this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_MANNSCHAFT) && !dsbMannschaftDO.getVeranstaltungId().equals(dsbMannschaftDTO.getVeranstaltungId())) {
             throw new NoPermissionException();
         }
         checkPreconditions(dsbMannschaftDTO);
