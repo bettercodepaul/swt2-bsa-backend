@@ -230,7 +230,20 @@ public class DsbMannschaftService implements ServiceFacade {
             if (veranstaltungDO != null){
                 veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
             }
+
+            // Check if an Auffuellmannschaft is already in the Veranstaltung, delete if it is true
+            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(9999);
+            for (DsbMannschaftDO dsbMannschaftDO : list) {
+                long auffuellmannschaftId = dsbMannschaftDO.getId();
+                long auffuellmannschaftVeranstaltungsId = dsbMannschaftDO.getVeranstaltungId();
+
+                if (auffuellmannschaftVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()) {
+                    delete(auffuellmannschaftId, principal);
+                }
+            }
+
             Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltungsgroesse
+
                     , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
             LOG.debug("Receive 'create' request with verein id '{}', nummer '{}', benutzer id '{}', veranstaltung id '{}',",
