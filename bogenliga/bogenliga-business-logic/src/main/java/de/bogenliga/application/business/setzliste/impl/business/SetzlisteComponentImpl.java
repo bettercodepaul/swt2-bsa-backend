@@ -157,7 +157,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         if (setzlisteBEList.isEmpty()){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
-        int indexStructure = numberOfTeams(setzlisteBEList);
+        int indexStructure = indexOfStructure(setzlisteBEList);
         if (matchDOList.isEmpty()){
             //itarate through matches
             for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++){
@@ -214,7 +214,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         }
 
         int mpkteSpacing = 25;
-        int indexStructure = numberOfTeams(setzlisteBEList);
+        int indexStructure = indexOfStructure(setzlisteBEList);
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
         // iterate through the number of matches
@@ -247,7 +247,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * */
     private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList) {
 
-        int indexStructure = numberOfTeams(setzlisteBEList);
+        int indexStructure = indexOfStructure(setzlisteBEList);
 
         String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.setzlisteStructure[index][pos1], setzlisteBEList);
         if (firstTwoLines.length() <= 26) {
@@ -275,23 +275,22 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     /**
      * Returns specified index for the correct team size structure.
      * @param setzlisteBEList List of all competing teams in Wettkampf with context to Ligaplatz
-     * @return index for size of Match
+     * @return index of Structure for given Team Size
      * */
-    private int numberOfTeams(List<SetzlisteBE> setzlisteBEList){
-        int numberOfTeams = setzlisteBEList.size();
-        if (numberOfTeams >= 7 && numberOfTeams <= 8){
+    private int indexOfStructure(List<SetzlisteBE> setzlisteBEList) {
+        int numberOfTeamsToIndex = setzlisteBEList.size();
+        if (numberOfTeamsToIndex == 8) {
             return 0;
 
-        } else if (numberOfTeams >= 5 && numberOfTeams <= 6){
+        } else if (numberOfTeamsToIndex == 6) {
             return 1;
 
-        } else if (numberOfTeams >= 3 && numberOfTeams <= 4){
+        } else if (numberOfTeamsToIndex == 4) {
             return 2;
 
-        } else{
-            LOGGER.debug("Number of teams can not form match ups.");
+        } else {
+            throw new BusinessException(ErrorCode.INCORRECT_AMOUNT_OF_TEAMS, "Anzahl der Teams muss 8, 6 oder 4 betragen, Aktuelle Größe:" + numberOfTeamsToIndex);
         }
-        return numberOfTeams;
     }
 
     /**
