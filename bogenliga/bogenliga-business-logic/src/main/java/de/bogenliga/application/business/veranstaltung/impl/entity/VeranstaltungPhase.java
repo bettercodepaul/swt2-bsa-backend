@@ -71,6 +71,9 @@ public class VeranstaltungPhase {
 
     public int getPhaseFromStringToInt(String phase) {
         int phaseInt;
+        if (phase == null){
+            return 1;
+        }
         switch (phase) {
             case strPlanned:
                 phaseInt = 1;
