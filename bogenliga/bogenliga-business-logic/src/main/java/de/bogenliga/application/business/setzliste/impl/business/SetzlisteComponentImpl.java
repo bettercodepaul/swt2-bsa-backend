@@ -157,7 +157,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         if (setzlisteBEList.isEmpty()){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
-        int indexStructure = indexOfStructure(setzlisteBEList);
+        int indexStructure = indexOfStructure(setzlisteBEList.size());
         if (matchDOList.isEmpty()){
             //itarate through matches
             for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++){
@@ -219,7 +219,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * calculates the specific height for the given size of team
      *
      * @param doc document to write
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      * @return calculated table height
      */
     private float calculateTableHeight(int numberOfTeams, Document doc) {
@@ -257,7 +257,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     /**
      * Creates the table with specific amount of columns
      *
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      * @param tableHeight the height needed for the document
      * @return created Table with specific height and column width
      */
@@ -276,7 +276,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * adds the Header into the Document
      *
      * @param table generated table with specific height and column width
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      */
     private void addTableHeader(Table table, int numberOfTeams) {
 
@@ -293,11 +293,11 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      *
      * @param table generated table with specific height and column width and header
      * @param setzlisteBEList list with data for the doc
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      */
     private void addTableContent(Table table, List<SetzlisteBE> setzlisteBEList, int numberOfTeams) {
         int mpkteSpacing = 25;
-        int indexStructure = indexOfStructure(setzlisteBEList);
+        int indexStructure = indexOfStructure(numberOfTeams);
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
         // iterate through the number of matches
@@ -327,7 +327,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * */
     private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList) {
 
-        int indexStructure = indexOfStructure(setzlisteBEList);
+        int indexStructure = indexOfStructure(setzlisteBEList.size());
 
         String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.setzlisteStructure[index][pos1], setzlisteBEList);
         if (firstTwoLines.length() <= 26) {
@@ -354,22 +354,21 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     /**
      * Returns specified index for the correct team size structure.
-     * @param setzlisteBEList List of all competing teams in Wettkampf with context to Ligaplatz
+     * @param numberOfTeams How many competing Teams
      * @return index of Structure for given Team Size
      * */
-    private int indexOfStructure(List<SetzlisteBE> setzlisteBEList) {
-        int numberOfTeamsToIndex = setzlisteBEList.size();
-        if (numberOfTeamsToIndex == 8) {
+    private int indexOfStructure(int numberOfTeams) {
+        if (numberOfTeams == 8) {
             return 0;
 
-        } else if (numberOfTeamsToIndex == 6) {
+        } else if (numberOfTeams == 6) {
             return 1;
 
-        } else if (numberOfTeamsToIndex == 4) {
+        } else if (numberOfTeams == 4) {
             return 2;
 
         } else {
-            throw new BusinessException(ErrorCode.INCORRECT_AMOUNT_OF_TEAMS, "Anzahl der Teams muss 8, 6 oder 4 betragen, Aktuelle Größe:" + numberOfTeamsToIndex);
+            throw new BusinessException(ErrorCode.INCORRECT_AMOUNT_OF_TEAMS, "Anzahl der Teams muss 8, 6 oder 4 betragen, Aktuelle Größe:" + numberOfTeams);
         }
     }
 
