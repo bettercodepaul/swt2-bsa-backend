@@ -177,8 +177,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     }
 
     /**
-     * <p>writes a document with a table containing information from given Setzliste
-     * </p>
+     * writes a document with a table containing information from given Setzliste
+     *
      * @param doc document to write
      * @param setzlisteBEList list with data for the doc
      */
@@ -199,20 +199,103 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         doc.add(new Paragraph(""));
 
-        //Create table
-        Table table = new Table(new float[]{40, 150, 40, 150, 40, 150, 40, 150, 40});
+        // adjust table height dynamically to fit on a single A4 page
+        float tableHeight = calculateTableHeight(numberOfTeams, doc);
 
-        //adjust table height to fit on a single A4 page (129 is fixed value for height of the first 4 doc Paragraphs)
-        table.setHeight(PageSize.A4.getWidth() - 129 - doc.getBottomMargin());
+        // Create dynamic Table
+        Table table = createTable(numberOfTeams, tableHeight);
 
-        //Table header
+        // Add Table header
+        addTableHeader(table, numberOfTeams);
+
+        // Add Table content
+        addTableContent(table, setzlisteBEList, numberOfTeams);
+
+        doc.add(table);
+        doc.close();
+    }
+
+    /**
+     * calculates the specific height for the given size of team
+     *
+     * @param doc document to write
+     * @param numberOfTeams Current Team Size
+     * @return calculated table height
+     */
+    private float calculateTableHeight(int numberOfTeams, Document doc) {
+
+        int dynamicTableHeight;
+
+        if (numberOfTeams == 8) {
+            dynamicTableHeight = 1;
+        } else if (numberOfTeams == 6) {
+            dynamicTableHeight = 2;
+        } else {
+            dynamicTableHeight = 3;
+        }
+
+        float tableHeight;
+
+        switch (dynamicTableHeight) {
+            case 1:
+                tableHeight = PageSize.A4.getWidth() - 129 - doc.getBottomMargin();
+                break;
+            case 2:
+                tableHeight = PageSize.A4.getWidth() - 246 - doc.getBottomMargin();
+                break;
+            case 3:
+                tableHeight = PageSize.A4.getWidth() - 187 - doc.getBottomMargin();
+                break;
+            default:
+                tableHeight = PageSize.A4.getWidth() - doc.getBottomMargin();
+                break;
+        }
+
+        return tableHeight;
+    }
+
+    /**
+     * Creates the table with specific amount of columns
+     *
+     * @param numberOfTeams Current Team Size
+     * @param tableHeight the height needed for the document
+     * @return created Table with specific height and column width
+     */
+    private Table createTable(int numberOfTeams, float tableHeight) {
+// Max Columns for Table
+        float[] coulumnWidth = new float[]{40, 150, 40, 150, 40, 150, 40, 150, 40};
+
+        //Copys relevant amount of columns to fit the amount of begegnungen per Match (8 Teams = 4, 6Teams = 3, 4Teams = 2)
+        float[] dynamicColumnAmount = new float[numberOfTeams + 1];
+        System.arraycopy(coulumnWidth, 0, dynamicColumnAmount, 0, numberOfTeams + 1);
+
+        return new Table(dynamicColumnAmount).setHeight(tableHeight);
+    }
+
+    /**
+     * adds the Header into the Document
+     *
+     * @param table generated table with specific height and column width
+     * @param numberOfTeams Current Team Size
+     */
+    private void addTableHeader(Table table, int numberOfTeams) {
+
         table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Match")));
 
         for (int i = 1; i <= numberOfTeams/2; i++) {
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("Scheibe " + (i * 2 - 1) + " + " + (i * 2))));
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph(SETZLISTE_MPKTE)));
         }
+    }
 
+    /**
+     * adds specific Content to the Document (Matchnumber, disc, Matchups, ...)
+     *
+     * @param table generated table with specific height and column width and header
+     * @param setzlisteBEList list with data for the doc
+     * @param numberOfTeams Current Team Size
+     */
+    private void addTableContent(Table table, List<SetzlisteBE> setzlisteBEList, int numberOfTeams) {
         int mpkteSpacing = 25;
         int indexStructure = numberOfTeams(setzlisteBEList);
 
@@ -227,14 +310,11 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
                         .setHeight(table.getHeight().getValue() / 8));
                 table.addCell(new Cell().setHeight(mpkteSpacing));
             }
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-            table.addCell(new Cell().setHeight(mpkteSpacing));
-        }
+            for (int k = 1; k <= numberOfTeams/2; k++) {
+                table.addCell(new Cell().setHeight(mpkteSpacing));
+            }
 
-        doc.add(table);
-        doc.close();
+        }
     }
 
     /**
