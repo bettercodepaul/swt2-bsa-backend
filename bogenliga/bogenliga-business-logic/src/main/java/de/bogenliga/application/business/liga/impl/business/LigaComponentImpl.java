@@ -92,20 +92,49 @@ public class LigaComponentImpl implements LigaComponent {
     }
 
 
+
+
+
     @Override
-    public LigaDO checkExists(long id) {
+    public LigaDO checkExist(long id) {
 
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
-        LigaDO emptyLigaDO = new LigaDO();
 
         final LigaBE result = ligaDAO.findById(id);
+        LigaDO emptyLiga = new LigaDO();
 
         if (result == null) {
-            return emptyLigaDO;
+            return emptyLiga;
         }
 
         return completeLiga(result);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Override

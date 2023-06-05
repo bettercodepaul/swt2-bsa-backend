@@ -89,26 +89,38 @@ public class LigaService implements ServiceFacade {
     }
 
 
-    /**
-     * Returns a liga entry of the given id
-     * or empty liga if no liga entry exists
-     *
-     * @param id id of the klasse to be returned
-     *
-     * @return returns a klasse
-     */
-    @GetMapping(
-            value = "{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+
+
+
+
+
+
+    @GetMapping(value = "/checkExist/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public LigaDTO checkExists(@PathVariable("id") final long id) {
+    public LigaDO checkExist(@PathVariable("id") final long id) {
 //        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 
-
-        final LigaDO ligaDO = ligaComponent.checkExists(id);
-
-        return LigaDTOMapper.toDTO.apply(ligaDO);
+        final LigaDO ligaExists = ligaComponent.checkExist(id);
+        return ligaExists;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
