@@ -306,7 +306,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             // iterate through the number of teams
             for (int j = 0; j < numberOfTeams/2 ; j++) {
 
-                table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, (j * 2), (j * 2 + 1), setzlisteBEList)))
+                table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, (j * 2), (j * 2 + 1), setzlisteBEList, indexStructure)))
                         .setHeight(table.getHeight().getValue() / 8));
                 table.addCell(new Cell().setHeight(mpkteSpacing));
             }
@@ -325,9 +325,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteBEList the List with data for generateDoc
      * @return String with 2 Teams where each team has two lines of space with a line width of X chars
      * */
-    private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList) {
-
-        int indexStructure = indexOfStructure(setzlisteBEList.size());
+    private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList, int indexStructure) {
 
         String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.setzlisteStructure[index][pos1], setzlisteBEList);
         if (firstTwoLines.length() <= 26) {
