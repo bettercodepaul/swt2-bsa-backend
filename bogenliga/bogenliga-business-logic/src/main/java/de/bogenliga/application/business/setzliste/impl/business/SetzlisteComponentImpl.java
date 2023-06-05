@@ -224,22 +224,31 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      */
     private float calculateTableHeight(int numberOfTeams, Document doc) {
 
-        float tableHeight;
+            int dynamicTableHeight;
 
-        switch (numberOfTeams) {
-            case 8:
-                tableHeight = PageSize.A4.getWidth() - 129 - doc.getBottomMargin();
-                break;
-            case 6:
-                tableHeight = PageSize.A4.getWidth() - 246 - doc.getBottomMargin();
-                break;
-            case 4:
-                tableHeight = PageSize.A4.getWidth() - 187 - doc.getBottomMargin();
-                break;
-            default:
-                tableHeight = PageSize.A4.getWidth() - doc.getBottomMargin();
-                break;
-        }
+            if (numberOfTeams == 8) {
+                dynamicTableHeight = 1;
+            } else if (numberOfTeams == 6) {
+                dynamicTableHeight = 2;
+            } else {
+                dynamicTableHeight = 3;
+            }
+
+            float tableHeight;
+
+            switch (dynamicTableHeight) {
+                case 1:
+                    tableHeight = PageSize.A4.getWidth() - 129 - doc.getBottomMargin();
+                    break;
+                case 2:
+                    tableHeight = PageSize.A4.getWidth() - 246 - doc.getBottomMargin();
+                    break;
+                case 3:
+                    tableHeight = PageSize.A4.getWidth() - 187 - doc.getBottomMargin();
+                    break;
+                default:
+                    tableHeight = PageSize.A4.getWidth() - doc.getBottomMargin();
+            }
 
         return tableHeight;
     }
@@ -288,16 +297,24 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private void addTableContent(Table table, List<SetzlisteBE> setzlisteBEList, int numberOfTeams) {
         int mpkteSpacing = 25;
         int indexStructure = indexOfStructure(numberOfTeams);
+        int correctSpacing;
+
+        if (numberOfTeams == 8 || numberOfTeams == 4) {
+            correctSpacing = 8;
+        } else {
+            correctSpacing = 6;
+        }
+
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
         // iterate through the number of matches
         for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++) {
-            table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / correctSpacing));
             // iterate through the number of teams
             for (int j = 0; j < numberOfTeams/2 ; j++) {
 
                 table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, (j * 2), (j * 2 + 1), setzlisteBEList, indexStructure)))
-                        .setHeight(table.getHeight().getValue() / 8));
+                        .setHeight(table.getHeight().getValue() / correctSpacing));
                 table.addCell(new Cell().setHeight(mpkteSpacing));
             }
             for (int k = 1; k <= numberOfTeams/2; k++) {
