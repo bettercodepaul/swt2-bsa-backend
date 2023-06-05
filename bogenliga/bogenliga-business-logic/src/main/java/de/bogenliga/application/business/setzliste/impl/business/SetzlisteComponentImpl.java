@@ -224,31 +224,21 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      */
     private float calculateTableHeight(int numberOfTeams, Document doc) {
 
-            int dynamicTableHeight;
+        float tableHeight;
 
-            if (numberOfTeams == 8) {
-                dynamicTableHeight = 1;
-            } else if (numberOfTeams == 6) {
-                dynamicTableHeight = 2;
-            } else {
-                dynamicTableHeight = 3;
-            }
-
-            float tableHeight;
-
-            switch (dynamicTableHeight) {
-                case 1:
-                    tableHeight = PageSize.A4.getWidth() - 129 - doc.getBottomMargin();
-                    break;
-                case 2:
-                    tableHeight = PageSize.A4.getWidth() - 246 - doc.getBottomMargin();
-                    break;
-                case 3:
-                    tableHeight = PageSize.A4.getWidth() - 187 - doc.getBottomMargin();
-                    break;
-                default:
-                    tableHeight = PageSize.A4.getWidth() - doc.getBottomMargin();
-            }
+        switch (numberOfTeams) {
+            case 8:
+                tableHeight = PageSize.A4.getWidth() - 129 - doc.getBottomMargin();
+                break;
+            case 6:
+                tableHeight = PageSize.A4.getWidth() - 246 - doc.getBottomMargin();
+                break;
+            case 4:
+                tableHeight = PageSize.A4.getWidth() - 187 - doc.getBottomMargin();
+                break;
+            default:
+                tableHeight = PageSize.A4.getWidth() - doc.getBottomMargin();
+        }
 
         return tableHeight;
     }
