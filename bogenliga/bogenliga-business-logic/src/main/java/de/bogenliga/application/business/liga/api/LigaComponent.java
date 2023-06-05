@@ -24,6 +24,17 @@ public interface LigaComponent {
     LigaDO findById(long id);
 
     /**
+     * Returns a liga entry of the given id
+     * or empty liga if no liga entry exists
+     *
+     * @param id id of the klasse to be returned
+     *
+     * @return returns a klasse
+     */
+    LigaDO checkExists(long id);
+
+
+    /**
      * Create a new liga in the database.
      *
      * @param ligaDO new liga
