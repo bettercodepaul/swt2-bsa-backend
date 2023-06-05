@@ -90,6 +90,30 @@ public class LigaService implements ServiceFacade {
 
 
     /**
+     * Returns a liga entry of the given id
+     * or empty liga if no liga entry exists
+     *
+     * @param id id of the klasse to be returned
+     *
+     * @return returns a klasse
+     */
+    @GetMapping(
+            value = "{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public LigaDTO checkExists(@PathVariable("id") final long id) {
+//        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
+
+
+        final LigaDO ligaDO = ligaComponent.checkExists(id);
+
+        return LigaDTOMapper.toDTO.apply(ligaDO);
+    }
+
+
+
+
+    /**
      * I persist a new liga and return this liga entry
      *
      * @param ligaDTO Data to be stored to DB
