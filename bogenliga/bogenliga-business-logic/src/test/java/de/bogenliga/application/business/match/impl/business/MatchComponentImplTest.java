@@ -314,7 +314,17 @@ public class MatchComponentImplTest extends BaseMatchTest {
     @Test
     public void create() {
         MatchBE expectedMatchBE = getMatchBE();
+        DsbMannschaftDO expectedAuffuellmannschaft = getAuffuellmannschaft();
+
+        // Mock the findAllByVereinsId method
+        List<DsbMannschaftDO> list = new ArrayList<>();
+        list.add(expectedAuffuellmannschaft);
+
+        // configure mocks
         when(matchDAO.create(any(MatchBE.class), anyLong())).thenReturn(expectedMatchBE);
+        when(mannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
+
+        // call test method
         MatchDO matchDO = MatchMapper.toMatchDO.apply(expectedMatchBE);
         MatchDO actual = underTest.create(matchDO, CURRENT_USER_ID);
 
