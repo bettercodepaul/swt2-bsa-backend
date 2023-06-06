@@ -647,11 +647,11 @@ public class MatchComponentImplTest extends BaseMatchTest {
                 mannschaften.add(mannschaft);
             }
 
-            when(mannschaftComponent.findAllByVeranstaltungsId(1L)).thenReturn(mannschaften);
+            when(mannschaftComponent.findAllByVeranstaltungsId(1L)).thenReturn(null);
 
             WettkampfDO wettkampf = new WettkampfDO(1L);
 
-            when(wettkampfComponent.findWT0byVeranstaltungsId(1L)).thenReturn(wettkampf);
+            when(wettkampfComponent.findWT0byVeranstaltungsId(1L)).thenReturn(null);
 
             underTest.createInitialMatchesWT0(1L, 1L);
         }
