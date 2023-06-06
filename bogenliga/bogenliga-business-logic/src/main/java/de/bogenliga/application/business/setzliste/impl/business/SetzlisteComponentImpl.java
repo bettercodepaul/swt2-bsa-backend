@@ -150,6 +150,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * */
     @Override
     public List<MatchDO> generateMatchesBySetzliste(long wettkampfID) {
+
         Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_WETTKAMPFID);
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfID);
@@ -157,7 +158,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         if (setzlisteBEList.isEmpty()){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
-        int indexStructure = indexOfStructure(setzlisteBEList.size());
+
+        int numberOfTeams = approvedNumberOfTeams(setzlisteBEList.size());
+        int indexStructure = indexOfStructure(numberOfTeams);
+
         if (matchDOList.isEmpty()){
             //itarate through matches
             for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++){
@@ -185,7 +189,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
 
         doc.setFontSize(9.2f);
-        int numberOfTeams = setzlisteBEList.size();
+        int numberOfTeams = approvedNumberOfTeams(setzlisteBEList.size());
 
         // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
@@ -257,7 +261,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         //Copys relevant amount of columns to fit the amount of begegnungen per Match (8 Teams = 4, 6Teams = 3, 4Teams = 2)
         float[] dynamicColumnAmount = new float[numberOfTeams + 1];
         System.arraycopy(coulumnWidth, 0, dynamicColumnAmount, 0, numberOfTeams + 1);
-
+      
         return new Table(dynamicColumnAmount).setHeight(tableHeight);
     }
 
@@ -310,7 +314,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             for (int k = 1; k <= numberOfTeams/2; k++) {
                 table.addCell(new Cell().setHeight(mpkteSpacing));
             }
-
         }
     }
 
@@ -359,13 +362,23 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         } else if (numberOfTeams == 6) {
             return 1;
-
-        } else if (numberOfTeams == 4) {
-            return 2;
-
         } else {
-            throw new BusinessException(ErrorCode.INCORRECT_AMOUNT_OF_TEAMS, "Anzahl der Teams muss 8, 6 oder 4 betragen, Aktuelle Größe:" + numberOfTeams);
+            return 2;
         }
+    }
+
+
+    /**
+     * Checks if given size of competing Teams is correct
+     *
+     * @param numberOfTeams How many competing Teams
+     * @return approved Number of Teams (8, 6 , 4)
+     */
+    private int approvedNumberOfTeams (int numberOfTeams){
+        if (numberOfTeams == 8 || numberOfTeams == 6 || numberOfTeams == 4){
+            return numberOfTeams;
+        }
+        throw new BusinessException(ErrorCode.INCORRECT_AMOUNT_OF_TEAMS, "Anzahl der Teams muss 8, 6 oder 4 betragen, Aktuelle Größe:" + numberOfTeams);
     }
 
     /**
