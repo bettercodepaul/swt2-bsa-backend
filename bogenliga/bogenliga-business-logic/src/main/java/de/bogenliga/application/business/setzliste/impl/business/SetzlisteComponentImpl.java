@@ -360,11 +360,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         } else if (numberOfTeams == 6) {
             return 1;
 
-        } else if (numberOfTeams == 4) {
-            return 2;
-
         } else {
-            throw new BusinessException(ErrorCode.INCORRECT_AMOUNT_OF_TEAMS, "Anzahl der Teams muss 8, 6 oder 4 betragen, Aktuelle Größe:" + numberOfTeams);
+            return 2;
         }
     }
 
