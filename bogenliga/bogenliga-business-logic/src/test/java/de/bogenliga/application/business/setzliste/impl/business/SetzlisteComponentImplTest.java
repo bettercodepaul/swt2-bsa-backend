@@ -165,6 +165,27 @@ public class SetzlisteComponentImplTest {
 
     }
 
+    @Test(expected = BusinessException.class)
+    public void getPDFasByteArray_SetzlisteFalseValue() {
+
+        int sizeTeam = 7;
+
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+
+        //call test method
+        final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isEmpty();
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
     @Test
     public void generateMatchesBySetzliste() {
 
@@ -216,6 +237,27 @@ public class SetzlisteComponentImplTest {
 
     }
 
+    @Test(expected = BusinessException.class)
+    public void generateMatchesBySetzliste_SetzlisteFalseValue() {
+
+        int sizeTeam = 7;
+
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+
+        //call test method
+        List<MatchDO> actual = underTest.generateMatchesBySetzliste(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isEmpty();
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+
+    }
+
     @Test
     public void generateMatchesBySetzliste_MatchesExist() {
 
@@ -245,7 +287,6 @@ public class SetzlisteComponentImplTest {
         verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
 
     }
-
 
     public static List<SetzlisteBE> getSetzlisteBEList(int sizeTeam){
         List<SetzlisteBE> result = new ArrayList<>();
