@@ -91,6 +91,13 @@ public class VeranstaltungPhaseTest extends TestCase {
     public void testGetPhaseFromStringToInt() {
 
         /**
+         * Test when Phase is Null
+         */
+        final int actual_1 = underTest.getPhaseFromStringToInt(null);
+
+        assertThat(actual_1).isEqualTo(PHASE_INTEGER);
+
+        /**
          * Test 1: Case 1 Phase: 1
          */
         final int actual = underTest.getPhaseFromStringToInt(PHASE_STRING_GEPLANT);
