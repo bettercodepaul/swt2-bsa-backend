@@ -150,6 +150,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * */
     @Override
     public List<MatchDO> generateMatchesBySetzliste(long wettkampfID) {
+
         Preconditions.checkArgument(wettkampfID >= 0, PRECONDITION_WETTKAMPFID);
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfID);
@@ -157,7 +158,8 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         if (setzlisteBEList.isEmpty()){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
-        int indexStructure = numberOfTeams(setzlisteBEList);
+        int numberOfTeams = approvedNumberOfTeams(setzlisteBEList.size());
+        int indexStructure = indexOfStructure(numberOfTeams);
         if (matchDOList.isEmpty()){
             //itarate through matches
             for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++){
@@ -185,7 +187,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     private void generateDoc(Document doc, List<SetzlisteBE> setzlisteBEList){
 
         doc.setFontSize(9.2f);
-        int numberOfTeams = setzlisteBEList.size();
+        int numberOfTeams = approvedNumberOfTeams(setzlisteBEList.size());
 
         // description
         DateFormat sdF2 = new SimpleDateFormat("dd.MM.yyyy");
@@ -268,7 +270,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         //Copys relevant amount of columns to fit the amount of begegnungen per Match (8 Teams = 4, 6Teams = 3, 4Teams = 2)
         float[] dynamicColumnAmount = new float[numberOfTeams + 1];
         System.arraycopy(coulumnWidth, 0, dynamicColumnAmount, 0, numberOfTeams + 1);
-
+      
         return new Table(dynamicColumnAmount).setHeight(tableHeight);
     }
 
@@ -276,7 +278,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * adds the Header into the Document
      *
      * @param table generated table with specific height and column width
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      */
     private void addTableHeader(Table table, int numberOfTeams) {
 
@@ -293,27 +295,34 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      *
      * @param table generated table with specific height and column width and header
      * @param setzlisteBEList list with data for the doc
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      */
     private void addTableContent(Table table, List<SetzlisteBE> setzlisteBEList, int numberOfTeams) {
         int mpkteSpacing = 25;
-        int indexStructure = numberOfTeams(setzlisteBEList);
+        int indexStructure = indexOfStructure(numberOfTeams);
+        int correctSpacing;
+
+        if (numberOfTeams == 8 || numberOfTeams == 4) {
+            correctSpacing = 8;
+        } else {
+            correctSpacing = 6;
+        }
+
 
         //Create Setzliste content on base of SETZLISTE_STRUCTURE array
         // iterate through the number of matches
         for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++) {
-            table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / 8));
+            table.addCell(new Cell(2, 1).add(new Paragraph(Integer.toString(i + 1))).setHeight(table.getHeight().getValue() / correctSpacing));
             // iterate through the number of teams
             for (int j = 0; j < numberOfTeams/2 ; j++) {
 
-                table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, (j * 2), (j * 2 + 1), setzlisteBEList)))
-                        .setHeight(table.getHeight().getValue() / 8));
+                table.addCell(new Cell(2, 1).add(new Paragraph(getTeamsCellParagraph(i, (j * 2), (j * 2 + 1), setzlisteBEList, indexStructure)))
+                        .setHeight(table.getHeight().getValue() / correctSpacing));
                 table.addCell(new Cell().setHeight(mpkteSpacing));
             }
             for (int k = 1; k <= numberOfTeams/2; k++) {
                 table.addCell(new Cell().setHeight(mpkteSpacing));
             }
-
         }
     }
 
@@ -325,16 +334,15 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * @param setzlisteBEList the List with data for generateDoc
      * @return String with 2 Teams where each team has two lines of space with a line width of X chars
      * */
-    private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList) {
+    private String getTeamsCellParagraph(int index, int pos1, int pos2, List<SetzlisteBE> setzlisteBEList, int indexStructure) {
 
-        int indexStructure = numberOfTeams(setzlisteBEList);
-
-        String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.setzlisteStructure[index][pos1], setzlisteBEList);
+        String firstTwoLines = SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos1] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos1], setzlisteBEList);
         if (firstTwoLines.length() <= 26) {
             firstTwoLines += "\n";
         }
+
         return firstTwoLines + "\n" +
-                SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.SETZLISTE_STRUCTURE_8TEAM.setzlisteStructure[index][pos2], setzlisteBEList);
+                SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos2] + " " + getTeamName(SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure[index][pos2], setzlisteBEList);
     }
 
     /**
@@ -354,24 +362,32 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
     /**
      * Returns specified index for the correct team size structure.
-     * @param setzlisteBEList List of all competing teams in Wettkampf with context to Ligaplatz
-     * @return index for size of Match
+     * @param numberOfTeams How many competing Teams
+     * @return index of Structure for given Team Size
      * */
-    private int numberOfTeams(List<SetzlisteBE> setzlisteBEList){
-        int numberOfTeams = setzlisteBEList.size();
-        if (numberOfTeams >= 7 && numberOfTeams <= 8){
+    private int indexOfStructure(int numberOfTeams) {
+        if (numberOfTeams == 8) {
             return 0;
 
-        } else if (numberOfTeams >= 5 && numberOfTeams <= 6){
+        } else if (numberOfTeams == 6) {
             return 1;
 
-        } else if (numberOfTeams >= 3 && numberOfTeams <= 4){
+        } else {
             return 2;
-
-        } else{
-            LOGGER.debug("Number of teams can not form match ups.");
         }
-        return numberOfTeams;
+    }
+
+    /**
+     * Checks if given size of competing Teams is correct
+     *
+     * @param numberOfTeams How many competing Teams
+     * @return approved Number of Teams (8, 6 , 4)
+     */
+    private int approvedNumberOfTeams (int numberOfTeams){
+        if (numberOfTeams == 8 || numberOfTeams == 6 || numberOfTeams == 4){
+            return numberOfTeams;
+        }
+        throw new BusinessException(ErrorCode.INCORRECT_AMOUNT_OF_TEAMS, "Anzahl der Teams muss 8, 6 oder 4 betragen, Aktuelle Größe:" + numberOfTeams);
     }
 
     /**
