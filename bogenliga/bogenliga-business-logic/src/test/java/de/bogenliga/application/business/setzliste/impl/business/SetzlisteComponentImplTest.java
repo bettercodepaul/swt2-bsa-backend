@@ -41,7 +41,9 @@ public class SetzlisteComponentImplTest {
 
     private static final long MANNSCHAFTSID = 5;
     private static final long WETTKAMPFID = 30;
-    private static int sizeTeam = 8;
+    private static int sizeTeam_8 = 8;
+    private static int sizeTeam_6 = 6;
+    private static int sizeTeam_4 = 4;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -68,9 +70,61 @@ public class SetzlisteComponentImplTest {
 
 
     @Test
-    public void getPDFasByteArray() {
+    public void getPDFasByteArray_8_Teams() {
 
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam_8);
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfID())).thenReturn(wettkampfDO);
+        when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+
+        //call test method
+        final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+    }
+
+    @Test
+    public void getPDFasByteArray_6_Teams() {
+
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam_6);
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+
+        //configure Mocks
+        when(SetzlisteDAO.getTableByWettkampfID(WETTKAMPFID)).thenReturn(setzlisteBEList);
+        when(wettkampfComponent.findById(setzlisteBEList.get(0).getWettkampfID())).thenReturn(wettkampfDO);
+        when(veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId())).thenReturn(veranstaltungDO);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+
+        //call test method
+        final byte[] actual = underTest.getPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(SetzlisteDAO).getTableByWettkampfID(WETTKAMPFID);
+    }
+
+    @Test
+    public void getPDFasByteArray_4_Teams() {
+
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam_4);
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         VeranstaltungDO veranstaltungDO =  VeranstaltungComponentImplTest.getVeranstaltungDO();
         DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
@@ -165,7 +219,7 @@ public class SetzlisteComponentImplTest {
     @Test
     public void generateMatchesBySetzliste_MatchesExist() {
 
-        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam);
+        final List<SetzlisteBE> setzlisteBEList = getSetzlisteBEList(sizeTeam_8);
         final List<MatchDO> matchDOList = new ArrayList<>();
         for(int i=1;i<5;i++){
             MatchDO matchDO = MatchComponentImplTest.getMatchDO();
