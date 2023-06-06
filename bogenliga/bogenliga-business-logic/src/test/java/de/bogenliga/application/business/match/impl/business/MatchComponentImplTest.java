@@ -17,6 +17,8 @@ import de.bogenliga.application.business.match.impl.BaseMatchTest;
 import de.bogenliga.application.business.match.impl.dao.MatchDAO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 import de.bogenliga.application.business.match.impl.mapper.MatchMapper;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -42,6 +44,8 @@ public class MatchComponentImplTest extends BaseMatchTest {
     @InjectMocks
     private MatchComponentImpl underTest;
 
+    @Mock
+    private VereinComponent vereinComponent;
 
     private void validateObjectList (List<MatchDO> actual) {
         assertThat(actual)
@@ -74,6 +78,23 @@ public class MatchComponentImplTest extends BaseMatchTest {
                 MATCH_STRAFPUNKT_SATZ_5);
 
         assertThat(actual.getNr()).isEqualTo(expectedMatchBE.getNr()).isEqualTo(MATCH_NR);
+    }
+
+    public static DsbMannschaftDO getDsbMannschaftDO() {
+        return new DsbMannschaftDO(
+                1L,
+                "MA_NAME",
+                5L,
+                99L,
+                0L,
+                444L,
+                8L);
+    }
+
+    public static VereinDO getVereinDO() {
+        return new VereinDO(1L, "name", "final String dsbIdentifier", 1L,
+        null, null, null, null, 0L, 1L);
+
     }
 
 
@@ -360,6 +381,16 @@ public class MatchComponentImplTest extends BaseMatchTest {
     }
 
      */
+
+    @Test
+    public void getMannschaftsNameByID() {
+        DsbMannschaftDO expected = getDsbMannschaftDO();
+        VereinDO expectedVerein = getVereinDO();
+
+        when(mannschaftComponent.findById(anyLong())).thenReturn(expected);
+        when(vereinComponent.findById(anyLong())).thenReturn(expectedVerein);
+        underTest.getMannschaftsNameByID(1L);
+    }
 
     @Test
     public void createInitialMatchesWT0_NegativeVeranstalungsID(){
