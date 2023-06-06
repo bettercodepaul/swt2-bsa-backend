@@ -158,8 +158,10 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         if (setzlisteBEList.isEmpty()){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Der Wettkampf mit der ID " + wettkampfID +" oder die Tabelleneinträge vom vorherigen Wettkampftag existieren noch nicht");
         }
+
         int numberOfTeams = approvedNumberOfTeams(setzlisteBEList.size());
         int indexStructure = indexOfStructure(numberOfTeams);
+
         if (matchDOList.isEmpty()){
             //itarate through matches
             for (int i = 0; i < SETZLISTE_STRUCTURE_SIZE_8_6_4.values()[indexStructure].setzlisteStructure.length; i++){
@@ -221,36 +223,25 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * calculates the specific height for the given size of team
      *
      * @param doc document to write
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      * @return calculated table height
      */
     private float calculateTableHeight(int numberOfTeams, Document doc) {
 
-        int dynamicTableHeight;
-
-        if (numberOfTeams == 8) {
-            dynamicTableHeight = 1;
-        } else if (numberOfTeams == 6) {
-            dynamicTableHeight = 2;
-        } else {
-            dynamicTableHeight = 3;
-        }
-
         float tableHeight;
 
-        switch (dynamicTableHeight) {
-            case 1:
+        switch (numberOfTeams) {
+            case 8:
                 tableHeight = PageSize.A4.getWidth() - 129 - doc.getBottomMargin();
                 break;
-            case 2:
+            case 6:
                 tableHeight = PageSize.A4.getWidth() - 246 - doc.getBottomMargin();
                 break;
-            case 3:
+            case 4:
                 tableHeight = PageSize.A4.getWidth() - 187 - doc.getBottomMargin();
                 break;
             default:
                 tableHeight = PageSize.A4.getWidth() - doc.getBottomMargin();
-                break;
         }
 
         return tableHeight;
@@ -259,7 +250,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     /**
      * Creates the table with specific amount of columns
      *
-     * @param numberOfTeams Current Team Size
+     * @param numberOfTeams How many competing Teams
      * @param tableHeight the height needed for the document
      * @return created Table with specific height and column width
      */
@@ -371,11 +362,11 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
 
         } else if (numberOfTeams == 6) {
             return 1;
-
         } else {
             return 2;
         }
     }
+
 
     /**
      * Checks if given size of competing Teams is correct
