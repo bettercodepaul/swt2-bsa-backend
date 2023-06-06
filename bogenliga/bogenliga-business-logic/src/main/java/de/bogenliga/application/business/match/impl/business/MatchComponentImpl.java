@@ -43,7 +43,7 @@ public class MatchComponentImpl implements MatchComponent {
             "scheibennummer");
 
     private static final String PRECONDITION_MSG_WT0_VERANSTALTUNG = "Veranstaltungs-ID must not be Null or negative";
-    private static final String PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT = "The number of assigned Mannschaften to the Veranstaltung must be exactly 8";
+    private static final String PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT = "The number of assigned Mannschaften to the Veranstaltung must be 8, 6, 4";
     private static final String PRECONDITION_MSG_WT0_MANNSCHAFT = "The Mannschaft-ID must not be null or negative";
 
 
