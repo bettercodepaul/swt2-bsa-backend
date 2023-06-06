@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.naming.NoPermissionException;
@@ -17,6 +19,7 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,6 +76,24 @@ public class DsbMannschaftServiceTest {
     public static DsbMannschaftDO getDsbMannschaftDO() {
         return new DsbMannschaftDO(
                 ID, NAME, VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, SORTIERUNG
+        );
+    }
+
+    public static DsbMannschaftDO getAuffuellmannschaft() {
+        return new DsbMannschaftDO(
+                6969L, "Auffuellmannschaft", 9999L, 696969L, 01274L, 4444L, 8L
+        );
+    }
+
+    public static DsbMannschaftDO getMockMannschaft() {
+        return new DsbMannschaftDO(
+                6969L, "Mockmannschaft", 9999L, 696969L, 01274L, 4445L, 8L
+        );
+    }
+
+    public static VeranstaltungDO getMockVeranstaltung(){
+        return new VeranstaltungDO(
+                null, null, null, null, null, null, null, null, null, null, null, null, null,null, null, null, 8
         );
     }
 
@@ -204,10 +225,19 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaft();
+        final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
+
+
+        // Mock the findAllByVereinsId method
+        List<DsbMannschaftDO> list = new ArrayList<>();
+        list.add(auffuellmannschaft);
 
         // configure mocks
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
 
         // call test method
         try {
@@ -255,10 +285,14 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final DsbMannschaftDO old = getMockMannschaft();
+        final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
 
         // configure mocks
         when(dsbMannschaftComponent.update(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(old);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
 
         // call test method
         try {
@@ -298,7 +332,6 @@ public class DsbMannschaftServiceTest {
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.update(input, principal));
     }
-
 
     @Test
     public void update_Null() {
