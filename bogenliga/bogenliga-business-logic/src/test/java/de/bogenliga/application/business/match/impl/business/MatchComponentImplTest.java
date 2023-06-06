@@ -636,4 +636,24 @@ public class MatchComponentImplTest extends BaseMatchTest {
             verify(mannschaftComponent).findAllByVeranstaltungsId(1L);
         }
     }
+    @Test (expected = BusinessException.class)
+    public void createInitialMatchesWT0_7_Teams(){
+
+        for (int numberOfTeams : new int[]{7}) {
+            List<DsbMannschaftDO> mannschaften = new ArrayList<>();
+
+            for (int i = 0; i < numberOfTeams; i++) {
+                DsbMannschaftDO mannschaft = new DsbMannschaftDO(1L, "TEST", 1L, 1L, 1L, 1L, 1L);
+                mannschaften.add(mannschaft);
+            }
+
+            when(mannschaftComponent.findAllByVeranstaltungsId(1L)).thenReturn(mannschaften);
+
+            WettkampfDO wettkampf = new WettkampfDO(1L);
+
+            when(wettkampfComponent.findWT0byVeranstaltungsId(1L)).thenReturn(wettkampf);
+
+            underTest.createInitialMatchesWT0(1L, 1L);
+        }
+    }
 }
