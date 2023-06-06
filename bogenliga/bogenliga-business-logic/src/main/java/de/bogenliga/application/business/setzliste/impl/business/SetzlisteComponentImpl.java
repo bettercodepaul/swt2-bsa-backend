@@ -221,25 +221,36 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
      * calculates the specific height for the given size of team
      *
      * @param doc document to write
-     * @param numberOfTeams How many competing Teams
+     * @param numberOfTeams Current Team Size
      * @return calculated table height
      */
     private float calculateTableHeight(int numberOfTeams, Document doc) {
 
+        int dynamicTableHeight;
+
+        if (numberOfTeams == 8) {
+            dynamicTableHeight = 1;
+        } else if (numberOfTeams == 6) {
+            dynamicTableHeight = 2;
+        } else {
+            dynamicTableHeight = 3;
+        }
+
         float tableHeight;
 
-        switch (numberOfTeams) {
-            case 8:
+        switch (dynamicTableHeight) {
+            case 1:
                 tableHeight = PageSize.A4.getWidth() - 129 - doc.getBottomMargin();
                 break;
-            case 6:
+            case 2:
                 tableHeight = PageSize.A4.getWidth() - 246 - doc.getBottomMargin();
                 break;
-            case 4:
+            case 3:
                 tableHeight = PageSize.A4.getWidth() - 187 - doc.getBottomMargin();
                 break;
             default:
                 tableHeight = PageSize.A4.getWidth() - doc.getBottomMargin();
+                break;
         }
 
         return tableHeight;
@@ -248,7 +259,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
     /**
      * Creates the table with specific amount of columns
      *
-     * @param numberOfTeams How many competing Teams
+     * @param numberOfTeams Current Team Size
      * @param tableHeight the height needed for the document
      * @return created Table with specific height and column width
      */
@@ -259,7 +270,7 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
         //Copys relevant amount of columns to fit the amount of begegnungen per Match (8 Teams = 4, 6Teams = 3, 4Teams = 2)
         float[] dynamicColumnAmount = new float[numberOfTeams + 1];
         System.arraycopy(coulumnWidth, 0, dynamicColumnAmount, 0, numberOfTeams + 1);
-
+      
         return new Table(dynamicColumnAmount).setHeight(tableHeight);
     }
 
@@ -312,7 +323,6 @@ public class SetzlisteComponentImpl implements SetzlisteComponent {
             for (int k = 1; k <= numberOfTeams/2; k++) {
                 table.addCell(new Cell().setHeight(mpkteSpacing));
             }
-
         }
     }
 
