@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
@@ -714,7 +715,7 @@ public class MatchService implements ServiceFacade {
         List<DsbMannschaftDO> list = mannschaftComponent.findAllByVereinsId(9999L);
         long auffuellmannschaftID = 0;
         for(int i=0; i<= list.size(); i++) {
-            if(matchDTO.getMannschaftId() == list.get(i).getId()) {
+            if(Objects.equals(matchDTO.getMannschaftId(), list.get(i).getId())) {
                 auffuellmannschaftID = list.get(i).getId();
                 break;
             }
