@@ -106,15 +106,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         return invalidAuth;
     }
 
-    /*@Bean
-    public DaoAuthenticationProvider authProvider() {
-        CustomAuthenticationProvider authProvider = new CustomAuthenticationProvider();
-        authProvider.setUserDetailsService(getUserDetailsService());
-        authProvider.setPasswordEncoder(getPasswordEncoder());
-        return authProvider;
-    }*/
-
-
     @Override
     public boolean supports(final Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);

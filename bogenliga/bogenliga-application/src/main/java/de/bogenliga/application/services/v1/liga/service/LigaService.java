@@ -90,6 +90,23 @@ public class LigaService implements ServiceFacade {
 
 
     /**
+     * Returns a liga entry of the given id
+     *
+     * @param id id of the klasse to be returned
+     *
+     * @return returns a klasse
+     */
+    @GetMapping(value = "/checkExist/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public LigaDTO checkExist(@PathVariable("id") final long id) {
+        Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
+
+        final LigaDO ligaExist = ligaComponent.checkExist(id);
+        return LigaDTOMapper.toDTO.apply(ligaExist);
+    }
+
+
+    /**
      * I persist a new liga and return this liga entry
      *
      * @param ligaDTO Data to be stored to DB
@@ -126,7 +143,7 @@ public class LigaService implements ServiceFacade {
                           final Principal principal) {
 
 
-
+        System.out.println("es kommt etwas an");
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 

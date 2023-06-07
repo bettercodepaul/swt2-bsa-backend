@@ -41,7 +41,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_BE_WETTKAMPF_TAG = "wettkampfTag";
     private static final String WETTKAMPF_BE_WETTKAMPF_DISZIPLIN_ID = "wettkampfDisziplinId";
     private static final String WETTKAMPF_BE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampfTypId";
-    private static final String WETTKAMPF_BE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
+    private static final String WETTKAMPF_BE_WETTKAMPF_AUSRICHTER= "wettkampfAusrichter";
     private static final String WETTKAMPF_BE_OFFLINETOKEN = "offlineToken";
 
     private static final String WETTKAMPF_TABLE_ID = "wettkampf_id";
@@ -55,7 +55,7 @@ public class WettkampfDAO implements DataAccessObject {
     private static final String WETTKAMPF_TABLE_WETTKAMPF_TAG = "wettkampf_tag";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_DISZIPLIN_ID = "wettkampf_disziplin_id";
     private static final String WETTKAMPF_TABLE_WETTKAMPF_WETTKAMPFTYP_ID= "wettkampf_wettkampftyp_id";
-    private static final String WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER= "Wettkampf_Ausrichter";
+    private static final String WETTKAMPF_TABLE_WETTKAMPF_AUSRICHTER= "wettkampfausrichter";
     private static final String WETTKAMPF_TABLE_OFFLINETOKEN = "offlinetoken";
 
     //default Values for Wettkampftag 0
