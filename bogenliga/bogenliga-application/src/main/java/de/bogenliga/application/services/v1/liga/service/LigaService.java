@@ -101,8 +101,8 @@ public class LigaService implements ServiceFacade {
     public LigaDTO checkExist(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 
-        final LigaDO ligaExists = ligaComponent.checkExist(id);
-        return LigaDTOMapper.toDTO.apply(ligaExists);
+        final LigaDO ligaExist = ligaComponent.checkExist(id);
+        return LigaDTOMapper.toDTO.apply(ligaExist);
     }
 
 
