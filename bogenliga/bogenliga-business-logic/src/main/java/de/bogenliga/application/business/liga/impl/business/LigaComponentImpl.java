@@ -92,9 +92,6 @@ public class LigaComponentImpl implements LigaComponent {
     }
 
 
-
-
-
     @Override
     public LigaDO checkExist(long id) {
 
@@ -109,32 +106,6 @@ public class LigaComponentImpl implements LigaComponent {
 
         return completeLiga(result);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
