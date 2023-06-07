@@ -98,11 +98,11 @@ public class LigaService implements ServiceFacade {
      */
     @GetMapping(value = "/checkExist/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
-    public LigaDO checkExist(@PathVariable("id") final long id) {
+    public LigaDTO checkExist(@PathVariable("id") final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_LIGA_ID);
 
         final LigaDO ligaExists = ligaComponent.checkExist(id);
-        return ligaExists;
+        return LigaDTOMapper.toDTO.apply(ligaExists);
     }
 
 
