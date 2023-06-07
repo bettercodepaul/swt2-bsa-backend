@@ -26,6 +26,7 @@ public final class ConfigurationMapper implements ValueObjectMapper {
         final String key = be.getConfigurationKey();
         final String value = be.getConfigurationValue();
         final String regex = be.getConfigurationRegex();
+        final Boolean isHidden = be.isConfigurationHidden();
 
         Long createdByUserId = be.getCreatedByUserId();
         Long lastModifiedByUserId = be.getLastModifiedByUserId();
@@ -34,8 +35,9 @@ public final class ConfigurationMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(be.getCreatedAtUtc());
         OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(be.getLastModifiedAtUtc());
 
-        return new ConfigurationDO(id, key, value, regex, createdAtUtc, createdByUserId, lastModifiedAtUtc, lastModifiedByUserId,
-                version);
+        return new ConfigurationDO(id, key, value, regex, createdAtUtc, createdByUserId, lastModifiedAtUtc,
+                lastModifiedByUserId,
+                version, isHidden);
     };
 
     /**
@@ -51,6 +53,7 @@ public final class ConfigurationMapper implements ValueObjectMapper {
         configurationBE.setConfigurationValue(vo.getValue());
         configurationBE.setConfigurationKey(vo.getKey());
         configurationBE.setConfigurationRegex(vo.getRegex());
+        configurationBE.setConfigurationHidden(vo.isHidden());
         configurationBE.setCreatedAtUtc(createdAtUtcTimestamp);
         configurationBE.setCreatedByUserId(vo.getCreatedByUserId());
         configurationBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
