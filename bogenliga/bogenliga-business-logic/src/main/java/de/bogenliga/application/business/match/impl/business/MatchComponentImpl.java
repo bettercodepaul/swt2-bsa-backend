@@ -229,9 +229,11 @@ public class MatchComponentImpl implements MatchComponent {
         checkPreconditions(currentUserId, PRECONDITION_MSG_CURRENT_USER_ID);
 
         this.checkMatch(matchDO);
+        DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
 
         // Check if the ID of the Auffuellmannschaft is already saved
-        if(auffuellmannschaftID < 0) {
+        if(auffuellmannschaftID < 0 || auffuellmannschaftID != matchDO.getMannschaftId()
+                && checkForVereinsID.getVereinId() == 9999L) {
             // Find all Auffuellmannschaft mannschaften
             List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(9999L);
             for (DsbMannschaftDO dsbMannschaftDO : list) {

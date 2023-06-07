@@ -343,6 +343,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
         // configure mocks
         when(matchDAO.create(any(MatchBE.class), anyLong())).thenReturn(expectedMatchBE);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(expectedAuffuellmannschaft);
         when(mannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
 
         // call test method
@@ -389,7 +390,10 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
         when(mannschaftComponent.findById(anyLong())).thenReturn(expected);
         when(vereinComponent.findById(anyLong())).thenReturn(expectedVerein);
-        underTest.getMannschaftsNameByID(1L);
+        String name = underTest.getMannschaftsNameByID(1L);
+
+        assertThat(name).isNotNull();
+        assertThat(name).contains(expectedVerein.getName());
     }
 
     @Test
