@@ -18,9 +18,20 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
     private Long ligaRegionId;
     private Long ligaUebergeordnetId;
     private Long ligaVerantwortlichId;
+    private String ligaDetail;
 
     public LigaBE(){
         // empty constructor
+    }
+
+
+    public String getLigaDetail() {
+        return ligaDetail;
+    }
+
+
+    public void setLigaDetail(String ligaDetail) {
+        this.ligaDetail = ligaDetail;
     }
 
 
