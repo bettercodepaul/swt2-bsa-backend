@@ -24,36 +24,14 @@ public interface LigaComponent {
     LigaDO findById(long id);
 
 
-
-
-
-
-
-
-
     /**
-
      Return if liag exist with the given id.*
      @param id of the liga
-     @return boolean (true= liga exist);
-     null, if no liga is found
+     @return LigaDO,
+     if found -> return LigaDO;
+     if not found -> empty LigaDO
      */
     LigaDO checkExist(long id);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
