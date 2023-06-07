@@ -4,7 +4,7 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
  * I´m the data transfer object of the configuration.
- *
+ * <p>
  * I define the payload for the external REST interface of the configuration business entity.
  *
  * @author Andre Lehnert, BettercallPaul gmbh
@@ -15,6 +15,8 @@ public class ConfigurationDTO implements DataTransferObject {
     private String key;
     private String value;
     private String regex;
+    private Boolean hidden;
+
 
     /**
      * Constructor
@@ -23,6 +25,7 @@ public class ConfigurationDTO implements DataTransferObject {
         // empty constructor
     }
 
+
     /**
      * Constructor with required fields
      *
@@ -30,11 +33,13 @@ public class ConfigurationDTO implements DataTransferObject {
      * @param value of the key-value-pair
      */
 
-    public ConfigurationDTO(final Long id, final String key, final String value, final String regex){
+    public ConfigurationDTO(final Long id, final String key, final String value, final String regex,
+                            final Boolean hidden) {
         this.id = id;
         this.key = key;
         this.value = value;
         this.regex = regex;
+        this.hidden = hidden;
     }
 
 
@@ -75,5 +80,15 @@ public class ConfigurationDTO implements DataTransferObject {
 
     public void setRegex(String regex) {
         this.regex = regex;
+    }
+
+
+    public Boolean isHidden() {
+        return hidden;
+    }
+
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }
