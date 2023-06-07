@@ -188,6 +188,12 @@ public class MatchServiceTest {
         );
     }
 
+    protected DsbMannschaftDO getAuffuellmannschaft() {
+        return new DsbMannschaftDO(
+                MATCH_MANNSCHAFT_ID, "Auffuellmannschaft", 9999L, 696969L, 01274L, 4444L, 8L
+        );
+    }
+
 
     protected PasseDO getPasseDO(Long id) {
         return new PasseDO(
@@ -570,10 +576,17 @@ public class MatchServiceTest {
     public void create() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+        DsbMannschaftDO expectedAuffuellmannschaft = getAuffuellmannschaft();
+
+        // Mock the findAllByVereinsId method
+        List<DsbMannschaftDO> list = new ArrayList<>();
+        list.add(expectedAuffuellmannschaft);
+
 
         when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
+        when(mannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
         try {
             final MatchDTO actual = underTest.create(matchDTO, principal);
             assertThat(actual).isNotNull();
