@@ -16,21 +16,21 @@ public class SyncWrapper implements DataTransferObject {
     private String offlineToken;
     private long wettkampfId;
 
-    public SyncWrapper(List<LigaSyncMatchDTO> match,
+    public SyncWrapper(List<LigaSyncMatchDTO> matchesDTO,
                        List<LigaSyncPasseDTO> passe,
-                       List<LigaSyncMannschaftsmitgliedDTO> mannschaftsMitglieder,
+                       List<LigaSyncMannschaftsmitgliedDTO> mannschaftsmitgliederDTO ,
                        String offlineToken,
                        long wettkampfId) {
-        this.match = match;
+        this.match = matchesDTO;
         this.passe = passe;
-        this.mannschaftsMitglieder = mannschaftsMitglieder;
+        this.mannschaftsMitglieder = mannschaftsmitgliederDTO ;
         this.offlineToken = offlineToken;
         this.wettkampfId = wettkampfId;
     }
 
 
     public List<LigaSyncMatchDTO> getMatch() {
-        return match;
+        return this.match;
     }
 
 
@@ -40,7 +40,7 @@ public class SyncWrapper implements DataTransferObject {
 
 
     public List<LigaSyncPasseDTO> getPasse() {
-        return passe;
+        return this.passe;
     }
 
 
@@ -50,7 +50,7 @@ public class SyncWrapper implements DataTransferObject {
 
 
     public List<LigaSyncMannschaftsmitgliedDTO> getMannschaftsmitglied() {
-        return mannschaftsMitglieder;
+        return this.mannschaftsMitglieder;
     }
 
 
