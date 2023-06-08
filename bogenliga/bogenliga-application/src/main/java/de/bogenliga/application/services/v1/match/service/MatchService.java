@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
@@ -710,6 +711,21 @@ public class MatchService implements ServiceFacade {
 
         this.log(matchDTO, SERVICE_CREATE);
 
+
+        List<DsbMannschaftDO> list = mannschaftComponent.findAllByVereinsId(9999L);
+        long auffuellmannschaftID = 0;
+        for(int i=0; i<= list.size(); i++) {
+            if(Objects.equals(matchDTO.getMannschaftId(), list.get(i).getId())) {
+                auffuellmannschaftID = list.get(i).getId();
+                break;
+            }
+        }
+        if(auffuellmannschaftID == matchDTO.getMannschaftId()) {
+            matchDTO.setMatchpunkte(0L);
+            matchDTO.setSatzpunkte(0L);
+        }
+
+
         final MatchDO newMatch = MatchDTOMapper.toDO.apply(matchDTO);
 
         final MatchDO savedNewMatch = matchComponent.create(newMatch, userId);
@@ -783,9 +799,6 @@ public class MatchService implements ServiceFacade {
      */
 
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
-
-
-
 
         // the match is shown on the Schusszettel, add passen and mannschaft name from the views ligamatch and ligapasse
         // if the match is not shown on the Schusszettel, enrich matchDTO with data from the tables
