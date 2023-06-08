@@ -712,7 +712,7 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO, SERVICE_CREATE);
 
 
-        List<DsbMannschaftDO> list = mannschaftComponent.findAllByVereinsId(9999L);
+        List<DsbMannschaftDO> list = mannschaftComponent.findAllByVereinsId(99L);
         long auffuellmannschaftID = 0;
         for(int i=0; i<= list.size(); i++) {
             if(Objects.equals(matchDTO.getMannschaftId(), list.get(i).getId())) {
