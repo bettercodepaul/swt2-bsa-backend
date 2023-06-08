@@ -232,7 +232,7 @@ public class DsbMannschaftService implements ServiceFacade {
             }
 
             // Check if an Auffuellmannschaft is already in the Veranstaltung, delete if it is true
-            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(9999);
+            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(99);
             for (DsbMannschaftDO dsbMannschaftDO : list) {
                 long auffuellmannschaftId = dsbMannschaftDO.getId();
                 long auffuellmannschaftVeranstaltungsId = dsbMannschaftDO.getVeranstaltungId();

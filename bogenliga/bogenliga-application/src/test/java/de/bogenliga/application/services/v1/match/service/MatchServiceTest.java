@@ -190,7 +190,7 @@ public class MatchServiceTest {
 
     protected DsbMannschaftDO getAuffuellmannschaft() {
         return new DsbMannschaftDO(
-                MATCH_MANNSCHAFT_ID, "Auffuellmannschaft", 9999L, 696969L, 01274L, 4444L, 8L
+                MATCH_MANNSCHAFT_ID, "Auffuellmannschaft", 99L, 696969L, 01274L, 4444L, 8L
         );
     }
 

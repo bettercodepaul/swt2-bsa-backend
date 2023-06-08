@@ -81,13 +81,13 @@ public class DsbMannschaftServiceTest {
 
     public static DsbMannschaftDO getAuffuellmannschaft() {
         return new DsbMannschaftDO(
-                6969L, "Auffuellmannschaft", 9999L, 696969L, 01274L, 4444L, 8L
+                6969L, "Auffuellmannschaft", 99L, 696969L, 01274L, 4444L, 8L
         );
     }
 
     public static DsbMannschaftDO getMockMannschaft() {
         return new DsbMannschaftDO(
-                6969L, "Mockmannschaft", 9999L, 696969L, 01274L, 4445L, 8L
+                6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L
         );
     }
 
