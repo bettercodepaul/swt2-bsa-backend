@@ -233,9 +233,9 @@ public class MatchComponentImpl implements MatchComponent {
 
         // Check if the ID of the Auffuellmannschaft is already saved
         if(auffuellmannschaftID < 0 || auffuellmannschaftID != matchDO.getMannschaftId()
-                && checkForVereinsID.getVereinId() == 9999L) {
+                && checkForVereinsID.getVereinId() == 99L) {
             // Find all Auffuellmannschaft mannschaften
-            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(9999L);
+            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(99L);
             for (DsbMannschaftDO dsbMannschaftDO : list) {
                 // Check if the matchDO is an Auffuellmannschaft
                 if (Objects.equals(matchDO.getMannschaftId(), dsbMannschaftDO.getId())) {
