@@ -41,6 +41,8 @@ public class ConfigurationServiceTest {
     private static final String VALUE_NOT_MATCHING_REGEX = "noreplybsapp.de";
     private static final long USER = 0;
 
+    private static final Boolean HIDDEN = Boolean.FALSE;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -62,6 +64,7 @@ public class ConfigurationServiceTest {
         when(principal.getName()).thenReturn(String.valueOf(USER));
     }
 
+
     @Test
     public void findAll() {
         // prepare test data
@@ -69,6 +72,7 @@ public class ConfigurationServiceTest {
         configurationDO.setId(ID);
         configurationDO.setKey(KEY);
         configurationDO.setValue(VALUE);
+        configurationDO.setHidden(HIDDEN);
 
         final List<ConfigurationDO> configurationDOList = Collections.singletonList(configurationDO);
 
@@ -89,6 +93,7 @@ public class ConfigurationServiceTest {
         assertThat(actualDTO.getId()).isEqualTo(configurationDO.getId());
         assertThat(actualDTO.getKey()).isEqualTo(configurationDO.getKey());
         assertThat(actualDTO.getValue()).isEqualTo(configurationDO.getValue());
+        assertThat(actualDTO.isHidden()).isEqualTo(configurationDO.isHidden());
 
         // verify invocations
         verify(configurationComponent).findAll();
@@ -102,6 +107,7 @@ public class ConfigurationServiceTest {
         configurationDO.setId(ID);
         configurationDO.setKey(KEY);
         configurationDO.setValue(VALUE);
+        configurationDO.setHidden(HIDDEN);
 
         // configure mocks
         //when(configurationComponent.findByKey(any())).thenReturn(configurationDO);
@@ -116,6 +122,7 @@ public class ConfigurationServiceTest {
         assertThat(actual.getId()).isEqualTo(configurationDO.getId());
         assertThat(actual.getKey()).isEqualTo(configurationDO.getKey());
         assertThat(actual.getValue()).isEqualTo(configurationDO.getValue());
+        assertThat(actual.isHidden()).isEqualTo(configurationDO.isHidden());
 
         // verify invocations
         //verify(configurationComponent).findByKey(KEY);
@@ -135,6 +142,7 @@ public class ConfigurationServiceTest {
         expected.setId(input.getId());
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
+        input.setHidden(Boolean.FALSE);
 
         // configure mocks
         when(configurationComponent.create(any(), anyLong())).thenReturn(expected);
@@ -158,6 +166,7 @@ public class ConfigurationServiceTest {
         assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
         assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
     }
+
 
     @Test
     public void createValidRegExMail() {
@@ -166,11 +175,13 @@ public class ConfigurationServiceTest {
         input.setId(ID);
         input.setKey("SMTPEmail");
         input.setValue("test@test.de");
+        input.setHidden(Boolean.FALSE);
 
         final ConfigurationDO expected = new ConfigurationDO();
         expected.setId(input.getId());
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
+        expected.setHidden(input.isHidden());
 
         // configure mocks
         when(configurationComponent.create(any(), anyLong())).thenReturn(expected);
@@ -183,6 +194,7 @@ public class ConfigurationServiceTest {
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getKey()).isEqualTo(input.getKey());
         assertThat(actual.getValue()).isEqualTo(input.getValue());
+        assertThat(actual.isHidden()).isEqualTo(input.isHidden());
 
         // verify invocations
         verify(configurationComponent).create(configurationVOArgumentCaptor.capture(), anyLong());
@@ -192,7 +204,9 @@ public class ConfigurationServiceTest {
         assertThat(createdConfiguration.getId()).isEqualTo(input.getId());
         assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
         assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
+        assertThat(createdConfiguration.isHidden()).isEqualTo(input.isHidden());
     }
+
 
     @Test
     public void createValidRegExPort() {
@@ -201,11 +215,13 @@ public class ConfigurationServiceTest {
         input.setId(ID);
         input.setKey("SMTPPort");
         input.setValue("25");
+        input.setHidden(Boolean.FALSE);
 
         final ConfigurationDO expected = new ConfigurationDO();
         expected.setId(input.getId());
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
+        expected.setHidden(input.isHidden());
 
         // configure mocks
         when(configurationComponent.create(any(), anyLong())).thenReturn(expected);
@@ -218,6 +234,7 @@ public class ConfigurationServiceTest {
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getKey()).isEqualTo(input.getKey());
         assertThat(actual.getValue()).isEqualTo(input.getValue());
+        assertThat(actual.isHidden()).isEqualTo(input.isHidden());
 
         // verify invocations
         verify(configurationComponent).create(configurationVOArgumentCaptor.capture(), anyLong());
@@ -227,7 +244,9 @@ public class ConfigurationServiceTest {
         assertThat(createdConfiguration.getId()).isEqualTo(input.getId());
         assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
         assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
+        assertThat(createdConfiguration.isHidden()).isEqualTo(input.isHidden());
     }
+
 
     @Test
     public void createValidRegExHostname() {
@@ -236,11 +255,13 @@ public class ConfigurationServiceTest {
         input.setId(ID);
         input.setKey("SMTPHost");
         input.setValue("mail.test.de");
+        input.setHidden(Boolean.FALSE);
 
         final ConfigurationDO expected = new ConfigurationDO();
         expected.setId(input.getId());
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
+        expected.setHidden(input.isHidden());
 
         // configure mocks
         when(configurationComponent.create(any(), anyLong())).thenReturn(expected);
@@ -253,6 +274,7 @@ public class ConfigurationServiceTest {
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getKey()).isEqualTo(input.getKey());
         assertThat(actual.getValue()).isEqualTo(input.getValue());
+        assertThat(actual.isHidden()).isEqualTo(input.isHidden());
 
         // verify invocations
         verify(configurationComponent).create(configurationVOArgumentCaptor.capture(), anyLong());
@@ -262,7 +284,9 @@ public class ConfigurationServiceTest {
         assertThat(createdConfiguration.getId()).isEqualTo(input.getId());
         assertThat(createdConfiguration.getKey()).isEqualTo(input.getKey());
         assertThat(createdConfiguration.getValue()).isEqualTo(input.getValue());
+        assertThat(createdConfiguration.isHidden()).isEqualTo(input.isHidden());
     }
+
 
     @Test
     public void update_regex_matching() {
@@ -272,18 +296,21 @@ public class ConfigurationServiceTest {
         input.setKey(KEY);
         input.setValue(VALUE);
         input.setRegex(REGEX);
+        input.setHidden(Boolean.FALSE);
 
         final ConfigurationDO toBeReturned = new ConfigurationDO();
         toBeReturned.setId(ID);
         toBeReturned.setKey(KEY);
         toBeReturned.setValue(VALUE);
         toBeReturned.setRegex(REGEX);
+        toBeReturned.setHidden(HIDDEN);
 
         final ConfigurationDO expected = new ConfigurationDO();
         expected.setId(input.getId());
         expected.setKey(input.getKey());
         expected.setValue(input.getValue());
         expected.setRegex(input.getRegex());
+        expected.setHidden(input.isHidden());
 
         // configure mocks
         when(configurationComponent.update(any(), anyLong())).thenReturn(expected);
@@ -298,6 +325,7 @@ public class ConfigurationServiceTest {
         assertThat(actual.getKey()).isEqualTo(input.getKey());
         assertThat(actual.getValue()).isEqualTo(input.getValue());
         assertThat(actual.getRegex()).isEqualTo(input.getRegex());
+        assertThat(actual.isHidden()).isEqualTo(input.isHidden());
 
         // verify invocations
         verify(configurationComponent).update(configurationVOArgumentCaptor.capture(), anyLong());
@@ -309,7 +337,9 @@ public class ConfigurationServiceTest {
         assertThat(updatedConfiguration.getKey()).isEqualTo(input.getKey());
         assertThat(updatedConfiguration.getValue()).isEqualTo(input.getValue());
         assertThat(updatedConfiguration.getRegex()).isEqualTo(updatedConfiguration.getRegex());
+        assertThat(updatedConfiguration.isHidden()).isEqualTo(updatedConfiguration.isHidden());
     }
+
 
     @Test
     public void update_regex_not_matching() {
@@ -319,12 +349,14 @@ public class ConfigurationServiceTest {
         input.setKey(KEY);
         input.setValue(VALUE_NOT_MATCHING_REGEX);
         input.setRegex(REGEX);
+        input.setHidden(HIDDEN);
 
         final ConfigurationDO toBeReturned = new ConfigurationDO();
         toBeReturned.setId(ID);
         toBeReturned.setKey(KEY);
         toBeReturned.setValue(VALUE);
         toBeReturned.setRegex(REGEX);
+        toBeReturned.setHidden(HIDDEN);
 
         // configure mocks
         when(configurationComponent.findById(anyLong())).thenReturn(toBeReturned);

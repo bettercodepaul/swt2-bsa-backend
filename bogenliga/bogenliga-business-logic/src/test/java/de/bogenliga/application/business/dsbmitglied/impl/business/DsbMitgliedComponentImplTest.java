@@ -357,6 +357,7 @@ public class DsbMitgliedComponentImplTest {
 
     }
 
+    @Test
     public void hasKampfrichterLizenzMinusEins(){
         try {
             assertThat(underTest.hasKampfrichterLizenz(-1L)).isNull();
