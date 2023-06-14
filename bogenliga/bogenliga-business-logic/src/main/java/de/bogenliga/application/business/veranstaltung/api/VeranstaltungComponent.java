@@ -33,6 +33,7 @@ public interface VeranstaltungComponent extends ComponentFacade {
      */
     VeranstaltungDO findById(final long veranstaltungId);
 
+    VeranstaltungDO findByLigaIDAndSportjahr(long Ligaid, long sportjahr);  //TODO: COMMENT
     /**
      * Returns all Veranstaltungen of one ligaleiter.
      *
@@ -118,6 +119,8 @@ public interface VeranstaltungComponent extends ComponentFacade {
 
     List<VeranstaltungDO> findBySportjahrDestinct(long sportjahr);
 
+
+
     /**
      * Changes Phase for a Veranstaltung
      *
@@ -130,4 +133,6 @@ public interface VeranstaltungComponent extends ComponentFacade {
      */
 
     VeranstaltungDO setPhase(final long veranstaltungId, String phase, long currentDsbMitgliedId );
+
+
 }
