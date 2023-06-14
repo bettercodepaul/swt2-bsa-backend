@@ -329,4 +329,20 @@ public class VeranstaltungService implements ServiceFacade {
         Preconditions.checkArgument(veranstaltungDTO.getLigaId() >= 0, PRECONDITION_MSG_VERANSTALTUNG_LIGA_ID);
     }
 
+    /**
+     * I return the veranstaltung Entry of the database with a specific liga id and sportyear
+     *
+     * @return list of {@link VeranstaltungDTO} as JSON
+     */
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public VeranstaltungDTO findByLigaIdAndSportjahr(@PathVariable ("id") final long id, @PathVariable ("sportjahr") final long sportjahr){
+        Preconditions.checkArgument(id >= 0 , "ID must not be negative");
+        Preconditions.checkArgument(sportjahr >= 0 , "Sport year must not be negative");
+
+
+        final VeranstaltungDO veranstaltungDO = veranstaltungComponent.findByLigaIDAndSportjahr(id, sportjahr);
+        return VeranstaltungDTOMapper.toDTO.apply(veranstaltungDO);
+    }
+
 }
