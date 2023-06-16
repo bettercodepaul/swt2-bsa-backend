@@ -182,6 +182,26 @@ public class LigaServiceTest {
     }
 
     @Test
+    public void checkExist() {
+        // Prepare test data
+        final LigaDO ligaDO = getLigaDO();
+
+        // Configure mocks
+        when(ligaComponent.checkExist(anyLong())).thenReturn(ligaDO);
+        // Call the test method
+        final LigaDTO actual = underTest.checkExist(ID);
+
+        // Assert the result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(ligaDO.getId());
+        assertThat(actual.getName()).isEqualTo(ligaDO.getName());
+
+        // Verify invocations
+        verify(ligaComponent).checkExist(ID);
+    }
+
+
+    @Test
     public void create() {
         // prepare test data
         final LigaDTO input = getLigaDTO();
