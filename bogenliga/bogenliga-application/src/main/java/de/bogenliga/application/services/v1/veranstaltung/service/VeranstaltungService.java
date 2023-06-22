@@ -334,7 +334,7 @@ public class VeranstaltungService implements ServiceFacade {
      *
      * @return list of {@link VeranstaltungDTO} as JSON
      */
-    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}/{sportjahr}", produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public VeranstaltungDTO findByLigaIdAndSportjahr(@PathVariable ("id") final long id, @PathVariable ("sportjahr") final long sportjahr){
         Preconditions.checkArgument(id >= 0 , "ID must not be negative");
