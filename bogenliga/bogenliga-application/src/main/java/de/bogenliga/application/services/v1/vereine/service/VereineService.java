@@ -38,6 +38,8 @@ public class VereineService implements ServiceFacade {
     private static final String PRECONDITION_MSG_REGION_ID_NOT_NEG = "Verein regio ID must not be negative";
     private static final String PRECONDITION_MSG_REGION_ID = "Verein regio ID can not be null";
 
+    private final long auffuellmannschaftVereinId = 99;
+
 
     private final VereinComponent vereinComponent;
 
@@ -154,6 +156,10 @@ public class VereineService implements ServiceFacade {
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
 
+        // You can´t delete the Auffuellmannschaft Verein
+        if(id == auffuellmannschaftVereinId) {
+            return;
+        }
 
         final VereinDO vereinDO = new VereinDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);
