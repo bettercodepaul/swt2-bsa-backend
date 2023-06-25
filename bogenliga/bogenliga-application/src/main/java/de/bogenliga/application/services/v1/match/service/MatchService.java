@@ -107,6 +107,8 @@ public class MatchService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs-ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_ID = "Users-ID must not be negative";
 
+    private static final int AUFFUELLMANNSCHAFT_ID = 99;
+
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
     private final WettkampfComponent wettkampfComponent;
@@ -711,19 +713,14 @@ public class MatchService implements ServiceFacade {
 
         this.log(matchDTO, SERVICE_CREATE);
 
-
-        List<DsbMannschaftDO> list = mannschaftComponent.findAllByVereinsId(99L);
-        long auffuellmannschaftID = 0;
-        for(int i=0; i<= list.size(); i++) {
-            if(Objects.equals(matchDTO.getMannschaftId(), list.get(i).getId())) {
-                auffuellmannschaftID = list.get(i).getId();
-                break;
+        try {
+            // Check if the Mannschaft of this match is an Auffuellmannschaft
+            DsbMannschaftDO checkForVereinsID =  mannschaftComponent.findById(matchDTO.getMannschaftId());
+            if(checkForVereinsID.getVereinId() == AUFFUELLMANNSCHAFT_ID) {
+                matchDTO.setMatchpunkte(0L);
+                matchDTO.setSatzpunkte(0L);
             }
-        }
-        if(auffuellmannschaftID == matchDTO.getMannschaftId()) {
-            matchDTO.setMatchpunkte(0L);
-            matchDTO.setSatzpunkte(0L);
-        }
+        }catch (NullPointerException ignored) {}
 
 
         final MatchDO newMatch = MatchDTOMapper.toDO.apply(matchDTO);

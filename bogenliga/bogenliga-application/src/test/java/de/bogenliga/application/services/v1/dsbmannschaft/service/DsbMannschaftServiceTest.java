@@ -50,6 +50,8 @@ public class DsbMannschaftServiceTest {
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
 
+    private static final long AUFFUELLMANNSCHAFT_ID = 99;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -81,7 +83,13 @@ public class DsbMannschaftServiceTest {
 
     public static DsbMannschaftDO getAuffuellmannschaft() {
         return new DsbMannschaftDO(
-                6969L, "Auffuellmannschaft", 99L, 696969L, 01274L, 4444L, 8L
+                6969L, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+        );
+    }
+
+    public static DsbMannschaftDTO getAuffuellmannschaftDTO() {
+        return new DsbMannschaftDTO(
+                6970L, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
         );
     }
 
@@ -233,11 +241,15 @@ public class DsbMannschaftServiceTest {
         List<DsbMannschaftDO> list = new ArrayList<>();
         list.add(auffuellmannschaft);
 
+        // Mock the findAllByVeranstaltungsId
+        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
+        list.add(expected);
+
         // configure mocks
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(actualMannschaftInVeranstaltungCount);
 
         // call test method
         try {
@@ -277,6 +289,79 @@ public class DsbMannschaftServiceTest {
 
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.create(input, principal));
+    }
+
+    @Test
+    public void checkForAuffuellmannschaft() {
+        // Testcases:
+        // 1. Adding new Auffuellmannschaft
+        // 2. Adding new Auffuellmannschaft && But Auffuellmannschaft already in Veranstaltung
+
+        // prepare test data
+        final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
+        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaft();
+        final DsbMannschaftDTO auffuellmannschaftDTO = getAuffuellmannschaftDTO();
+        final int veranstaltunggroesse = 3;
+
+
+        // List with Mannschaften that are in the Veranstaltung
+        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
+        actualMannschaftInVeranstaltungCount.add(auffuellmannschaft);
+        actualMannschaftInVeranstaltungCount.add(mannschaft);
+
+        auffuellmannschaft.setVeranstaltungId(1L);
+
+        // List with all existing Auffuellmannschaften
+        List<DsbMannschaftDO> allExistingAuffuellmannschaftList = new ArrayList<>();
+        allExistingAuffuellmannschaftList.add(auffuellmannschaft);
+
+        // configure Mock
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+
+        try {
+            underTest.checkForAuffuellmannschaft(actualMannschaftInVeranstaltungCount,
+                    allExistingAuffuellmannschaftList, auffuellmannschaftDTO, veranstaltunggroesse, principal);
+
+        }catch (NoPermissionException e) {}
+    }
+
+    @Test
+    public void checkForAuffuellmannschaftAddNormalMannschaft() {
+        // Testcase:
+        // Adding new Mannschaft && Auffuellmannschaft already in Veranstaltung existing and Veranstaltung is full
+
+        // prepare test data
+        final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
+        final DsbMannschaftDTO mannschaftDTO = getDsbMannschaftDTO();
+        final DsbMannschaftDO auffuellmannschaft1 = getAuffuellmannschaft();
+        final int veranstaltunggroesse = 2;
+
+        // List with Mannschaften that are in the Veranstaltung
+        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
+        actualMannschaftInVeranstaltungCount.add(mannschaft);
+        actualMannschaftInVeranstaltungCount.add(auffuellmannschaft1);
+
+        // List with all existing Auffuellmannschaften
+        List<DsbMannschaftDO> allExistingAuffuellmannschaftList = new ArrayList<>();
+        allExistingAuffuellmannschaftList.add(auffuellmannschaft1);
+
+
+        // configure Mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        try {
+            when(allExistingAuffuellmannschaftList.get(any()).getVeranstaltungId()).thenReturn(auffuellmannschaft1.getVeranstaltungId());
+        }catch (NullPointerException ignored) {}
+
+        try {
+            underTest.checkForAuffuellmannschaft(actualMannschaftInVeranstaltungCount,
+                    allExistingAuffuellmannschaftList, mannschaftDTO, veranstaltunggroesse, principal);
+
+            verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+            final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+
+            assertThat(deletedDsbMannschaft).isNotNull();
+
+        }catch (NoPermissionException ignored) {}
     }
 
 
