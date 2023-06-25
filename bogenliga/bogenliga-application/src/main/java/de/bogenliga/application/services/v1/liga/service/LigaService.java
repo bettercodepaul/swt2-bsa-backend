@@ -106,6 +106,27 @@ public class LigaService implements ServiceFacade {
     }
 
 
+
+    /**
+     * Returns a liga entry of the given liga name
+     *
+     * @param liganame liga name of the klasse to be returned
+     *
+     * @return returns a klasse
+     */
+    @GetMapping(value = "/checkExistsLigaName/{liganame}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public LigaDTO checkExistsLigaName(@PathVariable("liganame") final String liganame) {
+
+        final LigaDO ligaExist = ligaComponent.checkExistsLigaName(liganame);
+        return LigaDTOMapper.toDTO.apply(ligaExist);
+    }
+
+
+
+
+
+
     /**
      * I persist a new liga and return this liga entry
      *

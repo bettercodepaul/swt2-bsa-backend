@@ -69,6 +69,11 @@ public class LigaDAO implements DataAccessObject {
                     + " FROM liga "
                     + " WHERE liga_id = ?";
 
+    private static final String FIND_BY_LIGANAME =
+            "SELECT * " +
+                    "FROM liga " +
+                    "WHERE LOWER(liga_name) = ?";
+
     private final BasicDAO basicDao;
 
 
@@ -108,6 +113,15 @@ public class LigaDAO implements DataAccessObject {
      */
     public LigaBE findById(final long id) {
         return basicDao.selectSingleEntity(LIGA, FIND_BY_ID, id);
+    }
+
+    /**
+     * Return liga entry with specific liga name
+     *
+     * @param ligaName
+     */
+    public LigaBE findByLigaName(final String ligaName) {
+        return basicDao.selectSingleEntity(LIGA, FIND_BY_LIGANAME, ligaName.toLowerCase());
     }
 
 
