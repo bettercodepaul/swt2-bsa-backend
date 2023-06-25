@@ -102,7 +102,7 @@ public class VereineService implements ServiceFacade {
      * @return list of {@link VereineDTO} as JSON
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_CREATE_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_STAMMDATEN, UserPermission.CAN_CREATE_STAMMDATEN_LIGALEITER})
     public VereineDTO create(@RequestBody final VereineDTO vereineDTO, final Principal principal) {
         checkPreconditions(vereineDTO);
         final long userId = UserProvider.getCurrentUserId(principal);
@@ -122,14 +122,14 @@ public class VereineService implements ServiceFacade {
      * Mannschaftsführer/Sportleiter of the Verein.
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN})
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN, UserPermission.CAN_MODIFY_MY_VEREIN, UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER})
     public VereineDTO update(@RequestBody final VereineDTO vereineDTO,
                              final Principal principal) throws NoPermissionException {
         checkPreconditions(vereineDTO);
         Preconditions.checkArgument(vereineDTO.getId() >= 0, PRECONDITION_MSG_VEREIN_ID);
 
 
-        if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN)) {
+        if (this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN) || this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER)) {
             //der User hat allgemeine Schreibrechte - wir machen weiter
         } else if (this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, vereineDTO.getId())) {
             // der user modifiziert seinen eigenen Verein und ist Sportleiter
