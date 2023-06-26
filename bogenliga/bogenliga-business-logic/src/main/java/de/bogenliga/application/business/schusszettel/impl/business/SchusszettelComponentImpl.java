@@ -34,9 +34,12 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -70,6 +73,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -77,13 +81,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                                      final DsbMannschaftComponent dsbMannschaftComponent,
                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                      final VereinComponent vereinComponent,
-                                     final WettkampfComponent wettkampfComponent) {
+                                     final WettkampfComponent wettkampfComponent,
+                                     final VeranstaltungComponent veranstaltungComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
     @Override
@@ -92,9 +98,13 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
 
+        // Informationen sammeln zu Veranstaltungs Groesse
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
+
         byte[] bResult;
         if (!matchDOList.isEmpty()) {
-            bResult = generateDoc(matchDOList).toByteArray();
+            bResult = generateDoc(matchDOList, veranstaltungDO.getVeranstaltungGroesse()).toByteArray();
         }else{
             throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
         }
@@ -592,21 +602,23 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * <p>writes a Schusszettel document for the Wettkamnpf
      * </p>
      */
-    private ByteArrayOutputStream generateDoc(List<MatchDO> matchDOList) {
+    private ByteArrayOutputStream generateDoc(List<MatchDO> matchDOList, int veranstaltungGroesse) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
+            int numberOfMatches = numberOfMatches(veranstaltungGroesse);
+
             //iterate through matches
-            for (long i = 1; i<=7; i++){
+            for (long i = 1; i<=numberOfMatches; i++){
                 //iterate through begegnungen
-                for(long k = 1; k<=4; k++){
+                for(long k = 1; k<=veranstaltungGroesse/2; k++){
                     MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList , i, k);
                     if(matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
                         generateSchusszettelPage(doc, matchesBegegnung);
-                        if(i != 7){
+                        if(i != numberOfMatches){
                             doc.add(new AreaBreak());
                         }
                     }
@@ -621,6 +633,19 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         }
         return ret;
 
+    }
+
+    /**
+     * Returns number of Matches for given size.
+     * @param veranstaltungGroesse How many competing Teams
+     * @return number of Matches for given veranstaltungGroesse
+     * */
+    private int numberOfMatches(int veranstaltungGroesse) {
+        if (veranstaltungGroesse == 8 || veranstaltungGroesse == 6) {
+            return veranstaltungGroesse - 1;
+        } else {
+            return 6;
+        }
     }
 
     /**
@@ -905,16 +930,16 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ2).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ3).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ4).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ5).setFontSize(5.0F))
                     )
                     // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))

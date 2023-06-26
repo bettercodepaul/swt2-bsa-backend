@@ -104,7 +104,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).getDisziplinName();
         Date wettkampfDatum = wettkampfDO.getWettkampfDatum();
 
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= veranstaltungDO.getVeranstaltungGroesse(); i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
@@ -123,7 +123,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping);
+            generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping, veranstaltungDO.getVeranstaltungGroesse());
             doc.close();
 
             return result.toByteArray();
@@ -136,7 +136,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     /**
      * <p>writes a Meldezettel document for the Wettkampf</p>
      */
-    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping) {
+    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, int veranstlatungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfTag, PRECONDITION_WETTKAMPFTAG);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
@@ -144,8 +144,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         Preconditions.checkNotNull(wettkampfDatum, PRECONDITION_WETTKAMPFDATUM);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
 
-        String[] teamNameList = new String[8];
+        String[] teamNameList = new String[veranstlatungGroesse];
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        int numberOfMatches = numberOfMatches(veranstlatungGroesse);
         int i = 0;
 
         for (String key : teamMemberMapping.keySet()) {
@@ -153,7 +154,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             i++;
         }
 
-        for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
+        for (int manschaftCounter = 0; manschaftCounter < veranstlatungGroesse; manschaftCounter++) {
 
             if(teamNameList[manschaftCounter].equals(AUFFUELLMANNSCHAFT_NAME)) {
                 continue;
@@ -166,197 +167,271 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             final Table mainTableFirstRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
             final Table mainTableFirstRowFirstPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
             final Table mainTableFirstRowFirstPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFirstRowFirstPartThirdRow = new Table(UnitValue.createPercentArray(new float[] { 23.0F, 11.0F, 11.0F, 11.0F, 11.0F, 11.0F, 11.0F, 11.0F }), true);
+            final Table mainTableFirstRowFirstPartThirdRow = new Table(
+                    UnitValue.createPercentArray(new float[]{23.0F, 11.0F, 11.0F, 11.0F, 11.0F, 11.0F, 11.0F, 11.0F}),
+                    true);
             final Table mainTableFirstRowSecondPart = new Table(UnitValue.createPercentArray(1), true);
             final Table mainTableFirstRowSecondPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
             final Table mainTableFirstRowSecondPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
             final Table mainTableFirstRowSecondPartThirdRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableSecondRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableSecondRowFirstPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableSecondRowFirstPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableSecondRowFirstPartThirdRow = new Table(UnitValue.createPercentArray(5), true);
-            final Table mainTableSecondRowSecondPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableSecondRowSecondPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableSecondRowSecondPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableSecondRowSecondPartThirdRow = new Table(UnitValue.createPercentArray(5), true);
-            final Table mainTableThirdRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableThirdRowFirstPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableThirdRowFirstPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableThirdRowFirstPartThirdRow = new Table(UnitValue.createPercentArray(5), true);
-            final Table mainTableThirdRowSecondPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableThirdRowSecondPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableThirdRowSecondPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableThirdRowSecondPartThirdRow = new Table(UnitValue.createPercentArray(5), true);
-            final Table mainTableFourthRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFourthRowFirstPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFourthRowFirstPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFourthRowFirstPartThirdRow = new Table(UnitValue.createPercentArray(5), true);
-            final Table mainTableFourthRowSecondPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFourthRowSecondPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFourthRowSecondPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFourthRowSecondPartThirdRow = new Table(UnitValue.createPercentArray(5), true);
             final Table mainTableFifthRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFifthRowSecondPart = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFifthRowSecondPartFirstRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFifthRowSecondPartSecondRow = new Table(UnitValue.createPercentArray(1), true);
-            final Table mainTableFifthRowSecondPartThirdRow = new Table(UnitValue.createPercentArray(5), true);
+            Table emptyTable = new Table(UnitValue.createPercentArray(1), true);
 
             // Fill first table in first row
             mainTableFirstRowFirstPartFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(header).setFontSize(8.0F))
+                    )
             ;
 
             mainTableFirstRowFirstPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(verein).setBold().setFontSize(10.0F))
+                    )
             ;
 
+            // sets the correct spacing for given numberOfMatches
+            int colSpan;
+
+            if (numberOfMatches == 7) {
+                colSpan = 1;
+            } else if (numberOfMatches == 6) {
+                colSpan = 2;
+            } else
+                colSpan = 3;
+
+            //Add FirstRowFirstPart dynamically with content for 8 = 5,1, 6 = 5,3 and 4 = 5,2
             mainTableFirstRowFirstPartThirdRow
-                .addCell(new Cell(5, 1).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID)).setBorderLeft(new SolidBorder(Border.SOLID))
-                    .add(new Paragraph("1").setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID))
-                    .add(new Paragraph("2").setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID))
-                    .add(new Paragraph("3").setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID))
-                    .add(new Paragraph("4").setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID))
-                    .add(new Paragraph("5").setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID))
-                    .add(new Paragraph("6").setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(new SolidBorder(Border.SOLID)).setBorderRight(new SolidBorder(Border.SOLID))
-                    .add(new Paragraph("7").setBold().setFontSize(10.0F))
-                )
-                // Add twentyone cells for text input
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                .addCell(new Cell().setHeight(15.0F))
-                // Add seven cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-            ;
+                    .addCell(new Cell(5, colSpan).setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
+                    );
+
+            for (int match = 1; match <= numberOfMatches; match++) {
+
+                if (match == 1) {
+                    mainTableFirstRowFirstPartThirdRow
+                            .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(
+                                            Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(
+                                            new SolidBorder(Border.SOLID)).setBorderLeft(new SolidBorder(Border.SOLID))
+                                    .add(new Paragraph(String.valueOf(match)).setBold().setFontSize(10.0F)));
+                } else if (match == numberOfMatches) {
+                    mainTableFirstRowFirstPartThirdRow
+                            .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(
+                                            Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(
+                                            new SolidBorder(Border.SOLID)).setBorderRight(new SolidBorder(Border.SOLID))
+                                    .add(new Paragraph(String.valueOf(match)).setBold().setFontSize(10.0F)));
+                } else {
+                    mainTableFirstRowFirstPartThirdRow
+                            .addCell(new Cell().setHeight(15.0F).setTextAlignment(TextAlignment.CENTER).setBorder(
+                                            Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)).setBorderBottom(
+                                            new SolidBorder(Border.SOLID))
+                                    .add(new Paragraph(String.valueOf(match)).setBold().setFontSize(10.0F)));
+                }
+            }
+
+            // Add cells dependent on number of Matches times 3 (Number of Schützen) for text input
+            for (int j = 0; j < numberOfMatches * 3; j++) {
+                mainTableFirstRowFirstPartThirdRow.addCell(new Cell().setHeight(15.0F));
+            }
+
+            // Add cells dependent on the number of Matches because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
+            for (int j = 0; j < numberOfMatches; j++) {
+                mainTableFirstRowFirstPartThirdRow.addCell(
+                        new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
+                );
+            }
 
             // Fill second table in first row
             mainTableFirstRowSecondPartFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(header).setFontSize(8.0F))
+                    )
             ;
 
             mainTableFirstRowSecondPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(verein).setBold().setFontSize(10.0F))
+                    )
             ;
 
             mainTableFirstRowSecondPartThirdRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("Die Lizenz erhalten:").setFontSize(10.0F))
-                )
-                // Two empty cells for text input
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("\n"))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("\n"))
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(60.0F)))
-                )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("Die Lizenz erhalten:").setFontSize(10.0F))
+                    )
+                    // Two empty cells for text input
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("\n"))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("\n"))
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(
+                                    new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(60.0F)))
+                    )
             ;
 
-            // Fill first table in second row
-            mainTableSecondRowFirstPartFirstRow
+            // Create all Match Cells and save it into an array
+            Cell[] mainTableSubParts = new Cell[numberOfMatches];
+
+            for (int match = 1; match <= numberOfMatches; match++) {
+                mainTableSubParts[match - 1] = new Cell().setBorder(Border.NO_BORDER)
+                        .add(mainTableMatchContent(header, verein, match));
+            }
+
+            // Fill first table in fifth row
+            mainTableFifthRowFirstPart
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(new Paragraph("RNr.: " + teamNameList[manschaftCounter]).setBold().setFontSize(10.0F))
+                    )
+            ;
+
+            // Create table for Mitglieder with 2 fixed width columns
+            final Table mitgliederTable = new Table(new float[]{150F, 150F});
+            for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(
+                    teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
+                DsbMitgliedDO mitgliedDO = teamMemberMapping.get(teamNameList[manschaftCounter]).get(
+                        mitgliedCounter - 1);
+                mitgliederTable
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(
+                                        mitgliedCounter + ". " + mitgliedDO.getNachname() + ", " + mitgliedDO.getVorname()).setFontSize(
+                                        8.0F))
+                        )
+                ;
+            }
+            // Add mitgliederTable to mainTable
+            mainTableFifthRowFirstPart
+                    .addCell(
+                            new Cell().setBorder(Border.NO_BORDER)
+                                    .add(mitgliederTable)
+                    );
+
+            // Add sub tables to main table
+            mainTableFirstRowFirstPart
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowFirstPartFirstRow)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowFirstPartSecondRow)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowFirstPartThirdRow)
+                    )
+            ;
+
+            mainTableFirstRowSecondPart
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowSecondPartFirstRow)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowSecondPartSecondRow)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowSecondPartThirdRow)
+                    )
+            ;
+
+            // Add sub tables to main table dynamic
+            mainTable
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(
+                                    20.0F).setPaddingBottom(12.0F)
+                    )
+                    .addCell(new Cell().setBorder(Border.NO_BORDER)
+                            .add(mainTableFirstRowSecondPart).setPaddingLeft(30.0F).setPaddingRight(
+                                    5.0F).setPaddingBottom(12.0F)
+                    );
+
+            // 4 Mannschaften needs a different way of generating Meldezettel, because of odd number
+            if (numberOfMatches == 6) {
+                // iterate through number of matches and add subTables from array
+                for (int match = numberOfMatches - 1; match >= 0; match--) {
+                    // there are different spacings for left and right row
+                    // left row
+                    if (match % 2 == 0) {
+                        mainTable.addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableSubParts[match]).setPaddingLeft(30.0F).setPaddingRight(
+                                        5.0F).setPaddingBottom(12.0F)
+                        );
+                        // right row
+                    } else {
+                        mainTable.addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableSubParts[match]).setPaddingLeft(10.0F).setPaddingRight(
+                                        20.0F).setPaddingBottom(12.0F)
+                        );
+                    }
+                }
+                // last Part to add names of Schützen
+                mainTable
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableFifthRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F)
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER));
+            } else {
+                // iterate through number of matches for 6, 8 Mannschaften
+                for (int match = numberOfMatches - 1; match > 0; match--) {
+                    // left row
+                    if (match % 2 == 0) {
+                        mainTable.addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableSubParts[match]).setPaddingLeft(10.0F).setPaddingRight(
+                                        20.0F).setPaddingBottom(12.0F)
+                        );
+                        // right row
+                    } else {
+                        mainTable.addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableSubParts[match]).setPaddingLeft(30.0F).setPaddingRight(
+                                        5.0F).setPaddingBottom(12.0F));
+                    }
+                }
+                // first add Schützen, then the last Match
+                mainTable
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableFifthRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F)
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableSubParts[0]).setPaddingLeft(30.0F).setPaddingRight(5.0F)
+                        );
+            }
+            // Add all to document
+            doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
+                    Border.NO_BORDER);
+
+            if (numberOfMatches == 6) {
+                if (manschaftCounter != 3) {
+                    doc.add(new AreaBreak());
+                }
+            }else {
+                    if (manschaftCounter != numberOfMatches) {
+                        doc.add(new AreaBreak());
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns a complete Table with Content to one Match
+     * @return Table with content for one Match
+     * */
+    private Table mainTableMatchContent(String header, String verein, int match) {
+        final Table mainTableSubPart = new Table(UnitValue.createPercentArray(1), true);
+        final Table mainTableMatchContentFirstRow = new Table(UnitValue.createPercentArray(1), true);
+        final Table mainTableMatchContentSecondRow = new Table(UnitValue.createPercentArray(1), true);
+        final Table mainTableMatchContentThirdRow = new Table(UnitValue.createPercentArray(5), true);
+
+        mainTableMatchContentFirstRow
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
+                        .add(new Paragraph(header).setFontSize(8.0F))
                 )
-            ;
+        ;
 
-            mainTableSecondRowFirstPartSecondRow
+        mainTableMatchContentSecondRow
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
+                        .add(new Paragraph(verein).setBold().setFontSize(10.0F))
                 )
-            ;
+        ;
 
-            mainTableSecondRowFirstPartThirdRow
-                .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
-                )
-                // Add three cells for text input
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("7").setBold().setFontSize(15.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
-                )
-            ;
-
-            // Fill second table in second row
-            mainTableSecondRowSecondPartFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
-            ;
-
-            mainTableSecondRowSecondPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
-            ;
-
-            mainTableSecondRowSecondPartThirdRow
+        mainTableMatchContentThirdRow
                 .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
                         .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
                 )
@@ -371,10 +446,10 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
+                        .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
                 )
                 .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("6").setBold().setFontSize(15.0F))
+                        .add(new Paragraph(String.valueOf(match)).setBold().setFontSize(15.0F))
                 )
                 .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
@@ -382,403 +457,35 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell().setBorder(Border.NO_BORDER))
                 .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
-                )
-            ;
+                        .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
+                );
 
-            // Fill first table in third row
-            mainTableThirdRowFirstPartFirstRow
+        mainTableSubPart
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
-            ;
-
-            mainTableThirdRowFirstPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
-            ;
-
-            mainTableThirdRowFirstPartThirdRow
-                .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
-                )
-                // Add three cells for text input
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("5").setBold().setFontSize(15.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
-                )
-            ;
-
-            // Fill second table in third row
-            mainTableThirdRowSecondPartFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
-            ;
-
-            mainTableThirdRowSecondPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
-            ;
-
-            mainTableThirdRowSecondPartThirdRow
-                .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
-                )
-                // Add three cells for text input
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("4").setBold().setFontSize(15.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
-                )
-            ;
-
-            // Fill first table in fourth row
-            mainTableFourthRowFirstPartFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
-            ;
-
-            mainTableFourthRowFirstPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
-            ;
-
-            mainTableFourthRowFirstPartThirdRow
-                .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
-                )
-                // Add three cells for text input
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("3").setBold().setFontSize(15.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
-                )
-            ;
-
-            // Fill second table in fourth row
-            mainTableFourthRowSecondPartFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
-            ;
-
-            mainTableFourthRowSecondPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
-            ;
-
-            mainTableFourthRowSecondPartThirdRow
-                .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
-                )
-                // Add three cells for text input
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("2").setBold().setFontSize(15.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
-                )
-            ;
-
-            // Fill first table in fifth row
-            mainTableFifthRowFirstPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("RNr.: " + teamNameList[manschaftCounter]).setBold().setFontSize(10.0F))
-                )
-            ;
-
-            // Create table for Mitglieder with 2 fixed width columns
-            final Table mitgliederTable = new Table(new float[]{150F, 150F});
-            for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
-                DsbMitgliedDO mitgliedDO = teamMemberMapping.get(teamNameList[manschaftCounter]).get(mitgliedCounter - 1);
-                mitgliederTable
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(new Paragraph(mitgliedCounter + ". " + mitgliedDO.getNachname() + ", " + mitgliedDO.getVorname()).setFontSize(8.0F))
-                        )
-                ;
-            }
-            // Add mitgliederTable to mainTable
-            mainTableFifthRowFirstPart
-                    .addCell(
-                            new Cell().setBorder(Border.NO_BORDER)
-                                    .add(mitgliederTable)
-                    );
-
-            // Fill second table in fifth row
-            mainTableFifthRowSecondPartFirstRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(header).setFontSize(8.0F))
-                )
-            ;
-
-            mainTableFifthRowSecondPartSecondRow
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(verein).setBold().setFontSize(10.0F))
-                )
-            ;
-
-            mainTableFifthRowSecondPartThirdRow
-                .addCell(new Cell(1,2).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_SCHUETZEN).setBold().setFontSize(10.0F))
-                )
-                // Add three cells for text input
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                .addCell(new Cell().setHeight(45.0F))
-                // Add five cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_MATCH).setBold().setFontSize(10.0F))
-                )
-                .addCell(new Cell().setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph("1").setBold().setFontSize(15.0F))
-                )
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setHeight(15.0F).setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell().setBorder(Border.NO_BORDER))
-                .addCell(new Cell(1,3).setBorder(Border.NO_BORDER)
-                    .add(new Paragraph(MELDEZETTEL_UNTERSCHRIFT).setFontSize(6.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(100.0F)))
-                )
-            ;
-
-            // Add sub tables to main table parts
-            mainTableFirstRowFirstPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFirstRowFirstPartFirstRow)
+                        .add(mainTableMatchContentFirstRow)
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFirstRowFirstPartSecondRow)
+                        .add(mainTableMatchContentSecondRow)
                 )
                 .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFirstRowFirstPartThirdRow)
+                        .add(mainTableMatchContentThirdRow)
                 )
-            ;
-
-            mainTableFirstRowSecondPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFirstRowSecondPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFirstRowSecondPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFirstRowSecondPartThirdRow)
-                )
-            ;
-
-            mainTableSecondRowFirstPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableSecondRowFirstPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableSecondRowFirstPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableSecondRowFirstPartThirdRow)
-                )
-            ;
-
-            mainTableSecondRowSecondPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableSecondRowSecondPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableSecondRowSecondPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableSecondRowSecondPartThirdRow)
-                )
-            ;
-
-            mainTableThirdRowFirstPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableThirdRowFirstPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableThirdRowFirstPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableThirdRowFirstPartThirdRow)
-                )
-            ;
-
-            mainTableThirdRowSecondPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableThirdRowSecondPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableThirdRowSecondPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableThirdRowSecondPartThirdRow)
-                )
-            ;
-
-            mainTableFourthRowFirstPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFourthRowFirstPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFourthRowFirstPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFourthRowFirstPartThirdRow)
-                )
-            ;
-
-            mainTableFourthRowSecondPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFourthRowSecondPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFourthRowSecondPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFourthRowSecondPartThirdRow)
-                )
-            ;
-
-            // Insert 5.1 here
-
-            mainTableFifthRowSecondPart
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFifthRowSecondPartFirstRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFifthRowSecondPartSecondRow)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                    .add(mainTableFifthRowSecondPartThirdRow)
-                )
-            ;
-
-            // Add sub tables to main table
-            mainTable
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableFirstRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableFirstRowSecondPart).setPaddingLeft(30.0F).setPaddingRight(5.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableSecondRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableSecondRowSecondPart).setPaddingLeft(30.0F).setPaddingRight(5.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableThirdRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableThirdRowSecondPart).setPaddingLeft(30.0F).setPaddingRight(5.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableFourthRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableFourthRowSecondPart).setPaddingLeft(30.0F).setPaddingRight(5.0F).setPaddingBottom(15.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableFifthRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F)
-                )
-                .addCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(mainTableFifthRowSecondPart).setPaddingLeft(30.0F).setPaddingRight(5.0F)
-                )
-            ;
-
-            // Add all to document
-            doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(Border.NO_BORDER);
-
-            if (manschaftCounter != 7) {
-                doc.add(new AreaBreak());
-            }
-        }
+        ;
+        return mainTableSubPart;
     }
 
+    /**
+     * Returns number of Matches for given size.
+     * @param veranstaltungGroesse How many competing Teams
+     * @return number of Matches for given veranstaltungGroesse
+     * */
+    private int numberOfMatches(int veranstaltungGroesse) {
+        if (veranstaltungGroesse == 8 || veranstaltungGroesse == 6) {
+            return veranstaltungGroesse - 1;
+        } else {
+            return 6;
+        }
+    }
 
     /**
      * help function to get team name
