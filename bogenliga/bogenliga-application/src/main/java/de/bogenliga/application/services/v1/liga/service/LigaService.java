@@ -143,7 +143,6 @@ public class LigaService implements ServiceFacade {
                           final Principal principal) {
 
 
-        System.out.println("es kommt etwas an");
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
