@@ -60,6 +60,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private static final String MELDEZETTEL_MATCH = "Match";
     private static final String MELDEZETTEL_SCHUETZEN = "Schützen";
     private static final String MELDEZETTEL_UNTERSCHRIFT ="Unterschrift des Mannschaftsführers";
+    private static final String AUFFUELLMANNSCHAFT_NAME = "Auffüllmannschaft";
 
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
@@ -154,8 +155,12 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         }
 
         for (int manschaftCounter = 0; manschaftCounter < veranstlatungGroesse; manschaftCounter++) {
-            String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(
-                    wettkampfDatum);
+
+            if(teamNameList[manschaftCounter].equals(AUFFUELLMANNSCHAFT_NAME)) {
+                continue;
+            }
+
+            String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(wettkampfDatum);
             String verein = "Verein: " + teamNameList[manschaftCounter];
 
             final Table mainTable = new Table(UnitValue.createPercentArray(2), true);
