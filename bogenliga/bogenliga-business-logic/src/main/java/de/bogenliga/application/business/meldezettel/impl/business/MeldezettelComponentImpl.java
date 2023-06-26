@@ -103,7 +103,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         String disziplinsName = disziplinComponent.findById(wettkampfDO.getWettkampfDisziplinId()).getDisziplinName();
         Date wettkampfDatum = wettkampfDO.getWettkampfDatum();
 
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= veranstaltungDO.getVeranstaltungGroesse(); i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
             List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = mannschaftsmitgliedComponent.findAllSchuetzeInTeam(matchDO.getMannschaftId());
@@ -122,7 +122,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
              PdfDocument pdfDocument = new PdfDocument(writer);
              Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping);
+            generateDoc(doc, wettkampfTag, veranstaltungsName, disziplinsName, wettkampfDatum, teamMemberMapping, veranstaltungDO.getVeranstaltungGroesse());
             doc.close();
 
             return result.toByteArray();
@@ -135,7 +135,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     /**
      * <p>writes a Meldezettel document for the Wettkampf</p>
      */
-    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping) {
+    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, int veranstlatungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfTag, PRECONDITION_WETTKAMPFTAG);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
@@ -143,7 +143,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         Preconditions.checkNotNull(wettkampfDatum, PRECONDITION_WETTKAMPFDATUM);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
 
-        String[] teamNameList = new String[8];
+        String[] teamNameList = new String[veranstlatungGroesse];
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
         int i = 0;
 
@@ -152,7 +152,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             i++;
         }
 
-        for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
+        for (int manschaftCounter = 0; manschaftCounter < veranstlatungGroesse; manschaftCounter++) {
             String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(wettkampfDatum);
             String verein = "Verein: " + teamNameList[manschaftCounter];
 
