@@ -346,21 +346,23 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                     // left row
                     if (match % 2 == 0) {
                         mainTable.addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(mainTableSubParts[match]).setPaddingLeft(30.0F).setPaddingRight(5.0F).setPaddingBottom(12.0F)
+                                .add(mainTableSubParts[match]).setPaddingLeft(30.0F).setPaddingRight(
+                                        5.0F).setPaddingBottom(12.0F)
                         );
-                    // right row
+                        // right row
                     } else {
                         mainTable.addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(mainTableSubParts[match]).setPaddingLeft(10.0F).setPaddingRight(20.0F).setPaddingBottom(12.0F)
+                                .add(mainTableSubParts[match]).setPaddingLeft(10.0F).setPaddingRight(
+                                        20.0F).setPaddingBottom(12.0F)
                         );
                     }
                 }
                 // last Part to add names of Schützen
                 mainTable
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(mainTableFifthRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F)
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER));
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(mainTableFifthRowFirstPart).setPaddingLeft(10.0F).setPaddingRight(20.0F)
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER));
             } else {
                 // iterate through number of matches for 6, 8 Mannschaften
                 for (int match = numberOfMatches - 1; match > 0; match--) {
@@ -370,7 +372,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                                 .add(mainTableSubParts[match]).setPaddingLeft(10.0F).setPaddingRight(
                                         20.0F).setPaddingBottom(12.0F)
                         );
-                    // right row
+                        // right row
                     } else {
                         mainTable.addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(mainTableSubParts[match]).setPaddingLeft(30.0F).setPaddingRight(
@@ -387,10 +389,17 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                         );
             }
             // Add all to document
-            doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(Border.NO_BORDER);
+            doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
+                    Border.NO_BORDER);
 
-            if (manschaftCounter != numberOfMatches) {
-                doc.add(new AreaBreak());
+            if (numberOfMatches == 6) {
+                if (manschaftCounter != 3) {
+                    doc.add(new AreaBreak());
+                }
+            }else {
+                    if (manschaftCounter != numberOfMatches) {
+                        doc.add(new AreaBreak());
+                }
             }
         }
     }
