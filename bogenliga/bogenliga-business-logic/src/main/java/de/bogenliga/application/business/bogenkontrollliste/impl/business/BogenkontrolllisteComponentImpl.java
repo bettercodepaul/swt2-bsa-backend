@@ -111,7 +111,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         String eventName = veranstaltungDO.getVeranstaltungName();
 
         // Fuer Jedes Match eines wettkampfs -> List.add alle Schuetzen
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= veranstaltungDO.getVeranstaltungGroesse(); i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
             LOGGER.info("Teamname {} wurde gefunden ", teamName);
@@ -211,7 +211,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName, allowedMapping);
+            generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName, allowedMapping, veranstaltungDO.getVeranstaltungGroesse());
 
             bResult = result.toByteArray();
             return bResult;
@@ -233,12 +233,12 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO,
                                                HashMap<String, List<DsbMitgliedDO>> teamMemberMapping,
                                                String veranstaltungsName,
-                                               HashMap<DsbMitgliedDO, Boolean> allowedMapping) {
+                                               HashMap<DsbMitgliedDO, Boolean> allowedMapping, int veranstaltungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
-        String[] teamNameList = new String[8];
+        String[] teamNameList = new String[veranstaltungGroesse];
         int i = 0;
 
         LOGGER.info("Es wurden {} Teams gefunden", teamMemberMapping.size());
@@ -258,7 +258,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         docTable.addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
                 .add(pageTitle));
         //Iterate through all the teams
-        for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
+        for (int manschaftCounter = 0; manschaftCounter < veranstaltungGroesse; manschaftCounter++) {
 
             //Create table for each team
             final Table tableBody = new Table(UnitValue.createPercentArray(3), true).setKeepTogether(true);
