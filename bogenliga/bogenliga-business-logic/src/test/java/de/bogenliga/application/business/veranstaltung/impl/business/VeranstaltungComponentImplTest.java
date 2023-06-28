@@ -781,12 +781,11 @@ public class VeranstaltungComponentImplTest {
         verify(veranstaltungDAO).findByLigaID(VERANSTALTUNG_LIGA_ID);
     }
 
-
-    /**
-     * Test for findBySportjahrDestinct
-     *
-     * @author Johannes Schänzle, Max Weise; FH Reutlingen
-     */
+        /**
+         * Test for findBySportjahrDestinct
+         *
+         * @author Johannes Schänzle, Max Weise; FH Reutlingen
+         */
     @Test
     public void testfindBySportjahrDestinct(){
         // prepare test data
