@@ -133,6 +133,22 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
 
 
     @Override
+    public VeranstaltungDO findByLigaIDAndSportjahr(long ligaId, long sportjahr) {
+        Preconditions.checkArgument(ligaId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
+        Preconditions.checkArgument(sportjahr >= 0, PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
+
+        final VeranstaltungBE result = veranstaltungDAO.findByLigaIdAndSportjahr(ligaId, sportjahr);
+
+        if (result == null) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for ID '%s'", ligaId));
+        }
+
+        return completeNames(result);
+    }
+
+
+    @Override
     public List<VeranstaltungDO> findByLigaleiterId(long ligaleiterId) {
 
         final ArrayList<VeranstaltungDO> returnList = new ArrayList<>();
