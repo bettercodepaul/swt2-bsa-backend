@@ -388,8 +388,9 @@ public class VeranstaltungComponentImplTest {
         // verify invocations
         verify(veranstaltungDAO).findById(VERANSTALTUNG_ID);
     }
-    //TODO Fix
-  @Test
+
+
+    @Test
   public void update() {
         // prepare test data
         final VeranstaltungDO input = getVeranstaltungDO();

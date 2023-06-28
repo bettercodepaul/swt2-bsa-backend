@@ -135,7 +135,7 @@ public class VeranstaltungComponentImpl implements VeranstaltungComponent {
     @Override
     public VeranstaltungDO findByLigaIDAndSportjahr(long ligaId, long sportjahr) {
         Preconditions.checkArgument(ligaId >= 0, PRECONDITION_MSG_VERANSTALTUNG_ID);
-        Preconditions.checkArgument(sportjahr >= 0, PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
+        Preconditions.checkArgument(sportjahr >= 1980, PRECONDITION_MSG_VERANSTALTUNG_SPORTJAHR);
 
         final VeranstaltungBE result = veranstaltungDAO.findByLigaIdAndSportjahr(ligaId, sportjahr);
 
