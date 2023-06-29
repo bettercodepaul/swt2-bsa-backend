@@ -821,6 +821,7 @@ public class VeranstaltungComponentImplTest {
 
         // Verify invocation
         verify(veranstaltungDAO).findByLigaIdAndSportjahr(VERANSTALTUNG_LIGA_ID_REAL, VERANSTALTUNG_SPORTJAHR_REAL);
+
     }
 */
 
