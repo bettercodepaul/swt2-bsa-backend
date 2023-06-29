@@ -200,7 +200,7 @@ public class VeranstaltungDAO implements DataAccessObject{
      * @param ligaId - selected liga ID of Veranstaltung you want to recieve
      * @param sportjahr - selected sport year of Veranstaltung you want to recieve
      */
-    public VeranstaltungBE findByLigaIdAndSportjahr(long ligaId, long sportjahr) {
+    public VeranstaltungBE findByLigaIdAndSportjahr(final long ligaId, final long sportjahr) {
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_LIGAID_AND_SPORTJAHR, ligaId, sportjahr);
     }
 
