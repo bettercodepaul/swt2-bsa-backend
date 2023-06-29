@@ -784,7 +784,7 @@ public class VeranstaltungComponentImplTest {
     @Test
     public void testFindByLigaIDUndSportjahr() {
         // prepare test data
-        //TODO:implement test
+        //TODO:implement Test
     }
 
         /**
