@@ -47,8 +47,11 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_ID_NEGATIVE = "DsbMannschaft Veranstaltung Id must not be negative";
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
-
+    private static final String PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV = "DsbMannschaft Veranstaltung size can not be negativ";
+    private static final String PRECONDITION_MSG_AUFFUELLMANNSCHAFT_DUPLICATE_VERANSTALTUNG_EXISTING = "Already an existing Auffuellmannschaft in this Veranstaltung";
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
+
+    private final long auffuellmannschaftVereinId = 99;
 
 
 
@@ -231,18 +234,19 @@ public class DsbMannschaftService implements ServiceFacade {
                 veranstaltungsgroesse = veranstaltungDO.getVeranstaltungGroesse();
             }
 
-            // Check if an Auffuellmannschaft is already in the Veranstaltung, delete if it is true
-            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(9999);
-            for (DsbMannschaftDO dsbMannschaftDO : list) {
-                long auffuellmannschaftId = dsbMannschaftDO.getId();
-                long auffuellmannschaftVeranstaltungsId = dsbMannschaftDO.getVeranstaltungId();
 
-                if (auffuellmannschaftVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()) {
-                    delete(auffuellmannschaftId, principal);
-                }
+            // Get the current number of teams from the Veranstaltung
+            List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = dsbMannschaftComponent.findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId());
+            List<DsbMannschaftDO> allExistingAuffuellmannschaftList = dsbMannschaftComponent.findAllByVereinsId(auffuellmannschaftVereinId);
+
+            // If the list isn´t empty, call the method
+            if(!allExistingAuffuellmannschaftList.isEmpty()) {
+                checkForAuffuellmannschaft(actualMannschaftInVeranstaltungCount, allExistingAuffuellmannschaftList,
+                        dsbMannschaftDTO, veranstaltungsgroesse, principal);
             }
 
-            Preconditions.checkArgument(findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId()).size() < veranstaltungsgroesse
+
+            Preconditions.checkArgument(actualMannschaftInVeranstaltungCount.size() < veranstaltungsgroesse
 
                     , PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL);
 
@@ -260,6 +264,64 @@ public class DsbMannschaftService implements ServiceFacade {
 
         } else throw new NoPermissionException();
     }
+
+    /**
+     * I check if an Auffuellmannschaft is already in the Veranstaltung
+     * @param actualMannschaftInVeranstaltungCount a list of all the current teams in the Veranstaltung
+     * @param allExistingAuffuellmannschaftList a list of all existing Auffuellmannschaft teams
+     * @param dsbMannschaftDTO of the request body
+     * @param veranstaltungsgroesse the size of the Veranstaltung
+     * @param principal authenticated user
+     */
+
+    @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
+    public void checkForAuffuellmannschaft(@RequestBody final List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount,
+                                        final List<DsbMannschaftDO> allExistingAuffuellmannschaftList,
+                                        final DsbMannschaftDTO dsbMannschaftDTO,
+                                        final int veranstaltungsgroesse,
+                                        final Principal principal) throws NoPermissionException {
+
+        if(this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
+                this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
+
+            checkPreconditions(dsbMannschaftDTO);
+            Preconditions.checkArgument(veranstaltungsgroesse >= 0, PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV);
+
+            final Long userId = UserProvider.getCurrentUserId(principal);
+            Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
+
+
+            for (int i = 0; i < allExistingAuffuellmannschaftList.size(); i++) {
+                // If the Auffuellmannschaft from the list isn´t in this Veranstaltung, skip it
+                // Only searching if an Auffuellmannschaft already exists in this Veranstaltung
+                if (!(allExistingAuffuellmannschaftList.get(i).getVeranstaltungId().equals(
+                        dsbMannschaftDTO.getVeranstaltungId()))) {
+                    continue;
+                }
+                long auffuellmannschaftVeranstaltungsId = allExistingAuffuellmannschaftList.get(i).getVeranstaltungId();
+                long auffuellmannschaftId = allExistingAuffuellmannschaftList.get(i).getId();
+
+                // Check if in this Veranstaltung is already and Auffuellmannschaft
+                // And if the new team isn´t an Auffuellmannschaft
+                Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() != auffuellmannschaftVereinId,
+                        PRECONDITION_MSG_AUFFUELLMANNSCHAFT_DUPLICATE_VERANSTALTUNG_EXISTING);
+
+                // If the new team isn´t and Auffuellmannschaft
+                // And the Veranstaltung already has an Auffuellmannschaft
+                // And the capacity of the Veranstaltung is reached -> delete the Auffuellmannschaft
+                if (auffuellmannschaftVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()
+                        && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
+                        && dsbMannschaftDTO.getVereinId() != auffuellmannschaftId) {
+                    delete(auffuellmannschaftId, principal);
+                    break;
+                }
+            }
+        }
+        else throw new NoPermissionException();
+
+    }
+
+
 
     /**
      * I copy the dsbMannschaft entries in the database with the given Veranstaltungs-Ids.

@@ -111,6 +111,8 @@ public class MatchServiceTest {
     protected static final Long MATCH_WETTKAMPF_TAG = 1L;
     protected static final Integer MATCH_RUECKENNUMMER = 2;
 
+    protected static final Long AUFFUELLMANNSCHAFT_ID = 99L;
+
 
 
     private static final Long PASSE_ID_1 = 1L;
@@ -185,6 +187,12 @@ public class MatchServiceTest {
                 MATCH_STRAFPUNKTE_SATZ3,
                 MATCH_STRAFPUNKTE_SATZ4,
                 MATCH_STRAFPUNKTE_SATZ5
+        );
+    }
+
+    protected DsbMannschaftDO getAuffuellmannschaft() {
+        return new DsbMannschaftDO(
+                MATCH_MANNSCHAFT_ID, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_ID, 696969L, M_benutzerId, 4444L, 8L
         );
     }
 
@@ -570,10 +578,13 @@ public class MatchServiceTest {
     public void create() {
         MatchDO matchDO1 = getMatchDO();
         MatchDTO matchDTO = MatchDTOMapper.toDTO.apply(matchDO1);
+        DsbMannschaftDO expectedAuffuellmannschaft = getAuffuellmannschaft();
+
 
         when(wettkampfComponent.findById(anyLong())).thenReturn(getWettkampfDO(W_id));
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(matchComponent.create(any(MatchDO.class), anyLong())).thenReturn(matchDO1);
+        when(mannschaftComponent.findById(anyLong())).thenReturn(expectedAuffuellmannschaft);
         try {
             final MatchDTO actual = underTest.create(matchDTO, principal);
             assertThat(actual).isNotNull();

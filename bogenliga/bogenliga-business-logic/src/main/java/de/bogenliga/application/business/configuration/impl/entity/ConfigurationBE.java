@@ -15,6 +15,9 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
     private String configurationKey;
     private String configurationValue;
     private String configurationRegex;
+    private Boolean configurationHidden;
+
+
     /**
      * Constructor
      */
@@ -28,24 +31,24 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
      */
     @Override
     public String toString() {
-        return "ConfigurationBE{" +
-                ", id=" + configurationId + '\'' +
-                ", key=" + configurationKey + '\'' +
-                ", value=" + configurationValue + '\'' +
-                ", regex=" + configurationRegex + '\'' +
-                "}";
+        return "ConfigurationBE{" + ", id=" + configurationId + '\'' + ", key=" + configurationKey + '\'' + ", value=" + configurationValue + '\'' + ", regex=" + configurationRegex + '\'' + ", hidden=" + configurationHidden + '\'' + "}";
     }
 
-    public Long getConfigurationId() { return configurationId; }
+
+    public Long getConfigurationId() {
+        return configurationId;
+    }
 
 
     public void setConfigurationId(final Long configurationId) {
         this.configurationId = configurationId;
     }
 
+
     public String getConfigurationKey() {
         return configurationKey;
     }
+
 
     public void setConfigurationKey(final String configurationKey) {
         this.configurationKey = configurationKey;
@@ -55,6 +58,7 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
     public String getConfigurationValue() {
         return configurationValue;
     }
+
 
     public void setConfigurationValue(final String configurationValue) {
         this.configurationValue = configurationValue;
@@ -68,5 +72,15 @@ public class ConfigurationBE extends CommonBusinessEntity implements BusinessEnt
 
     public void setConfigurationRegex(String configurationRegex) {
         this.configurationRegex = configurationRegex;
+    }
+
+
+    public Boolean isConfigurationHidden() {
+        return configurationHidden;
+    }
+
+
+    public void setConfigurationHidden(Boolean configurationHidden) {
+        this.configurationHidden = configurationHidden;
     }
 }

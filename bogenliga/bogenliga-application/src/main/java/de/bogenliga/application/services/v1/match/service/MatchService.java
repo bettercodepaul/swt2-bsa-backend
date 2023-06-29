@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
@@ -105,6 +106,8 @@ public class MatchService implements ServiceFacade {
 
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs-ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_ID = "Users-ID must not be negative";
+
+    private static final int AUFFUELLMANNSCHAFT_ID = 99;
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -710,6 +713,16 @@ public class MatchService implements ServiceFacade {
 
         this.log(matchDTO, SERVICE_CREATE);
 
+        try {
+            // Check if the Mannschaft of this match is an Auffuellmannschaft
+            DsbMannschaftDO checkForVereinsID =  mannschaftComponent.findById(matchDTO.getMannschaftId());
+            if(checkForVereinsID.getVereinId() == AUFFUELLMANNSCHAFT_ID) {
+                matchDTO.setMatchpunkte(0L);
+                matchDTO.setSatzpunkte(0L);
+            }
+        }catch (NullPointerException ignored) {}
+
+
         final MatchDO newMatch = MatchDTOMapper.toDO.apply(matchDTO);
 
         final MatchDO savedNewMatch = matchComponent.create(newMatch, userId);
@@ -783,9 +796,6 @@ public class MatchService implements ServiceFacade {
      */
 
     private MatchDTO getMatchFromId(Long matchId, boolean addPassen) {
-
-
-
 
         // the match is shown on the Schusszettel, add passen and mannschaft name from the views ligamatch and ligapasse
         // if the match is not shown on the Schusszettel, enrich matchDTO with data from the tables

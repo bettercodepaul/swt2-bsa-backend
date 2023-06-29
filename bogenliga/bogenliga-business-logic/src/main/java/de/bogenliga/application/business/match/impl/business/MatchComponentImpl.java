@@ -1,6 +1,8 @@
 package de.bogenliga.application.business.match.impl.business;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,7 +44,7 @@ public class MatchComponentImpl implements MatchComponent {
             "scheibennummer");
 
     private static final String PRECONDITION_MSG_WT0_VERANSTALTUNG = "Veranstaltungs-ID must not be Null or negative";
-    private static final String PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT = "The number of assigned Mannschaften to the Veranstaltung must be exactly 8";
+    private static final String PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT = "The number of assigned Mannschaften to the Veranstaltung must be 8, 6, 4";
     private static final String PRECONDITION_MSG_WT0_MANNSCHAFT = "The Mannschaft-ID must not be null or negative";
 
 
@@ -57,6 +59,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private WettkampfComponent wettkampfComponent;
     private final LigamatchDAO ligamatchDAO;
+    private long auffuellmannschaftId = 99;
 
 
     /**
@@ -227,6 +230,15 @@ public class MatchComponentImpl implements MatchComponent {
 
         this.checkMatch(matchDO);
 
+        try {
+            // Check if the Mannschaft of this match is an Auffuellmannschaft
+            DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
+            if (checkForVereinsID.getVereinId() == auffuellmannschaftId) {
+                matchDO.setMatchpunkte(0L);
+                matchDO.setSatzpunkte(0L);
+            }
+        }catch (NullPointerException ignored) {}
+
         MatchBE matchBE = matchDAO.create(MatchMapper.toMatchBE.apply(matchDO), currentUserId);
         return MatchMapper.toMatchDO.apply(matchBE);
     }
@@ -240,13 +252,15 @@ public class MatchComponentImpl implements MatchComponent {
 
         WettkampfDO wettkampfDO = wettkampfComponent.findWT0byVeranstaltungsId(veranstaltungsId);
 
-        if(mannschaften == null || mannschaften.size() != 8 || wettkampfDO == null
+        List<Integer> validMannschaftSizes = Arrays.asList(8, 6, 4);
+
+        if(mannschaften == null || !validMannschaftSizes.contains(mannschaften.size()) || wettkampfDO == null
                 || wettkampfDO.getId() == null || wettkampfDO.getId() < 0){
             throw new BusinessException(ErrorCode.ENTITY_CONFLICT_ERROR, PRECONDITION_MSG_WT0_MANNSCHAFT_COUNT);
         }else{
             Long wettkampfId = wettkampfDO.getId();
             Long begegnung = 0L;
-            for(int i = 0; i< 8; i++){
+            for(int i = 0; i < mannschaften.size(); i++){
                 if(i%2 == 0){
                     begegnung++;
                 }

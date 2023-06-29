@@ -4,6 +4,7 @@ import java.util.HashMap;
 import org.junit.Rule;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.entity.MatchBE;
 
@@ -30,6 +31,8 @@ public abstract class BaseMatchTest {
     protected static final Long MATCH_STRAFPUNKT_SATZ_4 = 10L;
     protected static final Long MATCH_STRAFPUNKT_SATZ_5 = 0L;
 
+    protected static final Long MATCH_AUFFUELLMANNSCHAFT_ID = 99L;
+
     protected static final Long CURRENT_USER_ID = 1L;
     private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
 
@@ -50,6 +53,12 @@ public abstract class BaseMatchTest {
         matchBE.setStrafPunkteSatz5(MATCH_STRAFPUNKT_SATZ_5);
         matchBE.setSatzpunkte(MATCH_SATZPUNKTE);
         return matchBE;
+    }
+
+    protected DsbMannschaftDO getAuffuellmannschaft() {
+        return new DsbMannschaftDO(
+                MATCH_MANNSCHAFT_ID, "Auffuellmannschaft", MATCH_AUFFUELLMANNSCHAFT_ID, 696969L, 01274L, 4444L, 8L
+        );
     }
 
 
