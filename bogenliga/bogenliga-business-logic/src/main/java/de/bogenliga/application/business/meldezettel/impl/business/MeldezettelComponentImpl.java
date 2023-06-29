@@ -136,7 +136,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     /**
      * <p>writes a Meldezettel document for the Wettkampf</p>
      */
-    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, int veranstlatungGroesse) {
+    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, int veranstaltungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfTag, PRECONDITION_WETTKAMPFTAG);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
@@ -144,9 +144,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         Preconditions.checkNotNull(wettkampfDatum, PRECONDITION_WETTKAMPFDATUM);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
 
-        String[] teamNameList = new String[veranstlatungGroesse];
+        String[] teamNameList = new String[veranstaltungGroesse];
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        int numberOfMatches = numberOfMatches(veranstlatungGroesse);
+        int numberOfMatches = numberOfMatches(veranstaltungGroesse);
         int i = 0;
 
         for (String key : teamMemberMapping.keySet()) {
@@ -154,11 +154,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             i++;
         }
 
-        for (int manschaftCounter = 0; manschaftCounter < veranstlatungGroesse; manschaftCounter++) {
+        for (int manschaftCounter = 0; manschaftCounter < veranstaltungGroesse; manschaftCounter++) {
 
-            if(teamNameList[manschaftCounter].equals(AUFFUELLMANNSCHAFT_NAME)) {
-                continue;
-            }
+
 
             String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(wettkampfDatum);
             String verein = "Verein: " + teamNameList[manschaftCounter];
@@ -393,17 +391,24 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                                 .add(mainTableSubParts[0]).setPaddingLeft(30.0F).setPaddingRight(5.0F)
                         );
             }
-            // Add all to document
-            doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
-                    Border.NO_BORDER);
+            if(!(teamNameList[manschaftCounter].equals(AUFFUELLMANNSCHAFT_NAME))) {
+                // Add all to document
+                doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
+                        Border.NO_BORDER);
+            }
+
 
             if (numberOfMatches == 6) {
                 if (manschaftCounter != 3) {
-                    doc.add(new AreaBreak());
+                    if(!(teamNameList[manschaftCounter+1].equals(AUFFUELLMANNSCHAFT_NAME))) {
+                        doc.add(new AreaBreak());
+                    }
                 }
             }else {
-                    if (manschaftCounter != numberOfMatches) {
+                if (manschaftCounter != numberOfMatches) {
+                    if(!(teamNameList[manschaftCounter+1].equals(AUFFUELLMANNSCHAFT_NAME))) {
                         doc.add(new AreaBreak());
+                    }
                 }
             }
         }
