@@ -781,6 +781,12 @@ public class VeranstaltungComponentImplTest {
         verify(veranstaltungDAO).findByLigaID(VERANSTALTUNG_LIGA_ID);
     }
 
+    @Test
+    public void testFindByLigaIDUndSportjahr() {
+        // prepare test data
+        //TODO:implement test
+    }
+
         /**
          * Test for findBySportjahrDestinct
          *
