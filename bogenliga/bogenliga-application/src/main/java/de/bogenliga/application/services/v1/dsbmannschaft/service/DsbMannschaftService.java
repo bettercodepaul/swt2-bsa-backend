@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.dsbmannschaft.service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -19,6 +21,8 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.model.MannschaftsMitgliedDTO;
+import de.bogenliga.application.services.v1.mannschaftsmitglied.service.MannschaftsMitgliedService;
 import de.bogenliga.application.springconfiguration.security.jsonwebtoken.JwtTokenProvider;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
@@ -63,6 +67,7 @@ public class DsbMannschaftService implements ServiceFacade {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final RequiresOnePermissionAspect requiresOnePermissionAspect;
+    MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
 
     /**
      * Constructor with dependency injection
@@ -71,10 +76,12 @@ public class DsbMannschaftService implements ServiceFacade {
      */
     @Autowired
     public DsbMannschaftService(final DsbMannschaftComponent dsbMannschaftComponent,
-                                final RequiresOnePermissionAspect requiresOnePermissionAspect, final VeranstaltungComponent veranstaltungComponent) {
+                                final RequiresOnePermissionAspect requiresOnePermissionAspect, final VeranstaltungComponent veranstaltungComponent,
+                                final MannschaftsmitgliedComponent mannschaftsmitgliedComponent) {
         this.veranstaltungComponent = veranstaltungComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.requiresOnePermissionAspect = requiresOnePermissionAspect;
+        this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
     }
     /**
      * Autowired WebTokenProvider to get the Permissions of the current User when checking them
@@ -260,6 +267,28 @@ public class DsbMannschaftService implements ServiceFacade {
             final DsbMannschaftDO newDsbMannschaftDO = DsbMannschaftDTOMapper.toDO.apply(dsbMannschaftDTO);
 
             final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
+
+
+            if(newDsbMannschaftDO.getVereinId() == auffuellmannschaftVereinId){
+                MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
+                try {
+                    List<MannschaftsMitgliedDTO> list = new ArrayList<>();
+                    for (int i = 0; i < 3; i++) {
+                        MannschaftsMitgliedDTO mannschaftsMitgliedDTO = new MannschaftsMitgliedDTO(
+                                (long) i,
+                                savedDsbMannschaftDO.getId(),
+                                (long) i+1,
+                                1,
+                                (long) i+1);
+                        list.add(mannschaftsMitgliedDTO);
+                    }
+
+                    for (int j = 0; j < list.size(); j++) {
+                        mannschaftsMitgliedService.create(list.get(j), principal);
+                    }
+                }catch (NullPointerException ignored) {}
+            }
+
             return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
 
         } else throw new NoPermissionException();
