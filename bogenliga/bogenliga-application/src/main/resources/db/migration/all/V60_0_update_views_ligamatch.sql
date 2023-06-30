@@ -23,7 +23,12 @@ CREATE VIEW ligamatch (
                        ligamatch_match_strafpunkte_satz_2,
                        ligamatch_match_strafpunkte_satz_3,
                        ligamatch_match_strafpunkte_satz_4,
-                       ligamatch_match_strafpunkte_satz_5
+                       ligamatch_match_strafpunkte_satz_5,
+                       ligamatch_begegnung,
+                       ligamatch_wettkampftyp_id,
+                       ligamatch_wettkampf_tag,
+                       ligamatch_satzpunkte,
+                       ligamatch_matchpunkte
     )
 AS
 (
@@ -43,7 +48,12 @@ select match1.match_wettkampf_id,
        match1.match_strafpunkte_satz_2,
        match1.match_strafpunkte_satz_3,
        match1.match_strafpunkte_satz_4,
-       match1.match_strafpunkte_satz_5
+       match1.match_strafpunkte_satz_5,
+       match1.match_begegnung,
+       wett.wettkampf_wettkampftyp_id,
+       wett.wettkampf_tag,
+       match1.match_satzpunkte,
+       match1.match_matchpunkte
 
 from match as match1,
      mannschaft as mannschaft,
@@ -54,7 +64,8 @@ from match as match1,
      match as match3,
      mannschaft as mannschaft3,
      verein as verein3,
-     match as match4
+     match as match4,
+     wettkampf as wett
 
 where match1.match_mannschaft_id = mannschaft.mannschaft_id
   and mannschaft.mannschaft_verein_id = verein.verein_id
@@ -75,6 +86,7 @@ where match1.match_mannschaft_id = mannschaft.mannschaft_id
                             WHEN veranstaltung.veranstaltung_groesse = 4 THEN LEAST(match1.match_nr + 1, 6)
                         END
   and match4.match_scheibennummer = 1
+  and wett.wettkampf_id = match1.match_wettkampf_id
 order by match1.match_wettkampf_id, match1.match_nr, match1.match_scheibennummer
     )
 ;
