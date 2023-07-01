@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.vereine.service;
 
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.vereine.model.VereineDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import org.junit.Before;
@@ -43,6 +44,7 @@ public class VereineServiceTest {
     private static final String VEREIN_DESCRIPTION = "";
     private static final String VEREIN_ICON = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
+    private static final long AUFFUELLMANNSCHAFT_VEREIN_ID = 99L;
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -262,5 +264,11 @@ public class VereineServiceTest {
         assertThat(deletedDsbMitglied).isNotNull();
         assertThat(deletedDsbMitglied.getId()).isEqualTo(expected.getId());
         assertThat(deletedDsbMitglied.getName()).isNullOrEmpty();
+    }
+
+    @Test
+    public void deleteAuffuellmannschaftVerein() {
+        assertThatExceptionOfType(BusinessException.class)
+                .isThrownBy(()-> underTest.delete(AUFFUELLMANNSCHAFT_VEREIN_ID, principal));
     }
 }
