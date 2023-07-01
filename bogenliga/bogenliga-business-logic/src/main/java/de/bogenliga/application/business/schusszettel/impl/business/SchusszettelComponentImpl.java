@@ -618,9 +618,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList , i, k);
                     if(matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
                         generateSchusszettelPage(doc, matchesBegegnung);
-                        if(i != numberOfMatches){
-                            doc.add(new AreaBreak());
+                        if (i == numberOfMatches && k == veranstaltungGroesse/2){
+                            continue;
                         }
+                        doc.add(new AreaBreak());
                     }
                 }
             }
