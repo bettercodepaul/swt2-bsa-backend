@@ -102,6 +102,91 @@ public class SchusszettelComponentImplTest {
     }
 
     @Test
+    public void getAllSchusszettelPDFasByteArrayAuffuellmannschaft() {
+        final List<MatchDO> matchDOList = getMatchesForWettkampf();
+
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO auffuellmannschaftDO = DsbMannschaftComponentImplTest.getAuffuellmannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(auffuellmannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+
+        //call test method
+        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(anyLong());
+    }
+
+    @Test
+    public void getAllSchusszettelPDFasByteArrayAuffuellmannschaftUnterschrift1() {
+        final List<MatchDO> matchDOList = getMatchesForWettkampf();
+
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO auffuellmannschaftDO = DsbMannschaftComponentImplTest.getAuffuellmannschaftDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(0).getMannschaftId())).thenReturn(auffuellmannschaftDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(1).getMannschaftId())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+
+        //call test method
+        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(anyLong());
+    }
+
+    @Test
+    public void getAllSchusszettelPDFasByteArrayAuffuellmannschaftUnterschrift2() {
+        final List<MatchDO> matchDOList = getMatchesForWettkampf();
+
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO auffuellmannschaftDO = DsbMannschaftComponentImplTest.getAuffuellmannschaftDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(1).getMannschaftId())).thenReturn(auffuellmannschaftDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(2).getMannschaftId())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+
+        //call test method
+        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(anyLong());
+    }
+
+    @Test
     public void getAllSchusszettelPDFasByteArray_ShouldThrowException() {
         final String PRECONDITION_WETTKAMPFID = "wettkampfid cannot be negative";
 
