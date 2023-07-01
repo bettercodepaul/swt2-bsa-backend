@@ -13,6 +13,7 @@ import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.liga.mapper.LigaDTOMapper;
 import de.bogenliga.application.services.v1.liga.model.LigaDTO;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
@@ -159,12 +160,11 @@ public class LigaService implements ServiceFacade {
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER,UserPermission.CAN_MODIFY_STAMMDATEN})
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
 
 
-        System.out.println("es kommt etwas an");
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
