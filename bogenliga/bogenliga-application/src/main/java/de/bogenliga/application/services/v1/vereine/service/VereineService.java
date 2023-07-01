@@ -37,8 +37,9 @@ public class VereineService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VEREIN_DSB_IDENTIFIER = "Verein dsb Identifier must not be null";
     private static final String PRECONDITION_MSG_REGION_ID_NOT_NEG = "Verein regio ID must not be negative";
     private static final String PRECONDITION_MSG_REGION_ID = "Verein regio ID can not be null";
+    private static final String PRECONDITION_MSG_AUFFUELLMANNSCHAFT_DELETE = "You can not delete the Auffuellmannschaft Verein";
 
-    private final long auffuellmannschaftVereinId = 99;
+    private static final long AUFFUELLMANNSCHAFT_VEREIN_ID = 99;
 
 
     private final VereinComponent vereinComponent;
@@ -155,11 +156,8 @@ public class VereineService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_DELETE_STAMMDATEN)
     public void delete(@PathVariable("id") final long id, final Principal principal) {
         Preconditions.checkArgument(id >= 0, "ID must not be negative.");
-
         // You can´t delete the Auffuellmannschaft Verein
-        if(id == auffuellmannschaftVereinId) {
-            return;
-        }
+        Preconditions.checkArgument(id != AUFFUELLMANNSCHAFT_VEREIN_ID, PRECONDITION_MSG_AUFFUELLMANNSCHAFT_DELETE);
 
         final VereinDO vereinDO = new VereinDO(id);
         final long userId = UserProvider.getCurrentUserId(principal);

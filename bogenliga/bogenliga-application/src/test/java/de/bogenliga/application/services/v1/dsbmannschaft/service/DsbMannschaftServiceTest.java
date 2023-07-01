@@ -17,9 +17,12 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +53,8 @@ public class DsbMannschaftServiceTest {
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
 
-    private static final long AUFFUELLMANNSCHAFT_ID = 99;
+    private static final long AUFFUELLMANNSCHAFT_VEREIN_ID = 99;
+    private static final long AUFFUELLMANNSCHAFT_ID = 6969;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -81,15 +85,15 @@ public class DsbMannschaftServiceTest {
         );
     }
 
-    public static DsbMannschaftDO getAuffuellmannschaft() {
+    public static DsbMannschaftDO getAuffuellmannschaftDO() {
         return new DsbMannschaftDO(
-                6969L, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                AUFFUELLMANNSCHAFT_ID, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
         );
     }
 
     public static DsbMannschaftDTO getAuffuellmannschaftDTO() {
         return new DsbMannschaftDTO(
-                6970L, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                AUFFUELLMANNSCHAFT_ID, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
         );
     }
 
@@ -233,23 +237,19 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
-        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaft();
+        final DsbMannschaftDO auffuellmannschaftDO = getAuffuellmannschaftDO();
         final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
 
 
         // Mock the findAllByVereinsId method
         List<DsbMannschaftDO> list = new ArrayList<>();
-        list.add(auffuellmannschaft);
-
-        // Mock the findAllByVeranstaltungsId
-        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
-        list.add(expected);
+        list.add(auffuellmannschaftDO);
 
         // configure mocks
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
-        when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(actualMannschaftInVeranstaltungCount);
+        when(veranstaltungComponent.findById((anyLong()))).thenReturn(veranstaltungDO);
 
         // call test method
         try {
@@ -275,6 +275,48 @@ public class DsbMannschaftServiceTest {
         } catch (NoPermissionException e) { }
     }
 
+    @Test
+    public void createAuffuellmannschaft() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final DsbMannschaftDO auffuellmannschaftDO = getAuffuellmannschaftDO();
+        final DsbMannschaftDTO auffuellmannschaftDTO = getAuffuellmannschaftDTO();
+        final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
+
+        // Mock the findAllByVeranstaltungsId
+        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
+        actualMannschaftInVeranstaltungCount.add(expected);
+
+        // configure mocks
+        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(auffuellmannschaftDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(actualMannschaftInVeranstaltungCount);
+        when(veranstaltungComponent.findById((anyLong()))).thenReturn(veranstaltungDO);
+
+        // call test method
+        try {
+            final DsbMannschaftDTO actual = underTest.create(auffuellmannschaftDTO, principal);
+
+            // assert result
+            assertThat(actual).isNotNull();
+            assertThat(actual.getId()).isEqualTo(auffuellmannschaftDTO.getId());
+            assertThat(actual.getVereinId()).isEqualTo(auffuellmannschaftDTO.getVereinId());
+            assertThat(actual.getSortierung()).isEqualTo(auffuellmannschaftDTO.getSortierung());
+
+
+            // verify invocations
+            verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+            final DsbMannschaftDO createdDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+
+            assertThat(createdDsbMannschaft).isNotNull();
+            assertThat(createdDsbMannschaft.getId()).isEqualTo(auffuellmannschaftDTO.getId());
+            assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(auffuellmannschaftDTO.getVereinId());
+            assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(auffuellmannschaftDTO.getSortierung());
+
+        } catch (NoPermissionException e) { }
+    }
+
 
     @Test
     public void createNoPermission() {
@@ -292,6 +334,22 @@ public class DsbMannschaftServiceTest {
     }
 
     @Test
+    public void createMannschaftsMitgliedForAuffuellmannschaft1() {
+        // prepare test data
+        final DsbMannschaftDO auffuellmannschaftDO = getAuffuellmannschaftDO();
+        final DsbMannschaftDO auffuellmannschaftDO2 = getAuffuellmannschaftDO();
+        auffuellmannschaftDO2.setVereinId(0L);
+
+        // call test method
+        try {
+            underTest.createMannschaftsMitgliedForAuffuellmannschaft(auffuellmannschaftDO, principal);
+
+            assertThatExceptionOfType(BusinessException.class)
+                    .isThrownBy(()-> underTest.createMannschaftsMitgliedForAuffuellmannschaft(auffuellmannschaftDO2, principal));
+        } catch (NoPermissionException ignored) { }
+    }
+
+    @Test
     public void checkForAuffuellmannschaft() {
         // Testcases:
         // 1. Adding new Auffuellmannschaft
@@ -299,7 +357,7 @@ public class DsbMannschaftServiceTest {
 
         // prepare test data
         final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
-        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaft();
+        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaftDO();
         final DsbMannschaftDTO auffuellmannschaftDTO = getAuffuellmannschaftDTO();
         final int veranstaltunggroesse = 3;
 
@@ -322,7 +380,7 @@ public class DsbMannschaftServiceTest {
             underTest.checkForAuffuellmannschaft(actualMannschaftInVeranstaltungCount,
                     allExistingAuffuellmannschaftList, auffuellmannschaftDTO, veranstaltunggroesse, principal);
 
-        }catch (NoPermissionException e) {}
+        }catch (NoPermissionException ignored) {}
     }
 
     @Test
@@ -333,7 +391,7 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
         final DsbMannschaftDTO mannschaftDTO = getDsbMannschaftDTO();
-        final DsbMannschaftDO auffuellmannschaft1 = getAuffuellmannschaft();
+        final DsbMannschaftDO auffuellmannschaft1 = getAuffuellmannschaftDO();
         final int veranstaltunggroesse = 2;
 
         // List with Mannschaften that are in the Veranstaltung
