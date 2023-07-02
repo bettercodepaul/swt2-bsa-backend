@@ -53,8 +53,8 @@ public class DsbMannschaftServiceTest {
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
 
-    private static final long AUFFUELLMANNSCHAFT_VEREIN_ID = 99;
-    private static final long AUFFUELLMANNSCHAFT_ID = 6969;
+    private static final long PLATZHALTER_VEREIN_ID = 99;
+    private static final long PLATZHALTER_ID = 6969;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -85,15 +85,15 @@ public class DsbMannschaftServiceTest {
         );
     }
 
-    public static DsbMannschaftDO getAuffuellmannschaftDO() {
+    public static DsbMannschaftDO getPlatzhalterDO() {
         return new DsbMannschaftDO(
-                AUFFUELLMANNSCHAFT_ID, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
         );
     }
 
-    public static DsbMannschaftDTO getAuffuellmannschaftDTO() {
+    public static DsbMannschaftDTO getPlatzhalterDTO() {
         return new DsbMannschaftDTO(
-                AUFFUELLMANNSCHAFT_ID, "Auffuellmannschaft", AUFFUELLMANNSCHAFT_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
         );
     }
 
@@ -237,13 +237,13 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
-        final DsbMannschaftDO auffuellmannschaftDO = getAuffuellmannschaftDO();
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
         final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
 
 
         // Mock the findAllByVereinsId method
         List<DsbMannschaftDO> list = new ArrayList<>();
-        list.add(auffuellmannschaftDO);
+        list.add(platzhalterDO);
 
         // configure mocks
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
@@ -276,11 +276,11 @@ public class DsbMannschaftServiceTest {
     }
 
     @Test
-    public void createAuffuellmannschaft() {
+    public void createPlatzhalter() {
         // prepare test data
         final DsbMannschaftDO expected = getDsbMannschaftDO();
-        final DsbMannschaftDO auffuellmannschaftDO = getAuffuellmannschaftDO();
-        final DsbMannschaftDTO auffuellmannschaftDTO = getAuffuellmannschaftDTO();
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
+        final DsbMannschaftDTO platzhalterDTO = getPlatzhalterDTO();
         final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
 
         // Mock the findAllByVeranstaltungsId
@@ -288,20 +288,20 @@ public class DsbMannschaftServiceTest {
         actualMannschaftInVeranstaltungCount.add(expected);
 
         // configure mocks
-        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(auffuellmannschaftDO);
+        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(platzhalterDO);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(actualMannschaftInVeranstaltungCount);
         when(veranstaltungComponent.findById((anyLong()))).thenReturn(veranstaltungDO);
 
         // call test method
         try {
-            final DsbMannschaftDTO actual = underTest.create(auffuellmannschaftDTO, principal);
+            final DsbMannschaftDTO actual = underTest.create(platzhalterDTO, principal);
 
             // assert result
             assertThat(actual).isNotNull();
-            assertThat(actual.getId()).isEqualTo(auffuellmannschaftDTO.getId());
-            assertThat(actual.getVereinId()).isEqualTo(auffuellmannschaftDTO.getVereinId());
-            assertThat(actual.getSortierung()).isEqualTo(auffuellmannschaftDTO.getSortierung());
+            assertThat(actual.getId()).isEqualTo(platzhalterDTO.getId());
+            assertThat(actual.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
+            assertThat(actual.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
 
 
             // verify invocations
@@ -310,9 +310,9 @@ public class DsbMannschaftServiceTest {
             final DsbMannschaftDO createdDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
 
             assertThat(createdDsbMannschaft).isNotNull();
-            assertThat(createdDsbMannschaft.getId()).isEqualTo(auffuellmannschaftDTO.getId());
-            assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(auffuellmannschaftDTO.getVereinId());
-            assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(auffuellmannschaftDTO.getSortierung());
+            assertThat(createdDsbMannschaft.getId()).isEqualTo(platzhalterDTO.getId());
+            assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
+            assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
 
         } catch (NoPermissionException e) { }
     }
@@ -334,85 +334,85 @@ public class DsbMannschaftServiceTest {
     }
 
     @Test
-    public void createMannschaftsMitgliedForAuffuellmannschaft1() {
+    public void createMannschaftsMitgliedForPlatzhalter1() {
         // prepare test data
-        final DsbMannschaftDO auffuellmannschaftDO = getAuffuellmannschaftDO();
-        final DsbMannschaftDO auffuellmannschaftDO2 = getAuffuellmannschaftDO();
-        auffuellmannschaftDO2.setVereinId(0L);
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
+        final DsbMannschaftDO platzhalterDO2 = getPlatzhalterDO();
+        platzhalterDO2.setVereinId(0L);
 
         // call test method
         try {
-            underTest.createMannschaftsMitgliedForAuffuellmannschaft(auffuellmannschaftDO, principal);
+            underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO, principal);
 
             assertThatExceptionOfType(BusinessException.class)
-                    .isThrownBy(()-> underTest.createMannschaftsMitgliedForAuffuellmannschaft(auffuellmannschaftDO2, principal));
+                    .isThrownBy(()-> underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO2, principal));
         } catch (NoPermissionException ignored) { }
     }
 
     @Test
-    public void checkForAuffuellmannschaft() {
+    public void checkForPlatzhalter() {
         // Testcases:
-        // 1. Adding new Auffuellmannschaft
-        // 2. Adding new Auffuellmannschaft && But Auffuellmannschaft already in Veranstaltung
+        // 1. Adding new Platzhalter
+        // 2. Adding new Platzhalter && But Platzhalter already in Veranstaltung
 
         // prepare test data
         final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
-        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaftDO();
-        final DsbMannschaftDTO auffuellmannschaftDTO = getAuffuellmannschaftDTO();
+        final DsbMannschaftDO platzhalter = getPlatzhalterDO();
+        final DsbMannschaftDTO platzhalterDTO = getPlatzhalterDTO();
         final int veranstaltunggroesse = 3;
 
 
         // List with Mannschaften that are in the Veranstaltung
         List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
-        actualMannschaftInVeranstaltungCount.add(auffuellmannschaft);
+        actualMannschaftInVeranstaltungCount.add(platzhalter);
         actualMannschaftInVeranstaltungCount.add(mannschaft);
 
-        auffuellmannschaft.setVeranstaltungId(1L);
+        platzhalter.setVeranstaltungId(1L);
 
-        // List with all existing Auffuellmannschaften
-        List<DsbMannschaftDO> allExistingAuffuellmannschaftList = new ArrayList<>();
-        allExistingAuffuellmannschaftList.add(auffuellmannschaft);
+        // List with all existing Platzhalter
+        List<DsbMannschaftDO> allExistingPlatzhalterList = new ArrayList<>();
+        allExistingPlatzhalterList.add(platzhalter);
 
         // configure Mock
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
 
         try {
-            underTest.checkForAuffuellmannschaft(actualMannschaftInVeranstaltungCount,
-                    allExistingAuffuellmannschaftList, auffuellmannschaftDTO, veranstaltunggroesse, principal);
+            underTest.checkForPlatzhalter(actualMannschaftInVeranstaltungCount,
+                    allExistingPlatzhalterList, platzhalterDTO, veranstaltunggroesse, principal);
 
         }catch (NoPermissionException ignored) {}
     }
 
     @Test
-    public void checkForAuffuellmannschaftAddNormalMannschaft() {
+    public void checkForPlatzhalterAddNormalMannschaft() {
         // Testcase:
-        // Adding new Mannschaft && Auffuellmannschaft already in Veranstaltung existing and Veranstaltung is full
+        // Adding new Mannschaft && Platzhalter already in Veranstaltung existing and Veranstaltung is full
 
         // prepare test data
         final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
         final DsbMannschaftDTO mannschaftDTO = getDsbMannschaftDTO();
-        final DsbMannschaftDO auffuellmannschaft1 = getAuffuellmannschaftDO();
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
         final int veranstaltunggroesse = 2;
 
         // List with Mannschaften that are in the Veranstaltung
         List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
         actualMannschaftInVeranstaltungCount.add(mannschaft);
-        actualMannschaftInVeranstaltungCount.add(auffuellmannschaft1);
+        actualMannschaftInVeranstaltungCount.add(platzhalterDO);
 
-        // List with all existing Auffuellmannschaften
-        List<DsbMannschaftDO> allExistingAuffuellmannschaftList = new ArrayList<>();
-        allExistingAuffuellmannschaftList.add(auffuellmannschaft1);
+        // List with all existing Platzhalter
+        List<DsbMannschaftDO> allExistingPlatzhalterList = new ArrayList<>();
+        allExistingPlatzhalterList.add(platzhalterDO);
 
 
         // configure Mocks
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         try {
-            when(allExistingAuffuellmannschaftList.get(any()).getVeranstaltungId()).thenReturn(auffuellmannschaft1.getVeranstaltungId());
+            when(allExistingPlatzhalterList.get(any()).getVeranstaltungId()).thenReturn(platzhalterDO.getVeranstaltungId());
         }catch (NullPointerException ignored) {}
 
         try {
-            underTest.checkForAuffuellmannschaft(actualMannschaftInVeranstaltungCount,
-                    allExistingAuffuellmannschaftList, mannschaftDTO, veranstaltunggroesse, principal);
+            underTest.checkForPlatzhalter(actualMannschaftInVeranstaltungCount,
+                    allExistingPlatzhalterList, mannschaftDTO, veranstaltunggroesse, principal);
 
             verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
             final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
