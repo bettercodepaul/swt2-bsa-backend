@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
@@ -107,7 +106,7 @@ public class MatchService implements ServiceFacade {
     private static final String PRECONDITION_MSG_VERANSTALTUNGS_ID = "Veranstaltungs-ID must not be null or negative";
     private static final String PRECONDITION_MSG_USER_ID = "Users-ID must not be negative";
 
-    private static final int AUFFUELLMANNSCHAFT_ID = 99;
+    private static final int PLATZHALTER_ID = 99;
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -714,9 +713,9 @@ public class MatchService implements ServiceFacade {
         this.log(matchDTO, SERVICE_CREATE);
 
         try {
-            // Check if the Mannschaft of this match is an Auffuellmannschaft
+            // Check if the Mannschaft of this match is a Platzhalter
             DsbMannschaftDO checkForVereinsID =  mannschaftComponent.findById(matchDTO.getMannschaftId());
-            if(checkForVereinsID.getVereinId() == AUFFUELLMANNSCHAFT_ID) {
+            if(checkForVereinsID.getVereinId() == PLATZHALTER_ID) {
                 matchDTO.setMatchpunkte(0L);
                 matchDTO.setSatzpunkte(0L);
             }

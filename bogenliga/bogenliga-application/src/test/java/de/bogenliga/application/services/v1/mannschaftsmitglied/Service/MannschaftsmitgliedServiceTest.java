@@ -41,12 +41,12 @@ public class MannschaftsmitgliedServiceTest {
     private static final String dsbMitgliedNachname = "Gomez";
     private static final Long rueckennummer = 5L;
     private static final Long wettkampId = 30L;
-    private static final Long auffuellmannschaftMitglied_id = 1L;
-    private static final Long auffuellmannschaft_id = 6969L;
-    private static final Long dsbMitgliedAuffuellmannschaftId = 1L;
-    private static final String dsbMitgliedAuffuellmannschaftVorname = "AuffuellmannschaftVorname1";
-    private static final String dsbMitgliedAuffuellmannschaftNachname = "AuffuellmannschaftNachname1";
-    private static final Long rueckennummerAuffuellmannschaft = 1L;
+    private static final Long platzhalterMitgliedId = 1L;
+    private static final Long platzhalterId = 6969L;
+    private static final Long dsbMitgliedPlatzhalterId = 1L;
+    private static final String dsbMitgliedPlatzhalterVorname = "PlatzhalterVorname1";
+    private static final String dsbMitgliedPlatzhalterNachname = "PlatzhalterNachname1";
+    private static final Long rueckennummerPlatzhalter = 1L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -83,17 +83,17 @@ public class MannschaftsmitgliedServiceTest {
         );
     }
 
-    public static MannschaftsmitgliedDO getMannschaftsmitgliedAuffuellmannschaftDO() {
+    public static MannschaftsmitgliedDO getMannschaftsmitgliedPlatzhalterDO() {
         return new MannschaftsmitgliedDO(
-                auffuellmannschaftMitglied_id, auffuellmannschaft_id, dsbMitgliedAuffuellmannschaftId, 1,
-                dsbMitgliedAuffuellmannschaftVorname, dsbMitgliedAuffuellmannschaftNachname, rueckennummerAuffuellmannschaft
+                platzhalterMitgliedId, platzhalterId, dsbMitgliedPlatzhalterId, 1,
+                dsbMitgliedPlatzhalterVorname, dsbMitgliedPlatzhalterNachname, rueckennummerPlatzhalter
         );
     }
 
-    public static MannschaftsMitgliedDTO getMannschaftsmitgliedAuffuellmannschaftDTO() {
+    public static MannschaftsMitgliedDTO getMannschaftsmitgliedPlatzhalterDTO() {
         return new MannschaftsMitgliedDTO(
-                auffuellmannschaftMitglied_id, auffuellmannschaft_id, dsbMitgliedAuffuellmannschaftId, 1,
-                rueckennummerAuffuellmannschaft
+                platzhalterMitgliedId, platzhalterId, dsbMitgliedPlatzhalterId, 1,
+                rueckennummerPlatzhalter
         );
     }
 
