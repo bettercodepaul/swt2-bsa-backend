@@ -2,7 +2,6 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,7 +58,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private WettkampfComponent wettkampfComponent;
     private final LigamatchDAO ligamatchDAO;
-    private long auffuellmannschaftId = 99;
+    private long platzhalterId = 99;
 
 
     /**
@@ -231,9 +230,9 @@ public class MatchComponentImpl implements MatchComponent {
         this.checkMatch(matchDO);
 
         try {
-            // Check if the Mannschaft of this match is an Auffuellmannschaft
+            // Check if the Mannschaft of this match is an Platzhalter
             DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
-            if (checkForVereinsID.getVereinId() == auffuellmannschaftId) {
+            if (checkForVereinsID.getVereinId() == platzhalterId) {
                 matchDO.setMatchpunkte(0L);
                 matchDO.setSatzpunkte(0L);
             }

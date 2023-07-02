@@ -52,10 +52,10 @@ public class DsbMannschaftService implements ServiceFacade {
     private static final String PRECONDITION_MSG_DSBMANNSCHAFT_VERANSTALTUNG_FULL = "DsbMannschaft Veranstaltung has already reached its maximum capacity";
     private static final String PRECONDITION_MSG_ID_NEGATIVE = "ID must not be negative.";
     private static final String PRECONDITION_MSG_VERANSTALTUNG_SIZE_NEGATIV = "DsbMannschaft Veranstaltung size can not be negativ";
-    private static final String PRECONDITION_MSG_AUFFUELLMANNSCHAFT_DUPLICATE_VERANSTALTUNG_EXISTING = "Already an existing Auffuellmannschaft in this Veranstaltung";
+    private static final String PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING = "Already an existing Platzhalter in this Veranstaltung";
     private static final Logger LOG = LoggerFactory.getLogger(DsbMannschaftService.class);
 
-    private static final long AUFFUELLMANNSCHAFT_VEREIN_ID = 99;
+    private static final long PLATZHALTER_VEREIN_ID = 99;
 
 
 
@@ -244,11 +244,12 @@ public class DsbMannschaftService implements ServiceFacade {
 
             // Get the current number of teams from the Veranstaltung
             List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = dsbMannschaftComponent.findAllByVeranstaltungsId(dsbMannschaftDTO.getVeranstaltungId());
-            List<DsbMannschaftDO> allExistingAuffuellmannschaftList = dsbMannschaftComponent.findAllByVereinsId(AUFFUELLMANNSCHAFT_VEREIN_ID);
+            List<DsbMannschaftDO> allExistingPlatzhalterList = dsbMannschaftComponent.findAllByVereinsId(
+                    PLATZHALTER_VEREIN_ID);
 
             // If the list isn´t empty, call the method
-            if(!allExistingAuffuellmannschaftList.isEmpty()) {
-                checkForAuffuellmannschaft(actualMannschaftInVeranstaltungCount, allExistingAuffuellmannschaftList,
+            if(!allExistingPlatzhalterList.isEmpty()) {
+                checkForPlatzhalter(actualMannschaftInVeranstaltungCount, allExistingPlatzhalterList,
                         dsbMannschaftDTO, veranstaltungsgroesse, principal);
             }
 
@@ -268,8 +269,8 @@ public class DsbMannschaftService implements ServiceFacade {
 
             final DsbMannschaftDO savedDsbMannschaftDO = dsbMannschaftComponent.create(newDsbMannschaftDO, userId);
 
-            if(newDsbMannschaftDO.getVereinId() == AUFFUELLMANNSCHAFT_VEREIN_ID){
-                createMannschaftsMitgliedForAuffuellmannschaft(savedDsbMannschaftDO, principal);
+            if(newDsbMannschaftDO.getVereinId() == PLATZHALTER_VEREIN_ID){
+                createMannschaftsMitgliedForPlatzhalter(savedDsbMannschaftDO, principal);
             }
 
             return DsbMannschaftDTOMapper.toDTO.apply(savedDsbMannschaftDO);
@@ -279,15 +280,15 @@ public class DsbMannschaftService implements ServiceFacade {
 
 
     /**
-     * I create 3 Schuetzen for the Auffuellmannschaft when the Auffuellmannschaft is created
-     * @param savedDsbMannschaftDO the created Auffuellmannschaft team
+     * I create 3 Schuetzen for the Platzhalter when the Platzhalter is created
+     * @param savedDsbMannschaftDO the created Platzhalter team
      * @param principal authenticated user
      */
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public void createMannschaftsMitgliedForAuffuellmannschaft(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
-                                           final Principal principal) throws NoPermissionException {
+    public void createMannschaftsMitgliedForPlatzhalter(@RequestBody final DsbMannschaftDO savedDsbMannschaftDO,
+                                                        final Principal principal) throws NoPermissionException {
 
-        Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId() == AUFFUELLMANNSCHAFT_VEREIN_ID, "tja");
+        Preconditions.checkArgument(savedDsbMannschaftDO.getVereinId() == PLATZHALTER_VEREIN_ID, "tja");
 
         MannschaftsMitgliedService mannschaftsMitgliedService = new MannschaftsMitgliedService(mannschaftsmitgliedComponent, dsbMannschaftComponent, requiresOnePermissionAspect);
         try {
@@ -312,20 +313,20 @@ public class DsbMannschaftService implements ServiceFacade {
 
 
     /**
-     * I check if an Auffuellmannschaft is already in the Veranstaltung
+     * I check if an Platzhalter is already in the Veranstaltung
      * @param actualMannschaftInVeranstaltungCount a list of all the current teams in the Veranstaltung
-     * @param allExistingAuffuellmannschaftList a list of all existing Auffuellmannschaft teams
+     * @param allExistingPlatzhalterList a list of all existing Platzhalter teams
      * @param dsbMannschaftDTO of the request body
      * @param veranstaltungsgroesse the size of the Veranstaltung
      * @param principal authenticated user
      */
 
     @RequiresOnePermissions(perm = {UserPermission.CAN_CREATE_MANNSCHAFT,UserPermission.CAN_MODIFY_MY_VEREIN})
-    public void checkForAuffuellmannschaft(@RequestBody final List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount,
-                                        final List<DsbMannschaftDO> allExistingAuffuellmannschaftList,
-                                        final DsbMannschaftDTO dsbMannschaftDTO,
-                                        final int veranstaltungsgroesse,
-                                        final Principal principal) throws NoPermissionException {
+    public void checkForPlatzhalter(@RequestBody final List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount,
+                                    final List<DsbMannschaftDO> allExistingPlatzhalterList,
+                                    final DsbMannschaftDTO dsbMannschaftDTO,
+                                    final int veranstaltungsgroesse,
+                                    final Principal principal) throws NoPermissionException {
 
         if(this.requiresOnePermissionAspect.hasPermission(UserPermission.CAN_CREATE_MANNSCHAFT) ||
                 this.requiresOnePermissionAspect.hasSpecificPermissionSportleiter(UserPermission.CAN_MODIFY_MY_VEREIN, dsbMannschaftDTO.getVereinId())) {
@@ -337,28 +338,28 @@ public class DsbMannschaftService implements ServiceFacade {
             Preconditions.checkArgument(userId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID_NEGATIVE);
 
 
-            for (int i = 0; i < allExistingAuffuellmannschaftList.size(); i++) {
-                // If the Auffuellmannschaft from the list isn´t in this Veranstaltung, skip it
-                // Only searching if an Auffuellmannschaft already exists in this Veranstaltung
-                if (!(allExistingAuffuellmannschaftList.get(i).getVeranstaltungId().equals(
+            for (int i = 0; i < allExistingPlatzhalterList.size(); i++) {
+                // If the Platzhalter from the list isn´t in this Veranstaltung, skip it
+                // Only searching if an Platzhalter already exists in this Veranstaltung
+                if (!(allExistingPlatzhalterList.get(i).getVeranstaltungId().equals(
                         dsbMannschaftDTO.getVeranstaltungId()))) {
                     continue;
                 }
-                long auffuellmannschaftVeranstaltungsId = allExistingAuffuellmannschaftList.get(i).getVeranstaltungId();
-                long auffuellmannschaftId = allExistingAuffuellmannschaftList.get(i).getId();
+                long platzhalterVeranstaltungsId = allExistingPlatzhalterList.get(i).getVeranstaltungId();
+                long platzhalterId = allExistingPlatzhalterList.get(i).getId();
 
-                // Check if in this Veranstaltung is already and Auffuellmannschaft
-                // And if the new team isn´t an Auffuellmannschaft
-                Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() != AUFFUELLMANNSCHAFT_VEREIN_ID,
-                        PRECONDITION_MSG_AUFFUELLMANNSCHAFT_DUPLICATE_VERANSTALTUNG_EXISTING);
+                // Check if in this Veranstaltung is already and Platzhalter
+                // And if the new team isn´t an Platzhalter
+                Preconditions.checkArgument(dsbMannschaftDTO.getVereinId() != PLATZHALTER_VEREIN_ID,
+                        PRECONDITION_MSG_PLATZHALTER_DUPLICATE_VERANSTALTUNG_EXISTING);
 
-                // If the new team isn´t and Auffuellmannschaft
-                // And the Veranstaltung already has an Auffuellmannschaft
-                // And the capacity of the Veranstaltung is reached -> delete the Auffuellmannschaft
-                if (auffuellmannschaftVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()
+                // If the new team isn´t and Platzhalter
+                // And the Veranstaltung already has an Platzhalter
+                // And the capacity of the Veranstaltung is reached -> delete the Platzhalter
+                if (platzhalterVeranstaltungsId == dsbMannschaftDTO.getVeranstaltungId()
                         && veranstaltungsgroesse == actualMannschaftInVeranstaltungCount.size()
-                        && dsbMannschaftDTO.getVereinId() != auffuellmannschaftId) {
-                    delete(auffuellmannschaftId, principal);
+                        && dsbMannschaftDTO.getVereinId() != platzhalterId) {
+                    delete(platzhalterId, principal);
                     break;
                 }
             }
