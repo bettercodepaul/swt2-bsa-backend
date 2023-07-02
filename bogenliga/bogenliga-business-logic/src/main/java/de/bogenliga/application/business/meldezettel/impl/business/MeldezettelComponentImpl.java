@@ -60,7 +60,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private static final String MELDEZETTEL_MATCH = "Match";
     private static final String MELDEZETTEL_SCHUETZEN = "Schützen";
     private static final String MELDEZETTEL_UNTERSCHRIFT ="Unterschrift des Mannschaftsführers";
-    private static final String AUFFUELLMANNSCHAFT_NAME = "Auffüllmannschaft";
+    private static final String PLATZHALTER_NAME = "Platzhalter";
 
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
@@ -391,7 +391,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                                 .add(mainTableSubParts[0]).setPaddingLeft(30.0F).setPaddingRight(5.0F)
                         );
             }
-            if(!(teamNameList[manschaftCounter].equals(AUFFUELLMANNSCHAFT_NAME))) {
+            if(!(teamNameList[manschaftCounter].equals(PLATZHALTER_NAME))) {
                 // Add all to document
                 doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
                         Border.NO_BORDER);
@@ -400,13 +400,13 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
             if (numberOfMatches == 6) {
                 if (manschaftCounter != 3) {
-                    if(!(teamNameList[manschaftCounter+1].equals(AUFFUELLMANNSCHAFT_NAME))) {
+                    if(!(teamNameList[manschaftCounter+1].equals(PLATZHALTER_NAME))) {
                         doc.add(new AreaBreak());
                     }
                 }
             }else {
                 if (manschaftCounter != numberOfMatches) {
-                    if(!(teamNameList[manschaftCounter+1].equals(AUFFUELLMANNSCHAFT_NAME))) {
+                    if(!(teamNameList[manschaftCounter+1].equals(PLATZHALTER_NAME))) {
                         doc.add(new AreaBreak());
                     }
                 }
