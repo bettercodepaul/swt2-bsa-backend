@@ -61,7 +61,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private static final String PRECONDITION_WETTKAMPFDO = "wettkampfDO cannot be null";
     private static final String PRECONDITION_VERANSTALTUNGSNAME = "veranstaltungsName cannot be null";
 
-    private static final String AUFFUELLMANNSCHAFT_NAME = "Auffüllmannschaft";
+    private static final String PLATZHALTER_NAME = "Platzhalter";
 
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
@@ -263,7 +263,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         //Iterate through all the teams
         for (int manschaftCounter = 0; manschaftCounter < veranstaltungGroesse; manschaftCounter++) {
 
-            if(teamNameList[manschaftCounter].startsWith(AUFFUELLMANNSCHAFT_NAME)){
+            if(teamNameList[manschaftCounter].startsWith(PLATZHALTER_NAME)){
                 continue;
             }
 

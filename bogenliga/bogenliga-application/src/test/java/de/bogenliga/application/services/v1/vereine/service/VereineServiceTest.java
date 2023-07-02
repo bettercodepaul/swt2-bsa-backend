@@ -44,7 +44,7 @@ public class VereineServiceTest {
     private static final String VEREIN_DESCRIPTION = "";
     private static final String VEREIN_ICON = "";
     private static final OffsetDateTime VEREIN_OFFSETDATETIME = null;
-    private static final long AUFFUELLMANNSCHAFT_VEREIN_ID = 99L;
+    private static final long PLATZHALTER_VEREIN_ID = 99L;
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -267,8 +267,8 @@ public class VereineServiceTest {
     }
 
     @Test
-    public void deleteAuffuellmannschaftVerein() {
+    public void deletePlatzhalterVerein() {
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(()-> underTest.delete(AUFFUELLMANNSCHAFT_VEREIN_ID, principal));
+                .isThrownBy(()-> underTest.delete(PLATZHALTER_VEREIN_ID, principal));
     }
 }
