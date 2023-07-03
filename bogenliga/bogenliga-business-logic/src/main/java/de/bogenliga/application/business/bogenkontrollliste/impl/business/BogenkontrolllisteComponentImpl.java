@@ -61,6 +61,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private static final String PRECONDITION_WETTKAMPFDO = "wettkampfDO cannot be null";
     private static final String PRECONDITION_VERANSTALTUNGSNAME = "veranstaltungsName cannot be null";
 
+    private static final String PLATZHALTER_NAME = "Platzhalter";
+
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
     private final LigaComponent ligaComponent;
@@ -119,7 +121,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     matchDO.getMannschaftId());
 
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
-            List<LigaDO> ligen = this.ligaComponent.findAll();
 
             int count = 0;
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
@@ -129,11 +130,15 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 // Find step of the actual League
                 int thisLigaStufe = 0;
                 int currentLiga = (int) thisLiga;
+                ArrayList<LigaDO> ligen = new ArrayList<>(this.ligaComponent.findAll());
+
+                int ligaUebergeordnet = getIndexOfLigaById(ligen, currentLiga);
 
                 // Finde und Setze die Ligastufe falls diese nicht 0 ist -> ansonsten thisLigaStufe = 0
                 while (currentLiga != 0) {
-                    if (ligen.get(currentLiga - 1).getLigaUebergeordnetId() != null) {
-                        currentLiga = ligen.get(currentLiga - 1).getLigaUebergeordnetId().intValue();
+                    if (ligen.get(ligaUebergeordnet).getLigaUebergeordnetId() != null) {
+                        currentLiga = ligen.get(ligaUebergeordnet).getLigaUebergeordnetId().intValue();
+                        ligaUebergeordnet = getIndexOfLigaById(ligen, currentLiga);
                         thisLigaStufe++;
                     } else {
                         currentLiga = 0;
@@ -173,8 +178,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                 currentLiga = (int) liga;
                                 int ligaStufe = 0;
                                 while (currentLiga != 0) {
-                                    if (ligen.get(currentLiga - 1).getLigaUebergeordnetId() != null) {
-                                        currentLiga = ligen.get(currentLiga - 1).getLigaUebergeordnetId().intValue();
+                                    if (ligen.get(ligaUebergeordnet).getLigaUebergeordnetId() != null) {
+                                        currentLiga = ligen.get(ligaUebergeordnet).getLigaUebergeordnetId().intValue();
+                                        ligaUebergeordnet = getIndexOfLigaById(ligen, currentLiga);
                                         ligaStufe++;
                                     } else {
                                         currentLiga = 0;
@@ -223,6 +229,18 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     }
 
 
+    private int getIndexOfLigaById(ArrayList<LigaDO> ligen, int currentLiga) {
+
+        for (int i = 0; i < ligen.size(); i++) {
+            if (ligen.get(i).getId() == currentLiga) {
+                return i;
+            }
+
+        }
+        return 0;
+    }
+
+
     /**
      * Generates the Document
      *
@@ -260,6 +278,10 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 .add(pageTitle));
         //Iterate through all the teams
         for (int manschaftCounter = 0; manschaftCounter < veranstaltungGroesse; manschaftCounter++) {
+
+            if(teamNameList[manschaftCounter].startsWith(PLATZHALTER_NAME)){
+                continue;
+            }
 
             //Create table for each team
             final Table tableBody = new Table(UnitValue.createPercentArray(3), true).setKeepTogether(true);

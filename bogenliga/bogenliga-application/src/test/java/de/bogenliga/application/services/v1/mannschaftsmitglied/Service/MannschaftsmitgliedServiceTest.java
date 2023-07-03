@@ -41,6 +41,12 @@ public class MannschaftsmitgliedServiceTest {
     private static final String dsbMitgliedNachname = "Gomez";
     private static final Long rueckennummer = 5L;
     private static final Long wettkampId = 30L;
+    private static final Long platzhalterMitgliedId = 1L;
+    private static final Long platzhalterId = 6969L;
+    private static final Long dsbMitgliedPlatzhalterId = 1L;
+    private static final String dsbMitgliedPlatzhalterVorname = "PlatzhalterVorname1";
+    private static final String dsbMitgliedPlatzhalterNachname = "PlatzhalterNachname1";
+    private static final Long rueckennummerPlatzhalter = 1L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -71,10 +77,23 @@ public class MannschaftsmitgliedServiceTest {
         );
     }
 
-
     public static MannschaftsmitgliedDO getMannschaftsmitgliedDO() {
         return new MannschaftsmitgliedDO(
                 id, mannschaftsId, dsbMitgliedId, dsbMitgliedEingesetzt, dsbMitgliedVorname, dsbMitgliedNachname, rueckennummer
+        );
+    }
+
+    public static MannschaftsmitgliedDO getMannschaftsmitgliedPlatzhalterDO() {
+        return new MannschaftsmitgliedDO(
+                platzhalterMitgliedId, platzhalterId, dsbMitgliedPlatzhalterId, 1,
+                dsbMitgliedPlatzhalterVorname, dsbMitgliedPlatzhalterNachname, rueckennummerPlatzhalter
+        );
+    }
+
+    public static MannschaftsMitgliedDTO getMannschaftsmitgliedPlatzhalterDTO() {
+        return new MannschaftsMitgliedDTO(
+                platzhalterMitgliedId, platzhalterId, dsbMitgliedPlatzhalterId, 1,
+                rueckennummerPlatzhalter
         );
     }
 
