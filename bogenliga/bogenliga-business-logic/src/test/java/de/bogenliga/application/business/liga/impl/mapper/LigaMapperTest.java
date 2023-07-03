@@ -43,7 +43,8 @@ public class LigaMapperTest {
         assertThat(actual.getName()).isEqualTo(ligaBE.getLigaName());
 
         LigaDO ligaDO = new LigaDO(ligaBE.getLigaId(), ligaBE.getLigaName(), regionDO.getId(), regionDO.getRegionName(), ligaUebergeordnetBE.getLigaId(),
-                ligaUebergeordnetBE.getLigaName(), userDO.getId(), userDO.getEmail(), disziplinDO.getDisziplinId(),ligaBE.getLigaDetail());
+                ligaUebergeordnetBE.getLigaName(), userDO.getId(), userDO.getEmail(), disziplinDO.getDisziplinId(),ligaBE.getLigaDetail(),
+                ligaBE.getLigaDetailFileBase64(),ligaBE.getLigaDetailFileName(),ligaBE.getLigaDetailFileType());
 
         assertThat(actual.hashCode()).isEqualTo(ligaDO.hashCode());
     }
