@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mockito.stubbing.Answer;
@@ -24,6 +25,7 @@ import de.bogenliga.application.business.mannschaftsmitglied.impl.business.Manns
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -38,6 +40,9 @@ import static org.mockito.Mockito.*;
 public class MeldezettelComponentImplTest {
 
     private static final long WETTKAMPFID = 30;
+    private static int sizeTeam_8 = 8;
+    private static int sizeTeam_6 = 6;
+    private static int sizeTeam_4 = 4;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -63,7 +68,7 @@ public class MeldezettelComponentImplTest {
     private MeldezettelComponentImpl underTest;
 
     @Test
-    public void getMeldezettelPDFasByteArray() {
+    public void getMeldezettelPDFasByteArray_8_Teams() {
 
         List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
         for(int i = 0; i < 3; i++) {
@@ -79,7 +84,93 @@ public class MeldezettelComponentImplTest {
         });
         when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(MatchComponentImplTest.getMatchDO());
         when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(VeranstaltungComponentImplTest.getVeranstaltungDO());
+        when(veranstaltungComponent.findById(anyLong())).thenAnswer((InvocationOnMock invocation) -> {
+                    VeranstaltungDO veranstaltung = VeranstaltungComponentImplTest.getVeranstaltungDO();
+                    veranstaltung.setVeranstaltungGroesse(sizeTeam_8); // Hier die gewünschte Größe setzen
+                    return veranstaltung;
+                });
+        when(disziplinComponent.findById(any())).thenReturn(DisziplinComponentImplTest.getDisziplinDO());
+        when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
+            DsbMannschaftDO ret = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+            ret.setNummer((long)(Math.random() * 2 + 1));
+            return ret;
+        });
+
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
+
+
+        //call test method
+        final byte[] actual = underTest.getMeldezettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent, atLeastOnce()).findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong());
+    }
+    @Test
+    public void getMeldezettelPDFasByteArray_6_Teams() {
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            mannschaftsmitgliedDOList.add(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
+        }
+
+        //configure Mocks
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        when(vereinComponent.findById(anyLong())).thenAnswer((Answer<VereinDO>) invocation -> {
+            VereinDO ret = VereinComponentImplTest.getVereinDO();
+            ret.setName("Verein " + UUID.randomUUID());
+            return ret;
+        });
+        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(MatchComponentImplTest.getMatchDO());
+        when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
+        when(veranstaltungComponent.findById(anyLong())).thenAnswer((InvocationOnMock invocation) -> {
+            VeranstaltungDO veranstaltung = VeranstaltungComponentImplTest.getVeranstaltungDO();
+            veranstaltung.setVeranstaltungGroesse(sizeTeam_6); // Hier die gewünschte Größe setzen
+            return veranstaltung;
+        });
+        when(disziplinComponent.findById(any())).thenReturn(DisziplinComponentImplTest.getDisziplinDO());
+        when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
+            DsbMannschaftDO ret = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+            ret.setNummer((long)(Math.random() * 2 + 1));
+            return ret;
+        });
+
+        when(dsbMitgliedComponent.findById(anyLong())).thenReturn(DsbMitgliedComponentImplTest.getDsbMitgliedDO());
+
+
+        //call test method
+        final byte[] actual = underTest.getMeldezettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent, atLeastOnce()).findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong());
+    }
+    @Test
+    public void getMeldezettelPDFasByteArray_4_Teams() {
+
+        List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            mannschaftsmitgliedDOList.add(MannschaftsmitgliedComponentImplTest.getMannschatfsmitgliedDO());
+        }
+
+        //configure Mocks
+        when(mannschaftsmitgliedComponent.findAllSchuetzeInTeamEingesetzt(anyLong())).thenReturn(mannschaftsmitgliedDOList);
+        when(vereinComponent.findById(anyLong())).thenAnswer((Answer<VereinDO>) invocation -> {
+            VereinDO ret = VereinComponentImplTest.getVereinDO();
+            ret.setName("Verein " + UUID.randomUUID());
+            return ret;
+        });
+        when(matchComponent.findByWettkampfIDMatchNrScheibenNr(anyLong(), anyLong(), anyLong())).thenReturn(MatchComponentImplTest.getMatchDO());
+        when(wettkampfComponent.findById(anyLong())).thenReturn(WettkampfComponentImplTest.getWettkampfDO());
+        when(veranstaltungComponent.findById(anyLong())).thenAnswer((InvocationOnMock invocation) -> {
+            VeranstaltungDO veranstaltung = VeranstaltungComponentImplTest.getVeranstaltungDO();
+            veranstaltung.setVeranstaltungGroesse(sizeTeam_4); // Hier die gewünschte Größe setzen
+            return veranstaltung;
+        });
         when(disziplinComponent.findById(any())).thenReturn(DisziplinComponentImplTest.getDisziplinDO());
         when(dsbMannschaftComponent.findById(anyLong())).thenAnswer((Answer<DsbMannschaftDO>) invocation -> {
             DsbMannschaftDO ret = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
