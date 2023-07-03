@@ -13,7 +13,3 @@ VALUES
     (2, 'Platzhaltermitglied_Vorname2', 'Platzhaltermitglied_Nachname2', '2021-06-30', 'DE', 69696970, 99, null, '2023-06-30 14:16:57.048792', 0, null, 0),
     (3, 'Platzhaltermitglied_Vorname3', 'PlatzhaltermitgliedS_Nachname3', '2021-06-30', 'DE', 69696971, 99, null, '2023-06-30 14:16:57.048792', 0, null, 0)
 ON CONFLICT DO NOTHING;
-
-
-
-
