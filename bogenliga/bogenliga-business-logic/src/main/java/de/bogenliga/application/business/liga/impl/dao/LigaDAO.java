@@ -36,6 +36,9 @@ public class LigaDAO implements DataAccessObject {
     private static final String LIGA_BE_UEBERGEORDNET_ID = "ligaUebergeordnetId";
     private static final String LIGA_BE_VERANTWORTLICH_ID = "ligaVerantwortlichId";
     private static final String LIGA_BE_LIGADETAIL = "ligaDetail";
+    private static final String LIGA_BE_LIGADETAILFILEBASE64 = "ligaDetailFileBase64";
+    private static final String LIGA_BE_LIGADETAILFILENAME = "ligaDetailFileName";
+    private static final String LIGA_BE_LIGADETAILFILETYPE = "ligaDetailFileType";
 
 
     private static final String LIGA_TABLE_ID = "liga_id";
@@ -45,6 +48,9 @@ public class LigaDAO implements DataAccessObject {
     private static final String LIGA_TABLE_UEBERGEORDNET = "liga_uebergeordnet";
     private static final String LIGA_TABLE_VERANTWORTLICH = "liga_verantwortlich";
     private static final String LIGA_TABLE_DETAIL = "liga_detail";
+    private static final String LIGA_TABLE_DETAIL_FILE_BASE64 = "liga_detail_file_base64";
+    private static final String LIGA_TABLE_DETAIL_FILE_NAME = "liga_detail_file_name";
+    private static final String LIGA_TABLE_DETAIL_FILE_TYPE = "liga_detail_file_type";
 
     //wrap all specific config parameters
     private static final BusinessEntityConfiguration<LigaBE> LIGA = new BusinessEntityConfiguration<>(
@@ -99,6 +105,9 @@ public class LigaDAO implements DataAccessObject {
         columnsToFieldsMap.put(LIGA_TABLE_UEBERGEORDNET, LIGA_BE_UEBERGEORDNET_ID);
         columnsToFieldsMap.put(LIGA_TABLE_VERANTWORTLICH, LIGA_BE_VERANTWORTLICH_ID);
         columnsToFieldsMap.put(LIGA_TABLE_DETAIL, LIGA_BE_LIGADETAIL);
+        columnsToFieldsMap.put(LIGA_TABLE_DETAIL_FILE_BASE64, LIGA_BE_LIGADETAILFILEBASE64);
+        columnsToFieldsMap.put(LIGA_TABLE_DETAIL_FILE_NAME, LIGA_BE_LIGADETAILFILENAME);
+        columnsToFieldsMap.put(LIGA_TABLE_DETAIL_FILE_TYPE, LIGA_BE_LIGADETAILFILETYPE);
         // add technical columns
         columnsToFieldsMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
 
