@@ -61,6 +61,8 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private static final String PRECONDITION_WETTKAMPFDO = "wettkampfDO cannot be null";
     private static final String PRECONDITION_VERANSTALTUNGSNAME = "veranstaltungsName cannot be null";
 
+    private static final String PLATZHALTER_NAME = "Platzhalter";
+
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final VereinComponent vereinComponent;
     private final LigaComponent ligaComponent;
@@ -111,7 +113,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         String eventName = veranstaltungDO.getVeranstaltungName();
 
         // Fuer Jedes Match eines wettkampfs -> List.add alle Schuetzen
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= veranstaltungDO.getVeranstaltungGroesse(); i++) {
             MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfid, 1L, (long) i);
             String teamName = getTeamName(matchDO.getMannschaftId());
             LOGGER.info("Teamname {} wurde gefunden ", teamName);
@@ -119,7 +121,6 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     matchDO.getMannschaftId());
 
             List<DsbMitgliedDO> dsbMitgliedDOList = new ArrayList<>();
-            List<LigaDO> ligen = this.ligaComponent.findAll();
 
             int count = 0;
             for (MannschaftsmitgliedDO mannschaftsmitglied : mannschaftsmitgliedDOList) {
@@ -129,11 +130,15 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 // Find step of the actual League
                 int thisLigaStufe = 0;
                 int currentLiga = (int) thisLiga;
+                ArrayList<LigaDO> ligen = new ArrayList<>(this.ligaComponent.findAll());
+
+                int ligaUebergeordnet = getIndexOfLigaById(ligen, currentLiga);
 
                 // Finde und Setze die Ligastufe falls diese nicht 0 ist -> ansonsten thisLigaStufe = 0
                 while (currentLiga != 0) {
-                    if (ligen.get(currentLiga - 1).getLigaUebergeordnetId() != null) {
-                        currentLiga = ligen.get(currentLiga - 1).getLigaUebergeordnetId().intValue();
+                    if (ligen.get(ligaUebergeordnet).getLigaUebergeordnetId() != null) {
+                        currentLiga = ligen.get(ligaUebergeordnet).getLigaUebergeordnetId().intValue();
+                        ligaUebergeordnet = getIndexOfLigaById(ligen, currentLiga);
                         thisLigaStufe++;
                     } else {
                         currentLiga = 0;
@@ -173,8 +178,9 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                 currentLiga = (int) liga;
                                 int ligaStufe = 0;
                                 while (currentLiga != 0) {
-                                    if (ligen.get(currentLiga - 1).getLigaUebergeordnetId() != null) {
-                                        currentLiga = ligen.get(currentLiga - 1).getLigaUebergeordnetId().intValue();
+                                    if (ligen.get(ligaUebergeordnet).getLigaUebergeordnetId() != null) {
+                                        currentLiga = ligen.get(ligaUebergeordnet).getLigaUebergeordnetId().intValue();
+                                        ligaUebergeordnet = getIndexOfLigaById(ligen, currentLiga);
                                         ligaStufe++;
                                     } else {
                                         currentLiga = 0;
@@ -211,7 +217,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
-            generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName, allowedMapping);
+            generateBogenkontrolllisteDoc(doc, wettkampfDO, teamMemberMapping, eventName, allowedMapping, veranstaltungDO.getVeranstaltungGroesse());
 
             bResult = result.toByteArray();
             return bResult;
@@ -220,6 +226,18 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
             throw new TechnicalException(ErrorCode.INTERNAL_ERROR,
                     "Bogenkontrollliste PDF konnte nicht erstellt werden: " + e);
         }
+    }
+
+
+    private int getIndexOfLigaById(ArrayList<LigaDO> ligen, int currentLiga) {
+
+        for (int i = 0; i < ligen.size(); i++) {
+            if (ligen.get(i).getId() == currentLiga) {
+                return i;
+            }
+
+        }
+        return 0;
     }
 
 
@@ -233,12 +251,13 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
     private void generateBogenkontrolllisteDoc(Document doc, WettkampfDO wettkampfDO,
                                                HashMap<String, List<DsbMitgliedDO>> teamMemberMapping,
                                                String veranstaltungsName,
-                                               HashMap<DsbMitgliedDO, Boolean> allowedMapping) {
+                                               HashMap<DsbMitgliedDO, Boolean> allowedMapping, int veranstaltungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfDO, PRECONDITION_WETTKAMPFDO);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
-        String[] teamNameList = new String[8];
+        String[] teamNameList = new String[veranstaltungGroesse];
+        int numberOfMatches = numberOfMatches(veranstaltungGroesse);
         int i = 0;
 
         LOGGER.info("Es wurden {} Teams gefunden", teamMemberMapping.size());
@@ -258,14 +277,18 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         docTable.addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
                 .add(pageTitle));
         //Iterate through all the teams
-        for (int manschaftCounter = 0; manschaftCounter < 8; manschaftCounter++) {
+        for (int manschaftCounter = 0; manschaftCounter < veranstaltungGroesse; manschaftCounter++) {
+
+            if(teamNameList[manschaftCounter].startsWith(PLATZHALTER_NAME)){
+                continue;
+            }
 
             //Create table for each team
             final Table tableBody = new Table(UnitValue.createPercentArray(3), true).setKeepTogether(true);
             //Create column headers
             final Table tableFirstRowFirstPart = new Table(UnitValue.createPercentArray(new float[]{25.0F, 75.0F}),
                     true);
-            final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(7), true);
+            final Table tableFirstRowSecondPart = new Table(UnitValue.createPercentArray(numberOfMatches), true);
             final Table tableFirstRowThirdPart = new Table(UnitValue.createPercentArray(1), true);
 
             //Add content to column headers
@@ -278,29 +301,16 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                             .add(new Paragraph(teamNameList[manschaftCounter]).setBold()).setFontSize(10.0F))
             ;
 
-            tableFirstRowSecondPart
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M1").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M2").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M3").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M4").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M5").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M6").setFontSize(10.0F))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
-                            .add(new Paragraph("M7").setFontSize(10.0F))
-                    )
-            ;
+            String[] teams = {"M1", "M2", "M3", "M4", "M5", "M6", "M7"};
+
+            for (int team = 0; team < numberOfMatches; team++) {
+                tableFirstRowSecondPart.addCell(
+                    new Cell()
+                        .setBorder(Border.NO_BORDER)
+                        .setTextAlignment(TextAlignment.LEFT)
+                        .add(new Paragraph(teams[team]).setFontSize(10.0F))
+                );
+            }
 
             tableFirstRowThirdPart.addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                     .add(new Paragraph("Bemerkungen zur Bogenkontrolle").setFontSize(10.0F))
@@ -324,15 +334,14 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     teamMemberMapping.get(teamNameList[manschaftCounter]).size());
             //Iterate through playerlist of each team, if no player was found, add additional information
 
-            for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(
-                    teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
+            for (int mitgliedCounter = 1; mitgliedCounter <= teamMemberMapping.get(
+                    teamNameList[manschaftCounter]).size(); mitgliedCounter++) {
                 //Create columns for player content
                 final Table tableBodyFirstPart = new Table(UnitValue.createPercentArray(new float[]{25.0F, 75.0F}),
                         true);
-                final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(7), true);
+                final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(numberOfMatches), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
-                final Table tableBodyForthPart = new Table(UnitValue.createPercentArray(new float[]{25.0F, 75.0F}),
-                        true);
+//                final Table tableBodyForthPart = new Table(UnitValue.createPercentArray(new float[]{25.0F, 75.0F}), true);
 
                 //Create tables for checkboxes
                 final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(new float[]{40.0F, 60.0F}), true);
@@ -381,38 +390,24 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                     ;
                 }
 
-                tableBodySecondPart
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox2.setBorder(Border.NO_BORDER)))
-                        .addCell(new Cell().setBorder(Border.NO_BORDER)
-                                .add(tableCheckbox2.setBorder(Border.NO_BORDER))
-
-                        )
-
-
-                ;
+                for (int match = 0; match < numberOfMatches; match++) {
+                    tableBodySecondPart.addCell(
+                            new Cell().setBorder(Border.NO_BORDER)
+                                    .add(tableCheckbox2.setBorder(Border.NO_BORDER))
+                    );
+                }
 
                 tableBodyThirdPart
                         .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                                 .add(new Paragraph(" ").setFontSize(10.0F))
                         )
                 ;
-                tableBodyForthPart
+/*                tableBodyForthPart
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
                         .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                                 .add(new Paragraph((mitgliedCounter + 1) + " ").setBold().setFontSize(10.0F)))
-                ;
+                ;*/
 
                 //Add player columns to team tables
 
@@ -450,7 +445,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 if (mitgliedCounter == teamMemberMapping.get(teamNameList[manschaftCounter]).size()) {
 
                     //Add Cell without Name if less than 10 Teams
-                    if (mitgliedCounter <= 10) {
+                    /*if (mitgliedCounter <= 10) {
                         tableBody.addCell(
                                         new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
                                                 .add(tableBodyForthPart)
@@ -463,7 +458,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                                 new SolidBorder(Border.SOLID))
                                         .add(tableBodyThirdPart)
                                 );
-                    }
+                    }*/
                     tableBody.addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
                             )
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
@@ -504,6 +499,18 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
         doc.close();
     }
 
+    /**
+     * Returns number of Matches for given size.
+     * @param veranstaltungGroesse How many competing Teams
+     * @return number of Matches for given veranstaltungGroesse
+     * */
+    private int numberOfMatches(int veranstaltungGroesse) {
+        if (veranstaltungGroesse == 8 || veranstaltungGroesse == 6) {
+            return veranstaltungGroesse - 1;
+        } else {
+            return 6;
+        }
+    }
 
     /**
      * function to add title and date at the top of each page

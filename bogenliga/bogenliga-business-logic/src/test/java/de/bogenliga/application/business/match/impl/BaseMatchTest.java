@@ -31,6 +31,8 @@ public abstract class BaseMatchTest {
     protected static final Long MATCH_STRAFPUNKT_SATZ_4 = 10L;
     protected static final Long MATCH_STRAFPUNKT_SATZ_5 = 0L;
 
+    protected static final Long MATCH_PLATZHALTER_ID = 99L;
+
     protected static final Long CURRENT_USER_ID = 1L;
     private HashMap<String, Object> valuesToMethodMap = new HashMap<>();
 
@@ -53,9 +55,9 @@ public abstract class BaseMatchTest {
         return matchBE;
     }
 
-    protected DsbMannschaftDO getAuffuellmannschaft() {
+    protected DsbMannschaftDO getPlatzhalter() {
         return new DsbMannschaftDO(
-                MATCH_MANNSCHAFT_ID, "Auffuellmannschaft", 9999L, 696969L, 01274L, 4444L, 8L
+                MATCH_MANNSCHAFT_ID, "Platzhalter", MATCH_PLATZHALTER_ID, 696969L, 01274L, 4444L, 8L
         );
     }
 
