@@ -60,6 +60,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     private static final String MELDEZETTEL_MATCH = "Match";
     private static final String MELDEZETTEL_SCHUETZEN = "Schützen";
     private static final String MELDEZETTEL_UNTERSCHRIFT ="Unterschrift des Mannschaftsführers";
+    private static final String PLATZHALTER_NAME = "Platzhalter";
 
     private final MatchComponent matchComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
@@ -135,7 +136,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
     /**
      * <p>writes a Meldezettel document for the Wettkampf</p>
      */
-    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, int veranstlatungGroesse) {
+    private void generateDoc(Document doc, Long wettkampfTag, String veranstaltungsName, String disziplinsName, Date wettkampfDatum, HashMap<String, List<DsbMitgliedDO>> teamMemberMapping, int veranstaltungGroesse) {
         Preconditions.checkNotNull(doc, PRECONDITION_DOCUMENT);
         Preconditions.checkNotNull(wettkampfTag, PRECONDITION_WETTKAMPFTAG);
         Preconditions.checkNotNull(veranstaltungsName, PRECONDITION_VERANSTALTUNGSNAME);
@@ -143,9 +144,9 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
         Preconditions.checkNotNull(wettkampfDatum, PRECONDITION_WETTKAMPFDATUM);
         Preconditions.checkArgument(!teamMemberMapping.isEmpty(), PRECONDITION_TEAM_MAPPING);
 
-        String[] teamNameList = new String[veranstlatungGroesse];
+        String[] teamNameList = new String[veranstaltungGroesse];
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        int numberOfMatches = numberOfMatches(veranstlatungGroesse);
+        int numberOfMatches = numberOfMatches(veranstaltungGroesse);
         int i = 0;
 
         for (String key : teamMemberMapping.keySet()) {
@@ -153,9 +154,11 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             i++;
         }
 
-        for (int manschaftCounter = 0; manschaftCounter < veranstlatungGroesse; manschaftCounter++) {
-            String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(
-                    wettkampfDatum);
+        for (int manschaftCounter = 0; manschaftCounter < veranstaltungGroesse; manschaftCounter++) {
+
+
+
+            String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(wettkampfDatum);
             String verein = "Verein: " + teamNameList[manschaftCounter];
 
             final Table mainTable = new Table(UnitValue.createPercentArray(2), true);
@@ -388,17 +391,24 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                                 .add(mainTableSubParts[0]).setPaddingLeft(30.0F).setPaddingRight(5.0F)
                         );
             }
-            // Add all to document
-            doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
-                    Border.NO_BORDER);
+            if(!(teamNameList[manschaftCounter].equals(PLATZHALTER_NAME))) {
+                // Add all to document
+                doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
+                        Border.NO_BORDER);
+            }
+
 
             if (numberOfMatches == 6) {
                 if (manschaftCounter != 3) {
-                    doc.add(new AreaBreak());
+                    if(!(teamNameList[manschaftCounter+1].equals(PLATZHALTER_NAME))) {
+                        doc.add(new AreaBreak());
+                    }
                 }
             }else {
-                    if (manschaftCounter != numberOfMatches) {
+                if (manschaftCounter != numberOfMatches) {
+                    if(!(teamNameList[manschaftCounter+1].equals(PLATZHALTER_NAME))) {
                         doc.add(new AreaBreak());
+                    }
                 }
             }
         }
