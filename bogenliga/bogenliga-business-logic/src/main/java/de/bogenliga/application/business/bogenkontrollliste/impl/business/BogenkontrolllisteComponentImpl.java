@@ -341,7 +341,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                         true);
                 final Table tableBodySecondPart = new Table(UnitValue.createPercentArray(numberOfMatches), true);
                 final Table tableBodyThirdPart = new Table(UnitValue.createPercentArray(1), true);
-//                final Table tableBodyForthPart = new Table(UnitValue.createPercentArray(new float[]{25.0F, 75.0F}), true);
+                final Table tableBodyForthPart = new Table(UnitValue.createPercentArray(new float[]{25.0F, 75.0F}), true);
 
                 //Create tables for checkboxes
                 final Table tableCheckbox1 = new Table(UnitValue.createPercentArray(new float[]{40.0F, 60.0F}), true);
@@ -402,12 +402,12 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                 .add(new Paragraph(" ").setFontSize(10.0F))
                         )
                 ;
-/*                tableBodyForthPart
+                tableBodyForthPart
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
                                 .add(tableCheckbox1.setBorder(Border.NO_BORDER)))
                         .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT)
                                 .add(new Paragraph((mitgliedCounter + 1) + " ").setBold().setFontSize(10.0F)))
-                ;*/
+                ;
 
                 //Add player columns to team tables
 
@@ -445,7 +445,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                 if (mitgliedCounter == teamMemberMapping.get(teamNameList[manschaftCounter]).size()) {
 
                     //Add Cell without Name if less than 10 Teams
-                    /*if (mitgliedCounter <= 10) {
+                    if (mitgliedCounter <= 10) {
                         tableBody.addCell(
                                         new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
                                                 .add(tableBodyForthPart)
@@ -458,7 +458,7 @@ public class BogenkontrolllisteComponentImpl implements BogenkontrolllisteCompon
                                                 new SolidBorder(Border.SOLID))
                                         .add(tableBodyThirdPart)
                                 );
-                    }*/
+                    }
                     tableBody.addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
                             )
                             .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID))
