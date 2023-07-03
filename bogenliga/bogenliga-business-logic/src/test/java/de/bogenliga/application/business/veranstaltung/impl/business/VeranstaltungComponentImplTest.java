@@ -790,6 +790,7 @@ public class VeranstaltungComponentImplTest {
     @Test
     public void testFindByLigaIDAndSportjahr() {
         // Prepare test data
+<<<<<<< Updated upstream
         final VeranstaltungBE expectedBE = getVeranstaltungBE();
         final UserDO expectedUserDO = getUserDO();
         final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
@@ -867,6 +868,8 @@ public class VeranstaltungComponentImplTest {
     }*/
 
 
+=======
+>>>>>>> Stashed changes
 //        final VeranstaltungBE expectedBE = getVeranstaltungBE();
 //        final UserDO expectedUserDO = getUserDO();
 //        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
@@ -899,8 +902,12 @@ public class VeranstaltungComponentImplTest {
 //
 //        // Verify invocation
 //        verify(veranstaltungDAO).findByLigaIDAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
+<<<<<<< Updated upstream
 //    }
 
+=======
+    }
+>>>>>>> Stashed changes
 
 
         /**
