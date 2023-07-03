@@ -25,6 +25,9 @@ public class LigaDO extends CommonDataObject implements DataObject {
     private Long ligaVerantwortlichId;
     private String ligaVerantwortlichMail;
     private String ligaDetail;
+    private String ligaDetailFileBase64;
+    private String ligaDetailFileName;
+    private String ligaDetailFileType;
 
 
     public LigaDO() {
@@ -63,7 +66,8 @@ public class LigaDO extends CommonDataObject implements DataObject {
                   final Long ligaVerantwortlichId, final String ligaVerantwortlichMail,
                   final OffsetDateTime createdAtUtc, final Long createdByUserId,
                   final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId,
-                  final Long version, final String ligaDetail) {
+                  final Long version, final String ligaDetail,
+                  final String ligaDetailFileBase64, final String ligaDetailFileName, final String ligaDetailFileType) {
         this.id=id;
         this.name = name;
         this.disziplinId = disziplinId;
@@ -79,6 +83,9 @@ public class LigaDO extends CommonDataObject implements DataObject {
         this.lastModifiedByUserId = lastModifiedByUserId;
         this.version = version;
         this.ligaDetail = ligaDetail;
+        this.ligaDetailFileBase64 = ligaDetailFileBase64;
+        this.ligaDetailFileName = ligaDetailFileName;
+        this.ligaDetailFileType = ligaDetailFileType;
     }
 
 
@@ -119,7 +126,8 @@ public class LigaDO extends CommonDataObject implements DataObject {
      */
     public LigaDO(final Long id, final String name, final Long regionId, final String regionName,
                   final Long ligaUebergeordnetId, final String ligaUebergeordnetName,
-                  final Long ligaVerantwortlichId, final String ligaVerantwortlichMail, final Long disziplinId, final String ligaDetail) {
+                  final Long ligaVerantwortlichId, final String ligaVerantwortlichMail, final Long disziplinId, final String ligaDetail,
+                  final String ligaDetailFileBase64, final String ligaDetailFileName, final String ligaDetailFileType) {
         this.id = id;
         this.name = name;
         this.regionId = regionId;
@@ -130,6 +138,10 @@ public class LigaDO extends CommonDataObject implements DataObject {
         this.ligaVerantwortlichId = ligaVerantwortlichId;
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
         this.ligaDetail = ligaDetail;
+        this.ligaDetailFileBase64 = ligaDetailFileBase64;
+        this.ligaDetailFileName = ligaDetailFileName;
+        this.ligaDetailFileType = ligaDetailFileType;
+
     }
 
 
@@ -219,6 +231,33 @@ public class LigaDO extends CommonDataObject implements DataObject {
 
     public void setLigaDetail(String ligaDetail) {
         this.ligaDetail = ligaDetail;
+    }
+
+    public String getLigaDetailFileBase64() {
+        return ligaDetailFileBase64;
+    }
+
+
+    public void setLigaDetailFileBase64(String ligaDetailFileBase64) {
+        this.ligaDetailFileBase64 = ligaDetailFileBase64;
+    }
+
+    public String getLigaDetailFileName() {
+        return ligaDetailFileName;
+    }
+
+
+    public void setLigaDetailFileName(String ligaDetailFileName) {
+        this.ligaDetailFileName = ligaDetailFileName;
+    }
+
+    public String getLigaDetailFileType() {
+        return ligaDetailFileType;
+    }
+
+
+    public void setLigaDetailFileType(String ligaDetailFileType) {
+        this.ligaDetailFileType = ligaDetailFileType;
     }
 
 
