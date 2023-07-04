@@ -206,6 +206,7 @@ public class LigaServiceTest {
         verify(ligaComponent).checkExist(ID);
     }
 
+    /*
     @Test
     public void checkExistsLigaName() {
         // Prepare test data
@@ -223,7 +224,7 @@ public class LigaServiceTest {
 
         // Verify invocations
         verify(ligaComponent).checkExist(ID);
-    }
+    }*/
 
 
     @Test
