@@ -868,8 +868,8 @@ public class VeranstaltungComponentImplTest {
     }*/
 
 
-=======
->>>>>>> Stashed changes
+//=======
+//>>>>>>> Stashed changes
 //        final VeranstaltungBE expectedBE = getVeranstaltungBE();
 //        final UserDO expectedUserDO = getUserDO();
 //        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
@@ -902,12 +902,12 @@ public class VeranstaltungComponentImplTest {
 //
 //        // Verify invocation
 //        verify(veranstaltungDAO).findByLigaIDAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
 //    }
 
-=======
-    }
->>>>>>> Stashed changes
+//=======
+//    }
+//>>>>>>> Stashed changes
 
 
         /**
