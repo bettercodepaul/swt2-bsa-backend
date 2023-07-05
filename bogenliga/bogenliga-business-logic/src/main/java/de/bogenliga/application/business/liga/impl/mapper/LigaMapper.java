@@ -76,9 +76,9 @@ public class LigaMapper implements ValueObjectMapper {
         ligaBE.setCreatedAtUtc(createdAtUtcTimestamp);
         ligaBE.setLastModifiedAtUtc(lastModifiedAtUtcTimestamp);
         ligaBE.setLigaDetail(ligaDO.getLigaDetail());
-        ligaBE.setLigaFileBase64(ligaDO.getLigaFileBase64());
-        ligaBE.setLigaFileName(ligaDO.getLigaFileName());
-        ligaBE.setLigaFileType(ligaDO.getLigaFileType());
+        ligaBE.setLigaFileBase64(ligaDO.getLigaDoFileBase64());
+        ligaBE.setLigaFileName(ligaDO.getLigaDoFileName());
+        ligaBE.setLigaFileType(ligaDO.getLigaDoFileType());
 
         return ligaBE;
     };
