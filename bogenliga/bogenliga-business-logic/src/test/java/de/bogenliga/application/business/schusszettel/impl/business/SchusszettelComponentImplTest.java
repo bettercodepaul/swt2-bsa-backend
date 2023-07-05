@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.schusszettel.impl.business;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -12,7 +10,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -23,6 +20,9 @@ import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.passe.api.PasseComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.match.impl.business.MatchComponentImplTest;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.business.veranstaltung.impl.business.VeranstaltungComponentImplTest;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.business.VereinComponentImplTest;
@@ -62,6 +62,9 @@ public class SchusszettelComponentImplTest {
     private MannschaftsmitgliedComponent MannschaftsmitgliedComponent;
     @Mock
     private VereinComponent vereinComponent;
+    @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+
 
 
     @InjectMocks
@@ -74,12 +77,99 @@ public class SchusszettelComponentImplTest {
         WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
         DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
         VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
 
         //configure Mocks
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
         when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
         when(dsbMannschaftComponent.findById(anyLong())).thenReturn(dsbMannschaftDO);
         when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+
+        //call test method
+        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(anyLong());
+    }
+
+    @Test
+    public void getAllSchusszettelPDFasByteArrayPlatzhalter() {
+        final List<MatchDO> matchDOList = getMatchesForWettkampf();
+
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO platzhalterDO = DsbMannschaftComponentImplTest.getPlatzhalterDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(dsbMannschaftComponent.findById(anyLong())).thenReturn(platzhalterDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+
+        //call test method
+        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(anyLong());
+    }
+
+    @Test
+    public void getAllSchusszettelPDFasByteArrayPlatzhalterUnterschrift1() {
+        final List<MatchDO> matchDOList = getMatchesForWettkampf();
+
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO platzhalterDO = DsbMannschaftComponentImplTest.getPlatzhalterDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(0).getMannschaftId())).thenReturn(platzhalterDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(1).getMannschaftId())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
+
+        //call test method
+        final byte[] actual = underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
+
+        //assert
+        Assertions.assertThat(actual).isNotEmpty();
+
+        //verify invocations
+        verify(matchComponent).findByWettkampfId(anyLong());
+    }
+
+    @Test
+    public void getAllSchusszettelPDFasByteArrayPlatzhalterUnterschrift2() {
+        final List<MatchDO> matchDOList = getMatchesForWettkampf();
+
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+        DsbMannschaftDO platzhalterDO = DsbMannschaftComponentImplTest.getPlatzhalterDO();
+        DsbMannschaftDO dsbMannschaftDO = DsbMannschaftComponentImplTest.getDsbMannschaftDO();
+        VereinDO vereinDO = VereinComponentImplTest.getVereinDO();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+
+        //configure Mocks
+        when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matchDOList);
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(1).getMannschaftId())).thenReturn(platzhalterDO);
+        when(dsbMannschaftComponent.findById(matchDOList.get(2).getMannschaftId())).thenReturn(dsbMannschaftDO);
+        when(vereinComponent.findById(anyLong())).thenReturn(vereinDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
 
 
         //call test method
@@ -118,10 +208,16 @@ public class SchusszettelComponentImplTest {
     @Test
     public void getAllSchusszettelPDFasByteArrayInIf_ShouldThrowException() {
         final String ELSE_CONDITION_WETTKAMPFID = "Matches für den Wettkampf noch nicht erzeugt";
+
         List<MatchDO> lokaleListe = new ArrayList();
+        VeranstaltungDO veranstaltungDO = VeranstaltungComponentImplTest.getVeranstaltungDO();
+        WettkampfDO wettkampfDO = WettkampfComponentImplTest.getWettkampfDO();
+
         thrown.expect(BusinessException.class);
         thrown.expectMessage(ELSE_CONDITION_WETTKAMPFID);
 
+        when(wettkampfComponent.findById(anyLong())).thenReturn(wettkampfDO);
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(lokaleListe);
 
         underTest.getAllSchusszettelPDFasByteArray(WETTKAMPFID);
