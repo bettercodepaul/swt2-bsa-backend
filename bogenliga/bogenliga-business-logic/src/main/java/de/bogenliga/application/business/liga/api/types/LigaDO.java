@@ -25,6 +25,9 @@ public class LigaDO extends CommonDataObject implements DataObject {
     private Long ligaVerantwortlichId;
     private String ligaVerantwortlichMail;
     private String ligaDetail;
+    private String ligaFileBase64;
+    private String ligaFileName;
+    private String ligaFileType;
 
 
     public LigaDO() {
@@ -46,39 +49,36 @@ public class LigaDO extends CommonDataObject implements DataObject {
      *
      * @param id
      * @param name
-     * @param regionId
      * @param regionName
      * @param ligaUebergeordnetId
      * @param ligaUebergeordnetName
      * @param ligaVerantwortlichId
      * @param ligaVerantwortlichMail
-     * @param createdAtUtc
      * @param createdByUserId
-     * @param lastModifiedAtUtc
-     * @param lastModifiedByUserId
-     * @param version
      */
-    public LigaDO(final Long id, final String name,final Long disziplinId, final Long regionId, final String regionName,
+    public LigaDO(final Long id, final String name, final Long disziplinId, final String regionName,
                   final Long ligaUebergeordnetId, final String ligaUebergeordnetName,
                   final Long ligaVerantwortlichId, final String ligaVerantwortlichMail,
-                  final OffsetDateTime createdAtUtc, final Long createdByUserId,
-                  final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId,
-                  final Long version, final String ligaDetail) {
+                  final Long createdByUserId,
+                  final String ligaDetail) {
         this.id=id;
         this.name = name;
         this.disziplinId = disziplinId;
-        this.regionId = regionId;
+
         this.regionName = regionName;
         this.ligaUebergeordnetId = ligaUebergeordnetId;
         this.ligaUebergeordnetName = ligaUebergeordnetName;
         this.ligaVerantwortlichId = ligaVerantwortlichId;
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
-        this.createdAtUtc = createdAtUtc;
+
         this.createdByUserId = createdByUserId;
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
-        this.lastModifiedByUserId = lastModifiedByUserId;
-        this.version = version;
+
+
+
         this.ligaDetail = ligaDetail;
+
+
+
     }
 
 
@@ -119,7 +119,8 @@ public class LigaDO extends CommonDataObject implements DataObject {
      */
     public LigaDO(final Long id, final String name, final Long regionId, final String regionName,
                   final Long ligaUebergeordnetId, final String ligaUebergeordnetName,
-                  final Long ligaVerantwortlichId, final String ligaVerantwortlichMail, final Long disziplinId, final String ligaDetail) {
+                  final Long ligaVerantwortlichId, final String ligaVerantwortlichMail, final Long disziplinId, final String ligaDetail,
+                  final String ligaFileBase64, final String ligaFileName, final String ligaFileType) {
         this.id = id;
         this.name = name;
         this.regionId = regionId;
@@ -130,6 +131,12 @@ public class LigaDO extends CommonDataObject implements DataObject {
         this.ligaVerantwortlichId = ligaVerantwortlichId;
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
         this.ligaDetail = ligaDetail;
+        this.ligaFileBase64 = ligaFileBase64;
+        this.ligaFileName = ligaFileName;
+        this.ligaFileType = ligaFileType;
+
+
+
     }
 
 
@@ -219,6 +226,33 @@ public class LigaDO extends CommonDataObject implements DataObject {
 
     public void setLigaDetail(String ligaDetail) {
         this.ligaDetail = ligaDetail;
+    }
+
+    public String getLigaDoFileBase64() {
+        return ligaFileBase64;
+    }
+
+
+    public void setLigaDoFileBase64(String ligaFileBase64) {
+        this.ligaFileBase64 = ligaFileBase64;
+    }
+
+    public String getLigaDoFileName() {
+        return ligaFileName;
+    }
+
+
+    public void setLigaDoFileName(String ligaFileName) {
+        this.ligaFileName = ligaFileName;
+    }
+
+    public String getLigaDoFileType() {
+        return ligaFileType;
+    }
+
+
+    public void setLigaDoFileType(String ligaFileType) {
+        this.ligaFileType = ligaFileType;
     }
 
 

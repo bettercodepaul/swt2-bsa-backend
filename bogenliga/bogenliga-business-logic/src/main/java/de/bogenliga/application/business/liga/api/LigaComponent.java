@@ -25,13 +25,26 @@ public interface LigaComponent {
 
 
     /**
-     Return if liag exist with the given id.*
+     Return if liga exist with the given id.*
      @param id of the liga
      @return LigaDO,
      if found -> return LigaDO;
      if not found -> empty LigaDO
      */
     LigaDO checkExist(long id);
+
+
+
+
+    /**
+     Return if liga exist with the given liga name.*
+     @param ligaName of the liga
+     @return LigaDO,
+     if found -> return LigaDO;
+     if not found -> empty LigaDO
+     */
+    LigaDO checkExistsLigaName(String ligaName);
+
 
 
     /**
