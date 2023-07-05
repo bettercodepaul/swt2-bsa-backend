@@ -104,7 +104,7 @@ public class DsbMannschaftComponentImplTest {
     public static DsbMannschaftDO getPlatzhalterDO() {
         return new DsbMannschaftDO(
                 ID,
-                MA_NAME,
+                "Platzhalter",
                 PLATZHALTER_ID,
                 NUMMER,
                 BENUTZER_ID,
