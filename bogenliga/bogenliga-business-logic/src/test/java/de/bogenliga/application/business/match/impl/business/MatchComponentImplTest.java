@@ -592,7 +592,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
 
         MatchDO MatchDOOScheibeNummerlessThanZero = new MatchDO(0L, 0L, 0L, 0L, 0L,0L,0L,0L,0L,0L,0L,0L,0L);
 
-        MatchDOOScheibeNummerlessThanZero.setScheibenNummer(-5L);
+        MatchDOOScheibeNummerlessThanZero.setMatchScheibennummer(-5L);
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.update(MatchDOOScheibeNummerlessThanZero, -1L))

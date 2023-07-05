@@ -143,7 +143,7 @@ public class SchusszettelComponentImplTest {
                     element.setBegegnung(encounter);
                     element.setMannschaftId(MANNSCHAFTSID);
 
-                    element.setScheibenNummer((encounter * 2) - 1 + i);
+                    element.setMatchScheibennummer((encounter * 2) - 1 + i);
 
                     result.add(element);
                 }
@@ -167,7 +167,7 @@ public class SchusszettelComponentImplTest {
                     element.setBegegnung(encounter);
                     element.setMannschaftId(MANNSCHAFTSID);
 
-                    element.setScheibenNummer((encounter * 2) - 1 + i);
+                    element.setMatchScheibennummer((encounter * 2) - 1 + i);
 
                     result.add(element);
                 }
@@ -202,14 +202,14 @@ public class SchusszettelComponentImplTest {
         element1.setNr(1L);
         element1.setBegegnung(1L);
         element1.setMannschaftId(MANNSCHAFTSID);
-        element1.setScheibenNummer(1L);
+        element1.setMatchScheibennummer(1L);
 
         MatchDO element2 = MatchComponentImplTest.getMatchDO();
         element2.setWettkampfId(WETTKAMPFID);
         element2.setNr(2L);
         element2.setBegegnung(1L);
         element2.setMannschaftId(MANNSCHAFTSID);
-        element2.setScheibenNummer(2L);
+        element2.setMatchScheibennummer(2L);
 
         final MannschaftsmitgliedDO inputMsMDo = new MannschaftsmitgliedDO(
             1L, 1L, 1L, 1, "Max", "Mustermann", 42L);
