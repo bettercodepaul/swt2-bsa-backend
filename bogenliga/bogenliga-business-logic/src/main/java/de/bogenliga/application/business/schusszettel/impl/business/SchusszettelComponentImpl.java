@@ -505,7 +505,6 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                                 .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
                         )
                         .addCell(new Cell().setBorder(Border.NO_BORDER));
-
             }else if (dsbMannschaftComponent.findById(matchDOs[1].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
                 matchThirdRows[i-1]
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
