@@ -19,9 +19,9 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
     private Long ligaUebergeordnetId;
     private Long ligaVerantwortlichId;
     private String ligaDetail;
-    private String ligaDetailFileBase64;
-    private String ligaDetailFileName;
-    private String ligaDetailFileType;
+    private String ligaFileBase64;
+    private String ligaFileName;
+    private String ligaFileType;
 
     public LigaBE(){
         // empty constructor
@@ -37,31 +37,31 @@ public class LigaBE extends CommonBusinessEntity implements BusinessEntity {
         this.ligaDetail = ligaDetail;
     }
 
-    public String getLigaDetailFileBase64() {
-        return ligaDetailFileBase64;
+    public String getLigaFileBase64() {
+        return ligaFileBase64;
     }
 
 
-    public void setLigaDetailFileBase64(String ligaDetailFileBase64) {
-        this.ligaDetailFileBase64 = ligaDetailFileBase64;
+    public void setLigaFileBase64(String ligaFileBase64) {
+        this.ligaFileBase64 = ligaFileBase64;
     }
 
-    public String getLigaDetailFileName() {
-        return ligaDetailFileName;
-    }
-
-
-    public void setLigaDetailFileName(String ligaDetailFileName) {
-        this.ligaDetailFileName = ligaDetailFileName;
-    }
-
-    public String getLigaDetailFileType() {
-        return ligaDetailFileType;
+    public String getLigaFileName() {
+        return ligaFileName;
     }
 
 
-    public void setLigaDetailFileType(String ligaDetailFileType) {
-        this.ligaDetailFileType = ligaDetailFileType;
+    public void setLigaFileName(String ligaFileName) {
+        this.ligaFileName = ligaFileName;
+    }
+
+    public String getLigaFileType() {
+        return ligaFileType;
+    }
+
+
+    public void setLigaFileType(String ligaFileType) {
+        this.ligaFileType = ligaFileType;
     }
 
 
