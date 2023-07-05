@@ -228,30 +228,30 @@ public class LigaDO extends CommonDataObject implements DataObject {
         this.ligaDetail = ligaDetail;
     }
 
-    public String getLigaFileBase64() {
+    public String getLigaDoFileBase64() {
         return ligaFileBase64;
     }
 
 
-    public void setLigaFileBase64(String ligaFileBase64) {
+    public void setLigaDoFileBase64(String ligaFileBase64) {
         this.ligaFileBase64 = ligaFileBase64;
     }
 
-    public String getLigaFileName() {
+    public String getLigaDoFileName() {
         return ligaFileName;
     }
 
 
-    public void setLigaFileName(String ligaFileName) {
+    public void setLigaDoFileName(String ligaFileName) {
         this.ligaFileName = ligaFileName;
     }
 
-    public String getLigaFileType() {
+    public String getLigaDoFileType() {
         return ligaFileType;
     }
 
 
-    public void setLigaFileType(String ligaFileType) {
+    public void setLigaDoFileType(String ligaFileType) {
         this.ligaFileType = ligaFileType;
     }
 
