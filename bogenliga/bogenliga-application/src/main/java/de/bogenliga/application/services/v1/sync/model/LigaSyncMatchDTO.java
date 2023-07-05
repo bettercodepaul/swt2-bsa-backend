@@ -131,7 +131,7 @@ public class LigaSyncMatchDTO implements DataTransferObject {
     }
 
 
-    public Integer getMatchNr() {return matchNr; }
+    public Integer getMatchNr() {return this.matchNr; }
 
 
     public void setMatchNr(Integer matchNr) {

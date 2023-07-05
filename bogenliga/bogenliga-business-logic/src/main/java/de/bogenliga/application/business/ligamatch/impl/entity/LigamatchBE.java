@@ -16,7 +16,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     private Long matchId;
     private Long matchIdGegner;
     private Long matchNr;
-    private Long scheibennummer;
+    private Long matchScheibennummer;
     private Long scheibennummerGegner;
     private Long mannschaftId;
     private Long begegnung;
@@ -50,7 +50,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
                 ", matchId=" + matchId +
                 ", matchIdGegner=" + matchIdGegner +
                 ", matchNr=" + matchNr +
-                ", scheibennummer=" + scheibennummer +
+                ", matchScheibennummer=" + matchScheibennummer +
                 ", scheibennummerGegner" + scheibennummerGegner +
                 ", mannschaftId=" + mannschaftId +
                 ",begegnung=" + begegnung +
@@ -81,8 +81,8 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     public Long getMatchNr() {return matchNr;}
     public void setMatchNr(Long matchNr) {this.matchNr = matchNr;}
 
-    public Long getScheibennummer() {return scheibennummer;}
-    public void setScheibennummer(Long scheibennummer) {this.scheibennummer = scheibennummer;}
+    public Long getMatchScheibennummer() {return matchScheibennummer;}
+    public void setMatchScheibennummer(Long matchScheibennummer) {this.matchScheibennummer = matchScheibennummer;}
 
     public Long getScheibennummerGegner() {return scheibennummerGegner;}
     public void setScheibennummerGegner(Long scheibennummerGegner) {this.scheibennummerGegner = scheibennummerGegner; }

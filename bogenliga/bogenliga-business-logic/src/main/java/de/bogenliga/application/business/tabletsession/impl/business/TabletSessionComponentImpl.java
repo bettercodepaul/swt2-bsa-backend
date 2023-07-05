@@ -76,8 +76,8 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         return wettkampfMatches.stream()
                 .filter(mDO -> mDO.getNr().equals(matchNr))
                 .filter(mDO -> (
-                        scheibenNr.equals(mDO.getScheibenNummer())
-                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                        scheibenNr.equals(mDO.getMatchScheibennummer())
+                                || otherScheibeNr.equals(mDO.getMatchScheibennummer())
                 ))
                 .collect(Collectors.toList());
     }
@@ -107,7 +107,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         }
         TabletSessionDO tab = new TabletSessionDO();
         List<MatchDO> matchDOs = matches.stream()
-                .filter(mDO -> mDO.getScheibenNummer().equals(scheibe))
+                .filter(mDO -> mDO.getMatchScheibennummer().equals(scheibe))
                 .filter(mDO -> mDO.getNr().equals(1L))
                 .collect(Collectors.toList());
 

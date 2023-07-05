@@ -85,7 +85,7 @@ public class LigamatchDO extends CommonDataObject {
 
 
     public Long getMatchScheibennummer() {
-        return matchScheibennummer;
+        return this.matchScheibennummer;
     }
 
 

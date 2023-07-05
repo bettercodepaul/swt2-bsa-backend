@@ -210,7 +210,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-                            .add(new Paragraph("Scheibe " + currentMatch.getScheibenNummer()).setBold().setFontSize(12.0F))
+                            .add(new Paragraph("Scheibe " + currentMatch.getMatchScheibennummer()).setBold().setFontSize(12.0F))
                     )
             ;
 
@@ -632,10 +632,10 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         long startScheibenNrBegegnung = (begegnung * 2) - 1 ;
         for(MatchDO match : matchDOList){
             if(match.getNr() == matchNr && match.getBegegnung() == begegnung){
-                if(match.getScheibenNummer() == startScheibenNrBegegnung){
+                if(match.getMatchScheibennummer() == startScheibenNrBegegnung){
                     ret[0] = match;
                 }
-                if(match.getScheibenNummer() == startScheibenNrBegegnung + 1){
+                if(match.getMatchScheibennummer() == startScheibenNrBegegnung + 1){
                     ret[1] = match;
                 }
             }
@@ -690,7 +690,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(wettkampfTag + ". Wettkampf").setBold().setFontSize(12.0F))
                     )
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT)
-                            .add(new Paragraph("Scheibe " + matchDOs[i - 1].getScheibenNummer()).setBold().setFontSize(12.0F))
+                            .add(new Paragraph("Scheibe " + matchDOs[i - 1].getMatchScheibennummer()).setBold().setFontSize(12.0F))
                     )
             ;
 
