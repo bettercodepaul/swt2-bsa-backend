@@ -39,6 +39,9 @@ public class LigaServiceTest {
     private static final String VERANTWORTLICHEREMAIL="test@test.de";
     private static final long USER = 4;
     private static final String LIGADETAIL = "ein Detail";
+    private static final String LIGAFILE = "data:application/pdf;base64,JVBERi0xLjYNJeL....";
+    private static final String LIGAFILENAME = "TestFile.pdf";
+    private static final String LIGAFILETYPE = "application/pdf";
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -81,7 +84,10 @@ public class LigaServiceTest {
                 VERANTWORTLICHERID,
                 VERANTWORTLICHEREMAIL,
                 DISZIPLINID,
-                LIGADETAIL
+                LIGADETAIL,
+                LIGAFILE,
+                LIGAFILENAME,
+                LIGAFILETYPE
         );
     }
 
