@@ -17,7 +17,7 @@ public class LigamatchToMatchMapperTest extends BaseLigamatchTest {
         assertThat(ligamatchBE.getWettkampfId()).isEqualTo(matchDOMapped.getWettkampfId()).isEqualTo(WETTKAMPF_ID);
         assertThat(ligamatchBE.getMatchId()).isEqualTo(matchDOMapped.getId()).isEqualTo(MATCH_ID);
         assertThat(ligamatchBE.getMatchNr()).isEqualTo(matchDOMapped.getNr()).isEqualTo(MATCH_NR);
-        assertThat(ligamatchBE.getScheibennummer()).isEqualTo(matchDOMapped.getScheibenNummer()).isEqualTo(SCHEIBENNUMMER);
+        assertThat(ligamatchBE.getMatchScheibennummer()).isEqualTo(matchDOMapped.getMatchScheibennummer()).isEqualTo(SCHEIBENNUMMER);
         assertThat(ligamatchBE.getMannschaftId()).isEqualTo(matchDOMapped.getMannschaftId()).isEqualTo(
                 MANNSCHAFT_ID);
         assertThat(ligamatchBE.getSatzpunkte()).isEqualTo(matchDOMapped.getSatzpunkte()).isEqualTo(SATZPUNKTE);
