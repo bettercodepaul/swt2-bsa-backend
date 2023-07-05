@@ -102,6 +102,9 @@ public class LigaServiceTest {
         ligaDTO.setLigaUebergeordnetName(LIGAUEBERGEORDNETNAME);
         ligaDTO.setLigaUebergeordnetId(VERANTWORTLICHERID);
         ligaDTO.setLigaVerantwortlichMail(VERANTWORTLICHEREMAIL);
+        ligaDTO.setLigaDetailFileBase64(LIGAFILE);
+        ligaDTO.setLigaDetailFileName(LIGAFILENAME);
+        ligaDTO.setLigaDetailFileType(LIGAFILETYPE);
         return ligaDTO;
     }
 
@@ -134,6 +137,9 @@ public class LigaServiceTest {
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(ligaDO.getId());
         assertThat(actualDTO.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actualDTO.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDetailFileBase64());
+        assertThat(actualDTO.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDetailFileName());
+        assertThat(actualDTO.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDetailFileType());
 
         // verify invocations
         verify(ligaComponent).findAll();
@@ -162,6 +168,9 @@ public class LigaServiceTest {
         assertThat(actualDTO).isNotNull();
         assertThat(actualDTO.getId()).isEqualTo(ligaDO.getId());
         assertThat(actualDTO.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actualDTO.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDetailFileBase64());
+        assertThat(actualDTO.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDetailFileName());
+        assertThat(actualDTO.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDetailFileType());
 
         // verify invocations
         verify(ligaComponent).findBySearch(ligaDO.getName());
@@ -182,6 +191,9 @@ public class LigaServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(ligaDO.getId());
         assertThat(actual.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDetailFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDetailFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDetailFileType());
 
         // verify invocations
         verify(ligaComponent).findById(ID);
@@ -201,6 +213,9 @@ public class LigaServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(ligaDO.getId());
         assertThat(actual.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDetailFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDetailFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDetailFileType());
 
         // Verify invocations
         verify(ligaComponent).checkExist(ID);
@@ -220,6 +235,9 @@ public class LigaServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(ligaDO.getId());
         assertThat(actual.getName()).isEqualTo(ligaDO.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(ligaDO.getLigaDetailFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(ligaDO.getLigaDetailFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(ligaDO.getLigaDetailFileType());
 
         // Verify invocations
         verify(ligaComponent).checkExistsLigaName(ligaDO.getName());
@@ -243,6 +261,9 @@ public class LigaServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getName()).isEqualTo(input.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(input.getLigaDetailFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(input.getLigaDetailFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(input.getLigaDetailFileType());
 
         // verify invocations
         verify(ligaComponent).create(ligaVOArgumentCaptor.capture(), anyLong());
@@ -252,6 +273,10 @@ public class LigaServiceTest {
         assertThat(createdLiga).isNotNull();
         assertThat(createdLiga.getId()).isEqualTo(input.getId());
         assertThat(createdLiga.getName()).isEqualTo(input.getName());
+        assertThat(createdLiga.getLigaDetailFileBase64()).isEqualTo(input.getLigaDetailFileBase64());
+        assertThat(createdLiga.getLigaDetailFileName()).isEqualTo(input.getLigaDetailFileName());
+        assertThat(createdLiga.getLigaDetailFileType()).isEqualTo(input.getLigaDetailFileType());
+
     }
 
     @Test
@@ -271,6 +296,9 @@ public class LigaServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isEqualTo(input.getId());
         assertThat(actual.getName()).isEqualTo(input.getName());
+        assertThat(actual.getLigaDetailFileBase64()).isEqualTo(input.getLigaDetailFileBase64());
+        assertThat(actual.getLigaDetailFileName()).isEqualTo(input.getLigaDetailFileName());
+        assertThat(actual.getLigaDetailFileType()).isEqualTo(input.getLigaDetailFileType());
 
         // verify invocations
         verify(ligaComponent).update(ligaVOArgumentCaptor.capture(), anyLong());
@@ -280,6 +308,9 @@ public class LigaServiceTest {
         assertThat(updatedLiga).isNotNull();
         assertThat(updatedLiga.getId()).isEqualTo(input.getId());
         assertThat(updatedLiga.getName()).isEqualTo(input.getName());
+        assertThat(updatedLiga.getLigaDetailFileBase64()).isEqualTo(input.getLigaDetailFileBase64());
+        assertThat(updatedLiga.getLigaDetailFileName()).isEqualTo(input.getLigaDetailFileName());
+        assertThat(updatedLiga.getLigaDetailFileType()).isEqualTo(input.getLigaDetailFileType());
     }
 
     @Test
