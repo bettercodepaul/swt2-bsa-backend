@@ -79,9 +79,9 @@ public class LigatabelleDAO implements DataAccessObject {
                 "lt.ligatabelle_verein_id, lt.ligatabelle_verein_name, lt.ligatabelle_matchpkt, lt.ligatabelle_matchpkt_gegen," +
            "lt.ligatabelle_satzpkt, lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_satzpkt_differenz, lt.ligatabelle_sortierung," +
            "row_number()  over (" +
-             "order by lt.ligatabelle_matchpkt desc, lt.ligatabelle_matchpkt_gegen," +
-               "lt.ligatabelle_satzpkt_differenz desc, lt.ligatabelle_satzpkt desc," +
-               "lt.ligatabelle_satzpkt_gegen, lt.ligatabelle_sortierung," +
+             "order by lt.ligatabelle_matchpkt desc NULLS LAST, lt.ligatabelle_matchpkt_gegen NULLS LAST," +
+               "lt.ligatabelle_satzpkt_differenz desc NULLS LAST, lt.ligatabelle_satzpkt desc NULLS LAST," +
+               "lt.ligatabelle_satzpkt_gegen NULLS LAST, lt.ligatabelle_sortierung," +
                "lt.ligatabelle_veranstaltung_id, lt.ligatabelle_veranstaltung_name," +
                "lt.ligatabelle_wettkampf_id, lt.ligatabelle_wettkampf_tag," +
                "lt.ligatabelle_mannschaft_id, lt.ligatabelle_mannschaft_nummer," +
