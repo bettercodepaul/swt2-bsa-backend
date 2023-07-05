@@ -44,7 +44,7 @@ public class LigaMapperTest {
 
         LigaDO ligaDO = new LigaDO(ligaBE.getLigaId(), ligaBE.getLigaName(), regionDO.getId(), regionDO.getRegionName(), ligaUebergeordnetBE.getLigaId(),
                 ligaUebergeordnetBE.getLigaName(), userDO.getId(), userDO.getEmail(), disziplinDO.getDisziplinId(),ligaBE.getLigaDetail(),
-                ligaBE.getLigaDetailFileBase64(),ligaBE.getLigaDetailFileName(),ligaBE.getLigaDetailFileType());
+                ligaBE.getLigaFileBase64(),ligaBE.getLigaFileName(),ligaBE.getLigaFileType());
 
         assertThat(actual.hashCode()).isEqualTo(ligaDO.hashCode());
     }
