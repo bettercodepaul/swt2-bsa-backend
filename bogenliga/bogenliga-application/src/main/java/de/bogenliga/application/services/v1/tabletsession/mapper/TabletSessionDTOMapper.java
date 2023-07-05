@@ -25,6 +25,6 @@ public class TabletSessionDTOMapper {
      * Map {@Link TabletSessionDTO} to {@Link TabletSessionDO}
      */
     public static final Function<TabletSessionDTO, TabletSessionDO> toDO = tabDTO -> new TabletSessionDO(
-            tabDTO.getWettkampfId(), tabDTO.getScheibennummer(), tabDTO.getSatznummer(),
+            tabDTO.getWettkampfId(), tabDTO.getMatchScheibennummer(), tabDTO.getSatznummer(),
             tabDTO.getMatchId(), tabDTO.isActive(), tabDTO.getAccessToken());
 }

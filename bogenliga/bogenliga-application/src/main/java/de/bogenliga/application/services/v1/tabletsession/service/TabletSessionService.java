@@ -106,7 +106,7 @@ public class TabletSessionService implements ServiceFacade {
             MatchDO second;
             first = relatedMatches.get(0);
             second = relatedMatches.get(1);
-            if (first.getScheibenNummer().equals(tsDTO.getScheibennummer())) {
+            if (first.getMatchScheibennummer().equals(tsDTO.getMatchScheibennummer())) {
                 tsDTO.setMatchId(first.getId());
                 tsDTO.setOtherMatchId(second.getId());
             } else {
@@ -146,7 +146,7 @@ public class TabletSessionService implements ServiceFacade {
                         " Scheibennummer: '{}', Satznummer: '{}', MatchID: '{}'",
                 fromService,
                 passeDTO.getWettkampfId(),
-                passeDTO.getScheibennummer(),
+                passeDTO.getMatchScheibennummer(),
                 passeDTO.getSatznummer(),
                 passeDTO.getMatchId()
         );

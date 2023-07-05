@@ -6,7 +6,7 @@ package de.bogenliga.application.services.v1.tabletsession.model;
 public class TabletSessionDTO {
 
     private Long wettkampfId;
-    private Long scheibennummer;
+    private Long matchScheibennummer;
     private Long satznummer;
     private Long matchId;
     private Long otherMatchId;
@@ -16,7 +16,7 @@ public class TabletSessionDTO {
 
     public TabletSessionDTO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken) {
         this.wettkampfId = wettkampfId;
-        this.scheibennummer = scheibennummer;
+        this.matchScheibennummer = matchScheibennummer;
         this.satznummer = satznummer;
         this.matchId = matchId;
         this.active = active;
@@ -36,13 +36,13 @@ public class TabletSessionDTO {
     }
 
 
-    public Long getScheibennummer() {
-        return scheibennummer;
+    public Long getMatchScheibennummer() {
+        return this.matchScheibennummer;
     }
 
 
-    public void setScheibennummer(Long scheibennummer) {
-        this.scheibennummer = scheibennummer;
+    public void setMatchScheibennummer(Long matchScheibennummer) {
+        this.matchScheibennummer = matchScheibennummer;
     }
 
 

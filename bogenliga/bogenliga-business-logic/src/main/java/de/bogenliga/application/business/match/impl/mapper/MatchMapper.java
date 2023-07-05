@@ -56,7 +56,7 @@ public class MatchMapper implements ValueObjectMapper {
         matchBE.setNr(matchDO.getNr());
         matchBE.setMannschaftId(matchDO.getMannschaftId());
         matchBE.setWettkampfId(matchDO.getWettkampfId());
-        matchBE.setScheibenNummer(matchDO.getScheibenNummer());
+        matchBE.setScheibenNummer(matchDO.getMatchScheibennummer());
         matchBE.setBegegnung(matchDO.getBegegnung());
         matchBE.setMatchpunkte(matchDO.getMatchpunkte());
         matchBE.setSatzpunkte(matchDO.getSatzpunkte());
