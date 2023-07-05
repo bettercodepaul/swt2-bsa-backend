@@ -49,25 +49,18 @@ public class LigaDO extends CommonDataObject implements DataObject {
      *
      * @param id
      * @param name
-     * @param regionId
      * @param regionName
      * @param ligaUebergeordnetId
      * @param ligaUebergeordnetName
      * @param ligaVerantwortlichId
      * @param ligaVerantwortlichMail
-     * @param createdAtUtc
      * @param createdByUserId
-     * @param lastModifiedAtUtc
-     * @param lastModifiedByUserId
-     * @param version
      */
-    public LigaDO(final Long id, final String name,final Long disziplinId, final Long regionId, final String regionName,
+    public LigaDO(final Long id, final String name, final Long disziplinId, final String regionName,
                   final Long ligaUebergeordnetId, final String ligaUebergeordnetName,
                   final Long ligaVerantwortlichId, final String ligaVerantwortlichMail,
-                  final OffsetDateTime createdAtUtc, final Long createdByUserId,
-                  final OffsetDateTime lastModifiedAtUtc, final Long lastModifiedByUserId,
-                  final Long version, final String ligaDetail,
-                  final String ligaDetailFileBase64, final String ligaDetailFileName, final String ligaDetailFileType) {
+                  final Long createdByUserId,
+                  final String ligaDetail) {
         this.id=id;
         this.name = name;
         this.disziplinId = disziplinId;
