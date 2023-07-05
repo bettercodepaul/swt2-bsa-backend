@@ -784,42 +784,53 @@ public class VeranstaltungComponentImplTest {
         // verify invocations
         verify(veranstaltungDAO).findByLigaID(VERANSTALTUNG_LIGA_ID);
     }
-/*
 
-//        final VeranstaltungBE expectedBE = getVeranstaltungBE();
-//        final UserDO expectedUserDO = getUserDO();
-//        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
-//        final LigaDO expectedLigaDO = getLigaDO();
-//        final VeranstaltungDO expectedDO = getVeranstaltungDO();
-//
-//        final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
-//
-//        // Configure mocks
-//        when(veranstaltungDAO.findByLigaID(VERANSTALTUNG_LIGA_ID)).thenReturn(expectedVeranstaltungBEList);
-//        when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_0)).thenReturn(expectedVeranstaltungBEList);
-//        when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_1)).thenReturn(expectedVeranstaltungBEList);
-//        when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_2)).thenReturn(expectedVeranstaltungBEList);
-//        when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_3)).thenReturn(expectedVeranstaltungBEList);
-//
-//        when(ligaComponent.findById(anyLong())).thenReturn(expectedLigaDO);
-//        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
-//        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
-//
-//        // Call the method under test
-//        final VeranstaltungDO actual = underTest.findByLigaIDAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
-//
-//        // Assert result
-//        assertThat(actual).isNotNull();
-//        assertThat(actual.getVeranstaltungID()).isEqualTo(expectedDO.getVeranstaltungID());
-//        assertThat(actual.getVeranstaltungName()).isEqualTo(expectedDO.getVeranstaltungName());
-//        assertThat(actual.getVeranstaltungWettkampftypName()).isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
-//        assertThat(actual.getVeranstaltungLigaleiterEmail()).isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
-//        assertThat(actual.getVeranstaltungLigaName()).isEqualTo(expectedDO.getVeranstaltungLigaName());
-//
-//        // Verify invocation
-//        verify(veranstaltungDAO).findByLigaIDAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
-*/
 
+
+
+
+
+
+
+
+
+
+
+    @Test
+    public void findByLigaIDAndSportjahr() {
+    final VeranstaltungBE expectedBE = getVeranstaltungBE();
+    final UserDO expectedUserDO = getUserDO();
+    final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+    final LigaDO expectedLigaDO = getLigaDO();
+    final VeranstaltungDO expectedDO = getVeranstaltungDO();
+
+    final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
+
+    // Configure mocks
+    when(veranstaltungDAO.findByLigaID(VERANSTALTUNG_LIGA_ID)).thenReturn(expectedVeranstaltungBEList);
+    when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_0)).thenReturn(expectedVeranstaltungBEList);
+    when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_1)).thenReturn(expectedVeranstaltungBEList);
+    when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_2)).thenReturn(expectedVeranstaltungBEList);
+    when(veranstaltungDAO.findBySportjahr(VERANSTALTUNG_SPORTJAHR, PHASELIST_3)).thenReturn(expectedVeranstaltungBEList);
+
+    when(ligaComponent.findById(anyLong())).thenReturn(expectedLigaDO);
+    when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+    when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+    // Call the method under test
+    final VeranstaltungDO actual = underTest.findByLigaIDAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
+
+    // Assert result
+    assertThat(actual).isNotNull();
+    assertThat(actual.getVeranstaltungID()).isEqualTo(expectedDO.getVeranstaltungID());
+    assertThat(actual.getVeranstaltungName()).isEqualTo(expectedDO.getVeranstaltungName());
+    assertThat(actual.getVeranstaltungWettkampftypName()).isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+    assertThat(actual.getVeranstaltungLigaleiterEmail()).isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+    assertThat(actual.getVeranstaltungLigaName()).isEqualTo(expectedDO.getVeranstaltungLigaName());
+
+    // Verify invocation
+    verify(veranstaltungDAO).findByLigaIdAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
+}
 
         /**
          * Test for findBySportjahrDestinct
