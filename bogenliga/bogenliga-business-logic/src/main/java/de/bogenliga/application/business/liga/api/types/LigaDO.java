@@ -64,17 +64,17 @@ public class LigaDO extends CommonDataObject implements DataObject {
         this.id=id;
         this.name = name;
         this.disziplinId = disziplinId;
-        this.regionId = regionId;
+
         this.regionName = regionName;
         this.ligaUebergeordnetId = ligaUebergeordnetId;
         this.ligaUebergeordnetName = ligaUebergeordnetName;
         this.ligaVerantwortlichId = ligaVerantwortlichId;
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
-        this.createdAtUtc = createdAtUtc;
+
         this.createdByUserId = createdByUserId;
-        this.lastModifiedAtUtc = lastModifiedAtUtc;
-        this.lastModifiedByUserId = lastModifiedByUserId;
-        this.version = version;
+
+
+
         this.ligaDetail = ligaDetail;
 
 
