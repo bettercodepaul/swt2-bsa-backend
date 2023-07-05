@@ -1,5 +1,7 @@
+/*
 INSERT INTO benutzer(
 benutzer_id,
+
 benutzer_email,
 benutzer_salt,
 benutzer_password,
@@ -21,3 +23,4 @@ VALUES (13, 2);
 
 
 
+   comment */
