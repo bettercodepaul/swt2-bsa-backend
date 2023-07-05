@@ -200,7 +200,6 @@ public class LigaServiceTest {
         verify(ligaComponent).checkExist(ID);
     }
 
-    /*
     @Test
     public void checkExistsLigaName() {
         // Prepare test data
@@ -217,8 +216,8 @@ public class LigaServiceTest {
         assertThat(actual.getName()).isEqualTo(ligaDO.getName());
 
         // Verify invocations
-        verify(ligaComponent).checkExist(ID);
-    }*/
+        verify(ligaComponent).checkExistsLigaName(ligaDO.getName());
+    }
 
 
     @Test

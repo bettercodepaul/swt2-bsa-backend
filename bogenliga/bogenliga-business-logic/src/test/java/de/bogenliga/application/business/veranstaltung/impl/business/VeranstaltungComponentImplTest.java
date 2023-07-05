@@ -784,6 +784,7 @@ public class VeranstaltungComponentImplTest {
         // verify invocations
         verify(veranstaltungDAO).findByLigaID(VERANSTALTUNG_LIGA_ID);
     }
+/*
 
 //        final VeranstaltungBE expectedBE = getVeranstaltungBE();
 //        final UserDO expectedUserDO = getUserDO();
@@ -817,6 +818,7 @@ public class VeranstaltungComponentImplTest {
 //
 //        // Verify invocation
 //        verify(veranstaltungDAO).findByLigaIDAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
+*/
 
 
         /**
