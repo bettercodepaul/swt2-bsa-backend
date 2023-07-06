@@ -2,7 +2,6 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,7 +58,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private WettkampfComponent wettkampfComponent;
     private final LigamatchDAO ligamatchDAO;
-    private long auffuellmannschaftID = -1;
+    private long platzhalterId = 99;
 
 
     /**
@@ -229,26 +228,15 @@ public class MatchComponentImpl implements MatchComponent {
         checkPreconditions(currentUserId, PRECONDITION_MSG_CURRENT_USER_ID);
 
         this.checkMatch(matchDO);
-        DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
 
-        // Check if the ID of the Auffuellmannschaft is already saved
-        if(auffuellmannschaftID < 0 || auffuellmannschaftID != matchDO.getMannschaftId()
-                && checkForVereinsID.getVereinId() == 9999L) {
-            // Find all Auffuellmannschaft mannschaften
-            List<DsbMannschaftDO> list = dsbMannschaftComponent.findAllByVereinsId(9999L);
-            for (DsbMannschaftDO dsbMannschaftDO : list) {
-                // Check if the matchDO is an Auffuellmannschaft
-                if (Objects.equals(matchDO.getMannschaftId(), dsbMannschaftDO.getId())) {
-                    auffuellmannschaftID = dsbMannschaftDO.getId();
-                }
+        try {
+            // Check if the Mannschaft of this match is an Platzhalter
+            DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
+            if (checkForVereinsID.getVereinId() == platzhalterId) {
+                matchDO.setMatchpunkte(0L);
+                matchDO.setSatzpunkte(0L);
             }
-        }
-
-        // Set the Match- and Satzpunkte for the Auffuellmannschaft to 0
-        if(auffuellmannschaftID == matchDO.getMannschaftId()) {
-            matchDO.setMatchpunkte(0L);
-            matchDO.setSatzpunkte(0L);
-        }
+        }catch (NullPointerException ignored) {}
 
         MatchBE matchBE = matchDAO.create(MatchMapper.toMatchBE.apply(matchDO), currentUserId);
         return MatchMapper.toMatchDO.apply(matchBE);

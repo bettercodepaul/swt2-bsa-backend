@@ -24,6 +24,7 @@ import de.bogenliga.application.services.v1.veranstaltung.service.VeranstaltungS
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissionAspect;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -217,6 +218,27 @@ public class VeranstaltungServiceTest {
 
         // verify invocations
         verify(VeranstaltungComponent).findById(ID);
+    }
+
+    @Test
+    public void findByLigaIdAndSportjahr() {
+        // prepare test data
+        final VeranstaltungDO VeranstaltungDO = getVeranstaltungDO();
+
+        // configure mocks
+        when(VeranstaltungComponent.findByLigaIDAndSportjahr(anyLong(), anyLong())).thenReturn(VeranstaltungDO);
+
+        // call test method
+        final VeranstaltungDTO actual = underTest.findByLigaIdAndSportjahr(LIGAID,SPORTJAHR);
+
+        // assert result
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isEqualTo(VeranstaltungDO.getVeranstaltungID());
+        assertThat(actual.getName()).isEqualTo(VeranstaltungDO.getVeranstaltungName());
+
+        // verify invocations
+        verify(VeranstaltungComponent).findByLigaIDAndSportjahr(LIGAID,SPORTJAHR);
+
     }
 
 
