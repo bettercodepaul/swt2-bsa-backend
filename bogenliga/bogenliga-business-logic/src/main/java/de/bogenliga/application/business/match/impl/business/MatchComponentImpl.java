@@ -283,7 +283,7 @@ public class MatchComponentImpl implements MatchComponent {
         matchBe.setNr(1L);
         matchBe.setBegegnung(begegnung);
         matchBe.setMannschaftId(mannschaftId);
-        matchBe.setScheibenNummer(scheibennummer);
+        matchBe.setMatchScheibennummer(scheibennummer);
 
         this.matchDAO.create(matchBe,currentUserId);
     }

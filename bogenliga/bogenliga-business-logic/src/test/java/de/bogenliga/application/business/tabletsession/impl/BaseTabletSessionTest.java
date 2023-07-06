@@ -30,7 +30,7 @@ public abstract class BaseTabletSessionTest {
 
     protected TabletSessionBE getTabletSessionBE() {
         TabletSessionBE tabBE = new TabletSessionBE();
-        tabBE.setScheibennummer(SCHEIBENNUMMER);
+        tabBE.setMatchScheibennummer(SCHEIBENNUMMER);
         tabBE.setWettkampfId(WETTKAMPF_ID);
         tabBE.setMatchId(MATCH_ID);
         tabBE.setSatznummer(SATZNUMMER);
@@ -47,7 +47,7 @@ public abstract class BaseTabletSessionTest {
 
     public BaseTabletSessionTest() {
         valuesToMethodMap.put("getWettkampfId", WETTKAMPF_ID);
-        valuesToMethodMap.put("getScheibennummer", SCHEIBENNUMMER);
+        valuesToMethodMap.put("getMatchScheibennummer", SCHEIBENNUMMER);
         valuesToMethodMap.put("getSatznummer", SATZNUMMER);
         valuesToMethodMap.put("getMatchId", MATCH_ID);
         valuesToMethodMap.put("getIsActive", IS_ACTIVE);

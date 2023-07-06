@@ -19,7 +19,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
     public static final Function<TabletSessionBE, TabletSessionDO> toTabletSessionDO = be -> {
 
         final Long id = be.getWettkampfId();
-        final Long scheibennr = be.getScheibennummer();
+        final Long scheibennr = be.getMatchScheibennummer();
         final Long satzNr = be.getSatznummer();
         final Long matchId = be.getMatchId();
         final Boolean active = be.isActive();
@@ -47,7 +47,7 @@ public class TabletSessionMapper implements ValueObjectMapper {
 
         TabletSessionBE tabBE = new TabletSessionBE();
         tabBE.setWettkampfId(vo.getWettkampfId());
-        tabBE.setScheibennummer(vo.getScheibennummer());
+        tabBE.setMatchScheibennummer(vo.getMatchScheibennummer());
         tabBE.setSatznummer(vo.getSatznummer());
         tabBE.setMatchId(vo.getMatchId());
         tabBE.setActive(vo.isActive());

@@ -21,7 +21,7 @@ public class MatchDTO implements DataTransferObject {
     private Long begegnung;
     private String wettkampfTyp;
     private Long wettkampfTag;
-    private Long scheibenNummer;
+    private Long matchScheibennummer;
     private Long matchpunkte;
     private Long satzpunkte;
 
@@ -52,7 +52,7 @@ public class MatchDTO implements DataTransferObject {
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
         this.setBegegnung(begegnung);
-        this.setScheibenNummer(scheibenNummer);
+        this.setMatchScheibennummer(scheibenNummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
         this.setPassen(passen);
@@ -134,13 +134,13 @@ public class MatchDTO implements DataTransferObject {
     }
 
 
-    public Long getScheibenNummer() {
-        return scheibenNummer;
+    public Long getMatchScheibennummer() {
+        return this.matchScheibennummer;
     }
 
 
-    public void setScheibenNummer(Long scheibenNummer) {
-        this.scheibenNummer = scheibenNummer;
+    public void setMatchScheibennummer(Long matchScheibennummer) {
+        this.matchScheibennummer = matchScheibennummer;
     }
 
 

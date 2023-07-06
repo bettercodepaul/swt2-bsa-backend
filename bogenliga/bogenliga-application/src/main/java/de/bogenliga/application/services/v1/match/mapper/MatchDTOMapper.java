@@ -38,7 +38,7 @@ public class MatchDTOMapper implements DataTransferObjectMapper {
      */
     public static final Function<MatchDTO, MatchDO> toDO = matchDTO -> new MatchDO(
             matchDTO.getId(), matchDTO.getNr(), matchDTO.getWettkampfId(), matchDTO.getMannschaftId(),
-            matchDTO.getBegegnung(), matchDTO.getScheibenNummer(),
+            matchDTO.getBegegnung(), matchDTO.getMatchScheibennummer(),
             matchDTO.getMatchpunkte(), matchDTO.getSatzpunkte(), matchDTO.getStrafPunkteSatz1(),
             matchDTO.getStrafPunkteSatz2(), matchDTO.getStrafPunkteSatz3(),
             matchDTO.getStrafPunkteSatz4(), matchDTO.getStrafPunkteSatz5()
