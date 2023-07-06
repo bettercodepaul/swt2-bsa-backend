@@ -19,9 +19,9 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
 
     public TabletSessionDO () {}
 
-    public TabletSessionDO(Long wettkampfId, Long matchScheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken) { //new CM
+    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken) { //new CM
         this.wettkampfId = wettkampfId;
-        this.matchScheibennummer = matchScheibennummer;
+        this.matchScheibennummer = scheibennummer;
         this.satznummer = satznummer;
         this.matchId = matchId;
         this.active = active;
@@ -29,12 +29,12 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
     }
 
 
-    public TabletSessionDO(Long wettkampfId, Long matchScheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken, //new CM
+    public TabletSessionDO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken, //new CM
                            final OffsetDateTime createdAtUtc,
                            final Long createdByUserId, final OffsetDateTime lastModifiedAtUtc,
                            final Long lastModifiedByUserId, final Long version) {
         this.wettkampfId = wettkampfId;
-        this.matchScheibennummer = matchScheibennummer;
+        this.matchScheibennummer = scheibennummer;
         this.satznummer = satznummer;
         this.matchId = matchId;
         this.active = active;
@@ -65,8 +65,8 @@ public class TabletSessionDO extends CommonDataObject implements DataObject {
     }
 
 
-    public void setMatchScheibennummer(Long matchScheibennummer) {
-        this.matchScheibennummer = matchScheibennummer;
+    public void setMatchScheibennummer(Long scheibennummer) {
+        this.matchScheibennummer = scheibennummer;
     }
 
 
