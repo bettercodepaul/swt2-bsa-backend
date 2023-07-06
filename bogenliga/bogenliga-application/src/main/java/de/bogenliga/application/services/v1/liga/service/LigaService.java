@@ -14,6 +14,7 @@ import de.bogenliga.application.common.validation.Preconditions;
 import de.bogenliga.application.services.v1.liga.mapper.LigaDTOMapper;
 import de.bogenliga.application.services.v1.liga.model.LigaDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresOnePermissions;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 
 /**
@@ -106,6 +107,27 @@ public class LigaService implements ServiceFacade {
     }
 
 
+
+    /**
+     * Returns a liga entry of the given liga name
+     *
+     * @param liganame liga name of the klasse to be returned
+     *
+     * @return returns a klasse
+     */
+    @GetMapping(value = "/checkExistsLigaName/{liganame}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
+    public LigaDTO checkExistsLigaName(@PathVariable("liganame") final String liganame) {
+
+        final LigaDO ligaExist = ligaComponent.checkExistsLigaName(liganame);
+        return LigaDTOMapper.toDTO.apply(ligaExist);
+    }
+
+
+
+
+
+
     /**
      * I persist a new liga and return this liga entry
      *
@@ -138,7 +160,7 @@ public class LigaService implements ServiceFacade {
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
+    @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER, UserPermission.CAN_MODIFY_STAMMDATEN})
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
 

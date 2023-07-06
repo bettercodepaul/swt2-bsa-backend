@@ -45,11 +45,15 @@ public class VeranstaltungComponentImplTest {
     private static final Long VERANSTALTUNG_WETTKAMPFTYP_ID = 1L;
     private static final String VERANSTALTUNG_NAME = "";
     private static final Long VERANSTALTUNG_SPORTJAHR = 2018L;
+
+    private static final Integer VERANSTALTUNG_SPORTJAHR_REAL = 2018;
     private static final Long LAST_VERANSTALTUNG_SPORTJAHR = 2017L;
     private static final Date VERANSTALTUNG_DSB_IDENTIFIER = new Date(1L);
     private static final Long VERANSTALTUNG_LIGALEITER_ID = 0L;
     private static final Date VERANSTALTUNG_MELDEDEADLINE = new Date(2L);
     private static final Long VERANSTALTUNG_LIGA_ID = 0L;
+
+    private static final Integer VERANSTALTUNG_LIGA_ID_REAL = 2;
     private static final Integer VERANSTALTUNG_PHASE = 1;
     private static final String VERANSTALTUNG_PHASE_GEPLANT = "GEPLANT";
     private static final Integer VERANSTALTUNG_GROESSE = 8;
@@ -388,8 +392,9 @@ public class VeranstaltungComponentImplTest {
         // verify invocations
         verify(veranstaltungDAO).findById(VERANSTALTUNG_ID);
     }
-    //TODO Fix
-  @Test
+
+
+    @Test
   public void update() {
         // prepare test data
         final VeranstaltungDO input = getVeranstaltungDO();
@@ -780,12 +785,77 @@ public class VeranstaltungComponentImplTest {
         verify(veranstaltungDAO).findByLigaID(VERANSTALTUNG_LIGA_ID);
     }
 
+    @Test
+    public void testFindByLigaIDAndSportjahr() {
+        // prepare test data
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
 
-    /**
-     * Test for findBySportjahrDestinct
-     *
-     * @author Johannes Schänzle, Max Weise; FH Reutlingen
-     */
+        final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(veranstaltungDAO.findByLigaIdAndSportjahr(VERANSTALTUNG_LIGA_ID,VERANSTALTUNG_SPORTJAHR)).thenReturn(expectedVeranstaltungBEList.get(0));
+
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+        // call test method
+        final VeranstaltungDO actual = underTest.findByLigaIDAndSportjahr(VERANSTALTUNG_LIGA_ID,VERANSTALTUNG_SPORTJAHR);
+        // assert result
+        assertThat(actual)
+                .isNotNull();
+
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getVeranstaltungID())
+                .isEqualTo(expectedDO.getVeranstaltungID());
+
+        assertThat(actual.getVeranstaltungName())
+                .isEqualTo(expectedDO.getVeranstaltungName());
+
+        assertThat(actual.getVeranstaltungWettkampftypName())
+                .isEqualTo(expectedDO.getVeranstaltungWettkampftypName());
+        assertThat(actual.getVeranstaltungLigaleiterEmail())
+                .isEqualTo(expectedDO.getVeranstaltungLigaleiterEmail());
+        assertThat(actual.getVeranstaltungLigaName())
+                .isEqualTo(expectedDO.getVeranstaltungLigaName());
+
+        // verify invocations
+        verify(veranstaltungDAO).findByLigaIdAndSportjahr(VERANSTALTUNG_LIGA_ID, VERANSTALTUNG_SPORTJAHR);
+    }
+
+/*    @Test
+    public void findByLigaIDAndSportjahr_LigaIdPreconditionFailure() {
+        // prepare test data
+        final VeranstaltungBE expectedBE = getVeranstaltungBE();
+        final UserDO expectedUserDO = getUserDO();
+        final WettkampfTypDO expectedWettkampfTypDO = getWettkampfTypDO();
+        final LigaDO expectedligaDO = getLigaDO();
+        final VeranstaltungDO expectedDO = getVeranstaltungDO();
+
+        final List<VeranstaltungBE> expectedVeranstaltungBEList = Collections.singletonList(expectedBE);
+
+        // configure mocks
+        when(veranstaltungDAO.findByLigaIdAndSportjahr(eq(-1L), anyLong())).thenReturn(null);
+
+        when(ligaComponent.findById(anyLong())).thenReturn(expectedligaDO);
+        when(wettkampfTypComponent.findById(anyLong())).thenReturn(expectedWettkampfTypDO);
+        when(userComponent.findById(anyLong())).thenReturn(expectedUserDO);
+
+        assertThat()
+
+        // verify invocations
+        verify(veranstaltungDAO).findByLigaIdAndSportjahr(eq(-1L), anyLong());
+    }*/
+        /**
+         * Test for findBySportjahrDestinct
+         *
+         * @author Johannes Schänzle, Max Weise; FH Reutlingen
+         */
     @Test
     public void testfindBySportjahrDestinct(){
         // prepare test data
