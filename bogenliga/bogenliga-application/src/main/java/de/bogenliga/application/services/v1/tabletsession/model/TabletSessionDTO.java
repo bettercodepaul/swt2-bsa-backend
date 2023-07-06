@@ -14,7 +14,7 @@ public class TabletSessionDTO {
     private Long accessToken;
 
 
-    public TabletSessionDTO(Long wettkampfId, Long scheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken) {
+    public TabletSessionDTO(Long wettkampfId, Long matchScheibennummer, Long satznummer, Long matchId, Boolean active, Long accessToken) {
         this.wettkampfId = wettkampfId;
         this.matchScheibennummer = matchScheibennummer;
         this.satznummer = satznummer;
