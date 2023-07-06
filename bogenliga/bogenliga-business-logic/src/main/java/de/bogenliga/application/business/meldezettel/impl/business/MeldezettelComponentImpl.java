@@ -154,12 +154,14 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             i++;
         }
 
-        for (int manschaftCounter = 0; manschaftCounter < veranstaltungGroesse; manschaftCounter++) {
+        for (int mannschaftCounter = 0; mannschaftCounter < veranstaltungGroesse; mannschaftCounter++) {
 
-
+            if((teamNameList[mannschaftCounter].equals(PLATZHALTER_NAME) && mannschaftCounter == 0)) {
+                continue;
+            }
 
             String header = wettkampfTag + ". WK " + veranstaltungsName + " " + disziplinsName + " am " + simpleDateFormat.format(wettkampfDatum);
-            String verein = "Verein: " + teamNameList[manschaftCounter];
+            String verein = "Verein: " + teamNameList[mannschaftCounter];
 
             final Table mainTable = new Table(UnitValue.createPercentArray(2), true);
             final Table mainTableFirstRowFirstPart = new Table(UnitValue.createPercentArray(1), true);
@@ -280,15 +282,15 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
             // Fill first table in fifth row
             mainTableFifthRowFirstPart
                     .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("RNr.: " + teamNameList[manschaftCounter]).setBold().setFontSize(10.0F))
+                            .add(new Paragraph("RNr.: " + teamNameList[mannschaftCounter]).setBold().setFontSize(10.0F))
                     )
             ;
 
             // Create table for Mitglieder with 2 fixed width columns
             final Table mitgliederTable = new Table(new float[]{150F, 150F});
             for (int mitgliedCounter = 1; mitgliedCounter < teamMemberMapping.get(
-                    teamNameList[manschaftCounter]).size() + 1; mitgliedCounter++) {
-                DsbMitgliedDO mitgliedDO = teamMemberMapping.get(teamNameList[manschaftCounter]).get(
+                    teamNameList[mannschaftCounter]).size() + 1; mitgliedCounter++) {
+                DsbMitgliedDO mitgliedDO = teamMemberMapping.get(teamNameList[mannschaftCounter]).get(
                         mitgliedCounter - 1);
                 mitgliederTable
                         .addCell(new Cell().setBorder(Border.NO_BORDER)
@@ -391,7 +393,7 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
                                 .add(mainTableSubParts[0]).setPaddingLeft(30.0F).setPaddingRight(5.0F)
                         );
             }
-            if(!(teamNameList[manschaftCounter].equals(PLATZHALTER_NAME))) {
+            if(!(teamNameList[mannschaftCounter].equals(PLATZHALTER_NAME))) {
                 // Add all to document
                 doc.add(mainTable.setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F)).setBorder(
                         Border.NO_BORDER);
@@ -399,14 +401,14 @@ public class MeldezettelComponentImpl implements MeldezettelComponent {
 
 
             if (numberOfMatches == 6) {
-                if (manschaftCounter != 3) {
-                    if(!(teamNameList[manschaftCounter+1].equals(PLATZHALTER_NAME))) {
+                if (mannschaftCounter != 3) {
+                    if(!(teamNameList[mannschaftCounter+1].equals(PLATZHALTER_NAME))) {
                         doc.add(new AreaBreak());
                     }
                 }
             }else {
-                if (manschaftCounter != numberOfMatches) {
-                    if(!(teamNameList[manschaftCounter+1].equals(PLATZHALTER_NAME))) {
+                if (mannschaftCounter != numberOfMatches) {
+                    if(!(teamNameList[mannschaftCounter+1].equals(PLATZHALTER_NAME))) {
                         doc.add(new AreaBreak());
                     }
                 }
