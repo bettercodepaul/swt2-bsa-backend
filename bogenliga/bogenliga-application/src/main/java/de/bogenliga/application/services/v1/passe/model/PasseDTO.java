@@ -25,28 +25,28 @@ public class PasseDTO implements DataTransferObject {
 
     public PasseDTO(Long id, Long mannschaftId, Long wettkampfId, Long matchNr, Long matchid,
                     Long lfdNr, Long dsbMitgliedId, Integer[] ringzahl) {
-        this.setId(id);
-        this.setMannschaftId(mannschaftId);
-        this.setWettkampfId(wettkampfId);
-        this.setMatchNr(matchNr);
-        this.setMatchId(matchid);
-        this.setLfdNr(lfdNr);
-        this.setDsbMitgliedId(dsbMitgliedId);
-        this.setRingzahl(ringzahl);
+        this.id = id;
+        this.mannschaftId = mannschaftId;
+        this.wettkampfId = wettkampfId;
+        this.matchNr = matchNr;
+        this.matchId = matchid;
+        this.lfdNr = lfdNr;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.ringzahl = ringzahl;
     }
 
 
     public PasseDTO(Long id, Long mannschaftId, Long wettkampfId, Long matchNr, Long matchid,
                     Long lfdNr, Integer rueckennummer, Long dsbMitgliedId, Integer[] ringzahl) {
-        this.setId(id);
-        this.setMannschaftId(mannschaftId);
-        this.setWettkampfId(wettkampfId);
-        this.setMatchNr(matchNr);
-        this.setMatchId(matchid);
-        this.setLfdNr(lfdNr);
-        this.setDsbMitgliedId(dsbMitgliedId);
-        this.setRingzahl(ringzahl);
-        this.setRueckennummer(rueckennummer);
+        this.id = id;
+        this.mannschaftId = mannschaftId;
+        this.wettkampfId = wettkampfId;
+        this.matchNr = matchNr;
+        this.matchId = matchid;
+        this.lfdNr = lfdNr;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.ringzahl = ringzahl;
+        this.rueckennummer = rueckennummer;
     }
 
 

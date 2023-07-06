@@ -32,14 +32,14 @@ public class LigaSyncPasseDTO implements DataTransferObject {
     public LigaSyncPasseDTO(Long id, Long version, Long matchId, Long mannschaftId,
                             Long wettkampfId, Long lfdNr, Long dsbMitgliedId,
                             Integer[] ringzahl) {
-        this.setId(id);
-        this.setVersion(version);
-        this.setMatchId(matchId);
-        this.setMannschaftId(mannschaftId);
-        this.setWettkampfId(wettkampfId);
-        this.setLfdNr(lfdNr);
-        this.setDsbMitgliedId(dsbMitgliedId);
-        this.setRingzahl(ringzahl);
+        this.id = id;
+        this.version = version;
+        this.matchId = matchId;
+        this.mannschaftId = mannschaftId;
+        this.wettkampfId = wettkampfId;
+        this.lfdNr = lfdNr;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.ringzahl = ringzahl;
     }
 
     // Konstruktor mit allen Attributen
@@ -47,15 +47,15 @@ public class LigaSyncPasseDTO implements DataTransferObject {
                             Long wettkampfId, Long lfdNr, Long dsbMitgliedId,
                             Integer rueckennummer,
                             Integer[] ringzahl) {
-        this.setId(id);
-        this.setVersion(version);
-        this.setMatchId(matchId);
-        this.setMannschaftId(mannschaftId);
-        this.setWettkampfId(wettkampfId);
-        this.setLfdNr(lfdNr);
-        this.setDsbMitgliedId(dsbMitgliedId);
-        this.setRueckennummer(rueckennummer);
-        this.setRingzahl(ringzahl);
+        this.id = id;
+        this.version = version;
+        this.matchId = matchId;
+        this.mannschaftId = mannschaftId;
+        this.wettkampfId = wettkampfId;
+        this.lfdNr = lfdNr;
+        this.dsbMitgliedId = dsbMitgliedId;
+        this.rueckennummer = rueckennummer;
+        this.ringzahl = ringzahl;
     }
 
     public Integer getRueckennummer() {
@@ -114,35 +114,6 @@ public class LigaSyncPasseDTO implements DataTransferObject {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof LigaSyncPasseDTO)) {
-            return false;
-        }
-        LigaSyncPasseDTO that = (LigaSyncPasseDTO) o;
-        return Objects.equals(getId(),
-                that.getId()) && Objects.equals(getVersion(),
-                that.getVersion()) && Objects.equals(getMatchId(),
-                that.getMatchId()) && Objects.equals(getMannschaftId(),
-                that.getMannschaftId()) && Objects.equals(getWettkampfId(),
-                that.getWettkampfId()) && Objects.equals(getLfdNr(),
-                that.getLfdNr()) && Objects.equals(getDsbMitgliedId(),
-                that.getDsbMitgliedId()) && Arrays.equals(getRingzahl(),
-                that.getRingzahl()) && Objects.equals(getRueckennummer(),
-                that.getRueckennummer());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(getId(), getVersion(), getMatchId(), getMannschaftId(), getWettkampfId(), getLfdNr(),
-                getDsbMitgliedId(), getRueckennummer());
-        result = 31 * result + Arrays.hashCode(getRingzahl());
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "LigaSyncPasseDTO{" +
                 "id=" + id +
@@ -156,7 +127,30 @@ public class LigaSyncPasseDTO implements DataTransferObject {
                 ", rueckennummer=" + rueckennummer +
                 '}';
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LigaSyncPasseDTO)) {
+            return false;
+        }
+        LigaSyncPasseDTO that = (LigaSyncPasseDTO) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getVersion(),
+                that.getVersion()) && Objects.equals(getMatchId(), that.getMatchId()) && Objects.equals(
+                getMannschaftId(), that.getMannschaftId()) && Objects.equals(getWettkampfId(),
+                that.getWettkampfId()) && Objects.equals(getLfdNr(), that.getLfdNr()) && Objects.equals(
+                getDsbMitgliedId(), that.getDsbMitgliedId()) && Arrays.equals(getRingzahl(),
+                that.getRingzahl()) && Objects.equals(getRueckennummer(), that.getRueckennummer());
+    }
 
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getId(), getVersion(), getMatchId(), getMannschaftId(), getWettkampfId(), getLfdNr(),
+                getDsbMitgliedId(), getRueckennummer());
+        result = 31 * result + Arrays.hashCode(getRingzahl());
+        return result;
+    }
 
 
 }
