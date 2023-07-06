@@ -568,13 +568,13 @@ public class WettkampfComponentImpl implements WettkampfComponent {
         for(int i=0 ; i<14 ; i++)
             table.addCell(new Cell().setBorder(Border.NO_BORDER).add(new Paragraph("")));
 
-        for(WettkampfBE wetkampf : wettkaempfe)
+        for(WettkampfBE wettkampf : wettkaempfe)
         {
             List<MatchDO> matches = sortForDisplay(matchComponent.findByWettkampfId(wettkampfid));
 
             MatchDO alt = new MatchDO(null,null,null,null,null,null,null,null,null,null,null,null,null);
             int count = 1;
-            List<PasseDO> passen = passeComponent.findByWettkampfId(wetkampf.getId());
+            List<PasseDO> passen = passeComponent.findByWettkampfId(wettkampf.getId());
 
             for(MatchDO match : matches)
             {
