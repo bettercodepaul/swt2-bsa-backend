@@ -75,6 +75,11 @@ public class VeranstaltungDAO implements DataAccessObject{
                     + " FROM veranstaltung "
                     + " WHERE veranstaltung_id = ?";
 
+    private static final String FIND_BY_LIGAID_AND_SPORTJAHR =
+            "SELECT * "
+                    + " FROM veranstaltung "
+                    + " WHERE veranstaltung_liga_id = ? AND veranstaltung_sportjahr = ?";
+
     private static final String FIND_BY_LIGALEITER_ID =
             "SELECT * "
                     + " FROM veranstaltung "
@@ -189,6 +194,16 @@ public class VeranstaltungDAO implements DataAccessObject{
         return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_ID, id);
     }
 
+    /**
+     * Return Veranstaltung entry with specific liga id and sport year
+     *
+     * @param ligaId - selected liga ID of Veranstaltung you want to recieve
+     * @param sportjahr - selected sport year of Veranstaltung you want to recieve
+     */
+    public VeranstaltungBE findByLigaIdAndSportjahr(final long ligaId, final long sportjahr) {
+        return basicDao.selectSingleEntity(VERANSTALTUNG, FIND_BY_LIGAID_AND_SPORTJAHR, ligaId, sportjahr);
+    }
+
 
     /**
      * Return Veranstaltungen with the same Sportjahr specified by the amount of passed phases (even none passed
@@ -244,6 +259,7 @@ public class VeranstaltungDAO implements DataAccessObject{
         return sportjahre;
 
     }
+
 
 
     /**
