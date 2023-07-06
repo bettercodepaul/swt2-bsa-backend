@@ -52,6 +52,7 @@ public class DsbMannschaftComponentImplTest {
     
     private static final String VEREIN_NAME = "Testverein";
     private static final String MA_NAME = VEREIN_NAME+" "+ NUMMER;
+    private static final long PLATZHALTER_ID = 99L;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -94,6 +95,17 @@ public class DsbMannschaftComponentImplTest {
                 ID,
                 MA_NAME,
                 VEREIN_ID,
+                NUMMER,
+                BENUTZER_ID,
+                VERANSTALTUNG_ID,
+                SORTIERUNG);
+    }
+
+    public static DsbMannschaftDO getPlatzhalterDO() {
+        return new DsbMannschaftDO(
+                ID,
+                "Platzhalter",
+                PLATZHALTER_ID,
                 NUMMER,
                 BENUTZER_ID,
                 VERANSTALTUNG_ID,

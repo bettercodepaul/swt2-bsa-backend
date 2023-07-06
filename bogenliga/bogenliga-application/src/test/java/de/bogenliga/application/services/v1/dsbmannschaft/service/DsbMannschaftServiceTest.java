@@ -17,9 +17,12 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.services.v1.dsbmannschaft.mapper.DsbMannschaftDTOMapper;
 import de.bogenliga.application.services.v1.dsbmannschaft.model.DsbMannschaftDTO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,6 +53,9 @@ public class DsbMannschaftServiceTest {
     private static final long CURRENT_VERANSTALTUNG_ID = 55555;
     private static final long SORTIERUNG = 1;
 
+    private static final long PLATZHALTER_VEREIN_ID = 99;
+    private static final long PLATZHALTER_ID = 6969;
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -79,15 +85,21 @@ public class DsbMannschaftServiceTest {
         );
     }
 
-    public static DsbMannschaftDO getAuffuellmannschaft() {
+    public static DsbMannschaftDO getPlatzhalterDO() {
         return new DsbMannschaftDO(
-                6969L, "Auffuellmannschaft", 9999L, 696969L, 01274L, 4444L, 8L
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
+        );
+    }
+
+    public static DsbMannschaftDTO getPlatzhalterDTO() {
+        return new DsbMannschaftDTO(
+                PLATZHALTER_ID, "Platzhalter", PLATZHALTER_VEREIN_ID, NUMMER, BENUTZER_ID, VERANSTALTUNG_ID, 8L
         );
     }
 
     public static DsbMannschaftDO getMockMannschaft() {
         return new DsbMannschaftDO(
-                6969L, "Mockmannschaft", 9999L, 696969L, 01274L, 4445L, 8L
+                6969L, "Mockmannschaft", 99L, 696969L, 01274L, 4445L, 8L
         );
     }
 
@@ -225,19 +237,19 @@ public class DsbMannschaftServiceTest {
         // prepare test data
         final DsbMannschaftDTO input = getDsbMannschaftDTO();
         final DsbMannschaftDO expected = getDsbMannschaftDO();
-        final DsbMannschaftDO auffuellmannschaft = getAuffuellmannschaft();
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
         final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
 
 
         // Mock the findAllByVereinsId method
         List<DsbMannschaftDO> list = new ArrayList<>();
-        list.add(auffuellmannschaft);
+        list.add(platzhalterDO);
 
         // configure mocks
         when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(expected);
         when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
         when(dsbMannschaftComponent.findAllByVereinsId(anyLong())).thenReturn(list);
-        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+        when(veranstaltungComponent.findById((anyLong()))).thenReturn(veranstaltungDO);
 
         // call test method
         try {
@@ -263,6 +275,48 @@ public class DsbMannschaftServiceTest {
         } catch (NoPermissionException e) { }
     }
 
+    @Test
+    public void createPlatzhalter() {
+        // prepare test data
+        final DsbMannschaftDO expected = getDsbMannschaftDO();
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
+        final DsbMannschaftDTO platzhalterDTO = getPlatzhalterDTO();
+        final VeranstaltungDO veranstaltungDO = getMockVeranstaltung();
+
+        // Mock the findAllByVeranstaltungsId
+        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
+        actualMannschaftInVeranstaltungCount.add(expected);
+
+        // configure mocks
+        when(dsbMannschaftComponent.create(any(), anyLong())).thenReturn(platzhalterDO);
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(actualMannschaftInVeranstaltungCount);
+        when(veranstaltungComponent.findById((anyLong()))).thenReturn(veranstaltungDO);
+
+        // call test method
+        try {
+            final DsbMannschaftDTO actual = underTest.create(platzhalterDTO, principal);
+
+            // assert result
+            assertThat(actual).isNotNull();
+            assertThat(actual.getId()).isEqualTo(platzhalterDTO.getId());
+            assertThat(actual.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
+            assertThat(actual.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
+
+
+            // verify invocations
+            verify(dsbMannschaftComponent).create(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+
+            final DsbMannschaftDO createdDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+
+            assertThat(createdDsbMannschaft).isNotNull();
+            assertThat(createdDsbMannschaft.getId()).isEqualTo(platzhalterDTO.getId());
+            assertThat(createdDsbMannschaft.getVereinId()).isEqualTo(platzhalterDTO.getVereinId());
+            assertThat(createdDsbMannschaft.getSortierung()).isEqualTo(platzhalterDTO.getSortierung());
+
+        } catch (NoPermissionException e) { }
+    }
+
 
     @Test
     public void createNoPermission() {
@@ -277,6 +331,95 @@ public class DsbMannschaftServiceTest {
 
         assertThatExceptionOfType(NoPermissionException.class)
                 .isThrownBy(()-> underTest.create(input, principal));
+    }
+
+    @Test
+    public void createMannschaftsMitgliedForPlatzhalter1() {
+        // prepare test data
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
+        final DsbMannschaftDO platzhalterDO2 = getPlatzhalterDO();
+        platzhalterDO2.setVereinId(0L);
+
+        // call test method
+        try {
+            underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO, principal);
+
+            assertThatExceptionOfType(BusinessException.class)
+                    .isThrownBy(()-> underTest.createMannschaftsMitgliedForPlatzhalter(platzhalterDO2, principal));
+        } catch (NoPermissionException ignored) { }
+    }
+
+    @Test
+    public void checkForPlatzhalter() {
+        // Testcases:
+        // 1. Adding new Platzhalter
+        // 2. Adding new Platzhalter && But Platzhalter already in Veranstaltung
+
+        // prepare test data
+        final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
+        final DsbMannschaftDO platzhalter = getPlatzhalterDO();
+        final DsbMannschaftDTO platzhalterDTO = getPlatzhalterDTO();
+        final int veranstaltunggroesse = 3;
+
+
+        // List with Mannschaften that are in the Veranstaltung
+        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
+        actualMannschaftInVeranstaltungCount.add(platzhalter);
+        actualMannschaftInVeranstaltungCount.add(mannschaft);
+
+        platzhalter.setVeranstaltungId(1L);
+
+        // List with all existing Platzhalter
+        List<DsbMannschaftDO> allExistingPlatzhalterList = new ArrayList<>();
+        allExistingPlatzhalterList.add(platzhalter);
+
+        // configure Mock
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+
+        try {
+            underTest.checkForPlatzhalter(actualMannschaftInVeranstaltungCount,
+                    allExistingPlatzhalterList, platzhalterDTO, veranstaltunggroesse, principal);
+
+        }catch (NoPermissionException ignored) {}
+    }
+
+    @Test
+    public void checkForPlatzhalterAddNormalMannschaft() {
+        // Testcase:
+        // Adding new Mannschaft && Platzhalter already in Veranstaltung existing and Veranstaltung is full
+
+        // prepare test data
+        final DsbMannschaftDO mannschaft = getDsbMannschaftDO();
+        final DsbMannschaftDTO mannschaftDTO = getDsbMannschaftDTO();
+        final DsbMannschaftDO platzhalterDO = getPlatzhalterDO();
+        final int veranstaltunggroesse = 2;
+
+        // List with Mannschaften that are in the Veranstaltung
+        List<DsbMannschaftDO> actualMannschaftInVeranstaltungCount = new ArrayList<>();
+        actualMannschaftInVeranstaltungCount.add(mannschaft);
+        actualMannschaftInVeranstaltungCount.add(platzhalterDO);
+
+        // List with all existing Platzhalter
+        List<DsbMannschaftDO> allExistingPlatzhalterList = new ArrayList<>();
+        allExistingPlatzhalterList.add(platzhalterDO);
+
+
+        // configure Mocks
+        when(requiresOnePermissionAspect.hasPermission(any())).thenReturn(true);
+        try {
+            when(allExistingPlatzhalterList.get(any()).getVeranstaltungId()).thenReturn(platzhalterDO.getVeranstaltungId());
+        }catch (NullPointerException ignored) {}
+
+        try {
+            underTest.checkForPlatzhalter(actualMannschaftInVeranstaltungCount,
+                    allExistingPlatzhalterList, mannschaftDTO, veranstaltunggroesse, principal);
+
+            verify(dsbMannschaftComponent).delete(dsbMannschaftVOArgumentCaptor.capture(), anyLong());
+            final DsbMannschaftDO deletedDsbMannschaft = dsbMannschaftVOArgumentCaptor.getValue();
+
+            assertThat(deletedDsbMannschaft).isNotNull();
+
+        }catch (NoPermissionException ignored) {}
     }
 
 
