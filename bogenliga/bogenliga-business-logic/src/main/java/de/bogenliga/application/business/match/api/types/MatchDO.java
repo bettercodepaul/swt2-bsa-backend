@@ -24,7 +24,7 @@ public class MatchDO extends CommonDataObject {
     private Long strafPunkteSatz5;
 
 
-    public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long matchScheibennummer,
+    public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibennummer,
                    Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
                    Long strafPunkteSatz3,
                    Long strafPunkteSatz4, Long strafPunkteSatz5,
@@ -36,7 +36,7 @@ public class MatchDO extends CommonDataObject {
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
         this.setBegegnung(begegnung);
-        this.setMatchScheibennummer(matchScheibennummer);
+        this.setMatchScheibennummer(scheibennummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
         this.setStrafPunkteSatz1(strafPunkteSatz1);
@@ -53,14 +53,14 @@ public class MatchDO extends CommonDataObject {
     }
 
     public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung,
-                   Long matchScheibennummer, Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
+                   Long scheibennummer, Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
                    Long strafPunkteSatz3, Long strafPunkteSatz4, Long strafPunkteSatz5) {
         this.setId(id);
         this.setNr(nr);
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
         this.setBegegnung(begegnung);
-        this.setMatchScheibennummer(matchScheibennummer);
+        this.setMatchScheibennummer(scheibennummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
 
@@ -127,8 +127,8 @@ public class MatchDO extends CommonDataObject {
     }
 
 
-    public void setMatchScheibennummer(Long matchScheibennummer) {
-        this.matchScheibennummer = matchScheibennummer;
+    public void setMatchScheibennummer(Long scheibennummer) {
+        this.matchScheibennummer = scheibennummer;
     }
 
 
