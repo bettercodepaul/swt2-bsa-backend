@@ -34,9 +34,12 @@ import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponen
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
+import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
@@ -63,6 +66,8 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private static final String SCHUSSZETTEL_PFEIL1 = "Pfeil 1";
     private static final String SCHUSSZETTEL_PFEIL2 = "Pfeil 2";
     private static final String SCHUSSZETTEL_UNTERSCHRIFT = "Unterschrift";
+    private static final String PLATZHALTER_NAME = "Platzhalter";
+    private static final long PLATZHALTER_ID = 99;
 
     private final MatchComponent matchComponent;
     private final PasseComponent passeComponent;
@@ -70,6 +75,7 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final VereinComponent vereinComponent;
     private final WettkampfComponent wettkampfComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
 
     @Autowired
     public SchusszettelComponentImpl(final MatchComponent matchComponent,
@@ -77,13 +83,15 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                                      final DsbMannschaftComponent dsbMannschaftComponent,
                                      final MannschaftsmitgliedComponent mannschaftsmitgliedComponent,
                                      final VereinComponent vereinComponent,
-                                     final WettkampfComponent wettkampfComponent) {
+                                     final WettkampfComponent wettkampfComponent,
+                                     final VeranstaltungComponent veranstaltungComponent) {
         this.matchComponent = matchComponent;
         this.passeComponent = passeComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
         this.mannschaftsmitgliedComponent = mannschaftsmitgliedComponent;
         this.vereinComponent = vereinComponent;
         this.wettkampfComponent = wettkampfComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
     }
 
     @Override
@@ -92,9 +100,13 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         List<MatchDO> matchDOList = matchComponent.findByWettkampfId(wettkampfid);
 
+        // Informationen sammeln zu Veranstaltungs Groesse
+        WettkampfDO wettkampfDO = wettkampfComponent.findById(wettkampfid);
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfDO.getWettkampfVeranstaltungsId());
+
         byte[] bResult;
         if (!matchDOList.isEmpty()) {
-            bResult = generateDoc(matchDOList).toByteArray();
+            bResult = generateDoc(matchDOList, veranstaltungDO.getVeranstaltungGroesse()).toByteArray();
         }else{
             throw new BusinessException(ErrorCode.UNEXPECTED_ERROR, "Matches für den Wettkampf noch nicht erzeugt");
         }
@@ -477,28 +489,59 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
-            // Third row
-            matchThirdRows[i-1]
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
-                    )
-                    // Two empty cells for text input
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("\n"))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("\n"))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
-                    )
-            ;
+            // If the first team is a Platzhalter (Leermatch) don´t show the Unterschrift section for the Platzhalter,
+            // the same procedure if the second team is a Platzhalter
+            if(dsbMannschaftComponent.findById(matchDOs[0].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
+                matchThirdRows[i-1]
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER));
+            }else if (dsbMannschaftComponent.findById(matchDOs[1].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
+                matchThirdRows[i-1]
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER));
+            }else {
+                // Third row
+                matchThirdRows[i-1]
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
+                        )
+                        // Two empty cells for text input
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        );
+            }
 
             // Add subtables to main tables
             matchFirstRows[i-1]
@@ -566,12 +609,21 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
 
         // Build page with both matches and separator
         for (int i = 0; i < 2; i++) {
+
+            // If the first team is a Platzhalter (Leermatch) skip it, the same procedure if the second team is
+            // a Platzhalter
+            if(mannschaftName[0].contains(PLATZHALTER_NAME) && i==0){
+                continue;
+            }else if (mannschaftName[1].contains(PLATZHALTER_NAME) && i==1){
+                break;
+            }
+
             // If there's no 2nd match data, break
             if (matchHeaders[i] == null) {
                 break;
             }
             // Add separator
-            if (i == 1) {
+            if (i == 1 && !(mannschaftName[0].contains(PLATZHALTER_NAME))) {
                 doc.add(new LineSeparator(cutterDottedLine).setMargins(25.0F, 1.0F, 25.0F, 1.0F));
             }
             // Add all to document
@@ -591,23 +643,26 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
      * <p>writes a Schusszettel document for the Wettkamnpf
      * </p>
      */
-    private ByteArrayOutputStream generateDoc(List<MatchDO> matchDOList) {
+    private ByteArrayOutputStream generateDoc(List<MatchDO> matchDOList, int veranstaltungGroesse) {
         ByteArrayOutputStream ret;
         try (final ByteArrayOutputStream result = new ByteArrayOutputStream();
              final PdfWriter writer = new PdfWriter(result);
              final PdfDocument pdfDocument = new PdfDocument(writer);
              final Document doc = new Document(pdfDocument, PageSize.A4)) {
 
+            int numberOfMatches = numberOfMatches(veranstaltungGroesse);
+
             //iterate through matches
-            for (long i = 1; i<=7; i++){
+            for (long i = 1; i<=numberOfMatches; i++){
                 //iterate through begegnungen
-                for(long k = 1; k<=4; k++){
+                for(long k = 1; k<=veranstaltungGroesse/2; k++){
                     MatchDO[] matchesBegegnung = getMatchDOsForPage(matchDOList , i, k);
                     if(matchesBegegnung[0] != null && matchesBegegnung[1] != null) {
                         generateSchusszettelPage(doc, matchesBegegnung);
-                        if(i != 7){
-                            doc.add(new AreaBreak());
+                        if (i == numberOfMatches && k == veranstaltungGroesse/2){
+                            continue;
                         }
+                        doc.add(new AreaBreak());
                     }
                 }
             }
@@ -620,6 +675,19 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         }
         return ret;
 
+    }
+
+    /**
+     * Returns number of Matches for given size.
+     * @param veranstaltungGroesse How many competing Teams
+     * @return number of Matches for given veranstaltungGroesse
+     * */
+    private int numberOfMatches(int veranstaltungGroesse) {
+        if (veranstaltungGroesse == 8 || veranstaltungGroesse == 6) {
+            return veranstaltungGroesse - 1;
+        } else {
+            return 6;
+        }
     }
 
     /**
@@ -659,8 +727,16 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
         DottedLine cutterDottedLine = new DottedLine(0.5F);
 
         for (int i = 1; i <= 2; i++) {
+            // If the first team is a Platzhalter (Leermatch) skip it, the same procedure if the second team is
+            // a Platzhalter
+            if(dsbMannschaftComponent.findById(matchDOs[0].getMannschaftId()).getVereinId() == PLATZHALTER_ID && i == 1){
+                continue;
+            }else if (dsbMannschaftComponent.findById(matchDOs[1].getMannschaftId()).getVereinId() == PLATZHALTER_ID && i == 2){
+                break;
+            }
+
             //Blank lines before second half
-            if (i == 2) {
+            if (i == 2 && dsbMannschaftComponent.findById(matchDOs[0].getMannschaftId()).getVereinId() != PLATZHALTER_ID) {
                 for(int j = 0; j <= 2; j++) {
                     if (j == 1) {
                         doc.add(new LineSeparator(cutterDottedLine));
@@ -896,43 +972,77 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                             .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ2).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ3).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ4).setFontSize(5.0F))
                     )
                     .addCell(new Cell().setTextAlignment(TextAlignment.CENTER).setHeight(20.0F)
-                            .add(new Paragraph(SCHUSSZETTEL_SATZ1).setFontSize(5.0F))
+                            .add(new Paragraph(SCHUSSZETTEL_SATZ5).setFontSize(5.0F))
                     )
                     // Add one cells more because of a bug in the pdf framework which leads to the last cells not showing the border downwards.
                     .addCell(new Cell().setBorder(Border.NO_BORDER).setBorderTop(new SolidBorder(Border.SOLID)))
             ;
 
-            // Third row
-            tableThirdRow
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
-                    )
-                    // Two empty cells for text input
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("\n"))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph("\n"))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
-                    )
-                    .addCell(new Cell().setBorder(Border.NO_BORDER)
-                            .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
-                    )
-            ;
+            // If the first team is a Platzhalter (Leermatch) don´t show the Unterschrift section for the Platzhalter,
+            // the same procedure if the second team is a Platzhalter
+            if(dsbMannschaftComponent.findById(matchDOs[0].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
+                tableThirdRow
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER));
+
+            }else if (dsbMannschaftComponent.findById(matchDOs[1].getMannschaftId()).getVereinId() == PLATZHALTER_ID){
+                tableThirdRow
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER))
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER));
+            }else {
+                // Third row
+                tableThirdRow
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[0]).setBold().setFontSize(getDynamicFontSize(mannschaftName[0], 12.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(mannschaftName[1]).setBold().setFontSize(getDynamicFontSize(mannschaftName[1], 12.0F)))
+                        )
+                        // Two empty cells for text input
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph("\n"))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        )
+                        .addCell(new Cell().setBorder(Border.NO_BORDER)
+                                .add(new Paragraph(SCHUSSZETTEL_UNTERSCHRIFT).setFontSize(10.0F).setBorderTop(new SolidBorder(Border.SOLID)).setWidth(UnitValue.createPercentValue(50.0F)))
+                        );
+            }
+
+
 
             // Add subtables to main tables
             tableFirstRow
@@ -956,15 +1066,16 @@ public class SchusszettelComponentImpl implements SchusszettelComponent {
                     )
             ;
 
-            // Add all to document
-            doc
-                    .add(tableHead)
-                    .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
-                            .add(tableFirstRow)
-                            .add(tableSecondRow)
-                            .add(tableThirdRow)
-                    )
-            ;
+                // Add all to document
+                doc
+                        .add(tableHead)
+                        .add(new Div().setPaddings(10.0F, 10.0F, 10.0F, 10.0F).setMargins(2.5F, 0.0F, 2.5F, 0.0F).setBorder(new SolidBorder(Border.SOLID))
+                                .add(tableFirstRow)
+                                .add(tableSecondRow)
+                                .add(tableThirdRow)
+                        )
+                ;
+
         }
     }
 

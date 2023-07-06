@@ -49,6 +49,10 @@ public class LigaComponentImplTest {
     private static final Long DISZIPLINID = 0L;
 
     private static final String LIGA_DETAIL = "Dies ist ein wichtiges Detail zur TestligaXY: Manchmal zielen wir mit Absicht daneben!";
+    private static final String LIGA_FILE = "data:application/pdf;base64,JVBERi0xLjYNJeL....";
+    private static final String LIGA_FILE_NAME = "TestFile.pdf";
+    private static final String LIGA_FILE_TYPE = "application/pdf";
+
 
 
     @Rule
@@ -89,6 +93,9 @@ public class LigaComponentImplTest {
         expectedLigaBE.setLigaVerantwortlichId(LIGAVERANTWORTLICH);
         expectedLigaBE.setLigaDisziplinId(DISZIPLINID);
         expectedLigaBE.setLigaDetail(LIGA_DETAIL);
+        expectedLigaBE.setLigaFileBase64(LIGA_FILE);
+        expectedLigaBE.setLigaFileName(LIGA_FILE_NAME);
+        expectedLigaBE.setLigaFileType(LIGA_FILE_TYPE);
 
         return expectedLigaBE;
     }
@@ -103,6 +110,9 @@ public class LigaComponentImplTest {
         expectedLigaDO.setLigaVerantwortlichId(LIGAVERANTWORTLICH);
         expectedLigaDO.setDisziplinId(DISZIPLINID);
         expectedLigaDO.setLigaDetail(LIGA_DETAIL);
+        expectedLigaDO.setLigaDoFileBase64(LIGA_FILE);
+        expectedLigaDO.setLigaDoFileName(LIGA_FILE_NAME);
+        expectedLigaDO.setLigaDoFileType(LIGA_FILE_TYPE);
 
         return expectedLigaDO;
     }
@@ -161,6 +171,9 @@ public class LigaComponentImplTest {
         assertThat(actual.get(0).getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
         assertThat(actual.get(0).getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
         assertThat(actual.get(0).getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.get(0).getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.get(0).getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.get(0).getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
         // verify invocations
         verify(ligaDao).findBySearch(expectedLigaBE.getLigaName());
@@ -208,6 +221,9 @@ public class LigaComponentImplTest {
         assertThat(actual.get(0).getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
         assertThat(actual.get(0).getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
         assertThat(actual.get(0).getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.get(0).getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.get(0).getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.get(0).getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
 
         // verify invocations
@@ -252,6 +268,9 @@ public class LigaComponentImplTest {
             assertThat(actual.get(0).getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
             assertThat(actual.get(0).getLigaVerantwortlichMail()).isEqualTo(null);
             assertThat(actual.get(0).getLigaDetail()).isEqualTo(null);
+            assertThat(actual.get(0).getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+            assertThat(actual.get(0).getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+            assertThat(actual.get(0).getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
             // verify invocations
             verify(ligaDao).findBySearch(expectedLigaBE.getLigaName());
@@ -291,6 +310,10 @@ public class LigaComponentImplTest {
             assertThat(actual.get(0).getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
             assertThat(actual.get(0).getLigaVerantwortlichMail()).isEqualTo(null);
             assertThat(actual.get(0).getLigaDetail()).isEqualTo(null);
+            assertThat(actual.get(0).getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+            assertThat(actual.get(0).getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+            assertThat(actual.get(0).getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
+
 
             // verify invocations
             verify(ligaDao).findAll();
@@ -325,6 +348,9 @@ public class LigaComponentImplTest {
         assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
         assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
         assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
 
         // verify invocation
@@ -381,6 +407,9 @@ public class LigaComponentImplTest {
         assertThat(actual.getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
         assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(null);
         assertThat(actual.getLigaDetail()).isEqualTo(null);
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
         // verify invocation
         verify(ligaDao).findById(LIGAID);
@@ -415,6 +444,9 @@ public class LigaComponentImplTest {
         assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
         assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
         assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
 
         // verify invocation
@@ -440,44 +472,67 @@ public class LigaComponentImplTest {
     }
 
     @Test
-    public void checkExist__whenLigaNotExists() {
+    public void checkExistsLigaName__whenLigaNameExists() {
         // prepare test data
         final LigaBE expectedLigaBE = getLigaBE();
+        final LigaBE expectedLigaUebergeordnetBE = expectedLigaBE;
         final RegionenDO expectedRegionBE = getRegionenDO();
         final UserDO expectedUserDO = getUserDO();
         final DisziplinDO expectedDisziplinDO = getDisziplinDO();
 
+
         // configure mocks
+        when(ligaDao.findByLigaName(expectedLigaBE.getLigaName())).thenReturn(expectedLigaBE);
         when(ligaDao.findById(anyLong())).thenReturn(expectedLigaBE);
         when(regionenComponentImpl.findById(anyLong())).thenReturn(expectedRegionBE);
         when(userComponentImpl.findById(anyLong())).thenReturn(expectedUserDO);
         when(disziplinComponentImpl.findById(anyLong())).thenReturn(expectedDisziplinDO);
 
+
         // call test method
-        final LigaDO actual = underTest.checkExist(LIGAID);
+        final LigaDO actual = underTest.checkExistsLigaName(expectedLigaBE.getLigaName());
 
         // assert result
         assertThat(actual).isNotNull();
 
         assertThat(actual.getId()).isEqualTo(expectedLigaBE.getLigaId());
+        assertThat(actual.getName()).isEqualTo(expectedLigaBE.getLigaName());
         assertThat(actual.getRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
         assertThat(actual.getRegionName()).isEqualTo(expectedRegionBE.getRegionName());
-        assertThat(actual.getLigaUebergeordnetId()).isEqualTo(expectedLigaBE.getLigaId());
-        assertThat(actual.getLigaUebergeordnetName()).isEqualTo(expectedLigaBE.getLigaName());
+        assertThat(actual.getLigaUebergeordnetId()).isEqualTo(expectedLigaUebergeordnetBE.getLigaId());
+        assertThat(actual.getLigaUebergeordnetName()).isEqualTo(expectedLigaUebergeordnetBE.getLigaName());
         assertThat(actual.getLigaVerantwortlichId()).isEqualTo(expectedLigaBE.getLigaVerantwortlichId());
         assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
-        assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
         assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
 
-
-        // verify invocation
-        verify(ligaDao, times(2)).findById(LIGAID);
+        // verify invocations
+        verify(ligaDao).findByLigaName(expectedLigaBE.getLigaName());
+        verify(ligaDao).findById(expectedLigaBE.getLigaUebergeordnetId());
+        verify(regionenComponentImpl).findById(expectedLigaBE.getLigaRegionId());
+        verify(userComponentImpl).findById(expectedLigaBE.getLigaVerantwortlichId());
+        verify(disziplinComponentImpl).findById(expectedLigaBE.getLigaDisziplinId());
 
     }
 
+    @Test
+    public void checkExistsLigaName_whenLigaNameDoesNotExist() {
+        // prepare test data
+        final String liganame = "jUnitTestLiga";
+        when(ligaDao.findByLigaName(liganame)).thenReturn(null);
 
+        // call test method
+        final LigaDO actual = underTest.checkExistsLigaName(liganame);
 
+        // assert result
+        assertThat(actual.getId()).isNull();
+        assertThat(actual.getLigaDetail()).isNull();
+        assertThat(actual.getName()).isNull();
 
+        verify(ligaDao).findByLigaName(liganame);
+    }
 
     @Test
     public void create__whenEverythingIsSet() {
@@ -522,6 +577,9 @@ public class LigaComponentImplTest {
         assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
         assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
         assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
     }
 
 
@@ -561,6 +619,9 @@ public class LigaComponentImplTest {
         assertThat(persistedLigaBE.getLigaRegionId()).isEqualTo(expectedLigaBE.getLigaRegionId());
         assertThat(persistedLigaBE.getLigaDisziplinId()).isEqualTo(expectedLigaBE.getLigaDisziplinId());
         assertThat(persistedLigaBE.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(persistedLigaBE.getLigaFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(persistedLigaBE.getLigaFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(persistedLigaBE.getLigaFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
         assertThat(persistedLigaBE.getLigaUebergeordnetId()).isEqualTo(null);
         assertThat(persistedLigaBE.getLigaVerantwortlichId()).isEqualTo(null);
     }
@@ -600,6 +661,9 @@ public class LigaComponentImplTest {
         assertThat(persistedBE.getLigaName()).isEqualTo(input.getName());
         assertThat(persistedBE.getLigaRegionId()).isEqualTo(input.getRegionId());
         assertThat(persistedBE.getLigaDetail()).isEqualTo(input.getLigaDetail());
+        assertThat(persistedBE.getLigaFileBase64()).isEqualTo(input.getLigaDoFileBase64());
+        assertThat(persistedBE.getLigaFileName()).isEqualTo(input.getLigaDoFileName());
+        assertThat(persistedBE.getLigaFileType()).isEqualTo(input.getLigaDoFileType());
 
         // test mapping of do
         assertThat(actual.getRegionName()).isEqualTo(expectedRegionBE.getRegionName());
@@ -607,6 +671,9 @@ public class LigaComponentImplTest {
         assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(expectedUserDO.getEmail());
         assertThat(actual.getDisziplinId()).isEqualTo(expectedDisziplinDO.getDisziplinId());
         assertThat(actual.getLigaDetail()).isEqualTo(expectedLigaBE.getLigaDetail());
+        assertThat(actual.getLigaDoFileBase64()).isEqualTo(expectedLigaBE.getLigaFileBase64());
+        assertThat(actual.getLigaDoFileName()).isEqualTo(expectedLigaBE.getLigaFileName());
+        assertThat(actual.getLigaDoFileType()).isEqualTo(expectedLigaBE.getLigaFileType());
     }
 
 
@@ -645,11 +712,15 @@ public class LigaComponentImplTest {
         assertThat(persistedBE.getLigaName()).isEqualTo(input.getName());
         assertThat(persistedBE.getLigaRegionId()).isEqualTo(input.getRegionId());
         assertThat(persistedBE.getLigaDetail()).isEqualTo(input.getLigaDetail());
+        assertThat(persistedBE.getLigaFileBase64()).isEqualTo(input.getLigaDoFileBase64());
+        assertThat(persistedBE.getLigaFileName()).isEqualTo(input.getLigaDoFileName());
+        assertThat(persistedBE.getLigaFileType()).isEqualTo(input.getLigaDoFileType());
 
         // test mapping of do
         assertThat(actual.getLigaUebergeordnetName()).isEqualTo(null);
         assertThat(actual.getLigaVerantwortlichMail()).isEqualTo(null);
         assertThat(actual.getLigaDetail()).isEqualTo(null);
+
 
     }
 

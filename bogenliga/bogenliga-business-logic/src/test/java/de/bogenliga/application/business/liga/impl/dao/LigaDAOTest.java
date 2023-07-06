@@ -116,6 +116,31 @@ public class LigaDAOTest {
         // verify invocations
         verify(basicDao).selectSingleEntity(any(), any(), any());
     }
+    @Test
+    public void checkExistsLigaName() {
+        // prepare test data
+        final LigaBE expectedBE = getLigaBE();
+
+        // configure mocks
+        when(basicDao.selectSingleEntity(any(), any(), any())).thenReturn((expectedBE));
+
+        // call test method
+        final LigaBE actual = underTest.findByLigaName(expectedBE.getLigaName());
+
+        // assert result
+        assertThat(actual)
+                .isNotNull();
+
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getLigaId())
+                .isEqualTo(expectedBE.getLigaId());
+        assertThat(actual.getLigaName())
+                .isEqualTo(expectedBE.getLigaName());
+
+        // verify invocations
+        verify(basicDao).selectSingleEntity(any(), any(), any());
+    }
 
     @Test
     public void create() {
