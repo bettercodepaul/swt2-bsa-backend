@@ -131,11 +131,11 @@ public class SchusszettelComponentImplTest {
     private static List<MatchDO> getMatchesForWettkampf(){
         List<MatchDO> result = new ArrayList<>();
         //iterate through matches
-        for (long match = 1; match <=7; match++){
+        for (Long match = 1L; match <=7L; match++){
             //iterate through encounter
-            for(long encounter = 1; encounter <=4; encounter++){
+            for(Long encounter = 1L; encounter <=4L; encounter++){
                 //iterate thorugh targets
-                for(long i = 0; i <= 1; i++) {
+                for(Long i = 0L; i <= 1L; i++) {
                     MatchDO element = MatchComponentImplTest.getMatchDO();
 
                     element.setWettkampfId(WETTKAMPFID);
@@ -155,11 +155,11 @@ public class SchusszettelComponentImplTest {
     private static List<MatchDO> getMatchesForSchusszettel(){
         List<MatchDO> result = new ArrayList<>();
         //iterate through matches
-        for (long match = 1; match <=2; match++){
+        for (Long match = 1L; match <=2L; match++){
             //iterate through encounter
-            for(long encounter = 1; encounter <=2; encounter++){
+            for(Long encounter = 1L; encounter <=2; encounter++){
                 //iterate thorugh targets
-                for(long i = 0; i <= 1; i++) {
+                for(Long i = 0L; i <= 1L; i++) {
                     MatchDO element = MatchComponentImplTest.getMatchDO();
 
                     element.setWettkampfId(WETTKAMPFID);
@@ -179,9 +179,9 @@ public class SchusszettelComponentImplTest {
     private static List<PasseDO> getPasseForSchusszettel(){
         List<PasseDO> result = new ArrayList<>();
         //iterate through matches
-        for (long passe = 1; passe <=5; passe++){
+        for (Long passe = 1L; passe <=5L; passe++){
                  //iterate through matches
-                for(long i = 0; i <= 2; i++) {
+                for(Long i = 0L; i <= 2L; i++) {
                     PasseDO element = new PasseDO(
                              1L, MANNSCHAFTSID, WETTKAMPFID,
                             1L, 1L,
