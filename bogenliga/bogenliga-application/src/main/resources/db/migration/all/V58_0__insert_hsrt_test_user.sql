@@ -1,3 +1,4 @@
+/*
 INSERT INTO benutzer(
 benutzer_id,
 benutzer_email,
@@ -19,5 +20,8 @@ INSERT INTO benutzer_rolle(
 )
 VALUES (13, 2)
 ;
+
+*/
+
 
 
