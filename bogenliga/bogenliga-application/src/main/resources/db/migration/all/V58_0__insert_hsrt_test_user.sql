@@ -1,7 +1,5 @@
-/*
 INSERT INTO benutzer(
 benutzer_id,
-
 benutzer_email,
 benutzer_salt,
 benutzer_password,
@@ -19,8 +17,7 @@ INSERT INTO benutzer_rolle(
   benutzer_rolle_benutzer_id,
   benutzer_rolle_rolle_id
 )
-VALUES (13, 2);
+VALUES (13, 2)
+;
 
 
-
-   comment */
