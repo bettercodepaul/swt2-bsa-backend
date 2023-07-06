@@ -22,6 +22,9 @@ public class LigaDTO implements DataTransferObject {
     private Long ligaVerantwortlichId;
     private String ligaVerantwortlichMail;
     private String ligaDetail;
+    private String ligaDetailFileBase64;
+    private String ligaDetailFileName;
+    private String ligaDetailFileType;
 
 
     /**
@@ -36,7 +39,7 @@ public class LigaDTO implements DataTransferObject {
      */
     public LigaDTO(Long id, String name, Long regionId, String regionName, Long ligaUebergeordnetId,
                    String ligaUebergeordnetName, Long ligaVerantwortlichId, String ligaVerantwortlichMail, Long disziplinId,
-                   String ligaDetail) {
+                   String ligaDetail, String ligaDetailFileBase64, String ligaDetailFileName, String ligaDetailFileType) {
         this.id = id;
         this.name = name;
         this.regionId = regionId;
@@ -47,6 +50,9 @@ public class LigaDTO implements DataTransferObject {
         this.ligaVerantwortlichMail = ligaVerantwortlichMail;
         this.disziplinId = disziplinId;
         this.ligaDetail = ligaDetail;
+        this.ligaDetailFileBase64 = ligaDetailFileBase64;
+        this.ligaDetailFileName = ligaDetailFileName;
+        this.ligaDetailFileType = ligaDetailFileType;
     }
 
 
@@ -147,4 +153,32 @@ public class LigaDTO implements DataTransferObject {
     public void setLigaDetail(String ligaDetail) {
         this.ligaDetail = ligaDetail;
     }
+
+    public String getLigaDetailFileBase64() {
+        return ligaDetailFileBase64;
+    }
+
+
+    public void setLigaDetailFileBase64(String ligaDetailFileBase64) {
+        this.ligaDetailFileBase64 = ligaDetailFileBase64;
+    }
+
+    public String getLigaDetailFileName() {
+        return ligaDetailFileName;
+    }
+
+
+    public void setLigaDetailFileName(String ligaDetailFileName) {
+        this.ligaDetailFileName = ligaDetailFileName;
+    }
+
+    public String getLigaDetailFileType() {
+        return ligaDetailFileType;
+    }
+
+
+    public void setLigaDetailFileType(String ligaDetailFileType) {
+        this.ligaDetailFileType = ligaDetailFileType;
+    }
+
 }

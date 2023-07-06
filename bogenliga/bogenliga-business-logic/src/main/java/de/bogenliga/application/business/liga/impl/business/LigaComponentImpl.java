@@ -107,6 +107,19 @@ public class LigaComponentImpl implements LigaComponent {
         return completeLiga(result);
     }
 
+    @Override
+    public LigaDO checkExistsLigaName(String ligaName) {
+
+        final LigaBE result = ligaDAO.findByLigaName(ligaName);
+        LigaDO emptyLiga = new LigaDO();
+
+        if (result == null) {
+            return emptyLiga;
+        }
+
+        return completeLiga(result);
+    }
+
 
     @Override
     public LigaDO create(LigaDO ligaDO, long currentDsbMitgliedId) {
