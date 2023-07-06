@@ -81,7 +81,7 @@ public class LigamatchBE extends CommonBusinessEntity implements BusinessEntity 
     public Long getMatchNr() {return matchNr;}
     public void setMatchNr(Long matchNr) {this.matchNr = matchNr;}
 
-    public Long getMatchScheibennummer() {return matchScheibennummer;}
+    public Long getMatchScheibennummer() {return this.matchScheibennummer;}
     public void setMatchScheibennummer(Long matchScheibennummer) {this.matchScheibennummer = matchScheibennummer;}
 
     public Long getScheibennummerGegner() {return scheibennummerGegner;}

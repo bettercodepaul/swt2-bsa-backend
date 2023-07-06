@@ -137,7 +137,7 @@ public class BaseLigamatchTest {
         valuesToMethodMap.put("getMatchId", MATCH_ID);
         valuesToMethodMap.put("getMatchIdGegner", MATCH_ID_GEGNER);
         valuesToMethodMap.put("getMatchNr", MATCH_NR);
-        valuesToMethodMap.put("getScheibennummer", SCHEIBENNUMMER);
+        valuesToMethodMap.put("getMatchScheibennummer", SCHEIBENNUMMER);
         valuesToMethodMap.put("getScheibennummerGegner", SCHEIBENNUMMER_GEGNER);
         valuesToMethodMap.put("getMannschaftId", MANNSCHAFT_ID);
         valuesToMethodMap.put("getBegegnung", BEGEGNUNG);
