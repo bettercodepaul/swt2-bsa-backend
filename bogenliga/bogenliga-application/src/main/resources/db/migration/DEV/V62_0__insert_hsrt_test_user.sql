@@ -6,3 +6,4 @@ INSERT INTO benutzer_rolle (benutzer_rolle_benutzer_id, benutzer_rolle_rolle_id)
 SELECT 13, 2
 WHERE NOT EXISTS (SELECT 1 FROM benutzer_rolle WHERE benutzer_rolle_benutzer_id = 13 AND benutzer_rolle_rolle_id = 2);
 
+
