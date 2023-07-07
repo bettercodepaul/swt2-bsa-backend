@@ -45,7 +45,7 @@ public abstract class BaseMatchTest {
         matchBE.setMannschaftId(MATCH_MANNSCHAFT_ID);
         matchBE.setWettkampfId(MATCH_WETTKAMPF_ID);
         matchBE.setMatchpunkte(MATCH_MATCHPUNKTE);
-        matchBE.setScheibenNummer(MATCH_SCHEIBENNUMMER);
+        matchBE.setMatchScheibennummer(MATCH_SCHEIBENNUMMER);
         matchBE.setStrafPunkteSatz1(MATCH_STRAFPUNKT_SATZ_1);
         matchBE.setStrafPunkteSatz2(MATCH_STRAFPUNKT_SATZ_2);
         matchBE.setStrafPunkteSatz3(MATCH_STRAFPUNKT_SATZ_3);
@@ -76,7 +76,7 @@ public abstract class BaseMatchTest {
         valuesToMethodMap.put("getMannschaftId", MATCH_MANNSCHAFT_ID);
         valuesToMethodMap.put("getWettkampfId", MATCH_WETTKAMPF_ID);
         valuesToMethodMap.put("getMatchpunkte", MATCH_MATCHPUNKTE);
-        valuesToMethodMap.put("getScheibenNummer", MATCH_SCHEIBENNUMMER);
+        valuesToMethodMap.put("getMatchScheibennummer", MATCH_SCHEIBENNUMMER);
         valuesToMethodMap.put("getSatzpunkte", MATCH_SATZPUNKTE);
         valuesToMethodMap.put("getStrafPunkteSatz1", MATCH_STRAFPUNKT_SATZ_1);
         valuesToMethodMap.put("getStrafPunkteSatz2", MATCH_STRAFPUNKT_SATZ_2);

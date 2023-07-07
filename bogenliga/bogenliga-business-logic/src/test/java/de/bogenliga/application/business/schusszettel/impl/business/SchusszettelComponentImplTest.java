@@ -227,11 +227,11 @@ public class SchusszettelComponentImplTest {
     private static List<MatchDO> getMatchesForWettkampf(){
         List<MatchDO> result = new ArrayList<>();
         //iterate through matches
-        for (long match = 1; match <=7; match++){
+        for (Long match = 1L; match <=7L; match++){
             //iterate through encounter
-            for(long encounter = 1; encounter <=4; encounter++){
+            for(Long encounter = 1L; encounter <=4L; encounter++){
                 //iterate thorugh targets
-                for(long i = 0; i <= 1; i++) {
+                for(Long i = 0L; i <= 1L; i++) {
                     MatchDO element = MatchComponentImplTest.getMatchDO();
 
                     element.setWettkampfId(WETTKAMPFID);
@@ -242,7 +242,7 @@ public class SchusszettelComponentImplTest {
                     }else {
                         element.setMannschaftId(1L);
                     }
-                    element.setScheibenNummer((encounter * 2) - 1 + i);
+                    element.setMatchScheibennummer((encounter * 2) - 1 + i);
 
                     result.add(element);
                 }
@@ -254,11 +254,11 @@ public class SchusszettelComponentImplTest {
     private static List<MatchDO> getMatchesForSchusszettel(){
         List<MatchDO> result = new ArrayList<>();
         //iterate through matches
-        for (long match = 1; match <=2; match++){
+        for (Long match = 1L; match <=2L; match++){
             //iterate through encounter
-            for(long encounter = 1; encounter <=2; encounter++){
+            for(Long encounter = 1L; encounter <=2L; encounter++){
                 //iterate thorugh targets
-                for(long i = 0; i <= 1; i++) {
+                for(Long i = 0L; i <= 1L; i++) {
                     MatchDO element = MatchComponentImplTest.getMatchDO();
 
                     element.setWettkampfId(WETTKAMPFID);
@@ -271,7 +271,7 @@ public class SchusszettelComponentImplTest {
                         element.setMannschaftId(1L);
                     }
 
-                    element.setScheibenNummer((encounter * 2) - 1 + i);
+                    element.setMatchScheibennummer((encounter * 2) - 1 + i);
 
                     result.add(element);
                 }
@@ -283,9 +283,9 @@ public class SchusszettelComponentImplTest {
     private static List<PasseDO> getPasseForSchusszettel(){
         List<PasseDO> result = new ArrayList<>();
         //iterate through matches
-        for (long passe = 1; passe <=5; passe++){
+        for (Long passe = 1L; passe <=5L; passe++){
                  //iterate through matches
-                for(long i = 0; i <= 2; i++) {
+                for(Long i = 0L; i <= 2L; i++) {
                     if(i==0){
                         PasseDO element = new PasseDO(
 
@@ -318,14 +318,14 @@ public class SchusszettelComponentImplTest {
         element1.setNr(1L);
         element1.setBegegnung(1L);
         element1.setMannschaftId(MANNSCHAFTSID);
-        element1.setScheibenNummer(1L);
+        element1.setMatchScheibennummer(1L);
 
         MatchDO element2 = MatchComponentImplTest.getMatchDO();
         element2.setWettkampfId(WETTKAMPFID);
         element2.setNr(2L);
         element2.setBegegnung(1L);
         element2.setMannschaftId(MANNSCHAFTSID);
-        element2.setScheibenNummer(2L);
+        element2.setMatchScheibennummer(2L);
 
         final MannschaftsmitgliedDO inputMsMDo = new MannschaftsmitgliedDO(
                 1L, 1L, 1L, 1, "Max", "Mustermann", 42L);
@@ -361,7 +361,7 @@ public class SchusszettelComponentImplTest {
         element1.setNr(1L);
         element1.setBegegnung(1L);
         element1.setMannschaftId(MANNSCHAFTSID);
-        element1.setScheibenNummer(1L);
+        element1.setMatchScheibennummer(1L);
 
         MatchDO element2 = MatchComponentImplTest.getMatchDO();
         element1.setId(2L);
@@ -369,7 +369,7 @@ public class SchusszettelComponentImplTest {
         element2.setNr(2L);
         element2.setBegegnung(1L);
         element2.setMannschaftId(1L);
-        element2.setScheibenNummer(2L);
+        element2.setMatchScheibennummer(2L);
 
         final MannschaftsmitgliedDO inputMsMDo = new MannschaftsmitgliedDO(
                 1L, 2222L, 1L, 1, "Max", "Mustermann", 42L);
@@ -408,7 +408,7 @@ public class SchusszettelComponentImplTest {
         element1.setNr(1L);
         element1.setBegegnung(1L);
         element1.setMannschaftId(MANNSCHAFTSID);
-        element1.setScheibenNummer(1L);
+        element1.setMatchScheibennummer(1L);
 
         MatchDO element2 = MatchComponentImplTest.getMatchDO();
         element1.setId(2L);
@@ -416,7 +416,7 @@ public class SchusszettelComponentImplTest {
         element2.setNr(2L);
         element2.setBegegnung(1L);
         element2.setMannschaftId(1L);
-        element2.setScheibenNummer(2L);
+        element2.setMatchScheibennummer(2L);
 
         final MannschaftsmitgliedDO inputMsMDo = new MannschaftsmitgliedDO(
                 1L, 2222L, 1L, 1, "Max", "Mustermann", 42L);

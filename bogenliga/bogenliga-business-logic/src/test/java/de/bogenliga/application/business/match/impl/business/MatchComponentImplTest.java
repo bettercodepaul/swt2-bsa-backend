@@ -546,7 +546,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
         //Match: currentUserId must not be null and must not be negative
         //Preconditions.checkArgument(matchDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
         //Preconditions.checkArgument(matchDO.getMannschaftId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
-        //Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getMatchScheibennummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
 
         MatchDO MatchDOWettkampfIDlessThanZero = new MatchDO(0L, 0L, 0L, 0L, 0L,0L,0L,0L,0L,0L,0L,0L,0L);
 
@@ -565,7 +565,7 @@ public class MatchComponentImplTest extends BaseMatchTest {
         //Match: currentUserId must not be null and must not be negative
         //Preconditions.checkArgument(matchDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
         //Preconditions.checkArgument(matchDO.getMannschaftId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
-        //Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getMatchScheibennummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
 
         MatchDO MatchDOMannschaftIDlessThanZero = new MatchDO(0L, 0L, 0L, 0L, 0L,0L,0L,0L,0L,0L,0L,0L,0L);
 
@@ -584,11 +584,11 @@ public class MatchComponentImplTest extends BaseMatchTest {
         //Match: currentUserId must not be null and must not be negative
         //Preconditions.checkArgument(matchDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
         //Preconditions.checkArgument(matchDO.getMannschaftId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
-        //Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        //Preconditions.checkArgument(matchDO.getMatchScheibennummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
 
         MatchDO MatchDOOScheibeNummerlessThanZero = new MatchDO(0L, 0L, 0L, 0L, 0L,0L,0L,0L,0L,0L,0L,0L,0L);
 
-        MatchDOOScheibeNummerlessThanZero.setScheibenNummer(-5L);
+        MatchDOOScheibeNummerlessThanZero.setMatchScheibennummer(-5L);
 
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(()-> underTest.update(MatchDOOScheibeNummerlessThanZero, -1L))

@@ -77,7 +77,7 @@ public class MatchService implements ServiceFacade {
     static {
         matchConditionErrors.put("getBegegnung", MatchComponentImpl.PRECONDITION_MSG_BEGEGNUNG);
         matchConditionErrors.put("getMannschaftId", MatchComponentImpl.PRECONDITION_MSG_MANNSCHAFT_ID);
-        matchConditionErrors.put("getScheibenNummer", MatchComponentImpl.PRECONDITION_MSG_SCHEIBENNUMMER);
+        matchConditionErrors.put("getMatchScheibennummer", MatchComponentImpl.PRECONDITION_MSG_SCHEIBENNUMMER);
         matchConditionErrors.put("getWettkampfId", MatchComponentImpl.PRECONDITION_MSG_WETTKAMPF_ID);
         matchConditionErrors.put("getNr", MatchComponentImpl.PRECONDITION_MSG_MATCH_NR);
     }
@@ -489,7 +489,7 @@ public class MatchService implements ServiceFacade {
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
-        Long scheibeNr = matchDO.getScheibenNummer();
+        Long scheibeNr = matchDO.getMatchScheibennummer();
         // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
         // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
         // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
@@ -498,10 +498,10 @@ public class MatchService implements ServiceFacade {
                 .stream()
                 .filter(mDO -> mDO.getNr().equals(matchDO.getNr()))
                 .filter(mDO -> (
-                        scheibeNr.equals(mDO.getScheibenNummer())
-                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                        scheibeNr.equals(mDO.getMatchScheibennummer())
+                                || otherScheibeNr.equals(mDO.getMatchScheibennummer())
                 ))
-                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
                 .collect(Collectors.toList());
     }
@@ -524,11 +524,11 @@ public class MatchService implements ServiceFacade {
 
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
         long scheibeNr;
-        if(matchDO.getScheibenNummer() <7 ){
+        if(matchDO.getMatchScheibennummer() <7 ){
             //wir suchen im gleichen Match die nächste Scheiben-Paarung (+2)
-            scheibeNr = matchDO.getScheibenNummer() +2;
+            scheibeNr = matchDO.getMatchScheibennummer() +2;
         }
-        else if(matchDO.getScheibenNummer() >=7 && matchDO.getNr() <7){
+        else if(matchDO.getMatchScheibennummer() >=7 && matchDO.getNr() <7){
             //wir sind noch nicht am Ende des Wettkampfs angekommen
             scheibeNr = 1L;
             matchDO.setNr(matchDO.getNr()+1);
@@ -548,10 +548,10 @@ public class MatchService implements ServiceFacade {
                 .stream()
                 .filter(mDO -> mDO.getNr().equals(matchDO.getNr()))
                 .filter(mDO -> (
-                        ersteScheibe.equals(mDO.getScheibenNummer())
-                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                        ersteScheibe.equals(mDO.getMatchScheibennummer())
+                                || otherScheibeNr.equals(mDO.getMatchScheibennummer())
                 ))
-                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
                 .collect(Collectors.toList());
     }
@@ -567,11 +567,11 @@ public class MatchService implements ServiceFacade {
 
         this.log(MatchDTOMapper.toDTO.apply(matchDO), SERVICE_CREATE);
         long scheibeNr;
-        if(matchDO.getScheibenNummer() > 2){
+        if(matchDO.getMatchScheibennummer() > 2){
             //wir suchen im gleichen Match die vorherige Scheiben-Paarung (-2)
-            scheibeNr = matchDO.getScheibenNummer() - 2;
+            scheibeNr = matchDO.getMatchScheibennummer() - 2;
         }
-        else if(matchDO.getScheibenNummer() <= 2 && matchDO.getNr() > 1){
+        else if(matchDO.getMatchScheibennummer() <= 2 && matchDO.getNr() > 1){
             //wir sind noch nicht am Anfang des Wettkampfs angekommen
             scheibeNr = 8L;
             matchDO.setNr(matchDO.getNr() - 1);
@@ -592,10 +592,10 @@ public class MatchService implements ServiceFacade {
                 .stream()
                 .filter(mDO -> mDO.getNr().equals(matchDO.getNr()))
                 .filter(mDO -> (
-                        ersteScheibe.equals(mDO.getScheibenNummer())
-                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                        ersteScheibe.equals(mDO.getMatchScheibennummer())
+                                || otherScheibeNr.equals(mDO.getMatchScheibennummer())
                 ))
-                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
                 .collect(Collectors.toList());
     }
@@ -660,7 +660,7 @@ public class MatchService implements ServiceFacade {
         MatchDO matchDO = matchComponent.findById(matchId);
 
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(matchDO.getWettkampfId());
-        Long scheibeNr = matchDO.getScheibenNummer();
+        Long scheibeNr = matchDO.getMatchScheibennummer();
         // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
         // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
         // ist das gegebene match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
@@ -669,10 +669,10 @@ public class MatchService implements ServiceFacade {
                 .stream()
                 .filter(mDO -> mDO.getNr() == matchDO.getNr() + 1)
                 .filter(mDO -> (
-                        scheibeNr.equals(mDO.getScheibenNummer())
-                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                        scheibeNr.equals(mDO.getMatchScheibennummer())
+                                || otherScheibeNr.equals(mDO.getMatchScheibennummer())
                 ))
-                .sorted(Comparator.comparing(MatchDO::getScheibenNummer))
+                .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
                 .collect(Collectors.toList());
     }
@@ -881,7 +881,7 @@ public class MatchService implements ServiceFacade {
                 matchDTO.getWettkampfId(),
                 matchDTO.getBegegnung(),
                 matchDTO.getMannschaftId(),
-                matchDTO.getScheibenNummer(),
+                matchDTO.getMatchScheibennummer(),
                 matchDTO.getSatzpunkte(),
                 matchDTO.getMatchpunkte()
         );

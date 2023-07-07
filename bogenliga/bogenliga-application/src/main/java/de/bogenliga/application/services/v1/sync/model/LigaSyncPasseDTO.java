@@ -113,7 +113,6 @@ public class LigaSyncPasseDTO implements DataTransferObject {
         this.ringzahl = ringzahl;
     }
 
-
     @Override
     public String toString() {
         return "LigaSyncPasseDTO{" +
@@ -128,8 +127,6 @@ public class LigaSyncPasseDTO implements DataTransferObject {
                 ", rueckennummer=" + rueckennummer +
                 '}';
     }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -147,7 +144,6 @@ public class LigaSyncPasseDTO implements DataTransferObject {
                 that.getRingzahl()) && Objects.equals(getRueckennummer(), that.getRueckennummer());
     }
 
-
     @Override
     public int hashCode() {
         int result = Objects.hash(getId(), getVersion(), getMatchId(), getMannschaftId(), getWettkampfId(), getLfdNr(),
@@ -155,5 +151,7 @@ public class LigaSyncPasseDTO implements DataTransferObject {
         result = 31 * result + Arrays.hashCode(getRingzahl());
         return result;
     }
+
+
 }
 

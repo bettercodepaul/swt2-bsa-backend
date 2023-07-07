@@ -67,7 +67,7 @@ public class BaseLigamatchTest {
         ligamatchBE.setMatchId(MATCH_ID);
         ligamatchBE.setMatchIdGegner(MATCH_ID_GEGNER);
         ligamatchBE.setMatchNr(MATCH_NR);
-        ligamatchBE.setScheibennummer(SCHEIBENNUMMER);
+        ligamatchBE.setMatchScheibennummer(SCHEIBENNUMMER);
         ligamatchBE.setScheibennummerGegner(SCHEIBENNUMMER_GEGNER);
         ligamatchBE.setMannschaftId(MANNSCHAFT_ID);
         ligamatchBE.setBegegnung(BEGEGNUNG);
@@ -93,7 +93,7 @@ public class BaseLigamatchTest {
         assertThat(actual.getMatchNr()).isEqualTo(ligamatchBE.getMatchNr()).isEqualTo(MATCH_NR);
         assertThat(actual.getMatchId()).isEqualTo(ligamatchBE.getMatchId()).isEqualTo(MATCH_ID);
         assertThat(actual.getMatchIdGegner()).isEqualTo(ligamatchBE.getMatchIdGegner()).isEqualTo(MATCH_ID_GEGNER);
-        assertThat(actual.getScheibennummer()).isEqualTo(ligamatchBE.getScheibennummer()).isEqualTo(SCHEIBENNUMMER);
+        assertThat(actual.getMatchScheibennummer()).isEqualTo(ligamatchBE.getMatchScheibennummer()).isEqualTo(SCHEIBENNUMMER);
         assertThat(actual.getScheibennummerGegner()).isEqualTo(ligamatchBE.getScheibennummerGegner()).isEqualTo(SCHEIBENNUMMER_GEGNER);
         assertThat(actual.getMannschaftId()).isEqualTo(ligamatchBE.getMannschaftId()).isEqualTo(MANNSCHAFT_ID);
         assertThat(actual.getBegegnung()).isEqualTo(ligamatchBE.getBegegnung()).isEqualTo(BEGEGNUNG);
@@ -137,7 +137,7 @@ public class BaseLigamatchTest {
         valuesToMethodMap.put("getMatchId", MATCH_ID);
         valuesToMethodMap.put("getMatchIdGegner", MATCH_ID_GEGNER);
         valuesToMethodMap.put("getMatchNr", MATCH_NR);
-        valuesToMethodMap.put("getScheibennummer", SCHEIBENNUMMER);
+        valuesToMethodMap.put("getMatchScheibennummer", SCHEIBENNUMMER);
         valuesToMethodMap.put("getScheibennummerGegner", SCHEIBENNUMMER_GEGNER);
         valuesToMethodMap.put("getMannschaftId", MANNSCHAFT_ID);
         valuesToMethodMap.put("getBegegnung", BEGEGNUNG);
