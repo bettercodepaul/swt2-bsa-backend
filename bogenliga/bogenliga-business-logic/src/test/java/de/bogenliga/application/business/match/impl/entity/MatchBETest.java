@@ -17,7 +17,7 @@ public class MatchBETest extends BaseMatchTest {
         assertTrue(s.length() > 0);
         assertTrue(s.contains(matchBE.getBegegnung().toString()));
         assertTrue(s.contains(matchBE.getNr().toString()));
-        assertTrue(s.contains(matchBE.getScheibenNummer().toString()));
+        assertTrue(s.contains(matchBE.getMatchScheibennummer().toString()));
         assertTrue(s.contains(matchBE.getClass().getSimpleName()));
         assertTrue(s.contains(matchBE.getClass().getDeclaredFields()[2].getName()));
     }

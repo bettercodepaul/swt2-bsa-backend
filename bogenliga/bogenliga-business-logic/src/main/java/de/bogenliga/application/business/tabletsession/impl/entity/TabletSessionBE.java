@@ -10,7 +10,7 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     private static final long serialVersionUID = 5856944226092695392L;
 
     private Long wettkampfId;
-    private Long scheibennummer;
+    private Long matchScheibennummer;
     private Long matchId;
     private Long satznummer;
     private Boolean active = false;
@@ -27,13 +27,13 @@ public class TabletSessionBE extends CommonBusinessEntity implements BusinessEnt
     }
 
 
-    public Long getScheibennummer() {
-        return scheibennummer;
+    public Long getMatchScheibennummer() {
+        return matchScheibennummer;
     }
 
 
-    public void setScheibennummer(Long scheibennummer) {
-        this.scheibennummer = scheibennummer;
+    public void setMatchScheibennummer(Long matchScheibennummer) {
+        this.matchScheibennummer = matchScheibennummer;
     }
 
 

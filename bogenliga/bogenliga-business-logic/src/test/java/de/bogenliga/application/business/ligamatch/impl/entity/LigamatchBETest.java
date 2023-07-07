@@ -18,7 +18,7 @@ public class LigamatchBETest extends BaseLigamatchTest {
         assertTrue(s.length() > 0);
         assertTrue(s.contains(ligamatchBE.getBegegnung().toString()));
         assertTrue(s.contains(ligamatchBE.getMatchNr().toString()));
-        assertTrue(s.contains(ligamatchBE.getScheibennummer().toString()));
+        assertTrue(s.contains(ligamatchBE.getMatchScheibennummer().toString()));
         assertTrue(s.contains(ligamatchBE.getClass().getSimpleName()));
         assertTrue(s.contains(ligamatchBE.getClass().getDeclaredFields()[2].getName()));
     }

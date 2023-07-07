@@ -384,7 +384,7 @@ public class SyncServiceTest {
         ligamatchBE.setWettkampfId(MATCH_WETTKAMPF_ID);
         ligamatchBE.setMatchId(MATCH_ID);
         ligamatchBE.setMatchNr(MATCH_NR);
-        ligamatchBE.setScheibennummer(MATCH_SCHEIBENNUMMER);
+        ligamatchBE.setMatchScheibennummer(MATCH_SCHEIBENNUMMER);
         ligamatchBE.setMannschaftId(MATCH_MANNSCHAFT_ID);
         ligamatchBE.setBegegnung(MATCH_BEGEGNUNG);
         ligamatchBE.setNaechsteMatchId(MATCH_NAECHSTE_MATCH_ID);

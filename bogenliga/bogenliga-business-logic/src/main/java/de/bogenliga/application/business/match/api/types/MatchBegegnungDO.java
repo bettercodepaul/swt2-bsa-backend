@@ -16,7 +16,7 @@ public class MatchBegegnungDO extends CommonDataObject {
     private Long matchIdGegner;
     private String mannschaften;
     private Long begegnung;
-    private Long scheibenNummer;
+    private Long matchScheibennummer;
     private Long scheibenNummerGegner;
     private Long matchpunkte;
     private Long satzpunkte;
@@ -33,7 +33,7 @@ public class MatchBegegnungDO extends CommonDataObject {
                             Long matchIdGegner,
                             String mannschaften,
                             Long begegnung,
-                            Long scheibenNummer,
+                            Long matchScheibennummer,
                             Long scheibenNummerGegner,
                             Long matchpunkte,
                             Long satzpunkte,
@@ -49,7 +49,7 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.setMatchIdGegner(matchIdGegner);
         this.setMannschaften(mannschaften);
         this.setBegegnung(begegnung);
-        this.setScheibenNummer(scheibenNummer);
+        this.setMatchScheibennummer(matchScheibennummer);
         this.setScheibenNummerGegner(scheibenNummerGegner);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
@@ -119,12 +119,12 @@ public class MatchBegegnungDO extends CommonDataObject {
         this.begegnung = begegnung;
     }
 
-    public Long getScheibenNummer() {
-        return scheibenNummer;
+    public Long getMatchScheibennummer() {
+        return this.matchScheibennummer;
     }
 
-    public void setScheibenNummer(Long scheibenNummer) {
-        this.scheibenNummer = scheibenNummer;
+    public void setMatchScheibennummer(Long matchScheibennummer) {
+        this.matchScheibennummer = matchScheibennummer;
     }
 
     public Long getScheibenNummerGegner() {

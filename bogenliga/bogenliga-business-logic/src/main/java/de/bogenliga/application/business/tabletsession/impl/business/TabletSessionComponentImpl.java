@@ -61,13 +61,13 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
     @Override
     public List<MatchDO> getRelatedMatches(TabletSessionDO tabletSessionDO, MatchComponent matchComponent) {
-        checkPreconditions(tabletSessionDO.getScheibennummer(), "scheibenNr");
+        checkPreconditions(tabletSessionDO.getMatchScheibennummer(), "scheibenNr");
         MatchDO matchDO = null;
         if (tabletSessionDO.getMatchId() != null) {
             matchDO = matchComponent.findById(tabletSessionDO.getMatchId());
         }
         List<MatchDO> wettkampfMatches = matchComponent.findByWettkampfId(tabletSessionDO.getWettkampfId());
-        Long scheibenNr = tabletSessionDO.getScheibennummer();
+        Long scheibenNr = tabletSessionDO.getMatchScheibennummer();
         // Scheibennummern: [(1,2),(3,4),(5,6),(7,8)]
         // Die gruppierten Nummern bilden eine Begegnung aus 2 Matches, die hier ermittelt werden
         // ist das gegebene Match an Scheibe nr 2 -> andere Scheibe ist nr 1, und andersherum, daher das überprüfen auf gerade/ungerade
@@ -76,8 +76,8 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         return wettkampfMatches.stream()
                 .filter(mDO -> mDO.getNr().equals(matchNr))
                 .filter(mDO -> (
-                        scheibenNr.equals(mDO.getScheibenNummer())
-                                || otherScheibeNr.equals(mDO.getScheibenNummer())
+                        scheibenNr.equals(mDO.getMatchScheibennummer())
+                                || otherScheibeNr.equals(mDO.getMatchScheibennummer())
                 ))
                 .collect(Collectors.toList());
     }
@@ -107,14 +107,14 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
         }
         TabletSessionDO tab = new TabletSessionDO();
         List<MatchDO> matchDOs = matches.stream()
-                .filter(mDO -> mDO.getScheibenNummer().equals(scheibe))
+                .filter(mDO -> mDO.getMatchScheibennummer().equals(scheibe))
                 .filter(mDO -> mDO.getNr().equals(1L))
                 .collect(Collectors.toList());
 
         tab.setMatchId(matchDOs.get(0).getId());
         tab.setSatznummer(1L);
         tab.setWettkampfId(wettkampfId);
-        tab.setScheibennummer(scheibe);
+        tab.setMatchScheibennummer(scheibe);
         tab.setActive(false);
         return tab;
     }
@@ -165,7 +165,7 @@ public class TabletSessionComponentImpl implements TabletSessionComponent {
 
 
     private void checkBE(final TabletSessionDO sessionDO) {
-        checkPreconditions(sessionDO.getScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
+        checkPreconditions(sessionDO.getMatchScheibennummer(), PRECONDITION_FIELD_SCHEIBENNUMMER);
         checkPreconditions(sessionDO.getWettkampfId(), PRECONDITION_FIELD_WETTKAMPF_ID);
         checkPreconditions(sessionDO.getSatznummer(), "satznummer");
         checkPreconditions(sessionDO.getMatchId(), "matchId");

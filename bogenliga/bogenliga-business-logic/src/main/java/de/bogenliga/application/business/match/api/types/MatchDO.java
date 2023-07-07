@@ -14,7 +14,7 @@ public class MatchDO extends CommonDataObject {
     private Long wettkampfId;
     private Long mannschaftId;
     private Long begegnung;
-    private Long scheibenNummer;
+    private Long matchScheibennummer;
     private Long matchpunkte;
     private Long satzpunkte;
     private Long strafPunkteSatz1;
@@ -24,7 +24,7 @@ public class MatchDO extends CommonDataObject {
     private Long strafPunkteSatz5;
 
 
-    public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibenNummer,
+    public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibennummer,
                    Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
                    Long strafPunkteSatz3,
                    Long strafPunkteSatz4, Long strafPunkteSatz5,
@@ -36,7 +36,7 @@ public class MatchDO extends CommonDataObject {
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
         this.setBegegnung(begegnung);
-        this.setScheibenNummer(scheibenNummer);
+        this.setMatchScheibennummer(scheibennummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
         this.setStrafPunkteSatz1(strafPunkteSatz1);
@@ -53,14 +53,14 @@ public class MatchDO extends CommonDataObject {
     }
 
     public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung,
-                   Long scheibenNummer, Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
+                   Long scheibennummer, Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
                    Long strafPunkteSatz3, Long strafPunkteSatz4, Long strafPunkteSatz5) {
         this.setId(id);
         this.setNr(nr);
         this.setWettkampfId(wettkampfId);
         this.setMannschaftId(mannschaftId);
         this.setBegegnung(begegnung);
-        this.setScheibenNummer(scheibenNummer);
+        this.setMatchScheibennummer(scheibennummer);
         this.setMatchpunkte(matchpunkte);
         this.setSatzpunkte(satzpunkte);
 
@@ -122,13 +122,13 @@ public class MatchDO extends CommonDataObject {
     }
 
 
-    public Long getScheibenNummer() {
-        return scheibenNummer;
+    public Long getMatchScheibennummer() {
+        return this.matchScheibennummer;
     }
 
 
-    public void setScheibenNummer(Long scheibenNummer) {
-        this.scheibenNummer = scheibenNummer;
+    public void setMatchScheibennummer(Long scheibennummer) {
+        this.matchScheibennummer = scheibennummer;
     }
 
 

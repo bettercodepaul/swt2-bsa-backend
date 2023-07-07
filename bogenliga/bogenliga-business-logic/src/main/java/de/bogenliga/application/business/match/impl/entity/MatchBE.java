@@ -13,7 +13,7 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     private Long id;
     private Long wettkampfId;
     private Long mannschaftId;
-    private Long scheibenNummer;
+    private Long matchScheibennummer;
     private Long begegnung;
     private Long matchpunkte;
     private Long satzpunkte;
@@ -31,7 +31,7 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
                 "nr=" + nr +
                 "wettkampfId=" + wettkampfId +
                 "mannschaftId=" + mannschaftId +
-                "scheibenNummer=" + scheibenNummer +
+                "matchScheibennummer=" + matchScheibennummer +
                 "begegnung=" + begegnung +
                 "matchpunkte=" + matchpunkte +
                 "satzpunkte=" + satzpunkte +
@@ -84,13 +84,13 @@ public class MatchBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public Long getScheibenNummer() {
-        return scheibenNummer;
+    public Long getMatchScheibennummer() {
+        return matchScheibennummer;
     }
 
 
-    public void setScheibenNummer(Long scheibenNummer) {
-        this.scheibenNummer = scheibenNummer;
+    public void setMatchScheibennummer(Long matchScheibennummer) {
+        this.matchScheibennummer = matchScheibennummer;
     }
 
 

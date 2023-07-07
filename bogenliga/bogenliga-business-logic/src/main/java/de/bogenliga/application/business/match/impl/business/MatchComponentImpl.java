@@ -283,7 +283,7 @@ public class MatchComponentImpl implements MatchComponent {
         matchBe.setNr(1L);
         matchBe.setBegegnung(begegnung);
         matchBe.setMannschaftId(mannschaftId);
-        matchBe.setScheibenNummer(scheibennummer);
+        matchBe.setMatchScheibennummer(scheibennummer);
 
         this.matchDAO.create(matchBe,currentUserId);
     }
@@ -308,8 +308,8 @@ public class MatchComponentImpl implements MatchComponent {
         Preconditions.checkNotNull(matchDO.getWettkampfId(), PRECONDITION_MSG_CURRENT_USER_ID);
         Preconditions.checkArgument(matchDO.getWettkampfId() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
 
-        Preconditions.checkNotNull(matchDO.getScheibenNummer(), PRECONDITION_MSG_CURRENT_USER_ID);
-        Preconditions.checkArgument(matchDO.getScheibenNummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
+        Preconditions.checkNotNull(matchDO.getMatchScheibennummer(), PRECONDITION_MSG_CURRENT_USER_ID);
+        Preconditions.checkArgument(matchDO.getMatchScheibennummer() >= 0, PRECONDITION_MSG_CURRENT_USER_ID);
     }
 
 
