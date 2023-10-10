@@ -125,7 +125,7 @@ public class LigatabelleDAO implements DataAccessObject {
                         "ligatabelle_mannschaft_id," +
                         "ligatabelle_mannschaft_nummer," +
                         "ligatabelle_verein_id," +
-                        "ligatabelle_VEREINNAME_TABLE" +
+                         VEREINNAME_TABLE +
                         ")as tabellenplatz " +
                     "from ligatabelle " +
                     "where ligatabelle_wettkampf_id = ?" ;
