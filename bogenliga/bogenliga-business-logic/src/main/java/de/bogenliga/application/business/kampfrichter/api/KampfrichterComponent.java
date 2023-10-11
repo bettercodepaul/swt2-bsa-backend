@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.kampfrichter.api;
 
 import java.util.List;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.kampfrichter.api.types.KampfrichterDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 
