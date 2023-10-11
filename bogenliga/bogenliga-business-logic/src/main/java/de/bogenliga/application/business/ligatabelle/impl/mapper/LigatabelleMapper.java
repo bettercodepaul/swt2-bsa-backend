@@ -41,7 +41,7 @@ public class LigatabelleMapper implements ValueObjectMapper {
         final int tabellenplatz=be.getTabellenplatz();
 
         // technical parameter
-        Long createdByUserId = be.getCreatedByUserId();
+       
         Long lastModifiedByUserId = be.getLastModifiedByUserId();
         Long version = be.getVersion();
 
