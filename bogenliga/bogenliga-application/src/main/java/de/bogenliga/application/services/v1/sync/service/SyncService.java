@@ -200,10 +200,15 @@ public class SyncService implements ServiceFacade {
         final List<MannschaftsmitgliedDO> mannschaftsmitgliedDOList = new ArrayList<>();
 
         for (int i = 1; i <= 8; i++) {
-            MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfId, 1L, (long) i);
-            mannschaftsmitgliedDOList.addAll(
-                    mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(matchDO.getMannschaftId(),
-                            wettkampfId));
+            try {
+                MatchDO matchDO = matchComponent.findByWettkampfIDMatchNrScheibenNr(wettkampfId, 1L, (long) i);
+                mannschaftsmitgliedDOList.addAll(
+                        mannschaftsmitgliedComponent.findSchuetzenInUebergelegenerLiga(matchDO.getMannschaftId(),
+                                wettkampfId));
+            } catch (BusinessException exception) {
+                // No "Mannschaftsmitglied" with these attributes is registered in the database
+                logger.warn(String.format("Unable to find match %d while going offline: %s", i, exception.getMessage()));
+            }
         }
 
         return mannschaftsmitgliedDOList.stream().map(LigaSyncMannschaftsmitgliedDTOMapper.toDTO).collect(
