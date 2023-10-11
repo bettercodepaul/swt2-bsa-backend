@@ -238,7 +238,7 @@ public class JwtTokenProviderTest {
         final String actual = underTest.createToken(authentication);
 
         // assert result
-
+        assertThat(actual).isNotEmpty();
         // verify invocations
     }
 
