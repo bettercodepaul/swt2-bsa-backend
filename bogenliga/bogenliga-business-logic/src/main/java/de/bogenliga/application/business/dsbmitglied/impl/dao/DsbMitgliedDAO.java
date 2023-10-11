@@ -231,10 +231,10 @@ public class DsbMitgliedDAO implements DataAccessObject {
 
         DsbMitgliedBE updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, dsbMitgliedBE, DSBMITGLIED_BE_ID);
         // Check if DsbMitgliedUserId is Null. If it is null then add the corresponding userId to DsbMitglied
-        UserDAO UserDAO = new UserDAO(basicDao);
-        UserBE UserBE = UserDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
-        if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && UserBE != null) {
-            updatedDsbMitgliedBE.setDsbMitgliedUserId(UserBE.getUserId());
+        UserDAO userDAO = new UserDAO(basicDao);
+        UserBE userBE = userDAO.findByDsbMitgliedId(updatedDsbMitgliedBE.getDsbMitgliedId());
+        if (updatedDsbMitgliedBE.getDsbMitgliedUserId() == null && userBE != null) {
+            updatedDsbMitgliedBE.setDsbMitgliedUserId(userBE.getUserId());
             updatedDsbMitgliedBE = basicDao.updateEntity(DSBMITGLIED, updatedDsbMitgliedBE, DSBMITGLIED_BE_ID);
         }
 
