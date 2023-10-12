@@ -23,7 +23,6 @@ import java.util.List;
 public class LigatabelleComponentImpl implements LigatabelleComponent {
 
     private final LigatabelleDAO ligatabelleDAO;
-    private final DsbMannschaftSortierungComponent mannschaftSortierungComp;
 
     private static final String PRECONDITION_VERANSTALTUNGID = "veranstaltungID cannot be null or negative";
     private static final String PRECONDITION_WETTKAMPFID = "wettkampfID cannot be null or negative";
@@ -38,7 +37,6 @@ public class LigatabelleComponentImpl implements LigatabelleComponent {
     @Autowired
     public LigatabelleComponentImpl(final LigatabelleDAO ligatabelleDAO, final DsbMannschaftSortierungComponent maSortierungComp) {
         this.ligatabelleDAO = ligatabelleDAO;
-        this.mannschaftSortierungComp = maSortierungComp;
     }
 
 

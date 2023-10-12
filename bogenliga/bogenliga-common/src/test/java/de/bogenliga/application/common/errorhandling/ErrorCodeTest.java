@@ -66,6 +66,6 @@ public class ErrorCodeTest {
 
     @Test
     public void assertToString() {
-        assertThat(ErrorCode.ENTITY_NOT_FOUND_ERROR.toString()).isEqualTo("ENTITY_NOT_FOUND_ERROR");
+        assertThat(ErrorCode.ENTITY_NOT_FOUND_ERROR.toString()).hasToString("ENTITY_NOT_FOUND_ERROR");
     }
 }
