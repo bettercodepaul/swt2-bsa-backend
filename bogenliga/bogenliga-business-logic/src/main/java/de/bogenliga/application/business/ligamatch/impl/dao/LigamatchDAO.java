@@ -142,7 +142,7 @@ public class LigamatchDAO implements DataAccessObject {
 
     public Boolean checkIfLigamatch(Long id){
         try{
-            List<LigamatchBE> liste = basicDao.selectEntityList(LIGAMATCH, FIND_BY_WETTKAMPF_ID, id);
+            basicDao.selectEntityList(LIGAMATCH, FIND_BY_WETTKAMPF_ID, id);
             return true;
         }catch (Exception e){
             return false;
