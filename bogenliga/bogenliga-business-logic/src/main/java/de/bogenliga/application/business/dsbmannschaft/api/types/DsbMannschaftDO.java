@@ -79,6 +79,7 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
         this.nummer=nummer;
         this.benutzerId=benutzerId;
         this.veranstaltungId=veranstaltungId;
+        this.sortierung = sortierung;
         this.createdAtUtc = createdAtUtc;
         this.createdByUserId = createdByUserId;
         this.version = version;
