@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.mannschaftsmitglied.api;
 
 import java.util.List;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import de.bogenliga.application.common.component.ComponentFacade;
 

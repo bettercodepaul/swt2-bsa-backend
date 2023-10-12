@@ -256,7 +256,7 @@
                     </schemas>
                     <!-- resolved by the profile properties -->
                     <url>${database.url}</url>
-                    <user>${database.user}</user>
+                    <user>${database.user}</user>^
                     <password>${database.password}</password>
                     <locations>
                         <location>filesystem:src/main/resources/db/migration/all</location>
