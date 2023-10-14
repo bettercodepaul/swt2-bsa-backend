@@ -28,7 +28,6 @@ public class LigaComponentImpl implements LigaComponent {
     private static final String PRECONDITION_MSG_LIGA = "ligaDO must not be Null";
     private static final String PRECONDITION_MSG_LIGA_ID = "ligaId must not be Null";
     private static final String PRECONDITION_MSG_LIGA_NAME = "ligaName must not be Null";
-    private static final String PRECONDITION_MSG_LIGA_DISZIPLIN_ID = "ligaDisziplinId must not be Null";
     private static final String PRECONDITION_MSG_REGION_ID = "ligaRegionId must not be Null";
     private static final String PRECONDITION_MSG_LIGA_UEBERGEORDNET_ID = "ligaUebergeordnetId must not be Null";
     private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID = "ligaVerantwortlichId must not be Null";
