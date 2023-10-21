@@ -4,7 +4,14 @@ import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
 /**
- * TODO [AL] class documentation
+ * I represent the "disziplin" business entity (BE).
+ * <p>
+ * A "disziplin" represents a specific category of the sports event.
+ * It shows which types of activities are currently played within the "Bogenliga".
+ * For example "Langbogen","Blankbogen" etc.
+ * <p>
+ * The {@link CommonBusinessEntity} contains the technical parameter. Business entities commonly use these parameters to
+ * control their lifecycle.
  *
  * @author Marcel Neumann
  * @author Robin Mueller
