@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -16,5 +17,8 @@ import de.bogenliga.application.common.service.ServiceFacade;
 @RequestMapping("v1/trigger")
 
 public class TriggerService implements ServiceFacade {
-
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
 }
