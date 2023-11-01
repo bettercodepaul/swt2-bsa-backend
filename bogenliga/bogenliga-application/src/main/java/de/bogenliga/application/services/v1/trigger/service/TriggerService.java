@@ -13,11 +13,15 @@ import de.bogenliga.application.common.service.ServiceFacade;
 
 public class TriggerService implements ServiceFacade {
 
-    private LocalDateTime lastTrigger = null;
+    private LocalDateTime syncTimestamp = null;
 
     @GetMapping("/ping")
     public String ping() {
-        lastTrigger = LocalDateTime.now();
-        return lastTrigger.toString();
+        setSyncTimestamp(LocalDateTime.now());
+        return syncTimestamp.toString();
+    }
+
+    private void setSyncTimestamp(LocalDateTime timestamp) {
+        syncTimestamp = timestamp;
     }
 }
