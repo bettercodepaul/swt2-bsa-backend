@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import de.bogenliga.application.common.configuration.DatabaseConfiguration;
+import de.bogenliga.application.common.configuration.DatabaseConfiguration_NewDB;//added for new DB
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
@@ -24,7 +25,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostgresqlTransactionManager.class);
     private DataSource ds;
+    private DataSource newDS; //added for new DB
     private DatabaseConfiguration databaseConfiguration;
+    private DatabaseConfiguration_NewDB databaseConfiguration_newDB; //added for new DB
 
 
     /**
@@ -33,8 +36,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
      * Initialize and test database connection
      */
     @Autowired
-    public PostgresqlTransactionManager(DatabaseConfiguration databaseConfiguration) {
+    public PostgresqlTransactionManager(DatabaseConfiguration databaseConfiguration, DatabaseConfiguration_NewDB databaseConfiguration_newDB ) {
         this.databaseConfiguration = databaseConfiguration;
+        this.databaseConfiguration_newDB = databaseConfiguration_newDB; //added for new DB
     }
 
 
@@ -43,8 +47,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
      *
      * @param dataSource with the database connection
      */
-    PostgresqlTransactionManager(DataSource dataSource) {
+    PostgresqlTransactionManager(DataSource dataSource, DataSource dataSourceNewDB) {
         ds = dataSource;
+        newDS = dataSourceNewDB;
     }
 
 
@@ -178,6 +183,34 @@ public class PostgresqlTransactionManager implements TransactionManager {
 
         return ds;
     }
+
+    public DataSource getDataSourceNewDB() {
+        if (newDS == null) {
+            try {
+                LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
+                        databaseConfiguration_newDB.getHost(), databaseConfiguration_newDB.getPort(),
+                        databaseConfiguration_newDB.getDatabaseName(), databaseConfiguration_newDB.getUser(),
+                        databaseConfiguration_newDB.getPassword().length());
+
+                PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
+                postgresqlDatasource.setServerName(databaseConfiguration_newDB.getHost());
+                postgresqlDatasource.setPortNumber(databaseConfiguration_newDB.getPort());
+                postgresqlDatasource.setDatabaseName(databaseConfiguration_newDB.getDatabaseName());
+                postgresqlDatasource.setUser(databaseConfiguration_newDB.getUser());
+                postgresqlDatasource.setPassword(databaseConfiguration_newDB.getPassword());
+
+                newDS = postgresqlDatasource;
+
+                testConnection();
+            } catch (SQLException | NullPointerException e) {
+                throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
+            }
+        }
+
+        return newDS;
+    }
+
+
 
 
     /**
