@@ -23,7 +23,9 @@ public class PostgresqlTransactionManagerTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    private DataSource dataSource;
+    private DataSource dataSourceOldDB;
+
+    private DataSource dataSourceNewDB;
 
     @Mock
     private Connection connection;
@@ -33,7 +35,7 @@ public class PostgresqlTransactionManagerTest {
 
     @Before
     public void initUnderTest() {
-        underTest = new PostgresqlTransactionManager(dataSource);
+        underTest = new PostgresqlTransactionManager(dataSourceOldDB, dataSourceNewDB);
     }
 
 
@@ -60,10 +62,10 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         // assert result
         assertThat(SessionHandler.isActive()).isTrue();
@@ -80,12 +82,12 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
         doThrow(SQLException.class).when(connection).setAutoCommit(false);
 
         // call test method
         assertThatExceptionOfType(TechnicalException.class)
-                .isThrownBy(() -> underTest.begin());
+                .isThrownBy(() -> underTest.begin(false));
 
         // assert result
         assertThat(SessionHandler.isActive()).isFalse();
@@ -102,10 +104,10 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -127,11 +129,11 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
         doThrow(SQLException.class).when(connection).rollback();
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -171,10 +173,10 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -196,11 +198,11 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
         doThrow(SQLException.class).when(connection).commit();
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -240,10 +242,10 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -266,11 +268,11 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
         doThrow(SQLException.class).when(connection).rollback();
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -292,11 +294,11 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.removeConnection();
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
         doThrow(SQLException.class).when(connection).close();
 
         // call test method
-        underTest.begin();
+        underTest.begin(false);
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -337,7 +339,7 @@ public class PostgresqlTransactionManagerTest {
         // prepare test data
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
         final Connection actual = underTest.getConnection();
@@ -358,7 +360,7 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.setIsActive(false);
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
         final Connection actual = underTest.getConnection();
@@ -379,7 +381,7 @@ public class PostgresqlTransactionManagerTest {
         SessionHandler.setIsActive(true);
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
         final Connection actual = underTest.getConnection();
@@ -400,7 +402,7 @@ public class PostgresqlTransactionManagerTest {
         final String version = "1.2.3";
 
         // configure mocks
-        when(dataSource.getConnection()).thenReturn(connection);
+        when(dataSourceOldDB.getConnection()).thenReturn(connection);
         when(connection.getMetaData()).thenReturn(databaseMetaData);
         when(databaseMetaData.getDatabaseProductName()).thenReturn(database);
         when(databaseMetaData.getDatabaseProductVersion()).thenReturn(version);
@@ -419,7 +421,7 @@ public class PostgresqlTransactionManagerTest {
     public void testConnection_withConnectionProblem_shouldThrowException() throws SQLException {
         // prepare test data
         // configure mocks
-        doThrow(SQLException.class).when(dataSource).getConnection();
+        doThrow(SQLException.class).when(dataSourceOldDB).getConnection();
 
         // call test method
 

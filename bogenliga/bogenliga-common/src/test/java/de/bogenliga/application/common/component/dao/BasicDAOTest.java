@@ -253,7 +253,7 @@ public class BasicDAOTest {
         assertThat(actual.getName()).isEqualTo(expected.getName());
 
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).commit();
         verify(transactionManager).release();
 
@@ -292,7 +292,7 @@ public class BasicDAOTest {
 
         // assert result
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).release();
         verify(transactionManager).rollback();
 
@@ -335,7 +335,7 @@ public class BasicDAOTest {
         assertThat(actual).isEqualTo(affectedRows);
 
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).commit();
         verify(transactionManager).release();
 
@@ -374,7 +374,7 @@ public class BasicDAOTest {
 
         // assert result
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).rollback();
         verify(transactionManager).release();
 
@@ -426,7 +426,7 @@ public class BasicDAOTest {
         assertThat(actual.getName()).isEqualTo(expected.getName());
 
         // verify invocations
-        verify(transactionManager, times(2)).begin();
+        verify(transactionManager, times(2)).begin(false);
         verify(transactionManager, times(2)).commit();
         verify(transactionManager, times(2)).release();
 
@@ -477,7 +477,7 @@ public class BasicDAOTest {
 
         // assert result
         // verify invocations
-        verify(transactionManager, times(2)).begin();
+        verify(transactionManager, times(2)).begin(false);
         verify(transactionManager, times(2)).rollback();
         verify(transactionManager, times(2)).release();
 
@@ -533,7 +533,7 @@ public class BasicDAOTest {
         // assert result
 
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).commit();
         verify(transactionManager).release();
     }
@@ -560,7 +560,7 @@ public class BasicDAOTest {
         // assert result
 
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).rollback();
         verify(transactionManager).release();
     }
@@ -793,7 +793,7 @@ public class BasicDAOTest {
 
         // assert result
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).rollback();
         verify(transactionManager).release();
 
@@ -832,7 +832,7 @@ public class BasicDAOTest {
         // assert result
 
         // verify invocations
-        verify(transactionManager).begin();
+        verify(transactionManager).begin(false);
         verify(transactionManager).rollback();
         verify(transactionManager).release();
     }
