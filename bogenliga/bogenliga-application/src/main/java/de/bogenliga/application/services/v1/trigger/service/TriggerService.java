@@ -1,6 +1,8 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,5 +25,24 @@ public class TriggerService implements ServiceFacade {
 
     private void setSyncTimestamp(LocalDateTime timestamp) {
         syncTimestamp = timestamp;
+    }
+    @Scheduled(fixedRate = 600000)
+    public void triggerSchedule(){
+        if(syncTimestamp==null){
+            return;
+        }
+        LocalDateTime currentTime = LocalDateTime.now();
+        if ((syncTimestamp.plusMinutes(10).isBefore(currentTime))) {
+            syncTimestamp = currentTime;
+            System.out.println(currentTime);
+            //Sync-Funktion
+            //wenn Timestamp älter als  10 minuten, dann sync else return
+        }
+        else return;
+        {
+            System.out.println(syncTimestamp);
+
+            System.out.println(currentTime);
+        }
     }
 }
