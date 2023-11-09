@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
  * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Component
-@ConfigurationProperties("database")
-public class DatabaseConfiguration {
+@ConfigurationProperties("newdatabase")
+public class DatabaseConfiguration_NewDB {
     private String host;
     private int port;
     private String databaseName;
@@ -116,5 +116,4 @@ public class DatabaseConfiguration {
     public void setPassword(final String password) {
         this.password = password;
     }
-
 }
