@@ -40,7 +40,7 @@ public class TriggerServiceTest {
     @Test
     public void getPong(){
         // Actual result(s) TBD \\
-        assertThat(triggerService.ping()).isEqualTo("pong");
+        assertThat(triggerTest.ping()).isEqualTo("pong");
 
     }
 
