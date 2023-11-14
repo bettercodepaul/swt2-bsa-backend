@@ -45,7 +45,7 @@ public class TriggerServiceTest {
     }
 
 
-    /*@Test
+    /*
     public void validateSyncDataCall(){
         // TODO: Add elapsed time test and verify with below if succeeded
         // verify(triggerService, times(1)).syncData();
