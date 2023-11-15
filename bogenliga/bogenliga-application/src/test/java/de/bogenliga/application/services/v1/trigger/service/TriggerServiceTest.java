@@ -7,10 +7,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -44,7 +46,7 @@ public class TriggerServiceTest {
 
 
 	@Test
-	public void validateSyncDataCall() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+	public void validateSyncTimestamp() throws NoSuchFieldException, IllegalAccessException{
 
 		Field syncTimestampField = triggerTest.getClass().getDeclaredField("syncTimestamp");
 		assertEquals(LocalDateTime.class, syncTimestampField.getType());
@@ -53,5 +55,17 @@ public class TriggerServiceTest {
 		assertNull(syncTimestampField.get(triggerTest)); // Tests if syncTimestamp has it's default value of null
 		syncTimestampField.set(triggerTest, currentTime); // Sets syncTimestamp to current time
 		assertNotNull(syncTimestampField.get(triggerTest)); // Tests if syncTimestamp has been set
+	}
+
+
+	// To be changed
+	@Test
+	public void testTrigger(){
+		TriggerService triggerServiceSpy = Mockito.spy(new TriggerService()); // Create spy
+		doNothing().when(triggerServiceSpy).triggerSchedule(); // Call void method
+
+		triggerServiceSpy.triggerSchedule();
+
+		verify(triggerServiceSpy, times(1)).triggerSchedule(); // Test if invoked once
 	}
 }
