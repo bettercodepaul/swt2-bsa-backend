@@ -250,15 +250,26 @@ public class UserComponentImplTest {
     @Test
     public void signIn() {
         // prepare test data
+        final UserBE expectedBE = new UserBE();
+        expectedBE.setUserEmail(EMAIL);
+        expectedBE.setUserPassword(PASSWORD);
+        expectedBE.setUserId(ID);
+
 
         // configure mocks
 
         // call test method
+        final UserDO actual = underTest.signIn(EMAIL, PASSWORD);
 
         // assert result
-
+        assertThat(expectedBE).isNotNull();
+        assertThat(actual.getEmail())
+                .isEqualTo(expectedBE.getUserEmail());
+        assertThat(actual.getId())
+                .isEqualTo(expectedBE.getUserId());
         // verify invocations
     }
+
 
 
     @Test
