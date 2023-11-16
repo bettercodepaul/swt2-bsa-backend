@@ -5,6 +5,8 @@ package de.bogenliga;
  TODO [AL] class documentation*
  @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,7 +25,8 @@ public class Main {
     // JDBC-URL
     private static final String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
 
-    private static String[] tableNames = {"acl",  "banner", "banner-stat", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "sites", "users", "wettkampfdaten"};
+    private static String[] tableNames = {"acl", "banner", "banner-stat", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "sites", "users", "wettkampfdaten"};
+
 
     public static void main(String[] args) {
         try {
@@ -33,18 +36,24 @@ public class Main {
             // Connection herstellen
             try (Connection connection = DriverManager.getConnection(url, user, password)) {
 
-                for(int i = 0; i < tableNames.length; i++)
+                for (int i = 0; i < tableNames.length; i++) {
+                    System.out.println(tableNames[i]);
                     exportTable(connection, tableNames[i]);
-            }
-            catch (SQLException e) {
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
-    private static void exportTable(Connection connection, String tableName) throws SQLException {
+
+    private static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
         // SQL Abfrage mit Backticks um den Tabellennamen
         String sql = "SELECT * FROM `" + tableName + "`";
 
@@ -54,11 +63,28 @@ public class Main {
 
             // Ergebnisse speichern
             while (resultSet.next()) {
+                //Daten in die temporäre Tabelle einfügen
+                String insertSql = "INSERT INTO BL_" + tableName + " VALUES (";
                 for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
-                    System.out.println(resultSet.getMetaData().getColumnName(i) + ": " + resultSet.getString(i));
+                    insertSql += "?, ";
+                }
+                insertSql = insertSql.substring(0, insertSql.length() - 2) + ");\r\n"; //letztes Komma entfernen
+                try (PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
+                    for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+
+                        insertStatement.setObject(i, resultSet.getObject(i)); //Wert aus der ResultSet übernehmen
+                    }
+                    String insertQuery = insertStatement.toString();
+                    insertQuery = insertQuery.replace("com.mysql.cj.jdbc.ClientPreparedStatement: ",
+                            ""); // Entferne den spezifischen String
+                    // FileWriter in try-with-resources verwenden
+                    try (FileWriter fw = new FileWriter("temptable.sql", true)) { // true für den Anhängemodus
+                        fw.write(insertQuery);
+                    } // FileWriter wird hier automatisch geschlossen
                 }
             }
         }
     }
-
 }
+
+
