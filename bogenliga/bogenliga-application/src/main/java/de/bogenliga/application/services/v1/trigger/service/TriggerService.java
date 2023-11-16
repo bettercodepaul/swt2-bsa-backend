@@ -1,12 +1,15 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.services.v1.trigger.model.MappableOldModel;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 @RestController
@@ -40,14 +43,33 @@ public class TriggerService implements ServiceFacade {
         }
 
     }
+
     /*@TODO RequiresPermission so, dass nur Admin per buttonSync syncen kann*/
     @GetMapping("/buttonSync")
     public void syncData() {
          /*
          Wer zieht die Daten aus dem alten System/ der alten Datenbank?
          @TODO Abfragen, ob Datenbank aktualisiert wurde
-         @TODO Testen, was verändert wurde
-         @TODO Schnittstelle Backendfunktionen
           */
+
+
+         // TODO Testen, was verändert wurde
+        List<MappableOldModel<?>> changedModels = computeAllChangedModels();
+
+        for (MappableOldModel<?> oldModel : changedModels) {
+            BusinessEntity newModel = oldModel.toNewModelBE();
+
+            // TODO Modell in der Datenbank abspeichern
+        }
+    }
+
+
+    /**
+     * Checks the imported old database tables for changes and returns all
+     * updated and newly created models.
+     */
+    private List<MappableOldModel<?>> computeAllChangedModels() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 }
