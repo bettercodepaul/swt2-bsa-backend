@@ -30,5 +30,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         working-directory: ./bogenliga
         run: |
+          java -version
           export MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"
           mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
