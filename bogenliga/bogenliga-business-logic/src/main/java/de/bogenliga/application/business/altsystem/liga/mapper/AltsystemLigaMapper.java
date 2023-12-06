@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.altsystem.liga.mapper;
 
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.liga.impl.entity.LigaBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 
@@ -11,19 +12,17 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class AltsystemLigaMapper implements ValueObjectMapper {
-    public static LigaBE toBE(AltsystemLigaDO altsystemLigaDO){
-        LigaBE ligaBE = new LigaBE();
-        ligaBE.setLigaId(altsystemLigaDO.getId());
-        ligaBE.setLigaName(altsystemLigaDO.getName());
-        ligaBE.setLigaUebergeordnetId(200L);
-        return ligaBE;
+    public static LigaDO toDO(LigaDO ligaDO, AltsystemLigaDO altsystemLigaDO){
+        ligaDO.setName(altsystemLigaDO.getName());
+        ligaDO.setLigaUebergeordnetId(200L);
+        return ligaDO;
     }
 
-    public static LigaBE addDefaultFields(LigaBE ligaBE){
-        ligaBE.setLigaVerantwortlichId(1L);
-        ligaBE.setLigaRegionId(1000L);
-        ligaBE.setLigaDisziplinId(0L);
-        return ligaBE;
+    public static LigaDO addDefaultFields(LigaDO ligaDO) {
+        ligaDO.setLigaVerantwortlichId(1L);
+        ligaDO.setRegionId(1000L);
+        ligaDO.setDisziplinId(0L);
+        return ligaDO;
     }
 
     private AltsystemLigaMapper(){}
