@@ -5,11 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.xml.transform.Result;
 import de.bogenliga.application.business.datatransfer.TableType;
 import de.bogenliga.application.business.datatransfer.model.MannschaftDBO;
-import de.bogenliga.application.business.datatransfer.bl_model.BL_MannschaftDBO;
 import de.bogenliga.application.business.datatransfer.model.SchuetzeDBO;
+import de.bogenliga.application.business.datatransfer.model.VereinDBO;
 
 /**
  * TODO [AL] class documentation
@@ -81,15 +80,12 @@ public class BL_DBOMapper {
             schuetze_new.setDsb_mitglied_vorname(name[1]);
             schuetze_new.setDsb_mitglied_nachname(name[0]);
 
-
             System.out.println(name[1] + " " + name[0]);
         }
         // DBO dass die daten speichert in attribute
         // diese DBO an die neue DBO anschließen und fehlende generieren
 
-        //
         //bl_schuetze -> dsb_mitglied
-
 
         return schuetze_new;
     }
@@ -98,41 +94,50 @@ public class BL_DBOMapper {
         MannschaftDBO mannschaftDBO = new MannschaftDBO();
         SchuetzeDBO schuetze_new = new SchuetzeDBO();
 
-
-        
         return mannschaftDBO;
     }
 
 
-    private MannschaftDBO mapVerein(){
+    public VereinDBO mapVerein() throws SQLException{
         //BL_MannschaftDBO mannschaft_old = null;
-        MannschaftDBO mannschaft_new = null;
+        VereinDBO vereinDBO = null;
         ResultSet mannschaft_oldData = null;
 
-        try {
-            mannschaft_oldData = getData(TableType.MANNSCHAFT);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        mannschaft_oldData = getData(TableType.MANNSCHAFT);
+
+        while(mannschaft_oldData.next()) {
+            char[] nameOld;
+            String nameNew = "";
+            String sonderzeichen = "/-.";
+
+            //@Setup Alles Einheitlich machen
+            // 1.BSC Karlsruhe 2 leerzeichen nach Comma
+            nameOld = mannschaft_oldData.getString(4).toCharArray();
+
+            //iterate over old name -> check every character for mismatching formatting -> replace accordingly
+            for(int i = 0; i < nameOld.length; i++){
+
+                //store current char at index to reduce getString().charAt()-calls for memory efficiency
+                char charAt = mannschaft_oldData.getString(4).charAt(i);
+
+                if(charAt == '.' && mannschaft_oldData.getString(4).charAt(i+1) != ' '){
+                    // 1.BSC -> 1.. BSC
+                    nameNew += ". ";
+                } else if (sonderzeichen.contains(charAt + "") ) {
+                    nameNew += "/s";
+                } else {
+                    nameNew += charAt;
+                }
+            }
+            // replaceAll(\\W) A non-word character
+            //
+            // [e.V.] -> [e. V.]
+            // SVgg Endersb.-Strümpf. -> SVgg Endersb Strümpf
+            // vereinDBO.setVerein_name(mannschaft_oldData.getString(4));
+            // z.413 SVgg Endersb.-Strümpf. in SVng Endersbach-Strümpf. ändern
+
+
         }
-
-        /*
-
-        mannschaft_oldData = [id][liga_id][mannr][saison_id]
-
-        mannschaft_new.setVereinID([id]);
-
-         */
-
-        /*
-        *
-        *
-        *
-        TODO: tatsächliches mapping
-        *
-        *
-        *
-         */
-
-        return mannschaft_new;
+        return vereinDBO;
     }
 }

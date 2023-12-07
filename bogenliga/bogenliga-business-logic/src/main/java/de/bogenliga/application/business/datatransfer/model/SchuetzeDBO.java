@@ -23,6 +23,13 @@ public class SchuetzeDBO {
     private int last_modified_by;
     private int version;
 
+
+
+    // if mannschaft hat keine nummer -> Verein
+    // if mannschaft contains verein -> mannschaft mannschaftsnr order by num desc
+
+
+
     public SchuetzeDBO(){
 
     }
