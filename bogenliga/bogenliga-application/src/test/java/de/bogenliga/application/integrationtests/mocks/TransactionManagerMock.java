@@ -29,7 +29,7 @@ public class TransactionManagerMock implements TransactionManager {
 
 
     @Override
-    public void begin(boolean newDatabase) {
+    public void begin() {
     }
 
 

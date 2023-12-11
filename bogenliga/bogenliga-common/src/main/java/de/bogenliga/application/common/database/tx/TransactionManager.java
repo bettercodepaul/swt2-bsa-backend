@@ -16,7 +16,7 @@ public interface TransactionManager {
     /**
      * Start a transaction
      */
-    void begin(boolean newDatabase);
+    void begin();
 
     /**
      * Undo all changes while transaction (begin)

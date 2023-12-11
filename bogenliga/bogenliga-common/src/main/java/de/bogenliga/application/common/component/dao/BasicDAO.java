@@ -132,7 +132,7 @@ public class BasicDAO implements DataAccessObject {
             if (transactionManager.isActive()) {
                 activeTX = true;
             } else {
-                transactionManager.begin(false);
+                transactionManager.begin();
             }
 
             return run.query(getConnection(), logSQL(businessEntityConfiguration.getLogger(), sqlQuery, params),
@@ -187,7 +187,7 @@ public class BasicDAO implements DataAccessObject {
             if (transactionManager.isActive()) {
                 activeTX = true;
             } else {
-                transactionManager.begin(false);
+                transactionManager.begin();
             }
 
             businessEntityList = run.query(getConnection(),
@@ -245,7 +245,7 @@ public class BasicDAO implements DataAccessObject {
             if (transactionManager.isActive()) {
                 activeTX = true;
             } else {
-                transactionManager.begin(false);
+                transactionManager.begin();
             }
 
             businessEntityAfterInsert = run.insert(getConnection(),
@@ -305,7 +305,7 @@ public class BasicDAO implements DataAccessObject {
             if (transactionManager.isActive()) {
                 activeTX = true;
             } else {
-                transactionManager.begin(false);
+                transactionManager.begin();
             }
 
             return runUpdate(businessEntityConfiguration, sql);
@@ -403,7 +403,7 @@ public class BasicDAO implements DataAccessObject {
             if (transactionManager.isActive()) {
                 activeTX = true;
             } else {
-                transactionManager.begin(false);
+                transactionManager.begin();
             }
 
             int affectedRows = run.update(getConnection(),
@@ -478,7 +478,7 @@ public class BasicDAO implements DataAccessObject {
             if (transactionManager.isActive()) {
                 activeTX = true;
             } else {
-                transactionManager.begin(false);
+                transactionManager.begin();
             }
 
             int affectedRows = runUpdate(businessEntityConfiguration, sql);
