@@ -24,6 +24,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.23</version> <!-- Aktualisiere die Version entsprechend deiner Anforderungen -->
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

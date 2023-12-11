@@ -65,7 +65,7 @@ public class PostgresqlTransactionManagerTest {
         when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         // assert result
         assertThat(SessionHandler.isActive()).isTrue();
@@ -87,7 +87,7 @@ public class PostgresqlTransactionManagerTest {
 
         // call test method
         assertThatExceptionOfType(TechnicalException.class)
-                .isThrownBy(() -> underTest.begin(false));
+                .isThrownBy(() -> underTest.begin());
 
         // assert result
         assertThat(SessionHandler.isActive()).isFalse();
@@ -107,7 +107,7 @@ public class PostgresqlTransactionManagerTest {
         when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -133,7 +133,7 @@ public class PostgresqlTransactionManagerTest {
         doThrow(SQLException.class).when(connection).rollback();
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -176,7 +176,7 @@ public class PostgresqlTransactionManagerTest {
         when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -202,7 +202,7 @@ public class PostgresqlTransactionManagerTest {
         doThrow(SQLException.class).when(connection).commit();
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -245,7 +245,7 @@ public class PostgresqlTransactionManagerTest {
         when(dataSourceOldDB.getConnection()).thenReturn(connection);
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -272,7 +272,7 @@ public class PostgresqlTransactionManagerTest {
         doThrow(SQLException.class).when(connection).rollback();
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         assertThat(SessionHandler.isActive()).isTrue();
 
@@ -298,7 +298,7 @@ public class PostgresqlTransactionManagerTest {
         doThrow(SQLException.class).when(connection).close();
 
         // call test method
-        underTest.begin(false);
+        underTest.begin();
 
         assertThat(SessionHandler.isActive()).isTrue();
 
