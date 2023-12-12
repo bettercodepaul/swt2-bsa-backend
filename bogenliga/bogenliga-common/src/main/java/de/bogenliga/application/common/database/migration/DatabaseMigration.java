@@ -56,11 +56,11 @@ public class DatabaseMigration {
 
             LOG.info("Setting following locations/SqlScript-Folders: {}", Arrays.toString(locations));
             Flyway flyway = Flyway.configure().dataSource
-                    (pgTransactionManager.getDataSource(false))
+                    (pgTransactionManager.getDataSource())
                     .locations(locations).load();
 
             Flyway flywayNewDB = Flyway.configure().dataSource
-                    (pgTransactionManager.getDataSource(true))
+                    (pgTransactionManager.getDataSource())
                     .locations(locations).load();
 
             LOG.info("Executing following locations/SqlScript-Folders: {}", Arrays.toString(flyway.getConfiguration().getLocations()));
