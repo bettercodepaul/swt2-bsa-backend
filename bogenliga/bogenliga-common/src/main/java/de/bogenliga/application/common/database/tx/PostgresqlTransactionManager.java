@@ -25,7 +25,6 @@ public class PostgresqlTransactionManager implements TransactionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostgresqlTransactionManager.class);
     private DataSource ds;
-    private DataSource newDS; //added for new DB
     private DatabaseConfiguration databaseConfiguration;
     private DatabaseConfiguration_NewDB databaseConfiguration_newDB; //added for new DB
 
@@ -38,7 +37,6 @@ public class PostgresqlTransactionManager implements TransactionManager {
     @Autowired
     public PostgresqlTransactionManager(DatabaseConfiguration databaseConfiguration, DatabaseConfiguration_NewDB databaseConfiguration_newDB ) {
         this.databaseConfiguration = databaseConfiguration;
-        this.databaseConfiguration_newDB = databaseConfiguration_newDB; //added for new DB
     }
 
 
@@ -49,7 +47,6 @@ public class PostgresqlTransactionManager implements TransactionManager {
      */
     PostgresqlTransactionManager(DataSource dataSource, DataSource dataSourceNewDB) {
         ds = dataSource;
-        newDS = dataSourceNewDB;
     }
 
 
@@ -63,38 +60,23 @@ public class PostgresqlTransactionManager implements TransactionManager {
      * Start transaction
      */
     @Override
-    public void begin(boolean newDatabase) {
+    public void begin() {
         LOG.debug("Starting transaction.");
         Connection connectionOldDB;
         Connection connectionNewDB;
 
-        if (!newDatabase) {
-            try {
-                connectionOldDB = getDataSource(false).getConnection();
-                connectionOldDB.setAutoCommit(false);
-                connectionOldDB.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-                LOG.debug("Created new connection from Datasource.");
-            } catch (SQLException e) {
-                throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
-            }
 
-            SessionHandler.setConnection(connectionOldDB);
-            SessionHandler.setIsActive(true);
+        try {
+            connectionOldDB = getDataSource().getConnection();
+            connectionOldDB.setAutoCommit(false);
+            connectionOldDB.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            LOG.debug("Created new connection from Datasource.");
+        } catch (SQLException e) {
+            throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
         }
-        else
-        {
-            try {
-                connectionNewDB = getDataSource(true).getConnection();
-                connectionNewDB.setAutoCommit(false);
-                connectionNewDB.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-                LOG.debug("Created new connection from Datasource.");
-            } catch (SQLException e) {
-                throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
-            }
 
-            SessionHandler.setConnection(connectionNewDB);
-            SessionHandler.setIsActive(true);
-        }
+        SessionHandler.setConnection(connectionOldDB);
+        SessionHandler.setIsActive(true);
     }
 
 
@@ -165,68 +147,42 @@ public class PostgresqlTransactionManager implements TransactionManager {
     public Connection getConnection() {
         if (!isActive()) {
             LOG.debug("Call types getConnection() without active transaction. Start transaction automatically...");
-            begin(false);
+            begin();
         }
 
         return SessionHandler.getConnection();
     }
 
 
-    public DataSource getDataSource(boolean newDatabase) {      //Boolean wird auf "true" gesetzt, wenn  man auf die neue Datenbank zugreifen will
-        if (!newDatabase) {
-            if (ds == null) {
-                try {
-                    LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
-                            databaseConfiguration.getHost(), databaseConfiguration.getPort(),
-                            databaseConfiguration.getDatabaseName(), databaseConfiguration.getUser(),
-                            databaseConfiguration.getPassword().length());
+    public DataSource getDataSource()
+    {//Boolean wird auf "true" gesetzt, wenn  man auf die neue Datenbank zugreifen will{
+        if (ds == null) {
+            try {
+                LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
+                        databaseConfiguration.getHost(), databaseConfiguration.getPort(),
+                        databaseConfiguration.getDatabaseName(), databaseConfiguration.getUser(),
+                        databaseConfiguration.getPassword().length());
 
-                    PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
-                    // The value `localhost` means the Postgres cluster running locally on the same machine.
-                    postgresqlDatasource.setServerName(databaseConfiguration.getHost());
-                    postgresqlDatasource.setPortNumber(databaseConfiguration.getPort());
-                    // A connection to Postgres must be made to a specific database rather than to the server as a whole.
-                    // You likely have an initial database created named `public`.
-                    postgresqlDatasource.setDatabaseName(databaseConfiguration.getDatabaseName());
-                    // Or use the super-user 'postgres' for user name if you installed Postgres with defaults and
-                    // have not yet created user(s) for your application.
-                    postgresqlDatasource.setUser(databaseConfiguration.getUser());
-                    postgresqlDatasource.setPassword(databaseConfiguration.getPassword());
+                PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
+                // The value `localhost` means the Postgres cluster running locally on the same machine.
+                postgresqlDatasource.setServerName(databaseConfiguration.getHost());
+                postgresqlDatasource.setPortNumber(databaseConfiguration.getPort());
+                // A connection to Postgres must be made to a specific database rather than to the server as a whole.
+                // You likely have an initial database created named `public`.
+                postgresqlDatasource.setDatabaseName(databaseConfiguration.getDatabaseName());
+                // Or use the super-user 'postgres' for user name if you installed Postgres with defaults and
+                // have not yet created user(s) for your application.
+                postgresqlDatasource.setUser(databaseConfiguration.getUser());
+                postgresqlDatasource.setPassword(databaseConfiguration.getPassword());
 
-                    ds = postgresqlDatasource;
+                ds = postgresqlDatasource;
 
-                    testConnection();
-                } catch (SQLException | NullPointerException e) {
-                    throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
-                }
+                testConnection();
+            } catch (SQLException | NullPointerException e) {
+                throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
             }
-            return ds;
         }
-        else {
-            if (newDS == null) {
-                try {
-                    LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
-                            databaseConfiguration_newDB.getHost(), databaseConfiguration_newDB.getPort(),
-                            databaseConfiguration_newDB.getDatabaseName(), databaseConfiguration_newDB.getUser(),
-                            databaseConfiguration_newDB.getPassword().length());
-
-                    PGSimpleDataSource postgresqlDatasource = new PGSimpleDataSource();  // Empty instance.
-                    postgresqlDatasource.setServerName(databaseConfiguration_newDB.getHost());
-                    postgresqlDatasource.setPortNumber(databaseConfiguration_newDB.getPort());
-                    postgresqlDatasource.setDatabaseName(databaseConfiguration_newDB.getDatabaseName());
-                    postgresqlDatasource.setUser(databaseConfiguration_newDB.getUser());
-                    postgresqlDatasource.setPassword(databaseConfiguration_newDB.getPassword());
-
-                    newDS = postgresqlDatasource;
-
-                    testConnection();
-                } catch (SQLException | NullPointerException e) {
-                    throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
-                }
-            }
-            return newDS;
-        }
-
+        return ds;
 
     }
 
@@ -240,7 +196,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
      * @throws SQLException if the database information could not be accessed
      */
     void testConnection() throws SQLException {
-        try (Connection connection = getDataSource(false).getConnection()) {
+        try (Connection connection = getDataSource().getConnection()) {
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             LOG.info("Datasource {} {} found and registered.", databaseMetaData.getDatabaseProductName(),
                     databaseMetaData.getDatabaseProductVersion());
