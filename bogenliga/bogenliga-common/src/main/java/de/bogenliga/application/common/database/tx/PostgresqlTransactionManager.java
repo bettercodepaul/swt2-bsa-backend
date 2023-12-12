@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import de.bogenliga.application.common.configuration.DatabaseConfiguration;
-import de.bogenliga.application.common.configuration.DatabaseConfiguration_NewDB;//added for new DB
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 
@@ -26,7 +25,6 @@ public class PostgresqlTransactionManager implements TransactionManager {
     private static final Logger LOG = LoggerFactory.getLogger(PostgresqlTransactionManager.class);
     private DataSource ds;
     private DatabaseConfiguration databaseConfiguration;
-    private DatabaseConfiguration_NewDB databaseConfiguration_newDB; //added for new DB
 
 
     /**
@@ -35,7 +33,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
      * Initialize and test database connection
      */
     @Autowired
-    public PostgresqlTransactionManager(DatabaseConfiguration databaseConfiguration, DatabaseConfiguration_NewDB databaseConfiguration_newDB ) {
+    public PostgresqlTransactionManager(DatabaseConfiguration databaseConfiguration) {
         this.databaseConfiguration = databaseConfiguration;
     }
 
@@ -45,7 +43,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
      *
      * @param dataSource with the database connection
      */
-    PostgresqlTransactionManager(DataSource dataSource, DataSource dataSourceNewDB) {
+    PostgresqlTransactionManager(DataSource dataSource) {
         ds = dataSource;
     }
 
@@ -63,7 +61,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
     public void begin() {
         LOG.debug("Starting transaction.");
         Connection connectionOldDB;
-        Connection connectionNewDB;
+
 
 
         try {

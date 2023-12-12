@@ -1,4 +1,4 @@
-package de.bogenliga.application.common.configuration;
+package de.bogenliga;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author Andre Lehnert, BettercallPaul gmbh
  */
 @Component
-@ConfigurationProperties("newdatabase")
+@ConfigurationProperties("old-bl-database")
 public class DatabaseConfiguration_NewDB {
     private String host;
     private int port;

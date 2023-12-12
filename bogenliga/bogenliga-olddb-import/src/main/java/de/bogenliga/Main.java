@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
 
+
 public class Main {
+
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     // Verbindungsinformationen
@@ -33,6 +35,13 @@ public class Main {
     private static final String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
 
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
+
+
+    private DatabaseConfiguration_NewDB DatabaseConfiguration_NewDB;
+
+    public Main() {
+        this.DatabaseConfiguration_NewDB= DatabaseConfiguration_NewDB;
+    }
 
 
     public static void main(String[] args) {
@@ -69,7 +78,7 @@ public class Main {
 
     }
 
-    private static String insertTable(String tableName, boolean[] tables, String insertQuery)
+    public static String insertTable(String tableName, boolean[] tables, String insertQuery)
     {
         if ("acl".equalsIgnoreCase(tableName) && tables[0]) {
             insertQuery = "CREATE TEMPORARY TABLE altsystem_acl (ID INT , users_ID INT , liga_ID INT);\r\n" + insertQuery;
@@ -106,7 +115,7 @@ public class Main {
         return insertQuery;
     }
 
-    private static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
+    public static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
 
         // SQL Abfrage mit Backticks um den Tabellennamen
         String sql = "SELECT * FROM `" + tableName + "`";
