@@ -19,6 +19,8 @@ import java.sql.Timestamp;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class BL_DBOMapper {
+    private static int schuetzeID;
+    private List<SchuetzeDBO> schuetzeList = new ArrayList<>();
 
     //methode zum auslesen der "bl_"-tabellen schuetze, mannschaft, ...
     private ResultSet getData(TableType type) throws SQLException {
@@ -65,12 +67,18 @@ public class BL_DBOMapper {
         SchuetzeDBO schuetze_new = new SchuetzeDBO();
         ResultSet schuetze_oldData = null;
 
-        // bl schuzte auslesen
-        schuetze_oldData = getData(TableType.SCHUETZE);
+        try {
+            schuetze_oldData = getData(TableType.SCHUETZE);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+
 
         while (schuetze_oldData.next()) {
-            // aus schützen die keys auslesen und trennen name (nachname, vorname)
-            schuetze_new.setDsb_mitglied_id(schuetze_oldData.getInt(1));
+            SchuetzeDBO schuetze_new = new SchuetzeDBO(); // Ein neues Objekt in jeder Iteration erstellen
+
+            //aus schützen die keys auslesen und trennen name (nachname, vorname)
 
             String[] name = null;
 
@@ -89,8 +97,17 @@ public class BL_DBOMapper {
 
             schuetze_new.setDsb_mitglied_vorname(name[1]);
             schuetze_new.setDsb_mitglied_nachname(name[0]);
+            schuetze_new.setDsb_mitglied_geburtsdatum(null);
+            schuetze_new.setDsb_mitglied_nationalitaet(null);
+            schuetze_new.setDsb_mitglied_mitgliedsnummer(null);
+            //schuetze_new.setDsb_mitglied_benutzer_id(); -> Daten aus Verein auslesen
+            schuetze_new.setCreated_at_utc(null);
+            schuetze_new.setCreated_by(0);
+            schuetze_new.setLast_modified_at_utc(null);
+            schuetze_new.setLast_modified_by(0);
+            schuetze_new.setVersion(0);
 
-            System.out.println(name[1] + " " + name[0]);
+            schuetzeList.add(schuetze_new);
         }
         // DBO dass die daten speichert in attribute
         // diese DBO an die neue DBO anschließen und fehlende generieren
