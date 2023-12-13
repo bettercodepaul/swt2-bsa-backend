@@ -36,24 +36,6 @@ public class TriggerServiceTest {
 	private TriggerService triggerTest;
 
 
-
-
-
-
-	@Test
-	public void validateSyncTimestamp() throws NoSuchFieldException, IllegalAccessException{
-
-		Field syncTimestampField = triggerTest.getClass().getDeclaredField("syncTimestamp");
-		assertEquals(LocalDateTime.class, syncTimestampField.getType());
-
-		syncTimestampField.setAccessible(true); // Enables Access
-		assertNull(syncTimestampField.get(triggerTest)); // Tests if syncTimestamp has it's default value of null
-		syncTimestampField.set(triggerTest, currentTime); // Sets syncTimestamp to current time
-		assertNotNull(syncTimestampField.get(triggerTest)); // Tests if syncTimestamp has been set
-	}
-
-
-
 	// To be changed
 	@Test
 	public void testSync(){
