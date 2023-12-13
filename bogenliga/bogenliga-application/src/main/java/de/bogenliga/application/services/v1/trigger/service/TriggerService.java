@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
+import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 @RestController
@@ -15,14 +17,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class TriggerService implements ServiceFacade {
 
-    private LocalDateTime syncTimestamp = null;
-/*TODO RequiresPermission so, dass nur Admin Zugriff hat*/
-    @GetMapping("/ping")
-    public String ping() {
-        setSyncTimestamp(LocalDateTime.now());
-        return "pong";
-    }
-
+   /* private LocalDateTime syncTimestamp = null;
     private void setSyncTimestamp(LocalDateTime timestamp) {
         syncTimestamp = timestamp;
     }
@@ -39,10 +34,11 @@ public class TriggerService implements ServiceFacade {
             syncData();
         }
 
-    }
-    /*@TODO RequiresPermission so, dass nur Admin per buttonSync syncen kann*/
+    }*/
+    @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     @GetMapping("/buttonSync")
     public void syncData() {
+        System.out.println("Hilfe ich bin hier gefangen");
          /*
          Wer zieht die Daten aus dem alten System/ der alten Datenbank?
          @TODO Abfragen, ob Datenbank aktualisiert wurde
