@@ -105,6 +105,7 @@ public class BL_DBOMapper {
 
         mannschaft_oldData = getData(TableType.MANNSCHAFT);
 
+
         while(mannschaft_oldData.next()) {
             char[] nameOld;
             String nameNew = "";
@@ -147,11 +148,10 @@ public class BL_DBOMapper {
                 nameNew = "SVng Endersbach Strümpfelbach";
             }
 
-
-            verein_new.setVerein_name(nameNew);
             System.out.println(nameNew);
-
+            verein_new.setVerein_name(nameNew);
         }
+
        return verein_new;
     }
 }
