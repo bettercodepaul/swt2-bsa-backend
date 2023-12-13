@@ -25,7 +25,7 @@ public class BL_DBOMapper {
         Connection connection = null;
 
         //durch tabletype pruefen welche daten abgerufen werden sollen, sql-abfrage entsprechend anpassen
-        switch (type){
+        switch (type) {
             case SCHUETZE:
                 query = "SELECT * FROM bl_schuetze";
                 break;
@@ -41,7 +41,7 @@ public class BL_DBOMapper {
             Statement statement = connection.createStatement();
             result = statement.executeQuery(query);
             result.next();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             connection.close();
@@ -51,6 +51,7 @@ public class BL_DBOMapper {
         return result;
     }
 
+
     public SchuetzeDBO mapSchuetze() throws SQLException {
         SchuetzeDBO schuetze_new = new SchuetzeDBO();
         ResultSet schuetze_oldData = null;
@@ -58,7 +59,7 @@ public class BL_DBOMapper {
         // bl schuzte auslesen
         schuetze_oldData = getData(TableType.SCHUETZE);
 
-        while(schuetze_oldData.next()) {
+        while (schuetze_oldData.next()) {
             // aus schützen die keys auslesen und trennen name (nachname, vorname)
             schuetze_new.setDsb_mitglied_id(schuetze_oldData.getInt(1));
 
@@ -90,6 +91,7 @@ public class BL_DBOMapper {
         return schuetze_new;
     }
 
+
     public MannschaftDBO mapMannschaft() {
         MannschaftDBO mannschaftDBO = new MannschaftDBO();
         SchuetzeDBO schuetze_new = new SchuetzeDBO();
@@ -98,7 +100,7 @@ public class BL_DBOMapper {
     }
 
 
-    public VereinDBO mapVerein() throws SQLException{
+    public VereinDBO mapVerein() throws SQLException {
         //BL_MannschaftDBO mannschaft_old = null;
         VereinDBO verein_new = new VereinDBO();
         ResultSet mannschaft_oldData = null;
@@ -106,45 +108,55 @@ public class BL_DBOMapper {
         mannschaft_oldData = getData(TableType.MANNSCHAFT);
 
 
-        while(mannschaft_oldData.next()) {
+        while (mannschaft_oldData.next()) {
             char[] nameOld;
             String nameNew = "";
             String sonderzeichen = "/-.";
             String num = "1234567890";
 
-            //@Setup Alles Einheitlich machen
+
             nameOld = mannschaft_oldData.getString(4).toCharArray();
 
-            //iterate over old name -> check every character for mismatching formatting -> replace accordingly
-            for(int i = 0; i < nameOld.length; i++){
+            // Iteriere über den alten Namen und überprüfe jedes Zeichen auf inkorrekte Formatierung, ersetze entsprechend
+            for (int i = 0; i < nameOld.length; i++) {
 
-                //store current char at index to reduce getString().charAt()-calls for memory efficiency
+                // Speichere das aktuelle Zeichen am Index, um getString().charAt()-Aufrufe zu minimieren (für bessere Speichereffizienz)
                 if (i + 1 < mannschaft_oldData.getString(4).length()) {
-                    if (mannschaft_oldData.getString(4).charAt(i) == '.' && mannschaft_oldData.getString(4).charAt(i + 1) != ' ') {
+                    // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
+                    if (mannschaft_oldData.getString(4).charAt(i) == '.' && mannschaft_oldData.getString(4).charAt(
+                            i + 1) != ' ') {
                         nameNew += ". ";
                     } else if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "") && !num.contains(
                             mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
+                        // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge ein Leerzeichen hinzu
                         nameNew += " ";
                     } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i > 7) {
+                        // Wenn das Zeichen eine Zahl ist und der Index größer als 7 ist, füge nichts hinzu (überspringe Zahl in der Mitte des Namens)
                         nameNew += "";
                     } else {
+                        // Andernfalls füge das Zeichen zum neuen Namen hinzu
                         nameNew += mannschaft_oldData.getString(4).charAt(i);
                     }
-                }else {
-                    if (mannschaft_oldData.getString(4).charAt(i) == '.'){
+                } else {
+                    // Für das letzte Zeichen
+                    if (mannschaft_oldData.getString(4).charAt(i) == '.') {
                         nameNew += ".";
                     } else if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "") && !num.contains(
                             mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
+                        // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge nichts hinzu
                         nameNew += "";
                     } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i >= 7) {
+                        // Wenn das Zeichen eine Zahl ist und der Index größer oder gleich 7 ist, füge nichts hinzu (überspringe Zahl in der Mitte des Namens)
                         nameNew += "";
                     } else {
+                        // Andernfalls füge das Zeichen zum neuen Namen hinzu
                         nameNew += mannschaft_oldData.getString(4).charAt(i);
                     }
-
                 }
             }
-            if (nameNew.equals("SVgg Endersb.  Strümpf.") || nameNew.equals("SVng Endersbach Strümpf.") ) {
+
+            // Spezielle Überprüfung für bestimmte Namen und Ausgabe des normalisierten Namens
+            if (nameNew.equals("SVgg Endersb.  Strümpf.") || nameNew.equals("SVng Endersbach Strümpf.")) {
                 nameNew = "SVng Endersbach Strümpfelbach";
             }
 
@@ -152,6 +164,8 @@ public class BL_DBOMapper {
             verein_new.setVerein_name(nameNew);
         }
 
-       return verein_new;
+        // Gibt das aktualisierte Vereinsobjekt zurück
+        return verein_new;
     }
 }
+
