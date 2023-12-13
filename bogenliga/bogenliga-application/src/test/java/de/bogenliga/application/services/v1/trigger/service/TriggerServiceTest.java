@@ -47,5 +47,4 @@ public class TriggerServiceTest {
 		assertNotNull(syncTimestampField.get(triggerTest)); // Tests if syncTimestamp has been set
 	}
 
-
 }
