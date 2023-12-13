@@ -100,7 +100,7 @@ public class BL_DBOMapper {
 
     public VereinDBO mapVerein() throws SQLException{
         //BL_MannschaftDBO mannschaft_old = null;
-        VereinDBO vereinDBO = null;
+        VereinDBO verein_new = new VereinDBO();
         ResultSet mannschaft_oldData = null;
 
         mannschaft_oldData = getData(TableType.MANNSCHAFT);
@@ -109,6 +109,7 @@ public class BL_DBOMapper {
             char[] nameOld;
             String nameNew = "";
             String sonderzeichen = "/-.";
+            String num = "1234567890";
 
             //@Setup Alles Einheitlich machen
             nameOld = mannschaft_oldData.getString(4).toCharArray();
