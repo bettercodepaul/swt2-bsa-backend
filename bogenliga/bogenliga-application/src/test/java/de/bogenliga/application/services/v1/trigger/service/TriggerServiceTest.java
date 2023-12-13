@@ -39,12 +39,6 @@ public class TriggerServiceTest {
 	// To be changed
 	@Test
 	public void testSync(){
-		TriggerService triggerServiceSpy = Mockito.spy(new TriggerService()); // Create spy
-		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outStream));
-
-		triggerServiceSpy.syncData();
-
-		assertEquals("toast", outStream.toString());
+		assertEquals("toast", triggerTest.syncData());
 	}
 }
