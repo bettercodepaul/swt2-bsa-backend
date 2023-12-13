@@ -46,4 +46,5 @@ public class TriggerService implements ServiceFacade {
          @TODO Schnittstelle Backendfunktionen
           */
     }
+
 }
