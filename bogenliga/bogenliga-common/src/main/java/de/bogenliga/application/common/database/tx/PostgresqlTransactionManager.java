@@ -153,7 +153,7 @@ public class PostgresqlTransactionManager implements TransactionManager {
 
 
     public DataSource getDataSource()
-    {//Boolean wird auf "true" gesetzt, wenn  man auf die neue Datenbank zugreifen will{
+    {
         if (ds == null) {
             try {
                 LOG.debug("Database connection: jdbc:postgresql://{}:{}/{} with user '{}' and password length '{}'",
