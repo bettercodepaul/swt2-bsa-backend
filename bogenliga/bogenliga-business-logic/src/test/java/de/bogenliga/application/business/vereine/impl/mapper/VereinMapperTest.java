@@ -1,5 +1,10 @@
 package de.bogenliga.application.business.vereine.impl.mapper;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import de.bogenliga.application.business.datatransfer.mapper.BL_DBOMapper;
+import de.bogenliga.application.business.datatransfer.model.VereinDBO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import org.junit.Test;
@@ -35,4 +40,68 @@ public class VereinMapperTest {
         assertThat(actual.getVereinName()).isEqualTo(VEREIN_NAME);
     }
 
+
+    @Test
+    public void testMapVerein() {
+        String databaseURL = "jdbc:postgresql://localhost:5432/swt2";
+        String query = null;
+        ResultSet result = null;
+        Connection connection = null;
+        BL_DBOMapper dataAccessObj = new BL_DBOMapper();
+        // Arrange: Vorbereitung der Testdaten und des Testobjekts
+        // Annahme: Dein Datenbank-Zugriffsobjekt ist dataAccessObj
+
+        // BoAbt MTV Ludwigsburg
+        // SGes Heidenheim
+        //BSC GeislingenSteige
+        //SF Gechingen
+        //BSC Schoemberg 
+        //SGi Ditzingen 
+        //SGi Welzheim 
+        //TV Murrhardt
+        //BSC Eschenbach
+        //BSC Geislingen
+        //SV Weil im Schönbuch
+        //SV Wimsheim 
+        //BC Magstadt
+        //BS Mühlen
+        //SV Essendorf
+        //BS Nürtingen
+        //BWT Kirchentellinsfurt 
+        // BSC Schömberg
+        // SV Wimsheim
+
+        // ----------------------------------------------------------------------------
+        //        NBAV Neuenstadt
+        //        BoAbt MTV Ludwigsburg
+        //        SGes Heidenheim
+        //        BSC Geislingen/Steige
+        //        SF Gechingen
+        //        BSC Schoemberg 1
+        //        SGi Ditzingen 2
+        //        SGi Welzheim 3
+        //        TV Murrhardt
+        //        BSC Eschenbach
+        //        BSC Geislingen
+        //        SV Weil im Schönbuch
+        //        SV Wimsheim 2
+        //        BC Magstadt
+        //        BS Mühlen
+        //        SV Essendorf
+        //        BS Nürtingen
+        //        BWT Kirchentellinsfurt 1
+        //        BSC Schömberg
+        //        SV Wimsheim
+
+        // Act: Ausführung der Methode, die gemappt werden soll
+        VereinDBO mappedVerein = null;
+        try {
+            mappedVerein = dataAccessObj.mapVerein();
+            System.out.println(mappedVerein);
+        } catch (SQLException e) {
+            fail("SQL Exception aufgetreten: " + e.getMessage());
+        }
+
+    }
+    
 }
