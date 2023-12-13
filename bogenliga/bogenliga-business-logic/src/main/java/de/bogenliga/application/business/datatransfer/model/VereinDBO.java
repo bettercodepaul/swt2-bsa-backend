@@ -145,4 +145,5 @@ public class VereinDBO {
     public void setVerein_icon(String verein_icon) {
         this.verein_icon = verein_icon;
     }
+
 }

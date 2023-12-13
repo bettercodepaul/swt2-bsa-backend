@@ -1,7 +1,5 @@
 package de.bogenliga.application.business.vereine.impl.mapper;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import de.bogenliga.application.business.datatransfer.mapper.BL_DBOMapper;
 import de.bogenliga.application.business.datatransfer.model.VereinDBO;
@@ -43,10 +41,6 @@ public class VereinMapperTest {
 
     @Test
     public void testMapVerein() {
-        String databaseURL = "jdbc:postgresql://localhost:5432/swt2";
-        String query = null;
-        ResultSet result = null;
-        Connection connection = null;
         BL_DBOMapper dataAccessObj = new BL_DBOMapper();
         VereinDBO mappedVerein = null;
 
