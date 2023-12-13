@@ -114,30 +114,63 @@ public class BL_DBOMapper {
             // 1.BSC Karlsruhe 2 leerzeichen nach Comma
             nameOld = mannschaft_oldData.getString(4).toCharArray();
 
+            // || nameOld.equals("SVng Endersbach-Strüpf."))
+
+
+            // Boabt MTV Ludwigsburg
+            // BoAbt MTV Ludwigsburg
+
+
             //iterate over old name -> check every character for mismatching formatting -> replace accordingly
             for(int i = 0; i < nameOld.length; i++){
 
                 //store current char at index to reduce getString().charAt()-calls for memory efficiency
-                char charAt = mannschaft_oldData.getString(4).charAt(i);
+                if (i + 1 < mannschaft_oldData.getString(4).length()) {
+                    if (mannschaft_oldData.getString(4).charAt(i) == '.' && mannschaft_oldData.getString(4).charAt(i + 1) != ' ') {
+                        nameNew += ". ";
+                    } else if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "") && !num.contains(
+                            mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
+                        nameNew += " ";
+                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i > 7) {
+                        nameNew += "";
+                    } else {
+                        nameNew += mannschaft_oldData.getString(4).charAt(i);
+                    }
+                }else {
+                    if (mannschaft_oldData.getString(4).charAt(i) == '.'){
+                        nameNew += ".";
+                    } else if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "") && !num.contains(
+                            mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
+                        nameNew += "";
+                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i >= 7) {
+                        nameNew += "";
+                    } else {
+                        nameNew += mannschaft_oldData.getString(4).charAt(i);
+                    }
 
-                if(charAt == '.' && mannschaft_oldData.getString(4).charAt(i+1) != ' '){
-                    // 1.BSC -> 1.. BSC
-                    nameNew += ". ";
-                } else if (sonderzeichen.contains(charAt + "") ) {
-                    nameNew += "/s";
-                } else {
-                    nameNew += charAt;
                 }
             }
-            // replaceAll(\\W) A non-word character
-            //
-            // [e.V.] -> [e. V.]
-            // SVgg Endersb.-Strümpf. -> SVgg Endersb Strümpf
-            // vereinDBO.setVerein_name(mannschaft_oldData.getString(4));
-            // z.413 SVgg Endersb.-Strümpf. in SVng Endersbach-Strümpf. ändern
+            if (nameNew.equals("SVgg Endersb.  Strümpf.") || nameNew.equals("SVng Endersbach Strümpf.") ) {
+                // Beispiel: Ersetzen von "SVgg" durch "SVng"
+                nameNew = "SVng Endersbach Strümpfelbach";
+            }
+
+
+            verein_new.setVerein_name(nameNew);
+            System.out.println(nameNew);
+
+                //verein_new.setverein_name(nameNew[1]);
+
+
+                // replaceAll(\\W) A non-word character
+                //
+                // [e.V.] -> [e. V.]
+                // SVgg Endersb.-Strümpf. -> SVgg Endersb Strümpf
+                // vereinDBO.setVerein_name(mannschaft_oldData.getString(4));
+                // z.413 SVgg Endersb.-Strümpf. in SVng Endersbach-Strümpf. ändern
 
 
         }
-        return verein_new;
+       return verein_new;
     }
 }
