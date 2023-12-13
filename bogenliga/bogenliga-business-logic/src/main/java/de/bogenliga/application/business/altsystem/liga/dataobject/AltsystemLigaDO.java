@@ -9,6 +9,7 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
  */
 public class AltsystemLigaDO extends AltsystemDO {
     private String name;
+    private int idNextLiga;
 
     public void setName(String name){
         this.name = name;
@@ -18,6 +19,7 @@ public class AltsystemLigaDO extends AltsystemDO {
         return this.name;
     }
 
+    public void setIdNextLiga(int idNextLiga) { this.idNextLiga = idNextLiga; }
 
-
+    public int getIdNextLiga(){ return this.idNextLiga; }
 }
