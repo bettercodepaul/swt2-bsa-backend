@@ -1,5 +1,7 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -35,6 +37,9 @@ public class TriggerServiceTest {
 
 
 
+
+
+
 	@Test
 	public void validateSyncTimestamp() throws NoSuchFieldException, IllegalAccessException{
 
@@ -47,4 +52,17 @@ public class TriggerServiceTest {
 		assertNotNull(syncTimestampField.get(triggerTest)); // Tests if syncTimestamp has been set
 	}
 
+
+
+	// To be changed
+	@Test
+	public void testSync(){
+		TriggerService triggerServiceSpy = Mockito.spy(new TriggerService()); // Create spy
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(outStream));
+
+		triggerServiceSpy.syncData();
+
+		assertEquals("Hilfe ich bin hier gefangen\r\n", outStream.toString());
+	}
 }
