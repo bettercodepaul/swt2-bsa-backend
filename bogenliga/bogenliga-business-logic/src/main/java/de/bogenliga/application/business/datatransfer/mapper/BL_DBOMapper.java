@@ -114,13 +114,6 @@ public class BL_DBOMapper {
             // 1.BSC Karlsruhe 2 leerzeichen nach Comma
             nameOld = mannschaft_oldData.getString(4).toCharArray();
 
-            // || nameOld.equals("SVng Endersbach-Strüpf."))
-
-
-            // Boabt MTV Ludwigsburg
-            // BoAbt MTV Ludwigsburg
-
-
             //iterate over old name -> check every character for mismatching formatting -> replace accordingly
             for(int i = 0; i < nameOld.length; i++){
 
@@ -151,24 +144,12 @@ public class BL_DBOMapper {
                 }
             }
             if (nameNew.equals("SVgg Endersb.  Strümpf.") || nameNew.equals("SVng Endersbach Strümpf.") ) {
-                // Beispiel: Ersetzen von "SVgg" durch "SVng"
                 nameNew = "SVng Endersbach Strümpfelbach";
             }
 
 
             verein_new.setVerein_name(nameNew);
             System.out.println(nameNew);
-
-                //verein_new.setverein_name(nameNew[1]);
-
-
-                // replaceAll(\\W) A non-word character
-                //
-                // [e.V.] -> [e. V.]
-                // SVgg Endersb.-Strümpf. -> SVgg Endersb Strümpf
-                // vereinDBO.setVerein_name(mannschaft_oldData.getString(4));
-                // z.413 SVgg Endersb.-Strümpf. in SVng Endersbach-Strümpf. ändern
-
 
         }
        return verein_new;
