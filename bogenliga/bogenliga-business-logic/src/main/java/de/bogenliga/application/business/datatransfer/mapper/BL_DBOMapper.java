@@ -111,7 +111,6 @@ public class BL_DBOMapper {
             String sonderzeichen = "/-.";
 
             //@Setup Alles Einheitlich machen
-            // 1.BSC Karlsruhe 2 leerzeichen nach Comma
             nameOld = mannschaft_oldData.getString(4).toCharArray();
 
             //iterate over old name -> check every character for mismatching formatting -> replace accordingly
