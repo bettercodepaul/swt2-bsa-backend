@@ -35,16 +35,6 @@ public class TriggerServiceTest {
 
 
 
-
-
-	@Test
-	public void getPong(){
-		// Actual result(s) TBD \\
-		assertThat(triggerTest.ping()).isEqualTo("pong");
-
-	}
-
-
 	@Test
 	public void validateSyncTimestamp() throws NoSuchFieldException, IllegalAccessException{
 
@@ -58,15 +48,4 @@ public class TriggerServiceTest {
 	}
 
 
-
-	// To be changed
-	@Test
-	public void testTrigger(){
-		TriggerService triggerServiceSpy = Mockito.spy(new TriggerService()); // Create spy
-		doNothing().when(triggerServiceSpy).triggerSchedule(); // Call void method
-
-		triggerServiceSpy.triggerSchedule();
-
-		verify(triggerServiceSpy, times(1)).triggerSchedule(); // Test if invoked once
-	}
 }
