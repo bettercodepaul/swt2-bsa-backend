@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
@@ -873,9 +874,12 @@ public class MatchService implements ServiceFacade {
      * @param fromService: name of the service the log came from
      */
     private void log(MatchDTO matchDTO, String fromService) {
+
+        fromService=fromService.replaceAll("[\n\r]", "_");
+
         LOG.debug(
-                "Received '{}' request for match with id: '{}', WettkampfID: '{}', Begegnung: '{}', MannschaftId: '{}'," +
-                        " ScheibenNummer: '{}', Satzpunkte: '{}', Matchpunkte: '{}'",
+        "Received '{}' request for match with id: '{}', WettkampfID: '{}', Begegnung: '{}', MannschaftId: '{}'," +
+                " ScheibenNummer: '{}', Satzpunkte: '{}', Matchpunkte: '{}'",
                 fromService,
                 matchDTO.getId(),
                 matchDTO.getWettkampfId(),
@@ -883,7 +887,9 @@ public class MatchService implements ServiceFacade {
                 matchDTO.getMannschaftId(),
                 matchDTO.getMatchScheibennummer(),
                 matchDTO.getSatzpunkte(),
-                matchDTO.getMatchpunkte()
+
+
+        matchDTO.getMatchpunkte()
         );
     }
- }
+}
