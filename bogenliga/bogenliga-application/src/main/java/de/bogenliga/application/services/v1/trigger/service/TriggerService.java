@@ -1,15 +1,20 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import de.bogenliga.application.common.component.entity.BusinessEntity;
+import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
+import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.services.v1.trigger.model.MappableOldModel;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 @RestController
@@ -17,6 +22,19 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 @RequestMapping("v1/trigger")
 
 public class TriggerService implements ServiceFacade {
+    private static final String FIND_ALL =
+            "SELECT * "
+                    + " FROM bl_liga";
+
+    private final AltsystemLiga altsystemLiga = new AltsystemLiga();
+
+    // define the logger context
+    private static final Logger LOGGER = LoggerFactory.getLogger(TriggerService.class);
+    private final BasicDAO basicDao;
+
+    public TriggerService(final BasicDAO basicDao) {
+        this.basicDao = basicDao;
+    }
 
     private LocalDateTime syncTimestamp = null;
 /*TODO RequiresPermission so, dass nur Admin Zugriff hat*/
@@ -52,15 +70,7 @@ public class TriggerService implements ServiceFacade {
          @TODO Abfragen, ob Datenbank aktualisiert wurde
           */
 
-
-         // TODO Testen, was verändert wurde
-        List<MappableOldModel<?>> changedModels = computeAllChangedModels();
-
-        for (MappableOldModel<?> oldModel : changedModels) {
-            BusinessEntity newModel = oldModel.toNewModelBE();
-
-            // TODO Modell in der Datenbank abspeichern
-        }
+        computeAllChangedModels();
     }
 
 
@@ -68,8 +78,14 @@ public class TriggerService implements ServiceFacade {
      * Checks the imported old database tables for changes and returns all
      * updated and newly created models.
      */
-    private List<MappableOldModel<?>> computeAllChangedModels() {
-        // TODO
-        throw new UnsupportedOperationException();
+    private void computeAllChangedModels() {
+        final List<AltsystemLigaDO> result = basicDao.selectEntityList(new BusinessEntityConfiguration<>(
+                AltsystemLigaDO.class, "bl_liga", new HashMap<>(), LOGGER
+        ), FIND_ALL);
+
+        for (AltsystemLigaDO liga : result) {
+            LOGGER.debug("LIGA NAME: " + liga.getName());
+            altsystemLiga.create(liga);
+        }
     }
 }

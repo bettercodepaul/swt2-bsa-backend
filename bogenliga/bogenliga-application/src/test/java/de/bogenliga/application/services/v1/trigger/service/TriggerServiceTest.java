@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -26,6 +27,9 @@ public class TriggerServiceTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+	@Mock
+	private BasicDAO basicDao;
 
 	@Mock
 	private TriggerService triggerService;
@@ -62,7 +66,7 @@ public class TriggerServiceTest {
 	// To be changed
 	@Test
 	public void testTrigger(){
-		TriggerService triggerServiceSpy = Mockito.spy(new TriggerService()); // Create spy
+		TriggerService triggerServiceSpy = Mockito.spy(new TriggerService(basicDao)); // Create spy
 		doNothing().when(triggerServiceSpy).triggerSchedule(); // Call void method
 
 		triggerServiceSpy.triggerSchedule();
