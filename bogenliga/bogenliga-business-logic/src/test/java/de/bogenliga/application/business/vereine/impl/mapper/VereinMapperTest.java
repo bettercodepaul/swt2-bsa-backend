@@ -48,53 +48,8 @@ public class VereinMapperTest {
         ResultSet result = null;
         Connection connection = null;
         BL_DBOMapper dataAccessObj = new BL_DBOMapper();
-        // Arrange: Vorbereitung der Testdaten und des Testobjekts
-        // Annahme: Dein Datenbank-Zugriffsobjekt ist dataAccessObj
-
-        // BoAbt MTV Ludwigsburg
-        // SGes Heidenheim
-        //BSC GeislingenSteige
-        //SF Gechingen
-        //BSC Schoemberg 
-        //SGi Ditzingen 
-        //SGi Welzheim 
-        //TV Murrhardt
-        //BSC Eschenbach
-        //BSC Geislingen
-        //SV Weil im Schönbuch
-        //SV Wimsheim 
-        //BC Magstadt
-        //BS Mühlen
-        //SV Essendorf
-        //BS Nürtingen
-        //BWT Kirchentellinsfurt 
-        // BSC Schömberg
-        // SV Wimsheim
-
-        // ----------------------------------------------------------------------------
-        //        NBAV Neuenstadt
-        //        BoAbt MTV Ludwigsburg
-        //        SGes Heidenheim
-        //        BSC Geislingen/Steige
-        //        SF Gechingen
-        //        BSC Schoemberg 1
-        //        SGi Ditzingen 2
-        //        SGi Welzheim 3
-        //        TV Murrhardt
-        //        BSC Eschenbach
-        //        BSC Geislingen
-        //        SV Weil im Schönbuch
-        //        SV Wimsheim 2
-        //        BC Magstadt
-        //        BS Mühlen
-        //        SV Essendorf
-        //        BS Nürtingen
-        //        BWT Kirchentellinsfurt 1
-        //        BSC Schömberg
-        //        SV Wimsheim
-
-        // Act: Ausführung der Methode, die gemappt werden soll
         VereinDBO mappedVerein = null;
+
         try {
             mappedVerein = dataAccessObj.mapVerein();
             System.out.println(mappedVerein);
