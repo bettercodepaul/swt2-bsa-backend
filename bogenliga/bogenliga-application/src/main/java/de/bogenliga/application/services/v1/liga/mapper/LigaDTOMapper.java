@@ -26,9 +26,9 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
         final String liga_verantwortlich_mail = ligaDO.getLigaVerantwortlichMail();
         final Long liga_disziplin_id = ligaDO.getDisziplinId();
         final String liga_detail = ligaDO.getLigaDetail();
-        final String liga_file_base64 = ligaDO.getLigaDoFileBase64();
-        final String liga_file_name = ligaDO.getLigaDoFileName();
-        final String liga_file_type = ligaDO.getLigaDoFileType();
+        final String liga_file_base64 = ligaDO.getLigaFileBase64();
+        final String liga_file_name = ligaDO.getLigaFileName();
+        final String liga_file_type = ligaDO.getLigaFileType();
 
 
 
@@ -49,9 +49,9 @@ public class LigaDTOMapper implements DataTransferObjectMapper {
         ligaDO.setLigaVerantwortlichId(dto.getLigaVerantwortlichId());
         ligaDO.setDisziplinId(dto.getDisziplinId());
         ligaDO.setLigaDetail(dto.getLigaDetail());
-        ligaDO.setLigaDoFileBase64(dto.getLigaDetailFileBase64());
-        ligaDO.setLigaDoFileName(dto.getLigaDetailFileName());
-        ligaDO.setLigaDoFileType(dto.getLigaDetailFileType());
+        ligaDO.setLigaFileBase64(dto.getLigaDetailFileBase64());
+        ligaDO.setLigaFileName(dto.getLigaDetailFileName());
+        ligaDO.setLigaFileType(dto.getLigaDetailFileType());
 
         return ligaDO;
     };
