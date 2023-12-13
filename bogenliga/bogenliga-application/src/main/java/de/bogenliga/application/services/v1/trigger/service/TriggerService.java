@@ -38,7 +38,7 @@ public class TriggerService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     @GetMapping("/buttonSync")
     public void syncData() {
-        System.out.println("Hilfe ich bin hier gefangen");
+        System.out.println("toast");
          /*
          Wer zieht die Daten aus dem alten System/ der alten Datenbank?
          @TODO Abfragen, ob Datenbank aktualisiert wurde
