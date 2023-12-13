@@ -9,8 +9,8 @@ import de.bogenliga.application.business.datatransfer.TableType;
 import de.bogenliga.application.business.datatransfer.model.MannschaftDBO;
 import de.bogenliga.application.business.datatransfer.model.SchuetzeDBO;
 import de.bogenliga.application.business.datatransfer.model.VereinDBO;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.Timestamp;
 
 /**
@@ -50,6 +50,9 @@ public class BL_DBOMapper {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            if (result != null) {
+                result.close();
+            }
             connection.close();
         }
 
@@ -98,8 +101,8 @@ public class BL_DBOMapper {
     }
 
 
-    public MannschaftDBO mapMannschaft() throws SQLException {
-        MannschaftDBO mannschaftDBO = new MannschaftDBO();
+    public List<MannschaftDBO> mapMannschaft() throws SQLException {
+        List<MannschaftDBO> mannschaftList = new ArrayList<>();
         ResultSet mannschaft_oldData = getData(TableType.MANNSCHAFT);
         ResultSet verein = getData(TableType.VEREIN);
 
@@ -168,7 +171,7 @@ public class BL_DBOMapper {
                 data = 1;
                 nameNewWithoutNumber = nameNew;
             }
-
+            MannschaftDBO mannschaftDBO = new MannschaftDBO();
             if (verein != null) {
                 try {
                     while (verein.next()) {
@@ -186,7 +189,6 @@ public class BL_DBOMapper {
                 }
 
 
-                // For the timestamp
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 mannschaftDBO.setMannschaftId(sort);
                 mannschaftDBO.setMannschaftNummer(data);
@@ -200,12 +202,14 @@ public class BL_DBOMapper {
                 mannschaftDBO.setVersion(1);
                 mannschaftDBO.setMannschaftSortierung(sort);
 
+                mannschaftList.add(mannschaftDBO);
+
                 // Für Sortierung mannschaftDBO;
                 sort += 1;
             }
 
         }
-        return mannschaftDBO;
+        return mannschaftList;
     }
 
 
