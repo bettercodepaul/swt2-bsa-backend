@@ -45,6 +45,6 @@ public class TriggerServiceTest {
 
 		triggerServiceSpy.syncData();
 
-		assertEquals("Hilfe ich bin hier gefangen\r\n", outStream.toString());
+		assertEquals("Hilfe ich bin hier gefangen", outStream.toString());
 	}
 }
