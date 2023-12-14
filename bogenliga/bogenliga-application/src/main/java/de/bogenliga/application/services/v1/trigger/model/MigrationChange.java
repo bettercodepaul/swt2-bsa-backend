@@ -13,21 +13,14 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
  * transferred to the new database.
  */
 public class MigrationChange<T extends AltsystemDO> {
-    private static final Map<Class<?>, AltsystemEntity<?>> dataObjectToEntity = getClassToMapperMap();
-
-    private static Map<Class<?>, AltsystemEntity<?>> getClassToMapperMap() {
-        Map<Class<?>, AltsystemEntity<?>> result = new HashMap<>();
-
-        // TODO register other classes
-        result.put(AltsystemLigaDO.class, new AltsystemLiga());
-
-        return result;
-    }
-
     /**
-     * The relevant entity retrieved from the old database ("Altsystem").
+     * The relevant data object retrieved from the old database ("Altsystem").
      */
     private final T altsystemDataObject;
+    /**
+     * The relevant entity which handles conversion to a new model.
+     */
+    private final AltsystemEntity<T> altsystemEntity;
     /**
      * The operation this migration change should perform (create or update).
      */
@@ -38,8 +31,9 @@ public class MigrationChange<T extends AltsystemDO> {
     private MigrationChangeState state;
 
 
-    public MigrationChange(T altsystemDataObject, MigrationChangeType type, MigrationChangeState state) {
+    public MigrationChange(T altsystemDataObject, AltsystemEntity<T> altsystemEntity, MigrationChangeType type, MigrationChangeState state) {
         this.altsystemDataObject = altsystemDataObject;
+        this.altsystemEntity = altsystemEntity;
         this.type = type;
         this.state = state;
     }
@@ -74,14 +68,12 @@ public class MigrationChange<T extends AltsystemDO> {
     }
 
     private void executeMigrationOnEntity() {
-        AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(altsystemDataObject.getClass());
-
         switch (type) {
             case CREATE:
-                entity.create(altsystemDataObject);
+                altsystemEntity.create(altsystemDataObject);
                 break;
             case UPDATE:
-                entity.update(altsystemDataObject);
+                altsystemEntity.update(altsystemDataObject);
                 break;
             default:
                 throw new IllegalStateException("Invalid operation: " + type);
