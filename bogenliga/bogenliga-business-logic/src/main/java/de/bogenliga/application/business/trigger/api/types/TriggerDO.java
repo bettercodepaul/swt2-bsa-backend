@@ -1,26 +1,19 @@
-package de.bogenliga.application.services.v1.trigger.model;
+package de.bogenliga.application.business.trigger.api.types;
 
-
-
-import de.bogenliga.application.common.service.types.DataTransferObject;
+import de.bogenliga.application.common.component.types.CommonDataObject;
+import de.bogenliga.application.common.component.types.DataObject;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class TriggerDTO implements DataTransferObject {
-
+public class TriggerDO extends CommonDataObject implements DataObject {
     private long id;
-    private Long version;
     private String timestamp;
     private String description;
     private String status;
-
-
-
-
-    public TriggerDTO(long id, Long version, String timestamp, String description, String status){
+    public TriggerDO(long id, Long version, String timestamp, String description, String status){
         this.id = id;
         this.version = version;
         this.timestamp = timestamp;
@@ -36,18 +29,6 @@ public class TriggerDTO implements DataTransferObject {
     public void setId(long id) {
         this.id = id;
     }
-
-
-    public Long getVersion() {
-        return version;
-    }
-
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
-
     public String getTimestamp() {
         return timestamp;
     }
@@ -76,5 +57,7 @@ public class TriggerDTO implements DataTransferObject {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 
 }
