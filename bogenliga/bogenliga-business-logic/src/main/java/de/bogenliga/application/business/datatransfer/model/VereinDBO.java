@@ -10,8 +10,8 @@ import java.sql.Timestamp;
 public class VereinDBO {
 
     private int verein_id;
-    private static String verein_name;
-    private String verein_region_id;
+    private String verein_name;
+    private int verein_region_id;
     private String verein_dsb_identifier;
     private Timestamp created_at_utc;
     private String created_by;
@@ -37,7 +37,7 @@ public class VereinDBO {
     }
 
 
-    public static String getVerein_name() {
+    public String getVerein_name() {
         return verein_name;
     }
 
@@ -47,12 +47,12 @@ public class VereinDBO {
     }
 
 
-    public String getVerein_region_id() {
+    public int getVerein_region_id() {
         return verein_region_id;
     }
 
 
-    public void setVerein_region_id(String verein_region_id) {
+    public void setVerein_region_id(int verein_region_id) {
         this.verein_region_id = verein_region_id;
     }
 
