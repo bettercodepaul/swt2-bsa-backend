@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import de.bogenliga.application.business.datatransfer.mapper.BL_DBOMapper;
 import de.bogenliga.application.business.datatransfer.model.VereinDBO;
 
@@ -16,7 +17,7 @@ import de.bogenliga.application.business.datatransfer.model.VereinDBO;
  */
 public class VereinTestTabelle {
 
-    public static void updateOrInsertVerein( VereinDBO verein) {
+    public static void updateOrInsertVerein(String verein) {
 
         try {
             // Datenbankverbindung herstellen
@@ -25,7 +26,7 @@ public class VereinTestTabelle {
             // Überprüfen, ob der Name bereits in der Tabelle vorhanden ist
             String checkQuery = "SELECT COUNT(*) FROM verein_testtabelle WHERE verein_name_test = ?";
             try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
-                checkStatement.setString(1, verein.getVerein_name());
+                checkStatement.setString(1, verein);
                 ResultSet resultSet = checkStatement.executeQuery();
                 resultSet.next();
 
@@ -35,16 +36,16 @@ public class VereinTestTabelle {
                     // Der Name ist bereits vorhanden, also aktualisieren (UPDATE)
                     String updateQuery = "UPDATE verein_testtabelle SET verein_dsb_identifier_test = ? WHERE verein_name_test = ?";
                     try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-                        updateStatement.setString(1, verein.getVerein_name());
-                        updateStatement.setString(2, verein.getVerein_dsb_identifier());
+                        updateStatement.setString(1, verein);
+                        updateStatement.setString(2, null);
                         updateStatement.executeUpdate();
                     }
                 } else {
                     // Der Name ist noch nicht vorhanden, also einfügen (INSERT)
                     String insertQuery = "INSERT INTO verein_testtabelle (verein_name_test, verein_dsb_identifier_test) VALUES (?, ?)";
                     try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-                        insertStatement.setString(1, verein.getVerein_name());
-                        insertStatement.setString(2, verein.getVerein_dsb_identifier());
+                        insertStatement.setString(1, verein);
+                        insertStatement.setString(2, null);
                         insertStatement.executeUpdate();
                     }
                 }
@@ -58,12 +59,23 @@ public class VereinTestTabelle {
         }
     }
 
-
     public static void main(String[] args) throws SQLException {
-        BL_DBOMapper dataAccessObj = new BL_DBOMapper();
-        VereinDBO mappedVerein = null;
-        mappedVerein = dataAccessObj.mapVerein();
 
-        updateOrInsertVerein(mappedVerein);
+        BL_DBOMapper dataAccessObj = new BL_DBOMapper();
+        List<VereinDBO> mappedVerein = null;
+        mappedVerein = dataAccessObj.mapVerein();
+        String vereinSolo = null;
+        for (VereinDBO verein : mappedVerein) {
+            System.out.println("Verein Name: " + verein.getVerein_name());
+            vereinSolo = verein.getVerein_name();
+            updateOrInsertVerein(vereinSolo);
+        }
+
+
     }
+
+
+
+
+
 }

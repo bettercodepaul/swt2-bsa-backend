@@ -141,7 +141,7 @@ public class BL_DBOMapper {
                             !num.contains(mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
                         // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge ein Leerzeichen hinzu
                         nameNew += " ";
-                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i > 7) {
+                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i > 8) {
                         // Wenn das Zeichen eine Zahl ist und der Index größer als 7 ist, füge nichts hinzu (überspringe Zahl in der Mitte des Namens)
                         nameNew += "";
                     } else {
@@ -221,22 +221,33 @@ public class BL_DBOMapper {
     }
 
 
-    public VereinDBO mapVerein() throws SQLException {
+    public List<VereinDBO> mapVerein() throws SQLException {
         //BL_MannschaftDBO mannschaft_old = null;
-        VereinDBO verein_new = new VereinDBO();
+        List<VereinDBO> vereinList = new ArrayList<>();
+
         ResultSet mannschaft_oldData = null;
 
-        mannschaft_oldData = getData(TableType.MANNSCHAFT);
+
+        try {
+            mannschaft_oldData = getData(TableType.MANNSCHAFT);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
 
 
         while (mannschaft_oldData.next()) {
-            char[] nameOld;
+            char[] nameOld = mannschaft_oldData.getString(4).toCharArray();
+            VereinDBO verein_new = new VereinDBO();
             String nameNew = "";
-            String sonderzeichen = "/-.";
+            int sort = 0;
+            String sonderzeichen = "/-";
             String num = "1234567890";
 
-
-            nameOld = mannschaft_oldData.getString(4).toCharArray();
+            String currentName = new String(nameOld);
+            if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName.equals(null)) {
+                continue; // Überspringe den Eintrag, wenn der Name "fehlender Verein" oder "<leer>" ist
+            }
 
             // Iteriere über den alten Namen und überprüfe jedes Zeichen auf inkorrekte Formatierung, ersetze entsprechend
             for (int i = 0; i < nameOld.length; i++) {
@@ -247,46 +258,88 @@ public class BL_DBOMapper {
                     if (mannschaft_oldData.getString(4).charAt(i) == '.' && mannschaft_oldData.getString(4).charAt(
                             i + 1) != ' ') {
                         nameNew += ". ";
-                    } else if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "") && !num.contains(
-                            mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
+                    } else if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "")) {
                         // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge ein Leerzeichen hinzu
                         nameNew += " ";
-                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i > 7) {
+                    } else if (mannschaft_oldData.getString(4).charAt(i) == '.' && !num.contains(
+                            mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
+                        // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge ein Leerzeichen hinzu
+                        nameNew += "";
+                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i > 8) {
                         // Wenn das Zeichen eine Zahl ist und der Index größer als 7 ist, füge nichts hinzu (überspringe Zahl in der Mitte des Namens)
                         nameNew += "";
-                    } else {
+                    }else {
                         // Andernfalls füge das Zeichen zum neuen Namen hinzu
                         nameNew += mannschaft_oldData.getString(4).charAt(i);
                     }
                 } else {
                     // Für das letzte Zeichen
-                    if (mannschaft_oldData.getString(4).charAt(i) == '.') {
-                        nameNew += ".";
-                    } else if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "") && !num.contains(
+                    if (sonderzeichen.contains(mannschaft_oldData.getString(4).charAt(i) + "") && !num.contains(
                             mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
-                        // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge nichts hinzu
+                        // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge ein Leerzeichen hinzu
                         nameNew += "";
-                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i >= 7) {
+                    } else if (mannschaft_oldData.getString(4).charAt(i) == '.' && !num.contains(
+                            mannschaft_oldData.getString(4).charAt(i - 1) + "")) {
+                        // Wenn das Zeichen ein Sonderzeichen ist und nicht von einer Zahl gefolgt wird, füge ein Leerzeichen hinzu
+                        nameNew += "";
+                    } else if (num.contains(mannschaft_oldData.getString(4).charAt(i) + "") && i >= 8) {
                         // Wenn das Zeichen eine Zahl ist und der Index größer oder gleich 7 ist, füge nichts hinzu (überspringe Zahl in der Mitte des Namens)
                         nameNew += "";
-                    } else {
+                    }else {
                         // Andernfalls füge das Zeichen zum neuen Namen hinzu
                         nameNew += mannschaft_oldData.getString(4).charAt(i);
                     }
                 }
             }
 
-            // Spezielle Überprüfung für bestimmte Namen und Ausgabe des normalisierten Namens
-            if (nameNew.equals("SVgg Endersb.  Strümpf.") || nameNew.equals("SVng Endersbach Strümpf.")) {
-                nameNew = "SVng Endersbach Strümpfelbach";
+            int nameLong = nameNew.length() - 1;
+
+            if (nameNew.charAt(nameLong) == ' ') {
+                nameNew = nameNew.substring(0, nameNew.length() - 1);
             }
 
-            System.out.println(nameNew);
+
+            // Spezielle Überprüfung für bestimmte Namen und Ausgabe des normalisierten Namens
+            if (nameNew.equals("SVgg Endersb.  Strümpf") || nameNew.equals("SVng Endersbach Strümpf")) {
+                nameNew = "SVng Endersbach Strümpfelbach";
+            } else if (nameNew.equals("SV Ensheim  e. V")){
+                nameNew = "SV Ensheim  e.V.";
+            } else if (nameNew.equals("BSG Odenheim e. V")){
+                nameNew = "BSG Odenheim e.V.";
+            } else if (nameNew.equals("BWT Kichentellinsfurt")){
+                nameNew = "BWT Kirchentellinsfurt";
+            } else if (nameNew.equals("BSC Schoemberg")){
+                nameNew = "BSC Schömberg";
+            } else if (nameNew.equals("ZV Sontheim")){
+                nameNew = "ZV Sontheim Brenz";
+            } else if (nameNew.equals("SV Tell Weilheim Teck") || nameNew.equals("SV Weilheim Teck")){
+                nameNew = "SV Tell Weilheim";
+            } else if (nameNew.equals("BSV Hausen i K") || nameNew.equals("BSV Hausen i. K") ){
+                nameNew = "BSV Hausen i.K.";
+            }
+
+
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            verein_new.setVerein_id(sort);
             verein_new.setVerein_name(nameNew);
+            verein_new.setVerein_region_id(1);
+            verein_new.setVerein_dsb_identifier(null);
+            verein_new.setCreated_at_utc(timestamp);
+            verein_new.setCreated_by(null);
+            verein_new.setLast_modified_at_utc(null);
+            //verein_new.setLast_modified_by(null);
+            //verein_new.setVersion(null);
+            verein_new.setVerein_website(null);
+            verein_new.setVerein_describtion(null);
+            verein_new.setVerein_icon(null);
+
+
+            vereinList.add(verein_new);
+            sort += 1;
         }
 
         // Gibt das aktualisierte Vereinsobjekt zurück
-        return verein_new;
+        return vereinList;
     }
 }
 
