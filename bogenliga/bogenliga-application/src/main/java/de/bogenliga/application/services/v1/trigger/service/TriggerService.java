@@ -1,19 +1,20 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
+import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
+import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
+import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.service.ServiceFacade;
@@ -22,7 +23,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 import de.bogenliga.application.services.v1.trigger.model.MigrationChange;
 import de.bogenliga.application.services.v1.trigger.model.MigrationChangeState;
 import de.bogenliga.application.services.v1.trigger.model.MigrationChangeType;
-import static java.time.temporal.ChronoUnit.MINUTES;
 
 @RestController
 @CrossOrigin
@@ -31,12 +31,17 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class TriggerService implements ServiceFacade {
     private static final Map<String, Class<?>> tableNameToClass = getTableNameToClassMap();
 
+    private final Map<Class<?>, AltsystemEntity<?>> dataObjectToEntity;
+
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggerService.class);
     private final BasicDAO basicDao;
 
-    public TriggerService(final BasicDAO basicDao) {
+    public TriggerService(final BasicDAO basicDao, final LigaComponent ligaComponent) {
         this.basicDao = basicDao;
+
+        dataObjectToEntity = new HashMap<>();
+        dataObjectToEntity.put(AltsystemLigaDO.class, new AltsystemLiga(ligaComponent));
     }
 
     private static Map<String, Class<?>> getTableNameToClassMap() {
@@ -105,7 +110,9 @@ public class TriggerService implements ServiceFacade {
 
         List<MigrationChange<T>> changes = new ArrayList<>();
         for (T retrievedObject : allTableObjects) {
-            changes.add(new MigrationChange<>(retrievedObject, MigrationChangeType.CREATE, MigrationChangeState.NEW));
+            AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(retrievedObject.getClass());
+
+            changes.add(new MigrationChange<>(retrievedObject, entity, MigrationChangeType.CREATE, MigrationChangeState.NEW));
         }
 
         return changes;
