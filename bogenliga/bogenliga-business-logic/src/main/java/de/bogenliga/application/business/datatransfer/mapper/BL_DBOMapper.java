@@ -20,7 +20,6 @@ import java.sql.Timestamp;
  */
 public class BL_DBOMapper {
     private static int schuetzeID;
-    private List<SchuetzeDBO> schuetzeList = new ArrayList<>();
 
     //methode zum auslesen der "bl_"-tabellen schuetze, mannschaft, ...
     private ResultSet getData(TableType type) throws SQLException {
@@ -48,13 +47,9 @@ public class BL_DBOMapper {
             connection = DriverManager.getConnection(databaseURL, "swt2", "swt2");
             Statement statement = connection.createStatement();
             result = statement.executeQuery(query);
-            result.next();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (result != null) {
-                result.close();
-            }
             connection.close();
         }
 
@@ -63,9 +58,9 @@ public class BL_DBOMapper {
     }
 
 
-    public SchuetzeDBO mapSchuetze() throws SQLException {
-        SchuetzeDBO schuetze_new = new SchuetzeDBO();
+    public List<SchuetzeDBO> mapSchuetze() throws SQLException {
         ResultSet schuetze_oldData = null;
+        List<SchuetzeDBO> schuetzeList = new ArrayList<>();
 
         try {
             schuetze_oldData = getData(TableType.SCHUETZE);
@@ -109,12 +104,8 @@ public class BL_DBOMapper {
 
             schuetzeList.add(schuetze_new);
         }
-        // DBO dass die daten speichert in attribute
-        // diese DBO an die neue DBO anschließen und fehlende generieren
 
-        //bl_schuetze -> dsb_mitglied
-
-        return schuetze_new;
+        return schuetzeList;
     }
 
 
