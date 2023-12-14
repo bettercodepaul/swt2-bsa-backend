@@ -34,6 +34,8 @@ public class DsbMitgliedMapperTest {
     private static final long VEREINSID = 2;
     private static final long USERID = 4242;
 
+    private final int[] ZAHLENLISTE = {0,129, 173};
+    private final String[] NAMENSLISTE = {"Allmendinger" , "Michael", "Gröner", "Alexander" , "Haag", "Axel"};
 
     @Test
     public void toDO() throws Exception {
@@ -60,8 +62,9 @@ public class DsbMitgliedMapperTest {
         assertThat(actual.getDsbMitgliedVorname()).isEqualTo(VORNAME);
     }
 
+
     @Test
-    public void testMapperWithCommaFormat() throws Exception {
+    public void parseAllFormatSucceessful() throws Exception {
 
         // Creating an instance of the Mapper class
         BL_DBOMapper blDboMapper = new BL_DBOMapper();
@@ -75,48 +78,20 @@ public class DsbMitgliedMapperTest {
         }
 
         //name of schuetze at index 0 is separated by comma: Allmendinger, Michael
-        SchuetzeDBO schuetzeDBO = schuetzeList.get(0);
-        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo("Allmendinger");
-        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo("Michael");
-    }
+        SchuetzeDBO schuetzeDBO = schuetzeList.get(ZAHLENLISTE[0]);
+        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo(NAMENSLISTE[0]);
+        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo(NAMENSLISTE[1]);
 
-    @Test
-    public void testMapperWithSpaceFormat() throws Exception {
-
-        // Creating an instance of the Mapper class
-        BL_DBOMapper blDboMapper = new BL_DBOMapper();
-
-        List<SchuetzeDBO> schuetzeList = null;
-
-        try {
-            schuetzeList = blDboMapper.mapSchuetze();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
         //name of schuetze at index 129 is separated by two spaces before and after comma: Alexander , Gröner
-        SchuetzeDBO schuetzeDBO = schuetzeList.get(129);
-        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo("Gröner");
-        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo("Alexander");
-    }
-
-    @Test
-    public void testMapperWithoutCommaFormat() throws Exception {
-
-        // Creating an instance of the Mapper class
-        BL_DBOMapper blDboMapper = new BL_DBOMapper();
-
-        List<SchuetzeDBO> schuetzeList = null;
-
-        try {
-            schuetzeList = blDboMapper.mapSchuetze();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        schuetzeDBO = schuetzeList.get(ZAHLENLISTE[1]);
+        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo(NAMENSLISTE[2]);
+        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo(NAMENSLISTE[3]);
 
         //name of schuetze at index 173 is separated without comma: Axel Haag
-        SchuetzeDBO schuetzeDBO = schuetzeList.get(173);
-        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo("Haag");
-        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo("Axel");
+        schuetzeDBO = schuetzeList.get(ZAHLENLISTE[2]);
+        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo(NAMENSLISTE[4]);
+        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo(NAMENSLISTE[5]);
+
     }
 }
