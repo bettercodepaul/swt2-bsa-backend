@@ -75,12 +75,15 @@ public class TriggerService implements ServiceFacade {
     /*@TODO RequiresPermission so, dass nur Admin per buttonSync syncen kann*/
     @GetMapping("/buttonSync")
     public void syncData() {
-         /*
-         Wer zieht die Daten aus dem alten System/ der alten Datenbank?
-         @TODO Abfragen, ob Datenbank aktualisiert wurde
-          */
+        LOGGER.debug("Computing changes");
+        List<MigrationChange<?>> changes = computeAllChanges();
 
-        computeAllChanges();
+        for (MigrationChange<?> change : changes) {
+            LOGGER.debug("Migrating {}", change.getAltsystemDataObject().getClass().getSimpleName());
+            boolean migrationSuccessful = change.tryMigration();
+
+            LOGGER.debug("Migration successful? {}", migrationSuccessful);
+        }
     }
 
 
