@@ -1,13 +1,13 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
-import de.bogenliga.application.common.altsystem.AltsystemEntity;
+import de.bogenliga.application.common.altsystem.AltsystemDO;
 
 /**
  * A migration change contains information about an object which has
  * changed in the old database ("Altsystem") and should be
  * transferred to the new database.
  */
-public class MigrationChange<T extends AltsystemEntity> {
+public class MigrationChange<T extends AltsystemDO> {
 
     /**
      * The relevant entity retrieved from the old database ("Altsystem").
