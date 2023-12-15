@@ -16,5 +16,8 @@ public class MigrationChangeTypeTest {
 	public void testType(){
 		assertThat(migrationChangeType.CREATE, notNullValue());
 		assertThat(migrationChangeType.UPDATE, notNullValue());
+
+		assertEquals("CREATE", migrationChangeType.CREATE.name());
+		assertEquals("UPDATE", migrationChangeType.UPDATE.name());
 	}
 }
