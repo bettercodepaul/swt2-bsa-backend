@@ -18,5 +18,10 @@ public class MigrationChangeStateTest {
 		assertThat(migrationChangeState.IN_PROGRESS, notNullValue());
 		assertThat(migrationChangeState.ERROR, notNullValue());
 		assertThat(migrationChangeState.SUCCESS, notNullValue());
+
+		assertEquals("NEW", migrationChangeState.NEW.name());
+		assertEquals("IN_PROGRESS", migrationChangeState.IN_PROGRESS.name());
+		assertEquals("ERROR", migrationChangeState.ERROR.name());
+		assertEquals("SUCCESS", migrationChangeState.SUCCESS.name());
 	}
 }
