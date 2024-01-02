@@ -45,7 +45,7 @@ INSERT INTO BL_saison VALUES (1,'2017 - 2018',1,0),(2,'2018 - 2019',1,0),(3,'201
 COMMIT;
 
 -- Löschen des abhängigen Fremdschlüssel-Constraints in der Tabelle "acl"
-ALTER TABLE BL_acl DROP CONSTRAINT IF EXISTS BL_fk_acl_users_id;
+--ALTER TABLE BL_acl DROP CONSTRAINT IF EXISTS BL_fk_acl_users_id;
 
 -- Löschen der Tabelle "users" und der Sequenz
 DROP TABLE IF EXISTS BL_users CASCADE;
