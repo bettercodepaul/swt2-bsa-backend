@@ -1,5 +1,7 @@
 package de.bogenliga.application.business.altsystem.liga.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.liga.api.LigaComponent;
@@ -11,11 +13,15 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
 
+    private final AltsystemLigaMapper altsystemLigaMapper;
     private final LigaComponent ligaComponent;
 
-    public AltsystemLiga(final LigaComponent ligaComponent) {
+    @Autowired
+    public AltsystemLiga(final AltsystemLigaMapper altsystemLigaMapper, final LigaComponent ligaComponent) {
+        this.altsystemLigaMapper = altsystemLigaMapper;
         this.ligaComponent = ligaComponent;
     }
 
@@ -23,8 +29,8 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
     public void create(AltsystemLigaDO altsystemDataObject){
         // Map data to new object, add default fields
         LigaDO ligaDO = new LigaDO();
-        ligaDO = AltsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
-        ligaDO = AltsystemLigaMapper.addDefaultFields(ligaDO);
+        ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
+        ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO);
 
         // Add data to table
         // ligaComponent.create(ligaDO, <UserID>);
@@ -41,7 +47,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         LigaDO ligaDO = ligaComponent.findById(1);
 
         // Map data to new object, don't add default fields
-        AltsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
+        altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
 
         // Update data in table with given primary key
         // ligaComponent.update(ligaDO, <UserID>);
