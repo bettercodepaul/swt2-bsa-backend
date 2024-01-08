@@ -4,6 +4,7 @@ import de.bogenliga.application.business.altsystem.veranstaltung.dataobject.Alts
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.business.veranstaltung.impl.entity.VeranstaltungBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
+import de.bogenliga.application.business.liga.api.types.LigaDO;
 /**
  * TODO [AL] class documentation
  *
@@ -14,16 +15,17 @@ public class AltsystemVeranstaltungMapper implements ValueObjectMapper {
     public static VeranstaltungDO toDO(VeranstaltungDO veranstaltungDO, AltsystemVeranstaltungDO altsystemVeranstaltungDO) {
 
         // Name: Liga + Sportjahr (=saison_name)
-        veranstaltungDO.setVeranstaltungName(altsystemVeranstaltungDO.getName());
+        //veranstaltungDO.setVeranstaltungName(ligaDO.getName() + saisonDO.getSportjahr(saisonDO));
 
         // Liga_id
-        veranstaltungDO.setVeranstaltungLigaID();
+        // veranstaltungDO.setVeranstaltungLigaID(ligaDO.getId());
 
         // sportjahr
-        veranstaltungDO.setVeranstaltungSportJahr(altsystemSaisonDO.getName());
+        // veranstaltungDO.setVeranstaltungSportJahr(saisonDO.getName());
 
         // phase: aktuelles Jahr = aktiv; vergangenes Jahr: 'abgeschlossen(?)'
-        veranstaltungDO.setVeranstaltungPhase();
+        // if veranstaltungsDO.getSportjahr älter als 23 -> abgeschlossen; if sportjahr = 23 -> aktiv
+        // veranstaltungDO.setVeranstaltungPhase();
         return veranstaltungDO;
     }
 
@@ -32,7 +34,7 @@ public class AltsystemVeranstaltungMapper implements ValueObjectMapper {
         // Wettkampftyp: Satzsystem
         veranstaltungDO.setVeranstaltungWettkampftypID(1L);
         // meldeDeadline: 1.10. des vorherigen Jahres
-        veranstaltungDO.setVeranstaltungMeldeDeadline();
+        // veranstaltungDO.setVeranstaltungMeldeDeadline();
         // groesse: 8 bei meisten, abhängig davon wie viele Mannschaften im Sportjahr bei Liga waren
         veranstaltungDO.setVeranstaltungGroesse(8);
 
