@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.altsystem.veranstaltung.entity;
 
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.veranstaltung.dataobject.AltsystemVeranstaltungDO;
 import de.bogenliga.application.business.altsystem.veranstaltung.mapper.AltsystemVeranstaltungMapper;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -10,6 +11,8 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+
+@Component
 public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeranstaltungDO> {
 
     private final VeranstaltungComponent veranstaltungComponent;
@@ -24,7 +27,7 @@ public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeransta
         veranstaltungDO = AltsystemVeranstaltungMapper.addDefaultFields(veranstaltungDO);
 
         //Add data to table
-
+        // veranstaltungComponent.create(veranstaltungDO, <UserID>);
         // Add to translation table
     }
 
@@ -39,6 +42,7 @@ public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeransta
         AltsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
 
         // Update data in table with given primary key
+        // veranstaltungComponent.update(veranstaltungDO, <UserID>);
     }
 }
 

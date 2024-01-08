@@ -13,8 +13,9 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
     public void create(AltsystemSaisonDO altsystemSaisonDO) {
 
         // altsystemSaison_name -> set
-
-        // Add data to table
+        String saison = altsystemSaisonDO.getName();
+        String[] sportjahr = saison.split("-");
+        altsystemSaisonDO.setName(sportjahr[1]);
 
         // Add to translation table
     }
