@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,25 +53,10 @@ public class TriggerService implements ServiceFacade {
 
         return result;
     }
-
-   /* private LocalDateTime syncTimestamp = null;
-    private void setSyncTimestamp(LocalDateTime timestamp) {
-        syncTimestamp = timestamp;
+    @Scheduled(cron = "0 0 22 * * ?")
+    public void scheduler(){
+        syncData();
     }
-
-    @Scheduled(fixedRate = 600000)
-    public void triggerSchedule(){
-        syncTimestamp = LocalDateTime.now();
-        if(syncTimestamp==null){
-            return;
-        }
-        LocalDateTime currentTime = LocalDateTime.now();
-        long amount = MINUTES.between(syncTimestamp, currentTime);
-        if (amount <= 10) {
-            syncData();
-        }
-
-    }*/
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     @GetMapping("/buttonSync")
     public void syncData() {
