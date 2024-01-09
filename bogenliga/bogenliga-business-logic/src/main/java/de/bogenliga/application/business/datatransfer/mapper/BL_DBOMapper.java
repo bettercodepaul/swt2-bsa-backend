@@ -58,9 +58,11 @@ public class BL_DBOMapper {
     }
 
 
+
     public List<SchuetzeDBO> mapSchuetze() throws SQLException {
         ResultSet schuetze_oldData = null;
         List<SchuetzeDBO> schuetzeList = new ArrayList<>();
+        List<String> nameList = new ArrayList<>();
 
         try {
             schuetze_oldData = getData(TableType.SCHUETZE);
@@ -90,20 +92,31 @@ public class BL_DBOMapper {
                 name[1] = name[1].replaceAll("\\s+", "");
             }
 
-            schuetze_new.setDsb_mitglied_vorname(name[1]);
-            schuetze_new.setDsb_mitglied_nachname(name[0]);
-            schuetze_new.setDsb_mitglied_geburtsdatum(null);
-            schuetze_new.setDsb_mitglied_nationalitaet(null);
-            schuetze_new.setDsb_mitglied_mitgliedsnummer(null);
-            //schuetze_new.setDsb_mitglied_benutzer_id(); -> Daten aus Verein auslesen
-            schuetze_new.setCreated_at_utc(null);
-            schuetze_new.setCreated_by(0);
-            schuetze_new.setLast_modified_at_utc(null);
-            schuetze_new.setLast_modified_by(0);
-            schuetze_new.setVersion(0);
+            //schütze 1: m. gheb. schütze: m. gheb.
+            if(!nameList.contains(name[0] + " " + name[1])) {
+                nameList.add(name[0] + " " + name[1]);
 
-            schuetzeList.add(schuetze_new);
+                schuetze_new.setDsb_mitglied_vorname(name[1]);
+                schuetze_new.setDsb_mitglied_nachname(name[0]);
+                schuetze_new.setDsb_mitglied_geburtsdatum(null);
+                schuetze_new.setDsb_mitglied_nationalitaet(null);
+                schuetze_new.setDsb_mitglied_mitgliedsnummer(null);
+                //schuetze_new.setDsb_mitglied_benutzer_id(); -> Daten aus Verein auslesen
+                schuetze_new.setCreated_at_utc(null);
+                schuetze_new.setCreated_by(0);
+                schuetze_new.setLast_modified_at_utc(null);
+                schuetze_new.setLast_modified_by(0);
+                schuetze_new.setVersion(0);
+
+                schuetzeList.add(schuetze_new);
+
+                int mannschaft_id = Integer.parseInt(schuetze_oldData.getString(2));
+            } else {
+                continue;
+            }
         }
+
+        //
 
         return schuetzeList;
     }
