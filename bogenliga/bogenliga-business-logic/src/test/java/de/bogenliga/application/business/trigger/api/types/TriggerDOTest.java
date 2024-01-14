@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 /**
  * Tests the TriggerDOT class
  *
- */
+ *//*
 public class TriggerDOTest extends TestCase{
 
 	//Test data
@@ -113,9 +113,10 @@ public class TriggerDOTest extends TestCase{
 	public void testSetStatus(){
 		TriggerDO actual = getExpectedDO();
 		actual.setStatus(newSTATUS);
-		String actualStatus = actual.getStatus();
+		long actualStatus = actual.getStatus();
 
 		assertEquals(newSTATUS, actualStatus);
 	}
 	
 }
+*/

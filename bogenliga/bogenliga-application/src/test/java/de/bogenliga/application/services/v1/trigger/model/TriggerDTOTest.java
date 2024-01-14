@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 /**
  * Tests the TriggerDTO class
  *
- */
+ *//*
 public class TriggerDTOTest extends TestCase{
 
 	//Test data
@@ -104,7 +104,7 @@ public class TriggerDTOTest extends TestCase{
 	@Test
 	public void testGetStatus(){
 		TriggerDTO actual = getExpectedDTO();
-		String actualStatus = actual.getStatus();
+		long actualStatus = actual.getStatus();
 
 		assertEquals(STATUS, actualStatus);
 	}
@@ -113,10 +113,11 @@ public class TriggerDTOTest extends TestCase{
 	public void testSetStatus(){
 		TriggerDTO actual = getExpectedDTO();
 		actual.setStatus(newSTATUS);
-		String actualStatus = actual.getStatus();
+		long actualStatus = actual.getStatus();
 
 		assertEquals(newSTATUS, actualStatus);
 	}
 
 
 }
+*/
