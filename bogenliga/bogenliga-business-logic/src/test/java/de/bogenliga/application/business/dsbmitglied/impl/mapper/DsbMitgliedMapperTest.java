@@ -4,8 +4,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import org.junit.Test;
-import de.bogenliga.application.business.datatransfer.mapper.BL_DBOMapper;
-import de.bogenliga.application.business.datatransfer.model.SchuetzeDBO;
+import de.bogenliga.application.business.altsystem.BL_DBOMapper;
+import de.bogenliga.application.business.altsystem.schuetze.dataobject.DSBMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedBE;
@@ -69,7 +69,7 @@ public class DsbMitgliedMapperTest {
         // Creating an instance of the Mapper class
         BL_DBOMapper blDboMapper = new BL_DBOMapper();
 
-        List<SchuetzeDBO> schuetzeList = null;
+        List<DSBMitgliedDO> schuetzeList = null;
 
         try {
             schuetzeList = blDboMapper.mapSchuetze();
@@ -78,7 +78,7 @@ public class DsbMitgliedMapperTest {
         }
 
         //name of schuetze at index 0 is separated by comma: Allmendinger, Michael
-        SchuetzeDBO schuetzeDBO = schuetzeList.get(ZAHLENLISTE[0]);
+        DSBMitgliedDO schuetzeDBO = schuetzeList.get(ZAHLENLISTE[0]);
         assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo(NAMENSLISTE[0]);
         assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo(NAMENSLISTE[1]);
 

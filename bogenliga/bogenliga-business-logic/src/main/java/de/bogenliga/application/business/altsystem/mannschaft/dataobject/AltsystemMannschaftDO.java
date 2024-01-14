@@ -1,13 +1,13 @@
-package de.bogenliga.application.business.datatransfer.bl_model;
+package de.bogenliga.application.business.altsystem.mannschaft.dataobject;
 
 
-public class BL_MannschaftDBO {
+public class AltsystemMannschaftDO {
     private int id;
     private int liga_id;
     private String mannr;
     private int saison_id;
 
-    public BL_MannschaftDBO(int id, int liga_id, String mannr, int saison_id){
+    public AltsystemMannschaftDO(int id, int liga_id, String mannr, int saison_id){
         this.id = id;
         this.liga_id = id;
         this.mannr = mannr;

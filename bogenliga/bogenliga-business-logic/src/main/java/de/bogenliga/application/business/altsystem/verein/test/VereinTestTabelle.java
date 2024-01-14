@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.datatransfer.TestTabelle;
+package de.bogenliga.application.business.altsystem.verein.test;
 
 
 import java.sql.Connection;
@@ -7,8 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import de.bogenliga.application.business.datatransfer.mapper.BL_DBOMapper;
-import de.bogenliga.application.business.datatransfer.model.VereinDBO;
+import de.bogenliga.application.business.altsystem.BL_DBOMapper;
+import de.bogenliga.application.business.altsystem.verein.dataobject.DSBVereinDO;
 
 /**
  * TODO [AL] class documentation
@@ -62,10 +62,10 @@ public class VereinTestTabelle {
     public static void main(String[] args) throws SQLException {
 
         BL_DBOMapper dataAccessObj = new BL_DBOMapper();
-        List<VereinDBO> mappedVerein = null;
+        List<DSBVereinDO> mappedVerein = null;
         mappedVerein = dataAccessObj.mapVerein();
         String vereinSolo = null;
-        for (VereinDBO verein : mappedVerein) {
+        for (DSBVereinDO verein : mappedVerein) {
             System.out.println("Verein Name: " + verein.getVerein_name());
             vereinSolo = verein.getVerein_name();
             updateOrInsertVerein(vereinSolo);

@@ -1,14 +1,13 @@
-package de.bogenliga.application.business.datatransfer.mapper;
+package de.bogenliga.application.business.altsystem;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import de.bogenliga.application.business.datatransfer.TableType;
-import de.bogenliga.application.business.datatransfer.model.MannschaftDBO;
-import de.bogenliga.application.business.datatransfer.model.SchuetzeDBO;
-import de.bogenliga.application.business.datatransfer.model.VereinDBO;
+import de.bogenliga.application.business.altsystem.mannschaft.dataobject.DSBMannschaftDO;
+import de.bogenliga.application.business.altsystem.schuetze.dataobject.DSBMitgliedDO;
+import de.bogenliga.application.business.altsystem.verein.dataobject.DSBVereinDO;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Timestamp;
@@ -59,9 +58,9 @@ public class BL_DBOMapper {
 
 
 
-    public List<SchuetzeDBO> mapSchuetze() throws SQLException {
+    public List<DSBMitgliedDO> mapSchuetze() throws SQLException {
         ResultSet schuetze_oldData = null;
-        List<SchuetzeDBO> schuetzeList = new ArrayList<>();
+        List<DSBMitgliedDO> schuetzeList = new ArrayList<>();
         List<String> nameList = new ArrayList<>();
 
         try {
@@ -73,7 +72,7 @@ public class BL_DBOMapper {
 
 
         while (schuetze_oldData.next()) {
-            SchuetzeDBO schuetze_new = new SchuetzeDBO(); // Ein neues Objekt in jeder Iteration erstellen
+            DSBMitgliedDO schuetze_new = new DSBMitgliedDO(); // Ein neues Objekt in jeder Iteration erstellen
 
             //aus schützen die keys auslesen und trennen name (nachname, vorname)
 
@@ -122,8 +121,8 @@ public class BL_DBOMapper {
     }
 
 
-    public List<MannschaftDBO> mapMannschaft() throws SQLException {
-        List<MannschaftDBO> mannschaftList = new ArrayList<>();
+    public List<DSBMannschaftDO> mapMannschaft() throws SQLException {
+        List<DSBMannschaftDO> mannschaftList = new ArrayList<>();
         ResultSet mannschaft_oldData = getData(TableType.MANNSCHAFT);
         ResultSet verein = getData(TableType.VEREIN);
 
@@ -192,7 +191,7 @@ public class BL_DBOMapper {
                 data = 1;
                 nameNewWithoutNumber = nameNew;
             }
-            MannschaftDBO mannschaftDBO = new MannschaftDBO();
+            DSBMannschaftDO mannschaftDBO = new DSBMannschaftDO();
             if (verein != null) {
                 try {
                     while (verein.next()) {
@@ -234,9 +233,9 @@ public class BL_DBOMapper {
     }
 
 
-    public List<VereinDBO> mapVerein() throws SQLException {
+    public List<DSBVereinDO> mapVerein() throws SQLException {
         //BL_MannschaftDBO mannschaft_old = null;
-        List<VereinDBO> vereinList = new ArrayList<>();
+        List<DSBVereinDO> vereinList = new ArrayList<>();
 
         ResultSet mannschaft_oldData = null;
 
@@ -251,7 +250,7 @@ public class BL_DBOMapper {
 
         while (mannschaft_oldData.next()) {
             char[] nameOld = mannschaft_oldData.getString(4).toCharArray();
-            VereinDBO verein_new = new VereinDBO();
+            DSBVereinDO verein_new = new DSBVereinDO();
             String nameNew = "";
             int sort = 0;
             String sonderzeichen = "/-";

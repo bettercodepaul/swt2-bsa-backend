@@ -1,18 +1,18 @@
-package de.bogenliga.application.business.datatransfer.bl_model;
+package de.bogenliga.application.business.altsystem.schuetze.dataobject;
 
 /**
  * TODO [AL] class documentation
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class BL_SchuetzeDBO {
+public class AltsystemSchuetzeDO {
 
     private int id;
     private int mannschaft_id;
     private int ruecknr;
     private String name;
 
-    public BL_SchuetzeDBO(int id, int mannschaft_id, int ruecknr, String name){
+    public AltsystemSchuetzeDO(int id, int mannschaft_id, int ruecknr, String name){
         this.id = id;
         this.mannschaft_id = mannschaft_id;
         this.ruecknr = ruecknr;
