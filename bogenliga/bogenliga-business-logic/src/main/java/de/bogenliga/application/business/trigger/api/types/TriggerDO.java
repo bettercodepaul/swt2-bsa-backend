@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.trigger.api.types;
 
+import java.time.OffsetDateTime;
 import de.bogenliga.application.common.component.types.CommonDataObject;
 import de.bogenliga.application.common.component.types.DataObject;
 
@@ -9,55 +10,86 @@ import de.bogenliga.application.common.component.types.DataObject;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class TriggerDO extends CommonDataObject implements DataObject {
-    private long id;
-    private String timestamp;
-    private String description;
-    private String status;
-    public TriggerDO(long id, Long version, String timestamp, String description, String status){
+    private Long id;
+    private Long version;
+    private String kategorie;
+    private Long altsystemId;
+    private Long operation;
+    private Long status;
+    private String nachricht;
+    private OffsetDateTime createdAtUtc;
+
+
+
+
+    public TriggerDO(final Long id, final Long version, final String kategorie, final Long altsystemId, final Long operation, final Long status, final String nachricht, final OffsetDateTime createdAtUtc){
         this.id = id;
         this.version = version;
-        this.timestamp = timestamp;
-        this.description = description;
+        this.kategorie = kategorie;
+        this.altsystemId = altsystemId;
+        this.operation = operation;
         this.status = status;
+        this.nachricht = nachricht;
+        this.createdAtUtc = createdAtUtc;
     }
 
-    public long getId() {
+
+    public Long getId() {
         return id;
     }
 
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
-    public String getTimestamp() {
-        return timestamp;
+
+
+    public String getKategorie() {
+        return kategorie;
     }
 
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setKategorie(String kategorie) {
+        this.kategorie = kategorie;
     }
 
 
-    public String getDescription() {
-        return description;
+    public Long getAltsystemId() {
+        return altsystemId;
     }
 
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setAltsystemId(Long altsystemId) {
+        this.altsystemId = altsystemId;
     }
 
 
-    public String getStatus() {
+    public Long getOperation() {
+        return operation;
+    }
+
+
+    public void setOperation(Long operation) {
+        this.operation = operation;
+    }
+
+
+    public Long getStatus() {
         return status;
     }
 
 
-    public void setStatus(String status) {
+    public void setStatus(Long status) {
         this.status = status;
     }
 
 
+    public String getNachricht() {
+        return nachricht;
+    }
 
+
+    public void setNachricht(String nachricht) {
+        this.nachricht = nachricht;
+    }
 }

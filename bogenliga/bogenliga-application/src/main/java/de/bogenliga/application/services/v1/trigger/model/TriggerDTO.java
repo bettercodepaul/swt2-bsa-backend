@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.trigger.model;
 
 
 
+import java.time.OffsetDateTime;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
@@ -11,29 +12,45 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
  */
 public class TriggerDTO implements DataTransferObject {
 
-    private long id;
+    private Long id;
     private Long version;
-    private String timestamp;
-    private String description;
-    private String status;
+    private String kategorie;
+    private Long altsystemId;
+    private Long operation;
+    private Long status;
+    private String nachricht;
+    private OffsetDateTime createdAtUtc;
 
 
+    /**
+     *
+     * @param id
+     * @param version
+     * @param kategorie
+     * @param altsystemId
+     * @param operation
+     * @param status
+     * @param nachricht
+     * @param createdAtUtc
+     */
 
-
-    public TriggerDTO(long id, Long version, String timestamp, String description, String status){
+    public TriggerDTO(Long id, Long version, String kategorie, Long altsystemId, Long operation, Long status, String nachricht, OffsetDateTime createdAtUtc){
         this.id = id;
         this.version = version;
-        this.timestamp = timestamp;
-        this.description = description;
+        this.kategorie = kategorie;
+        this.altsystemId = altsystemId;
+        this.operation = operation;
         this.status = status;
+        this.nachricht = nachricht;
+        this.createdAtUtc = createdAtUtc;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -48,33 +65,63 @@ public class TriggerDTO implements DataTransferObject {
     }
 
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getKategorie() {
+        return kategorie;
     }
 
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setKategorie(String kategorie) {
+        this.kategorie = kategorie;
     }
 
 
-    public String getDescription() {
-        return description;
+    public Long getAltsystemId() {
+        return altsystemId;
     }
 
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setAltsystemId(Long altsystemId) {
+        this.altsystemId = altsystemId;
     }
 
 
-    public String getStatus() {
+    public Long getOperation() {
+        return operation;
+    }
+
+
+    public void setOperation(Long operation) {
+        this.operation = operation;
+    }
+
+
+    public Long getStatus() {
         return status;
     }
 
 
-    public void setStatus(String status) {
+    public void setStatus(Long status) {
         this.status = status;
+    }
+
+
+    public String getNachricht() {
+        return nachricht;
+    }
+
+
+    public void setNachricht(String nachricht) {
+        this.nachricht = nachricht;
+    }
+
+
+    public OffsetDateTime getCreatedAtUtc() {
+        return createdAtUtc;
+    }
+
+
+    public void setCreatedAtUtc(OffsetDateTime created_at_utc) {
+        this.createdAtUtc = createdAtUtc;
     }
 
 }
