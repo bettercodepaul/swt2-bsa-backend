@@ -2,8 +2,8 @@ package de.bogenliga.application.business.vereine.impl.mapper;
 
 import java.sql.SQLException;
 import java.util.List;
-import de.bogenliga.application.business.datatransfer.mapper.BL_DBOMapper;
-import de.bogenliga.application.business.datatransfer.model.VereinDBO;
+import de.bogenliga.application.business.altsystem.BL_DBOMapper;
+import de.bogenliga.application.business.altsystem.verein.dataobject.DSBVereinDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import org.junit.Test;
@@ -43,11 +43,11 @@ public class VereinMapperTest {
     @Test
     public void testMapVerein() {
         BL_DBOMapper dataAccessObj = new BL_DBOMapper();
-        List<VereinDBO> mappedVerein = null;
+        List<DSBVereinDO> mappedVerein = null;
 
         try {
             mappedVerein = dataAccessObj.mapVerein();
-            for (VereinDBO verein : mappedVerein) {
+            for (DSBVereinDO verein : mappedVerein) {
                 System.out.println("Verein Name: " + verein.getVerein_name());
             }
         } catch (SQLException e) {

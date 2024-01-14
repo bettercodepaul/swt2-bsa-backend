@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.datatransfer.model;
+package de.bogenliga.application.business.altsystem.schuetze.dataobject;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -8,7 +8,7 @@ import java.util.Date;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class SchuetzeDBO {
+public class DSBMitgliedDO {
     private int dsb_mitglied_id;
     private String dsb_mitglied_vorname;
     private String dsb_mitglied_nachname;
@@ -30,7 +30,7 @@ public class SchuetzeDBO {
 
 
 
-    public SchuetzeDBO(){
+    public DSBMitgliedDO(){
 
     }
 

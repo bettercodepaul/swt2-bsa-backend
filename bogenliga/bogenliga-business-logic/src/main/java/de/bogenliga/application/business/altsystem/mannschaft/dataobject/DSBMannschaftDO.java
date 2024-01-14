@@ -1,8 +1,8 @@
-package de.bogenliga.application.business.datatransfer.model;
+package de.bogenliga.application.business.altsystem.mannschaft.dataobject;
 
 import java.sql.Timestamp;
 
-public class MannschaftDBO {
+public class DSBMannschaftDO {
     private int mannschaft_id;
     private int mannschaft_verein_id;
     private int mannschaft_nummer;
@@ -16,7 +16,7 @@ public class MannschaftDBO {
     private int mannschaft_sortierung;
 
 
-    public MannschaftDBO(){
+    public DSBMannschaftDO(){
 
     }
 

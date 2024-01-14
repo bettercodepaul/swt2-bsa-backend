@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.datatransfer.model;
+package de.bogenliga.application.business.altsystem.verein.dataobject;
 
 import java.sql.Timestamp;
 
@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class VereinDBO {
+public class DSBVereinDO {
 
     private int verein_id;
     private String verein_name;
@@ -23,7 +23,7 @@ public class VereinDBO {
     private String verein_icon;
 
 
-    public VereinDBO() {
+    public DSBVereinDO() {
     }
 
 
