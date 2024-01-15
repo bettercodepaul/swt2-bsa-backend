@@ -32,14 +32,23 @@ CREATE SEQUENCE
 ;
 
 CREATE TABLE altsystem_aenderung (
-    aenderung_id   INT       NOT NULL PRIMARY KEY DEFAULT NEXTVAL('altsystem_aenderung_id'),
-    kategorie      VARCHAR   NOT NULL,
-    altsystem_id   INT       NOT NULL,
-    operation      INT       NOT NULL, -- references a key in enum altsystem_aenderung_operation
-    status         INT       NOT NULL, -- references a key in enum altsystem_aenderung_status
-    nachricht      VARCHAR,
+    aenderung_id         INT            NOT NULL PRIMARY KEY DEFAULT NEXTVAL('altsystem_aenderung_id'),
+    kategorie            VARCHAR        NOT NULL,
+    altsystem_id         INT            NOT NULL,
+    operation            INT            NOT NULL, -- references a key in enum altsystem_aenderung_operation
+    status               INT            NOT NULL, -- references a key in enum altsystem_aenderung_status
+    nachricht            VARCHAR,
 
-    created_at_utc TIMESTAMP NOT NULL             DEFAULT (NOW() AT TIME ZONE 'utc'),
-    run_at_utc     TIMESTAMP
+    run_at_utc           TIMESTAMP,
+
+    -- technical columns to track the lifecycle of each row
+    -- the "_by" columns references a "benutzer_id" without foreign key constraint
+    -- the "_at_utc" columns using the timestamp with the UTC timezone
+    -- the version number is automatically incremented by UPDATE queries to detect optimistic concurrency problems
+    created_at_utc       TIMESTAMP      NOT NULL             DEFAULT (NOW() AT TIME ZONE 'utc'),
+    created_by           DECIMAL(19, 0) NOT NULL             DEFAULT 0,
+    last_modified_at_utc TIMESTAMP      NULL                 DEFAULT NULL,
+    last_modified_by     DECIMAL(19, 0) NULL                 DEFAULT NULL,
+    version              DECIMAL(19, 0) NOT NULL             DEFAULT 0
 )
 ;
