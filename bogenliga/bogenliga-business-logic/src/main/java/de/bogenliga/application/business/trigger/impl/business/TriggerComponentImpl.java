@@ -3,6 +3,7 @@ package de.bogenliga.application.business.trigger.impl.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
@@ -15,10 +16,11 @@ import de.bogenliga.application.business.trigger.impl.mapper.TriggerMapper;
  * @author Maximilian Fronmueller
  */
 //TODO: PRECONDITIONS
+@Component
 public class TriggerComponentImpl implements TriggerComponent {
     public final TriggerDAO triggerDAO;
 
-    //@Autowired how?
+    @Autowired
     public TriggerComponentImpl (TriggerDAO triggerDAO){
         this.triggerDAO = triggerDAO;
     }
