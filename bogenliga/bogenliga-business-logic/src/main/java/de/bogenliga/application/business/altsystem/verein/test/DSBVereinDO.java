@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.altsystem.verein.dataobject;
+package de.bogenliga.application.business.altsystem.verein.test;
 
 import java.sql.Timestamp;
 
