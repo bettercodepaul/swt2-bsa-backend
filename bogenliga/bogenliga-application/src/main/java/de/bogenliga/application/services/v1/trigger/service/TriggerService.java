@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
 import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerDO;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -22,8 +26,6 @@ import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import de.bogenliga.application.services.v1.trigger.model.MigrationChange;
-import de.bogenliga.application.services.v1.trigger.model.MigrationChangeState;
-import de.bogenliga.application.services.v1.trigger.model.MigrationChangeType;
 
 @RestController
 @CrossOrigin
@@ -37,12 +39,16 @@ public class TriggerService implements ServiceFacade {
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggerService.class);
     private final BasicDAO basicDao;
+    private final TriggerDAO triggerDAO;
 
-    public TriggerService(final BasicDAO basicDao, final LigaComponent ligaComponent) {
+    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final LigaComponent ligaComponent) {
         this.basicDao = basicDao;
+        this.triggerDAO = triggerDAO;
 
         dataObjectToEntity = new HashMap<>();
         dataObjectToEntity.put(AltsystemLigaDO.class, new AltsystemLiga(ligaComponent));
+
+        debugSelect();
     }
 
     private static Map<String, Class<?>> getTableNameToClassMap() {
@@ -64,10 +70,20 @@ public class TriggerService implements ServiceFacade {
         List<MigrationChange<?>> changes = computeAllChanges();
 
         for (MigrationChange<?> change : changes) {
-            LOGGER.debug("Migrating {}", change.getAltsystemDataObject().getClass().getSimpleName());
+            LOGGER.debug("Migrating {}", change.getClass().getSimpleName());
             boolean migrationSuccessful = change.tryMigration();
 
             LOGGER.debug("Migration successful? {}", migrationSuccessful);
+        }
+    }
+
+    // TODO remove when not needed anymore
+    private void debugSelect() {
+        final var results = triggerDAO.findAll();
+
+        LOGGER.debug("FOUND " + results.size() + " RESULTS"); // set a breakpoint here to inspect results
+        for (var result : results) {
+            LOGGER.debug(result.toString());
         }
     }
 
@@ -98,7 +114,10 @@ public class TriggerService implements ServiceFacade {
         for (T retrievedObject : allTableObjects) {
             AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(retrievedObject.getClass());
 
-            changes.add(new MigrationChange<>(retrievedObject, entity, MigrationChangeType.CREATE, MigrationChangeState.NEW));
+            // TODO create new row in altsystem_aenderung
+            TriggerDO dataObject = new TriggerDO(1L, 0L, oldTableName, retrievedObject.getId(), MigrationChangeType.CREATE, MigrationChangeState.NEW, "keine nachricht", null);
+
+            changes.add(new MigrationChange<>(dataObject, retrievedObject, entity));
         }
 
         return changes;

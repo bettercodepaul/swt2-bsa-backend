@@ -14,15 +14,15 @@ public class TriggerDO extends CommonDataObject implements DataObject {
     private Long version;
     private String kategorie;
     private Long altsystemId;
-    private Long operation;
-    private Long status;
+    private MigrationChangeType operation;
+    private MigrationChangeState status;
     private String nachricht;
     private OffsetDateTime createdAtUtc;
 
 
 
 
-    public TriggerDO(final Long id, final Long version, final String kategorie, final Long altsystemId, final Long operation, final Long status, final String nachricht, final OffsetDateTime createdAtUtc){
+    public TriggerDO(final Long id, final Long version, final String kategorie, final Long altsystemId, final MigrationChangeType operation, final MigrationChangeState status, final String nachricht, final OffsetDateTime createdAtUtc){
         this.id = id;
         this.version = version;
         this.kategorie = kategorie;
@@ -64,22 +64,22 @@ public class TriggerDO extends CommonDataObject implements DataObject {
     }
 
 
-    public Long getOperation() {
+    public MigrationChangeType getOperation() {
         return operation;
     }
 
 
-    public void setOperation(Long operation) {
+    public void setOperation(MigrationChangeType operation) {
         this.operation = operation;
     }
 
 
-    public Long getStatus() {
+    public MigrationChangeState getStatus() {
         return status;
     }
 
 
-    public void setStatus(Long status) {
+    public void setStatus(MigrationChangeState status) {
         this.status = status;
     }
 

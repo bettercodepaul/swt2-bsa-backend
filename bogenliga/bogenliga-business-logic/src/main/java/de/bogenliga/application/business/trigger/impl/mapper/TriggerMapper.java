@@ -3,6 +3,8 @@ package de.bogenliga.application.business.trigger.impl.mapper;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
@@ -22,8 +24,8 @@ public class TriggerMapper implements ValueObjectMapper {
         final Long version = triggerBE.getVersion();
         final String kategorie = triggerBE.getKategorie();
         final Long altsystemId = triggerBE.getAltsystemId();
-        final Long operation = triggerBE.getOperation();
-        final Long status = triggerBE.getStatus();
+        final MigrationChangeType operation = triggerBE.getChangeOperation();
+        final MigrationChangeState status = triggerBE.getChangeStatus();
         final String nachricht = triggerBE.getNachricht();
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(triggerBE.getCreatedAtUtc());
@@ -38,8 +40,8 @@ public class TriggerMapper implements ValueObjectMapper {
         triggerBE.setVersion(triggerDO.getVersion());
         triggerBE.setKategorie(triggerDO.getKategorie());
         triggerBE.setAltsystemId(triggerDO.getAltsystemId());
-        triggerBE.setOperation(triggerDO.getOperation());
-        triggerBE.setStatus(triggerDO.getStatus());
+        triggerBE.setChangeOperation(triggerDO.getOperation());
+        triggerBE.setChangeStatus(triggerDO.getStatus());
         triggerBE.setNachricht(triggerDO.getNachricht());
 
         triggerBE.setCreatedAtUtc(createdAtUtcTimestamp);

@@ -31,16 +31,16 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_BE_ID = "Id";
     private static final String TRIGGER_BE_KATEGORIE = "kategorie";
     private static final String TRIGGER_BE_ALTSYSTEMID = "altsystemId";
-    private static final String TRIGGER_BE_OPERATION = "operation";
-    private static final String TRIGGER_BE_STATUS = "status";
+    private static final String TRIGGER_BE_OPERATION = "changeOperation";
+    private static final String TRIGGER_BE_STATUS = "changeStatus";
     private static final String TRIGGER_BE_NACHRICHT = "nachricht";
     private static final String TRIGGER_BE_CREATEDATUTC = "createdAtUtc";
 
     private static final String TRIGGER_TABLE_ID = "aenderung_id";
     private static final String TRIGGER_TABLE_KATEGORIE = "kategorie";
     private static final String TRIGGER_TABLE_ALTSYSTEMID = "altsystem_id";
-    private static final String TRIGGER_TABLE_OPERATION = "operation";
-    private static final String TRIGGER_TABLE_STATUS = "status";
+    private static final String TRIGGER_TABLE_OPERATION = "operation_name";
+    private static final String TRIGGER_TABLE_STATUS = "status_name";
     private static final String TRIGGER_TABLE_NACHRICHT = "nachricht";
     private static final String TRIGGER_TABLE_CREATEDATUTC = "created_at_utc";
 
@@ -54,6 +54,8 @@ public class TriggerDAO implements DataAccessObject {
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st ON altsystem_aenderung.status = st.status_id"
                     + " ORDER BY aenderung_id";
 
 

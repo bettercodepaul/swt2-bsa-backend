@@ -1,6 +1,8 @@
 package de.bogenliga.application.business.trigger.impl.entity;
 
 import java.time.OffsetDateTime;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
@@ -14,8 +16,8 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     private Long version;
     private String kategorie;
     private Long altsystemId;
-    private Long operation;
-    private Long status;
+    private MigrationChangeType changeOperation;
+    private MigrationChangeState changeStatus;
     private String nachricht;
     private OffsetDateTime createdAtUtc;
 
@@ -48,23 +50,23 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public Long getOperation() {
-        return operation;
+    public MigrationChangeType getChangeOperation() {
+        return changeOperation;
     }
 
 
-    public void setOperation(Long operation) {
-        this.operation = operation;
+    public void setChangeOperation(MigrationChangeType changeOperation) {
+        this.changeOperation = changeOperation;
     }
 
 
-    public Long getStatus() {
-        return status;
+    public MigrationChangeState getChangeStatus() {
+        return changeStatus;
     }
 
 
-    public void setStatus(Long status) {
-        this.status = status;
+    public void setChangeStatus(MigrationChangeState changeStatus) {
+        this.changeStatus = changeStatus;
     }
 
 
@@ -83,8 +85,8 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
                 ", version = '" + version + '\'' +
                 ", kategorie = '" + kategorie + '\'' +
                 ", altsystemId = '" + altsystemId + '\'' +
-                ", operation = '" + operation + '\'' +
-                ", status = '" + status + '\'' +
+                ", operation = '" + changeOperation + '\'' +
+                ", status = '" + changeStatus + '\'' +
                 ", nachricht = '" + nachricht + '\'' +
                 ", createdAtUtc = '" + createdAtUtc + '\'' +
                 '}';
