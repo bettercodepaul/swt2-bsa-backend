@@ -3,8 +3,8 @@ package de.bogenliga.application.business.trigger.impl.mapper;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
@@ -23,8 +23,8 @@ public class TriggerMapper implements ValueObjectMapper {
         final Long id = triggerBE.getId();
         final String kategorie = triggerBE.getKategorie();
         final Long altsystemId = triggerBE.getAltsystemId();
-        final MigrationChangeType operation = triggerBE.getChangeOperation();
-        final MigrationChangeState status = triggerBE.getChangeStatus();
+        final TriggerChangeOperation operation = triggerBE.getChangeOperation();
+        final TriggerChangeStatus status = triggerBE.getChangeStatus();
         final String nachricht = triggerBE.getNachricht();
 
         OffsetDateTime runAtUtc = DateProvider.convertTimestamp(triggerBE.getRunAtUtc());

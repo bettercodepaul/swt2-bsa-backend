@@ -3,8 +3,8 @@ package de.bogenliga.application.services.v1.trigger.model;
 
 
 import java.time.OffsetDateTime;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
@@ -15,36 +15,33 @@ import de.bogenliga.application.common.service.types.DataTransferObject;
 public class TriggerDTO implements DataTransferObject {
 
     private Long id;
-    private Long version;
     private String kategorie;
     private Long altsystemId;
-    private MigrationChangeType operation;
-    private MigrationChangeState status;
+    private TriggerChangeOperation operation;
+    private TriggerChangeStatus status;
     private String nachricht;
-    private OffsetDateTime createdAtUtc;
+    private OffsetDateTime runAtUtc;
 
 
     /**
      *
      * @param id
-     * @param version
      * @param kategorie
      * @param altsystemId
      * @param operation
      * @param status
      * @param nachricht
-     * @param createdAtUtc
+     * @param runAtUtc
      */
 
-    public TriggerDTO(Long id, Long version, String kategorie, Long altsystemId, MigrationChangeType operation, MigrationChangeState status, String nachricht, OffsetDateTime createdAtUtc){
+    public TriggerDTO(Long id, String kategorie, Long altsystemId, TriggerChangeOperation operation, TriggerChangeStatus status, String nachricht, OffsetDateTime runAtUtc){
         this.id = id;
-        this.version = version;
         this.kategorie = kategorie;
         this.altsystemId = altsystemId;
         this.operation = operation;
         this.status = status;
         this.nachricht = nachricht;
-        this.createdAtUtc = createdAtUtc;
+        this.runAtUtc = runAtUtc;
     }
 
     public Long getId() {
@@ -54,16 +51,6 @@ public class TriggerDTO implements DataTransferObject {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-
-    public Long getVersion() {
-        return version;
-    }
-
-
-    public void setVersion(Long version) {
-        this.version = version;
     }
 
 
@@ -87,22 +74,22 @@ public class TriggerDTO implements DataTransferObject {
     }
 
 
-    public MigrationChangeType getOperation() {
+    public TriggerChangeOperation getOperation() {
         return operation;
     }
 
 
-    public void setOperation(MigrationChangeType operation) {
+    public void setOperation(TriggerChangeOperation operation) {
         this.operation = operation;
     }
 
 
-    public MigrationChangeState getStatus() {
+    public TriggerChangeStatus getStatus() {
         return status;
     }
 
 
-    public void setStatus(MigrationChangeState status) {
+    public void setStatus(TriggerChangeStatus status) {
         this.status = status;
     }
 
@@ -117,13 +104,13 @@ public class TriggerDTO implements DataTransferObject {
     }
 
 
-    public OffsetDateTime getCreatedAtUtc() {
-        return createdAtUtc;
+    public OffsetDateTime getRunAtUtc() {
+        return runAtUtc;
     }
 
 
-    public void setCreatedAtUtc(OffsetDateTime created_at_utc) {
-        this.createdAtUtc = createdAtUtc;
+    public void setRunAtUtc(OffsetDateTime runAtUtc) {
+        this.runAtUtc = runAtUtc;
     }
 
 }

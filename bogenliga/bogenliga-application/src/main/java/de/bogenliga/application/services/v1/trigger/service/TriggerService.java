@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
 import de.bogenliga.application.business.liga.api.LigaComponent;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
@@ -25,7 +25,7 @@ import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import de.bogenliga.application.services.v1.trigger.model.MigrationChange;
+import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
 
 @RestController
 @CrossOrigin
@@ -67,9 +67,9 @@ public class TriggerService implements ServiceFacade {
     @GetMapping("/buttonSync")
     public void syncData() {
         LOGGER.debug("Computing changes");
-        List<MigrationChange<?>> changes = computeAllChanges();
+        List<TriggerChange<?>> changes = computeAllChanges();
 
-        for (MigrationChange<?> change : changes) {
+        for (TriggerChange<?> change : changes) {
             LOGGER.debug("Migrating {}", change.getClass().getSimpleName());
             boolean migrationSuccessful = change.tryMigration();
 
@@ -92,8 +92,8 @@ public class TriggerService implements ServiceFacade {
      * Checks the imported old database tables for changes and returns all
      * updated and newly created models.
      */
-    private List<MigrationChange<?>> computeAllChanges() {
-        List<MigrationChange<?>> changes = new ArrayList<>();
+    private List<TriggerChange<?>> computeAllChanges() {
+        List<TriggerChange<?>> changes = new ArrayList<>();
 
         for (String oldTableName : tableNameToClass.keySet()) {
             changes.addAll(computeChangesOfTable(oldTableName));
@@ -102,7 +102,7 @@ public class TriggerService implements ServiceFacade {
         return changes;
     }
 
-    private <T extends AltsystemDO> List<MigrationChange<T>> computeChangesOfTable(String oldTableName) {
+    private <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName) {
         Class<T> oldClass = (Class<T>) tableNameToClass.get(oldTableName);
         String sqlQuery = "SELECT * FROM " + oldTableName;
 
@@ -110,14 +110,14 @@ public class TriggerService implements ServiceFacade {
                 oldClass, oldTableName, new HashMap<>(), LOGGER
         ), sqlQuery);
 
-        List<MigrationChange<T>> changes = new ArrayList<>();
+        List<TriggerChange<T>> changes = new ArrayList<>();
         for (T retrievedObject : allTableObjects) {
             AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(retrievedObject.getClass());
 
             // TODO create new row in altsystem_aenderung
-            TriggerDO dataObject = new TriggerDO(1L, oldTableName, retrievedObject.getId(), MigrationChangeType.CREATE, MigrationChangeState.NEW, "keine nachricht", null);
+            TriggerDO dataObject = new TriggerDO(1L, oldTableName, retrievedObject.getId(), TriggerChangeOperation.CREATE, TriggerChangeStatus.NEW, "keine nachricht", null);
 
-            changes.add(new MigrationChange<>(dataObject, retrievedObject, entity));
+            changes.add(new TriggerChange<>(dataObject, retrievedObject, entity));
         }
 
         return changes;
