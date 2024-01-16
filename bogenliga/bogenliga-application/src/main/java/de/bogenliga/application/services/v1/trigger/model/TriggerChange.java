@@ -1,7 +1,7 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
@@ -11,7 +11,7 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
  * changed in the old database ("Altsystem") and should be
  * transferred to the new database.
  */
-public class MigrationChange<T extends AltsystemDO> {
+public class TriggerChange<T extends AltsystemDO> {
     private final TriggerDO data;
     /**
      * The relevant data object retrieved from the old database ("Altsystem").
@@ -23,7 +23,7 @@ public class MigrationChange<T extends AltsystemDO> {
     private final AltsystemEntity<T> altsystemEntity;
 
 
-    public MigrationChange(TriggerDO data, T altsystemDataObject, AltsystemEntity<T> altsystemEntity) {
+    public TriggerChange(TriggerDO data, T altsystemDataObject, AltsystemEntity<T> altsystemEntity) {
         this.data = data;
         this.altsystemDataObject = altsystemDataObject;
         this.altsystemEntity = altsystemEntity;
@@ -33,27 +33,27 @@ public class MigrationChange<T extends AltsystemDO> {
         return altsystemDataObject;
     }
 
-    public MigrationChangeType getType() {
+    public TriggerChangeOperation getType() {
         return data.getOperation();
     }
 
-    public MigrationChangeState getState() {
+    public TriggerChangeStatus getState() {
         return data.getStatus();
     }
 
-    public void setState(MigrationChangeState state) {
+    public void setState(TriggerChangeStatus state) {
         data.setStatus(state);
     }
 
     public boolean tryMigration() {
-        setState(MigrationChangeState.IN_PROGRESS);
+        setState(TriggerChangeStatus.IN_PROGRESS);
 
         try {
             executeMigrationOnEntity();
-            setState(MigrationChangeState.SUCCESS);
+            setState(TriggerChangeStatus.SUCCESS);
             return true;
         } catch (Exception exception) {
-            setState(MigrationChangeState.ERROR);
+            setState(TriggerChangeStatus.ERROR);
             return false;
         }
     }

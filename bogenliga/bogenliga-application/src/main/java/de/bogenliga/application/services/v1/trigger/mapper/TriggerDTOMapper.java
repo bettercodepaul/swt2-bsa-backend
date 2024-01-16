@@ -2,8 +2,8 @@ package de.bogenliga.application.services.v1.trigger.mapper;
 
 import java.time.OffsetDateTime;
 import java.util.function.Function;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
@@ -20,17 +20,16 @@ import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 public class TriggerDTOMapper implements DataTransferObjectMapper {
     public static final Function<TriggerDO, TriggerDTO> toDTO = triggerDO -> {
         final Long id = triggerDO.getId();
-        final Long version = triggerDO.getVersion();
         final String kategorie = triggerDO.getKategorie();
         final Long altsystemId = triggerDO.getAltsystemId();
-        final MigrationChangeType operation = triggerDO.getOperation();
-        final MigrationChangeState status = triggerDO.getStatus();
+        final TriggerChangeOperation operation = triggerDO.getOperation();
+        final TriggerChangeStatus status = triggerDO.getStatus();
         final String nachricht = triggerDO.getNachricht();
-        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAtUtc();
+        final OffsetDateTime runAtUtc = triggerDO.getRunAtUtc();
 
 
 
-        return new TriggerDTO(id, version, kategorie, altsystemId, operation, status, nachricht, createdAtUtc);
+        return new TriggerDTO(id, kategorie, altsystemId, operation, status, nachricht, runAtUtc);
     };
 
     /**
@@ -39,15 +38,14 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
 
     public static final Function<TriggerDTO, TriggerDO> toDO = triggerDTO -> {
         final Long id = triggerDTO.getId();
-        final Long version = triggerDTO.getVersion();
         final String kategorie = triggerDTO.getKategorie();
         final Long altsystemId = triggerDTO.getAltsystemId();
-        final MigrationChangeType operation = triggerDTO.getOperation();
-        final MigrationChangeState status = triggerDTO.getStatus();
+        final TriggerChangeOperation operation = triggerDTO.getOperation();
+        final TriggerChangeStatus status = triggerDTO.getStatus();
         final String nachricht = triggerDTO.getNachricht();
-        final OffsetDateTime createdAtUtc = triggerDTO.getCreatedAtUtc();
+        final OffsetDateTime runAtUtc = triggerDTO.getRunAtUtc();
 
-        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, runAtUtc);
     };
 
     private TriggerDTOMapper(){

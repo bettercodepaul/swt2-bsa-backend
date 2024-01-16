@@ -1,8 +1,8 @@
 package de.bogenliga.application.business.trigger.impl.entity;
 
 import java.sql.Timestamp;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
-import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
 import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
 
@@ -15,8 +15,8 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     private Long id;
     private String kategorie;
     private Long altsystemId;
-    private MigrationChangeType changeOperation;
-    private MigrationChangeState changeStatus;
+    private TriggerChangeOperation changeOperation;
+    private TriggerChangeStatus changeStatus;
     private String nachricht;
     private Timestamp runAtUtc;
 
@@ -49,22 +49,22 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     }
 
 
-    public MigrationChangeType getChangeOperation() {
+    public TriggerChangeOperation getChangeOperation() {
         return changeOperation;
     }
 
 
-    public void setChangeOperation(MigrationChangeType changeOperation) {
+    public void setChangeOperation(TriggerChangeOperation changeOperation) {
         this.changeOperation = changeOperation;
     }
 
 
-    public MigrationChangeState getChangeStatus() {
+    public TriggerChangeStatus getChangeStatus() {
         return changeStatus;
     }
 
 
-    public void setChangeStatus(MigrationChangeState changeStatus) {
+    public void setChangeStatus(TriggerChangeStatus changeStatus) {
         this.changeStatus = changeStatus;
     }
 
@@ -90,15 +90,15 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
 
 
     @Override
-    public String toString (){
-        return "TriggerBE {" +
-                "id = '" + id + '\'' +
-                ", kategorie = '" + kategorie + '\'' +
-                ", altsystemId = '" + altsystemId + '\'' +
-                ", operation = '" + changeOperation + '\'' +
-                ", status = '" + changeStatus + '\'' +
-                ", nachricht = '" + nachricht + '\'' +
-                ", runAtUtc = '" + runAtUtc + '\'' +
+    public String toString() {
+        return "TriggerBE{" +
+                "id=" + id +
+                ", kategorie='" + kategorie + '\'' +
+                ", altsystemId=" + altsystemId +
+                ", changeOperation=" + changeOperation +
+                ", changeStatus=" + changeStatus +
+                ", nachricht='" + nachricht + '\'' +
+                ", runAtUtc=" + runAtUtc +
                 '}';
     }
 }
