@@ -13,7 +13,6 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  */
 public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     private Long id;
-    private Long version;
     private String kategorie;
     private Long altsystemId;
     private MigrationChangeType changeOperation;
@@ -82,7 +81,6 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     public String toString (){
         return "TriggerBE {" +
                 "id = '" + id + '\'' +
-                ", version = '" + version + '\'' +
                 ", kategorie = '" + kategorie + '\'' +
                 ", altsystemId = '" + altsystemId + '\'' +
                 ", operation = '" + changeOperation + '\'' +

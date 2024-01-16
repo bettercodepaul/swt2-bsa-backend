@@ -11,7 +11,6 @@ import de.bogenliga.application.common.component.types.DataObject;
  */
 public class TriggerDO extends CommonDataObject implements DataObject {
     private Long id;
-    private Long version;
     private String kategorie;
     private Long altsystemId;
     private MigrationChangeType operation;
@@ -22,9 +21,8 @@ public class TriggerDO extends CommonDataObject implements DataObject {
 
 
 
-    public TriggerDO(final Long id, final Long version, final String kategorie, final Long altsystemId, final MigrationChangeType operation, final MigrationChangeState status, final String nachricht, final OffsetDateTime createdAtUtc){
+    public TriggerDO(final Long id, final String kategorie, final Long altsystemId, final MigrationChangeType operation, final MigrationChangeState status, final String nachricht, final OffsetDateTime createdAtUtc){
         this.id = id;
-        this.version = version;
         this.kategorie = kategorie;
         this.altsystemId = altsystemId;
         this.operation = operation;
