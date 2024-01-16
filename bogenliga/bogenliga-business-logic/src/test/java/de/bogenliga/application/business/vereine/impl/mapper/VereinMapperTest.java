@@ -3,7 +3,7 @@ package de.bogenliga.application.business.vereine.impl.mapper;
 import java.sql.SQLException;
 import java.util.List;
 import de.bogenliga.application.business.altsystem.BL_DBOMapper;
-import de.bogenliga.application.business.altsystem.verein.dataobject.DSBVereinDO;
+import de.bogenliga.application.business.altsystem.verein.test.DSBVereinDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.business.vereine.impl.entity.VereinBE;
 import org.junit.Test;

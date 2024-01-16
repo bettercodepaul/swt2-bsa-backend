@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.junit.Test;
 import de.bogenliga.application.business.altsystem.BL_DBOMapper;
-import de.bogenliga.application.business.altsystem.schuetze.dataobject.DSBMitgliedDO;
+import de.bogenliga.application.business.altsystem.verein.test.DSBMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedBE;

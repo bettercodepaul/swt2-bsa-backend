@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import de.bogenliga.application.business.altsystem.BL_DBOMapper;
-import de.bogenliga.application.business.altsystem.verein.dataobject.DSBVereinDO;
 
 /**
  * TODO [AL] class documentation
