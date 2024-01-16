@@ -47,7 +47,7 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final String nachricht = triggerDTO.getNachricht();
         final OffsetDateTime createdAtUtc = triggerDTO.getCreatedAtUtc();
 
-        return new TriggerDO(id, version, kategorie, altsystemId, operation, status, nachricht, createdAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc);
     };
 
     private TriggerDTOMapper(){

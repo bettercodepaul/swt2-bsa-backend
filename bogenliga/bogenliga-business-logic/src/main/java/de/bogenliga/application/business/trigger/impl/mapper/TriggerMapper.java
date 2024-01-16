@@ -21,7 +21,6 @@ public class TriggerMapper implements ValueObjectMapper {
     }
     public static final Function<TriggerBE, TriggerDO> toTriggerDO = triggerBE -> {
         final Long id = triggerBE.getId();
-        final Long version = triggerBE.getVersion();
         final String kategorie = triggerBE.getKategorie();
         final Long altsystemId = triggerBE.getAltsystemId();
         final MigrationChangeType operation = triggerBE.getChangeOperation();
@@ -30,14 +29,13 @@ public class TriggerMapper implements ValueObjectMapper {
 
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(triggerBE.getCreatedAtUtc());
 
-        return new TriggerDO(id, version, kategorie, altsystemId, operation, status, nachricht, createdAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc);
     };
     public static final Function<TriggerDO, TriggerBE> toTriggerBE = triggerDO -> {
         Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(triggerDO.getCreatedAtUtc());
 
         TriggerBE triggerBE = new TriggerBE();
         triggerBE.setId(triggerDO.getId());
-        triggerBE.setVersion(triggerDO.getVersion());
         triggerBE.setKategorie(triggerDO.getKategorie());
         triggerBE.setAltsystemId(triggerDO.getAltsystemId());
         triggerBE.setChangeOperation(triggerDO.getOperation());
