@@ -1,9 +1,8 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
-import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
+import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 
@@ -13,6 +12,7 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
  * transferred to the new database.
  */
 public class MigrationChange<T extends AltsystemDO> {
+    private final TriggerDO data;
     /**
      * The relevant data object retrieved from the old database ("Altsystem").
      */
@@ -21,21 +21,12 @@ public class MigrationChange<T extends AltsystemDO> {
      * The relevant entity which handles conversion to a new model.
      */
     private final AltsystemEntity<T> altsystemEntity;
-    /**
-     * The operation this migration change should perform (create or update).
-     */
-    private final MigrationChangeType type;
-    /**
-     * The current state of this migration change.
-     */
-    private MigrationChangeState state;
 
 
-    public MigrationChange(T altsystemDataObject, AltsystemEntity<T> altsystemEntity, MigrationChangeType type, MigrationChangeState state) {
+    public MigrationChange(TriggerDO data, T altsystemDataObject, AltsystemEntity<T> altsystemEntity) {
+        this.data = data;
         this.altsystemDataObject = altsystemDataObject;
         this.altsystemEntity = altsystemEntity;
-        this.type = type;
-        this.state = state;
     }
 
     public T getAltsystemDataObject() {
@@ -43,15 +34,15 @@ public class MigrationChange<T extends AltsystemDO> {
     }
 
     public MigrationChangeType getType() {
-        return type;
+        return data.getOperation();
     }
 
     public MigrationChangeState getState() {
-        return state;
+        return data.getStatus();
     }
 
     public void setState(MigrationChangeState state) {
-        this.state = state;
+        data.setStatus(state);
     }
 
     public boolean tryMigration() {
@@ -68,7 +59,7 @@ public class MigrationChange<T extends AltsystemDO> {
     }
 
     private void executeMigrationOnEntity() {
-        switch (type) {
+        switch (getType()) {
             case CREATE:
                 altsystemEntity.create(altsystemDataObject);
                 break;
@@ -76,7 +67,7 @@ public class MigrationChange<T extends AltsystemDO> {
                 altsystemEntity.update(altsystemDataObject);
                 break;
             default:
-                throw new IllegalStateException("Invalid operation: " + type);
+                throw new IllegalStateException("Invalid operation: " + getType());
         }
     }
 }

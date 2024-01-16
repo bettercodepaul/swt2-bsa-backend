@@ -3,6 +3,8 @@ package de.bogenliga.application.services.v1.trigger.model;
 
 
 import java.time.OffsetDateTime;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
@@ -16,8 +18,8 @@ public class TriggerDTO implements DataTransferObject {
     private Long version;
     private String kategorie;
     private Long altsystemId;
-    private Long operation;
-    private Long status;
+    private MigrationChangeType operation;
+    private MigrationChangeState status;
     private String nachricht;
     private OffsetDateTime createdAtUtc;
 
@@ -34,7 +36,7 @@ public class TriggerDTO implements DataTransferObject {
      * @param createdAtUtc
      */
 
-    public TriggerDTO(Long id, Long version, String kategorie, Long altsystemId, Long operation, Long status, String nachricht, OffsetDateTime createdAtUtc){
+    public TriggerDTO(Long id, Long version, String kategorie, Long altsystemId, MigrationChangeType operation, MigrationChangeState status, String nachricht, OffsetDateTime createdAtUtc){
         this.id = id;
         this.version = version;
         this.kategorie = kategorie;
@@ -85,22 +87,22 @@ public class TriggerDTO implements DataTransferObject {
     }
 
 
-    public Long getOperation() {
+    public MigrationChangeType getOperation() {
         return operation;
     }
 
 
-    public void setOperation(Long operation) {
+    public void setOperation(MigrationChangeType operation) {
         this.operation = operation;
     }
 
 
-    public Long getStatus() {
+    public MigrationChangeState getStatus() {
         return status;
     }
 
 
-    public void setStatus(Long status) {
+    public void setStatus(MigrationChangeState status) {
         this.status = status;
     }
 

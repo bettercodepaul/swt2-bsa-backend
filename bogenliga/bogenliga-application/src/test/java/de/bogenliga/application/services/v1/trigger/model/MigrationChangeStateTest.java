@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
 import org.junit.Test;
+import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
 
