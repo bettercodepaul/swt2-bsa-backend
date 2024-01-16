@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;;
+import org.springframework.stereotype.Repository;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -34,7 +34,7 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_BE_OPERATION = "changeOperation";
     private static final String TRIGGER_BE_STATUS = "changeStatus";
     private static final String TRIGGER_BE_NACHRICHT = "nachricht";
-    private static final String TRIGGER_BE_CREATEDATUTC = "createdAtUtc";
+    private static final String TRIGGER_BE_RUNATUTC = "runAtUtc";
 
     private static final String TRIGGER_TABLE_ID = "aenderung_id";
     private static final String TRIGGER_TABLE_KATEGORIE = "kategorie";
@@ -42,7 +42,7 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_TABLE_OPERATION = "operation_name";
     private static final String TRIGGER_TABLE_STATUS = "status_name";
     private static final String TRIGGER_TABLE_NACHRICHT = "nachricht";
-    private static final String TRIGGER_TABLE_CREATEDATUTC = "created_at_utc";
+    private static final String TRIGGER_TABLE_RUNATUTC = "run_at_utc";
 
     private static final BusinessEntityConfiguration<TriggerBE> TRIGGER = new BusinessEntityConfiguration<>(
             TriggerBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
@@ -83,7 +83,7 @@ public class TriggerDAO implements DataAccessObject {
         columnsToFieldMap.put(TRIGGER_TABLE_OPERATION, TRIGGER_BE_OPERATION);
         columnsToFieldMap.put(TRIGGER_TABLE_STATUS, TRIGGER_BE_STATUS);
         columnsToFieldMap.put(TRIGGER_TABLE_NACHRICHT, TRIGGER_BE_NACHRICHT);
-        columnsToFieldMap.put(TRIGGER_TABLE_CREATEDATUTC, TRIGGER_BE_CREATEDATUTC);
+        columnsToFieldMap.put(TRIGGER_TABLE_RUNATUTC, TRIGGER_BE_RUNATUTC);
 
         columnsToFieldMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
         return columnsToFieldMap;

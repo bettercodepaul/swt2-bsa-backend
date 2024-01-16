@@ -27,12 +27,12 @@ public class TriggerMapper implements ValueObjectMapper {
         final MigrationChangeState status = triggerBE.getChangeStatus();
         final String nachricht = triggerBE.getNachricht();
 
-        OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(triggerBE.getCreatedAtUtc());
+        OffsetDateTime runAtUtc = DateProvider.convertTimestamp(triggerBE.getRunAtUtc());
 
-        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, runAtUtc);
     };
     public static final Function<TriggerDO, TriggerBE> toTriggerBE = triggerDO -> {
-        Timestamp createdAtUtcTimestamp = DateProvider.convertOffsetDateTime(triggerDO.getCreatedAtUtc());
+        Timestamp runAtUtcTimestamp = DateProvider.convertOffsetDateTime(triggerDO.getRunAtUtc());
 
         TriggerBE triggerBE = new TriggerBE();
         triggerBE.setId(triggerDO.getId());
@@ -42,7 +42,7 @@ public class TriggerMapper implements ValueObjectMapper {
         triggerBE.setChangeStatus(triggerDO.getStatus());
         triggerBE.setNachricht(triggerDO.getNachricht());
 
-        triggerBE.setCreatedAtUtc(createdAtUtcTimestamp);
+        triggerBE.setRunAtUtc(runAtUtcTimestamp);
 
 
         return triggerBE;

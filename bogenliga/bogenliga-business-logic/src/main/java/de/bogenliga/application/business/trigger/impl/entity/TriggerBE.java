@@ -1,6 +1,6 @@
 package de.bogenliga.application.business.trigger.impl.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import de.bogenliga.application.business.trigger.api.types.MigrationChangeState;
 import de.bogenliga.application.business.trigger.api.types.MigrationChangeType;
 import de.bogenliga.application.common.component.entity.BusinessEntity;
@@ -18,7 +18,7 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     private MigrationChangeType changeOperation;
     private MigrationChangeState changeStatus;
     private String nachricht;
-    private OffsetDateTime createdAtUtc;
+    private Timestamp runAtUtc;
 
 
     public Long getId() {
@@ -77,6 +77,18 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     public void setNachricht(String nachricht) {
         this.nachricht = nachricht;
     }
+
+
+    public Timestamp getRunAtUtc() {
+        return runAtUtc;
+    }
+
+
+    public void setRunAtUtc(Timestamp runAtUtc) {
+        this.runAtUtc = runAtUtc;
+    }
+
+
     @Override
     public String toString (){
         return "TriggerBE {" +
@@ -86,7 +98,7 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
                 ", operation = '" + changeOperation + '\'' +
                 ", status = '" + changeStatus + '\'' +
                 ", nachricht = '" + nachricht + '\'' +
-                ", createdAtUtc = '" + createdAtUtc + '\'' +
+                ", runAtUtc = '" + runAtUtc + '\'' +
                 '}';
     }
 }
