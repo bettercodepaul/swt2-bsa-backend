@@ -59,12 +59,24 @@ public class TriggerService implements ServiceFacade {
 
         return result;
     }
-    @Scheduled(cron = "0 0 22 * * ?")
-    public void scheduler(){
-        syncData();
-    }
+
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     @GetMapping("/buttonSync")
+    public int startTheSync() {
+        try {
+            syncData();
+        } catch(Exception e) {
+            LOGGER.debug("Could not sync data.");
+            return 0;
+        }
+        return 1;
+    }
+
+    @Scheduled(cron = "0 0 22 * * ?")
+    public void scheduler(){
+        startTheSync();
+    }
+
     public void syncData() {
         LOGGER.debug("Computing changes");
         List<TriggerChange<?>> changes = computeAllChanges();
