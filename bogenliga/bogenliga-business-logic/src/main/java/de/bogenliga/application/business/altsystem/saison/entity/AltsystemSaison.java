@@ -1,12 +1,15 @@
 package de.bogenliga.application.business.altsystem.saison.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.saison.dataobject.AltsystemSaisonDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 /**
- * TODO [AL] class documentation
+ * Component to handle the import of a "Saison" entity
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
 
     @Override
