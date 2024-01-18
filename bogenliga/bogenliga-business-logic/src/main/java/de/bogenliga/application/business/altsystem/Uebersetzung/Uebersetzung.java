@@ -14,8 +14,8 @@ import java.sql.SQLException;
  */
 public class Uebersetzung {
 
-    public static void updateOrInsertUebersetzung(String kategorie, int altsystemID, int bogenligaID, String value) {
-
+    public static void updateOrInsertUebersetzung(Kategorien kategorie, int altsystemID, int bogenligaID, String value) {
+        String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {
             // Datenbankverbindung herstellen
@@ -24,7 +24,7 @@ public class Uebersetzung {
             // Überprüfen, ob der Name bereits in der Tabelle vorhanden ist
             String checkQuery = "SELECT COUNT(*) FROM altsystem_uebersetzung WHERE kategorie = ? AND altsystem_id = ?";
             try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
-                checkStatement.setString(1, kategorie);
+                checkStatement.setString(1, kategorieLabel);
                 checkStatement.setInt(2, altsystemID);
                 ResultSet resultSet = checkStatement.executeQuery();
                 resultSet.next();
@@ -43,7 +43,7 @@ public class Uebersetzung {
                     // Der Name ist noch nicht vorhanden, also einfügen (INSERT)
                     String insertQuery = "INSERT INTO altsystem_uebersetzung (kategorie, altsystem_id, bogenliga_id, value ) VALUES (?, ?, ?, ?)";
                     try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-                        insertStatement.setString(1, kategorie);
+                        insertStatement.setString(1, kategorieLabel);
                         insertStatement.setInt(2, altsystemID);
                         insertStatement.setInt(3, bogenligaID);
                         insertStatement.setString(4, value);
@@ -63,7 +63,8 @@ public class Uebersetzung {
     }
 
 
-    public static AltsystemUebersetzungDO findByAltsystemID(String kategorie, int altsystemID) {
+    public static AltsystemUebersetzungDO findByAltsystemID(Kategorien kategorie, int altsystemID) {
+        String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {
             // Datenbankverbindung herstellen
@@ -72,7 +73,7 @@ public class Uebersetzung {
             // Überprüfen, ob der Datensatz bereits in der Tabelle vorhanden ist
             String checkQuery = "SELECT * FROM altsystem_uebersetzung WHERE kategorie = ? AND altsystem_id = ?";
             try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
-                checkStatement.setString(1, kategorie);
+                checkStatement.setString(1, kategorie.label);
                 checkStatement.setInt(2, altsystemID);
 
                 ResultSet resultSet = checkStatement.executeQuery();
