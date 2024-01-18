@@ -15,6 +15,7 @@ public class AltsystemUebersetzungDO {
     int bogenliga_id;
     String value;
 
+
     public int getUebersetzung_id() {
         return uebersetzung_id;
     }
