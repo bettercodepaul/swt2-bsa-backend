@@ -1,10 +1,11 @@
 package de.bogenliga.application.business.altsystem.Uebersetzung;
 
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 
 /**
  * TODO [AL] class documentation
@@ -15,10 +16,10 @@ public class Uebersetzung {
 
     public static void updateOrInsertUebersetzung(String kategorie, int altsystemID, int bogenligaID, String value) {
 
+        Connection connection = null;
         try {
             // Datenbankverbindung herstellen
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/swt2", "swt2",
-                    "swt2");
+            connection = DSBConnection.connect();
 
             // Überprüfen, ob der Name bereits in der Tabelle vorhanden ist
             String checkQuery = "SELECT COUNT(*) FROM altsystem_uebersetzung WHERE kategorie = ? AND altsystem_id = ?";
@@ -56,14 +57,17 @@ public class Uebersetzung {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            DSBConnection.close(connection);
         }
     }
 
 
     public static AltsystemUebersetzungDO findByAltsystemID(String kategorie, int altsystemID) {
+        Connection connection = null;
         try {
             // Datenbankverbindung herstellen
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/swt2", "swt2", "swt2");
+            connection = DSBConnection.connect();
 
             // Überprüfen, ob der Datensatz bereits in der Tabelle vorhanden ist
             String checkQuery = "SELECT * FROM altsystem_uebersetzung WHERE kategorie = ? AND altsystem_id = ?";
@@ -75,10 +79,9 @@ public class Uebersetzung {
 
                 // Prüfen, ob ein Datensatz gefunden wurde
                 if (resultSet.next()) {
-                    // Hier musst du die Klasse "YourDataObject" entsprechend deiner Datenstruktur anpassen
+
                     AltsystemUebersetzungDO dataObject = new AltsystemUebersetzungDO();
 
-                    // Setze die Werte für die verschiedenen Spalten in deinem Datenobjekt
                     dataObject.setUebersetzung_id(resultSet.getInt("uebersetzungs_id"));
                     dataObject.setKategorie(resultSet.getString("kategorie"));
                     dataObject.setAltsystem_id(resultSet.getInt("altsystem_id"));
@@ -88,12 +91,18 @@ public class Uebersetzung {
                     // Gib das Datenobjekt zurück
                     return dataObject;
                 } else {
-                    // Wenn kein Datensatz gefunden wurde, kannst du null oder ein leeres Objekt zurückgeben, je nach Bedarf
+
                     return null;
                 }
+
+
             }
+
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            DSBConnection.close(connection);
         }
     }
 }
