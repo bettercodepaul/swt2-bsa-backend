@@ -41,7 +41,7 @@ public class TriggerServiceTest {
 
 
 	// To be changed
-	@Test
+	//@Test
 	public void testSync(){
 
 	}
