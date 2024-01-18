@@ -20,14 +20,11 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     // Verbindungsinformationen
-    //private static String host = System.getenv("DB_HOST");;
+    private static String host = "host";
     private static int port = 3306;
-    private static String host = "mysql2f19.netcup.net";
-    private static String dbName = "k74918_bogenliga";
-    private static String password = "BsApp@100%";
-    //private static String dbName = System.getenv("DB_USERNAME");
-    private static String user = "k74918_bsapp_ro";
-    //private static String password = System.getenv("DB_PASSWORD");
+    private static String dbName = "name";
+    private static String user = "user";
+    private static String password = "pw";
 
     // JDBC-URL
     private static final String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
@@ -72,35 +69,35 @@ public class Main {
     private static String insertTable(String tableName, boolean[] tables, String insertQuery)
     {
         if ("acl".equalsIgnoreCase(tableName) && tables[0]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_acl (ID INT , users_ID INT , liga_ID INT);\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_acl (ID INT PRIMARY KEY, users_ID INT, liga_ID INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
             tables[0] = false;
         }
         if ("ergebniss".equalsIgnoreCase(tableName) && tables[1]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_ergebniss (match INT , schuetze_ID INT, ergebniss INT);\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_ergebniss (schuetze_ID INT, match INT,  ergebniss INT, created_at timestamp, updated_at timestamp, PRIMARY KEY(schuetze_ID ,match));\r\n" + insertQuery;
             tables[1] = false;
         }
         if ("liga".equalsIgnoreCase(tableName) && tables[2]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_liga (ID INT, subdom VARCHAR(255), name VARCHAR(255), id_nextLiga INT, secret VARCHAR(255));\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" +  "CREATE TABLE altsystem_liga (ID INT PRIMARY KEY, subdom VARCHAR(255), name VARCHAR(255), id_nextLiga INT, secret VARCHAR(255), created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
             tables[2] = false;
         }
         if ("mannschaft".equalsIgnoreCase(tableName) && tables[3]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_mannschaft (ID INT, liga_ID INT, manNr INT, name VARCHAR(255), saison_ID INT);\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_mannschaft (ID INT PRIMARY KEY, liga_ID INT, manNr VARCHAR(255), name VARCHAR(255), saison_ID INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
             tables[3] = false;
         }
         if ("saison".equalsIgnoreCase(tableName) && tables[4]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_saison (ID INT, name VARCHAR(255), oderNr INT, aktuell INT);\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" +  "CREATE TABLE altsystem_saison (ID INT PRIMARY KEY, name VARCHAR(255), oderNr INT, aktuell INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
             tables[4] = false;
         }
         if ("schuetze".equalsIgnoreCase(tableName) && tables[5]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_schuetze (ID INT, mannschaft_ID INT,rueckNR INT, name VARCHAR(255));\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_schuetze (ID INT PRIMARY KEY, mannschaft_ID INT,rueckNR INT, name VARCHAR(255), created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
             tables[5] = false;
         }
         if ("users".equalsIgnoreCase(tableName) && tables[6]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_users (ID INT,email VARCHAR(50),password CHAR(128),su INT);\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_users (ID INT PRIMARY KEY,email VARCHAR(50),password CHAR(128),su INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
             tables[6] = false;
         }
         if ("wettkampfdaten".equalsIgnoreCase(tableName) && tables[7]) {
-            insertQuery = "CREATE TEMPORARY TABLE altsystem_wettkampfdaten (ID INT, liga_ID INT, mannschaft INT, gegner INT, match INT, satzPlus INT, satzMinus INT, matchPlus INT, matchMinus INT, satz1 INT, satz2 INT, satz3 INT, satz4 INT, satz5 INT, saison_ID INT, sec INT);\r\n" + insertQuery;
+            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_wettkampfdaten (ID INT PRIMARY KEY, liga_ID INT, mannschaft INT, gegner INT, match INT, satzPlus INT, satzMinus INT, matchPlus INT, matchMinus INT, satz1 INT, satz2 INT, satz3 INT, satz4 INT, satz5 INT, saison_ID INT, sec INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
             tables[7] = false;
         }
         return insertQuery;
@@ -120,7 +117,8 @@ public class Main {
             // Ergebnisse speichern
             while (resultSet.next()) {
                 //Daten in die temporäre Tabelle einfügen
-                String insertSql = "INSERT INTO altsystem_" + tableName + " VALUES (";
+
+                String insertSql ="INSERT INTO altsystem_" + tableName + " VALUES (";
                 for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
                     insertSql += "?, ";
                 }
@@ -137,6 +135,7 @@ public class Main {
 
                 // FileWriter in try-with-resources verwenden
                 try (FileWriter fw = new FileWriter("temptable.sql", true)) { // true für den Anhängemodus
+
                     fw.write(insertQuery);
                 } catch (IOException e){
                   System.out.println("Fehler beim Filewriter");
