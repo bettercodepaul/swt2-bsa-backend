@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.altsystem.veranstaltung.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.veranstaltung.dataobject.AltsystemVeranstaltungDO;
 import de.bogenliga.application.business.altsystem.veranstaltung.mapper.AltsystemVeranstaltungMapper;
@@ -7,7 +8,7 @@ import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponen
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 /**
- * TODO [AL] class documentation
+ * Component to handle the import of a "Veranstaltung" entity
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -16,15 +17,20 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
 public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeranstaltungDO> {
 
     private final VeranstaltungComponent veranstaltungComponent;
+    private final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper;
 
-    public AltsystemVeranstaltung(final VeranstaltungComponent veranstaltungComponent) { this.veranstaltungComponent = veranstaltungComponent; }
+    @Autowired
+    public AltsystemVeranstaltung(final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper, final VeranstaltungComponent veranstaltungComponent) {
+        this.altsystemVeranstaltungMapper = altsystemVeranstaltungMapper;
+        this.veranstaltungComponent = veranstaltungComponent;
+    }
 
     @Override
     public void create(AltsystemVeranstaltungDO altsystemDataObject) {
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
-        veranstaltungDO = AltsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
-        veranstaltungDO = AltsystemVeranstaltungMapper.addDefaultFields(veranstaltungDO);
+        veranstaltungDO = altsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
+        veranstaltungDO = altsystemVeranstaltungMapper.addDefaultFields(veranstaltungDO);
 
         //Add data to table
         // veranstaltungComponent.create(veranstaltungDO, <UserID>);
@@ -39,7 +45,7 @@ public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeransta
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(1);
 
         // Map data to new object, don't add default fields
-        AltsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
+        altsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
 
         // Update data in table with given primary key
         // veranstaltungComponent.update(veranstaltungDO, <UserID>);

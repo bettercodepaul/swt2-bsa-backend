@@ -2,7 +2,7 @@ package de.bogenliga.application.business.altsystem.saison.dataobject;
 
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 /**
- * TODO [AL] class documentation
+ * Bean to sotre data of the entity
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
