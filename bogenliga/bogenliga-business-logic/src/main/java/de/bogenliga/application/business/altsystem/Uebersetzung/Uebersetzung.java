@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class Uebersetzung {
 
-    public static void updateOrInsertUebersetzung(Kategorien kategorie, int altsystemID, int bogenligaID, String value) {
+    public static void updateOrInsertUebersetzung(Kategorien kategorie, int altsystemID, int bogenligaID, String wert) {
         String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {
@@ -33,20 +33,20 @@ public class Uebersetzung {
 
                 if (count > 0) {
                     // Der Name ist bereits vorhanden, also aktualisieren (UPDATE)
-                    String updateQuery = "UPDATE altsystem_uebersetzung SET bogenliga_id = ? AND value = ? WHERE kategorie = ? AND altsystem_id = ?";
+                    String updateQuery = "UPDATE altsystem_uebersetzung SET bogenliga_id = ? AND wert = ? WHERE kategorie = ? AND altsystem_id = ?";
                     try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
                         updateStatement.setInt(2, bogenligaID);
-                        updateStatement.setString(3, value);
+                        updateStatement.setString(3, wert);
                         updateStatement.executeUpdate();
                     }
                 } else {
                     // Der Name ist noch nicht vorhanden, also einfügen (INSERT)
-                    String insertQuery = "INSERT INTO altsystem_uebersetzung (kategorie, altsystem_id, bogenliga_id, value ) VALUES (?, ?, ?, ?)";
+                    String insertQuery = "INSERT INTO altsystem_uebersetzung (kategorie, altsystem_id, bogenliga_id, wert ) VALUES (?, ?, ?, ?)";
                     try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
                         insertStatement.setString(1, kategorieLabel);
                         insertStatement.setInt(2, altsystemID);
                         insertStatement.setInt(3, bogenligaID);
-                        insertStatement.setString(4, value);
+                        insertStatement.setString(4, wert);
                         insertStatement.executeUpdate();
                     }
                 }
@@ -87,7 +87,7 @@ public class Uebersetzung {
                     dataObject.setKategorie(resultSet.getString("kategorie"));
                     dataObject.setAltsystem_id(resultSet.getInt("altsystem_id"));
                     dataObject.setBogenliga_id(resultSet.getInt("bogenliga_id"));
-                    dataObject.setValue(resultSet.getString("value"));
+                    dataObject.setValue(resultSet.getString("wert"));
 
                     // Gib das Datenobjekt zurück
                     return dataObject;
