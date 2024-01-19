@@ -85,8 +85,8 @@ public class Uebersetzung {
 
                     dataObject.setUebersetzung_id(resultSet.getInt("uebersetzungs_id"));
                     dataObject.setKategorie(resultSet.getString("kategorie"));
-                    dataObject.setAltsystem_id(resultSet.getInt("altsystem_id"));
-                    dataObject.setBogenliga_id(resultSet.getInt("bogenliga_id"));
+                    dataObject.setAltsystem_id(resultSet.getLong("altsystem_id"));
+                    dataObject.setBogenliga_id(resultSet.getLong("bogenliga_id"));
                     dataObject.setValue(resultSet.getString("wert"));
 
                     // Gib das Datenobjekt zurück
