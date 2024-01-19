@@ -12,13 +12,9 @@ public class AltsystemSchuetzeDO {
     private int ruecknr;
     private String name;
 
-    public AltsystemSchuetzeDO(int id, int mannschaft_id, int ruecknr, String name){
-        this.id = id;
-        this.mannschaft_id = mannschaft_id;
-        this.ruecknr = ruecknr;
-        this.name = name;
-    }
+    public AltsystemSchuetzeDO() {
 
+    }
 
     public int getId() {
         return id;
@@ -37,25 +33,5 @@ public class AltsystemSchuetzeDO {
 
     public String getName() {
         return name;
-    }
-
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    public void setMannschaft_id(int mannschaft_id) {
-        this.mannschaft_id = mannschaft_id;
-    }
-
-
-    public void setRuecknr(int ruecknr) {
-        this.ruecknr = ruecknr;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
