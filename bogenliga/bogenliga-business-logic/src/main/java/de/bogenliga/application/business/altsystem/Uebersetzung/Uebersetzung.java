@@ -63,7 +63,7 @@ public class Uebersetzung {
     }
 
 
-    public static AltsystemUebersetzungDO findByAltsystemID(Kategorien kategorie, int altsystemID) {
+    public static AltsystemUebersetzungDO findByAltsystemID(Kategorien kategorie, Long altsystemID) {
         String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {
@@ -74,7 +74,7 @@ public class Uebersetzung {
             String checkQuery = "SELECT * FROM altsystem_uebersetzung WHERE kategorie = ? AND altsystem_id = ?";
             try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
                 checkStatement.setString(1, kategorie.label);
-                checkStatement.setInt(2, altsystemID);
+                checkStatement.setLong(2, altsystemID);
 
                 ResultSet resultSet = checkStatement.executeQuery();
 

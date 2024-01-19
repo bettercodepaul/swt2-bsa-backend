@@ -11,8 +11,8 @@ public class AltsystemUebersetzungDO {
 
     int uebersetzung_id;
     String kategorie;
-    int altsystem_id;
-    int bogenliga_id;
+    Long altsystem_id;
+    Long bogenliga_id;
     String value;
 
 
@@ -36,22 +36,22 @@ public class AltsystemUebersetzungDO {
     }
 
 
-    public int getAltsystem_id() {
+    public Long getAltsystem_id() {
         return altsystem_id;
     }
 
 
-    public void setAltsystem_id(int altsystem_id) {
+    public void setAltsystem_id(Long altsystem_id) {
         this.altsystem_id = altsystem_id;
     }
 
 
-    public int getBogenliga_id() {
+    public Long getBogenliga_id() {
         return bogenliga_id;
     }
 
 
-    public void setBogenliga_id(int bogenliga_id) {
+    public void setBogenliga_id(Long bogenliga_id) {
         this.bogenliga_id = bogenliga_id;
     }
 
