@@ -29,6 +29,10 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
         // find data in table with id
 
         // Map data to new object, without adding default fields
+
+
+        // sportjahr & saison aus Tabelle holen
+        // wenn sportjahr anderst -> wert verändern
     }
 
 }
