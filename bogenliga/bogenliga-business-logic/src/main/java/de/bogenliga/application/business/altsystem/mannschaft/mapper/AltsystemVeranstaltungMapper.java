@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -57,6 +58,8 @@ public class AltsystemVeranstaltungMapper {
             veranstaltungDO = createVeranstaltung(ligaId, sportjahr, currentUserId);
         }
 
+        AltsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftDO.getId(),
+                veranstaltungDO.getVeranstaltungID().intValue(), "");
 
         return veranstaltungDO;
     }
