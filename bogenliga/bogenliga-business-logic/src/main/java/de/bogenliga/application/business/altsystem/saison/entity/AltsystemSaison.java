@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.altsystem.saison.entity;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.saison.dataobject.AltsystemSaisonDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
@@ -13,7 +12,7 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
 public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
 
     @Override
-    public void create(AltsystemSaisonDO altsystemSaisonDO) {
+    public void create(AltsystemSaisonDO altsystemSaisonDO, long userId) {
 
         // altsystemSaison_name -> set
         String saison = altsystemSaisonDO.getName();
@@ -24,7 +23,7 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
     }
 
     @Override
-    public void update(AltsystemSaisonDO altsystemSaisonDO) {
+    public void update(AltsystemSaisonDO altsystemSaisonDO, long userId) {
         // get primary key from translation table
 
         // find data in table with id

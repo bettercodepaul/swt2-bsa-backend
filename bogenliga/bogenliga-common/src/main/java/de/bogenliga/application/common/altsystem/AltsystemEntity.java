@@ -6,7 +6,7 @@ package de.bogenliga.application.common.altsystem;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public interface AltsystemEntity <T extends AltsystemDO>{
-    void create(T altsystemDataObject);
+    void create(T altsystemDataObject, long userId);
 
-    void update(T altsystemDataObject);
+    void update(T altsystemDataObject, long userId);
 }

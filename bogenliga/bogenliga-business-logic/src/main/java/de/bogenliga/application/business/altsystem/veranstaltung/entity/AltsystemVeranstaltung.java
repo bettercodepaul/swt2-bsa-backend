@@ -26,7 +26,7 @@ public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeransta
     }
 
     @Override
-    public void create(AltsystemVeranstaltungDO altsystemDataObject) {
+    public void create(AltsystemVeranstaltungDO altsystemDataObject, long userId) {
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
         veranstaltungDO = altsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
@@ -38,7 +38,7 @@ public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeransta
     }
 
     @Override
-    public void update(AltsystemVeranstaltungDO altsystemDataObject) {
+    public void update(AltsystemVeranstaltungDO altsystemDataObject, long userId) {
         // Get primary key from translation table
 
         // find data in table with id

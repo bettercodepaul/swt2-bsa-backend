@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.altsystem.schuetze.entity;
 
-import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
-import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
@@ -28,7 +26,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
 
 
     @Override
-    public void create(AltsystemSchuetzeDO altsystemSchuetzeDO) {
+    public void create(AltsystemSchuetzeDO altsystemSchuetzeDO, long userId) {
         // Map data to new object, add default fields
         DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO();
         /*
@@ -41,7 +39,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
     }
 
     @Override
-    public void update(AltsystemSchuetzeDO altsystemSchuetzeDO){
+    public void update(AltsystemSchuetzeDO altsystemSchuetzeDO, long userId){
 
     }
 }
