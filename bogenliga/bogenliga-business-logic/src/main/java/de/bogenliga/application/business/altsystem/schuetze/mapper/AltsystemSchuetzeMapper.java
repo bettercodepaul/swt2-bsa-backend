@@ -1,21 +1,13 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.transform.Result;
-import de.bogenliga.application.business.altsystem.Uebersetzung.Kategorien;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
-import de.bogenliga.application.business.altsystem.Uebersetzung.DSBConnection;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
-import de.bogenliga.application.business.altsystem.Uebersetzung.Uebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 
 /**
  * TODO [AL] class documentation
@@ -53,7 +45,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
             dsbMitglied.setGeburtsdatum(null);
             dsbMitglied.setNationalitaet(null);
             dsbMitglied.setMitgliedsnummer(null);
-            dsbMitglied.setVereinsId(Uebersetzung.findByAltsystemID(Kategorien.Mannschaft_Verein, altsystemSchuetzeDO.getMannschaft_id()).getAltsystem_id());
+            dsbMitglied.setVereinsId(AltsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, (long) altsystemSchuetzeDO.getMannschaft_id()).getAltsystem_id());
 
             //unten aufgeführte Funktionen in DsbMitgliedDO nicht vorhanden - wie sollen diese Werte gesetzt werden?
             /*

@@ -28,7 +28,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
 
 
     @Override
-    public void create(AltsystemSchuetzeDO altsystemSchuetzeDO) {
+    public void create(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId) {
         // Map data to new object, add default fields
         DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO();
         /*
@@ -41,7 +41,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
     }
 
     @Override
-    public void update(AltsystemSchuetzeDO altsystemSchuetzeDO){
-
+    public void update(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId){
+        // yet to be implemented
     }
 }
