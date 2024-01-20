@@ -30,7 +30,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         // Map data to new object, add default fields
         LigaDO ligaDO = new LigaDO();
         ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
-        ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO);
+        ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO, currentUserId);
 
         // Add data to table
         ligaComponent.create(ligaDO, currentUserId);
