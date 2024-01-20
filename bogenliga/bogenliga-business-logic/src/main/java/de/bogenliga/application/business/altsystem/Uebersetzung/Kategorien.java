@@ -6,6 +6,10 @@ package de.bogenliga.application.business.altsystem.Uebersetzung;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public enum Kategorien {
+
+    Liga_Liga("Liga_Liga"),
+
+    Saison_Sportjahr("Saison_Sportjahr"),
     Mannschaft_Verein("Mannschaft_Verein"),
     Mannschaft_Mannschaft("Mannschaft_Mannschaft"),
     Schütze_Verein("Schütze_Verein"),
