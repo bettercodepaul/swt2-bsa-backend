@@ -12,11 +12,13 @@ public class AltsystemWettkampfdatenDO extends AltsystemDO {
 
     private long id;
     private int ligaID;
-    private int mannschaft;
-    private int gegner;
+    private int mannschaftId;
+    private int gegnerId;
     private int match;
     private int satzPlus;
     private int satzMinus;
+    private int matchPlus;
+    private int matchMinus;
     private int satz1;
     private int satz2;
     private int satz3;
@@ -44,20 +46,20 @@ public class AltsystemWettkampfdatenDO extends AltsystemDO {
         this.ligaID = ligaID;
     }
 
-    public int getMannschaft() {
-        return mannschaft;
+    public int getMannschaftId() {
+        return mannschaftId;
     }
 
-    public void setMannschaft(int mannschaft) {
-        this.mannschaft = mannschaft;
+    public void setMannschaftId(int mannschaftId) {
+        this.mannschaftId = mannschaftId;
     }
 
-    public int getGegner() {
-        return gegner;
+    public int getGegnerId() {
+        return gegnerId;
     }
 
-    public void setGegner(int gegner) {
-        this.gegner = gegner;
+    public void setGegnerId(int gegnerId) {
+        this.gegnerId = gegnerId;
     }
 
     public int getMatch() {
@@ -83,6 +85,23 @@ public class AltsystemWettkampfdatenDO extends AltsystemDO {
     public void setSatzMinus(int satzMinus) {
         this.satzMinus = satzMinus;
     }
+
+    public int getMatchPlus() {
+        return matchPlus;
+    }
+
+    public void setMatchPlus(int matchPlus) {
+        this.matchPlus = matchPlus;
+    }
+
+    public int getMatchMinus() {
+        return matchMinus;
+    }
+
+    public void setMatchMinus(int matchMinus) {
+        this.matchMinus = matchMinus;
+    }
+
 
     public int getSatz1() {
         return satz1;
