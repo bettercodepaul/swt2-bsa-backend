@@ -26,19 +26,20 @@ public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeransta
     }
 
     @Override
-    public void create(AltsystemVeranstaltungDO altsystemDataObject) {
+    public void create(AltsystemVeranstaltungDO altsystemDataObject, long currentUserId) {
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
         veranstaltungDO = altsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
         veranstaltungDO = altsystemVeranstaltungMapper.addDefaultFields(veranstaltungDO);
 
         //Add data to table
-        // veranstaltungComponent.create(veranstaltungDO, <UserID>);
+        veranstaltungComponent.create(veranstaltungDO, currentUserId);
+
         // Add to translation table
     }
 
     @Override
-    public void update(AltsystemVeranstaltungDO altsystemDataObject) {
+    public void update(AltsystemVeranstaltungDO altsystemDataObject, long currentUserId) {
         // Get primary key from translation table
 
         // find data in table with id
@@ -48,7 +49,7 @@ public class AltsystemVeranstaltung implements AltsystemEntity<AltsystemVeransta
         altsystemVeranstaltungMapper.toDO(veranstaltungDO, altsystemDataObject);
 
         // Update data in table with given primary key
-        // veranstaltungComponent.update(veranstaltungDO, <UserID>);
+        veranstaltungComponent.update(veranstaltungDO, currentUserId);
     }
 }
 
