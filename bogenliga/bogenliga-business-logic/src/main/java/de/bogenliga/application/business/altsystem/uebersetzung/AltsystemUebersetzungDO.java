@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.altsystem.Uebersetzung;
+package de.bogenliga.application.business.altsystem.uebersetzung;
 
 /**
  * TODO [AL] class documentation

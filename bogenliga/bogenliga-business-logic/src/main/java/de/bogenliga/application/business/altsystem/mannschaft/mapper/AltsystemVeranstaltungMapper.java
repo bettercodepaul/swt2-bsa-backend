@@ -4,9 +4,9 @@ import java.sql.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.altsystem.Uebersetzung.AltsystemUebersetzungDO;
-import de.bogenliga.application.business.altsystem.Uebersetzung.Kategorien;
-import de.bogenliga.application.business.altsystem.Uebersetzung.Uebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -43,10 +43,12 @@ public class AltsystemVeranstaltungMapper {
         long ligaId;
         long sportjahr;
 
-        AltsystemUebersetzungDO uebersetzungLigaDO = Uebersetzung.findByAltsystemID(Kategorien.Liga_Liga, (long)mannschaftDO.getLiga_id());
+        AltsystemUebersetzungDO uebersetzungLigaDO = AltsystemUebersetzung.findByAltsystemID(
+                AltsystemUebersetzungKategorie.Liga_Liga, (long)mannschaftDO.getLiga_id());
         ligaId = uebersetzungLigaDO.getBogenliga_id();
 
-        AltsystemUebersetzungDO uebersetzungSaisonDO = Uebersetzung.findByAltsystemID(Kategorien.Saison_Sportjahr, (long)mannschaftDO.getSaison_id());
+        AltsystemUebersetzungDO uebersetzungSaisonDO = AltsystemUebersetzung.findByAltsystemID(
+                AltsystemUebersetzungKategorie.Saison_Sportjahr, (long)mannschaftDO.getSaison_id());
         sportjahr = Long.parseLong(uebersetzungSaisonDO.getValue());
 
         try {

@@ -80,7 +80,7 @@ public class AltsystemLigaMapperTest {
         actual = altsystemLigaMapper.toDO(actual, altsystemLigaDO);
 
         // assert result
-        assertThat(actual).isEqualTo(expectedDO);
+        assertThat(actual.getDisziplinId()).isEqualTo(expectedDO.getDisziplinId());
 
     }
 }

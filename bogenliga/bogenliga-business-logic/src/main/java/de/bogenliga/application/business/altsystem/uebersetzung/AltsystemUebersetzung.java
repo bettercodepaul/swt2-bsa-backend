@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.altsystem.Uebersetzung;
+package de.bogenliga.application.business.altsystem.uebersetzung;
 
 
 import java.sql.Connection;
@@ -12,9 +12,9 @@ import java.sql.SQLException;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-public class Uebersetzung {
+public class AltsystemUebersetzung {
 
-    public static void updateOrInsertUebersetzung(Kategorien kategorie, int altsystemID, int bogenligaID, String wert) {
+    public static void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, int altsystemID, int bogenligaID, String wert) {
         String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {
@@ -63,7 +63,7 @@ public class Uebersetzung {
     }
 
 
-    public static AltsystemUebersetzungDO findByAltsystemID(Kategorien kategorie, Long altsystemID) {
+    public static AltsystemUebersetzungDO findByAltsystemID(AltsystemUebersetzungKategorie kategorie, Long altsystemID) {
         String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {
