@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.dataobject.AltsystemWettkampfdatenDO;
-import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemWettkampfdatenMapper;
+import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemMatchMapper;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemWettkampftagMapper;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
@@ -21,14 +21,14 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
 @Component
 public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkampfdatenDO> {
 
-    private final AltsystemWettkampfdatenMapper altsystemWettkampfdatenMapper;
+    private final AltsystemMatchMapper altsystemWettkampfdatenMapper;
     private final AltsystemWettkampftagMapper altsystemWettkampftagMapper;
     private final MatchComponent matchComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final LigaComponent ligaComponent;
 
     @Autowired
-    public AltsystemWettkampfdaten(final AltsystemWettkampfdatenMapper altsystemWettkampfdatenMapper,
+    public AltsystemWettkampfdaten(final AltsystemMatchMapper altsystemWettkampfdatenMapper,
                                    AltsystemWettkampftagMapper altsystemWettkampftagMapper, final MatchComponent matchComponent,
                                    VeranstaltungComponent veranstaltungComponent, LigaComponent ligaComponent) {
         this.altsystemWettkampfdatenMapper = altsystemWettkampfdatenMapper;
@@ -40,14 +40,17 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
 
     @Override
     public void create(AltsystemWettkampfdatenDO altsystemDataObject, long currentUserId){
-        List<WettkampfDO> wettkampfTage = altsystemWettkampftagMapper.getOrCreateWettkampftage(altsystemDataObject, currentUserId);
+        // Daten sind im Altsystem redundant
+        // Bearbeitung nur, falls Sec = 0 ist
+        if (altsystemDataObject.getSec() == 0){
+            List<WettkampfDO> wettkampfTage = altsystemWettkampftagMapper.getOrCreateWettkampftage(altsystemDataObject, currentUserId);
 
-        // Map data to new object, add default fields
-        MatchDO matchDO = new MatchDO();
-        matchDO = altsystemWettkampfdatenMapper.toDO(matchDO, altsystemDataObject);
-        matchDO = altsystemWettkampfdatenMapper.addDefaultFields(matchDO);
-
-
+            MatchDO[] match = new MatchDO[2];
+            match[0] = new MatchDO();
+            match[1] = new MatchDO();
+            match = altsystemWettkampfdatenMapper.toDO(match, altsystemDataObject);
+            match = altsystemWettkampfdatenMapper.addDefaultFields(match, wettkampfTage);
+        }
 
 
         // Add data to table
@@ -65,7 +68,7 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
         MatchDO matchDO = matchComponent.findById(1L);
 
         // Map data to new object, don't add default fields
-        altsystemWettkampfdatenMapper.toDO(matchDO, altsystemDataObject);
+        // altsystemWettkampfdatenMapper.toDO(match, altsystemDataObject);
 
         // Update data in table with given primary key
         // ligaComponent.update(ligaDO, <UserID>);
