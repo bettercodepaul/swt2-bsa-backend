@@ -1,18 +1,15 @@
 package de.bogenliga.application.business.altsystem.liga.mapper;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.disziplin.api.DisziplinComponent;
 import de.bogenliga.application.business.disziplin.api.types.DisziplinDO;
+import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.regionen.api.RegionenComponent;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
-import de.bogenliga.application.business.user.api.UserComponent;
-import de.bogenliga.application.business.user.api.types.UserDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 
 /**
@@ -26,62 +23,62 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
 
     private static final String COMPOUND_NAME = "compound";
     private static final String RECURVE_NAME = "recurve";
+    private static final String LIGA_UEBERGEORDNET_NAME = "Bundesliga";
+    private final LigaComponent ligaComponent;
     private final DisziplinComponent disziplinComponent;
     private final RegionenComponent regionenComponent;
-    private final UserComponent userComponent;
 
     @Autowired
-    public AltsystemLigaMapper(final DisziplinComponent disziplinComponent, final RegionenComponent regionenComponent, final UserComponent userComponent){
+    public AltsystemLigaMapper(final LigaComponent ligaComponent, final DisziplinComponent disziplinComponent, final RegionenComponent regionenComponent){
+        this.ligaComponent = ligaComponent;
         this.disziplinComponent = disziplinComponent;
         this.regionenComponent = regionenComponent;
-        this.userComponent = userComponent;
     }
     public LigaDO toDO(LigaDO ligaDO, AltsystemLigaDO altsystemLigaDO){
         String ligaName = altsystemLigaDO.getName();
-        long ligaUebergeordnetId = altsystemLigaDO.getIdNextLiga();
 
         ligaDO.setName(ligaName);
 
-        // Id muss noch übersetzt werden
-        ligaDO.setLigaUebergeordnetId(ligaUebergeordnetId);
-
+        String key;
         // Checken ob es eine Recurve oder Compound Liga ist
-        Map<String, DisziplinDO> disziplinen = getDisziplinen();
-        DisziplinDO disziplinDO;
-
         if(ligaName.toLowerCase().contains("comp")){
-            disziplinDO = disziplinen.get(COMPOUND_NAME);
+            key = COMPOUND_NAME;
         }
         else{
-            disziplinDO = disziplinen.get(RECURVE_NAME);
+            key = RECURVE_NAME;
         }
+        DisziplinDO disziplinDO = getDisziplinByKey(key);
         ligaDO.setDisziplinId(disziplinDO.getDisziplinId());
 
         return ligaDO;
     }
 
-    public LigaDO addDefaultFields(LigaDO ligaDO) {
-        // ID vom Admin User herausfinden
-        UserDO adminDO = userComponent.findByEmail("admin@bogenliga.de");
-        ligaDO.setLigaVerantwortlichId(adminDO.getId());
+    public LigaDO addDefaultFields(LigaDO ligaDO, long currentDSBMitglied) {
+        // Importierender Benutzer wird als Verantwortlicher gesetzt
+        ligaDO.setLigaVerantwortlichId(currentDSBMitglied);
         // ID von DSB Region herausfinden
         RegionenDO dsbDO = getDsbDO();
         ligaDO.setRegionId(dsbDO.getId());
+        // Übergeordnete Liga defaultmäßig auf Bundesliga setzen
+        LigaDO ligaUebergeordnetDO = ligaComponent.checkExistsLigaName(LIGA_UEBERGEORDNET_NAME);
+        ligaDO.setLigaUebergeordnetId(ligaUebergeordnetDO.getId());
         return ligaDO;
     }
 
-    public Map<String, DisziplinDO> getDisziplinen(){
-        HashMap<String, DisziplinDO> hashDisziplinen = new HashMap<>();
+    public DisziplinDO getDisziplinByKey(String key){
+        DisziplinDO resultDO = null;
+        // Auslesen aller vorhandenen Disziplinen
         List<DisziplinDO> disziplinen = disziplinComponent.findAll();
+
         for (DisziplinDO disziplinDO : disziplinen){
             String disziplinName = disziplinDO.getDisziplinName().toLowerCase();
-            if (disziplinName.equals(COMPOUND_NAME)){
-                hashDisziplinen.put(COMPOUND_NAME, disziplinDO);
-            }else if (disziplinName.equals(RECURVE_NAME)){
-                hashDisziplinen.put(RECURVE_NAME, disziplinDO);
+            // Testen ob die aktuelle Disziplin dem Key entspricht
+            if (disziplinName.equals(key)) {
+                resultDO = disziplinDO;
+                break;
             }
         }
-        return hashDisziplinen;
+        return resultDO;
     }
 
     public RegionenDO getDsbDO(){
