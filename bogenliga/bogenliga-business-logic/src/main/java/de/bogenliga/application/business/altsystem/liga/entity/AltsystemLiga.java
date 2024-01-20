@@ -26,21 +26,21 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
     }
 
     @Override
-    public void create(AltsystemLigaDO altsystemDataObject){
+    public void create(AltsystemLigaDO altsystemDataObject, long currentUserId){
         // Map data to new object, add default fields
         LigaDO ligaDO = new LigaDO();
         ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
         ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO);
 
         // Add data to table
-        // ligaComponent.create(ligaDO, <UserID>);
+        ligaComponent.create(ligaDO, currentUserId);
 
         // Add to translation table
 
     }
 
     @Override
-    public void update(AltsystemLigaDO altsystemDataObject){
+    public void update(AltsystemLigaDO altsystemDataObject, long currentUserId){
         // Get primary key from translation table
 
         // Find data in table with corresponding id
@@ -50,7 +50,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
 
         // Update data in table with given primary key
-        // ligaComponent.update(ligaDO, <UserID>);
+        ligaComponent.update(ligaDO, currentUserId);
     }
 
 }
