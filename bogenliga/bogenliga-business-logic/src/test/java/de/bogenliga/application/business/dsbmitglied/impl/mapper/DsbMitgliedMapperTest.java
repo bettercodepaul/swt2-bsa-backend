@@ -1,7 +1,11 @@
 package de.bogenliga.application.business.dsbmitglied.impl.mapper;
 
 import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
 import org.junit.Test;
+import de.bogenliga.application.business.altsystem.BL_DBOMapper;
+import de.bogenliga.application.business.altsystem.verein.test.DSBMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
 import static de.bogenliga.application.business.dsbmitglied.impl.business.DsbMitgliedComponentImplTest.getDsbMitgliedBE;
@@ -30,6 +34,8 @@ public class DsbMitgliedMapperTest {
     private static final long VEREINSID = 2;
     private static final long USERID = 4242;
 
+    private final int[] ZAHLENLISTE = {0,129, 173};
+    private final String[] NAMENSLISTE = {"Allmendinger" , "Michael", "Gröner", "Alexander" , "Haag", "Axel"};
 
     @Test
     public void toDO() throws Exception {
@@ -54,5 +60,38 @@ public class DsbMitgliedMapperTest {
 
         assertThat(actual.getDsbMitgliedId()).isEqualTo(ID);
         assertThat(actual.getDsbMitgliedVorname()).isEqualTo(VORNAME);
+    }
+
+
+    @Test
+    public void parseAllFormatSucceessful() throws Exception {
+
+        // Creating an instance of the Mapper class
+        BL_DBOMapper blDboMapper = new BL_DBOMapper();
+
+        List<DSBMitgliedDO> schuetzeList = null;
+
+        try {
+            schuetzeList = blDboMapper.mapSchuetze();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        //name of schuetze at index 0 is separated by comma: Allmendinger, Michael
+        DSBMitgliedDO schuetzeDBO = schuetzeList.get(ZAHLENLISTE[0]);
+        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo(NAMENSLISTE[0]);
+        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo(NAMENSLISTE[1]);
+
+
+        //name of schuetze at index 129 is separated by two spaces before and after comma: Alexander , Gröner
+        schuetzeDBO = schuetzeList.get(ZAHLENLISTE[1]);
+        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo(NAMENSLISTE[2]);
+        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo(NAMENSLISTE[3]);
+
+        //name of schuetze at index 173 is separated without comma: Axel Haag
+        schuetzeDBO = schuetzeList.get(ZAHLENLISTE[2]);
+        assertThat(schuetzeDBO.getDsb_mitglied_nachname()).isEqualTo(NAMENSLISTE[4]);
+        assertThat(schuetzeDBO.getDsb_mitglied_vorname()).isEqualTo(NAMENSLISTE[5]);
+
     }
 }
