@@ -15,7 +15,6 @@ import de.bogenliga.application.business.trigger.impl.mapper.TriggerMapper;
  *
  * @author Maximilian Fronmueller
  */
-//TODO: PRECONDITIONS
 @Component
 public class TriggerComponentImpl implements TriggerComponent {
     public final TriggerDAO triggerDAO;
