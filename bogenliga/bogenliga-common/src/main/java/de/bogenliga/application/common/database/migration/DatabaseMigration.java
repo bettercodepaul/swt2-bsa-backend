@@ -18,7 +18,7 @@ import java.util.Arrays;
  * I am responsible for starting the auto migration of the database.
  */
 @Component
-public class DatabaseMigration {
+public class DatabaseMigration{
 
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseMigration.class);
 
@@ -56,11 +56,11 @@ public class DatabaseMigration {
 
             LOG.info("Setting following locations/SqlScript-Folders: {}", Arrays.toString(locations));
             Flyway flyway = Flyway.configure().dataSource
-                    (pgTransactionManager.getDataSource(false))
+                    (pgTransactionManager.getDataSource())
                     .locations(locations).load();
 
             Flyway flywayNewDB = Flyway.configure().dataSource
-                    (pgTransactionManager.getDataSource(true))
+                    (pgTransactionManager.getDataSource())
                     .locations(locations).load();
 
             LOG.info("Executing following locations/SqlScript-Folders: {}", Arrays.toString(flyway.getConfiguration().getLocations()));

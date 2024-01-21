@@ -116,5 +116,4 @@ public class DatabaseConfiguration {
     public void setPassword(final String password) {
         this.password = password;
     }
-
 }
