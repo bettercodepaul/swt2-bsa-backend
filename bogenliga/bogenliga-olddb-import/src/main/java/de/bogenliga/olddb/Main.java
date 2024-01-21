@@ -1,4 +1,4 @@
-package de.bogenliga;
+package de.bogenliga.olddb;
 
 /**
 
@@ -15,24 +15,67 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Statement;
+import javax.sql.DataSource;
+import de.bogenliga.application.common.database.tx.PostgresqlTransactionManager;
+import de.bogenliga.application.common.configuration.DatabaseConfiguration;
+
+
 
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     // Verbindungsinformationen
-    private static String host = "host";
+    private static String host = "My SQL Host hinzufügen";
     private static int port = 3306;
-    private static String dbName = "name";
-    private static String user = "user";
-    private static String password = "pw";
+    private static String dbName = "My SQL Name hinzufügen";
+    private static String user = "My SQL User hinzufügen";
+    private static String password = "My Password Host hinzufügen";
+
+    private static DatabaseConfiguration databaseConfiguration;
+
 
     // JDBC-URL
     private static final String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
 
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
+    public static void main (String [] args){
+        sync();
+        executeScript("temptable.sql", "jdbc:postgresql://localhost:5432/swt2", "username hinzufügen","password hinzufügen" );
+
+       /* getDataScource() databaseConfiguration.getHost(), databseConfiguration.getHost(), databaseConfiguration.getpassword()
+
+        PostgresqlTransactionManager manager = new PostgresqlTransactionManager(databaseConfiguration);
+        DataSource dataSource = manager.getDataSource(); */
+
+    }
 
 
-    public static void main(String[] args) {
+    public static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
+        try{
+            String script=new String(Files.readAllBytes(Paths.get(scriptFilePath)));
+            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+
+            try(Statement statement = connection.createStatement()){
+                statement.execute(script);
+                System.out.println("Script erfolgreich ausgeführt");
+            }
+            finally{
+                if(connection != null && !connection.isClosed()){
+                    connection.close();
+                }
+            }
+        }
+        catch (IOException | SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void sync(){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
@@ -65,6 +108,8 @@ public class Main {
         }
 
     }
+
+
 
     private static String insertTable(String tableName, boolean[] tables, String insertQuery)
     {
@@ -138,11 +183,13 @@ public class Main {
 
                     fw.write(insertQuery);
                 } catch (IOException e){
+                    e.printStackTrace();
                   System.out.println("Fehler beim Filewriter");
                 }
             }
         }
     }
+
 }
 
 

@@ -30,6 +30,12 @@
             <version>1.7.30</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>de.bogenliga</groupId>
+            <artifactId>bogenliga-common</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
