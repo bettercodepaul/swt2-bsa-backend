@@ -82,6 +82,8 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
     }
 
     public RegionenDO getDsbDO(){
+        // Funktion gibt den DSB als konkrete Region zurück
+        // Dieser wird defaultmäßig für alle Ligen als Region gesetzt
         RegionenDO dsbDO = null;
         List<RegionenDO> regionenDOS = regionenComponent.findBySearch("dsb");
         for (RegionenDO regionenDO : regionenDOS){
