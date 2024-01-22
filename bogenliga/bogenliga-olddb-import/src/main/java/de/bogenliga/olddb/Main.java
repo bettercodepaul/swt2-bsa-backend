@@ -18,8 +18,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Statement;
-import javax.sql.DataSource;
-import de.bogenliga.application.common.database.tx.PostgresqlTransactionManager;
+import java.util.HashMap;
+import java.util.Map;
 import de.bogenliga.application.common.configuration.DatabaseConfiguration;
 
 
@@ -28,22 +28,24 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     // Verbindungsinformationen
-    private static String host = "My SQL Host hinzufügen";
+    private static String host = "host";
     private static int port = 3306;
-    private static String dbName = "My SQL Name hinzufügen";
-    private static String user = "My SQL User hinzufügen";
-    private static String password = "My Password Host hinzufügen";
+    private static String dbName = "name";
+    private static String user = "user";
+    private static String password = "pw";
 
     private static DatabaseConfiguration databaseConfiguration;
 
+    private static final String DROPSTATMENT = "DROP TABLE IF EXISTS altsystem_";
 
     // JDBC-URL
-    private static final String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+    private static final String URL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+
+    private static String sqlfile ="temptable.sql";
 
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
     public static void main (String [] args){
         sync();
-        executeScript("temptable.sql", "jdbc:postgresql://localhost:5432/swt2", "username hinzufügen","password hinzufügen" );
 
        /* getDataScource() databaseConfiguration.getHost(), databseConfiguration.getHost(), databaseConfiguration.getpassword()
 
@@ -79,7 +81,7 @@ public class Main {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            File file = new File("temptable.sql");
+            File file = new File(sqlfile);
 
             if (file.exists() && file.isFile()) {
                 if (file.delete()) {
@@ -91,105 +93,102 @@ public class Main {
             }
 
             // Connection herstellen
-            try (Connection connection = DriverManager.getConnection(url, user, password)) {
+            try (Connection connection = DriverManager.getConnection(URL, user, password)) {
 
                 for (int i = 0; i < tableNames.length; i++) {
                     System.out.println(tableNames[i]);
                     exportTable(connection, tableNames[i]);
                 }
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+
+            }
+            catch (IOException  | SQLException e) {
                 e.printStackTrace();
             }
-        } catch (ClassNotFoundException e) {
+            finally{
+                executeScript("temptable.sql", "jdbc:postgresql: url hinzufügen", "user hinzufügen","pw hinzufügen" );
+            }
+        }
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
     }
 
 
+    private static final Map<String, String> TABLE_DEFINITIONS;
 
-    private static String insertTable(String tableName, boolean[] tables, String insertQuery)
-    {
-        if ("acl".equalsIgnoreCase(tableName) && tables[0]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_acl (ID INT PRIMARY KEY, users_ID INT, liga_ID INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
-            tables[0] = false;
+    // Initialize the map with table definitions
+    static {
+        TABLE_DEFINITIONS = new HashMap<>();
+        TABLE_DEFINITIONS.put("acl", "CREATE TABLE altsystem_acl (ID INT PRIMARY KEY, users_ID INT, liga_ID INT, created_at timestamp, updated_at timestamp)");
+        TABLE_DEFINITIONS.put("ergebniss", "CREATE TABLE altsystem_ergebniss (schuetze_ID INT, match INT,  ergebniss INT, created_at timestamp, updated_at timestamp, PRIMARY KEY(schuetze_ID ,match))");
+        TABLE_DEFINITIONS.put("liga", "CREATE TABLE altsystem_liga (ID INT PRIMARY KEY, subdom VARCHAR(255), name VARCHAR(255), id_nextLiga INT, secret VARCHAR(255), created_at timestamp, updated_at timestamp)");
+        TABLE_DEFINITIONS.put("mannschaft", "CREATE TABLE altsystem_mannschaft (ID INT PRIMARY KEY, liga_ID INT, manNr VARCHAR(255), name VARCHAR(255), saison_ID INT, created_at timestamp, updated_at timestamp)");
+        TABLE_DEFINITIONS.put("saison", "CREATE TABLE altsystem_saison (ID INT PRIMARY KEY, name VARCHAR(255), oderNr INT, aktuell INT, created_at timestamp, updated_at timestamp)");
+        TABLE_DEFINITIONS.put("schuetze", "CREATE TABLE altsystem_schuetze (ID INT PRIMARY KEY, mannschaft_ID INT,rueckNR INT, name VARCHAR(255), created_at timestamp, updated_at timestamp)");
+        TABLE_DEFINITIONS.put("users", "CREATE TABLE altsystem_users (ID INT PRIMARY KEY,email VARCHAR(50),password CHAR(128),su INT, created_at timestamp, updated_at timestamp)");
+        TABLE_DEFINITIONS.put("wettkampfdaten", "CREATE TABLE altsystem_wettkampfdaten (ID INT PRIMARY KEY, liga_ID INT, mannschaft INT, gegner INT, match INT, satzPlus INT, satzMinus INT, matchPlus INT, matchMinus INT, satz1 INT, satz2 INT, satz3 INT, satz4 INT, satz5 INT, saison_ID INT, sec INT, created_at timestamp, updated_at timestamp)");
+    }
+
+    private static String createTable(String tableName) {
+        return DROPSTATMENT + tableName + ";\n" + TABLE_DEFINITIONS.get(tableName) + ";\r\n";
+    }
+
+    private static String insertTable(String tableName, boolean[] tables, String insertQuery) {
+        for (int i = 0; i < TABLE_DEFINITIONS.size(); i++) {
+            if (tableName.equalsIgnoreCase(TABLE_DEFINITIONS.keySet().toArray()[i].toString()) && tables[i]) {
+                tables[i] = false;
+                return createTable(tableName) + insertQuery;
+            }
         }
-        if ("ergebniss".equalsIgnoreCase(tableName) && tables[1]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_ergebniss (schuetze_ID INT, match INT,  ergebniss INT, created_at timestamp, updated_at timestamp, PRIMARY KEY(schuetze_ID ,match));\r\n" + insertQuery;
-            tables[1] = false;
-        }
-        if ("liga".equalsIgnoreCase(tableName) && tables[2]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" +  "CREATE TABLE altsystem_liga (ID INT PRIMARY KEY, subdom VARCHAR(255), name VARCHAR(255), id_nextLiga INT, secret VARCHAR(255), created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
-            tables[2] = false;
-        }
-        if ("mannschaft".equalsIgnoreCase(tableName) && tables[3]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_mannschaft (ID INT PRIMARY KEY, liga_ID INT, manNr VARCHAR(255), name VARCHAR(255), saison_ID INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
-            tables[3] = false;
-        }
-        if ("saison".equalsIgnoreCase(tableName) && tables[4]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" +  "CREATE TABLE altsystem_saison (ID INT PRIMARY KEY, name VARCHAR(255), oderNr INT, aktuell INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
-            tables[4] = false;
-        }
-        if ("schuetze".equalsIgnoreCase(tableName) && tables[5]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_schuetze (ID INT PRIMARY KEY, mannschaft_ID INT,rueckNR INT, name VARCHAR(255), created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
-            tables[5] = false;
-        }
-        if ("users".equalsIgnoreCase(tableName) && tables[6]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_users (ID INT PRIMARY KEY,email VARCHAR(50),password CHAR(128),su INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
-            tables[6] = false;
-        }
-        if ("wettkampfdaten".equalsIgnoreCase(tableName) && tables[7]) {
-            insertQuery = "DROP TABLE IF EXISTS altsystem_" + tableName + ";\n" + "CREATE TABLE altsystem_wettkampfdaten (ID INT PRIMARY KEY, liga_ID INT, mannschaft INT, gegner INT, match INT, satzPlus INT, satzMinus INT, matchPlus INT, matchMinus INT, satz1 INT, satz2 INT, satz3 INT, satz4 INT, satz5 INT, saison_ID INT, sec INT, created_at timestamp, updated_at timestamp);\r\n" + insertQuery;
-            tables[7] = false;
-        }
+
         return insertQuery;
     }
 
     private static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
-
-        // SQL Abfrage mit Backticks um den Tabellennamen
-        String sql = "SELECT * FROM `" + tableName + "`";
-        boolean[] tables  = new boolean[8];
-        for(int i = 0; i < tables.length; i++)
+        String sql = "SELECT * FROM " + tableName + "";
+        boolean[] tables = new boolean[8];
+        for (int i = 0; i < tables.length; i++) {
             tables[i] = true;
-        // Statement erstellen
+        }
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            // Ergebnisse speichern
             while (resultSet.next()) {
-                //Daten in die temporäre Tabelle einfügen
-
-                String insertSql ="INSERT INTO altsystem_" + tableName + " VALUES (";
+                String insertSql = "INSERT INTO altsystem_" + tableName + " VALUES (";
                 for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
                     insertSql += "?, ";
                 }
-                insertSql = insertSql.substring(0, insertSql.length() - 2) + ");\r\n"; //letztes Komma entfernen
-                PreparedStatement insertStatement = connection.prepareStatement(insertSql);
-                for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++)
-                    insertStatement.setObject(i, resultSet.getObject(i)); //Wert aus der ResultSet übernehmen
+                insertSql = insertSql.substring(0, insertSql.length() - 2) + ");\r\n";
+                PreparedStatement insertStatement = null;
 
-                String insertQuery = insertStatement.toString();
-                insertQuery = insertQuery.replace("com.mysql.cj.jdbc.ClientPreparedStatement: ",""); // Entferne den spezifischen String
+                try {
+                    insertStatement = connection.prepareStatement(insertSql);
+                    for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+                        insertStatement.setObject(i, resultSet.getObject(i));
+                    }
 
-                // Überprüfen, ob die Tabelle "mannschaft" ist
-                insertQuery = insertTable(tableName, tables, insertQuery);
+                    String insertQuery = insertStatement.toString();
+                    insertQuery = insertQuery.replace("com.mysql.cj.jdbc.ClientPreparedStatement: ", "");
 
-                // FileWriter in try-with-resources verwenden
-                try (FileWriter fw = new FileWriter("temptable.sql", true)) { // true für den Anhängemodus
+                    insertQuery = insertTable(tableName, tables, insertQuery);
 
-                    fw.write(insertQuery);
-                } catch (IOException e){
-                    e.printStackTrace();
-                  System.out.println("Fehler beim Filewriter");
+                    try (FileWriter fw = new FileWriter(sqlfile, true)) {
+                        fw.write(insertQuery);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("Fehler beim Filewriter");
+                    }
+
+                } finally {
+                    if (insertStatement != null) {
+                        insertStatement.close();
+                    }
                 }
             }
         }
     }
 
 }
-
-
