@@ -27,17 +27,15 @@ import de.bogenliga.application.business.liga.api.types.LigaDO;
 public class AltsystemVeranstaltungMapper {
 
     private final VeranstaltungComponent veranstaltungComponent;
-    private final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper;
     private final LigaComponent ligaComponent;
     private final WettkampfTypComponent wettkampfTypComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
     @Autowired
-    public AltsystemVeranstaltungMapper(final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper, final VeranstaltungComponent veranstaltungComponent,
+    public AltsystemVeranstaltungMapper(final VeranstaltungComponent veranstaltungComponent,
                                         LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent,
                                         DsbMannschaftComponent dsbMannschaftComponent, AltsystemUebersetzung altsystemUebersetzung) {
-        this.altsystemVeranstaltungMapper = altsystemVeranstaltungMapper;
         this.veranstaltungComponent = veranstaltungComponent;
         this.ligaComponent = ligaComponent;
         this.wettkampfTypComponent = wettkampfTypComponent;
@@ -46,7 +44,7 @@ public class AltsystemVeranstaltungMapper {
     }
 
     public VeranstaltungDO getOrCreateVeranstaltung(AltsystemMannschaftDO mannschaftDO, long currentUserId){
-        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        VeranstaltungDO veranstaltungDO;
         long ligaId;
         long sportjahr;
 
@@ -75,7 +73,7 @@ public class AltsystemVeranstaltungMapper {
         }
 
         altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftDO.getId(),
-                veranstaltungDO.getVeranstaltungID().intValue(), "");
+                veranstaltungDO.getVeranstaltungID(), "");
 
         return veranstaltungDO;
     }
@@ -98,7 +96,7 @@ public class AltsystemVeranstaltungMapper {
 
         // meldeDeadline: 1.10. des vorherigen Jahres
         long vorherigesJahr = sportjahr - 1;
-        String deadline = Long.toString(vorherigesJahr) + "-10-01";
+        String deadline = vorherigesJahr + "-10-01";
         Date meldeDeadline = Date.valueOf(deadline);
         veranstaltungDO.setVeranstaltungMeldeDeadline(meldeDeadline);
 
