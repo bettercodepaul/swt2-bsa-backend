@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -29,14 +28,17 @@ public class AltsystemVeranstaltungMapper {
     private final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper;
     private final LigaComponent ligaComponent;
     private final WettkampfTypComponent wettkampfTypComponent;
+    private final AltsystemUebersetzung altsystemUebersetzung;
 
     @Autowired
     public AltsystemVeranstaltungMapper(final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper, final VeranstaltungComponent veranstaltungComponent,
-                                        LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent) {
+                                        LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent,
+                                        AltsystemUebersetzung altsystemUebersetzung) {
         this.altsystemVeranstaltungMapper = altsystemVeranstaltungMapper;
         this.veranstaltungComponent = veranstaltungComponent;
         this.ligaComponent = ligaComponent;
         this.wettkampfTypComponent = wettkampfTypComponent;
+        this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
     public VeranstaltungDO getOrCreateVeranstaltung(AltsystemMannschaftDO mannschaftDO, long currentUserId){
@@ -44,11 +46,11 @@ public class AltsystemVeranstaltungMapper {
         long ligaId;
         long sportjahr;
 
-        AltsystemUebersetzungDO uebersetzungLigaDO = AltsystemUebersetzung.findByAltsystemID(
+        AltsystemUebersetzungDO uebersetzungLigaDO = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Liga_Liga, (long)mannschaftDO.getLiga_id());
         ligaId = uebersetzungLigaDO.getBogenliga_id();
 
-        AltsystemUebersetzungDO uebersetzungSaisonDO = AltsystemUebersetzung.findByAltsystemID(
+        AltsystemUebersetzungDO uebersetzungSaisonDO = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Saison_Sportjahr, (long)mannschaftDO.getSaison_id());
         sportjahr = Long.parseLong(uebersetzungSaisonDO.getValue());
 
@@ -58,7 +60,7 @@ public class AltsystemVeranstaltungMapper {
             veranstaltungDO = createVeranstaltung(ligaId, sportjahr, currentUserId);
         }
 
-        AltsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftDO.getId(),
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftDO.getId(),
                 veranstaltungDO.getVeranstaltungID().intValue(), "");
 
         return veranstaltungDO;

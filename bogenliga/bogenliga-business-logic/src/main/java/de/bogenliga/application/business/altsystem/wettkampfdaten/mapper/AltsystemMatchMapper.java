@@ -20,21 +20,23 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 public class AltsystemMatchMapper {
 
     private final MatchComponent matchComponent;
+    private final AltsystemUebersetzung altsystemUebersetzung;
     @Autowired
-    public AltsystemMatchMapper(MatchComponent matchComponent){
+    public AltsystemMatchMapper(MatchComponent matchComponent, AltsystemUebersetzung altsystemUebersetzung){
         this.matchComponent = matchComponent;
+        this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
     public MatchDO[] toDO(MatchDO[] match, AltsystemWettkampfdatenDO altsystemDataObject) {
         MatchDO mannschaftDO = match[0];
-        AltsystemUebersetzungDO mannschaftUebersetzung = AltsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (long) altsystemDataObject.getMannschaftId());
+        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (long) altsystemDataObject.getMannschaftId());
         mannschaftDO.setMannschaftId(mannschaftUebersetzung.getBogenliga_id());
         mannschaftDO.setSatzpunkte((long) altsystemDataObject.getSatzPlus());
         mannschaftDO.setMatchpunkte((long) altsystemDataObject.getMatchPlus());
         mannschaftDO.setBegegnung((long) altsystemDataObject.getMatch());
 
         MatchDO gegnerDO = match[1];
-        AltsystemUebersetzungDO gegnerUebersetzung = AltsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (long) altsystemDataObject.getGegnerId());
+        AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (long) altsystemDataObject.getGegnerId());
         gegnerDO.setMannschaftId(mannschaftUebersetzung.getBogenliga_id());
         gegnerDO.setSatzpunkte((long) altsystemDataObject.getSatzMinus());
         gegnerDO.setMatchpunkte((long) altsystemDataObject.getMatchMinus());
