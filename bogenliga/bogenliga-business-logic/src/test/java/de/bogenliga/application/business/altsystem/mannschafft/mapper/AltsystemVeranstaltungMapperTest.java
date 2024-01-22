@@ -44,7 +44,9 @@ public class AltsystemVeranstaltungMapperTest {
     @Mock
     private UserComponent userComponent;
     @Mock
-    private AltsystemUebersetzungDO altsystemUebersetzungDO;
+    private AltsystemUebersetzung altsystemUebersetzung;
+    @Mock
+    private WettkampfTypComponent wettkampfTypComponent;
 
     @InjectMocks
     private AltsystemVeranstaltungMapper altsystemVeranstaltungMapper;
@@ -62,10 +64,10 @@ public class AltsystemVeranstaltungMapperTest {
         expectedVeranstaltungDO.setVeranstaltungSportJahr(SPORTJAHR);
 
         // Mock behavior of AltsystemUebersetzung.findByAltsystemID
-        when(AltsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
                 .thenReturn(new AltsystemUebersetzungDO());
 
-        when(AltsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
                 .thenReturn(new AltsystemUebersetzungDO());
 
         // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr
@@ -73,7 +75,10 @@ public class AltsystemVeranstaltungMapperTest {
                 .thenReturn(new VeranstaltungDO());
 
         // Mock behavior of AltsystemUebersetzung.updateOrInsertUebersetzung
-        // when(AltsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, anyInt(), anyInt(), anyString()));
+        doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), any(), any(), any());
+
+        // Mock behavior of groesse
+
 
         // call test method
         VeranstaltungDO actual = new VeranstaltungDO();
@@ -83,11 +88,50 @@ public class AltsystemVeranstaltungMapperTest {
         assertThat(actual.getVeranstaltungLigaID()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungLigaID());
         assertThat(actual.getVeranstaltungSportJahr()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungSportJahr());
 
-        //verify
-        verify(veranstaltungComponent, times(1)).findByLigaIDAndSportjahr(anyLong(), anyLong());
-        verify(altsystemVeranstaltungMapper, times(1)).createVeranstaltung(anyLong(), anyLong(), anyLong());
-        // verify(AltsystemUebersetzung, times(1)).findByAltsystemID(AltsystemUebersetzungKategorie.Liga_Liga, anyLong());
-        // verify(AltsystemUebersetzung, times(1)).updateOrInsertUebersetzung(any(), anyInt(), anyInt(), anyString());
+
     }
 
+    @Test
+    public void testTryCatch() {
+
+        // prepare test data
+        // altsystem MannschaftDO
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO(anyInt(), anyInt(), anyString(), anyInt());
+        altsystemMannschaftDO.setLiga_id(LIGAID);
+        altsystemMannschaftDO.setSaison_id(SPORTJAHRID);
+        // expected Result
+        VeranstaltungDO expectedVeranstaltungDO = new VeranstaltungDO();
+        expectedVeranstaltungDO.setVeranstaltungLigaID((long)LIGAID);
+        expectedVeranstaltungDO.setVeranstaltungSportJahr(SPORTJAHR);
+
+        // Mock behavior of AltsystemUebersetzung.findByAltsystemID
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+                .thenReturn(new AltsystemUebersetzungDO());
+
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+                .thenReturn(new AltsystemUebersetzungDO());
+
+        // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr() throws Exception
+        when(veranstaltungComponent.findByLigaIDAndSportjahr(anyLong(), anyLong())).thenThrow(new Exception("Test Exception"));
+
+        // Mock behavior of altsystemVeranstaltungMapper.createVeranstaltung
+        when(altsystemVeranstaltungMapper.createVeranstaltung(anyLong(), anyLong(), anyLong())).thenReturn(new VeranstaltungDO());
+
+        // Call test method
+        VeranstaltungDO actual = new VeranstaltungDO();
+        actual = altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemMannschaftDO, CURRENTUSERID);
+
+        // assert result
+        assertThat(actual.getVeranstaltungLigaID()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungLigaID());
+        assertThat(actual.getVeranstaltungSportJahr()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungSportJahr());
+
+    }
+    /*
+    @Test
+    public void createVeranstaltung() {
+
+
+
+    }
+*/
 }

@@ -103,8 +103,6 @@ public class AltsystemVeranstaltungMapper {
         // groesse: default als Mindestgroesse auf 4 gesetzt, später in getOrCreateVeranstaltung updated
         veranstaltungDO.setVeranstaltungGroesse(4);
 
-
-
         // phase: "geplant" setzen
         veranstaltungDO.setVeranstaltungPhase("geplant");
 
