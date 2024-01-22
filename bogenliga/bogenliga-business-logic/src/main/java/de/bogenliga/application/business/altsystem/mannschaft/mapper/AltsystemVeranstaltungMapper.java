@@ -7,8 +7,9 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
+import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
@@ -29,14 +30,17 @@ public class AltsystemVeranstaltungMapper {
     private final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper;
     private final LigaComponent ligaComponent;
     private final WettkampfTypComponent wettkampfTypComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
 
     @Autowired
     public AltsystemVeranstaltungMapper(final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper, final VeranstaltungComponent veranstaltungComponent,
-                                        LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent) {
+                                        LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent,
+                                        DsbMannschaftComponent dsbMannschaftComponent) {
         this.altsystemVeranstaltungMapper = altsystemVeranstaltungMapper;
         this.veranstaltungComponent = veranstaltungComponent;
         this.ligaComponent = ligaComponent;
         this.wettkampfTypComponent = wettkampfTypComponent;
+        this.dsbMannschaftComponent = dsbMannschaftComponent;
     }
 
     public VeranstaltungDO getOrCreateVeranstaltung(AltsystemMannschaftDO mannschaftDO, long currentUserId){
@@ -53,7 +57,17 @@ public class AltsystemVeranstaltungMapper {
         sportjahr = Long.parseLong(uebersetzungSaisonDO.getValue());
 
         try {
+            //Get veranstaltungDO if already exists
             veranstaltungDO = veranstaltungComponent.findByLigaIDAndSportjahr(ligaId, sportjahr);
+
+            // Check how many dsbMannschaften exist in this Veranstaltung and set veranstaltungGroesse accordingly
+            List<DsbMannschaftDO> dsbMannschaften = dsbMannschaftComponent.findAllByVeranstaltungsId(veranstaltungDO.getVeranstaltungID());
+            if(dsbMannschaften.size() >= 4 && dsbMannschaften.size() < 6) {
+                veranstaltungDO.setVeranstaltungGroesse(6);
+            } else if(dsbMannschaften.size() >= 6) {
+                veranstaltungDO.setVeranstaltungGroesse(8);
+            }
+
         } catch (Exception e) {
             veranstaltungDO = createVeranstaltung(ligaId, sportjahr, currentUserId);
         }
@@ -86,8 +100,8 @@ public class AltsystemVeranstaltungMapper {
         Date meldeDeadline = Date.valueOf(deadline);
         veranstaltungDO.setVeranstaltungMeldeDeadline(meldeDeadline);
 
-        // groesse: 8 bei meisten, abhängig davon wie viele Mannschaften im Sportjahr bei Liga waren
-        veranstaltungDO.setVeranstaltungGroesse(8);
+        // groesse: default als Mindestgroesse auf 4 gesetzt, später in getOrCreateVeranstaltung updated
+        veranstaltungDO.setVeranstaltungGroesse(4);
 
 
 
