@@ -23,12 +23,15 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
 
     private final AltsystemLigaMapper altsystemLigaMapper;
     private final LigaComponent ligaComponent;
+    private final AltsystemUebersetzung altsystemUebersetzung;
 
 
     @Autowired
-    public AltsystemLiga(final AltsystemLigaMapper altsystemLigaMapper, final LigaComponent ligaComponent) {
+    public AltsystemLiga(final AltsystemLigaMapper altsystemLigaMapper, final LigaComponent ligaComponent,
+                         AltsystemUebersetzung altsystemUebersetzung) {
         this.altsystemLigaMapper = altsystemLigaMapper;
         this.ligaComponent = ligaComponent;
+        this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
     @Override
@@ -42,13 +45,13 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         ligaComponent.create(ligaDO, currentUserId);
 
         // Add to translation table
-        AltsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, (int) altsystemDataObject.getId(), ligaDO.getId().intValue(), "");
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, (int) altsystemDataObject.getId(), ligaDO.getId().intValue(), "");
     }
 
     @Override
     public void update(AltsystemLigaDO altsystemDataObject, long currentUserId){
         // Get primary key from translation table
-        AltsystemUebersetzungDO ligaUebersetzung = AltsystemUebersetzung.findByAltsystemID(
+        AltsystemUebersetzungDO ligaUebersetzung = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Liga_Liga, altsystemDataObject.getId());
 
         // Check if the translation data has been found
