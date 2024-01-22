@@ -36,8 +36,7 @@ public class AltsystemVeranstaltungMapper {
     @Autowired
     public AltsystemVeranstaltungMapper(final AltsystemVeranstaltungMapper altsystemVeranstaltungMapper, final VeranstaltungComponent veranstaltungComponent,
                                         LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent,
-                                        DsbMannschaftComponent dsbMannschaftComponent) {
-                                        LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent,
+                                        DsbMannschaftComponent dsbMannschaftComponent,
                                         AltsystemUebersetzung altsystemUebersetzung) {
         this.altsystemVeranstaltungMapper = altsystemVeranstaltungMapper;
         this.veranstaltungComponent = veranstaltungComponent;
