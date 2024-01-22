@@ -27,20 +27,23 @@ public class AltsystemWettkampftagMapper {
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final LigaComponent ligaComponent;
+    private final AltsystemUebersetzung altsystemUebersetzung;
 
     @Autowired
     public AltsystemWettkampftagMapper(final WettkampfComponent wettkampfComponent,
-                                       VeranstaltungComponent veranstaltungComponent, LigaComponent ligaComponent){
+                                       VeranstaltungComponent veranstaltungComponent, LigaComponent ligaComponent,
+                                       AltsystemUebersetzung altsystemUebersetzung){
         this.wettkampfComponent = wettkampfComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.ligaComponent = ligaComponent;
+        this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
     public List<WettkampfDO> getOrCreateWettkampftage(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
         List<WettkampfDO> wettkampfTage = new LinkedList<>();
         long mannschaftID = altsystemWettkampfdatenDO.getMannschaftId();
         // Aus Übersetzungstabelle Veranstaltung für Mannschaft auslesen
-        long veranstaltungID = AltsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftID).getBogenliga_id();
+        long veranstaltungID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftID).getBogenliga_id();
 
         wettkampfTage = wettkampfComponent.findAllByVeranstaltungId(veranstaltungID);
 
