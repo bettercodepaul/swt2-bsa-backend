@@ -45,7 +45,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         ligaComponent.create(ligaDO, currentUserId);
 
         // Add to translation table
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, (int) altsystemDataObject.getId(), ligaDO.getId().intValue(), "");
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemDataObject.getId(), ligaDO.getId(), "");
     }
 
     @Override
