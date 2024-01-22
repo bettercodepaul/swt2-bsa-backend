@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -12,9 +13,11 @@ import java.sql.SQLException;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+
+@Component
 public class AltsystemUebersetzung {
 
-    public static void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, int altsystemID, int bogenligaID, String wert) {
+    public void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, long altsystemID, long bogenligaID, String wert) {
         String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {
@@ -25,7 +28,7 @@ public class AltsystemUebersetzung {
             String checkQuery = "SELECT COUNT(*) FROM altsystem_uebersetzung WHERE kategorie = ? AND altsystem_id = ?";
             try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
                 checkStatement.setString(1, kategorieLabel);
-                checkStatement.setInt(2, altsystemID);
+                checkStatement.setLong(2, altsystemID);
                 ResultSet resultSet = checkStatement.executeQuery();
                 resultSet.next();
 
@@ -35,7 +38,7 @@ public class AltsystemUebersetzung {
                     // Der Name ist bereits vorhanden, also aktualisieren (UPDATE)
                     String updateQuery = "UPDATE altsystem_uebersetzung SET bogenliga_id = ? AND wert = ? WHERE kategorie = ? AND altsystem_id = ?";
                     try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-                        updateStatement.setInt(2, bogenligaID);
+                        updateStatement.setLong(2, bogenligaID);
                         updateStatement.setString(3, wert);
                         updateStatement.executeUpdate();
                     }
@@ -44,8 +47,8 @@ public class AltsystemUebersetzung {
                     String insertQuery = "INSERT INTO altsystem_uebersetzung (kategorie, altsystem_id, bogenliga_id, wert ) VALUES (?, ?, ?, ?)";
                     try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
                         insertStatement.setString(1, kategorieLabel);
-                        insertStatement.setInt(2, altsystemID);
-                        insertStatement.setInt(3, bogenligaID);
+                        insertStatement.setLong(2, altsystemID);
+                        insertStatement.setLong(3, bogenligaID);
                         insertStatement.setString(4, wert);
                         insertStatement.executeUpdate();
                     }
@@ -63,7 +66,7 @@ public class AltsystemUebersetzung {
     }
 
 
-    public static AltsystemUebersetzungDO findByAltsystemID(AltsystemUebersetzungKategorie kategorie, Long altsystemID) {
+    public AltsystemUebersetzungDO findByAltsystemID(AltsystemUebersetzungKategorie kategorie, Long altsystemID) {
         String kategorieLabel = kategorie.label;
         Connection connection = null;
         try {

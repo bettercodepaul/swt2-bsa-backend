@@ -24,6 +24,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
     private final AltsystemLigaMapper altsystemLigaMapper;
     private final LigaComponent ligaComponent;
 
+
     @Autowired
     public AltsystemLiga(final AltsystemLigaMapper altsystemLigaMapper, final LigaComponent ligaComponent) {
         this.altsystemLigaMapper = altsystemLigaMapper;
