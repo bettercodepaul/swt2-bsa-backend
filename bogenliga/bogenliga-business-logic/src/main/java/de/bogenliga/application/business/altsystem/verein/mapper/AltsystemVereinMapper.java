@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.altsystem.verein.test.DSBVereinDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -15,6 +16,7 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class AltsystemVereinMapper implements ValueObjectMapper {
 
 

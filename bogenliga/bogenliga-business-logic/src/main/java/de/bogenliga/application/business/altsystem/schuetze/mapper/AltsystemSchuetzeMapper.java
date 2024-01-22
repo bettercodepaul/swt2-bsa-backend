@@ -2,6 +2,7 @@ package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
@@ -14,10 +15,13 @@ import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUeberse
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
+@Component
 public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
 
     private Connection connection;
     private VereinComponent vereinComponent;
+
+    private AltsystemUebersetzung altsystemUebersetzung;
 
     public DsbMitgliedDO toDO(DsbMitgliedDO dsbMitglied, AltsystemSchuetzeDO altsystemSchuetzeDO) throws SQLException {
 
@@ -45,7 +49,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
             dsbMitglied.setGeburtsdatum(null);
             dsbMitglied.setNationalitaet(null);
             dsbMitglied.setMitgliedsnummer(null);
-            dsbMitglied.setVereinsId(AltsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, (long) altsystemSchuetzeDO.getMannschaft_id()).getAltsystem_id());
+            dsbMitglied.setVereinsId(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, (long) altsystemSchuetzeDO.getMannschaft_id()).getAltsystem_id());
 
             //unten aufgeführte Funktionen in DsbMitgliedDO nicht vorhanden - wie sollen diese Werte gesetzt werden?
             /*
