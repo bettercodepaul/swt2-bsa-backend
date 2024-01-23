@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.altsystem.mannschaft.mapper.AltsystemMannschaftMapper;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
@@ -20,7 +21,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
 
 
     private final AltsystemMannschaftMapper altsystemMannschaftMapper;
-    private final DsbMannschaftComponent mannschaftComponent;
+    private final DsbMannschaftComponent dsbMannschaftComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
 
@@ -28,7 +29,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
     public AltsystemMannschaft(final AltsystemMannschaftMapper altsystemMannschaftMapper, final DsbMannschaftComponent mannschaftComponent,
                                AltsystemUebersetzung altsystemUebersetzung){
         this.altsystemMannschaftMapper = altsystemMannschaftMapper;
-        this.mannschaftComponent = mannschaftComponent;
+        this.dsbMannschaftComponent = mannschaftComponent;
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
@@ -36,6 +37,10 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
     public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) throws SQLException {
         DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO();
         dsbMannschaftDO = AltsystemMannschaftMapper.toDO(dsbMannschaftDO, altsystemDataObject);
+
+        dsbMannschaftComponent.create(dsbMannschaftDO, currentUserId);
+
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (int) altsystemDataObject.getId(), dsbMannschaftDO.getId().longValue(), "");
     }
 
 
