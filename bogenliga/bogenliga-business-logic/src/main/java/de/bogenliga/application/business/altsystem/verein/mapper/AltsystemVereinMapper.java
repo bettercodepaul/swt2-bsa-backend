@@ -1,13 +1,11 @@
 package de.bogenliga.application.business.altsystem.verein.mapper;
 
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
-import de.bogenliga.application.business.altsystem.verein.test.DSBVereinDO;
+import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 
@@ -20,11 +18,10 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 public class AltsystemVereinMapper implements ValueObjectMapper {
 
 
-    public VereinDO toDO(VereinDO verein, AltsystemMannschaftDO altsystemMannschaftDO) throws SQLException {
+    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemMannschaftDO) throws SQLException {
 
         char[] nameOld = altsystemMannschaftDO.getName().toCharArray();
         String nameNew = "";
-        long sort = 0;
         String sonderzeichen = "/-";
         String num = "1234567890";
 
@@ -103,24 +100,23 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         }
 
 
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            verein.setId(sort);
-            verein.setName(nameNew);
-            verein.setRegionId(null);
-            verein.setDsbIdentifier(null);
-            //verein.setCreated_at_utc(timestamp);
-            //verein.setCreated_by(null);
-            //verein.setLast_modified_at_utc(null);
-            //verein_new.setLast_modified_by(null);
-            //verein_new.setVersion(null);
-            verein.setWebsite(null);
-            verein.setDescription(null);
-            verein.setIcon(null);
+        vereinDO.setName(nameNew);
 
-
-
-        // Gibt das aktualisierte Vereinsobjekt zurück
-        return verein;
+        // Gibt das Vereinsobjekt zurück
+        return vereinDO;
     }
+
+    public VereinDO addDefaultFields(VereinDO vereinDO){
+
+        AltsystemLigaMapper altsystemLigaMapper = null;
+        RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
+        vereinDO.setRegionId(dsbDO.getId());
+
+
+        return vereinDO;
+    }
+
+
+
 
 }
