@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.altsystem.mannschafft.mapper;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Rule;
@@ -61,6 +62,7 @@ public class AltsystemVeranstaltungMapperTest {
     @InjectMocks
     private AltsystemVeranstaltungMapper altsystemVeranstaltungMapper;
 
+    // tests getOrCreateVeranstaltung when in try/catch no exception is thrown
     @Test
     public void testGetOrCreateVeranstaltung() {
         // prepare test data
@@ -76,6 +78,10 @@ public class AltsystemVeranstaltungMapperTest {
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
                 .thenReturn(new AltsystemUebersetzungDO());
 
+        // Mock behavior of AltsystemUebersetzung.getBogenligaID
+        AltsystemUebersetzungDO uebersetzungLigaDOMock = mock(AltsystemUebersetzungDO.class);
+        when(uebersetzungLigaDOMock.getBogenliga_id()).thenReturn(1L);
+
         when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
                 .thenReturn(new AltsystemUebersetzungDO());
 
@@ -83,11 +89,11 @@ public class AltsystemVeranstaltungMapperTest {
         when(veranstaltungComponent.findByLigaIDAndSportjahr(anyLong(), anyLong()))
                 .thenReturn(new VeranstaltungDO());
 
-        // Mock behavior of AltsystemUebersetzung.updateOrInsertUebersetzung
-        doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), any(), any(), any());
-
         // Mock behavior of groesse
         when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(getMockedDsbMannschaften());
+
+        // Mock behavior of AltsystemUebersetzung.updateOrInsertUebersetzung
+        doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), anyLong(), anyLong(), eq("String by matcher"));
 
         // call test method
         VeranstaltungDO actual = altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemMannschaftDO, CURRENTUSERID);
@@ -95,11 +101,12 @@ public class AltsystemVeranstaltungMapperTest {
         // assert result
         assertThat(actual.getVeranstaltungLigaID()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungLigaID());
         assertThat(actual.getVeranstaltungSportJahr()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungSportJahr());
-        assertThat(actual.getVeranstaltungGroesse()).isEqualTo(4);
+        assertThat(actual.getVeranstaltungGroesse()).isEqualTo(6);
 
 
     }
 
+    // tests getOrCreateVeranstaltung when try/catch throws exception
     @Test
     public void testTryCatch() {
 
@@ -134,6 +141,7 @@ public class AltsystemVeranstaltungMapperTest {
 
     }
 
+    // tests createVeranstaltung
     @Test
     public void testCreateVeranstaltung() {
         // prepare test data
@@ -147,6 +155,8 @@ public class AltsystemVeranstaltungMapperTest {
 
         // Mock behavior of getSatzSystemDO()
         when(altsystemVeranstaltungMapper.getSatzSystemDO()).thenReturn(createMockedSatzSystemDO());
+
+        //when(wettkampfTypComponent.findAll()).thenReturn(getMockedWettkampftypen());
 
         // Mock behavior of veranstaltungComponent.create()
         when(veranstaltungComponent.create(any(VeranstaltungDO.class), eq(CURRENTUSERID)))
@@ -178,6 +188,13 @@ public class AltsystemVeranstaltungMapperTest {
 
     private WettkampfTypDO createMockedSatzSystemDO() {
         return new WettkampfTypDO(1L, "liga satzsysten");
+    }
+
+    private static List<WettkampfTypDO> getMockedWettkampftypen() {
+        List<WettkampfTypDO> wettkampfTypDOS = new ArrayList<>();
+        WettkampfTypDO wettkampfTypDO = new WettkampfTypDO(1L, "Liga Satzsystem");
+        wettkampfTypDOS.add(wettkampfTypDO);
+        return wettkampfTypDOS;
     }
 
 }
