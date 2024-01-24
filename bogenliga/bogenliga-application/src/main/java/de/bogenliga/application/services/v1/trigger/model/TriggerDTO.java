@@ -8,9 +8,9 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperatio
 import de.bogenliga.application.common.service.types.DataTransferObject;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ *
+ * @author Maximilian Fronmüller
  */
 public class TriggerDTO implements DataTransferObject {
 
@@ -20,6 +20,7 @@ public class TriggerDTO implements DataTransferObject {
     private TriggerChangeOperation operation;
     private TriggerChangeStatus status;
     private String nachricht;
+    private OffsetDateTime createdAtUtc;
     private OffsetDateTime runAtUtc;
 
 
@@ -31,16 +32,18 @@ public class TriggerDTO implements DataTransferObject {
      * @param operation
      * @param status
      * @param nachricht
+     * @param createdAtUtc
      * @param runAtUtc
      */
 
-    public TriggerDTO(Long id, String kategorie, Long altsystemId, TriggerChangeOperation operation, TriggerChangeStatus status, String nachricht, OffsetDateTime runAtUtc){
+    public TriggerDTO(Long id, String kategorie, Long altsystemId, TriggerChangeOperation operation, TriggerChangeStatus status, String nachricht, OffsetDateTime createdAtUtc, OffsetDateTime runAtUtc){
         this.id = id;
         this.kategorie = kategorie;
         this.altsystemId = altsystemId;
         this.operation = operation;
         this.status = status;
         this.nachricht = nachricht;
+        this.createdAtUtc = createdAtUtc;
         this.runAtUtc = runAtUtc;
     }
 
@@ -101,6 +104,14 @@ public class TriggerDTO implements DataTransferObject {
 
     public void setNachricht(String nachricht) {
         this.nachricht = nachricht;
+    }
+    public OffsetDateTime getCreatedAtUtc(){
+        return createdAtUtc
+                ;}
+
+
+    public void setCreatedAtUtc(OffsetDateTime createdAtUtc) {
+        this.createdAtUtc = createdAtUtc;
     }
 
 
