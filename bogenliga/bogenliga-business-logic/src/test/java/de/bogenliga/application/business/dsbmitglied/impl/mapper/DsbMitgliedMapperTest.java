@@ -1,8 +1,6 @@
 package de.bogenliga.application.business.dsbmitglied.impl.mapper;
 
 import java.sql.Date;
-import java.sql.SQLException;
-import java.util.List;
 import org.junit.Test;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.dsbmitglied.impl.entity.DsbMitgliedBE;
