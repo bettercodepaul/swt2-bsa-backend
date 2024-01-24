@@ -1,14 +1,12 @@
 package de.bogenliga.application.business.trigger.impl.mapper;
 
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import org.junit.Test;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerDO;
 
@@ -26,6 +24,7 @@ public class TriggerMapperTest {
 	private static final TriggerChangeOperation OPERATION = null;
 	private static final TriggerChangeStatus STATUS = null;
 	private static final String NACHRICHT = "testmsg";
+	private static final Timestamp CREATED_AT_UTC = null;
 	private static final Timestamp RUN_AT_UTC = null;
 
 
@@ -41,6 +40,7 @@ public class TriggerMapperTest {
 		assertThat(actual.getOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
+		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 	}
 
@@ -56,6 +56,7 @@ public class TriggerMapperTest {
 		assertThat(actual.getChangeOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getChangeStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
+		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 	}
 

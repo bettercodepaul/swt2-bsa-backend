@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import org.junit.Test;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
@@ -21,6 +20,7 @@ public class TriggerDTOTest extends TestCase{
 	private static final TriggerChangeOperation OPERATION = null;
 	private static final TriggerChangeStatus STATUS = null;
 	private static final String NACHRICHT = "horrible"; //I did choose this
+	private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.MIN;
 	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MIN;
 
 
@@ -31,11 +31,12 @@ public class TriggerDTOTest extends TestCase{
 	private static final TriggerChangeOperation newOPERATION = null;
 	private static final TriggerChangeStatus newSTATUS = null;
 	private static final String newNACHRICHT = "perfect";
+	private static final OffsetDateTime newCREATED_AT_UTC = OffsetDateTime.MAX;
 	private static final OffsetDateTime newRUN_AT_UTC = OffsetDateTime.MAX;
 
 
 	private TriggerDTO getExpectedDTO(){
-		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, RUN_AT_UTC);
+		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
 	}
 
 	@Test
@@ -132,6 +133,22 @@ public class TriggerDTOTest extends TestCase{
 		String actualNachricht = actual.getNachricht();
 
 		assertEquals(newNACHRICHT, actualNachricht);
+	}
+
+	@Test
+	public void testGetCreatedAtUTC(){
+		TriggerDTO actual = getExpectedDTO();
+		OffsetDateTime actualCreatedAtUTC = actual.getCreatedAtUtc();
+
+		assertEquals(CREATED_AT_UTC, actualCreatedAtUTC);
+	}
+	@Test
+	public void testSetCreatedAtUTC(){
+		TriggerDTO actual = getExpectedDTO();
+		actual.setCreatedAtUtc(newCREATED_AT_UTC);
+		OffsetDateTime actualCreatedAtUtc = actual.getCreatedAtUtc();
+
+		assertEquals(newCREATED_AT_UTC, actualCreatedAtUtc);
 	}
 
 	@Test

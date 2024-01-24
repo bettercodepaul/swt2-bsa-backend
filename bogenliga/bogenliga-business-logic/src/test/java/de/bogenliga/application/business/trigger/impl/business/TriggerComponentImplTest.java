@@ -55,6 +55,7 @@ public class TriggerComponentImplTest {
 	}
 
 
+	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
 	public static TriggerDO getTriggerDO() {
 		return new TriggerDO(
@@ -64,6 +65,7 @@ public class TriggerComponentImplTest {
 				TRIGGER_OPERATION,
 				TRIGGER_STATUS,
 				TRIGGER_NACHRICHT,
+				TRIGGER_CREATEDATUTCO,
 				TRIGGER_RUNATUTCO
 		);
 	}
@@ -100,6 +102,8 @@ public class TriggerComponentImplTest {
 				.isEqualTo(expectedBE.getChangeStatus());
 		assertThat(actual.get(0).getNachricht())
 				.isEqualTo(expectedBE.getNachricht());
+		assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedBE.getCreatedAtUtc());
 		assertThat(actual.get(0).getRunAtUtc())
 				.isEqualTo(expectedBE.getRunAtUtc());
 
