@@ -12,9 +12,7 @@
 
     <artifactId>bogenliga-olddbimport</artifactId>
 
-    <build>
-       
-    </build>
+
 
     <dependencies>
         <!-- MySQL JDBC Driver -->
