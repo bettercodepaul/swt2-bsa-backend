@@ -1,122 +1,150 @@
 package de.bogenliga.application.business.trigger.api.types;
 
+import java.time.OffsetDateTime;
 import org.junit.Test;
 import junit.framework.TestCase;
 
 /**
  * Tests the TriggerDOT class
  *
- *//*
+ * @author Lino Cortese, 99 problems here & now gmbh
+ */
 public class TriggerDOTest extends TestCase{
 
 	//Test data
-	private static final long ID = 24;
-	private static final long VERSION = 3;
-	private static final String TIMESTAMP = "12.12";
-	private static final String DESCRIPTION = "sampleData";
-	private static final String STATUS = "bad";
+	private static final Long ID = 4L;
+	private static final String KATEGORIE = "dumb";
+	private static final Long ALTSYSTEM_ID = 5L;
+	private static final TriggerChangeOperation OPERATION = null;
+	private static final TriggerChangeStatus STATUS = null;
+	private static final String NACHRICHT = "beth";
+	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MIN;
 
 
 	//Test data for setters
-	private static final long newID = 25;
-	private static final long newVERSION = 4;
-	private static final String newTIMESTAMP = "13.12";
-	private static final String newDESCRIPTION = "samplerData";
-	private static final String newSTATUS = "good";
+	private static final Long newID = 8L;
+	private static final String newKATEGORIE = "dumber";
+	private static final Long newALTSYSTEM_ID = 10L;
+	private static final TriggerChangeOperation newOPERATION = null;
+	private static final TriggerChangeStatus newSTATUS = null;
+	private static final String newNACHRICHT = "trueger";
+	private static final OffsetDateTime newRUN_AT_UTC = OffsetDateTime.MAX;
 
 
-	private TriggerDO getExpectedDO(){
-		return new TriggerDO(ID, VERSION, TIMESTAMP, DESCRIPTION, STATUS);
+	private TriggerDO getExpectedDTO(){
+		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, RUN_AT_UTC);
 	}
 
 	@Test
 	public void testGetId(){
-		TriggerDO actual = getExpectedDO();
-		long actualId = actual.getId();
+		TriggerDO actual = getExpectedDTO();
+		Long actualId = actual.getId();
 
 		assertEquals(ID, actualId);
 	}
-
 	@Test
 	public void testSetId(){
-		TriggerDO actual = getExpectedDO();
+		TriggerDO actual = getExpectedDTO();
 		actual.setId(newID);
-		long actualId = actual.getId();
+		Long actualId = actual.getId();
 
 		assertEquals(newID, actualId);
 	}
 
-
 	@Test
-	public void testGetVersion(){
-		TriggerDO actual = getExpectedDO();
-		long actualVersion = actual.getVersion();
+	public void testGetKategorie(){
+		TriggerDO actual = getExpectedDTO();
+		String actualKategorie = actual.getKategorie();
 
-		assertEquals(VERSION, actualVersion);
+		assertEquals(KATEGORIE, actualKategorie);
+	}
+	@Test
+	public void testSetKategorie(){
+		TriggerDO actual = getExpectedDTO();
+		actual.setKategorie(newKATEGORIE);
+		String actualKategorie = actual.getKategorie();
+
+		assertEquals(newKATEGORIE, actualKategorie);
 	}
 
 	@Test
-	public void testSetVersion(){
-		TriggerDO actual = getExpectedDO();
-		actual.setVersion(newVERSION);
-		long actualVersion = actual.getVersion();
+	public void testGetAltsystemId(){
+		TriggerDO actual = getExpectedDTO();
+		Long actualAltsystemId = actual.getAltsystemId();
 
-		assertEquals(newVERSION, actualVersion);
+		assertEquals(ALTSYSTEM_ID, actualAltsystemId);
 	}
-
-
 	@Test
-	public void testGetTimestamp(){
-		TriggerDO actual = getExpectedDO();
-		String actualTimestamp = actual.getTimestamp();
+	public void testSetAltsystemId(){
+		TriggerDO actual = getExpectedDTO();
+		actual.setAltsystemId(newALTSYSTEM_ID);
+		Long actualAltsystemId = actual.getAltsystemId();
 
-		assertEquals(TIMESTAMP, actualTimestamp);
+		assertEquals(newALTSYSTEM_ID, actualAltsystemId);
 	}
 
 	@Test
-	public void testSetTimestamp(){
-		TriggerDO actual = getExpectedDO();
-		actual.setTimestamp(newTIMESTAMP);
-		String actualTimestamp = actual.getTimestamp();
+	public void testGetOperation(){
+		TriggerDO actual = getExpectedDTO();
+		TriggerChangeOperation actualOperation = actual.getOperation();
 
-		assertEquals(newTIMESTAMP, actualTimestamp);
+		assertEquals(OPERATION, actualOperation);
 	}
-
-
 	@Test
-	public void testGetDescription(){
-		TriggerDO actual = getExpectedDO();
-		String actualDescription = actual.getDescription();
+	public void testSetOperation(){
+		TriggerDO actual = getExpectedDTO();
+		actual.setOperation(newOPERATION);
+		TriggerChangeOperation actualOperation = actual.getOperation();
 
-		assertEquals(DESCRIPTION, actualDescription);
+		assertEquals(newOPERATION, actualOperation);
 	}
-
-	@Test
-	public void testSetDescription(){
-		TriggerDO actual = getExpectedDO();
-		actual.setDescription(newDESCRIPTION);
-		String actualDescription = actual.getDescription();
-
-		assertEquals(newDESCRIPTION, actualDescription);
-	}
-
 
 	@Test
 	public void testGetStatus(){
-		TriggerDO actual = getExpectedDO();
-		String actualStatus = actual.getStatus();
+		TriggerDO actual = getExpectedDTO();
+		TriggerChangeStatus actualStatus = actual.getStatus();
 
 		assertEquals(STATUS, actualStatus);
 	}
-
 	@Test
 	public void testSetStatus(){
-		TriggerDO actual = getExpectedDO();
+		TriggerDO actual = getExpectedDTO();
 		actual.setStatus(newSTATUS);
-		long actualStatus = actual.getStatus();
+		TriggerChangeStatus actualStatus = actual.getStatus();
 
 		assertEquals(newSTATUS, actualStatus);
 	}
+
+	@Test
+	public void testGetNachricht(){
+		TriggerDO actual = getExpectedDTO();
+		String actualNachricht = actual.getNachricht();
+
+		assertEquals(NACHRICHT, actualNachricht);
+	}
+	@Test
+	public void testSetNachricht(){
+		TriggerDO actual = getExpectedDTO();
+		actual.setNachricht(newNACHRICHT);
+		String actualNachricht = actual.getNachricht();
+
+		assertEquals(newNACHRICHT, actualNachricht);
+	}
+
+	@Test
+	public void testGetRunAtUTC(){
+		TriggerDO actual = getExpectedDTO();
+		OffsetDateTime actualRunAtUTC = actual.getRunAtUtc();
+
+		assertEquals(RUN_AT_UTC, actualRunAtUTC);
+	}
+	@Test
+	public void testSetRunAtUTC(){
+		TriggerDO actual = getExpectedDTO();
+		actual.setRunAtUtc(newRUN_AT_UTC);
+		OffsetDateTime actualRunAtUtc = actual.getRunAtUtc();
+
+		assertEquals(newRUN_AT_UTC, actualRunAtUtc);
+	}
 	
 }
-*/
