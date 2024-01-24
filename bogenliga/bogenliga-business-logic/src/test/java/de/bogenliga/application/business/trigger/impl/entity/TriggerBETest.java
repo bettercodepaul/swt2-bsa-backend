@@ -20,6 +20,7 @@ public class TriggerBETest {
 	private static final TriggerChangeOperation OPERATION = null;
 	private static final TriggerChangeStatus STATUS = null;
 	private static final String NACHRICHT = "invalid";
+	private static final Timestamp CREATED_AT_UTC = null;
 	private static final Timestamp RUN_AT_UTC = null;
 
 	@Test
@@ -31,6 +32,7 @@ public class TriggerBETest {
 		triggerBE.setChangeOperation(OPERATION);
 		triggerBE.setChangeStatus(STATUS);
 		triggerBE.setNachricht(NACHRICHT);
+		triggerBE.setRunAtUtc(CREATED_AT_UTC);
 		triggerBE.setRunAtUtc(RUN_AT_UTC);
 
 		final String actual = triggerBE.toString();

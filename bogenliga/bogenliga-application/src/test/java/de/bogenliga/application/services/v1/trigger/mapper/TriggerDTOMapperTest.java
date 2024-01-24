@@ -15,22 +15,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TriggerDTOMapperTest{
 
 	//Test data
-	// id, kategorie, altsystemId, operation, status, nachricht, runAtUtc
 	private static final Long ID = 24L;
 	private static final String KATEGORIE = "needles";
 	private static final Long ALTSYSTEM_ID = 25L;
 	private static final TriggerChangeOperation OPERATION = null;
 	private static final TriggerChangeStatus STATUS = null;
 	private static final String NACHRICHT = "too bad!";
+	private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.MAX;
 	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MAX;
 
 
 	private TriggerDTO getDTO(){
-		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, RUN_AT_UTC);
+		return new TriggerDTO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
 	}
 
 	private TriggerDO getDO(){
-		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, RUN_AT_UTC);
+		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
 	}
 
 
@@ -44,6 +44,7 @@ public class TriggerDTOMapperTest{
 		assertThat(actual.getOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
+		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 	}
 
@@ -57,6 +58,7 @@ public class TriggerDTOMapperTest{
 		assertThat(actual.getOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
+		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
 		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
 	}
 

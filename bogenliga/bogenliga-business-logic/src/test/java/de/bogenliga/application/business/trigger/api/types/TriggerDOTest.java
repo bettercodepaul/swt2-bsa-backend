@@ -18,6 +18,7 @@ public class TriggerDOTest extends TestCase{
 	private static final TriggerChangeOperation OPERATION = null;
 	private static final TriggerChangeStatus STATUS = null;
 	private static final String NACHRICHT = "beth";
+	private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.MIN;
 	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MIN;
 
 
@@ -28,11 +29,12 @@ public class TriggerDOTest extends TestCase{
 	private static final TriggerChangeOperation newOPERATION = null;
 	private static final TriggerChangeStatus newSTATUS = null;
 	private static final String newNACHRICHT = "trueger";
+	private static final OffsetDateTime newCREATED_AT_UTC = OffsetDateTime.MAX;
 	private static final OffsetDateTime newRUN_AT_UTC = OffsetDateTime.MAX;
 
 
 	private TriggerDO getExpectedDTO(){
-		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, RUN_AT_UTC);
+		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
 	}
 
 	@Test
@@ -129,6 +131,22 @@ public class TriggerDOTest extends TestCase{
 		String actualNachricht = actual.getNachricht();
 
 		assertEquals(newNACHRICHT, actualNachricht);
+	}
+
+	@Test
+	public void testGetCreatedAtUTC(){
+		TriggerDO actual = getExpectedDTO();
+		OffsetDateTime actualCreatedAtUTC = actual.getCreatedAtUtc();
+
+		assertEquals(CREATED_AT_UTC, actualCreatedAtUTC);
+	}
+	@Test
+	public void testSetCreatedAtUTC(){
+		TriggerDO actual = getExpectedDTO();
+		actual.setCreatedAtUtc(newCREATED_AT_UTC);
+		OffsetDateTime actualCreatedAtUtc = actual.getCreatedAtUtc();
+
+		assertEquals(newCREATED_AT_UTC, actualCreatedAtUtc);
 	}
 
 	@Test
