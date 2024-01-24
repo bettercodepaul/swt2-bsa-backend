@@ -10,5 +10,5 @@ import java.sql.SQLException;
 public interface AltsystemEntity <T extends AltsystemDO>{
     void create(T altsystemDataObject, long currentUserId) throws SQLException;
 
-    void update(T altsystemDataObject, long currentUserId);
+    void update(T altsystemDataObject, long currentUserId) throws SQLException;
 }
