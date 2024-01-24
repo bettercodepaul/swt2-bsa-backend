@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import de.bogenliga.application.common.configuration.DatabaseConfiguration;
+
 
 
 
@@ -29,14 +29,14 @@ public class Main {
 
     // Verbindungsinformationen
 
-    private static String host = "mysql2f19.netcup.net";
+    private static String host = "host";
     private static int port = 3306;
-    private static String dbName = "k74918_bogenliga";
-    private static String user = "k74918_bsapp_ro";
-    private static String password = "BsApp@100%";
+    private static String dbName = "name";
+    private static String user = "user";
+    private static String password = "pw";
 
 
-    private static DatabaseConfiguration databaseConfiguration;
+
 
     private static final String DROPSTATMENT = "DROP TABLE IF EXISTS altsystem_";
 
@@ -48,11 +48,6 @@ public class Main {
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
     public static void main (String [] args){
         sync();
-
-       /* getDataScource() databaseConfiguration.getHost(), databseConfiguration.getHost(), databaseConfiguration.getpassword()
-
-        PostgresqlTransactionManager manager = new PostgresqlTransactionManager(databaseConfiguration);
-        DataSource dataSource = manager.getDataSource(); */
 
     }
 
@@ -108,7 +103,7 @@ public class Main {
                 e.printStackTrace();
             }
             finally{
-                executeScript("temptable.sql", "jdbc:postgresql://localhost:5432/swt2", "swt2","swt2" );
+                executeScript("temptable.sql", "jdbc:postgresql://localhost:5432/{datenbank hinzufügen}", "user hinzufügen","pw hinzufügen" );
             }
         }
         catch (ClassNotFoundException e) {
