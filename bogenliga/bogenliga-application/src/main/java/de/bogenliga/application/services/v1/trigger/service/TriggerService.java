@@ -35,6 +35,8 @@ import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
+import de.bogenliga.olddb.Main;
+
 
 @RestController
 @CrossOrigin
@@ -99,6 +101,7 @@ public class TriggerService implements ServiceFacade {
     }
 
     public void syncData() {
+        Main.sync();
         LOGGER.debug("Computing changes");
         List<TriggerChange<?>> changes = computeAllChanges();
 
