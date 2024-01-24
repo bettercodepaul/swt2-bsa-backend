@@ -17,12 +17,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version> <!-- Verwende die neueste verfügbare Version -->
+                <version>3.6.1</version> <!-- Verwende die neueste verfügbare Version -->
                 <executions>
                     <execution>
-                        <id>analyze-dep</id>
+                        <id>analyze-only</id>
                         <goals>
-                            <goal>analyze-only</goal>
+                            <goal>analyze</goal>
                         </goals>
                         <configuration>
                             <failOnWarning>false</failOnWarning>
