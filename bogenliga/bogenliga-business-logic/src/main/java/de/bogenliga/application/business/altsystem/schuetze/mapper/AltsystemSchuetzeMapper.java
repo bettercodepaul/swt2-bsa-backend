@@ -17,34 +17,37 @@ import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUeberse
  */
 @Component
 public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
-
-    private Connection connection;
-    private VereinComponent vereinComponent;
-
     private AltsystemUebersetzung altsystemUebersetzung;
 
-    public DsbMitgliedDO toDO(DsbMitgliedDO dsbMitglied, AltsystemSchuetzeDO altsystemSchuetzeDO) throws SQLException {
+    public DsbMitgliedDO toDO(AltsystemSchuetzeDO altsystemSchuetzeDO) throws SQLException {
 
-        // Checken ob der Schütze bereits in der FlyWay Tabelle exestiert
-        //aus schützen die namen auslesen und trennen name (nachname, vorname)
-
-        String[] name = null;
-
-        // (Allmendinger , Michael)
-        //argument 0 = nachname, argument 1 = vorname
-        if (altsystemSchuetzeDO.getName().contains(",")) {
-            name = altsystemSchuetzeDO.getName().split(",");
-            name[0] = name[0].replaceAll("\\s+", "");
-            name[1] = name[1].replaceAll("\\s+", "");
-
-        } else {
-            name = altsystemSchuetzeDO.getName().split(" ");
-            name[0] = name[0].replaceAll("\\s+", "");
-            name[1] = name[1].replaceAll("\\s+", "");
+        if(altsystemSchuetzeDO == null){
+            throw new NullPointerException(altsystemSchuetzeDO + " does not exist");
         }
 
-            dsbMitglied.setVorname(name[1]);
-            dsbMitglied.setNachname(name[0]);
+        DsbMitgliedDO dsbMitglied = new DsbMitgliedDO();
+
+        //prüfen ob Schütze mit Mannschafts-ID und Nachname + Vorname bereits in Flyway-Tabelle steht
+        //nein? -> anlegen und in Tabelle schreiben
+        //ja? -> return error
+        String[] parsedName = parseName(altsystemSchuetzeDO);
+
+        String altsystemName = parsedName[0] + ", " + parsedName[1]; // Allmendinger Michael
+        Long altsystemID = altsystemSchuetzeDO.getId(); // MannschaftsID = 356
+
+
+        String flywayValue = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getValue();
+        Long flywayBogenligaID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getBogenliga_id();
+
+        //wenn altsystemName einem value in flyway und altsystemID einer bogenligaID in flyway entspricht -> Schuetze wurde bereits in neue Datenbank importiert
+        if(altsystemID == flywayBogenligaID && altsystemName == flywayValue) {
+            //trigger-gruppe muss prüfen ob diese methode ein DsbMitgliedDO oder null zurückgibt und entsprechend agieren
+            return null;
+        }
+        else {
+            dsbMitglied.setVorname(parsedName[1]);
+            dsbMitglied.setNachname(parsedName[0]);
+
             //untere Werte können hier nicht gesetzt werden, da sie im Altsystem in der Entität Schuetze nicht existieren
             dsbMitglied.setGeburtsdatum(null);
             dsbMitglied.setNationalitaet(null);
