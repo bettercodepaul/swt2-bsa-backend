@@ -22,7 +22,7 @@
                     <execution>
                         <id>analyze-only</id>
                         <goals>
-                            <goal>analyze</goal>
+                            <goal>testCompile</goal>
                         </goals>
                         <configuration>
                             <failOnWarning>false</failOnWarning>
