@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
+
 
 @RestController
 @CrossOrigin
@@ -93,6 +95,10 @@ public class TriggerService implements ServiceFacade {
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
 
+    public void generateTimestamp(){
+        Timestamp syncDataTimestamp = new Timestamp(System.currentTimeMillis());
+    }
+
     @Scheduled(cron = "0 0 22 * * ?")
     public void scheduler(){
         startTheSync();
@@ -108,6 +114,12 @@ public class TriggerService implements ServiceFacade {
 
             LOGGER.debug("Migration successful? {}", migrationSuccessful);
         }
+        //Updated den Timestamp nach dem sync
+
+
+       /** String sqlQuery = "INSERT INTO Migrationtimestamp";
+        basicDao.insertEntity(new BusinessEntityConfiguration<Object>(sqlQuery, ))
+        */
     }
 
     // TODO remove when not needed anymore
