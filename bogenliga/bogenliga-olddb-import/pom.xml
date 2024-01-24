@@ -36,23 +36,4 @@
         </dependency>
     </dependencies>
 
-    <!-- I just pasted this here hoping it will build, which is probably a bad idea. -->
-    <!-- Too bad! -->
-    <build>
-        <pluginManagement>
-            <plugins>
-                <!-- compile & test -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.2</version>
-                    <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
 </project>
