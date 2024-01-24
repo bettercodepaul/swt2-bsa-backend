@@ -9,9 +9,9 @@ import de.bogenliga.application.common.service.mapping.DataTransferObjectMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 
 /**
- * TODO [AL] class documentation
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ *
+ * @author Maximilian Fronmüller
  */
 
 /**
@@ -25,11 +25,12 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final TriggerChangeOperation operation = triggerDO.getOperation();
         final TriggerChangeStatus status = triggerDO.getStatus();
         final String nachricht = triggerDO.getNachricht();
+        final OffsetDateTime createdAtUtc = triggerDO.getCreatedAtUtc();
         final OffsetDateTime runAtUtc = triggerDO.getRunAtUtc();
 
 
 
-        return new TriggerDTO(id, kategorie, altsystemId, operation, status, nachricht, runAtUtc);
+        return new TriggerDTO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
     };
 
     /**
@@ -43,9 +44,10 @@ public class TriggerDTOMapper implements DataTransferObjectMapper {
         final TriggerChangeOperation operation = triggerDTO.getOperation();
         final TriggerChangeStatus status = triggerDTO.getStatus();
         final String nachricht = triggerDTO.getNachricht();
+        final OffsetDateTime createdAtUtc = triggerDTO.getCreatedAtUtc();
         final OffsetDateTime runAtUtc = triggerDTO.getRunAtUtc();
 
-        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, runAtUtc);
+        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
     };
 
     private TriggerDTOMapper(){
