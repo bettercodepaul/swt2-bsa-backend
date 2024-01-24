@@ -20,7 +20,7 @@
                 <version>3.6.1</version> <!-- Verwende die neueste verfügbare Version -->
                 <executions>
                     <execution>
-                        <id>analyze-only</id>
+                        <id>analyze</id>
                         <goals>
                             <goal>testCompile</goal>
                         </goals>
