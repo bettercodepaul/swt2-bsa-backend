@@ -151,7 +151,7 @@ public class TriggerService implements ServiceFacade {
             AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(retrievedObject.getClass());
 
             // TODO create new row in altsystem_aenderung
-            TriggerDO dataObject = new TriggerDO(1L, oldTableName, retrievedObject.getId(), TriggerChangeOperation.CREATE, TriggerChangeStatus.NEW, "keine nachricht", null);
+            TriggerDO dataObject = new TriggerDO(1L, oldTableName, retrievedObject.getId(), TriggerChangeOperation.CREATE, TriggerChangeStatus.NEW, "keine nachricht", null, null);
 
             changes.add(new TriggerChange<>(dataObject, retrievedObject, entity));
         }
