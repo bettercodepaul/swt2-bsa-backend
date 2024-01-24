@@ -67,7 +67,7 @@ public class TriggerDTOTest extends TestCase{
 		actual.setKategorie(newKATEGORIE);
 		String actualKategorie = actual.getKategorie();
 
-		assertEquals(KATEGORIE, actualKategorie);
+		assertEquals(newKATEGORIE, actualKategorie);
 	}
 
 	@Test
