@@ -112,6 +112,7 @@ public class AltsystemVeranstaltungMapper {
         // Wettkampftyp: Satzsystem
         WettkampfTypDO satzSystemDO = getSatzSystemDO();
         veranstaltungDO.setVeranstaltungWettkampftypID(satzSystemDO.getId());
+        veranstaltungDO.setVeranstaltungWettkampftypName(satzSystemDO.getName());
 
         veranstaltungDO = veranstaltungComponent.create(veranstaltungDO, currentUserId);
 
