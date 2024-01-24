@@ -45,12 +45,12 @@ public class Main {
     private static String sqlfile ="temptable.sql";
 
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
-   /*
+
     public static void main (String [] args){
         sync();
 
     }
-    */
+    
 
     public static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
         try{
