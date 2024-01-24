@@ -140,7 +140,7 @@ public class AltsystemVeranstaltungMapperTest {
 
         // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr() throws Exception
         when(veranstaltungComponent.findByLigaIDAndSportjahr(anyLong(), anyLong())).thenThrow(new BusinessException(
-                ErrorCode.ENTITY_NOT_FOUND_ERROR, "Message"));
+                ErrorCode.ENTITY_NOT_FOUND_ERROR, "Test"));
 
         // Mock behavior of altsystemVeranstaltungMapper.createVeranstaltung
         doReturn(expectedVeranstaltungDO).when(altsystemVeranstaltungMapper1).createVeranstaltung(ligaUebersetzung.getBogenliga_id(), Long.parseLong(sportjahrUebersetzung.getValue()), CURRENTUSERID);
@@ -188,11 +188,133 @@ public class AltsystemVeranstaltungMapperTest {
 
     }
 
+    // tests getOrCreateVeranstaltung when 4 DsbMannschaften exist
+    @Test
+    public void testSetVeranstaltungGroesse6() {
+        // prepare test data
+        // altsystem MannschaftDO
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO(1, (int)LIGAID, "", SPORTJAHRID);
+        // liga uebersetzung
+        AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
+        ligaUebersetzung.setBogenliga_id(LIGAID);
+        // Sportjahr uebersetzung
+        AltsystemUebersetzungDO sportjahrUebersetzung = new AltsystemUebersetzungDO();
+        sportjahrUebersetzung.setValue(String.valueOf(SPORTJAHR));
+
+        // expected Result
+        VeranstaltungDO expectedVeranstaltungDO = new VeranstaltungDO();
+        expectedVeranstaltungDO.setVeranstaltungID(1L);
+        expectedVeranstaltungDO.setVeranstaltungLigaID(LIGAID);
+        expectedVeranstaltungDO.setVeranstaltungSportJahr(SPORTJAHR);
+        expectedVeranstaltungDO.setVeranstaltungGroesse(6);
+
+        // Mock behavior of AltsystemUebersetzung.findByAltsystemID
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+                .thenReturn(ligaUebersetzung);
+
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+                .thenReturn(sportjahrUebersetzung);
+
+        // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr
+        when(veranstaltungComponent.findByLigaIDAndSportjahr(LIGAID, SPORTJAHR))
+                .thenReturn(expectedVeranstaltungDO);
+
+        // Mock behavior of groesse
+        when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(get4MockedDsbMannschaften());
+
+        // Mock behavior of veranstaltungComponent.update()
+        when(veranstaltungComponent.update(expectedVeranstaltungDO, CURRENTUSERID)).thenReturn(expectedVeranstaltungDO);
+
+        // Mock behavior of AltsystemUebersetzung.updateOrInsertUebersetzung
+        doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), anyLong(), anyLong(), any());
+
+
+        // call test method
+        VeranstaltungDO actual = altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemMannschaftDO, CURRENTUSERID);
+
+        // assert result
+        assertThat(actual.getVeranstaltungLigaID()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungLigaID());
+        assertThat(actual.getVeranstaltungSportJahr()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungSportJahr());
+        assertThat(actual.getVeranstaltungGroesse()).isEqualTo(6);
+
+
+    }
+
+    // tests getOrCreateVeranstaltung when 6 DsbMannschaften exist
+    @Test
+    public void testSetVeranstaltungGroesse8() {
+        // prepare test data
+        // altsystem MannschaftDO
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO(1, (int)LIGAID, "", SPORTJAHRID);
+        // liga uebersetzung
+        AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
+        ligaUebersetzung.setBogenliga_id(LIGAID);
+        // Sportjahr uebersetzung
+        AltsystemUebersetzungDO sportjahrUebersetzung = new AltsystemUebersetzungDO();
+        sportjahrUebersetzung.setValue(String.valueOf(SPORTJAHR));
+
+        // expected Result
+        VeranstaltungDO expectedVeranstaltungDO = new VeranstaltungDO();
+        expectedVeranstaltungDO.setVeranstaltungID(1L);
+        expectedVeranstaltungDO.setVeranstaltungLigaID(LIGAID);
+        expectedVeranstaltungDO.setVeranstaltungSportJahr(SPORTJAHR);
+        expectedVeranstaltungDO.setVeranstaltungGroesse(8);
+
+        // Mock behavior of AltsystemUebersetzung.findByAltsystemID
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Liga_Liga), anyLong()))
+                .thenReturn(ligaUebersetzung);
+
+        when(altsystemUebersetzung.findByAltsystemID(eq(AltsystemUebersetzungKategorie.Saison_Sportjahr), anyLong()))
+                .thenReturn(sportjahrUebersetzung);
+
+        // Mock behavior of veranstaltungComponent.findByLigaIDAndSportjahr
+        when(veranstaltungComponent.findByLigaIDAndSportjahr(LIGAID, SPORTJAHR))
+                .thenReturn(expectedVeranstaltungDO);
+
+        // Mock behavior of groesse
+        when(dsbMannschaftComponent.findAllByVeranstaltungsId(anyLong())).thenReturn(get6MockedDsbMannschaften());
+
+        // Mock behavior of veranstaltungComponent.update()
+        when(veranstaltungComponent.update(expectedVeranstaltungDO, CURRENTUSERID)).thenReturn(expectedVeranstaltungDO);
+
+        // Mock behavior of AltsystemUebersetzung.updateOrInsertUebersetzung
+        doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), anyLong(), anyLong(), any());
+
+
+        // call test method
+        VeranstaltungDO actual = altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemMannschaftDO, CURRENTUSERID);
+
+        // assert result
+        assertThat(actual.getVeranstaltungLigaID()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungLigaID());
+        assertThat(actual.getVeranstaltungSportJahr()).isEqualTo(expectedVeranstaltungDO.getVeranstaltungSportJahr());
+        assertThat(actual.getVeranstaltungGroesse()).isEqualTo(8);
+
+
+    }
+
     public static List<DsbMannschaftDO> getMockedDsbMannschaften(){
         List<DsbMannschaftDO> dsbMannschaften = new LinkedList<>();
         DsbMannschaftDO mannschaftDO = new DsbMannschaftDO();
         mannschaftDO.setVeranstaltungId(VERANSTALTUNGID);
         dsbMannschaften.add(mannschaftDO);
+        return dsbMannschaften;
+    }
+
+    public static List<DsbMannschaftDO> get4MockedDsbMannschaften(){
+        List<DsbMannschaftDO> dsbMannschaften = new LinkedList<>();
+        for (int i = 1; i <= 4; i++) {
+            DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO((long)i, i);
+            dsbMannschaften.add(dsbMannschaftDO);
+        }
+        return dsbMannschaften;
+    }
+
+    public static List<DsbMannschaftDO> get6MockedDsbMannschaften(){
+        List<DsbMannschaftDO> dsbMannschaften = new LinkedList<>();
+        for (int i = 1; i <= 6; i++) {
+            DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO((long)i, i);
+            dsbMannschaften.add(dsbMannschaftDO);
+        }
         return dsbMannschaften;
     }
 

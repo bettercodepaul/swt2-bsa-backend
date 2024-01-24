@@ -16,6 +16,7 @@ import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO
 import de.bogenliga.application.business.wettkampftyp.api.WettkampfTypComponent;
 import de.bogenliga.application.business.wettkampftyp.api.types.WettkampfTypDO;
 import de.bogenliga.application.business.liga.api.types.LigaDO;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
  * Component to handle the import of a "Veranstaltung" entity
@@ -64,11 +65,13 @@ public class AltsystemVeranstaltungMapper {
             List<DsbMannschaftDO> dsbMannschaften = dsbMannschaftComponent.findAllByVeranstaltungsId(veranstaltungDO.getVeranstaltungID());
             if(dsbMannschaften.size() >= 4 && dsbMannschaften.size() < 6) {
                 veranstaltungDO.setVeranstaltungGroesse(6);
+                veranstaltungDO = veranstaltungComponent.update(veranstaltungDO, currentUserId);
             } else if(dsbMannschaften.size() >= 6) {
                 veranstaltungDO.setVeranstaltungGroesse(8);
+                veranstaltungDO = veranstaltungComponent.update(veranstaltungDO, currentUserId);
             }
 
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             veranstaltungDO = createVeranstaltung(ligaId, sportjahr, currentUserId);
         }
 
