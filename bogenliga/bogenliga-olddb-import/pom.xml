@@ -3,11 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>bogenliga-olddbimport</name>
+    <name>BLA :: Bogenliga Application :: bogenliga-olddbimport</name>
     <parent>
         <groupId>de.bogenliga</groupId>
         <artifactId>bogenliga</artifactId>
-        <version>2.0.0</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>bogenliga-olddbimport</artifactId>
@@ -34,6 +34,23 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.0</version> <!-- Verwende die neueste verfügbare Version -->
+                <executions>
+                    <execution>
+                        <id>analyze-dep</id>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>false</failOnWarning>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -42,7 +59,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.23</version> <!-- Aktualisiere die Version entsprechend deiner Anforderungen -->
+            <version>8.0.23</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
