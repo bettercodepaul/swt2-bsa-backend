@@ -54,8 +54,7 @@ public class TriggerComponentImplTest {
 		return expectedBE;
 	}
 
-	//temporary solution (maybe unneeded)
-	/*
+
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
 	public static TriggerDO getTriggerDO() {
 		return new TriggerDO(
@@ -68,7 +67,6 @@ public class TriggerComponentImplTest {
 				TRIGGER_RUNATUTCO
 		);
 	}
-	*/
 
 	@Test
 	public void findAll() {
