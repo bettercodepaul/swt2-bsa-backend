@@ -63,29 +63,30 @@ public class TriggerDAO implements DataAccessObject {
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st ON altsystem_aenderung.status = st.status_id"
                     + " ORDER BY aenderung_id";
 
+    private static final String FIND_ALL_UNPROCESSED =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         AND st.status_name != 'SUCCESS'"
+                    + " ORDER BY aenderung_id";
 
     private final BasicDAO basicDAO;
-    private final TriggerChangeOperationDAO operationDAO;
-    private final TriggerChangeStatusDAO statusDAO;
 
 
     /**
      * Initialize the transaction manager to provide a database connection
      *
-     * @param basicDAO     to handle the commonly used DB operations
-     * @param operationDAO to handle operation parsing
-     * @param statusDAO    to handle status parsing
+     * @param basicDAO  to handle the commonly used DB operations
      */
 
     @Autowired
-    public TriggerDAO(final BasicDAO basicDAO, TriggerChangeOperationDAO operationDAO, TriggerChangeStatusDAO statusDAO) {
+    public TriggerDAO(final BasicDAO basicDAO) {
         this.basicDAO = basicDAO;
-        this.operationDAO = operationDAO;
-        this.statusDAO = statusDAO;
     }
 
 
@@ -124,6 +125,9 @@ public class TriggerDAO implements DataAccessObject {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
     }
 
+    public List<TriggerBE> findAllUnprocessed() {
+        return basicDAO.selectEntityList(TRIGGER, FIND_ALL_UNPROCESSED);
+    }
 
     public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
         basicDAO.setCreationAttributes(triggerBE, currentUserId);
@@ -151,8 +155,8 @@ public class TriggerDAO implements DataAccessObject {
         created.setNachricht(raw.getNachricht());
         created.setRunAtUtc(raw.getRunAtUtc());
 
-        TriggerChangeOperation operation = TriggerChangeOperation.valueOf(operationDAO.findById(raw.getChangeOperationId()).getName());
-        TriggerChangeStatus status = TriggerChangeStatus.valueOf(statusDAO.findById(raw.getChangeStatusId()).getName());
+        TriggerChangeOperation operation = TriggerChangeOperation.parse(raw.getChangeOperationId());
+        TriggerChangeStatus status = TriggerChangeStatus.parse(raw.getChangeStatusId());
 
         created.setChangeOperation(operation);
         created.setChangeStatus(status);
@@ -170,8 +174,8 @@ public class TriggerDAO implements DataAccessObject {
         created.setNachricht(raw.getNachricht());
         created.setRunAtUtc(raw.getRunAtUtc());
 
-        Long operationId = operationDAO.findByEnum(raw.getChangeOperation()).getId();
-        Long statusId = statusDAO.findByEnum(raw.getChangeStatus()).getId();
+        Long operationId = raw.getChangeOperation().getId();
+        Long statusId = raw.getChangeStatus().getId();
 
         created.setChangeOperationId(operationId);
         created.setChangeStatusId(statusId);
