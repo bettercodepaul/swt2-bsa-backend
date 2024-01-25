@@ -9,13 +9,26 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *
  * @author Bennedikt Holst
  */
-    public class MigrationTimestampBE extends CommonBusinessEntity implements BusinessEntity {
-        private Timestamp syncTimestamp;
-        
-        public Timestamp getTimestamp() {return syncTimestamp;}
+public class MigrationTimestampBE extends CommonBusinessEntity implements BusinessEntity {
+    private Timestamp syncTimestamp;
 
-        public void setSyncTimestamp(Timestamp syncTimestamp) {this.syncTimestamp = syncTimestamp;}
-    
+    private Long id;
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public Timestamp getTimestamp() {return syncTimestamp;}
+
+    public void setSyncTimestamp(Timestamp syncTimestamp) {this.syncTimestamp = syncTimestamp;}
+
     public String toString() {
         return "SyncDataTriggerBE{" +
                 "syncTimestamp" + syncTimestamp +

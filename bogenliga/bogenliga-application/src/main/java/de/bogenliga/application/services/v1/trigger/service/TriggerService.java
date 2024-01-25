@@ -23,7 +23,9 @@ import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
+import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
+import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -53,12 +55,15 @@ public class TriggerService implements ServiceFacade {
     private final TriggerDAO triggerDAO;
     private final TriggerComponent triggerComponent;
 
+    private final MigrationTimestampDAO migrationTimestampDAO;
+
     @Autowired
     public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final LigaComponent ligaComponent, final
-                          TriggerComponent triggerComponent) {
+    TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO) {
         this.basicDao = basicDao;
         this.triggerDAO = triggerDAO;
         this.triggerComponent = triggerComponent;
+        this.migrationTimestampDAO = migrationTimestampDAO;
 
         dataObjectToEntity = new HashMap<>();
         dataObjectToEntity.put(AltsystemLigaDO.class, new AltsystemLiga(ligaComponent));
@@ -95,8 +100,18 @@ public class TriggerService implements ServiceFacade {
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
 
-    public void generateTimestamp(){
-        Timestamp syncDataTimestamp = new Timestamp(System.currentTimeMillis());
+    public void setMigrationTimestamp(Timestamp timestamp){
+        List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();
+        if (timestamplist.isEmpty()){
+            MigrationTimestampBE newTimestamp = new MigrationTimestampBE();
+            newTimestamp.setSyncTimestamp(timestamp);
+            migrationTimestampDAO.create(newTimestamp);
+        }
+        else{
+            MigrationTimestampBE timestampBE = timestamplist.get(0);
+            timestampBE.setSyncTimestamp(timestamp);
+            migrationTimestampDAO.update(timestampBE);
+        }
     }
 
     @Scheduled(cron = "0 0 22 * * ?")
@@ -115,11 +130,11 @@ public class TriggerService implements ServiceFacade {
             LOGGER.debug("Migration successful? {}", migrationSuccessful);
         }
         //Updated den Timestamp nach dem sync
+        setMigrationTimestamp(new Timestamp(System.currentTimeMillis()));
 
-
-       /** String sqlQuery = "INSERT INTO Migrationtimestamp";
-        basicDao.insertEntity(new BusinessEntityConfiguration<Object>(sqlQuery, ))
-        */
+        /** String sqlQuery = "INSERT INTO Migrationtimestamp";
+         basicDao.insertEntity(new BusinessEntityConfiguration<Object>(sqlQuery, ))
+         */
     }
 
     // TODO remove when not needed anymore
