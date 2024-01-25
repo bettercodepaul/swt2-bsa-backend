@@ -33,6 +33,16 @@ public class AltsystemVeranstaltungMapper {
     private final DsbMannschaftComponent dsbMannschaftComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
+    /**
+     * Constructor with all parameters
+     *
+     * @param veranstaltungComponent component for database access
+     * @param ligaComponent component for database access
+     * @param wettkampfTypComponent component for database access
+     * @param dsbMannschaftComponent component for database access
+     * @param altsystemUebersetzung component for database access
+     *
+     */
     @Autowired
     public AltsystemVeranstaltungMapper(final VeranstaltungComponent veranstaltungComponent,
                                         LigaComponent ligaComponent, WettkampfTypComponent wettkampfTypComponent,
@@ -44,6 +54,14 @@ public class AltsystemVeranstaltungMapper {
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
+    /**
+     * Gets or creates Veranstaltung
+     *
+     * @param mannschaftDO    mannschaft DO containing properties of a mannschaft
+     * @param currentUserId   id of the currently logged in user that sent the getOrCreate request
+     *
+     * @return return veranstaltungDO from altsystemUbersetzung or return created veranstaltungDO
+     */
     public VeranstaltungDO getOrCreateVeranstaltung(AltsystemMannschaftDO mannschaftDO, long currentUserId){
         VeranstaltungDO veranstaltungDO;
         long ligaId;
@@ -81,7 +99,15 @@ public class AltsystemVeranstaltungMapper {
         return veranstaltungDO;
     }
 
-
+    /**
+     * creates Veranstaltung
+     *
+     * @param ligaId    id of a liga from selected mannschaft
+     * @param sportjahr sportjahr from selected mannschaft
+     * @param currentUserId   id of the currently logged in user that sent the getOrCreate request
+     *
+     * @return return created veranstaltungDO
+     */
     public VeranstaltungDO createVeranstaltung(long ligaId, long sportjahr, long currentUserId){
 
         VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
@@ -122,6 +148,11 @@ public class AltsystemVeranstaltungMapper {
         return veranstaltungDO;
     }
 
+    /**
+     * Picks correct wettkampfTypDO from database
+     *
+     * @return satzSystemDO
+     */
     public WettkampfTypDO getSatzSystemDO() {
         WettkampfTypDO satzSystemDO = null;
         List<WettkampfTypDO> wettkampfTypDOS = wettkampfTypComponent.findAll();
