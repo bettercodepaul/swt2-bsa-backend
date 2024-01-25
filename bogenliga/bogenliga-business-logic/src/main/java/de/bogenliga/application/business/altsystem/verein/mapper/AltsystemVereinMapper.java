@@ -5,7 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
-
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -20,27 +21,32 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 public class AltsystemVereinMapper implements ValueObjectMapper {
 
     private final VereinComponent vereinComponent;
+    private final AltsystemVereinMapper altsystemVereinMapper;
+    private final AltsystemUebersetzung altsystemUebersetzung;
 
 
-    public AltsystemVereinMapper(VereinComponent vereinComponent) {
+    public AltsystemVereinMapper(VereinComponent vereinComponent, AltsystemVereinMapper altsystemVereinMapper,
+                                 AltsystemUebersetzung altsystemUebersetzung) {
         this.vereinComponent = vereinComponent;
+        this.altsystemVereinMapper = altsystemVereinMapper;
+        this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
 
-    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemMannschaftDO) {
+    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
 
 
-        String parsedName = parseName(altsystemMannschaftDO);
-        Long altsystemID = altsystemMannschaftDO.getId();
-
+        String parsedName = parseName(altsystemDataObject);
         VereinDO vorhanden = getVereinDO(parsedName);
 
         if (vorhanden == null){
+            vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
+            vereinComponent.create(vereinDO, currentUserId);
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vereinDO.getId().longValue(), "");
 
-
+        }else {
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vorhanden.getId().longValue(), "");
         }
-
-
         return vereinDO;
     }
 
