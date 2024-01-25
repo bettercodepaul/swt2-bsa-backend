@@ -9,7 +9,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *
  * @author Bennedikt Holst
  */
-public class MigrationTimestampBE extends CommonBusinessEntity implements BusinessEntity {
+public class MigrationTimestampBE implements BusinessEntity {
     private Timestamp syncTimestamp;
 
     private Long id;
@@ -25,7 +25,7 @@ public class MigrationTimestampBE extends CommonBusinessEntity implements Busine
     }
 
 
-    public Timestamp getTimestamp() {return syncTimestamp;}
+    public Timestamp getSyncTimestamp() {return syncTimestamp;}
 
     public void setSyncTimestamp(Timestamp syncTimestamp) {this.syncTimestamp = syncTimestamp;}
 

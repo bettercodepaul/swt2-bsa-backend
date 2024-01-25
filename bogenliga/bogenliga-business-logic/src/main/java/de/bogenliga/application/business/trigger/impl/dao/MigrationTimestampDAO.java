@@ -31,23 +31,15 @@ public class MigrationTimestampDAO implements DataAccessObject {
 
     private static final String TABLE = "Migrationtimestamp";
 
-    private static final String SYNCDATATRIGGER_BE_TIMESTAMP = "Migrationtimestamp";
+    private static final String SYNCDATATRIGGER_BE_TIMESTAMP = "syncTimestamp";
     private static final String SYNCDATATRIGGER_BE_ID = "id";
 
-    private static final String SYNCDATATRIGGER_TABLE_TIMESTAMP = "Migrationtimestamp";
+    private static final String SYNCDATATRIGGER_TABLE_TIMESTAMP = "timestamp";
     private static final String SYNCDATATRIGGER_TABLE_ID = "id";
 
     private static final BusinessEntityConfiguration<MigrationTimestampBE> SYNCDATATRIGGER = new BusinessEntityConfiguration<>(
             MigrationTimestampBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
 
-    /**private final BasicDAO basicDao;
-
-     public MigrationTimestampBE create(final MigrationTimestampBE migrationTimestampBE) {
-     basicDao.setCreationAttributes(migrationTimestampBE);
-
-     return basicDao.insertEntity(SYNCDATATRIGGER, migrationTimestampBE);
-     }
-     */
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM Migrationtimestamp";
