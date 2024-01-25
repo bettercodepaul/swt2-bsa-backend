@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,8 +17,18 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import de.bogenliga.application.business.altsystem.ergebnisse.dataobject.AltsystemErgebnisseDO;
+import de.bogenliga.application.business.altsystem.ergebnisse.entity.AltsystemErgebnisse;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
+import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+import de.bogenliga.application.business.altsystem.mannschaft.entity.AltsystemMannschaft;
+import de.bogenliga.application.business.altsystem.saison.dataobject.AltsystemSaisonDO;
+import de.bogenliga.application.business.altsystem.saison.entity.AltsystemSaison;
+import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import de.bogenliga.application.business.altsystem.wettkampfdaten.dataobject.AltsystemWettkampfdatenDO;
+import de.bogenliga.application.business.altsystem.wettkampfdaten.entity.AltsystemWettkampfdaten;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
@@ -59,8 +70,14 @@ public class TriggerService implements ServiceFacade {
     private final MigrationTimestampDAO migrationTimestampDAO;
 
     @Autowired
-    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final AltsystemLiga altsystemLiga, final
-    TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO) {
+    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
+                          final AltsystemLiga altsystemLiga,
+                          final AltsystemSaison altsystemSaison,
+                          final AltsystemMannschaft altsystemMannschaft,
+                          final AltsystemSchuetze altsystemSchuetze,
+                          final AltsystemWettkampfdaten altsystemWettkampfdaten,
+                          final AltsystemErgebnisse altsystemErgebnisse
+    ) {
         this.basicDao = basicDao;
         this.triggerDAO = triggerDAO;
         this.triggerComponent = triggerComponent;
@@ -68,15 +85,24 @@ public class TriggerService implements ServiceFacade {
 
         dataObjectToEntity = new HashMap<>();
         dataObjectToEntity.put(AltsystemLigaDO.class, altsystemLiga);
+        dataObjectToEntity.put(AltsystemSaisonDO.class, altsystemSaison);
+        dataObjectToEntity.put(AltsystemMannschaftDO.class, altsystemMannschaft);
+        dataObjectToEntity.put(AltsystemSchuetzeDO.class, altsystemSchuetze);
+        dataObjectToEntity.put(AltsystemWettkampfdatenDO.class, altsystemWettkampfdaten);
+        dataObjectToEntity.put(AltsystemErgebnisseDO.class, altsystemErgebnisse);
 
         debugSelect();
     }
 
     private static Map<String, Class<?>> getTableNameToClassMap() {
-        Map<String, Class<?>> result = new HashMap<>();
+        Map<String, Class<?>> result = new LinkedHashMap<>();
 
-        // TODO register other tables
         result.put("altsystem_liga", AltsystemLigaDO.class);
+        result.put("altsystem_saison", AltsystemSaisonDO.class);
+        result.put("altsystem_mannschaft", AltsystemMannschaftDO.class);
+        result.put("altsystem_schuetze", AltsystemSchuetzeDO.class);
+        result.put("altsystem_wettkampfdaten", AltsystemWettkampfdatenDO.class);
+        result.put("altsystem_ergebniss", AltsystemErgebnisseDO.class);
 
         return result;
     }
@@ -128,10 +154,11 @@ public class TriggerService implements ServiceFacade {
         LOGGER.debug("Computing changes");
 
         List<TriggerChange<?>> changes = computeAllChanges(triggeringUserId);
+        LOGGER.debug("Computed {} changes", changes.size());
 
         for (TriggerChange<?> change : changes) {
-            LOGGER.debug("Migrating {}", change.getAltsystemDataObject());
-            change.tryMigration();
+            boolean success = change.tryMigration();
+            LOGGER.debug("Migrated {} (Success: {})", change.getAltsystemDataObject(), success);
         }
 
         //Updated den Timestamp nach dem sync
