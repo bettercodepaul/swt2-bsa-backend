@@ -2,8 +2,6 @@ package de.bogenliga.application.services.v1.trigger.model;
 
 import java.time.OffsetDateTime;
 import org.junit.Test;
-import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
-import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import junit.framework.TestCase;
 
 /**
@@ -17,8 +15,8 @@ public class TriggerDTOTest extends TestCase{
 	private static final Long ID = 4L;
 	private static final String KATEGORIE = "Pizza Hawaii"; //I did not choose this
 	private static final Long ALTSYSTEM_ID = 5L;
-	private static final TriggerChangeOperation OPERATION = null;
-	private static final TriggerChangeStatus STATUS = null;
+	private static final Long OPERATION = null;
+	private static final Long STATUS = null;
 	private static final String NACHRICHT = "horrible"; //I did choose this
 	private static final OffsetDateTime CREATED_AT_UTC = OffsetDateTime.MIN;
 	private static final OffsetDateTime RUN_AT_UTC = OffsetDateTime.MIN;
@@ -28,8 +26,8 @@ public class TriggerDTOTest extends TestCase{
 	private static final Long newID = 8L;
 	private static final String newKATEGORIE = "Pizza Margherita";
 	private static final Long newALTSYSTEM_ID = 10L;
-	private static final TriggerChangeOperation newOPERATION = null;
-	private static final TriggerChangeStatus newSTATUS = null;
+	private static final Long newOPERATION = null;
+	private static final Long newSTATUS = null;
 	private static final String newNACHRICHT = "perfect";
 	private static final OffsetDateTime newCREATED_AT_UTC = OffsetDateTime.MAX;
 	private static final OffsetDateTime newRUN_AT_UTC = OffsetDateTime.MAX;
@@ -90,7 +88,7 @@ public class TriggerDTOTest extends TestCase{
 	@Test
 	public void testGetOperation(){
 		TriggerDTO actual = getExpectedDTO();
-		TriggerChangeOperation actualOperation = actual.getOperation();
+		Long actualOperation = actual.getOperation();
 
 		assertEquals(OPERATION, actualOperation);
 	}
@@ -98,7 +96,7 @@ public class TriggerDTOTest extends TestCase{
 	public void testSetOperation(){
 		TriggerDTO actual = getExpectedDTO();
 		actual.setOperation(newOPERATION);
-		TriggerChangeOperation actualOperation = actual.getOperation();
+		Long actualOperation = actual.getOperation();
 
 		assertEquals(newOPERATION, actualOperation);
 	}
@@ -106,7 +104,7 @@ public class TriggerDTOTest extends TestCase{
 	@Test
 	public void testGetStatus(){
 		TriggerDTO actual = getExpectedDTO();
-		TriggerChangeStatus actualStatus = actual.getStatus();
+		Long actualStatus = actual.getStatus();
 
 		assertEquals(STATUS, actualStatus);
 	}
@@ -114,7 +112,7 @@ public class TriggerDTOTest extends TestCase{
 	public void testSetStatus(){
 		TriggerDTO actual = getExpectedDTO();
 		actual.setStatus(newSTATUS);
-		TriggerChangeStatus actualStatus = actual.getStatus();
+		Long actualStatus = actual.getStatus();
 
 		assertEquals(newSTATUS, actualStatus);
 	}
