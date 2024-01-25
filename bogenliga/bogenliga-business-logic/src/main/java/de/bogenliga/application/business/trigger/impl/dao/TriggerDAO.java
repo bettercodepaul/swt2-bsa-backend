@@ -100,4 +100,17 @@ public class TriggerDAO implements DataAccessObject {
     public List<TriggerBE> findAll() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
     }
+
+
+    public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
+        basicDAO.setCreationAttributes(triggerBE, currentUserId);
+
+        return basicDAO.insertEntity(TRIGGER, triggerBE);
+    }
+
+    public TriggerBE update(TriggerBE triggerBE, Long currentUserId) {
+        basicDAO.setModificationAttributes(triggerBE, currentUserId);
+
+        return basicDAO.updateEntity(TRIGGER, triggerBE);
+    }
 }
