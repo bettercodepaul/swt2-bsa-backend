@@ -30,6 +30,8 @@ public class DsbMitgliedMapperTest {
     private static final long VEREINSID = 2;
     private static final long USERID = 4242;
 
+    private final int[] ZAHLENLISTE = {0,129, 173};
+    private final String[] NAMENSLISTE = {"Allmendinger" , "Michael", "Gröner", "Alexander" , "Haag", "Axel"};
 
     @Test
     public void toDO() throws Exception {
@@ -55,4 +57,5 @@ public class DsbMitgliedMapperTest {
         assertThat(actual.getDsbMitgliedId()).isEqualTo(ID);
         assertThat(actual.getDsbMitgliedVorname()).isEqualTo(VORNAME);
     }
+
 }
