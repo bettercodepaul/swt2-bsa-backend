@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
 import org.junit.Rule;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
