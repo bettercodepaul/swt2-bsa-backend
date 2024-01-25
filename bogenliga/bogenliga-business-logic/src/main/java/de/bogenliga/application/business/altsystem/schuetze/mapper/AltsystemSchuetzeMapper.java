@@ -2,6 +2,8 @@ package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.validation.constraints.Null;
+import org.flywaydb.core.Flyway;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
@@ -53,27 +55,34 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
             dsbMitglied.setGeburtsdatum(null);
             dsbMitglied.setNationalitaet(null);
             dsbMitglied.setMitgliedsnummer(null);
-            dsbMitglied.setVereinsId(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, (long) altsystemSchuetzeDO.getMannschaft_id()).getAltsystem_id());
+            dsbMitglied.setVereinsId(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
+                            altsystemSchuetzeDO.getMannschaft_id()).getBogenliga_id());
 
-            //unten aufgeführte Funktionen in DsbMitgliedDO nicht vorhanden - wie sollen diese Werte gesetzt werden?
-            /*
-            dsbMitglied.setCreated_at_utc(null);
-            dsbMitglied.setCreated_by(0);
-            dsbMitglied.setLast_modified_at_utc(null);
-            dsbMitglied.setLast_modified_by(0);
-            dsbMitglied.setVersion(0);
-            */
+
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schütze_Verein,
+                    altsystemID, dsbMitglied.getVereinsId(), altsystemName);
+        }
 
         return dsbMitglied;
     }
 
+    //Namen sind im Altsystem unterschiedlich getrennt, da als einzelnes Attribut (name) in der Tabelle gespeichert
+    //parsing erfolgt um Namen in Vorname + Nachname zu splitten, da im neuen System zwei verschiedene Attribute (vorname, nachname) dafür existieren
+    public String[] parseName(AltsystemSchuetzeDO altsystemSchuetzeDO){
+        String[] schuetzeName;
 
-    public DsbMitgliedDO addDefaultFields(DsbMitgliedDO dsbMitgliedDO) {
-        // ID von Verein herausfinden
+        //Fall 1: Name ist getrennt durch Komma + beliebig viele Leerzeichen
+        if (altsystemSchuetzeDO.getName().contains(",")) {
+            schuetzeName = altsystemSchuetzeDO.getName().split(",");
+            schuetzeName[0] = schuetzeName[0].replaceAll("\\s+", "");
+            schuetzeName[1] = schuetzeName[1].replaceAll("\\s+", "");
+        //Fall 2: Name ist getrennt durch >= 1 Leerzeichen
+        } else {
+            schuetzeName = altsystemSchuetzeDO.getName().split(" ");
+            schuetzeName[0] = schuetzeName[0].replaceAll("\\s+", "");
+            schuetzeName[1] = schuetzeName[1].replaceAll("\\s+", "");
+        }
 
-        vereinComponent.findById(dsbMitgliedDO.getId());
-        
-        
-        return dsbMitgliedDO;
+        return schuetzeName;
     }
 }
