@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
+import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import static org.junit.Assert.*;
@@ -19,12 +20,11 @@ import static org.junit.Assert.*;
 public class TriggerChangeTest<T extends AltsystemDO> {
 
 
-	private static final TriggerChangeStatus isNew = TriggerChangeStatus.NEW;
-	private static final TriggerChangeStatus isInProgress = TriggerChangeStatus.IN_PROGRESS;
-	private static final TriggerChangeStatus isError= TriggerChangeStatus.ERROR;
-	private static final TriggerChangeStatus isSuccess = TriggerChangeStatus.SUCCESS;
-	private static final TriggerChangeOperation isUpdate = TriggerChangeOperation.UPDATE;
-	private static final TriggerChangeOperation isCreate = TriggerChangeOperation.CREATE;
+	private static final TriggerChangeStatus New = TriggerChangeStatus.NEW;
+	private static final TriggerChangeStatus InProgress = TriggerChangeStatus.IN_PROGRESS;
+	private static final TriggerChangeStatus Error= TriggerChangeStatus.ERROR;
+	private static final TriggerChangeStatus Success = TriggerChangeStatus.SUCCESS;
+	private static final long triggeringUserId = 21;
 
 
 	@Rule
@@ -32,12 +32,27 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 
 	@Mock
 	public AltsystemDO altsystemDO;
-
 	@Mock
-	public AltsystemEntity altsystemEntity;
+	public AltsystemEntity<T> altsystemEntity;
+	@Mock
+	public TriggerDO triggerDO;
+	@Mock
+	public T altsystemDataObject;
 
-	@InjectMocks
-	public TriggerChange triggerChange;
+
+
+	private TriggerChange getExpectedTC(){
+		return new TriggerChange(triggerDO, altsystemDataObject, altsystemEntity, triggeringUserId);
+	}
+
+	@Test
+	public void testGetId(){
+		TriggerChange actual = getExpectedTC();
+		AltsystemDO actualAltsystemDataObject = actual.getAltsystemDataObject();
+
+		assertEquals(altsystemDataObject, actualAltsystemDataObject);
+	}
+
 
 
 	//NEW, IN_PROGRESS, ERROR, SUCCESS
@@ -46,29 +61,6 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 		//TODO
 	}
 
-
-	//@Test
-	public void testGetSetState(){
-
-		TriggerChangeStatus actual = triggerChange.getState();
-		assertNull(actual);
-
-		triggerChange.setState(TriggerChangeStatus.NEW);
-		actual = triggerChange.getState();
-		assertEquals(isNew, actual);
-
-		triggerChange.setState(TriggerChangeStatus.IN_PROGRESS);
-		actual = triggerChange.getState();
-		assertEquals(isInProgress, actual);
-
-		triggerChange.setState(TriggerChangeStatus.ERROR);
-		actual = triggerChange.getState();
-		assertEquals(isError, actual);
-
-		triggerChange.setState(TriggerChangeStatus.SUCCESS);
-		actual = triggerChange.getState();
-		assertEquals(isSuccess, actual);
-	}
 
 
 }
