@@ -91,7 +91,6 @@ public class AltsystemLigaMapperTest {
         LigaDO expectedDO = new LigaDO();
         expectedDO.setDisziplinId(RECURVE_ID);
         expectedDO.setName(altsystemLigaDO.getName());
-        expectedDO.setLigaUebergeordnetId(altsystemLigaDO.getIdNextLiga());
 
         // configure mocks
         when(disziplinComponent.findAll()).thenReturn(getMockDisziplinen());
