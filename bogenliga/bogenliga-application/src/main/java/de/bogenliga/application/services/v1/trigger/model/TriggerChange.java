@@ -1,9 +1,12 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 
@@ -25,7 +28,10 @@ public class TriggerChange<T extends AltsystemDO> {
 
     private final long triggeringUserId;
 
-    public TriggerChange(TriggerDO data, T altsystemDataObject, AltsystemEntity<T> altsystemEntity, long triggeringUserId) {
+    private final TriggerComponent triggerComponent;
+
+    public TriggerChange(TriggerComponent triggerComponent, TriggerDO data, T altsystemDataObject, AltsystemEntity<T> altsystemEntity, long triggeringUserId) {
+        this.triggerComponent = triggerComponent;
         this.data = data;
         this.altsystemDataObject = altsystemDataObject;
         this.altsystemEntity = altsystemEntity;
@@ -49,7 +55,9 @@ public class TriggerChange<T extends AltsystemDO> {
     }
 
     public boolean tryMigration() {
+        data.setRunAtUtc(OffsetDateTime.now());
         setState(TriggerChangeStatus.IN_PROGRESS);
+        triggerComponent.update(data, triggeringUserId);
 
         try {
             executeMigrationOnEntity();
@@ -57,7 +65,10 @@ public class TriggerChange<T extends AltsystemDO> {
             return true;
         } catch (Exception exception) {
             setState(TriggerChangeStatus.ERROR);
+            data.setNachricht(exception.getMessage());
             return false;
+        } finally {
+            triggerComponent.update(data, triggeringUserId);
         }
     }
 
