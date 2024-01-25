@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
 import de.bogenliga.application.business.liga.api.LigaComponent;
-import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
@@ -28,14 +27,12 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
 import de.bogenliga.application.common.service.ServiceFacade;
-import de.bogenliga.application.services.v1.regionen.mapper.RegionenDTOMapper;
-import de.bogenliga.application.services.v1.regionen.model.RegionenDTO;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
-import de.bogenliga.olddb.Main;
+import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
 
 
 @RestController
@@ -101,7 +98,7 @@ public class TriggerService implements ServiceFacade {
     }
 
     public void syncData() {
-        Main.sync();
+        OldDbImport.sync();
         LOGGER.debug("Computing changes");
         List<TriggerChange<?>> changes = computeAllChanges();
 
