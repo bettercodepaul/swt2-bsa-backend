@@ -1,4 +1,4 @@
-package de.bogenliga.olddb;
+package de.bogenliga.application.services.v1.olddbimport;
 
 /**
 
@@ -24,8 +24,8 @@ import de.bogenliga.application.common.configuration.DatabaseConfiguration;
 
 
 
-public class Main {
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+public class OldDbImport {
+    private static final Logger LOG = LoggerFactory.getLogger(OldDbImport.class);
 
     // Verbindungsinformationen
 private static String host = "My SQL Host hinzufügen";
