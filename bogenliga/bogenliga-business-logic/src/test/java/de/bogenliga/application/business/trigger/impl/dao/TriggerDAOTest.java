@@ -31,7 +31,7 @@ public class TriggerDAOTest {
 	private TriggerDAO triggerDAO;
 
 	@Test
-	public void ftestFindAll() {
+	public void testFindAll() {
 		// prepare test data
 		final TriggerBE expectedBE = getTriggerBE();
 

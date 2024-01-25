@@ -13,7 +13,9 @@ import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
+import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
+import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -32,6 +34,7 @@ public class TriggerComponentImplTest {
 	private static final TriggerChangeStatus TRIGGER_STATUS = null;
 	private static final String TRIGGER_NACHRICHT = "testmsg";
 	private static final Timestamp TRIGGER_RUNATUTC = null;
+	private static final Timestamp TRIGGER_SYNCTIMESTAMP = null;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -40,6 +43,14 @@ public class TriggerComponentImplTest {
 	@InjectMocks
 	private TriggerComponentImpl underTest;
 
+
+	public static MigrationTimestampBE getMigrationTimestampBE() {
+		final MigrationTimestampBE expectedBE = new MigrationTimestampBE();
+		expectedBE.setSyncTimestamp(TRIGGER_SYNCTIMESTAMP);
+		expectedBE.setId(TRIGGER_ID);
+
+		return expectedBE;
+	}
 
 	public static TriggerBE getTriggerBE() {
 		final TriggerBE expectedBE = new TriggerBE();
