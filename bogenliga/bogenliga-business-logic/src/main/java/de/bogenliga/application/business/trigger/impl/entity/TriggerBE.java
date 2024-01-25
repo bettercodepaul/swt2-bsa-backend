@@ -18,7 +18,6 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     private TriggerChangeOperation changeOperation;
     private TriggerChangeStatus changeStatus;
     private String nachricht;
-    private Timestamp createdAtUtc;
     private Timestamp runAtUtc;
 
 
@@ -78,12 +77,6 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
     public void setNachricht(String nachricht) {
         this.nachricht = nachricht;
     }
-    public Timestamp getCreatedAtUtc(){
-        return createdAtUtc;
-    }
-    public void setCreatedAtUtc(Timestamp createdAtUtc) {
-        this.createdAtUtc = createdAtUtc;
-    }
     public Timestamp getRunAtUtc() {
         return runAtUtc;
     }
@@ -103,7 +96,6 @@ public class TriggerBE extends CommonBusinessEntity implements BusinessEntity {
                 ", changeOperation=" + changeOperation +
                 ", changeStatus=" + changeStatus +
                 ", nachricht='" + nachricht + '\'' +
-                ", createdAtUtc=" + createdAtUtc +
                 ", runAtUtc=" + runAtUtc +
                 '}';
     }
