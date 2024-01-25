@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -157,5 +158,19 @@ public class TriggerService implements ServiceFacade {
         }
 
         return changes;
+    }
+
+    private static TriggerChangeOperation determineOperationFromTimestamp(AltsystemDO altsystemDO, OffsetDateTime lastSync) {
+        OffsetDateTime createdAt = altsystemDO.getCreatedAtUtc();
+        if (createdAt.isAfter(lastSync)) {
+            return TriggerChangeOperation.CREATE;
+        }
+
+        OffsetDateTime updatedAt = altsystemDO.getLastModifiedAtUtc();
+        if (updatedAt.isAfter(lastSync)) {
+            return TriggerChangeOperation.UPDATE;
+        }
+
+        return null;
     }
 }
