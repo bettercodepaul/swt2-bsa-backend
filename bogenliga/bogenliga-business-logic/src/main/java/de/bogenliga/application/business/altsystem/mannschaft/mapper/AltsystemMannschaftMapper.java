@@ -21,7 +21,7 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 public class AltsystemMannschaftMapper implements ValueObjectMapper {
 
     private final AltsystemUebersetzung altsystemUebersetzung;
-    private final AltsystemLigaMapper altsystemLigaMapper;
+
     private final DsbMannschaftComponent dsbMannschaftComponent;
 
 
@@ -30,12 +30,11 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
                                      AltsystemLigaMapper altsystemLigaMapper,
                                      DsbMannschaftComponent dsbMannschaftComponent) {
         this.altsystemUebersetzung = altsystemUebersetzung;
-        this.altsystemLigaMapper = altsystemLigaMapper;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
     }
 
 
-    public static DsbMannschaftDO toDO(DsbMannschaftDO dsbMannschaftDO, AltsystemMannschaftDO altsystemMannschaftDO){
+    public DsbMannschaftDO toDO(DsbMannschaftDO dsbMannschaftDO, AltsystemMannschaftDO altsystemMannschaftDO){
 
         String currentName = altsystemMannschaftDO.getName().toString();
         int nameLong = currentName.length() - 1;
@@ -60,10 +59,11 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
     }
 
 
-    public DsbMannschaftDO addDefaultFields (AltsystemMannschaftDO altsystemDataObject, DsbMannschaftDO dsbMannschaftDO, long currentDSBMitglied){
+    public DsbMannschaftDO addDefaultFields ( DsbMannschaftDO dsbMannschaftDO, long currentDSBMitglied,  AltsystemMannschaftDO altsystemDataObject){
 
         dsbMannschaftDO.setBenutzerId(currentDSBMitglied);
 
+        //AltsystemMannschaftDO altsystemDataObject = null;
         AltsystemUebersetzungDO vereinUebersetzung = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());
 

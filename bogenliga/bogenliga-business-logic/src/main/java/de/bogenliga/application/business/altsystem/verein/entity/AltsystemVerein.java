@@ -6,11 +6,14 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.verein.mapper.AltsystemVereinMapper;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
  * TODO [AL] class documentation
@@ -48,7 +51,22 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
 
 
     @Override
-    public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
+    public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) throws SQLException {
+
+        AltsystemUebersetzungDO vereinUebersetzung = altsystemUebersetzung.findByAltsystemID(
+                AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());
+
+
+        if(vereinUebersetzung == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                    String.format("No result found for ID '%s'", altsystemDataObject.getId()));
+        }
+
+        VereinDO vereinDO = vereinComponent.findById(vereinUebersetzung.getBogenliga_id());
+
+        altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
+
+        vereinComponent.update(vereinDO, currentUserId);
 
     }
 }
