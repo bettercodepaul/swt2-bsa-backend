@@ -71,6 +71,6 @@ public class MigrationTimestampDAO implements DataAccessObject {
     }
 
     public MigrationTimestampBE update(final MigrationTimestampBE timestampBE) {
-        return basicDAO.updateEntity(SYNCDATATRIGGER, timestampBE);
+        return basicDAO.updateEntity(SYNCDATATRIGGER, timestampBE, "id");
     }
 }
