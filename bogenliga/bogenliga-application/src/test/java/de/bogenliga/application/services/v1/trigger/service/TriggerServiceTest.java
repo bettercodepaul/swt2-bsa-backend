@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -32,10 +34,10 @@ public class TriggerServiceTest {
 
 	@Mock
 	private BasicDAO basicDao;
-
 	@Mock
-	private TriggerService triggerService;
-
+	private TriggerDAO triggerDAO;
+	@Mock
+	private LigaComponent ligaComponent;
 	@InjectMocks
 	private TriggerService triggerTest;
 
