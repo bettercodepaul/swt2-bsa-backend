@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class MigrationTimestampBETest {
 
 	private static final Timestamp SYNCTIMESTAMP = null;
-	private static final Long ID = 1L;
+	private static final Long ID = 123L;
 
 
 	@Test
