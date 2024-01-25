@@ -33,24 +33,25 @@ public class AltsystemMatchMapper {
         mannschaftDO.setMannschaftId(mannschaftUebersetzung.getBogenliga_id());
         mannschaftDO.setSatzpunkte((long) altsystemDataObject.getSatzPlus());
         mannschaftDO.setMatchpunkte((long) altsystemDataObject.getMatchPlus());
-        mannschaftDO.setBegegnung((long) altsystemDataObject.getMatch());
+        mannschaftDO.setNr((long) altsystemDataObject.getMatch());
 
         MatchDO gegnerDO = match[1];
         AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (long) altsystemDataObject.getGegnerId());
         gegnerDO.setMannschaftId(gegnerUebersetzung.getBogenliga_id());
         gegnerDO.setSatzpunkte((long) altsystemDataObject.getSatzMinus());
         gegnerDO.setMatchpunkte((long) altsystemDataObject.getMatchMinus());
-        gegnerDO.setBegegnung((long) altsystemDataObject.getMatch());
+        gegnerDO.setNr((long) altsystemDataObject.getMatch());
 
         return match;
     }
 
 
     public MatchDO[] addDefaultFields(MatchDO[] matchDO, List<WettkampfDO> wettkampfTage) {
-        WettkampfDO wettkampfDO = getCurrentWettkampfTag(wettkampfTage);
+        WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO[0], wettkampfTage);
         for(int i = 0; i < 2; i++){
             matchDO[i].setWettkampfId(wettkampfDO.getId());
-            matchDO[i].setMatchScheibennummer((long) getScheibenNummerPointer(wettkampfDO) + i + 1);
+            matchDO[i].setMatchScheibennummer((long) getCurrentScheibennummer(wettkampfDO) + i);
+            matchDO[i].setBegegnung((long) getCurrentBegegnung(wettkampfDO));
             matchDO[i].setStrafPunkteSatz1(0L);
             matchDO[i].setStrafPunkteSatz2(0L);
             matchDO[i].setStrafPunkteSatz3(0L);
@@ -60,22 +61,20 @@ public class AltsystemMatchMapper {
         return matchDO;
     }
 
-    public WettkampfDO getCurrentWettkampfTag(List<WettkampfDO> wettkampfTage){
-        WettkampfDO result = null;
-        for(int i = 0; i < 4; i++){
-            List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfTage.get(i).getId());
-            if(matches.size() < 56){
-                result = wettkampfTage.get(i);
-                break;
-            }
-        }
-        return result;
+    public WettkampfDO getCurrentWettkampfTag(MatchDO matchDO, List<WettkampfDO> wettkampfTage){
+        return wettkampfTage.get((int) Math.ceil(matchDO.getNr() / 7.0));
     }
 
-    public int getScheibenNummerPointer(WettkampfDO wettkampfDO){
+    public int getCurrentScheibennummer(WettkampfDO wettkampfDO){
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDO.getId());
         int matchCount = matches.size();
-        return matchCount % 8;
+        return (matchCount % 8) + 1;
+    }
+
+    public int getCurrentBegegnung(WettkampfDO wettkampfDO){
+        List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDO.getId());
+        int matchCount = matches.size();
+        return (matchCount % 4) + 1;
     }
 
 }
