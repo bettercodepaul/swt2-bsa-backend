@@ -21,6 +21,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
 
     public DsbMitgliedDO toDO(AltsystemSchuetzeDO altsystemSchuetzeDO) throws SQLException {
 
+        //dont execute method if argument is null
         if(altsystemSchuetzeDO == null){
             throw new NullPointerException(altsystemSchuetzeDO + " does not exist");
         }
