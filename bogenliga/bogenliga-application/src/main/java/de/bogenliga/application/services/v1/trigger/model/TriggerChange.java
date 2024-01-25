@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
+import java.sql.SQLException;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
@@ -22,11 +23,13 @@ public class TriggerChange<T extends AltsystemDO> {
      */
     private final AltsystemEntity<T> altsystemEntity;
 
+    private final long triggeringUserId;
 
-    public TriggerChange(TriggerDO data, T altsystemDataObject, AltsystemEntity<T> altsystemEntity) {
+    public TriggerChange(TriggerDO data, T altsystemDataObject, AltsystemEntity<T> altsystemEntity, long triggeringUserId) {
         this.data = data;
         this.altsystemDataObject = altsystemDataObject;
         this.altsystemEntity = altsystemEntity;
+        this.triggeringUserId = triggeringUserId;
     }
 
     public T getAltsystemDataObject() {
@@ -58,13 +61,13 @@ public class TriggerChange<T extends AltsystemDO> {
         }
     }
 
-    private void executeMigrationOnEntity() {
+    private void executeMigrationOnEntity() throws SQLException {
         switch (getType()) {
             case CREATE:
-                altsystemEntity.create(altsystemDataObject);
+                altsystemEntity.create(altsystemDataObject, triggeringUserId);
                 break;
             case UPDATE:
-                altsystemEntity.update(altsystemDataObject);
+                altsystemEntity.update(altsystemDataObject, triggeringUserId);
                 break;
             default:
                 throw new IllegalStateException("Invalid operation: " + getType());
