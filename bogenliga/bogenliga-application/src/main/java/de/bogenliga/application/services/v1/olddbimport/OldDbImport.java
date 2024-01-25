@@ -1,4 +1,4 @@
-package de.bogenliga.olddb;
+package de.bogenliga.application.services.v1.olddbimport;
 
 /**
 
@@ -24,15 +24,15 @@ import de.bogenliga.application.common.configuration.DatabaseConfiguration;
 
 
 
-public class Main {
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+public class OldDbImport {
+    private static final Logger LOG = LoggerFactory.getLogger(OldDbImport.class);
 
     // Verbindungsinformationen
-private static String host = "My SQL Host hinzufügen";
+    static String host = "mysql2f19.netcup.net";
     private static int port = 3306;
-    private static String dbName = "My SQL Name hinzufügen";
-    private static String user = "My SQL User hinzufügen";
-    private static String password = "My Password Host hinzufügen";
+    private static String dbName = "k74918_bogenliga";
+    private static String user = "k74918_bsapp_ro";
+    private static String password = "BsApp@100%";
 
     private static DatabaseConfiguration databaseConfiguration;
 
@@ -106,7 +106,7 @@ private static String host = "My SQL Host hinzufügen";
                 e.printStackTrace();
             }
             finally{
-                executeScript("temptable.sql", "jdbc:postgresql: url hinzufügen", "user hinzufügen","pw hinzufügen" );            }
+                executeScript("temptable.sql", "jdbc:postgresql://localhost:5432/swt2", "swt2","swt2" );           }
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
