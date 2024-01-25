@@ -37,7 +37,6 @@ import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
-import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
@@ -46,7 +45,6 @@ import de.bogenliga.application.common.errorhandling.exception.TechnicalExceptio
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
 import de.bogenliga.application.common.time.DateProvider;
-import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
@@ -146,14 +144,13 @@ public class TriggerService implements ServiceFacade {
         }
     }
 
-    public OffsetDateTime getMigrationTimestamp() {
+    public Timestamp getMigrationTimestamp() {
         List<MigrationTimestampBE> timestamplist = migrationTimestampDAO.findAll();
         if (timestamplist.isEmpty()){
             return null;
         }
         else{
-            Timestamp timestamp = timestamplist.get(0).getSyncTimestamp();
-            return DateProvider.convertTimestamp(timestamp);
+            return timestamplist.get(0).getSyncTimestamp();
         }
     }
 
@@ -167,7 +164,7 @@ public class TriggerService implements ServiceFacade {
         LOGGER.debug("Importing tables from old database");
         OldDbImport.sync();
 
-        OffsetDateTime lastSync = getMigrationTimestamp();
+        Timestamp lastSync = getMigrationTimestamp();
 
         LOGGER.debug("Computing changes");
         List<TriggerChange<?>> changes = computeAllChanges(triggeringUserId, lastSync);
@@ -197,7 +194,7 @@ public class TriggerService implements ServiceFacade {
      * Checks the imported old database tables for changes and returns all
      * updated and newly created models.
      */
-    private List<TriggerChange<?>> computeAllChanges(final long triggeringUserId, OffsetDateTime lastSync) {
+    private List<TriggerChange<?>> computeAllChanges(final long triggeringUserId, Timestamp lastSync) {
         List<TriggerChange<?>> changes = new ArrayList<>();
 
         for (String oldTableName : tableNameToClass.keySet()) {
@@ -211,12 +208,12 @@ public class TriggerService implements ServiceFacade {
         return changes;
     }
 
-    private <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName, long triggeringUserId, OffsetDateTime lastSync) {
+    private <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName, long triggeringUserId, Timestamp lastSync) {
         Class<T> oldClass = (Class<T>) tableNameToClass.get(oldTableName);
         String sqlQuery = "SELECT * FROM " + oldTableName;
 
         final List<T> allTableObjects = basicDao.selectEntityList(new BusinessEntityConfiguration<>(
-                oldClass, oldTableName, new HashMap<>(), LOGGER
+                oldClass, oldTableName, AltsystemDO.technicalColumnsToFieldsMap, LOGGER
         ), sqlQuery);
 
         List<TriggerChange<T>> changes = new ArrayList<>();
@@ -239,20 +236,20 @@ public class TriggerService implements ServiceFacade {
         return changes;
     }
 
-    private static TriggerChangeOperation determineOperationFromTimestamp(AltsystemDO altsystemDO, OffsetDateTime lastSync) {
+    private static TriggerChangeOperation determineOperationFromTimestamp(AltsystemDO altsystemDO, Timestamp lastSync) {
         if (lastSync == null) {
             // No data was imported, ever
             return TriggerChangeOperation.CREATE;
         }
 
-        OffsetDateTime createdAt = altsystemDO.getCreatedAtUtc();
-        if (createdAt.isAfter(lastSync)) {
+        Timestamp createdAt = altsystemDO.getCreatedAt();
+        if (createdAt.after(lastSync)) {
             // This object was newly added
             return TriggerChangeOperation.CREATE;
         }
 
-        OffsetDateTime updatedAt = altsystemDO.getLastModifiedAtUtc();
-        if (updatedAt.isAfter(lastSync)) {
+        Timestamp updatedAt = altsystemDO.getUpdatedAt();
+        if (updatedAt.after(lastSync)) {
             // This object is already imported, but has to be updated
             return TriggerChangeOperation.UPDATE;
         }
