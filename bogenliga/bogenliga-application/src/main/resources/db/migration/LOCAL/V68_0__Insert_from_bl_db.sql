@@ -51,9 +51,6 @@ INSERT INTO altsystem_saison VALUES (1,'2017 - 2018',1,0),(2,'2018 - 2019',1,0),
 /*!40000 ALTER TABLE `saison` ENABLE KEYS */;
 COMMIT;
 
--- Löschen des abhängigen Fremdschlüssel-Constraints in der Tabelle "acl"
-ALTER TABLE altsystem_acl DROP CONSTRAINT IF EXISTS altsystem_fk_acl_users_id;
-
 -- Löschen der Tabelle "users" und der Sequenz
 DROP TABLE IF EXISTS altsystem_users CASCADE;
 
