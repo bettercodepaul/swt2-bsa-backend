@@ -31,7 +31,8 @@ public class MigrationTimestampBE implements BusinessEntity {
 
     public String toString() {
         return "SyncDataTriggerBE{" +
-                "syncTimestamp" + syncTimestamp +
+                "id=" + id +
+                ", syncTimestamp=" + syncTimestamp +
                 '}';
     }
 
