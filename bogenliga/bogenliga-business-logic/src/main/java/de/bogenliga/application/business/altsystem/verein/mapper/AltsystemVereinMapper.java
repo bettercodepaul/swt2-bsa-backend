@@ -1,11 +1,13 @@
 package de.bogenliga.application.business.altsystem.verein.mapper;
 
 
-import java.sql.SQLException;
+import java.util.List;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 
@@ -17,8 +19,43 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 @Component
 public class AltsystemVereinMapper implements ValueObjectMapper {
 
+    private final VereinComponent vereinComponent;
 
-    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemMannschaftDO) throws SQLException {
+
+    public AltsystemVereinMapper(VereinComponent vereinComponent) {
+        this.vereinComponent = vereinComponent;
+    }
+
+
+    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemMannschaftDO) {
+
+
+        String parsedName = parseName(altsystemMannschaftDO);
+        Long altsystemID = altsystemMannschaftDO.getId();
+
+        VereinDO vorhanden = getVereinDO(parsedName);
+
+        if (vorhanden == null){
+
+
+        }
+
+
+        return vereinDO;
+    }
+
+    public VereinDO addDefaultFields(VereinDO vereinDO){
+
+        AltsystemLigaMapper altsystemLigaMapper = null;
+        RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
+        vereinDO.setRegionId(dsbDO.getId());
+
+
+        return vereinDO;
+    }
+
+
+    public String parseName(AltsystemMannschaftDO altsystemMannschaftDO) {
 
         char[] nameOld = altsystemMannschaftDO.getName().toCharArray();
         String nameNew = "";
@@ -35,7 +72,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
             // Speichere das aktuelle Zeichen am Index, um getString().charAt()-Aufrufe zu minimieren (für bessere Speichereffizienz)
             if (i + 1 < altsystemMannschaftDO.getName().length()) {
-                    // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
+                // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
                 if (altsystemMannschaftDO.getName().charAt(i) == '.' && altsystemMannschaftDO.getName().charAt(
                         i + 1) != ' ') {
                     nameNew += ". ";
@@ -100,23 +137,28 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         }
 
 
-        vereinDO.setName(nameNew);
 
         // Gibt das Vereinsobjekt zurück
-        return vereinDO;
-    }
+        return nameNew;
 
-    public VereinDO addDefaultFields(VereinDO vereinDO){
-
-        AltsystemLigaMapper altsystemLigaMapper = null;
-        RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
-        vereinDO.setRegionId(dsbDO.getId());
-
-
-        return vereinDO;
     }
 
 
+    public VereinDO getVereinDO(String vereinName){
+
+        VereinDO nameDO = null;
+        List<VereinDO> vereinDOS = vereinComponent.findBySearch(vereinName);
+        for (VereinDO vereinDO : vereinDOS){
+            String verName = vereinDO.getName();
+            if(verName.equals(vereinName)){
+                nameDO = vereinDO;
+                break;
+            } else {
+                return null;
+            }
+        }
+        return nameDO;
+    }
 
 
 }

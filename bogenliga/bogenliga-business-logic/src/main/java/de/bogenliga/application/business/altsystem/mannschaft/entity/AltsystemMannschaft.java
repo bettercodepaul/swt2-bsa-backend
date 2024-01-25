@@ -53,7 +53,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
     public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
 
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());
+                AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getId());
 
 
         if(mannschaftUebersetzung == null){
