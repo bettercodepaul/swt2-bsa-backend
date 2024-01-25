@@ -99,6 +99,7 @@ public class TriggerService implements ServiceFacade {
 
     public void syncData() {
 
+        OldDbImport.sync();
         LOGGER.debug("Computing changes");
         List<TriggerChange<?>> changes = computeAllChanges();
 
