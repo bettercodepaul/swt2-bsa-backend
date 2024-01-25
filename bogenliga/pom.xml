@@ -17,7 +17,6 @@
         <module>./bogenliga-business-logic</module>
         <module>./bogenliga-common</module>
         <module>./bogenliga-report</module>
-        <module>./bogenliga-olddbimport</module>
     </modules>
 
     <properties>

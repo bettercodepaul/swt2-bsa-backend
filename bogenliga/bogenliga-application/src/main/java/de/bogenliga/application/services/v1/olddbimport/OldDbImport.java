@@ -1,35 +1,27 @@
-package de.bogenliga.olddb;
+package de.bogenliga.application.services.v1.olddbimport;
 
-/**
-
- TODO [AL] class documentation*
- @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
-
-public class Main {
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+public class OldDbImport {
+    private static final Logger LOG = LoggerFactory.getLogger(OldDbImport.class);
 
     // Verbindungsinformationen
-
-
     private static String host = "mysql2f19.netcup.net";
     private static int port = 3306;
     private static String dbName = "k74918_bogenliga";
@@ -48,9 +40,7 @@ public class Main {
 
     public static void main (String [] args){
         sync();
-
     }
-    
 
     public static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
         try{
