@@ -55,8 +55,6 @@ public class AltsystemUebersetzung {
                 }
             }
 
-            // Datenbankverbindung schließen
-            connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
