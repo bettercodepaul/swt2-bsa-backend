@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,10 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
-import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
-import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
@@ -29,13 +29,15 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
+import de.bogenliga.application.common.service.UserProvider;
+import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
+import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import de.bogenliga.application.springconfiguration.security.permissions.RequiresPermission;
 import de.bogenliga.application.springconfiguration.security.types.UserPermission;
-import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
-import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
 
 
 
@@ -57,7 +59,7 @@ public class TriggerService implements ServiceFacade {
     private final MigrationTimestampDAO migrationTimestampDAO;
 
     @Autowired
-    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final LigaComponent ligaComponent, final
+    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final AltsystemLiga altsystemLiga, final
     TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO) {
         this.basicDao = basicDao;
         this.triggerDAO = triggerDAO;
@@ -65,7 +67,7 @@ public class TriggerService implements ServiceFacade {
         this.migrationTimestampDAO = migrationTimestampDAO;
 
         dataObjectToEntity = new HashMap<>();
-        dataObjectToEntity.put(AltsystemLigaDO.class, new AltsystemLiga(ligaComponent));
+        dataObjectToEntity.put(AltsystemLigaDO.class, altsystemLiga);
 
         debugSelect();
     }
@@ -74,18 +76,20 @@ public class TriggerService implements ServiceFacade {
         Map<String, Class<?>> result = new HashMap<>();
 
         // TODO register other tables
-        result.put("bl_liga", AltsystemLigaDO.class);
+        result.put("altsystem_liga", AltsystemLigaDO.class);
 
         return result;
     }
 
     @RequiresPermission(UserPermission.CAN_MODIFY_SYSTEMDATEN)
     @GetMapping("/buttonSync")
-    public int startTheSync() {
+    public int startTheSync(final Principal principal) {
+        final long triggeringUserId = UserProvider.getCurrentUserId(principal);
+
         try {
-            syncData();
+            syncData(triggeringUserId);
         } catch(Exception e) {
-            LOGGER.debug("Could not sync data.");
+            LOGGER.debug("Could not sync data.", e);
             return 0;
         }
         return 1;
@@ -115,26 +119,23 @@ public class TriggerService implements ServiceFacade {
 
     @Scheduled(cron = "0 0 22 * * ?")
     public void scheduler(){
-        startTheSync();
+        final long userId = 0;
+        syncData(userId);
     }
 
-    public void syncData() {
+    public void syncData(long triggeringUserId) {
         OldDbImport.sync();
         LOGGER.debug("Computing changes");
-        List<TriggerChange<?>> changes = computeAllChanges();
+
+        List<TriggerChange<?>> changes = computeAllChanges(triggeringUserId);
 
         for (TriggerChange<?> change : changes) {
-            LOGGER.debug("Migrating {}", change.getClass().getSimpleName());
-            boolean migrationSuccessful = change.tryMigration();
-
-            LOGGER.debug("Migration successful? {}", migrationSuccessful);
+            LOGGER.debug("Migrating {}", change.getAltsystemDataObject());
+            change.tryMigration();
         }
+
         //Updated den Timestamp nach dem sync
         setMigrationTimestamp(new Timestamp(System.currentTimeMillis()));
-
-        /** String sqlQuery = "INSERT INTO Migrationtimestamp";
-         basicDao.insertEntity(new BusinessEntityConfiguration<Object>(sqlQuery, ))
-         */
     }
 
     // TODO remove when not needed anymore
@@ -152,17 +153,21 @@ public class TriggerService implements ServiceFacade {
      * Checks the imported old database tables for changes and returns all
      * updated and newly created models.
      */
-    private List<TriggerChange<?>> computeAllChanges() {
+    private List<TriggerChange<?>> computeAllChanges(final long triggeringUserId) {
         List<TriggerChange<?>> changes = new ArrayList<>();
 
         for (String oldTableName : tableNameToClass.keySet()) {
-            changes.addAll(computeChangesOfTable(oldTableName));
+            try {
+                changes.addAll(computeChangesOfTable(oldTableName, triggeringUserId));
+            } catch (TechnicalException e) {
+                LOGGER.error("Failed to compute changes of table " + oldTableName, e);
+            }
         }
 
         return changes;
     }
 
-    private <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName) {
+    private <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName, long triggeringUserId) {
         Class<T> oldClass = (Class<T>) tableNameToClass.get(oldTableName);
         String sqlQuery = "SELECT * FROM " + oldTableName;
 
@@ -177,7 +182,7 @@ public class TriggerService implements ServiceFacade {
             // TODO create new row in altsystem_aenderung
             TriggerDO dataObject = new TriggerDO(1L, oldTableName, retrievedObject.getId(), TriggerChangeOperation.CREATE, TriggerChangeStatus.NEW, "keine nachricht", null, null);
 
-            changes.add(new TriggerChange<>(dataObject, retrievedObject, entity));
+            changes.add(new TriggerChange<>(dataObject, retrievedObject, entity, triggeringUserId));
         }
 
         return changes;
