@@ -1,5 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +14,8 @@ import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests the MigrationChange class
@@ -50,8 +53,8 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 		return new TriggerDO(ID, KATEGORIE, ALTSYSTEM_ID, OPERATION, STATUS, NACHRICHT, CREATED_AT_UTC, RUN_AT_UTC);
 	}
 
-	private TriggerChange getExpectedTC(){
-		return new TriggerChange(triggerComponent, triggerDO, altsystemDataObject, altsystemEntity, triggeringUserId);
+	private TriggerChange<?> getExpectedTC(){
+		return new TriggerChange<>(triggerComponent, triggerDO, altsystemDataObject, altsystemEntity, triggeringUserId);
 	}
 
 	@Test
@@ -70,12 +73,42 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 
 	@Test
 	public void testGetAltsystemDataObject(){
-		TriggerChange actual = getExpectedTC();
+		TriggerChange<?> actual = getExpectedTC();
 		AltsystemDO actualAltsystemDataObject = actual.getAltsystemDataObject();
 
 		assertEquals(altsystemDataObject, actualAltsystemDataObject);
 	}
 
+
+	@Test
+	public void testExecuteMigrationCreate() throws SQLException {
+		// prepare test data
+		final TriggerChange<?> unprocessedTrigger = getExpectedTC();
+
+		// configure mocks
+		when(triggerDO.getOperation()).thenReturn(TriggerChangeOperation.CREATE);
+
+		// call test method
+		unprocessedTrigger.executeMigrationOnEntity();
+
+		// verify invocations
+		verify(altsystemEntity, times(1)).create(any(), anyLong());
+	}
+
+	@Test
+	public void testExecuteMigrationUpdate() throws SQLException {
+		// prepare test data
+		final TriggerChange<?> unprocessedTrigger = getExpectedTC();
+
+		// configure mocks
+		when(triggerDO.getOperation()).thenReturn(TriggerChangeOperation.UPDATE);
+
+		// call test method
+		unprocessedTrigger.executeMigrationOnEntity();
+
+		// verify invocations
+		verify(altsystemEntity, times(1)).update(any(), anyLong());
+	}
 }
 
 
