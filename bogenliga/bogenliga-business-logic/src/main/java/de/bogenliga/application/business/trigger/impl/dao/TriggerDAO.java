@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.impl.entity.RawTriggerBE;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -33,20 +36,26 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_BE_ALTSYSTEMID = "altsystemId";
     private static final String TRIGGER_BE_OPERATION = "changeOperation";
     private static final String TRIGGER_BE_STATUS = "changeStatus";
+    private static final String TRIGGER_BE_OPERATION_ID = "changeOperationId";
+    private static final String TRIGGER_BE_STATUS_ID = "changeStatusId";
     private static final String TRIGGER_BE_NACHRICHT = "nachricht";
     private static final String TRIGGER_BE_RUNATUTC = "runAtUtc";
 
     private static final String TRIGGER_TABLE_ID = "aenderung_id";
     private static final String TRIGGER_TABLE_KATEGORIE = "kategorie";
     private static final String TRIGGER_TABLE_ALTSYSTEMID = "altsystem_id";
-    private static final String TRIGGER_TABLE_OPERATION = "operation_name";
-    private static final String TRIGGER_TABLE_STATUS = "status_name";
+    private static final String TRIGGER_TABLE_OPERATION_NAME = "operation_name";
+    private static final String TRIGGER_TABLE_STATUS_NAME = "status_name";
+    private static final String TRIGGER_TABLE_OPERATION_ID = "operation";
+    private static final String TRIGGER_TABLE_STATUS_ID = "status";
     private static final String TRIGGER_TABLE_NACHRICHT = "nachricht";
     private static final String TRIGGER_TABLE_RUNATUTC = "run_at_utc";
 
     private static final BusinessEntityConfiguration<TriggerBE> TRIGGER = new BusinessEntityConfiguration<>(
-            TriggerBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
+            TriggerBE.class, TABLE, getColumsToFieldsMapWithJoin(), LOGGER);
 
+    private static final BusinessEntityConfiguration<RawTriggerBE> RAW_TRIGGER = new BusinessEntityConfiguration<>(
+            RawTriggerBE.class, TABLE, getColumsToFieldsMap(), LOGGER);
 
     /**
      * SQL queries
@@ -54,10 +63,21 @@ public class TriggerDAO implements DataAccessObject {
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM altsystem_aenderung"
-                    + "     LEFT JOIN altsystem_aenderung_operation op ON altsystem_aenderung.operation = op.operation_id"
-                    + "     LEFT JOIN altsystem_aenderung_status st ON altsystem_aenderung.status = st.status_id"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
                     + " ORDER BY aenderung_id";
 
+    private static final String FIND_ALL_UNPROCESSED =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         AND st.status_name != 'SUCCESS'"
+                    + " ORDER BY aenderung_id";
 
     private final BasicDAO basicDAO;
 
@@ -65,7 +85,7 @@ public class TriggerDAO implements DataAccessObject {
     /**
      * Initialize the transaction manager to provide a database connection
      *
-     * @param basicDAO to handle the commonly used DB operations
+     * @param basicDAO  to handle the commonly used DB operations
      */
 
     @Autowired
@@ -80,14 +100,22 @@ public class TriggerDAO implements DataAccessObject {
         columnsToFieldMap.put(TRIGGER_TABLE_ID, TRIGGER_BE_ID);
         columnsToFieldMap.put(TRIGGER_TABLE_KATEGORIE, TRIGGER_BE_KATEGORIE);
         columnsToFieldMap.put(TRIGGER_TABLE_ALTSYSTEMID, TRIGGER_BE_ALTSYSTEMID);
-        columnsToFieldMap.put(TRIGGER_TABLE_OPERATION, TRIGGER_BE_OPERATION);
-        columnsToFieldMap.put(TRIGGER_TABLE_STATUS, TRIGGER_BE_STATUS);
+        columnsToFieldMap.put(TRIGGER_TABLE_OPERATION_ID, TRIGGER_BE_OPERATION_ID);
+        columnsToFieldMap.put(TRIGGER_TABLE_STATUS_ID, TRIGGER_BE_STATUS_ID);
         columnsToFieldMap.put(TRIGGER_TABLE_NACHRICHT, TRIGGER_BE_NACHRICHT);
         columnsToFieldMap.put(TRIGGER_TABLE_RUNATUTC, TRIGGER_BE_RUNATUTC);
 
         columnsToFieldMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
         return columnsToFieldMap;
+    }
 
+    private static Map<String, String> getColumsToFieldsMapWithJoin() {
+        final Map<String, String> columnsToFieldMap = getColumsToFieldsMap();
+
+        columnsToFieldMap.put(TRIGGER_TABLE_OPERATION_NAME, TRIGGER_BE_OPERATION);
+        columnsToFieldMap.put(TRIGGER_TABLE_STATUS_NAME, TRIGGER_BE_STATUS);
+
+        return columnsToFieldMap;
     }
 
 
@@ -99,5 +127,63 @@ public class TriggerDAO implements DataAccessObject {
 
     public List<TriggerBE> findAll() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL);
+    }
+
+    public List<TriggerBE> findAllUnprocessed() {
+        return basicDAO.selectEntityList(TRIGGER, FIND_ALL_UNPROCESSED);
+    }
+
+    public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
+        basicDAO.setCreationAttributes(triggerBE, currentUserId);
+
+        RawTriggerBE rawTrigger = resolveTrigger(triggerBE);
+        rawTrigger = basicDAO.insertEntity(RAW_TRIGGER, rawTrigger);
+        return resolveRawTrigger(rawTrigger);
+    }
+
+    public TriggerBE update(TriggerBE triggerBE, Long currentUserId) {
+        basicDAO.setModificationAttributes(triggerBE, currentUserId);
+
+        RawTriggerBE rawTrigger = resolveTrigger(triggerBE);
+        rawTrigger = basicDAO.insertEntity(RAW_TRIGGER, rawTrigger);
+        return resolveRawTrigger(rawTrigger);
+    }
+
+    private TriggerBE resolveRawTrigger(RawTriggerBE raw) {
+        TriggerBE created = new TriggerBE();
+        created.setId(raw.getId());
+        created.setKategorie(raw.getKategorie());
+        created.setAltsystemId(raw.getAltsystemId());
+        created.setChangeOperationId(raw.getChangeOperationId());
+        created.setChangeStatusId(raw.getChangeStatusId());
+        created.setNachricht(raw.getNachricht());
+        created.setRunAtUtc(raw.getRunAtUtc());
+
+        TriggerChangeOperation operation = TriggerChangeOperation.parse(raw.getChangeOperationId());
+        TriggerChangeStatus status = TriggerChangeStatus.parse(raw.getChangeStatusId());
+
+        created.setChangeOperation(operation);
+        created.setChangeStatus(status);
+
+        return created;
+    }
+
+    private RawTriggerBE resolveTrigger(TriggerBE raw) {
+        RawTriggerBE created = new RawTriggerBE();
+        created.setId(raw.getId());
+        created.setKategorie(raw.getKategorie());
+        created.setAltsystemId(raw.getAltsystemId());
+        created.setChangeOperationId(raw.getChangeOperationId());
+        created.setChangeStatusId(raw.getChangeStatusId());
+        created.setNachricht(raw.getNachricht());
+        created.setRunAtUtc(raw.getRunAtUtc());
+
+        Long operationId = raw.getChangeOperation().getId();
+        Long statusId = raw.getChangeStatus().getId();
+
+        created.setChangeOperationId(operationId);
+        created.setChangeStatusId(statusId);
+
+        return created;
     }
 }
