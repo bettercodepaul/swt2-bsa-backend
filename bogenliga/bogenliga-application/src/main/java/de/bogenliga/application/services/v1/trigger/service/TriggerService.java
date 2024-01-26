@@ -43,7 +43,7 @@ import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
-import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
+//import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
@@ -159,7 +159,7 @@ public class TriggerService implements ServiceFacade {
 
     public void syncData(long triggeringUserId) {
         LOGGER.debug("Importing tables from old database");
-        OldDbImport.sync();
+        //OldDbImport.sync();
 
         Timestamp lastSync = getMigrationTimestamp();
 
