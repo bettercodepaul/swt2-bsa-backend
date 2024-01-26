@@ -122,7 +122,7 @@ public class TriggerService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAll() {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAllLimited();
+        final List<TriggerDO> triggerDOList = triggerComponent.findAll();
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
