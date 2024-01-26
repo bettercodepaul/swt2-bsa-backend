@@ -49,5 +49,43 @@ public class TriggerDAOTest {
 
 		assertThat(actual.get(0)).isNotNull();
 	}
+	@Test
+	public void testFindAllLimited() {
+		// prepare test data
+		final TriggerBE expectedBE = getTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findAllLimited();
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
+	@Test
+	public void testFindAllUnprocessed() {
+		// prepare test data
+		final TriggerBE expectedBE = getTriggerBE();
+
+		// configure mocks
+		when(basicDAO.selectEntityList(any(), any(), any())).thenReturn(Collections.singletonList(expectedBE));
+
+		// call test method
+		final List<TriggerBE> actual = triggerDAO.findAllUnprocessed();
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+	}
 
 }

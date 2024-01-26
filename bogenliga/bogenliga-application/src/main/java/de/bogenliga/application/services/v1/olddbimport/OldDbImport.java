@@ -23,7 +23,7 @@ import java.util.Map;
 import de.bogenliga.application.common.configuration.DatabaseConfiguration;
 
 
-
+/*
 public class OldDbImport {
     private static final Logger LOG = LoggerFactory.getLogger(OldDbImport.class);
 
@@ -52,9 +52,10 @@ public class OldDbImport {
         PostgresqlTransactionManager manager = new PostgresqlTransactionManager(databaseConfiguration);
         DataSource dataSource = manager.getDataSource(); */
 
-    }
+   // }
 
 
+/*
     public static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
         try{
             String script=new String(Files.readAllBytes(Paths.get(scriptFilePath)));
@@ -190,4 +191,4 @@ public class OldDbImport {
         }
     }
 
-}
+}*/
