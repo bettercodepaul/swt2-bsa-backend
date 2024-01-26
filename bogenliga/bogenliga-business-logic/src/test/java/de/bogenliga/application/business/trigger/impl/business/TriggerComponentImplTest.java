@@ -121,5 +121,87 @@ public class TriggerComponentImplTest {
 		// verify invocations
 		verify(triggerDAO, times(1)).findAll();
 	}
+	@Test
+	public void findAllLimited() {
+		// prepare test data
+		final TriggerBE expectedBE = getTriggerBE();
+		final List<TriggerBE> expectedBEList = Collections.singletonList(expectedBE);
+
+		// configure mocks
+		when(triggerDAO.findAllLimited()).thenReturn(expectedBEList);
+
+		// call test method
+		final List<TriggerDO> actual = underTest.findAllLimited();
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+
+		assertThat(actual.get(0).getId())
+				.isEqualTo(expectedBE.getId());
+		assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedBE.getKategorie());
+		assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedBE.getAltsystemId());
+		assertThat(actual.get(0).getOperation())
+				.isEqualTo(expectedBE.getChangeOperation());
+		assertThat(actual.get(0).getStatus())
+				.isEqualTo(expectedBE.getChangeStatus());
+		assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedBE.getNachricht());
+		assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedBE.getCreatedAtUtc());
+		assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedBE.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerDAO, times(1)).findAllLimited();
+	}
+	@Test
+	public void findAllUnprocessed() {
+		// prepare test data
+		final TriggerBE expectedBE = getTriggerBE();
+		final List<TriggerBE> expectedBEList = Collections.singletonList(expectedBE);
+
+		// configure mocks
+		when(triggerDAO.findAllUnprocessed()).thenReturn(expectedBEList);
+
+		// call test method
+		final List<TriggerDO> actual = underTest.findAllUnprocessed();
+
+		// assert result
+		assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		assertThat(actual.get(0)).isNotNull();
+
+		assertThat(actual.get(0).getId())
+				.isEqualTo(expectedBE.getId());
+		assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedBE.getKategorie());
+		assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedBE.getAltsystemId());
+		assertThat(actual.get(0).getOperation())
+				.isEqualTo(expectedBE.getChangeOperation());
+		assertThat(actual.get(0).getStatus())
+				.isEqualTo(expectedBE.getChangeStatus());
+		assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedBE.getNachricht());
+		assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedBE.getCreatedAtUtc());
+		assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedBE.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerDAO, times(1)).findAllUnprocessed();
+	}
+
+
 
 }
