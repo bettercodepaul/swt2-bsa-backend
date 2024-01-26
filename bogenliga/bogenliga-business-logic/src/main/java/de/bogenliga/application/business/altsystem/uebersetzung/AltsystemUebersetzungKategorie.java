@@ -12,7 +12,8 @@ public enum AltsystemUebersetzungKategorie {
     Mannschaft_Verein("Mannschaft_Verein"),
     Mannschaft_Mannschaft("Mannschaft_Mannschaft"),
     Schütze_Verein("Schütze_Verein"),
-    Mannschaft_Veranstaltung("Mannschaft_Veranstaltung");
+    Mannschaft_Veranstaltung("Mannschaft_Veranstaltung"),
+    Match_Saetze("Match_Saetze");
 
 
     String label;
