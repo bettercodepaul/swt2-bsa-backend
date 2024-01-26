@@ -6,6 +6,7 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperatio
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.entity.TriggerBE;
+import de.bogenliga.application.common.time.DateProvider;
 import static org.assertj.core.api.Assertions.assertThat;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerBE;
 import static de.bogenliga.application.business.trigger.impl.business.TriggerComponentImplTest.getTriggerDO;
@@ -40,8 +41,8 @@ public class TriggerMapperTest {
 		assertThat(actual.getOperation()).isEqualTo(OPERATION);
 		assertThat(actual.getStatus()).isEqualTo(STATUS);
 		assertThat(actual.getNachricht()).isEqualTo(NACHRICHT);
-		assertThat(actual.getCreatedAtUtc()).isEqualTo(CREATED_AT_UTC);
-		assertThat(actual.getRunAtUtc()).isEqualTo(RUN_AT_UTC);
+		assertThat(actual.getCreatedAtUtc()).isEqualTo(DateProvider.convertTimestamp(CREATED_AT_UTC));
+		assertThat(actual.getRunAtUtc()).isEqualTo(DateProvider.convertTimestamp(RUN_AT_UTC));
 	}
 
 	@Test
