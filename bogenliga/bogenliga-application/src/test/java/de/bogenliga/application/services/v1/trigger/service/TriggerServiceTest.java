@@ -18,6 +18,7 @@ import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperatio
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
+import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import static org.mockito.Mockito.*;
@@ -68,6 +69,13 @@ public class TriggerServiceTest {
 		);
 	}
 
+	private static AltsystemDO createRawAltsystemDO(Timestamp createdAt, Timestamp updatedAt) {
+		final AltsystemDO rawDO = new AltsystemDO() {};
+		rawDO.setCreatedAt(createdAt);
+		rawDO.setUpdatedAt(updatedAt);
+		return rawDO;
+	}
+
 	@Test
 	public void testFindAll() {
 		// prepare test data
@@ -106,5 +114,34 @@ public class TriggerServiceTest {
 	}
 
 
+	@Test
+	public void testDetermineOperationFromTimestamp() {
+		// prepare test data
+		final Timestamp lastSync = Timestamp.valueOf(LocalDateTime.of(2024, 1, 3, 0, 0));
 
+		final AltsystemDO shouldBeCreated = createRawAltsystemDO(
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 4, 0, 0)),
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 4, 0, 0))
+		);
+
+		final AltsystemDO shouldBeUpdated = createRawAltsystemDO(
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0)),
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 4, 0, 0))
+		);
+
+		final AltsystemDO shouldBeLeftUntouched = createRawAltsystemDO(
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0)),
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0))
+		);
+
+		// assert results
+		Java6Assertions.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeCreated, lastSync))
+				.isEqualTo(TriggerChangeOperation.CREATE);
+
+		Java6Assertions.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeUpdated, lastSync))
+				.isEqualTo(TriggerChangeOperation.UPDATE);
+
+		Java6Assertions.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeLeftUntouched, lastSync))
+				.isEqualTo(null);
+	}
 }
