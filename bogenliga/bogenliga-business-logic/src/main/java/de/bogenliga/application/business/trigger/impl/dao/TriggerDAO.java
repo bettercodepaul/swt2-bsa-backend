@@ -63,6 +63,10 @@ public class TriggerDAO implements DataAccessObject {
     private static final String FIND_ALL =
             "SELECT * "
                     + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
                     + " ORDER BY aenderung_id";
 
     private static final String FIND_ALL_UNPROCESSED =
