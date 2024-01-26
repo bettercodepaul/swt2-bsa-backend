@@ -65,7 +65,7 @@ public class AltsystemLigaMapperTest {
         List<RegionenDO> regionen = new LinkedList<>();
         // add dsb element
         RegionenDO dsb = new RegionenDO(DSB_REGION_ID);
-        dsb.setRegionName("DSB");
+        dsb.setRegionKuerzel("DSB");
         regionen.add(dsb);
 
         return regionen;

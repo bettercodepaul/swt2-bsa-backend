@@ -87,8 +87,8 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
         RegionenDO dsbDO = null;
         List<RegionenDO> regionenDOS = regionenComponent.findBySearch("dsb");
         for (RegionenDO regionenDO : regionenDOS){
-            String regionName = regionenDO.getRegionName().toLowerCase();
-            if(regionName.equals("dsb")){
+            String regionKuerzel = regionenDO.getRegionKuerzel().toLowerCase();
+            if(regionKuerzel.equals("dsb")){
                 dsbDO = regionenDO;
                 break;
             }
