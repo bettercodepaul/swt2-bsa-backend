@@ -126,11 +126,6 @@ public class DsbMannschaftDO extends CommonDataObject implements DataObject {
     }
 
 
-    public DsbMannschaftDO() {
-
-    }
-
-
     public Long getId(){ return id; }
 
     public void setId(final long id){this.id=id;}
