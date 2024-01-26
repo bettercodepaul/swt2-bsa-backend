@@ -43,7 +43,6 @@ public class TriggerServiceTest {
 	private static final String TRIGGER_NACHRICHT = "see";
 	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
 	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
-	private LocalDateTime currentTime = LocalDateTime.now();
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -183,6 +182,16 @@ public class TriggerServiceTest {
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllUnprocessed();
 		verify(basicDAO, times(1)).selectEntityList(any(), anyString());
+	}
+
+	@Test
+	public void testScheduler() {
+		// call test method
+		triggerServiceTest.scheduler();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllUnprocessed();
+		verify(basicDAO, atLeastOnce()).selectEntityList(any(), anyString());
 	}
 
 	@Test
