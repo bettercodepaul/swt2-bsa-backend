@@ -38,8 +38,8 @@ public class AltsystemUebersetzung {
                     // Der Name ist bereits vorhanden, also aktualisieren (UPDATE)
                     String updateQuery = "UPDATE altsystem_uebersetzung SET bogenliga_id = ? AND wert = ? WHERE kategorie = ? AND altsystem_id = ?";
                     try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-                        updateStatement.setLong(2, bogenligaID);
-                        updateStatement.setString(3, wert);
+                        updateStatement.setLong(1, bogenligaID);
+                        updateStatement.setString(2, wert);
                         updateStatement.executeUpdate();
                     }
                 } else {
