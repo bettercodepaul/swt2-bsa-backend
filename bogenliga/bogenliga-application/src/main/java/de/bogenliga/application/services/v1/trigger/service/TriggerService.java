@@ -243,7 +243,16 @@ public class TriggerService implements ServiceFacade {
 
             AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(retrievedObject.getClass());
 
-            TriggerDO triggerDO = new TriggerDO(null, oldTableName, retrievedObject.getId(), TriggerChangeOperation.CREATE, TriggerChangeStatus.NEW, "", null, null);
+            TriggerDO triggerDO = new TriggerDO(
+                    null,
+                    oldTableName,
+                    retrievedObject.getId(),
+                    operation,
+                    TriggerChangeStatus.NEW,
+                    "",
+                    null,
+                    null
+            );
             TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
 
             changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));

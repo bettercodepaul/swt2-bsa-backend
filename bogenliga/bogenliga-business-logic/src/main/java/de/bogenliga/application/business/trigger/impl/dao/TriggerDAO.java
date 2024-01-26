@@ -145,7 +145,7 @@ public class TriggerDAO implements DataAccessObject {
         basicDAO.setModificationAttributes(triggerBE, currentUserId);
 
         RawTriggerBE rawTrigger = resolveTrigger(triggerBE);
-        rawTrigger = basicDAO.insertEntity(RAW_TRIGGER, rawTrigger);
+        rawTrigger = basicDAO.updateEntity(RAW_TRIGGER, rawTrigger, TRIGGER_TABLE_ID);
         return resolveRawTrigger(rawTrigger);
     }
 
