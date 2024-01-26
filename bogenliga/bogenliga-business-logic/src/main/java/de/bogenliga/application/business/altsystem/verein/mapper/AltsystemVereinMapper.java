@@ -1,11 +1,13 @@
 package de.bogenliga.application.business.altsystem.verein.mapper;
 
 
-import java.sql.SQLException;
+import java.util.List;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 
@@ -17,8 +19,37 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 @Component
 public class AltsystemVereinMapper implements ValueObjectMapper {
 
+    private final VereinComponent vereinComponent;
+    private final AltsystemLigaMapper altsystemLigaMapper;
 
-    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemMannschaftDO) throws SQLException {
+
+
+    public AltsystemVereinMapper(VereinComponent vereinComponent, AltsystemVereinMapper altsystemVereinMapper,
+                                 AltsystemUebersetzung altsystemUebersetzung, AltsystemLigaMapper altsystemLigaMapper) {
+        this.vereinComponent = vereinComponent;
+        this.altsystemLigaMapper = altsystemLigaMapper;
+    }
+
+
+    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemDataObject) {
+
+        vereinDO.setName(parseName(altsystemDataObject));
+        vereinDO.setDsbIdentifier(parseIdentifier(altsystemDataObject));
+
+        return vereinDO;
+    }
+
+    public VereinDO addDefaultFields(VereinDO vereinDO){
+
+        RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
+        vereinDO.setRegionId(dsbDO.getId());
+
+
+        return vereinDO;
+    }
+
+
+    public String parseName(AltsystemMannschaftDO altsystemMannschaftDO) {
 
         char[] nameOld = altsystemMannschaftDO.getName().toCharArray();
         String nameNew = "";
@@ -35,7 +66,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
             // Speichere das aktuelle Zeichen am Index, um getString().charAt()-Aufrufe zu minimieren (für bessere Speichereffizienz)
             if (i + 1 < altsystemMannschaftDO.getName().length()) {
-                    // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
+                // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
                 if (altsystemMannschaftDO.getName().charAt(i) == '.' && altsystemMannschaftDO.getName().charAt(
                         i + 1) != ' ') {
                     nameNew += ". ";
@@ -100,23 +131,44 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         }
 
 
-        vereinDO.setName(nameNew);
 
         // Gibt das Vereinsobjekt zurück
-        return vereinDO;
+        return nameNew;
+
     }
 
-    public VereinDO addDefaultFields(VereinDO vereinDO){
+    public String parseIdentifier(AltsystemMannschaftDO altsystemDataObject){
 
-        AltsystemLigaMapper altsystemLigaMapper = null;
-        RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
-        vereinDO.setRegionId(dsbDO.getId());
+        char[] identifierOld = altsystemDataObject.getMannr().toCharArray();
+        int[] need = {2, 3, 6, 7, 8, 9};
+        StringBuilder builder = new StringBuilder();
 
+        for (int index : need) {
 
-        return vereinDO;
+            if (index >= 0 && index < identifierOld.length) {
+                builder.append(identifierOld[index]);
+            }
+        }
+        String vereinIdentifier = builder.toString();
+
+        return vereinIdentifier;
     }
 
+    public VereinDO getVereinDO(String vereinIdentifier){
 
+        VereinDO identifierDO = null;
+        List<VereinDO> vereinDOS = vereinComponent.findBySearch(vereinIdentifier);
+        for (VereinDO vereinDO : vereinDOS){
+            String verIdentifier = vereinDO.getDsbIdentifier();
+            if(verIdentifier.equals(vereinIdentifier)){
+                identifierDO = vereinDO;
+                break;
+            } else {
+                return null;
+            }
+        }
+        return identifierDO;
+    }
 
 
 }

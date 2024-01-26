@@ -9,11 +9,9 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
  */
 public class AltsystemWettkampfdatenDO extends AltsystemDO {
 
-
-    private long id;
     private int ligaID;
-    private int mannschaftId;
-    private int gegnerId;
+    private long mannschaftId;
+    private long gegnerId;
     private int match;
     private int satzPlus;
     private int satzMinus;
@@ -28,16 +26,6 @@ public class AltsystemWettkampfdatenDO extends AltsystemDO {
     private int sec;
 
 
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public int getLigaID() {
         return ligaID;
     }
@@ -46,19 +34,19 @@ public class AltsystemWettkampfdatenDO extends AltsystemDO {
         this.ligaID = ligaID;
     }
 
-    public int getMannschaftId() {
+    public long getMannschaftId() {
         return mannschaftId;
     }
 
-    public void setMannschaftId(int mannschaftId) {
+    public void setMannschaftId(long mannschaftId) {
         this.mannschaftId = mannschaftId;
     }
 
-    public int getGegnerId() {
+    public long getGegnerId() {
         return gegnerId;
     }
 
-    public void setGegnerId(int gegnerId) {
+    public void setGegnerId(long gegnerId) {
         this.gegnerId = gegnerId;
     }
 
