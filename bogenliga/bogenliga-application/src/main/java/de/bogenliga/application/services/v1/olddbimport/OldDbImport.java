@@ -15,32 +15,84 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import static java.lang.Integer.parseInt;
 
 
 public class OldDbImport {
     private static final Logger LOG = LoggerFactory.getLogger(OldDbImport.class);
 
     // Verbindungsinformationen
-    private static String host = "mysql2f19.netcup.net";
-    private static int port = 3306;
-    private static String dbName = "k74918_bogenliga";
-    private static String user = "k74918_bsapp_ro";
-    private static String password = "BsApp@100%";
+    private static String host = "";
+    private static int port = 0;
+    private static String name = "";
+    private static String user = "";
+    private static String password = "";
 
 
     private static final String DROPSTATMENT = "DROP TABLE IF EXISTS altsystem_";
 
     // JDBC-URL
-    private static final String URL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+    private static final String URL = "jdbc:mysql://" + host + ":" + port + "/" + name;
 
     private static String sqlfile ="temptable.sql";
 
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
 
+
+    //TEST GET FROM LOGIN CREDENTIALS FROM ENV
+    private static String URLT = System.getenv("DB_URL");
+    private static String userT = System.getenv("DB_user");
+    private static String passwordT = System.getenv("DB_password");
+
+    private static String sqlQueryuser = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBBenutzer'";
+    private static String sqlQueryhost = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBHost'";
+    private static String sqlQuerypassword = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPasswort'";
+    private static String sqlQueryport = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPort'";
+    private static String sqlQueryname = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBName'";
     public static void main (String [] args){
         sync();
+
+       /* user = executeQuery(sqlQueryuser);
+        host = executeQuery(sqlQueryhost);
+        password = executeQuery(sqlQuerypassword);
+
+        try {
+            port = parseInt(executeQuery(sqlQueryport));
+        } catch (NumberFormatException e) {
+            System.err.println("string is keine zahl");
+        }
+        name = executeQuery(sqlQueryname);
+        */
     }
+
+    private static String executeQuery(String query) {
+        String configurationValue = "";
+        try {
+            Connection connection = DriverManager.getConnection(URLT, userT, passwordT);
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                configurationValue = resultSet.getString("configuration_value");
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Configuration Value: " + configurationValue);
+        return configurationValue;
+    }
+
+    // Hilfsmethode zum Abrufen des Konfigurationswerts anhand des Schlüssels
+
 
     public static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
         try{
@@ -65,6 +117,18 @@ public class OldDbImport {
 
 
     public static void sync(){
+
+        user = executeQuery(sqlQueryuser);
+        host = executeQuery(sqlQueryhost);
+        password = executeQuery(sqlQuerypassword);
+
+        try {
+            port = parseInt(executeQuery(sqlQueryport));
+        } catch (NumberFormatException e) {
+            System.err.println("string is keine zahl");
+        }
+        name = executeQuery(sqlQueryname);
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
@@ -94,8 +158,7 @@ public class OldDbImport {
             }
             finally{
 
-                executeScript("temptable.sql", "jdbc:postgresql://localhost:5432/swt2", "swt2","swt2" );
-
+                executeScript(sqlfile, URLT, userT, passwordT);
             }
         }
         catch (ClassNotFoundException e) {
