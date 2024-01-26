@@ -10,11 +10,16 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
 public class AltsystemErgebnisseDO extends AltsystemDO {
 
     private long schuetzeID;
-    private int mannschaftsID;
-    private String name;
-    private int ergebnis;
+    private long match;
+    private long ergebnis;
 
 
+    public long getMatch() {
+        return match;
+    }
+    public void setMatch(long match) {
+        this.match = match;
+    }
     public long getSchuetzeID() {
         return schuetzeID;
     }
@@ -23,23 +28,7 @@ public class AltsystemErgebnisseDO extends AltsystemDO {
         this.schuetzeID = schuetzeID;
     }
 
-    public int getMannschaftsID() {
-        return mannschaftsID;
-    }
-
-    public void setMannschaftsID(int mannschaftsID) {
-        this.mannschaftsID = mannschaftsID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getErgebnis() {
+    public long getErgebnis() {
         return ergebnis;
     }
 
