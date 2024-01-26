@@ -257,4 +257,28 @@ public class TriggerServiceTest {
 		Java6Assertions.assertThat(actual)
 				.isNotNull();
 	}
+	@Test
+	public void testSetMigrationTimestamp(){
+		
+		// configure mocks
+		Timestamp expectedTimestamp = new Timestamp(System.currentTimeMillis());
+		MigrationTimestampBE migrationTimestampBE = new MigrationTimestampBE();
+		migrationTimestampBE.setSyncTimestamp(expectedTimestamp);
+		List<MigrationTimestampBE> timestampList = new ArrayList<>();
+
+		// call test method
+		triggerServiceTest.setMigrationTimestamp(expectedTimestamp);
+
+		verify(migrationTimestampDAO, times(1)).create(any());
+
+		timestampList.add(migrationTimestampBE);
+
+		// create stub
+		when(migrationTimestampDAO.findAll()).thenReturn(timestampList);
+
+		// call test method
+		triggerServiceTest.setMigrationTimestamp(expectedTimestamp);
+
+		verify(migrationTimestampDAO, times(1)).update(any());
+	}
 }
