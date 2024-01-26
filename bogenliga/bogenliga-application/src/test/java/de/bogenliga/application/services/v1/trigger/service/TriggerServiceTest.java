@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -50,13 +49,11 @@ public class TriggerServiceTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	private BasicDAO basicDao;
+	private BasicDAO basicDAO;
 	@Mock
 	private TriggerDAO triggerDAO;
 	@Mock
 	private TriggerComponent triggerComponent;
-	@Mock
-	private BasicDAO basicDAO;
 	@Mock
 	private LigaComponent ligaComponent;
 	@Mock
@@ -167,7 +164,7 @@ public class TriggerServiceTest {
 				later
 		);
 		final List<Object> expectedDOs = Collections.singletonList(expectedDO);
-		when(basicDao.selectEntityList(any(), anyString())).thenReturn(expectedDOs);
+		when(basicDAO.selectEntityList(any(), anyString())).thenReturn(expectedDOs);
 
 		// call test method
 		final List<TriggerChange<?>> actual = triggerServiceTest.computeAllChanges(1L, earlier);
@@ -185,7 +182,7 @@ public class TriggerServiceTest {
 
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllUnprocessed();
-		verify(basicDao, times(1)).selectEntityList(any(), anyString());
+		verify(basicDAO, times(1)).selectEntityList(any(), anyString());
 	}
 
 	@Test
