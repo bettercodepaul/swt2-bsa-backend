@@ -1,19 +1,18 @@
 package de.bogenliga.application.services.v1.trigger.model;
 
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import org.junit.Rule;
-import org.mockito.InjectMocks;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests the MigrationChange class
@@ -37,6 +36,8 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
+	private TriggerComponent triggerComponent;
+	@Mock
 	public AltsystemEntity<T> altsystemEntity;
 	@Mock
 	public TriggerDO triggerDO;
@@ -50,7 +51,7 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 	}
 
 	private TriggerChange getExpectedTC(){
-		return new TriggerChange(triggerDO, altsystemDataObject, altsystemEntity, triggeringUserId);
+		return new TriggerChange(triggerComponent, triggerDO, altsystemDataObject, altsystemEntity, triggeringUserId);
 	}
 
 	@Test
@@ -58,7 +59,7 @@ public class TriggerChangeTest<T extends AltsystemDO> {
 
 		TriggerDO triggerData = getExpectedDO();
 
-		TriggerChange<T> triggerChange = new TriggerChange<>(triggerData, altsystemDataObject, altsystemEntity, triggeringUserId);
+		TriggerChange<T> triggerChange = new TriggerChange<>(triggerComponent, triggerData, altsystemDataObject, altsystemEntity, triggeringUserId);
 
 		boolean result = triggerChange.tryMigration();
 
