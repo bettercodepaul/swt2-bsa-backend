@@ -135,13 +135,26 @@ public class TriggerServiceTest {
 		);
 
 		// assert results
-		Java6Assertions.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeCreated, lastSync))
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeCreated, lastSync))
 				.isEqualTo(TriggerChangeOperation.CREATE);
 
-		Java6Assertions.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeUpdated, lastSync))
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeUpdated, lastSync))
 				.isEqualTo(TriggerChangeOperation.UPDATE);
 
-		Java6Assertions.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeLeftUntouched, lastSync))
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeLeftUntouched, lastSync))
 				.isEqualTo(null);
+
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeCreated, null))
+				.isEqualTo(TriggerChangeOperation.CREATE);
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeUpdated, null))
+				.isEqualTo(TriggerChangeOperation.CREATE);
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeLeftUntouched, null))
+				.isEqualTo(TriggerChangeOperation.CREATE);
 	}
 }
