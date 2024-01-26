@@ -124,7 +124,7 @@ public class OldDbImport {
         return DROPSTATMENT + tableName + ";\n" + TABLE_DEFINITIONS.get(tableName) + ";\r\n";
     }
 
-    private static String insertTable(String tableName, boolean[] tables, String insertQuery) {
+    public static String insertTable(String tableName, boolean[] tables, String insertQuery) {
         for (int i = 0; i < TABLE_DEFINITIONS.size(); i++) {
             if (tableName.equalsIgnoreCase(TABLE_DEFINITIONS.keySet().toArray()[i].toString()) && tables[i]) {
                 tables[i] = false;
@@ -135,7 +135,7 @@ public class OldDbImport {
         return insertQuery;
     }
 
-    private static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
+    public static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
         String sql = "SELECT * FROM " + tableName + "";
         boolean[] tables = new boolean[8];
         for (int i = 0; i < tables.length; i++) {
