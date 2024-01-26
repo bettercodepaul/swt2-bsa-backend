@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.Java6Assertions;
@@ -18,7 +19,9 @@ import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
+import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
+import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
@@ -53,7 +56,12 @@ public class TriggerServiceTest {
 	@Mock
 	private TriggerComponent triggerComponent;
 	@Mock
+	private BasicDAO basicDAO;
+	@Mock
 	private LigaComponent ligaComponent;
+	@Mock
+	private MigrationTimestampDAO migrationTimestampDAO;
+
 	@InjectMocks
 	private TriggerService triggerServiceTest;
 
@@ -222,5 +230,31 @@ public class TriggerServiceTest {
 		Java6Assertions
 				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeLeftUntouched, null))
 				.isEqualTo(TriggerChangeOperation.CREATE);
+	}
+	@Test
+	public void testGetMigrationTimestamp(){
+
+		// configure mocks
+		Timestamp expectedTimestamp = new Timestamp(System.currentTimeMillis());
+		MigrationTimestampBE migrationTimestampBE = new MigrationTimestampBE();
+		migrationTimestampBE.setSyncTimestamp(expectedTimestamp);
+		List<MigrationTimestampBE> timestampList = new ArrayList<>();
+
+		// call test method
+		final Timestamp actualFalse = triggerServiceTest.getMigrationTimestamp();
+
+		Java6Assertions.assertThat(actualFalse)
+				.isNull();
+
+		timestampList.add(migrationTimestampBE);
+
+		// create stub
+		when(migrationTimestampDAO.findAll()).thenReturn(timestampList);
+
+		// call test method
+		final Timestamp actual = triggerServiceTest.getMigrationTimestamp();
+
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
 	}
 }
