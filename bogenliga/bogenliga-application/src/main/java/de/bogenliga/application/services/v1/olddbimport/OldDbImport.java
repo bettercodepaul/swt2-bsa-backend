@@ -46,15 +46,16 @@ public class OldDbImport {
 
     private static String sqlQueryuser = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBBenutzer'";
     private static String sqlQueryhost = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBHost'";
-    private static String sqlQuerypassword = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPasswort'";
+    private static String sqlQuerypw = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPasswort'";
     private static String sqlQueryport = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPort'";
     private static String sqlQueryname = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBName'";
     public static void main (String [] args){
-        sync();
+        //sync();
 
-       /* user = executeQuery(sqlQueryuser);
+       /*
+        user = executeQuery(sqlQueryuser);
         host = executeQuery(sqlQueryhost);
-        password = executeQuery(sqlQuerypassword);
+        password = executeQuery(sqlQuerypw);
 
         try {
             port = parseInt(executeQuery(sqlQueryport));
@@ -67,23 +68,15 @@ public class OldDbImport {
 
     private static String executeQuery(String query) {
         String configurationValue = "";
-        try {
-            Connection connection = DriverManager.getConnection(URLT, userT, passwordT);
-
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (Connection connection = DriverManager.getConnection(URLT, userT, passwordT);
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 configurationValue = resultSet.getString("configuration_value");
             }
 
-            resultSet.close();
-            preparedStatement.close();
-            connection.close();
-
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -120,7 +113,7 @@ public class OldDbImport {
 
         user = executeQuery(sqlQueryuser);
         host = executeQuery(sqlQueryhost);
-        password = executeQuery(sqlQuerypassword);
+        password = executeQuery(sqlQuerypw);
 
         try {
             port = parseInt(executeQuery(sqlQueryport));
