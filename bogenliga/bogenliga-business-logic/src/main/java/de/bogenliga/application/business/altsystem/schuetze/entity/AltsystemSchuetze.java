@@ -18,31 +18,16 @@ import de.bogenliga.application.business.altsystem.schuetze.mapper.AltsystemSchu
 @Component
 public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
 
-    private final AltsystemSchuetzeMapper altsystemSchuetzeMapper;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
-    private final AltsystemUebersetzung altsystemUebersetzung;
-
 
     @Autowired
     public AltsystemSchuetze(final AltsystemSchuetzeMapper altsystemSchuetzeMapper, final DsbMitgliedComponent dsbMitgliedComponent,
                              AltsystemUebersetzung altsystemUebersetzung) {
-        this.altsystemSchuetzeMapper = altsystemSchuetzeMapper;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
-        this.altsystemUebersetzung = altsystemUebersetzung;
+
     }
 
 
     @Override
     public void create(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId) {
-        // Map data to new object, add default fields
-        DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO();
-        /*
-        try {
-            dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }*/
-        //dsbMitgliedDO = altsystemSchuetzeMapper.addDefaultFields(dsbMitgliedDO);
     }
 
     @Override

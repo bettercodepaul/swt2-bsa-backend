@@ -15,35 +15,4 @@ public class AltsystemErgebnisseDO extends AltsystemDO {
     private int ergebnis;
 
 
-    public long getSchuetzeID() {
-        return schuetzeID;
-    }
-
-    public void setSchuetzeID(long schuetzeID) {
-        this.schuetzeID = schuetzeID;
-    }
-
-    public int getMannschaftsID() {
-        return mannschaftsID;
-    }
-
-    public void setMannschaftsID(int mannschaftsID) {
-        this.mannschaftsID = mannschaftsID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getErgebnis() {
-        return ergebnis;
-    }
-
-    public void setErgebnis(int ergebnis) {
-        this.ergebnis = ergebnis;
-    }
 }
