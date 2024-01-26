@@ -24,45 +24,25 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
 
 
-    private final AltsystemVereinMapper altsystemVereinMapper;
-    private final VereinComponent vereinComponent;
-    private final AltsystemUebersetzung altsystemUebersetzung;
+
 
 
     @Autowired
     public AltsystemVerein (final AltsystemVereinMapper altsystemVereinMapper, final VereinComponent vereinComponent,
                             AltsystemUebersetzung altsystemUebersetzung) {
-        this.altsystemVereinMapper = altsystemVereinMapper;
-        this.vereinComponent = vereinComponent;
-        this.altsystemUebersetzung = altsystemUebersetzung;
+
     }
 
 
     @Override
     public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) throws SQLException {
-        VereinDO vereinDO = new VereinDO();
-        vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject, currentUserId);
+
 
     }
-
 
     @Override
     public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) throws SQLException {
 
-        AltsystemUebersetzungDO vereinUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());
-
-
-        if(vereinUebersetzung == null){
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemDataObject.getId()));
-        }
-
-        VereinDO vereinDO = vereinComponent.findById(vereinUebersetzung.getBogenliga_id());
-
-        altsystemVereinMapper.toDO(vereinDO, altsystemDataObject, currentUserId);
-
-        vereinComponent.update(vereinDO, currentUserId);
 
     }
 }
