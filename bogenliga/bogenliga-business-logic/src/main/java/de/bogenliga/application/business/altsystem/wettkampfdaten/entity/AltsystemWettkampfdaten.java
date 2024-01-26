@@ -3,13 +3,13 @@ package de.bogenliga.application.business.altsystem.wettkampfdaten.entity;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.dataobject.AltsystemWettkampfdatenDO;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemMatchMapper;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemWettkampftagMapper;
-import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 
@@ -21,21 +21,18 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
 @Component
 public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkampfdatenDO> {
 
-    private final AltsystemMatchMapper altsystemWettkampfdatenMapper;
+    private final AltsystemMatchMapper altsystemMatchMapper;
     private final AltsystemWettkampftagMapper altsystemWettkampftagMapper;
     private final MatchComponent matchComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
-    private final LigaComponent ligaComponent;
+    private final AltsystemUebersetzung altsystemUebersetzung;
 
     @Autowired
-    public AltsystemWettkampfdaten(final AltsystemMatchMapper altsystemWettkampfdatenMapper,
-                                   AltsystemWettkampftagMapper altsystemWettkampftagMapper, final MatchComponent matchComponent,
-                                   VeranstaltungComponent veranstaltungComponent, LigaComponent ligaComponent) {
-        this.altsystemWettkampfdatenMapper = altsystemWettkampfdatenMapper;
+    public AltsystemWettkampfdaten(AltsystemWettkampftagMapper altsystemWettkampftagMapper, final AltsystemMatchMapper altsystemMatchMapper, final MatchComponent matchComponent,
+                                   AltsystemUebersetzung altsystemUebersetzung) {
         this.altsystemWettkampftagMapper = altsystemWettkampftagMapper;
+        this.altsystemMatchMapper = altsystemMatchMapper;
         this.matchComponent = matchComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
-        this.ligaComponent = ligaComponent;
+        this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
     @Override
@@ -48,15 +45,14 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
             MatchDO[] match = new MatchDO[2];
             match[0] = new MatchDO();
             match[1] = new MatchDO();
-            match = altsystemWettkampfdatenMapper.toDO(match, altsystemDataObject);
-            match = altsystemWettkampfdatenMapper.addDefaultFields(match, wettkampfTage);
+            match = altsystemMatchMapper.toDO(match, altsystemDataObject);
+            match = altsystemMatchMapper.addDefaultFields(match, wettkampfTage);
+
+            matchComponent.create(match[0], currentUserId);
+            matchComponent.create(match[1], currentUserId);
+
+            saveAnzahlSaetze(altsystemDataObject, match);
         }
-
-
-        // Add data to table
-        // ligaComponent.create(ligaDO, <UserID>);
-
-        // Add to translation table
 
     }
 
@@ -72,6 +68,18 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
 
         // Update data in table with given primary key
         // ligaComponent.update(ligaDO, <UserID>);
+    }
+
+
+    public void saveAnzahlSaetze(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, MatchDO[] matchDOS){
+        int anzahlSaetze = 5;
+        if (altsystemWettkampfdatenDO.getSatz4() == 0){
+            anzahlSaetze = 3;
+        } else if (altsystemWettkampfdatenDO.getSatz5() == 0){
+            anzahlSaetze = 4;
+        }
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDOS[0].getId(), 0L, String.valueOf(anzahlSaetze));
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDOS[1].getId(), 0L, String.valueOf(anzahlSaetze));
     }
 
 }

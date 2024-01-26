@@ -1,11 +1,14 @@
 package de.bogenliga.application.business.altsystem.verein.mapper;
 
 
-import java.sql.SQLException;
+import java.util.List;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 
@@ -17,8 +20,48 @@ import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 @Component
 public class AltsystemVereinMapper implements ValueObjectMapper {
 
+    private final VereinComponent vereinComponent;
+    private final AltsystemVereinMapper altsystemVereinMapper;
+    private final AltsystemUebersetzung altsystemUebersetzung;
 
-    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemMannschaftDO) throws SQLException {
+
+    public AltsystemVereinMapper(VereinComponent vereinComponent, AltsystemVereinMapper altsystemVereinMapper,
+                                 AltsystemUebersetzung altsystemUebersetzung) {
+        this.vereinComponent = vereinComponent;
+        this.altsystemVereinMapper = altsystemVereinMapper;
+        this.altsystemUebersetzung = altsystemUebersetzung;
+    }
+
+
+    public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
+
+
+        String parsedName = parseName(altsystemDataObject);
+        VereinDO vorhanden = getVereinDO(parsedName);
+
+        if (vorhanden == null){
+            vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
+            vereinComponent.create(vereinDO, currentUserId);
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vereinDO.getId().longValue(), "");
+
+        }else {
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vorhanden.getId().longValue(), "");
+        }
+        return vereinDO;
+    }
+
+    public VereinDO addDefaultFields(VereinDO vereinDO){
+
+        AltsystemLigaMapper altsystemLigaMapper = null;
+        RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
+        vereinDO.setRegionId(dsbDO.getId());
+
+
+        return vereinDO;
+    }
+
+
+    public String parseName(AltsystemMannschaftDO altsystemMannschaftDO) {
 
         char[] nameOld = altsystemMannschaftDO.getName().toCharArray();
         String nameNew = "";
@@ -35,7 +78,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
             // Speichere das aktuelle Zeichen am Index, um getString().charAt()-Aufrufe zu minimieren (für bessere Speichereffizienz)
             if (i + 1 < altsystemMannschaftDO.getName().length()) {
-                    // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
+                // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
                 if (altsystemMannschaftDO.getName().charAt(i) == '.' && altsystemMannschaftDO.getName().charAt(
                         i + 1) != ' ') {
                     nameNew += ". ";
@@ -100,23 +143,28 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         }
 
 
-        vereinDO.setName(nameNew);
 
         // Gibt das Vereinsobjekt zurück
-        return vereinDO;
-    }
+        return nameNew;
 
-    public VereinDO addDefaultFields(VereinDO vereinDO){
-
-        AltsystemLigaMapper altsystemLigaMapper = null;
-        RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
-        vereinDO.setRegionId(dsbDO.getId());
-
-
-        return vereinDO;
     }
 
 
+    public VereinDO getVereinDO(String vereinName){
+
+        VereinDO nameDO = null;
+        List<VereinDO> vereinDOS = vereinComponent.findBySearch(vereinName);
+        for (VereinDO vereinDO : vereinDOS){
+            String verName = vereinDO.getName();
+            if(verName.equals(vereinName)){
+                nameDO = vereinDO;
+                break;
+            } else {
+                return null;
+            }
+        }
+        return nameDO;
+    }
 
 
 }
