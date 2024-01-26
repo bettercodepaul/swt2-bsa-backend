@@ -40,8 +40,10 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
+import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
+import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
@@ -157,7 +159,7 @@ public class TriggerService implements ServiceFacade {
 
     public void syncData(long triggeringUserId) {
         LOGGER.debug("Importing tables from old database");
-        //OldDbImport.sync();
+        OldDbImport.sync();
 
         Timestamp lastSync = getMigrationTimestamp();
 
@@ -188,15 +190,16 @@ public class TriggerService implements ServiceFacade {
             Class<?> oldClass = tableNameToClass.get(oldTableName);
             String sqlQuery = "SELECT * FROM " + oldTableName + " WHERE id = ?";
 
-            final AltsystemDO retrievedObject = (AltsystemDO) basicDao.selectSingleEntity(new BusinessEntityConfiguration<>(
-                    oldClass, oldTableName, new HashMap<>(), LOGGER
-            ), sqlQuery, triggerDO.getAltsystemId());
+            try {
+                final AltsystemDO retrievedObject = (AltsystemDO) basicDao.selectSingleEntity(new BusinessEntityConfiguration<>(
+                        oldClass, oldTableName, new HashMap<>(), LOGGER
+                ), sqlQuery, triggerDO.getAltsystemId());
 
-            AltsystemEntity entity = dataObjectToEntity.get(retrievedObject);
-
-            TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggerDO.getCreatedByUserId());
-
-            changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggerDO.getCreatedByUserId()));
+                AltsystemEntity entity = dataObjectToEntity.get(retrievedObject.getClass());
+                changes.add(new TriggerChange<>(triggerComponent, triggerDO, retrievedObject, entity, triggerDO.getCreatedByUserId()));
+            } catch (TechnicalException e) {
+                LOGGER.error("Failed to load old model for " + oldTableName, e);
+            }
         }
 
         return changes;
@@ -209,17 +212,16 @@ public class TriggerService implements ServiceFacade {
      */
     private List<TriggerChange<?>> computeAllChanges(final long triggeringUserId, Timestamp lastSync) {
         List<TriggerChange<?>> changes = loadUnprocessedChanges();
-        return changes;
 
-//        for (String oldTableName : tableNameToClass.keySet()) {
-//            try {
-//                changes.addAll(computeChangesOfTable(oldTableName, triggeringUserId, lastSync));
-//            } catch (TechnicalException e) {
-//                LOGGER.error("Failed to compute changes of table " + oldTableName, e);
-//            }
-//        }
-//
-//        return changes;
+        for (String oldTableName : tableNameToClass.keySet()) {
+            try {
+                changes.addAll(computeChangesOfTable(oldTableName, triggeringUserId, lastSync));
+            } catch (TechnicalException e) {
+                LOGGER.error("Failed to compute changes of table " + oldTableName, e);
+            }
+        }
+
+        return changes;
     }
 
     private <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName, long triggeringUserId, Timestamp lastSync) {
