@@ -6,7 +6,6 @@ import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerDO;
-import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 
@@ -78,7 +77,7 @@ public class TriggerChange<T extends AltsystemDO> {
         }
     }
 
-    private void executeMigrationOnEntity() throws SQLException {
+    void executeMigrationOnEntity() throws SQLException {
         switch (getType()) {
             case CREATE:
                 altsystemEntity.create(altsystemDataObject, triggeringUserId);
