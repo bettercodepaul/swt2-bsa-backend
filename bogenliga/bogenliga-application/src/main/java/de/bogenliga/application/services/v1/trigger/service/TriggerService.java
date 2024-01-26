@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import de.bogenliga.application.business.altsystem.ergebnisse.dataobject.AltsystemErgebnisseDO;
-import de.bogenliga.application.business.altsystem.ergebnisse.entity.AltsystemErgebnisse;
-import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
-import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
-import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
-import de.bogenliga.application.business.altsystem.mannschaft.entity.AltsystemMannschaft;
-import de.bogenliga.application.business.altsystem.saison.dataobject.AltsystemSaisonDO;
-import de.bogenliga.application.business.altsystem.saison.entity.AltsystemSaison;
-import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
-import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
-import de.bogenliga.application.business.altsystem.wettkampfdaten.dataobject.AltsystemWettkampfdatenDO;
-import de.bogenliga.application.business.altsystem.wettkampfdaten.entity.AltsystemWettkampfdaten;
+//import de.bogenliga.application.business.altsystem.ergebnisse.dataobject.AltsystemErgebnisseDO;
+//import de.bogenliga.application.business.altsystem.ergebnisse.entity.AltsystemErgebnisse;
+//import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
+//import de.bogenliga.application.business.altsystem.liga.entity.AltsystemLiga;
+//import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+//import de.bogenliga.application.business.altsystem.mannschaft.entity.AltsystemMannschaft;
+//import de.bogenliga.application.business.altsystem.saison.dataobject.AltsystemSaisonDO;
+//import de.bogenliga.application.business.altsystem.saison.entity.AltsystemSaison;
+//import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
+//import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+//import de.bogenliga.application.business.altsystem.wettkampfdaten.dataobject.AltsystemWettkampfdatenDO;
+//import de.bogenliga.application.business.altsystem.wettkampfdaten.entity.AltsystemWettkampfdaten;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
@@ -59,7 +59,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 public class TriggerService implements ServiceFacade {
     private static final Map<String, Class<?>> tableNameToClass = getTableNameToClassMap();
 
-    private final Map<Class<?>, AltsystemEntity<?>> dataObjectToEntity;
+    //private final Map<Class<?>, AltsystemEntity<?>> dataObjectToEntity;
 
     // define the logger context
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggerService.class);
@@ -70,38 +70,38 @@ public class TriggerService implements ServiceFacade {
     private final MigrationTimestampDAO migrationTimestampDAO;
 
     @Autowired
-    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
-                          final AltsystemLiga altsystemLiga,
-                          final AltsystemSaison altsystemSaison,
-                          final AltsystemMannschaft altsystemMannschaft,
-                          final AltsystemSchuetze altsystemSchuetze,
-                          final AltsystemWettkampfdaten altsystemWettkampfdaten,
-                          final AltsystemErgebnisse altsystemErgebnisse
+    public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO
+                          //final AltsystemLiga altsystemLiga,
+                          //final AltsystemSaison altsystemSaison,
+                          //final AltsystemMannschaft altsystemMannschaft,
+                          //final AltsystemSchuetze altsystemSchuetze,
+                          //final AltsystemWettkampfdaten altsystemWettkampfdaten,
+                          //final AltsystemErgebnisse altsystemErgebnisse
     ) {
         this.basicDao = basicDao;
         this.triggerDAO = triggerDAO;
         this.triggerComponent = triggerComponent;
         this.migrationTimestampDAO = migrationTimestampDAO;
-
+/*
         dataObjectToEntity = new HashMap<>();
         dataObjectToEntity.put(AltsystemLigaDO.class, altsystemLiga);
         dataObjectToEntity.put(AltsystemSaisonDO.class, altsystemSaison);
         dataObjectToEntity.put(AltsystemMannschaftDO.class, altsystemMannschaft);
         dataObjectToEntity.put(AltsystemSchuetzeDO.class, altsystemSchuetze);
         dataObjectToEntity.put(AltsystemWettkampfdatenDO.class, altsystemWettkampfdaten);
-        dataObjectToEntity.put(AltsystemErgebnisseDO.class, altsystemErgebnisse);
+        dataObjectToEntity.put(AltsystemErgebnisseDO.class, altsystemErgebnisse);*/
     }
 
     private static Map<String, Class<?>> getTableNameToClassMap() {
         Map<String, Class<?>> result = new LinkedHashMap<>();
 
-        result.put("altsystem_liga", AltsystemLigaDO.class);
+      /*  result.put("altsystem_liga", AltsystemLigaDO.class);
         result.put("altsystem_saison", AltsystemSaisonDO.class);
         result.put("altsystem_mannschaft", AltsystemMannschaftDO.class);
         result.put("altsystem_schuetze", AltsystemSchuetzeDO.class);
         result.put("altsystem_wettkampfdaten", AltsystemWettkampfdatenDO.class);
         result.put("altsystem_ergebniss", AltsystemErgebnisseDO.class);
-
+*/
         return result;
     }
 
@@ -195,8 +195,8 @@ public class TriggerService implements ServiceFacade {
                         oldClass, oldTableName, new HashMap<>(), LOGGER
                 ), sqlQuery, triggerDO.getAltsystemId());
 
-                AltsystemEntity entity = dataObjectToEntity.get(retrievedObject.getClass());
-                changes.add(new TriggerChange<>(triggerComponent, triggerDO, retrievedObject, entity, triggerDO.getCreatedByUserId()));
+                //AltsystemEntity entity = dataObjectToEntity.get(retrievedObject.getClass());
+                //changes.add(new TriggerChange<>(triggerComponent, triggerDO, retrievedObject, entity, triggerDO.getCreatedByUserId()));
             } catch (TechnicalException e) {
                 LOGGER.error("Failed to load old model for " + oldTableName, e);
             }
@@ -241,7 +241,7 @@ public class TriggerService implements ServiceFacade {
                 continue;
             }
 
-            AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(retrievedObject.getClass());
+            //AltsystemEntity<T> entity = (AltsystemEntity<T>) dataObjectToEntity.get(retrievedObject.getClass());
 
             TriggerDO triggerDO = new TriggerDO(
                     null,
@@ -255,7 +255,7 @@ public class TriggerService implements ServiceFacade {
             );
             TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
 
-            changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));
+            //changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));
         }
 
         return changes;
