@@ -24,6 +24,8 @@ public class PostgresqlTransactionManagerTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private DataSource dataSource;
+
+
     @Mock
     private Connection connection;
 

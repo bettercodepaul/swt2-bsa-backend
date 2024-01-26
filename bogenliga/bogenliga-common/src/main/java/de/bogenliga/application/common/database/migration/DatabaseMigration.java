@@ -18,7 +18,7 @@ import java.util.Arrays;
  * I am responsible for starting the auto migration of the database.
  */
 @Component
-public class DatabaseMigration {
+public class DatabaseMigration{
 
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseMigration.class);
 
@@ -59,6 +59,10 @@ public class DatabaseMigration {
                     (pgTransactionManager.getDataSource())
                     .locations(locations).load();
 
+            Flyway flywayNewDB = Flyway.configure().dataSource
+                    (pgTransactionManager.getDataSource())
+                    .locations(locations).load();
+
             LOG.info("Executing following locations/SqlScript-Folders: {}", Arrays.toString(flyway.getConfiguration().getLocations()));
 
             if(!Arrays.asList(environment.getActiveProfiles()).contains("PROD") && flywayCleanEnabled) {
@@ -68,6 +72,7 @@ public class DatabaseMigration {
             }
             //starts the database-migration
             flyway.migrate();
+            flywayNewDB.migrate();
 
         }catch(Exception e){
             LOG.error(e.getMessage());

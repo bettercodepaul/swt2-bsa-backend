@@ -60,20 +60,22 @@ public class PostgresqlTransactionManager implements TransactionManager {
     @Override
     public void begin() {
         LOG.debug("Starting transaction.");
-        Connection connection;
+        Connection connectionDB;
+
 
         try {
-            connection = getDataSource().getConnection();
-            connection.setAutoCommit(false);
-            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            connectionDB = getDataSource().getConnection();
+            connectionDB.setAutoCommit(false);
+            connectionDB.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             LOG.debug("Created new connection from Datasource.");
         } catch (SQLException e) {
             throw new TechnicalException(ErrorCode.DATABASE_TRANSACTION_ERROR, e);
         }
 
-        SessionHandler.setConnection(connection);
+        SessionHandler.setConnection(connectionDB);
         SessionHandler.setIsActive(true);
     }
+
 
 
     @Override
@@ -175,9 +177,9 @@ public class PostgresqlTransactionManager implements TransactionManager {
                 throw new TechnicalException(ErrorCode.DATABASE_CONNECTION_ERROR, e);
             }
         }
-
         return ds;
     }
+
 
 
     /**
