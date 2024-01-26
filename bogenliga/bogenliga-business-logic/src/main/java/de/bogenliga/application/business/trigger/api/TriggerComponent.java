@@ -13,4 +13,10 @@ public interface TriggerComponent extends ComponentFacade{
      * @return list of all Trigger classes in the DB
      */
     List<TriggerDO> findAll();
+
+    List<TriggerDO> findAllUnprocessed();
+
+    TriggerDO create(TriggerDO triggerDO, Long currentUserId);
+
+    TriggerDO update(TriggerDO triggerDO, Long currentUserId);
 }

@@ -30,7 +30,16 @@ public class TriggerMapper implements ValueObjectMapper {
         OffsetDateTime createdAtUtc = DateProvider.convertTimestamp(triggerBE.getCreatedAtUtc());
         OffsetDateTime runAtUtc = DateProvider.convertTimestamp(triggerBE.getRunAtUtc());
 
-        return new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
+        TriggerDO vo = new TriggerDO(id, kategorie, altsystemId, operation, status, nachricht, createdAtUtc, runAtUtc);
+
+        OffsetDateTime lastModifiedAtUtc = DateProvider.convertTimestamp(triggerBE.getLastModifiedAtUtc());
+        vo.setCreatedAtUtc(createdAtUtc);
+        vo.setCreatedByUserId(triggerBE.getCreatedByUserId());
+        vo.setLastModifiedAtUtc(lastModifiedAtUtc);
+        vo.setLastModifiedByUserId(triggerBE.getLastModifiedByUserId());
+        vo.setVersion(triggerBE.getVersion());
+
+        return vo;
     };
     public static final Function<TriggerDO, TriggerBE> toTriggerBE = triggerDO -> {
         Timestamp runAtUtcTimestamp = DateProvider.convertOffsetDateTime(triggerDO.getRunAtUtc());
