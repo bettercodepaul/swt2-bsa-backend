@@ -50,7 +50,6 @@ public class AltsystemWettkampftagMapper {
         if (wettkampfTage.isEmpty()){
             wettkampfTage = createWettkampftage(veranstaltungID, currentUserId);
         }
-
         return wettkampfTage;
     }
 
