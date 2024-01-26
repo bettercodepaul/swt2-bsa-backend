@@ -63,7 +63,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
 
         dsbMannschaftDO.setBenutzerId(currentDSBMitglied);
 
-        //AltsystemMannschaftDO altsystemDataObject = null;
+
         AltsystemUebersetzungDO vereinUebersetzung = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());
 
