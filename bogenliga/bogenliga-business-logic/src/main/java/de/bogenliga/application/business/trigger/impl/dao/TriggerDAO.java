@@ -69,6 +69,17 @@ public class TriggerDAO implements DataAccessObject {
                     + "         ON altsystem_aenderung.status = st.status_id"
                     + " ORDER BY aenderung_id";
 
+    private static final String FIND_ALL_LIMITED =
+            "SELECT * "
+                    + " FROM altsystem_aenderung"
+                    + "     LEFT JOIN altsystem_aenderung_operation op"
+                    + "         ON altsystem_aenderung.operation = op.operation_id"
+                    + "     LEFT JOIN altsystem_aenderung_status st"
+                    + "         ON altsystem_aenderung.status = st.status_id"
+                    + "         AND st.status_name != 'SUCCESS'"
+                    + " ORDER BY aenderung_id"
+                    + " LIMIT 500";
+
     private static final String FIND_ALL_UNPROCESSED =
             "SELECT * "
                     + " FROM altsystem_aenderung"
@@ -132,6 +143,9 @@ public class TriggerDAO implements DataAccessObject {
     public List<TriggerBE> findAllUnprocessed() {
         return basicDAO.selectEntityList(TRIGGER, FIND_ALL_UNPROCESSED);
     }
+    public List<TriggerBE> findAllLimited() {
+        return basicDAO.selectEntityList(TRIGGER, FIND_ALL_LIMITED);
+    }
 
     public TriggerBE create(TriggerBE triggerBE, Long currentUserId) {
         basicDAO.setCreationAttributes(triggerBE, currentUserId);
@@ -148,6 +162,7 @@ public class TriggerDAO implements DataAccessObject {
         rawTrigger = basicDAO.updateEntity(RAW_TRIGGER, rawTrigger, TRIGGER_TABLE_ID);
         return resolveRawTrigger(rawTrigger);
     }
+
 
     private TriggerBE resolveRawTrigger(RawTriggerBE raw) {
         TriggerBE created = new TriggerBE();
