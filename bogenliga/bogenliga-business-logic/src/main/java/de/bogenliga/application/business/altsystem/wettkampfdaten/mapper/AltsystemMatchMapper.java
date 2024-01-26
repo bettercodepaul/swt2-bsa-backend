@@ -29,14 +29,14 @@ public class AltsystemMatchMapper {
 
     public MatchDO[] toDO(MatchDO[] match, AltsystemWettkampfdatenDO altsystemDataObject) {
         MatchDO mannschaftDO = match[0];
-        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (long) altsystemDataObject.getMannschaftId());
+        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getMannschaftId());
         mannschaftDO.setMannschaftId(mannschaftUebersetzung.getBogenliga_id());
         mannschaftDO.setSatzpunkte((long) altsystemDataObject.getSatzPlus());
         mannschaftDO.setMatchpunkte((long) altsystemDataObject.getMatchPlus());
         mannschaftDO.setNr((long) altsystemDataObject.getMatch());
 
         MatchDO gegnerDO = match[1];
-        AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (long) altsystemDataObject.getGegnerId());
+        AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getGegnerId());
         gegnerDO.setMannschaftId(gegnerUebersetzung.getBogenliga_id());
         gegnerDO.setSatzpunkte((long) altsystemDataObject.getSatzMinus());
         gegnerDO.setMatchpunkte((long) altsystemDataObject.getMatchMinus());
