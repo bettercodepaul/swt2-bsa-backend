@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.security.Principal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,6 +96,9 @@ public class TriggerService implements ServiceFacade {
     private static Map<String, Class<?>> getTableNameToClassMap() {
         Map<String, Class<?>> result = new LinkedHashMap<>();
 
+        // FIXME: Use real entities
+        result.put("altsystem_TEST", AltsystemDO.class);
+
       /*  result.put("altsystem_liga", AltsystemLigaDO.class);
         result.put("altsystem_saison", AltsystemSaisonDO.class);
         result.put("altsystem_mannschaft", AltsystemMannschaftDO.class);
@@ -180,7 +184,7 @@ public class TriggerService implements ServiceFacade {
     /**
      * Reads all unprocessed changes from altsystem_aenderung.
      */
-    private List<TriggerChange<?>> loadUnprocessedChanges() {
+    List<TriggerChange<?>> loadUnprocessedChanges() {
         List<TriggerChange<?>> changes = new ArrayList<>();
 
         List<TriggerDO> changeObjects = triggerComponent.findAllUnprocessed();
@@ -196,7 +200,7 @@ public class TriggerService implements ServiceFacade {
                 ), sqlQuery, triggerDO.getAltsystemId());
 
                 //AltsystemEntity entity = dataObjectToEntity.get(retrievedObject.getClass());
-                //changes.add(new TriggerChange<>(triggerComponent, triggerDO, retrievedObject, entity, triggerDO.getCreatedByUserId()));
+                changes.add(new TriggerChange<>(triggerComponent, triggerDO, retrievedObject, null, triggerDO.getCreatedByUserId()));
             } catch (TechnicalException e) {
                 LOGGER.error("Failed to load old model for " + oldTableName, e);
             }
@@ -210,7 +214,7 @@ public class TriggerService implements ServiceFacade {
      * Checks the imported old database tables for changes and returns all
      * updated and newly created models.
      */
-    private List<TriggerChange<?>> computeAllChanges(final long triggeringUserId, Timestamp lastSync) {
+    List<TriggerChange<?>> computeAllChanges(final long triggeringUserId, Timestamp lastSync) {
         List<TriggerChange<?>> changes = loadUnprocessedChanges();
 
         for (String oldTableName : tableNameToClass.keySet()) {
@@ -224,7 +228,7 @@ public class TriggerService implements ServiceFacade {
         return changes;
     }
 
-    private <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName, long triggeringUserId, Timestamp lastSync) {
+    <T extends AltsystemDO> List<TriggerChange<T>> computeChangesOfTable(String oldTableName, long triggeringUserId, Timestamp lastSync) {
         Class<T> oldClass = (Class<T>) tableNameToClass.get(oldTableName);
         String sqlQuery = "SELECT * FROM " + oldTableName;
 
@@ -255,7 +259,8 @@ public class TriggerService implements ServiceFacade {
             );
             TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
 
-            //changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));
+            // FIXME: use entity instead of null
+            changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, null, triggeringUserId));
         }
 
         return changes;
