@@ -38,6 +38,12 @@ public class TriggerChange<T extends AltsystemDO> {
         this.triggeringUserId = triggeringUserId;
     }
 
+
+    public TriggerDO getData() {
+        return data;
+    }
+
+
     public T getAltsystemDataObject() {
         return altsystemDataObject;
     }

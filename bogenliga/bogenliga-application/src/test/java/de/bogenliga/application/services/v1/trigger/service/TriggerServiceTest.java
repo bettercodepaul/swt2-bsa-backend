@@ -1,6 +1,7 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import de.bogenliga.application.business.trigger.api.types.TriggerDO;
 import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
 import de.bogenliga.application.common.altsystem.AltsystemDO;
 import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
 import static org.mockito.Mockito.*;
 
@@ -113,6 +115,70 @@ public class TriggerServiceTest {
 		verify(triggerComponent, times(1)).findAll();
 	}
 
+	@Test
+	public void testLoadUnprocessedChanges() {
+		// prepare test data
+		final TriggerDO expectedDO = getTriggerDO();
+		expectedDO.setCreatedByUserId(1L); // A user ID is needed for TriggerChange wrapper
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAllUnprocessed()).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerChange<?>> actual = triggerServiceTest.loadUnprocessedChanges();
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+		Java6Assertions.assertThat(actual.get(0).getData()).isEqualTo(expectedDO);
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllUnprocessed();
+	}
+
+	@Test
+	public void testComputeAllChanges() {
+		// prepare test data
+		final TriggerDO unprocessedTrigger = getTriggerDO();
+		unprocessedTrigger.setCreatedByUserId(1L);
+
+		// configure mocks
+		final List<TriggerDO> unprocessedTriggers = Collections.singletonList(unprocessedTrigger);
+		when(triggerComponent.findAllUnprocessed()).thenReturn(unprocessedTriggers);
+
+		Timestamp earlier = Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0));
+		Timestamp later = Timestamp.valueOf(LocalDateTime.of(2024, 1, 3, 0, 0));
+
+		final AltsystemDO expectedDO = createRawAltsystemDO(
+				later,
+				later
+		);
+		final List<Object> expectedDOs = Collections.singletonList(expectedDO);
+		when(basicDao.selectEntityList(any(), anyString())).thenReturn(expectedDOs);
+
+		// call test method
+		final List<TriggerChange<?>> actual = triggerServiceTest.computeAllChanges(1L, earlier);
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(2);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+		Java6Assertions.assertThat(actual.get(1)).isNotNull();
+		Java6Assertions.assertThat(actual.get(0).getData()).isEqualTo(unprocessedTrigger);
+		Java6Assertions.assertThat(actual.get(1).getAltsystemDataObject()).isEqualTo(expectedDO);
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllUnprocessed();
+		verify(basicDao, times(1)).selectEntityList(any(), anyString());
+	}
 
 	@Test
 	public void testDetermineOperationFromTimestamp() {
