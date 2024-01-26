@@ -20,7 +20,7 @@ public enum TriggerChangeOperation {
 
     public static TriggerChangeOperation parse(Long id) {
         for (TriggerChangeOperation operation : values()) {
-            if (operation.id == id) {
+            if (operation.id.equals(id)) {
                 return operation;
             }
         }

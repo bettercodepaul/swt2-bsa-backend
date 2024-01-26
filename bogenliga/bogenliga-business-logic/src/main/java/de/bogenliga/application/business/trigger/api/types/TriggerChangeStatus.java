@@ -22,7 +22,7 @@ public enum TriggerChangeStatus {
 
     public static TriggerChangeStatus parse(Long id) {
         for (TriggerChangeStatus operation : values()) {
-            if (operation.id == id) {
+            if (operation.id.equals(id)) {
                 return operation;
             }
         }
