@@ -261,7 +261,7 @@ public class TriggerService implements ServiceFacade {
         return changes;
     }
 
-    private static TriggerChangeOperation determineOperationFromTimestamp(AltsystemDO altsystemDO, Timestamp lastSync) {
+    static TriggerChangeOperation determineOperationFromTimestamp(AltsystemDO altsystemDO, Timestamp lastSync) {
         if (lastSync == null) {
             // No data was imported, ever
             return TriggerChangeOperation.CREATE;
