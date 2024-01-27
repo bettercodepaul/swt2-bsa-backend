@@ -87,7 +87,7 @@ public class OldDbImport {
     // Hilfsmethode zum Abrufen des Konfigurationswerts anhand des Schlüssels
 
 
-    public static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
+    private static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
         try{
             String script=new String(Files.readAllBytes(Paths.get(scriptFilePath)));
             Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
