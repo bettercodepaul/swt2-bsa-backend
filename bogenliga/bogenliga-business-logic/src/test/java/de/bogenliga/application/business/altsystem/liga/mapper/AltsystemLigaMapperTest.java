@@ -65,6 +65,7 @@ public class AltsystemLigaMapperTest {
         List<RegionenDO> regionen = new LinkedList<>();
         // add dsb element
         RegionenDO dsb = new RegionenDO(DSB_REGION_ID);
+        dsb.setId(1L);
         dsb.setRegionKuerzel("DSB");
         regionen.add(dsb);
 
@@ -146,7 +147,7 @@ public class AltsystemLigaMapperTest {
         expectedDO.setLigaUebergeordnetId(getMockBundesliga().getId());
 
         // configure mocks
-        when(regionenComponent.findBySearch(any())).thenReturn(getMockRegionen());
+        when(regionenComponent.findAll()).thenReturn(getMockRegionen());
         when(ligaComponent.checkExistsLigaName(any())).thenReturn(getMockBundesliga());
 
         // call test method
