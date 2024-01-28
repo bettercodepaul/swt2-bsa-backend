@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 /**
  * Test for AltsystemVeranstaltungMapper
  *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ * @author Paul Roscher      paul.roscher@student.reutlingen-university.de
  */
 public class AltsystemVeranstaltungMapperTest {
 
