@@ -23,9 +23,6 @@ public class MatchDO extends CommonDataObject {
     private Long strafPunkteSatz4;
     private Long strafPunkteSatz5;
 
-    public  MatchDO(){
-
-    }
 
     public MatchDO(Long id, Long nr, Long wettkampfId, Long mannschaftId, Long begegnung, Long scheibennummer,
                    Long matchpunkte, Long satzpunkte, Long strafPunkteSatz1, Long strafPunkteSatz2,
