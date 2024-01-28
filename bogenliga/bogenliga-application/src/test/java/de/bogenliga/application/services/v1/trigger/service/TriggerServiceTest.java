@@ -1,0 +1,290 @@
+package de.bogenliga.application.services.v1.trigger.service;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.assertj.core.api.Java6Assertions;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.liga.api.LigaComponent;
+import de.bogenliga.application.business.trigger.api.TriggerComponent;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
+import de.bogenliga.application.business.trigger.api.types.TriggerChangeStatus;
+import de.bogenliga.application.business.trigger.api.types.TriggerDO;
+import de.bogenliga.application.business.trigger.impl.dao.MigrationTimestampDAO;
+import de.bogenliga.application.business.trigger.impl.dao.TriggerDAO;
+import de.bogenliga.application.business.trigger.impl.entity.MigrationTimestampBE;
+import de.bogenliga.application.common.altsystem.AltsystemDO;
+import de.bogenliga.application.common.component.dao.BasicDAO;
+import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
+import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
+import static org.mockito.Mockito.*;
+
+
+/**
+ * TODO [AL] class documentation
+ *
+ * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
+ */
+public class TriggerServiceTest {
+
+	private static final Long TRIGGER_ID = 123L;
+	private static final String TRIGGER_KATEGORIE = "bee";
+	private static final Long TRIGGER_ALTSYSTEMID = 234L;
+	private static final TriggerChangeOperation TRIGGER_OPERATION = null;
+	private static final TriggerChangeStatus TRIGGER_STATUS = null;
+	private static final String TRIGGER_NACHRICHT = "see";
+	public static final OffsetDateTime TRIGGER_CREATEDATUTCO = null;
+	public static final OffsetDateTime TRIGGER_RUNATUTCO = null;
+
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+	@Mock
+	private BasicDAO basicDAO;
+	@Mock
+	private TriggerDAO triggerDAO;
+	@Mock
+	private TriggerComponent triggerComponent;
+	@Mock
+	private LigaComponent ligaComponent;
+	@Mock
+	private MigrationTimestampDAO migrationTimestampDAO;
+
+	@InjectMocks
+	private TriggerService triggerServiceTest;
+
+
+	public static TriggerDO getTriggerDO() {
+		return new TriggerDO(
+				TRIGGER_ID,
+				TRIGGER_KATEGORIE,
+				TRIGGER_ALTSYSTEMID,
+				TRIGGER_OPERATION,
+				TRIGGER_STATUS,
+				TRIGGER_NACHRICHT,
+				TRIGGER_CREATEDATUTCO,
+				TRIGGER_RUNATUTCO
+		);
+	}
+
+	private static AltsystemDO createRawAltsystemDO(Timestamp createdAt, Timestamp updatedAt) {
+		final AltsystemDO rawDO = new AltsystemDO() {};
+		rawDO.setCreatedAt(createdAt);
+		rawDO.setUpdatedAt(updatedAt);
+		return rawDO;
+	}
+
+	@Test
+	public void testFindAll() {
+		// prepare test data
+		final TriggerDO expectedDO = getTriggerDO();
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAll()).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerDTO> actual = triggerServiceTest.findAll();
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+
+		Java6Assertions.assertThat(actual.get(0).getId())
+				.isEqualTo(expectedDO.getId());
+		Java6Assertions.assertThat(actual.get(0).getKategorie())
+				.isEqualTo(expectedDO.getKategorie());
+		Java6Assertions.assertThat(actual.get(0).getAltsystemId())
+				.isEqualTo(expectedDO.getAltsystemId());
+		Java6Assertions.assertThat(actual.get(0).getNachricht())
+				.isEqualTo(expectedDO.getNachricht());
+		Java6Assertions.assertThat(actual.get(0).getCreatedAtUtc())
+				.isEqualTo(expectedDO.getCreatedAtUtc());
+		Java6Assertions.assertThat(actual.get(0).getRunAtUtc())
+				.isEqualTo(expectedDO.getRunAtUtc());
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAll();
+	}
+
+	@Test
+	public void testLoadUnprocessedChanges() {
+		// prepare test data
+		final TriggerDO expectedDO = getTriggerDO();
+		expectedDO.setCreatedByUserId(1L); // A user ID is needed for TriggerChange wrapper
+		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
+
+		// configure mocks
+		when(triggerComponent.findAllUnprocessed()).thenReturn(expectedDOList);
+
+		// call test method
+		final List<TriggerChange<?>> actual = triggerServiceTest.loadUnprocessedChanges();
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(1);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+		Java6Assertions.assertThat(actual.get(0).getData()).isEqualTo(expectedDO);
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllUnprocessed();
+	}
+
+	@Test
+	public void testComputeAllChanges() {
+		// prepare test data
+		final TriggerDO unprocessedTrigger = getTriggerDO();
+		unprocessedTrigger.setCreatedByUserId(1L);
+
+		// configure mocks
+		final List<TriggerDO> unprocessedTriggers = Collections.singletonList(unprocessedTrigger);
+		when(triggerComponent.findAllUnprocessed()).thenReturn(unprocessedTriggers);
+
+		Timestamp earlier = Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0));
+		Timestamp later = Timestamp.valueOf(LocalDateTime.of(2024, 1, 3, 0, 0));
+
+		final AltsystemDO expectedDO = createRawAltsystemDO(
+				later,
+				later
+		);
+		final List<Object> expectedDOs = Collections.singletonList(expectedDO);
+		when(basicDAO.selectEntityList(any(), anyString())).thenReturn(expectedDOs);
+
+		// call test method
+		final List<TriggerChange<?>> actual = triggerServiceTest.computeAllChanges(1L, earlier);
+
+		// assert result
+		Java6Assertions.assertThat(actual)
+				.isNotNull()
+				.isNotEmpty()
+				.hasSize(2);
+
+		Java6Assertions.assertThat(actual.get(0)).isNotNull();
+		Java6Assertions.assertThat(actual.get(1)).isNotNull();
+		Java6Assertions.assertThat(actual.get(0).getData()).isEqualTo(unprocessedTrigger);
+		Java6Assertions.assertThat(actual.get(1).getAltsystemDataObject()).isEqualTo(expectedDO);
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllUnprocessed();
+		verify(basicDAO, times(1)).selectEntityList(any(), anyString());
+	}
+
+	@Test
+	public void testScheduler() {
+		// call test method
+		triggerServiceTest.scheduler();
+
+		// verify invocations
+		verify(triggerComponent, times(1)).findAllUnprocessed();
+		verify(basicDAO, atLeastOnce()).selectEntityList(any(), anyString());
+	}
+
+	@Test
+	public void testDetermineOperationFromTimestamp() {
+		// prepare test data
+		final Timestamp lastSync = Timestamp.valueOf(LocalDateTime.of(2024, 1, 3, 0, 0));
+
+		final AltsystemDO shouldBeCreated = createRawAltsystemDO(
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 4, 0, 0)),
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 4, 0, 0))
+		);
+
+		final AltsystemDO shouldBeUpdated = createRawAltsystemDO(
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0)),
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 4, 0, 0))
+		);
+
+		final AltsystemDO shouldBeLeftUntouched = createRawAltsystemDO(
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0)),
+				Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0))
+		);
+
+		// assert results
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeCreated, lastSync))
+				.isEqualTo(TriggerChangeOperation.CREATE);
+
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeUpdated, lastSync))
+				.isEqualTo(TriggerChangeOperation.UPDATE);
+
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeLeftUntouched, lastSync))
+				.isEqualTo(null);
+
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeCreated, null))
+				.isEqualTo(TriggerChangeOperation.CREATE);
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeUpdated, null))
+				.isEqualTo(TriggerChangeOperation.CREATE);
+		Java6Assertions
+				.assertThat(TriggerService.determineOperationFromTimestamp(shouldBeLeftUntouched, null))
+				.isEqualTo(TriggerChangeOperation.CREATE);
+	}
+	@Test
+	public void testGetMigrationTimestamp(){
+
+		// configure mocks
+		Timestamp expectedTimestamp = new Timestamp(System.currentTimeMillis());
+		MigrationTimestampBE migrationTimestampBE = new MigrationTimestampBE();
+		migrationTimestampBE.setSyncTimestamp(expectedTimestamp);
+		List<MigrationTimestampBE> timestampList = new ArrayList<>();
+
+		// call test method
+		final Timestamp actualFalse = triggerServiceTest.getMigrationTimestamp();
+
+		Java6Assertions.assertThat(actualFalse)
+				.isNull();
+
+		timestampList.add(migrationTimestampBE);
+
+		// create stub
+		when(migrationTimestampDAO.findAll()).thenReturn(timestampList);
+
+		// call test method
+		final Timestamp actual = triggerServiceTest.getMigrationTimestamp();
+
+		Java6Assertions.assertThat(actual)
+				.isNotNull();
+	}
+	@Test
+	public void testSetMigrationTimestamp(){
+		
+		// configure mocks
+		Timestamp expectedTimestamp = new Timestamp(System.currentTimeMillis());
+		MigrationTimestampBE migrationTimestampBE = new MigrationTimestampBE();
+		migrationTimestampBE.setSyncTimestamp(expectedTimestamp);
+		List<MigrationTimestampBE> timestampList = new ArrayList<>();
+
+		// call test method
+		triggerServiceTest.setMigrationTimestamp(expectedTimestamp);
+
+		verify(migrationTimestampDAO, times(1)).create(any());
+
+		timestampList.add(migrationTimestampBE);
+
+		// create stub
+		when(migrationTimestampDAO.findAll()).thenReturn(timestampList);
+
+		// call test method
+		triggerServiceTest.setMigrationTimestamp(expectedTimestamp);
+
+		verify(migrationTimestampDAO, times(1)).update(any());
+	}
+}
