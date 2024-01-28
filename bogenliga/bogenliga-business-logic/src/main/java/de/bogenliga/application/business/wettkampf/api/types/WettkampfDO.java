@@ -108,6 +108,7 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
     }
 
 
+
     /**
      * Constructor with optional parameters
      * no offlinetoken

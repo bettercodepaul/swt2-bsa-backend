@@ -2,11 +2,13 @@ package de.bogenliga.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * I´m the starting point for the spring boot application
  */
 @SpringBootApplication
+@EnableScheduling
 public class BogenligaApplication {
 
     /**
