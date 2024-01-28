@@ -34,9 +34,8 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
     @Override
     public void create(AltsystemSaisonDO altsystemSaisonDO, long currentUserId) {
 
-        // altsystemSaison_name -> set
+        // extract sportjahr
         String sportjahr = getSportjahr(altsystemSaisonDO.getName());
-        altsystemSaisonDO.setName(sportjahr);
 
         // Add to translation table
         altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Saison_Sportjahr, altsystemSaisonDO.getId(), 0, sportjahr);
@@ -66,7 +65,6 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
 
         // Check if new sportjahr is different from already existing one
         if(!sportjahr.equalsIgnoreCase(saisonUebersetzung.getValue())) {
-            altsystemSaisonDO.setName(sportjahr);
             altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Saison_Sportjahr, altsystemSaisonDO.getId(), 0, sportjahr);
         }
     }
@@ -78,8 +76,8 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
      *
      * @return sportjahr as string
      */
-    private String getSportjahr(String saisonName) {
-        return saisonName.split("-")[1];
+    public String getSportjahr(String saisonName) {
+        return saisonName.split("-")[1].trim();
     }
 
 }

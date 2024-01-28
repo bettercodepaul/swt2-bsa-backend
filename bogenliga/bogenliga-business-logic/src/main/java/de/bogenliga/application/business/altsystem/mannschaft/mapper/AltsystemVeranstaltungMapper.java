@@ -116,28 +116,21 @@ public class AltsystemVeranstaltungMapper {
         LigaDO ligaDO = ligaComponent.findById(ligaId);
         String veranstaltungName = ligaDO.getName() + " " + sportjahr;
         veranstaltungDO.setVeranstaltungName(veranstaltungName);
-
         // Liga_id
         veranstaltungDO.setVeranstaltungLigaID(ligaId);
-
         // sportjahr
         veranstaltungDO.setVeranstaltungSportJahr(sportjahr);
-
         // meldeDeadline: 1.10. des vorherigen Jahres
         long vorherigesJahr = sportjahr - 1;
         String deadline = vorherigesJahr + "-10-01";
         Date meldeDeadline = Date.valueOf(deadline);
         veranstaltungDO.setVeranstaltungMeldeDeadline(meldeDeadline);
-
         // groesse: default als Mindestgroesse auf 4 gesetzt, später in getOrCreateVeranstaltung updated
         veranstaltungDO.setVeranstaltungGroesse(4);
-
         // phase: "geplant" setzen
         veranstaltungDO.setVeranstaltungPhase("geplant");
-
         // Ligaleiter_id:
         veranstaltungDO.setVeranstaltungLigaleiterID(currentUserId);
-
         // Wettkampftyp: Satzsystem
         WettkampfTypDO satzSystemDO = getSatzSystemDO();
         veranstaltungDO.setVeranstaltungWettkampftypID(satzSystemDO.getId());
