@@ -42,7 +42,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO, currentUserId);
 
         // Add data to table
-        ligaComponent.create(ligaDO, currentUserId);
+        ligaDO = ligaComponent.create(ligaDO, currentUserId);
 
         // Add to translation table
         altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemDataObject.getId(), ligaDO.getId(), "");
@@ -64,7 +64,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         LigaDO ligaDO = ligaComponent.findById(ligaUebersetzung.getBogenliga_id());
 
         // Map data to new object, don't add default fields
-        altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
+        ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
 
         // Update data in table with given primary key
         ligaComponent.update(ligaDO, currentUserId);
