@@ -3,6 +3,7 @@ package de.bogenliga.application.business.altsystem.verein.entity;
 import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
@@ -40,19 +41,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
     @Override
     public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) throws SQLException {
         VereinDO vereinDO = new VereinDO();
-
-        String parsedIdentifier = altsystemVereinMapper.parseIdentifier(altsystemDataObject);
-        VereinDO vorhanden = altsystemVereinMapper.getVereinDO(parsedIdentifier);
-
-        if (vorhanden == null){
-            vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
-            vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
-            vereinComponent.create(vereinDO, currentUserId);
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vereinDO.getId().longValue(), "");
-
-        }else {
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vorhanden.getId().longValue(), "");
-        }
+        vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject, currentUserId);
 
     }
 
@@ -71,7 +60,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
 
         VereinDO vereinDO = vereinComponent.findById(vereinUebersetzung.getBogenliga_id());
 
-        altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
+        altsystemVereinMapper.toDO(vereinDO, altsystemDataObject, currentUserId);
 
         vereinComponent.update(vereinDO, currentUserId);
 
