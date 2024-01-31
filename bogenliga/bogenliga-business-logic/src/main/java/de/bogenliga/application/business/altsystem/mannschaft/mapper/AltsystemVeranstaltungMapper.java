@@ -69,11 +69,11 @@ public class AltsystemVeranstaltungMapper {
 
         AltsystemUebersetzungDO uebersetzungLigaDO = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Liga_Liga, (long)mannschaftDO.getLiga_id());
-        ligaId = uebersetzungLigaDO.getBogenliga_id();
+        ligaId = uebersetzungLigaDO.getBogenligaId();
 
         AltsystemUebersetzungDO uebersetzungSaisonDO = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Saison_Sportjahr, (long)mannschaftDO.getSaison_id());
-        sportjahr = Long.parseLong(uebersetzungSaisonDO.getValue());
+        sportjahr = Long.parseLong(uebersetzungSaisonDO.getWert());
 
         try {
             //Get veranstaltungDO if already exists

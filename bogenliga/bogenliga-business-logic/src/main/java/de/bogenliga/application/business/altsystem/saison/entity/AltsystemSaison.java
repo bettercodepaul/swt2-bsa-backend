@@ -64,7 +64,7 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
         String sportjahr = getSportjahr(altsystemSaisonDO.getName());
 
         // Check if new sportjahr is different from already existing one
-        if(!sportjahr.equalsIgnoreCase(saisonUebersetzung.getValue())) {
+        if(!sportjahr.equalsIgnoreCase(saisonUebersetzung.getWert())) {
             altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Saison_Sportjahr, altsystemSaisonDO.getId(), 0, sportjahr);
         }
     }

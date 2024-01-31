@@ -61,7 +61,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         }
 
         // Find data in table with corresponding id
-        LigaDO ligaDO = ligaComponent.findById(ligaUebersetzung.getBogenliga_id());
+        LigaDO ligaDO = ligaComponent.findById(ligaUebersetzung.getBogenligaId());
 
         // Map data to new object, don't add default fields
         ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);

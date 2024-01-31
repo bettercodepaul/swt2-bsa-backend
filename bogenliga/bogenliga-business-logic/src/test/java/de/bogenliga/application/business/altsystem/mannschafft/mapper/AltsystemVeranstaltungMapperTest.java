@@ -70,10 +70,10 @@ public class AltsystemVeranstaltungMapperTest {
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int)LIGAID, "", SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
-        ligaUebersetzung.setBogenliga_id(LIGAID);
+        ligaUebersetzung.setBogenligaId(LIGAID);
         // Sportjahr uebersetzung
         AltsystemUebersetzungDO sportjahrUebersetzung = new AltsystemUebersetzungDO();
-        sportjahrUebersetzung.setValue(String.valueOf(SPORTJAHR));
+        sportjahrUebersetzung.setWert(String.valueOf(SPORTJAHR));
 
         // expected Result
         VeranstaltungDO expectedVeranstaltungDO = new VeranstaltungDO();
@@ -120,10 +120,10 @@ public class AltsystemVeranstaltungMapperTest {
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int)LIGAID, "", SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
-        ligaUebersetzung.setBogenliga_id(LIGAID);
+        ligaUebersetzung.setBogenligaId(LIGAID);
         // Sportjahr uebersetzung
         AltsystemUebersetzungDO sportjahrUebersetzung = new AltsystemUebersetzungDO();
-        sportjahrUebersetzung.setValue(String.valueOf(SPORTJAHR));
+        sportjahrUebersetzung.setWert(String.valueOf(SPORTJAHR));
 
         // expected Result
         VeranstaltungDO expectedVeranstaltungDO = new VeranstaltungDO();
@@ -143,7 +143,7 @@ public class AltsystemVeranstaltungMapperTest {
                 ErrorCode.ENTITY_NOT_FOUND_ERROR, "Test"));
 
         // Mock behavior of altsystemVeranstaltungMapper.createVeranstaltung
-        doReturn(expectedVeranstaltungDO).when(altsystemVeranstaltungMapper1).createVeranstaltung(ligaUebersetzung.getBogenliga_id(), Long.parseLong(sportjahrUebersetzung.getValue()), CURRENTUSERID);
+        doReturn(expectedVeranstaltungDO).when(altsystemVeranstaltungMapper1).createVeranstaltung(ligaUebersetzung.getBogenligaId(), Long.parseLong(sportjahrUebersetzung.getWert()), CURRENTUSERID);
 
         // Mock behavior of AltsystemUebersetzung.updateOrInsertUebersetzung
         doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), anyLong(), anyLong(), anyString());
@@ -196,10 +196,10 @@ public class AltsystemVeranstaltungMapperTest {
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int)LIGAID, "", SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
-        ligaUebersetzung.setBogenliga_id(LIGAID);
+        ligaUebersetzung.setBogenligaId(LIGAID);
         // Sportjahr uebersetzung
         AltsystemUebersetzungDO sportjahrUebersetzung = new AltsystemUebersetzungDO();
-        sportjahrUebersetzung.setValue(String.valueOf(SPORTJAHR));
+        sportjahrUebersetzung.setWert(String.valueOf(SPORTJAHR));
 
         // expected Result
         VeranstaltungDO expectedVeranstaltungDO = new VeranstaltungDO();
@@ -248,10 +248,10 @@ public class AltsystemVeranstaltungMapperTest {
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int) LIGAID, "", SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
-        ligaUebersetzung.setBogenliga_id(LIGAID);
+        ligaUebersetzung.setBogenligaId(LIGAID);
         // Sportjahr uebersetzung
         AltsystemUebersetzungDO sportjahrUebersetzung = new AltsystemUebersetzungDO();
-        sportjahrUebersetzung.setValue(String.valueOf(SPORTJAHR));
+        sportjahrUebersetzung.setWert(String.valueOf(SPORTJAHR));
 
         // expected Result
         VeranstaltungDO expectedVeranstaltungDO = new VeranstaltungDO();
