@@ -1,14 +1,10 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import javax.validation.constraints.Null;
-import org.flywaydb.core.Flyway;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 
@@ -39,8 +35,8 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
         Long altsystemID = altsystemSchuetzeDO.getId(); // MannschaftsID = 356
 
 
-        String flywayValue = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getValue();
-        Long flywayAltsystemID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getAltsystem_id();
+        String flywayValue = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getWert();
+        Long flywayAltsystemID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getAltsystemId();
 
         //wenn altsystemName einem value in flyway und altsystemID einer bogenligaID in flyway entspricht -> Schuetze wurde bereits in neue Datenbank importiert
         if(altsystemID == flywayAltsystemID && altsystemName == flywayValue) {
@@ -56,7 +52,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
             dsbMitglied.setNationalitaet(null);
             dsbMitglied.setMitgliedsnummer(null);
             dsbMitglied.setVereinsId(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
-                            altsystemSchuetzeDO.getMannschaft_id()).getBogenliga_id());
+                            altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId());
 
 
             altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schütze_Verein,

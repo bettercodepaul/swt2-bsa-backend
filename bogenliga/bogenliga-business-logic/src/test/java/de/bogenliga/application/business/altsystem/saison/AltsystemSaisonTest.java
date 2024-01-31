@@ -66,7 +66,7 @@ public class AltsystemSaisonTest {
 
         // Mock behavior
         AltsystemUebersetzungDO saisonUebersetzung = new AltsystemUebersetzungDO();
-        saisonUebersetzung.setValue("2020");
+        saisonUebersetzung.setWert("2020");
         when(altsystemUebersetzung.findByAltsystemID(any(), anyLong())).thenReturn(saisonUebersetzung);
 
         // call test method
@@ -90,7 +90,7 @@ public class AltsystemSaisonTest {
 
         // Mock behavior
         AltsystemUebersetzungDO saisonUebersetzung = new AltsystemUebersetzungDO();
-        saisonUebersetzung.setValue(SPORTJAHR_AS_STRING);
+        saisonUebersetzung.setWert(SPORTJAHR_AS_STRING);
         when(altsystemUebersetzung.findByAltsystemID(any(), anyLong())).thenReturn(saisonUebersetzung);
 
         // call test method

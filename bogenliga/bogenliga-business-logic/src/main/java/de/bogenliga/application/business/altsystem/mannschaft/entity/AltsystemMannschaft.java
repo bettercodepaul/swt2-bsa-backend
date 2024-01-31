@@ -10,7 +10,6 @@ import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUeberse
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -61,7 +60,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
                     String.format("No result found for ID '%s'", altsystemDataObject.getId()));
         }
 
-        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftUebersetzung.getBogenliga_id());
+        DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftUebersetzung.getBogenligaId());
 
         altsystemMannschaftMapper.toDO(dsbMannschaftDO, altsystemDataObject);
 

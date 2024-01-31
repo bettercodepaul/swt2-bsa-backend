@@ -1,28 +1,26 @@
 package de.bogenliga.application.business.altsystem.uebersetzung;
 
 /**
- * TODO [AL] class documentation
+ * Datenobjekt für Datensätze in der Übersetzungstabelle
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class AltsystemUebersetzungDO {
 
+    private Long uebersetzungId;
+    private String kategorie;
+    private Long altsystemId;
+    private Long bogenligaId;
+    private String wert;
 
 
-    int uebersetzung_id;
-    String kategorie;
-    Long altsystem_id;
-    Long bogenliga_id;
-    String value;
-
-
-    public int getUebersetzung_id() {
-        return uebersetzung_id;
+    public Long getUebersetzungId() {
+        return uebersetzungId;
     }
 
 
-    public void setUebersetzung_id(int uebersetzung_id) {
-        this.uebersetzung_id = uebersetzung_id;
+    public void setUebersetzungId(Long uebersetzungId) {
+        this.uebersetzungId = uebersetzungId;
     }
 
 
@@ -36,36 +34,34 @@ public class AltsystemUebersetzungDO {
     }
 
 
-    public Long getAltsystem_id() {
-        return altsystem_id;
+    public Long getAltsystemId() {
+        return altsystemId;
     }
 
 
-    public void setAltsystem_id(Long altsystem_id) {
-        this.altsystem_id = altsystem_id;
+    public void setAltsystemId(Long altsystemId) {
+        this.altsystemId = altsystemId;
     }
 
 
-    public Long getBogenliga_id() {
-        return bogenliga_id;
+    public Long getBogenligaId() {
+        return bogenligaId;
     }
 
 
-    public void setBogenliga_id(Long bogenliga_id) {
-        this.bogenliga_id = bogenliga_id;
+    public void setBogenligaId(Long bogenligaId) {
+        this.bogenligaId = bogenligaId;
     }
 
 
-    public String getValue() {
-        return value;
+    public String getWert() {
+        return wert;
     }
 
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setWert(String wert) {
+        this.wert = wert;
     }
-
-
 
 
 }

@@ -1,8 +1,5 @@
 package de.bogenliga.application.business.altsystem.ergebnisse.mapper;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -76,7 +73,7 @@ public class AltsystemPasseMapper {
                 altsystemDataObject.getSchuetzeID());
 
         // wählt in den Matches der Mannschaft das mit entsprechender MatchNr
-        List<MatchDO> matches = matchComponent.findByMannschaftId(mannschaftUebersetzung.getBogenliga_id());
+        List<MatchDO> matches = matchComponent.findByMannschaftId(mannschaftUebersetzung.getBogenligaId());
         MatchDO match = null;
         for (MatchDO currentMatch : matches){
             if(currentMatch.getNr() == altsystemDataObject.getMatch()){
@@ -87,14 +84,14 @@ public class AltsystemPasseMapper {
 
         // findet für das Match die Anzahl der Sätze über Value in der Übersetzungstabelle
         AltsystemUebersetzungDO satzUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Match_Saetze, match.getId());
-        int anzahlSaetze = Integer.parseInt(satzUebersetzung.getValue());
+        int anzahlSaetze = Integer.parseInt(satzUebersetzung.getWert());
 
         int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebnis(), anzahlSaetze);
 
         for(int i = 0; i < anzahlSaetze; i++){
             PasseDO passe = new PasseDO();
             passe.setPasseLfdnr((long) (i + 1));
-            passe.setPasseDsbMitgliedId(schuetzeUebersetzung.getBogenliga_id());
+            passe.setPasseDsbMitgliedId(schuetzeUebersetzung.getBogenligaId());
             passe.setPasseMannschaftId(match.getMannschaftId());
             passe.setPasseMatchNr(match.getNr());
             passe.setPasseMatchId(match.getId());

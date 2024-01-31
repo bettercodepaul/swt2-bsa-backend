@@ -6,12 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.dataobject.AltsystemWettkampfdatenDO;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
 import de.bogenliga.application.business.match.api.MatchComponent;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -49,20 +47,20 @@ public class AltsystemMatchMapperTest {
         altsystemWettkampfdatenDO.setMatchMinus(0);
         // mock Uebersetzung
         AltsystemUebersetzungDO mannschaftUebersetzung = new AltsystemUebersetzungDO();
-        mannschaftUebersetzung.setBogenliga_id(10L);
+        mannschaftUebersetzung.setBogenligaId(10L);
         AltsystemUebersetzungDO gegnerUebersetzung = new AltsystemUebersetzungDO();
-        gegnerUebersetzung.setBogenliga_id(12L);
+        gegnerUebersetzung.setBogenligaId(12L);
 
         // expectedResult
         MatchDO[] expected = new MatchDO[2];
         expected[0] = new MatchDO();
-        expected[0].setMannschaftId(mannschaftUebersetzung.getBogenliga_id());
+        expected[0].setMannschaftId(mannschaftUebersetzung.getBogenligaId());
         expected[0].setSatzpunkte((long) altsystemWettkampfdatenDO.getSatzPlus());
         expected[0].setMatchpunkte((long) altsystemWettkampfdatenDO.getMatchPlus());
         expected[0].setNr((long) altsystemWettkampfdatenDO.getMatch());
 
         expected[1] = new MatchDO();
-        expected[1].setMannschaftId(gegnerUebersetzung.getBogenliga_id());
+        expected[1].setMannschaftId(gegnerUebersetzung.getBogenligaId());
         expected[1].setSatzpunkte((long) altsystemWettkampfdatenDO.getSatzMinus());
         expected[1].setMatchpunkte((long) altsystemWettkampfdatenDO.getMatchMinus());
         expected[1].setNr((long) altsystemWettkampfdatenDO.getMatch());

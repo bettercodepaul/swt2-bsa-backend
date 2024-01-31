@@ -69,7 +69,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
                     String.format("No result found for ID '%s'", altsystemDataObject.getId()));
         }
 
-        VereinDO vereinDO = vereinComponent.findById(vereinUebersetzung.getBogenliga_id());
+        VereinDO vereinDO = vereinComponent.findById(vereinUebersetzung.getBogenligaId());
 
         altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
 
