@@ -24,8 +24,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
 
 
-    public AltsystemVereinMapper(VereinComponent vereinComponent, AltsystemVereinMapper altsystemVereinMapper,
-                                 AltsystemUebersetzung altsystemUebersetzung, AltsystemLigaMapper altsystemLigaMapper) {
+    public AltsystemVereinMapper(VereinComponent vereinComponent, AltsystemUebersetzung altsystemUebersetzung, AltsystemLigaMapper altsystemLigaMapper) {
         this.vereinComponent = vereinComponent;
         this.altsystemLigaMapper = altsystemLigaMapper;
     }
