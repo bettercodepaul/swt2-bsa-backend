@@ -67,7 +67,11 @@ public class AltsystemVeranstaltungMapperTest {
     public void testGetOrCreateVeranstaltung() {
         // prepare test data
         // altsystem MannschaftDO
-        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int)LIGAID, "", SPORTJAHRID);
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
+        altsystemMannschaftDO.setLiga_id((int) LIGAID);
+        altsystemMannschaftDO.setName("");
+        altsystemMannschaftDO.setMannr("");
+        altsystemMannschaftDO.setSaison_id(SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
         ligaUebersetzung.setBogenligaId(LIGAID);
@@ -117,7 +121,11 @@ public class AltsystemVeranstaltungMapperTest {
         AltsystemVeranstaltungMapper altsystemVeranstaltungMapper1 = Mockito.spy(altsystemVeranstaltungMapper);
         // prepare test data
         // altsystem MannschaftDO
-        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int)LIGAID, "", SPORTJAHRID);
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
+        altsystemMannschaftDO.setLiga_id((int) LIGAID);
+        altsystemMannschaftDO.setName("");
+        altsystemMannschaftDO.setMannr("");
+        altsystemMannschaftDO.setSaison_id(SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
         ligaUebersetzung.setBogenligaId(LIGAID);
@@ -193,7 +201,11 @@ public class AltsystemVeranstaltungMapperTest {
     public void testSetVeranstaltungGroesse6() {
         // prepare test data
         // altsystem MannschaftDO
-        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int)LIGAID, "", SPORTJAHRID);
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
+        altsystemMannschaftDO.setLiga_id((int) LIGAID);
+        altsystemMannschaftDO.setName("");
+        altsystemMannschaftDO.setMannr("");
+        altsystemMannschaftDO.setSaison_id(SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
         ligaUebersetzung.setBogenligaId(LIGAID);
@@ -245,7 +257,11 @@ public class AltsystemVeranstaltungMapperTest {
     public void testSetVeranstaltungGroesse8() {
         // prepare test data
         // altsystem MannschaftDO
-        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO((int) LIGAID, "", SPORTJAHRID);
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
+        altsystemMannschaftDO.setLiga_id((int) LIGAID);
+        altsystemMannschaftDO.setName("");
+        altsystemMannschaftDO.setMannr("");
+        altsystemMannschaftDO.setSaison_id(SPORTJAHRID);
         // liga uebersetzung
         AltsystemUebersetzungDO ligaUebersetzung = new AltsystemUebersetzungDO();
         ligaUebersetzung.setBogenligaId(LIGAID);
