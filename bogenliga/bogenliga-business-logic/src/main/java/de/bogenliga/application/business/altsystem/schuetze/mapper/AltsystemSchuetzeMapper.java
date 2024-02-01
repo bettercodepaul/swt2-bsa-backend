@@ -39,7 +39,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
         Long flywayAltsystemID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getAltsystemId();
 
         //wenn altsystemName einem value in flyway und altsystemID einer bogenligaID in flyway entspricht -> Schuetze wurde bereits in neue Datenbank importiert
-        if(altsystemID == flywayAltsystemID && altsystemName == flywayValue) {
+        if(altsystemID == flywayAltsystemID && altsystemName.equals(flywayValue)) {
             //trigger-gruppe muss prüfen ob diese methode ein DsbMitgliedDO oder null zurückgibt und entsprechend agieren
             return null;
         }

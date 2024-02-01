@@ -13,6 +13,8 @@ import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponen
 import de.bogenliga.application.business.altsystem.ergebnisse.dataobject.AltsystemErgebnisseDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
  * TODO [AL] class documentation
@@ -48,7 +50,7 @@ public class AltsystemPasseMapper {
         int[][] punkte = new int[anzahlSaetze][2];
 
         // Aufteilung des Ergebnisses auf Passenunkte
-        int avgErgebnisProPasse = (int) Math.floor(anzahlPunkte / anzahlSaetze);
+        int avgErgebnisProPasse = (int) Math.floor(anzahlPunkte / (double) anzahlSaetze);
         int restpunkte = (int) (anzahlPunkte % anzahlSaetze);
 
         // Aufteilung der Passenpunkte auf jew. 2 Pfeile
@@ -80,6 +82,10 @@ public class AltsystemPasseMapper {
                 match = currentMatch;
                 break;
             }
+        }
+
+        if (match == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Match not found");
         }
 
         // findet für das Match die Anzahl der Sätze über Value in der Übersetzungstabelle

@@ -10,13 +10,6 @@ public class AltsystemMannschaftDO extends AltsystemDO {
     private String name;
     private int saison_id;
 
-    public AltsystemMannschaftDO(int liga_id, String mannr, int saison_id){
-        this.liga_id = liga_id;
-        this.mannr = mannr;
-        this.name = name;
-        this.saison_id = saison_id;
-    }
-
     public int getLiga_id() {
         return liga_id;
     }

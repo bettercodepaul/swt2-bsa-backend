@@ -57,7 +57,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         String num = "1234567890";
 
         String currentName = new String(nameOld);
-        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName.equals(null)) {
+        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
             return null;
         }
 

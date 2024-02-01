@@ -44,7 +44,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
         String num = "1234567890";
 
 
-        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName.equals(null)) {
+        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
             return null;
         }
         if (num.contains(lastCharAsString)){
