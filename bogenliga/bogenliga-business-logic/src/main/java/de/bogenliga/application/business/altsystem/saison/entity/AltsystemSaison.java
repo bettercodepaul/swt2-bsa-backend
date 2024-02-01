@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.altsystem.saison.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.saison.dataobject.AltsystemSaisonDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
@@ -19,7 +20,7 @@ public class AltsystemSaison implements AltsystemEntity<AltsystemSaisonDO>{
 
     private final AltsystemUebersetzung altsystemUebersetzung;
 
-
+    @Autowired
     public AltsystemSaison(AltsystemUebersetzung altsystemUebersetzung) {
         this.altsystemUebersetzung = altsystemUebersetzung;
     }

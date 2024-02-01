@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.common.component.dao.BasicDAO;
 import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration;
@@ -39,6 +40,7 @@ public class AltsystemUebersetzungDAO {
             LOGGER
     );
 
+    @Autowired
     public AltsystemUebersetzungDAO(BasicDAO basicDAO) {
         this.basicDAO = basicDAO;
     }
