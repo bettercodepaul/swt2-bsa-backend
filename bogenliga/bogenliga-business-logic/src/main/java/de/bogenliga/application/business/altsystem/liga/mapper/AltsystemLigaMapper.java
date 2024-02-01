@@ -34,6 +34,7 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
         this.disziplinComponent = disziplinComponent;
         this.regionenComponent = regionenComponent;
     }
+
     public LigaDO toDO(LigaDO ligaDO, AltsystemLigaDO altsystemLigaDO){
         String ligaName = altsystemLigaDO.getName();
 

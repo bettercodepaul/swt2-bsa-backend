@@ -17,11 +17,7 @@ import de.bogenliga.application.common.altsystem.AltsystemEntity;
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
-/**
- * TODO [AL] class documentation
- *
- * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
+
 @Component
 public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseDO> {
 

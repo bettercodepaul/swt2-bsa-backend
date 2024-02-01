@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.altsystem.uebersetzung;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class AltsystemUebersetzung {
     private final AltsystemUebersetzungDAO altsystemUebersetzungDAO;
 
-
+    @Autowired
     public AltsystemUebersetzung(AltsystemUebersetzungDAO altsystemUebersetzungDAO) {
         this.altsystemUebersetzungDAO = altsystemUebersetzungDAO;
     }
