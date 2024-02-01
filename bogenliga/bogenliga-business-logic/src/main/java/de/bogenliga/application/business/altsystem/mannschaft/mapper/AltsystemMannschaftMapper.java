@@ -36,7 +36,11 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
 
     public DsbMannschaftDO toDO(DsbMannschaftDO dsbMannschaftDO, AltsystemMannschaftDO altsystemMannschaftDO){
 
-        String currentName = altsystemMannschaftDO.getName().toString();
+        String currentName = altsystemMannschaftDO.getName();
+        if (currentName == null){
+            return null;
+        }
+
         int nameLong = currentName.length() - 1;
         char lastChar = altsystemMannschaftDO.getName().charAt(nameLong);
         String lastCharAsString = String.valueOf(lastChar);
@@ -44,7 +48,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
         String num = "1234567890";
 
 
-        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
+        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>")) {
             return null;
         }
         if (num.contains(lastCharAsString)){

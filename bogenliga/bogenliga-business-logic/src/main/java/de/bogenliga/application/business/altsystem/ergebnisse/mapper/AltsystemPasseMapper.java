@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.match.api.MatchComponent;
-import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
-import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
 import de.bogenliga.application.business.altsystem.ergebnisse.dataobject.AltsystemErgebnisseDO;
 import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.passe.api.types.PasseDO;
@@ -17,7 +14,7 @@ import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
- * TODO [AL] class documentation
+ * Mappt ein Ergebnis aus dem Altsystem auf Passen im neuen System
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -25,21 +22,11 @@ import de.bogenliga.application.common.errorhandling.exception.BusinessException
 @Component
 public class AltsystemPasseMapper {
 
-    private final WettkampfComponent wettkampfComponent;
-    private final VeranstaltungComponent veranstaltungComponent;
-    private final DsbMitgliedComponent dsbMitgliedComponent;
     private final MatchComponent matchComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
     @Autowired
-    public AltsystemPasseMapper(final WettkampfComponent wettkampfComponent,
-                                VeranstaltungComponent veranstaltungComponent,
-                                DsbMitgliedComponent dsbMitgliedComponent,
-                                MatchComponent matchComponent,
-                                AltsystemUebersetzung altsystemUebersetzung){
-        this.wettkampfComponent = wettkampfComponent;
-        this.veranstaltungComponent = veranstaltungComponent;
-        this.dsbMitgliedComponent = dsbMitgliedComponent;
+    public AltsystemPasseMapper(final MatchComponent matchComponent, final AltsystemUebersetzung altsystemUebersetzung){
         this.matchComponent = matchComponent;
         this.altsystemUebersetzung = altsystemUebersetzung;
     }

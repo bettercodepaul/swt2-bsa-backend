@@ -36,12 +36,9 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
     public void create(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId) {
         // Map data to new object, add default fields
         DsbMitgliedDO dsbMitgliedDO = new DsbMitgliedDO();
-        /*
-        try {
-            dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }*/
+
+        // dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
+
         //dsbMitgliedDO = altsystemSchuetzeMapper.addDefaultFields(dsbMitgliedDO);
     }
 

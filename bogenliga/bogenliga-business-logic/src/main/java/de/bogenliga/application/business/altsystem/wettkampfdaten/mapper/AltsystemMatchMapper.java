@@ -12,7 +12,7 @@ import de.bogenliga.application.business.match.api.types.MatchDO;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 
 /**
- * TODO [AL] class documentation
+ * Mappt Wettkampfdaten aus dem Altsystem auf Matches im neuen System
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
