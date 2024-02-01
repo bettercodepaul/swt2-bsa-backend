@@ -16,7 +16,8 @@ import de.bogenliga.application.business.wettkampf.api.WettkampfComponent;
 import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 
 /**
- * TODO [AL] class documentation
+ * Erstellt Wettkampftage für eine Veranstaltung, falls es noch keine gibt
+ * Gibt es bereits Wettkampftage, werden diese zurückgegeben
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -40,7 +41,7 @@ public class AltsystemWettkampftagMapper {
     }
 
     public List<WettkampfDO> getOrCreateWettkampftage(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
-        List<WettkampfDO> wettkampfTage = new LinkedList<>();
+        List<WettkampfDO> wettkampfTage;
         long mannschaftID = altsystemWettkampfdatenDO.getMannschaftId();
         // Aus Übersetzungstabelle Veranstaltung für Mannschaft auslesen
         long veranstaltungID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftID).getBogenligaId();
