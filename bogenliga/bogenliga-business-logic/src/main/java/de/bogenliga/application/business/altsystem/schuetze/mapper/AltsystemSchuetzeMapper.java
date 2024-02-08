@@ -1,10 +1,19 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import javax.validation.constraints.Null;
+import org.flywaydb.core.Flyway;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDAO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
+import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 
@@ -15,51 +24,27 @@ import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUeberse
  */
 @Component
 public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
-    private AltsystemUebersetzung altsystemUebersetzung;
+    private AltsystemUebersetzungDAO altsystemUebersetzungDAO;
 
-    public DsbMitgliedDO toDO(AltsystemSchuetzeDO altsystemSchuetzeDO) {
+    private DsbMitgliedComponent dsbMitgliedComponent;
 
-        //dont execute method if argument is null
-        if(altsystemSchuetzeDO == null){
-            throw new NullPointerException(altsystemSchuetzeDO + " does not exist");
-        }
-
-        DsbMitgliedDO dsbMitglied = new DsbMitgliedDO();
-
-        //prüfen ob Schütze mit Mannschafts-ID und Nachname + Vorname bereits in Flyway-Tabelle steht
-        //nein? -> anlegen und in Tabelle schreiben
-        //ja? -> return error
+    public DsbMitgliedDO toDO(DsbMitgliedDO dsbMitgliedDO, AltsystemSchuetzeDO altsystemSchuetzeDO) throws SQLException {
         String[] parsedName = parseName(altsystemSchuetzeDO);
 
-        String altsystemName = parsedName[0] + ", " + parsedName[1]; // Allmendinger Michael
-        Long altsystemID = altsystemSchuetzeDO.getId(); // MannschaftsID = 356
-
-
-        String flywayValue = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getWert();
-        Long flywayAltsystemID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId()).getAltsystemId();
-
-        //wenn altsystemName einem value in flyway und altsystemID einer bogenligaID in flyway entspricht -> Schuetze wurde bereits in neue Datenbank importiert
-        if(altsystemID.equals(flywayAltsystemID) && altsystemName.equals(flywayValue)) {
-            //trigger-gruppe muss prüfen ob diese methode ein DsbMitgliedDO oder null zurückgibt und entsprechend agieren
-            return null;
-        }
-        else {
-            dsbMitglied.setVorname(parsedName[1]);
-            dsbMitglied.setNachname(parsedName[0]);
+        // check weather identifier exist in UebersetzungsTabelle
+        if (altsystemUebersetzungDAO.findByWert(AltsystemUebersetzungKategorie.Schütze_Verein, getIdentifier(altsystemSchuetzeDO)) == null) {
+            // if not exist set attributes
+            dsbMitgliedDO.setVorname(parsedName[1]);
+            dsbMitgliedDO.setNachname(parsedName[0]);
+            dsbMitgliedDO.setVereinsId(altsystemUebersetzungDAO.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
+                    altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId());
 
             //untere Werte können hier nicht gesetzt werden, da sie im Altsystem in der Entität Schuetze nicht existieren
-            dsbMitglied.setGeburtsdatum(null);
-            dsbMitglied.setNationalitaet(null);
-            dsbMitglied.setMitgliedsnummer(null);
-            dsbMitglied.setVereinsId(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
-                            altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId());
-
-
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schütze_Verein,
-                    altsystemID, dsbMitglied.getVereinsId(), altsystemName);
+//            dsbMitgliedDO.setGeburtsdatum(null);
+//            dsbMitgliedDO.setNationalitaet(null);
+//            dsbMitgliedDO.setMitgliedsnummer(null);
         }
-
-        return dsbMitglied;
+        return dsbMitgliedDO;
     }
 
     //Namen sind im Altsystem unterschiedlich getrennt, da als einzelnes Attribut (name) in der Tabelle gespeichert
@@ -72,7 +57,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
             schuetzeName = altsystemSchuetzeDO.getName().split(",");
             schuetzeName[0] = schuetzeName[0].replaceAll("\\s+", "");
             schuetzeName[1] = schuetzeName[1].replaceAll("\\s+", "");
-        //Fall 2: Name ist getrennt durch >= 1 Leerzeichen
+            //Fall 2: Name ist getrennt durch >= 1 Leerzeichen
         } else {
             schuetzeName = altsystemSchuetzeDO.getName().split(" ");
             schuetzeName[0] = schuetzeName[0].replaceAll("\\s+", "");
@@ -81,4 +66,26 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
 
         return schuetzeName;
     }
+
+    public String getIdentifier(AltsystemSchuetzeDO altsystemSchuetzeDO) {
+
+        String[] parsedName = parseName(altsystemSchuetzeDO);
+
+        Long vereinId = altsystemUebersetzungDAO.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
+                altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId();
+
+        // build Identifier "firstName"+"lastName"+"vereinId"
+        String dsbMitgliedIdentifier = parsedName[0]+parsedName[1]+vereinId;
+
+        return dsbMitgliedIdentifier;
+    }
+
+    public AltsystemUebersetzungDO getDsbMitgliedDO(String dsbMitgliedIdentifier) throws SQLException {
+
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzungDAO.findByWert(AltsystemUebersetzungKategorie.Schütze_Verein, dsbMitgliedIdentifier);
+
+        return altsystemUebersetzungDO;
+    }
+
+
 }
