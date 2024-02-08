@@ -66,6 +66,14 @@ public class AltsystemUebersetzungDAO {
                 .compose()
                 .toString();
 
+    private final String SELECT_BY_KATEGORIE_AND_VALUE = new QueryBuilder()
+            .selectAll()
+            .from(ALTSYSTEMUEBERSETZUNG_TABLE)
+            .whereEquals(ALTSYSTEMUEBERSETZUNG_TABLE_KATEGORIE)
+            .andEquals(ALTSYSTEMUEBERSETZUNG_TABLE_WERT)
+            .compose()
+            .toString();
+
     public void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, long altsystemID, long bogenligaID, String wert) {
         AltsystemUebersetzungDO uebersetzungDO = findByAltsystemID(kategorie, altsystemID);
 
@@ -93,10 +101,10 @@ public class AltsystemUebersetzungDAO {
         return basicDAO.selectSingleEntity(UEBERSETZUNG, SELECT_BY_KATEGORIE_AND_ALTSYSTEM_ID, kategorieLabel, altsystemID);
     }
 
-    public AltsystemUebersetzungDO findByWert(AltsystemUebersetzungKategorie kategorie, String wert) {
+    public AltsystemUebersetzungDO findByValue(AltsystemUebersetzungKategorie kategorie, String value) {
         String kategorieLabel = kategorie.label;
 
-        return basicDAO.selectSingleEntity(UEBERSETZUNG, SELECT_BY_KATEGORIE_AND_ALTSYSTEM_ID, kategorieLabel, wert);
+        return basicDAO.selectSingleEntity(UEBERSETZUNG, SELECT_BY_KATEGORIE_AND_VALUE, kategorieLabel, value);
 
     }
 
