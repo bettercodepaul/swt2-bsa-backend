@@ -26,4 +26,19 @@ public class AltsystemSchuetzeDO extends AltsystemDO {
     public String getName() {
         return name;
     }
+
+
+    public void setMannschaft_id(int mannschaft_id) {
+        this.mannschaft_id = mannschaft_id;
+    }
+
+
+    public void setRuecknr(int ruecknr) {
+        this.ruecknr = ruecknr;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

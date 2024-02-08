@@ -26,9 +26,12 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
     public DsbMitgliedDO toDO(DsbMitgliedDO dsbMitgliedDO, AltsystemSchuetzeDO altsystemSchuetzeDO) throws SQLException {
         String[] parsedName = parseName(altsystemSchuetzeDO);
 
+        /*
         // check weather identifier exist in UebersetzungsTabelle
-        if (altsystemUebersetzung.findByValue(AltsystemUebersetzungKategorie.Schütze_Verein, getIdentifier(altsystemSchuetzeDO)) == null) {
-            // if not exist set attributes
+
+        if (altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schütze_Verein, getIdentifier(altsystemSchuetzeDO)) == null) {
+            */
+        // if not exist set attributes
             dsbMitgliedDO.setVorname(parsedName[1]);
             dsbMitgliedDO.setNachname(parsedName[0]);
             dsbMitgliedDO.setVereinsId(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
@@ -38,7 +41,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
 //            dsbMitgliedDO.setGeburtsdatum(null);
 //            dsbMitgliedDO.setNationalitaet(null);
 //            dsbMitgliedDO.setMitgliedsnummer(null);
-        }
+
         return dsbMitgliedDO;
     }
 
@@ -77,7 +80,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
 
     public AltsystemUebersetzungDO getDsbMitgliedDO(String dsbMitgliedIdentifier) throws SQLException {
 
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByValue(AltsystemUebersetzungKategorie.Schütze_Verein, dsbMitgliedIdentifier);
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schütze_Verein, dsbMitgliedIdentifier);
 
         return altsystemUebersetzungDO;
     }

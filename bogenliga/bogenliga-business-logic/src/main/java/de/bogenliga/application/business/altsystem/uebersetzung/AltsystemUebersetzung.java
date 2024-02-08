@@ -30,7 +30,7 @@ public class AltsystemUebersetzung {
         return altsystemUebersetzungDAO.findByAltsystemID(kategorie, altsystemID);
     }
 
-    public AltsystemUebersetzungDO findByValue(AltsystemUebersetzungKategorie kategorie, String value) {
-        return altsystemUebersetzungDAO.findByValue(kategorie, value);
+    public AltsystemUebersetzungDO findByWert(AltsystemUebersetzungKategorie kategorie, String wert) {
+        return altsystemUebersetzungDAO.findByWert(kategorie, wert);
     }
 }
