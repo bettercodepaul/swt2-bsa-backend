@@ -48,34 +48,32 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         // Objekt anhand des identifier zurückgeben
         AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemSchuetzeMapper.getDsbMitgliedDO(parsedIdentifier);
 
-
         // wenn es noch keinen identifier in der UbersetzungsTabelle gibt
         if (altsystemUebersetzungDO == null) {
             // dann schreib Daten in diesen schuetzen rein
             dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
 
-            dsbMitgliedDO = dsbMitgliedComponent.create(dsbMitgliedDO, currentUserId);
-
+            // add data to Uebersetzungstabelle
             altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId(),
                     altsystemUebersetzungDO.getBogenligaId(), altsystemUebersetzungDO.getWert());
 
+            // Add data to Dsb_Mitglied table
+            dsbMitgliedDO = dsbMitgliedComponent.create(dsbMitgliedDO, currentUserId);
+
         }
+        // wenn diesen identifer bereits existiert
         else {
+            // Schreib mannschaftsnamen in Schütze_Mannschaft
             String mannschaftName = String.valueOf(altsystemUebersetzung.findByAltsystemID(
                     AltsystemUebersetzungKategorie.Schütze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id()));
 
-            // TODO Hier noch die Kategorie Schuetze_Ergebnis
             altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schütze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id(),
                     altsystemSchuetzeDO.getMannschaft_id(), mannschaftName);
 
-
         }
-
-
     }
 
     @Override
     public void update(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId){
-        // yet to be implemented
     }
 }
