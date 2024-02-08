@@ -48,10 +48,14 @@ public class AltsystemMatchMapper {
 
     public MatchDO[] addDefaultFields(MatchDO[] matchDO, List<WettkampfDO> wettkampfTage) {
         WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO[0], wettkampfTage);
+        long matchCount = getCurrentMatchCountForWettkampf(wettkampfDO);
+        long currentBegegnung = (matchCount % 4) + 1;
+        long currentScheibenNummer = (matchCount % 8) + 1;
+
         for(int i = 0; i < 2; i++){
             matchDO[i].setWettkampfId(wettkampfDO.getId());
-            matchDO[i].setMatchScheibennummer((long) getCurrentScheibennummer(wettkampfDO) + i);
-            matchDO[i].setBegegnung((long) getCurrentBegegnung(wettkampfDO));
+            matchDO[i].setMatchScheibennummer(currentScheibenNummer + i);
+            matchDO[i].setBegegnung(currentBegegnung);
             matchDO[i].setStrafPunkteSatz1(0L);
             matchDO[i].setStrafPunkteSatz2(0L);
             matchDO[i].setStrafPunkteSatz3(0L);
@@ -62,19 +66,21 @@ public class AltsystemMatchMapper {
     }
 
     public WettkampfDO getCurrentWettkampfTag(MatchDO matchDO, List<WettkampfDO> wettkampfTage){
-        return wettkampfTage.get((int) Math.ceil(matchDO.getNr() / 7.0));
+        WettkampfDO currentWettkampfTag;
+        if(matchDO.getNr() <= 7){
+            currentWettkampfTag = wettkampfTage.get(0);
+        } else if (matchDO.getNr() <= 14){
+            currentWettkampfTag = wettkampfTage.get(1);
+        } else if (matchDO.getNr() <= 21){
+            currentWettkampfTag = wettkampfTage.get(2);
+        } else {
+            currentWettkampfTag = wettkampfTage.get(3);
+        }
+        return currentWettkampfTag;
     }
 
-    public int getCurrentScheibennummer(WettkampfDO wettkampfDO){
+    public int getCurrentMatchCountForWettkampf(WettkampfDO wettkampfDO){
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDO.getId());
-        int matchCount = matches.size();
-        return (matchCount % 8) + 1;
+        return matches.size();
     }
-
-    public int getCurrentBegegnung(WettkampfDO wettkampfDO){
-        List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDO.getId());
-        int matchCount = matches.size();
-        return (matchCount % 4) + 1;
-    }
-
 }
