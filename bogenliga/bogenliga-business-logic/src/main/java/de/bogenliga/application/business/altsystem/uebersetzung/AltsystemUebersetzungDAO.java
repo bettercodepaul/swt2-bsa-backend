@@ -101,10 +101,10 @@ public class AltsystemUebersetzungDAO {
         return basicDAO.selectSingleEntity(UEBERSETZUNG, SELECT_BY_KATEGORIE_AND_ALTSYSTEM_ID, kategorieLabel, altsystemID);
     }
 
-    public AltsystemUebersetzungDO findByValue(AltsystemUebersetzungKategorie kategorie, String value) {
+    public AltsystemUebersetzungDO findByWert(AltsystemUebersetzungKategorie kategorie, String wert) {
         String kategorieLabel = kategorie.label;
 
-        return basicDAO.selectSingleEntity(UEBERSETZUNG, SELECT_BY_KATEGORIE_AND_VALUE, kategorieLabel, value);
+        return basicDAO.selectSingleEntity(UEBERSETZUNG, SELECT_BY_KATEGORIE_AND_VALUE, kategorieLabel, wert);
 
     }
 
