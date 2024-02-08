@@ -39,7 +39,6 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
             dsbMitgliedDO.setVereinsId(altsystemUebersetzungDAO.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
                     altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId());
 
-
             //untere Werte können hier nicht gesetzt werden, da sie im Altsystem in der Entität Schuetze nicht existieren
 //            dsbMitgliedDO.setGeburtsdatum(null);
 //            dsbMitgliedDO.setNationalitaet(null);
