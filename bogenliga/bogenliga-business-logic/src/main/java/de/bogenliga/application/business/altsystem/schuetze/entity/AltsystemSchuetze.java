@@ -80,12 +80,19 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
 
     @Override
     public void update(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId){
+
         AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
                 altsystemSchuetzeDO.getId());
 
         DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(altsystemUebersetzungDO.getBogenligaId());
+
         String namen [] = altsystemSchuetzeMapper.parseName(altsystemSchuetzeDO);
-        dsbMitgliedDO.setVorname(altsystemSchuetzeDO.getName());
+
+        dsbMitgliedDO.setVorname(namen[1]);
+        dsbMitgliedDO.setNachname(namen[0]);
+
+        dsbMitgliedDO.setVereinsId(altsystemUebersetzungDO.getBogenligaId());
+
         dsbMitgliedComponent.update(dsbMitgliedDO, currentUserId);
 
     }
