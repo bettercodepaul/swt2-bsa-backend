@@ -28,6 +28,7 @@ public class AltsystemMatchMapper {
     }
 
     public MatchDO[] toDO(MatchDO[] match, AltsystemWettkampfdatenDO altsystemDataObject) {
+        // Create a DataObject for the first team
         MatchDO mannschaftDO = match[0];
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getMannschaftId());
         mannschaftDO.setMannschaftId(mannschaftUebersetzung.getBogenligaId());
@@ -35,6 +36,7 @@ public class AltsystemMatchMapper {
         mannschaftDO.setMatchpunkte((long) altsystemDataObject.getMatchPlus());
         mannschaftDO.setNr((long) altsystemDataObject.getMatch());
 
+        // Create a DataObject for the opponent
         MatchDO gegnerDO = match[1];
         AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getGegnerId());
         gegnerDO.setMannschaftId(gegnerUebersetzung.getBogenligaId());
@@ -48,14 +50,17 @@ public class AltsystemMatchMapper {
 
     public MatchDO[] addDefaultFields(MatchDO[] matchDO, List<WettkampfDO> wettkampfTage) {
         WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO[0], wettkampfTage);
-        long matchCount = getCurrentMatchCountForWettkampf(wettkampfDO);
-        long currentBegegnung = (matchCount % 4) + 1;
+        long matchCount = getMatchCountForWettkampf(wettkampfDO);
+        // Scheibennummer und aktuelle Begegnung anhand der Anzahl aller Matches errechnen
+        long currentBegegnung = ((matchCount / 2) % 4) + 1;
         long currentScheibenNummer = (matchCount % 8) + 1;
 
         for(int i = 0; i < 2; i++){
+            // Defaultfelder setzen
             matchDO[i].setWettkampfId(wettkampfDO.getId());
             matchDO[i].setMatchScheibennummer(currentScheibenNummer + i);
             matchDO[i].setBegegnung(currentBegegnung);
+            // Alle Strafpunkte auf 0 setzen
             matchDO[i].setStrafPunkteSatz1(0L);
             matchDO[i].setStrafPunkteSatz2(0L);
             matchDO[i].setStrafPunkteSatz3(0L);
@@ -67,6 +72,7 @@ public class AltsystemMatchMapper {
 
     public WettkampfDO getCurrentWettkampfTag(MatchDO matchDO, List<WettkampfDO> wettkampfTage){
         WettkampfDO currentWettkampfTag;
+        // Bestimmen des zugehörigen Wettkampftages
         if(matchDO.getNr() <= 7){
             currentWettkampfTag = wettkampfTage.get(0);
         } else if (matchDO.getNr() <= 14){
@@ -79,7 +85,7 @@ public class AltsystemMatchMapper {
         return currentWettkampfTag;
     }
 
-    public int getCurrentMatchCountForWettkampf(WettkampfDO wettkampfDO){
+    public int getMatchCountForWettkampf(WettkampfDO wettkampfDO){
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDO.getId());
         return matches.size();
     }
