@@ -31,7 +31,6 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
     private final PasseComponent passeComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
-
     @Autowired
     public AltsystemErgebnisse(final AltsystemPasseMapper altsystemPasseMapper, final PasseComponent passeComponent,
                                AltsystemUebersetzung altsystemUebersetzung) {
@@ -42,22 +41,35 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
 
     @Override
     public void create(AltsystemErgebnisseDO altsystemDataObject, long currentUserId){
+    /**
+     Create Passe-Objects with given data of the legacy system.*
+     @param AltsystemErgebnisseDO data of the legacy system
+     @param currentUserId id of the user starting the synchronization
+     */
+        // Passen aus dem Ergebnis erstellen
         List<PasseDO> passen = altsystemPasseMapper.toDO(new ArrayList<>(), altsystemDataObject);
 
         StringBuilder bld = new StringBuilder();
-        // Add data to table
         for(PasseDO passe : passen){
+            // Passe ins neue System schreiben
             passe = passeComponent.create(passe, currentUserId);
+            // Ids der Passen merken für die Übersetzungstabelle
             bld.append(passe.getId());
             bld.append(";");
         }
-        String passeIdString = bld.toString();
 
+        // Ids der Passen in die Übersetzungstabelle schreiben
+        String passeIdString = bld.toString();
         altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemDataObject.getId(), 0L, passeIdString);
 
     }
     @Override
     public void update(AltsystemErgebnisseDO altsystemDataObject, long currentUserId){
+        /**
+         Update existing Passe-Objects with given data of the legacy system.*
+         @param AltsystemErgebnisseDO data of the legacy system
+         @param currentUserId id of the user starting the synchronization
+         */
         // Ids der zugehörigen Passen extrahieren
         AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemDataObject.getId());
         String passeIdString = uebersetzungDO.getWert().trim();
