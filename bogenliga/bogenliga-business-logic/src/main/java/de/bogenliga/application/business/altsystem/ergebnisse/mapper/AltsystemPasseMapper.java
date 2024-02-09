@@ -59,8 +59,19 @@ public class AltsystemPasseMapper {
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
         AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
                 altsystemDataObject.getSchuetzeID());
+
+        // Exception, falls es für den Schützen kein zugehöriges DSB Mitglied gibt
+        if (schuetzeUebersetzung == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "No translation found for entity Schuetze to a corresponding DSBMitglied");
+        }
+
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_Mannschaft,
                 altsystemDataObject.getSchuetzeID());
+
+        // Exception, falls zu dem Schützen keine zugehörige Mannschaft gespeichert wurde
+        if (mannschaftUebersetzung == null){
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "No translation found for entity Schuetze to a corresponding Mannschaft");
+        }
 
         // wählt in den Matches der Mannschaft das mit entsprechender MatchNr
         List<MatchDO> matches = matchComponent.findByMannschaftId(mannschaftUebersetzung.getBogenligaId());
@@ -72,6 +83,7 @@ public class AltsystemPasseMapper {
             }
         }
 
+        // Exception, falls kein passendes Match gefunden wurde
         if (match == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Match not found");
         }

@@ -46,8 +46,10 @@ public class AltsystemWettkampftagMapper {
         // Aus Übersetzungstabelle Veranstaltung für Mannschaft auslesen
         long veranstaltungID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftID).getBogenligaId();
 
+        // Schauen ob es bereits Wettkämpfe für die Veranstaltung gibt
         wettkampfTage = wettkampfComponent.findAllByVeranstaltungId(veranstaltungID);
 
+        // Wettkämpfe erstellen, falls noch keine vorhanden sind
         if (wettkampfTage.isEmpty()){
             wettkampfTage = createWettkampftage(veranstaltungID, currentUserId);
         }
@@ -57,8 +59,10 @@ public class AltsystemWettkampftagMapper {
 
     public List<WettkampfDO> createWettkampftage(long veranstaltungId, long currentUserId){
         List<WettkampfDO> wettkampfTage = new LinkedList<>();
+        // VeranstaltungsDO auslesen
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(veranstaltungId);
         long sportjahr = veranstaltungDO.getVeranstaltungSportJahr();
+        // Wettkampftermine bestimmen
         Date[] wettkampfTermine = getWettkampfTermine(sportjahr);
         LigaDO ligaDO = ligaComponent.findById(veranstaltungDO.getVeranstaltungLigaID());
 
@@ -80,13 +84,22 @@ public class AltsystemWettkampftagMapper {
     }
 
     public Date[] getWettkampfTermine(long sportjahr){
+        /**
+         Returns all dates for Competitions.*
+         @param sporjahr year of the Veranstaltung
+         @return Array of dates
+         */
         final int anzahlTermine = 4;
         Date[] termine = new Date[anzahlTermine];
         long vorjahr = sportjahr - 1;
         String[] terminString = new String[anzahlTermine];
+        // 1. Termin: 01.11
         terminString[0] = vorjahr + "-11-01";
+        // 2. Termin: 01.12
         terminString[1] = vorjahr + "-12-01";
+        // 3. Termin: 01.01
         terminString[2] = sportjahr + "-01-01";
+        // letzter Termin: 01.02
         terminString[3] = sportjahr + "-02-01";
 
         for(int i = 0; i < anzahlTermine; i++){

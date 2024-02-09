@@ -38,6 +38,7 @@ public class AltsystemUebersetzung {
          Selects a row from the translation table with given category and legacyID
          @param kategorie category of the translation
          @param altsystem_id id in the legacy system
+         @return AltsystemUebersetzungDO result
          */
         return altsystemUebersetzungDAO.findByAltsystemID(kategorie, altsystemID);
     }
@@ -47,6 +48,7 @@ public class AltsystemUebersetzung {
          Selects a row from the translation table with given category and value
          @param kategorie category of the translation
          @param wert value that is associated with
+         @return AltsystemUebersetzungDO result
          */
         return altsystemUebersetzungDAO.findByWert(kategorie, wert);
     }
