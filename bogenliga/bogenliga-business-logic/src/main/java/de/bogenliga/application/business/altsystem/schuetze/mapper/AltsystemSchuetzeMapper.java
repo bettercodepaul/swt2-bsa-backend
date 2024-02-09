@@ -80,7 +80,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
 
     public AltsystemUebersetzungDO getDsbMitgliedDO(String dsbMitgliedIdentifier) throws SQLException {
 
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schütze_Verein, dsbMitgliedIdentifier);
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_Verein, dsbMitgliedIdentifier);
 
         return altsystemUebersetzungDO;
     }

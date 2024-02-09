@@ -5,14 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDAO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.business.altsystem.schuetze.mapper.AltsystemSchuetzeMapper;
-import de.bogenliga.application.common.component.dao.BasicDAO;
 
 
 /**
@@ -54,7 +52,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
             dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
 
             // add data to Uebersetzungstabelle
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schütze_Verein, altsystemSchuetzeDO.getId(),
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Verein, altsystemSchuetzeDO.getId(),
                     altsystemUebersetzungDO.getBogenligaId(), altsystemUebersetzungDO.getWert());
 
             // Add data to Dsb_Mitglied table
@@ -65,9 +63,9 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         else {
             // Schreib mannschaftsnamen in Schütze_Mannschaft
             String mannschaftName = String.valueOf(altsystemUebersetzung.findByAltsystemID(
-                    AltsystemUebersetzungKategorie.Schütze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id()));
+                    AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id()));
 
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schütze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id(),
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id(),
                     altsystemSchuetzeDO.getMannschaft_id(), mannschaftName);
 
         }
