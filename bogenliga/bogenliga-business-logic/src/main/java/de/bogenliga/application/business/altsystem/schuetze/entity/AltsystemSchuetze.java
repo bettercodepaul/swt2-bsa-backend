@@ -43,35 +43,50 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         // identifier speichern
         String parsedIdentifier = altsystemSchuetzeMapper.getIdentifier(altsystemSchuetzeDO);
 
-        // Objekt anhand des identifier zurückgeben
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemSchuetzeMapper.getDsbMitgliedDO(parsedIdentifier);
+        AltsystemUebersetzungDO schuetzeUebersetzung = altsystemSchuetzeMapper.getDsbMitgliedDO(parsedIdentifier);
+        Long dsbMitgliedId = null;
 
         // wenn es noch keinen identifier in der UbersetzungsTabelle gibt
-        if (altsystemUebersetzungDO == null) {
+        if (schuetzeUebersetzung == null) {
+
             // dann schreib Daten in diesen schuetzen rein
             dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
 
-            // add data to Uebersetzungstabelle
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Verein, altsystemSchuetzeDO.getId(),
-                    altsystemUebersetzungDO.getBogenligaId(), altsystemUebersetzungDO.getWert());
-
-            // Add data to Dsb_Mitglied table
+            // Add data to Dsb_Mitglied table (Create ID)
             dsbMitgliedDO = dsbMitgliedComponent.create(dsbMitgliedDO, currentUserId);
+
+            dsbMitgliedId = dsbMitgliedDO.getId();
 
         }
         // wenn diesen identifer bereits existiert
         else {
-            // Schreib mannschaftsnamen in Schütze_Mannschaft
-            String mannschaftName = String.valueOf(altsystemUebersetzung.findByAltsystemID(
-                    AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id()));
 
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getMannschaft_id(),
-                    altsystemSchuetzeDO.getMannschaft_id(), mannschaftName);
+            dsbMitgliedId = schuetzeUebersetzung.getBogenligaId();
 
         }
+
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, altsystemSchuetzeDO.getId(),
+                dsbMitgliedId, parsedIdentifier);
+
+        // Objekt anhand des identifier zurückgeben (für Ergebniss Tabelle)
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
+                altsystemSchuetzeDO.getMannschaft_id());
+
+        // add data to Uebersetzungstabelle (für Ergebniss Tabelle)
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getId(),
+                altsystemUebersetzungDO.getBogenligaId(), "");
+
     }
 
     @Override
     public void update(AltsystemSchuetzeDO altsystemSchuetzeDO, long currentUserId){
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
+                altsystemSchuetzeDO.getId());
+
+        DsbMitgliedDO dsbMitgliedDO = dsbMitgliedComponent.findById(altsystemUebersetzungDO.getBogenligaId());
+        String namen [] = altsystemSchuetzeMapper.parseName(altsystemSchuetzeDO);
+        dsbMitgliedDO.setVorname(altsystemSchuetzeDO.getName());
+        dsbMitgliedComponent.update(dsbMitgliedDO, currentUserId);
+
     }
 }

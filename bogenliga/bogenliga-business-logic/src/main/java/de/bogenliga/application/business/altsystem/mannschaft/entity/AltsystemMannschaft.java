@@ -44,7 +44,8 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
 
         dsbMannschaftComponent.create(dsbMannschaftDO, currentUserId);
 
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, (int) altsystemDataObject.getId(), dsbMannschaftDO.getId().longValue(), "");
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
+                (int) altsystemDataObject.getId(), dsbMannschaftDO.getId().longValue(), "");
     }
 
 
