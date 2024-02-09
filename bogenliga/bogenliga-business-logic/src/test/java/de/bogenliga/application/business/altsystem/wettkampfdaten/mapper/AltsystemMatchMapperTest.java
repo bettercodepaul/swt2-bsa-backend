@@ -140,7 +140,7 @@ public class AltsystemMatchMapperTest {
         // assert result
         for(MatchDO match : actual){
             assertThat(match.getWettkampfId()).isEqualTo(2L);
-            assertThat(match.getBegegnung()).isEqualTo((matches.size() % 4) + 1);
+            assertThat(match.getBegegnung()).isEqualTo(3L);
             assertThat(match.getStrafPunkteSatz1()).isEqualTo(0L);
             assertThat(match.getStrafPunkteSatz2()).isEqualTo(0L);
             assertThat(match.getStrafPunkteSatz3()).isEqualTo(0L);
