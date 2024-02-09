@@ -38,6 +38,11 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
 
     @Override
     public void create(AltsystemWettkampfdatenDO altsystemDataObject, long currentUserId){
+        /**
+         Create match-Objects with given data of the legacy system.*
+         @param AltsystemWettkampfdatenDO data of the legacy system
+         @param currentUserId id of the user starting the synchronization
+         */
         // Daten sind im Altsystem redundant
         // Bearbeitung nur, falls Sec = 0 ist
         if (altsystemDataObject.getSec() == 0){
@@ -61,6 +66,11 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
 
     @Override
     public void update(AltsystemWettkampfdatenDO altsystemDataObject, long currentUserId){
+        /**
+         Update existing match-Objects with given data of the legacy system.*
+         @param AltsystemWettkampfdatenDO data of the legacy system
+         @param currentUserId id of the user starting the synchronization
+         */
         // Daten sind im Altsystem redundant
         // Bearbeitung nur, falls Sec = 0 ist
         if (altsystemDataObject.getSec() == 0){
@@ -73,15 +83,22 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
             // Mapping des Datensatzes
             match = altsystemMatchMapper.toDO(match, altsystemDataObject);
 
+            // Matches updaten
             matchComponent.update(match[0], currentUserId);
             matchComponent.update(match[1], currentUserId);
 
+            // Anzahl Sätze in Übersetzungstabelle updaten
             saveAnzahlSaetze(altsystemDataObject, match);
         }
     }
 
 
     public void saveAnzahlSaetze(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, MatchDO[] matchDOS){
+        /**
+         Writes the number of played sets in a match into the translation table*
+         @param AltsystemWettkampfdatenDO data of the legacy system
+         @param MatchDO[] created match objects
+         */
         int anzahlSaetze = 5;
         if (altsystemWettkampfdatenDO.getSatz4() == 0){
             anzahlSaetze = 3;
