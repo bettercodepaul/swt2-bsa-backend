@@ -11,7 +11,7 @@ public enum AltsystemUebersetzungKategorie {
     Saison_Sportjahr("Saison_Sportjahr"),
     Mannschaft_Verein("Mannschaft_Verein"),
     Mannschaft_Mannschaft("Mannschaft_Mannschaft"),
-    Schuetze_Verein("Schütze_Verein"),
+
     Schuetze_DSBMitglied("Schütze_DSBMitglied"),
     Schuetze_Mannschaft("Schütze_Mannschaft"),
     Mannschaft_Veranstaltung("Mannschaft_Veranstaltung"),
