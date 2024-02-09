@@ -15,6 +15,7 @@ public enum AltsystemUebersetzungKategorie {
     Schuetze_DSBMitglied("Schütze_DSBMitglied"),
     Schuetze_Mannschaft("Schütze_Mannschaft"),
     Mannschaft_Veranstaltung("Mannschaft_Veranstaltung"),
+    Wettkampfergebnis_Match("Wettkampfergebnis_Match"),
     Match_Saetze("Match_Saetze"),
     Ergebnis_Passen("Ergebnis_Passen");
 
