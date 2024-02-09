@@ -36,6 +36,11 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
 
     @Override
     public void create(AltsystemLigaDO altsystemDataObject, long currentUserId){
+        /**
+         Create a new liga with given data of the legacy system.*
+         @param AltsystemLigaDO data of the legacy system
+         @param currentUserId id of the user starting the synchronization
+         */
         // Map data to new object, add default fields
         LigaDO ligaDO = new LigaDO();
         ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
@@ -50,6 +55,11 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
 
     @Override
     public void update(AltsystemLigaDO altsystemDataObject, long currentUserId){
+        /**
+         Update existing Liga with given data of the legacy system.*
+         @param AltsystemErgebnisseDO data of the legacy system
+         @param currentUserId id of the user starting the synchronization
+         */
         // Get primary key from translation table
         AltsystemUebersetzungDO ligaUebersetzung = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Liga_Liga, altsystemDataObject.getId());
