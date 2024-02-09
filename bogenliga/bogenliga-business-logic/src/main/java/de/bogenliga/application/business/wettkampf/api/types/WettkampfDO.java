@@ -107,7 +107,9 @@ public class WettkampfDO extends CommonDataObject implements DataObject {
         this.offlineToken = offlineToken;
     }
 
+    public WettkampfDO() {
 
+    }
 
     /**
      * Constructor with optional parameters
