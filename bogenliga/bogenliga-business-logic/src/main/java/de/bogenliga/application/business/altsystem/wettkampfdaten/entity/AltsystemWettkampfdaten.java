@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.dataobject.AltsystemWettkampfdatenDO;
 import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemMatchMapper;
@@ -52,22 +53,31 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
             matchComponent.create(match[1], currentUserId);
 
             saveAnzahlSaetze(altsystemDataObject, match);
+
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemDataObject.getId(), match[0].getId(), String.valueOf(match[1].getId()));
         }
 
     }
 
     @Override
     public void update(AltsystemWettkampfdatenDO altsystemDataObject, long currentUserId){
-        // Get primary key from translation table
+        // Daten sind im Altsystem redundant
+        // Bearbeitung nur, falls Sec = 0 ist
+        if (altsystemDataObject.getSec() == 0){
+            // Zugehörige Matches aus Übersetzungstabelle holen
+            AltsystemUebersetzungDO wettkampfdatenUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemDataObject.getId());
+            MatchDO[] match = new MatchDO[2];
+            // Erstgenannte Mannschafts-ID ist im Feld "BogenligaId" gespeichert, zweitgenannte Mannschafts-ID im Feld Wert
+            match[0] = matchComponent.findById(wettkampfdatenUebersetzung.getBogenligaId());
+            match[1] = matchComponent.findById(Long.parseLong(wettkampfdatenUebersetzung.getWert()));
+            // Mapping des Datensatzes
+            match = altsystemMatchMapper.toDO(match, altsystemDataObject);
 
-        // Find data in table with corresponding id
-        MatchDO matchDO = matchComponent.findById(1L);
+            matchComponent.update(match[0], currentUserId);
+            matchComponent.update(match[1], currentUserId);
 
-        // Map data to new object, don't add default fields
-        // altsystemWettkampfdatenMapper.toDO(match, altsystemDataObject);
-
-        // Update data in table with given primary key
-        // ligaComponent.update(ligaDO, <UserID>);
+            saveAnzahlSaetze(altsystemDataObject, match);
+        }
     }
 
 
