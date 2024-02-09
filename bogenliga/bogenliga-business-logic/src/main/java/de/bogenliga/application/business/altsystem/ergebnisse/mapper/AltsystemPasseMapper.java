@@ -36,14 +36,15 @@ public class AltsystemPasseMapper {
     public int[][] getPassenpunkte (long anzahlPunkte, int anzahlSaetze) {
         int[][] punkte = new int[anzahlSaetze][2];
 
-        // Aufteilung des Ergebnisses auf Passenunkte
-        int avgErgebnisProPasse = (int) Math.floor(anzahlPunkte / (double) anzahlSaetze);
-        int restpunkte = (int) (anzahlPunkte % anzahlSaetze);
+        // Aufteilung des Ergebnisses auf Ergebnis pro Pfeil
+        // Eine Passe je Satz, zwei Pfeile je Passe
+        int avgErgebnisProPfeil = (int) Math.floor(anzahlPunkte / (2.0 * anzahlSaetze));
+        int restpunkte = (int) (anzahlPunkte % (2 * anzahlSaetze));
 
         // Aufteilung der Passenpunkte auf jew. 2 Pfeile
         for(int i = 0; i < anzahlSaetze; i++){
             for(int j = 0; j < 2; j++) {
-                int ringzahl = avgErgebnisProPasse;
+                int ringzahl = avgErgebnisProPfeil;
                 if (restpunkte > 0 && ringzahl < 10) {
                     ringzahl++;
                     restpunkte--;
@@ -56,9 +57,9 @@ public class AltsystemPasseMapper {
     public List<PasseDO> toDO(List<PasseDO> passen, AltsystemErgebnisseDO altsystemDataObject) {
 
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
-        AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_DSBMitglied,
+        AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
                 altsystemDataObject.getSchuetzeID());
-        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schütze_Mannschaft,
+        AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_Mannschaft,
                 altsystemDataObject.getSchuetzeID());
 
         // wählt in den Matches der Mannschaft das mit entsprechender MatchNr

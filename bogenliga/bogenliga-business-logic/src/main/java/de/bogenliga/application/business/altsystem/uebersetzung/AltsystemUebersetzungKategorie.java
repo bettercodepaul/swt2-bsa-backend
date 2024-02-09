@@ -1,7 +1,7 @@
 package de.bogenliga.application.business.altsystem.uebersetzung;
 
 /**
- * TODO [AL] class documentation
+ * Konstanten für die Kategorien von Datensätzen in der Übersetzungstabelle
  *
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
@@ -11,9 +11,9 @@ public enum AltsystemUebersetzungKategorie {
     Saison_Sportjahr("Saison_Sportjahr"),
     Mannschaft_Verein("Mannschaft_Verein"),
     Mannschaft_Mannschaft("Mannschaft_Mannschaft"),
-    Schütze_Verein("Schütze_Verein"),
-    Schütze_DSBMitglied("Schütze_DSBMitglied"),
-    Schütze_Mannschaft("Schütze_Mannschaft"),
+    Schuetze_Verein("Schütze_Verein"),
+    Schuetze_DSBMitglied("Schütze_DSBMitglied"),
+    Schuetze_Mannschaft("Schütze_Mannschaft"),
     Mannschaft_Veranstaltung("Mannschaft_Veranstaltung"),
     Match_Saetze("Match_Saetze"),
     Ergebnis_Passen("Ergebnis_Passen");
