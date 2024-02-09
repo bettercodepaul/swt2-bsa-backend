@@ -77,6 +77,8 @@ public class AltsystemMatchMapperTest {
         altsystemWettkampfdatenDO.setSec(1);
         // mock Uebersetzung
         AltsystemUebersetzungDO mannschaftUebersetzung = new AltsystemUebersetzungDO();
+        mannschaftUebersetzung.setKategorie("Mannschaft_Mannschaft");
+        mannschaftUebersetzung.setAltsystemId(2L);
         mannschaftUebersetzung.setBogenligaId(10L);
         AltsystemUebersetzungDO gegnerUebersetzung = new AltsystemUebersetzungDO();
         gegnerUebersetzung.setBogenligaId(12L);
