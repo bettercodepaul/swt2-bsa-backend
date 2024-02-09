@@ -48,7 +48,8 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
         // Add data to table
         for(PasseDO passe : passen){
             passe = passeComponent.create(passe, currentUserId);
-            bld.append(passe.getId() + ";");
+            bld.append(passe.getId());
+            bld.append(";");
         }
         String passeIdString = bld.toString();
 
@@ -69,7 +70,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
         }
 
         // Änderugnen in die Data Objects übernehmen
-        altsystemPasseMapper.toDO(passen, altsystemDataObject);
+        passen = altsystemPasseMapper.toDO(passen, altsystemDataObject);
 
         // Neues Data Object in die Tabelle schreiben
         for(PasseDO passe : passen){

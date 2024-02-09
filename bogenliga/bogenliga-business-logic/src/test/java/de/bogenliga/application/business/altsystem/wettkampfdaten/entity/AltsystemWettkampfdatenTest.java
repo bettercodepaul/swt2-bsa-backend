@@ -49,6 +49,7 @@ public class AltsystemWettkampfdatenTest {
         wettkaempfe.add(new WettkampfDO());
         return wettkaempfe;
     }
+
     @Test
     public void testCreate_Sec0() {
         // Altsystem Data Object

@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.altsystem.saison;
+package de.bogenliga.application.business.altsystem.saison.entity;
 
 
 import org.junit.Rule;
@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.altsystem.saison.dataobject.AltsystemSaisonDO;
-import de.bogenliga.application.business.altsystem.saison.entity.AltsystemSaison;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
