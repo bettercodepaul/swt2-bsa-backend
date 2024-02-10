@@ -38,23 +38,23 @@ public class AltsystemUebersetzungsDAOTest {
 
     }
     @Test
-    public void testUpdateOrInsertUebersetzung(){
+    public void testUpdateOrInsertUebersetzungInsertCase(){
         AltsystemUebersetzungKategorie kategorie = AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung;
         AltsystemUebersetzungDO altsystemUebersetzungDOMock = mock(AltsystemUebersetzungDO.class);
 
         when(altsystemUebersetzung.findByAltsystemID(any(), anyLong())).thenReturn(null);
         when(altsystemUebersetzungDOMock.getKategorie()).thenReturn("Mannschaft_Veranstaltung");
         when(altsystemUebersetzungDOMock.getAltsystemId()).thenReturn(ALTSYSTEM_ID);
-        when(basicDAO.updateEntity(any(), any(), anyString())).thenReturn(altsystemUebersetzungDOMock);
+        when(basicDAO.insertEntity(any(), any())).thenReturn(altsystemUebersetzungDOMock);
 
-        altsystemUebersetzung.updateOrInsertUebersetzung(kategorie, ALTSYSTEM_ID, BOGENLIGA_ID, WERT);
+        altsystemUebersetzungDAO.updateOrInsertUebersetzung(kategorie, ALTSYSTEM_ID, BOGENLIGA_ID, WERT);
 
-        // verify(basicDAO).insertEntity(any(), any());
-        verify(basicDAO, never()).updateEntity(any(), any());
+        verify(basicDAO, times(1)).insertEntity(any(), any());
+        verify(basicDAO, never()).updateEntity(any(), any(), any());
     }
 
     @Test
-    public void testUdateOrInsertUebersetzungWhenExists() {
+    public void testUdateOrInsertUebersetzungUpdateCase() {
         AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung;
         BusinessEntityConfiguration<AltsystemUebersetzungDO> UebersetzungMock = mock(BusinessEntityConfiguration.class);
         AltsystemUebersetzungDO altsystemUebersetzungDO = mock(AltsystemUebersetzungDO.class);
@@ -63,15 +63,13 @@ public class AltsystemUebersetzungsDAOTest {
         altsystemUebersetzungDO.setBogenligaId(BOGENLIGA_ID);
         altsystemUebersetzungDO.setKategorie(UEBERSETZUNG_KATEGORIE);
 
-        when(altsystemUebersetzung.findByAltsystemID(altsystemUebersetzungKategorie, ALTSYSTEM_ID)).thenReturn(altsystemUebersetzungDO);
+        when(altsystemUebersetzungDAO.findByAltsystemID(altsystemUebersetzungKategorie, ALTSYSTEM_ID)).thenReturn(altsystemUebersetzungDO);
         when(basicDAO.updateEntity(UebersetzungMock, altsystemUebersetzungDO, "altsystemID")).thenAnswer(invocation -> invocation.getArgument(1));
 
-        altsystemUebersetzung.updateOrInsertUebersetzung(altsystemUebersetzungKategorie, ALTSYSTEM_ID, BOGENLIGA_ID, WERT);
+        altsystemUebersetzungDAO.updateOrInsertUebersetzung(altsystemUebersetzungKategorie, ALTSYSTEM_ID, BOGENLIGA_ID, WERT);
 
-        verify(altsystemUebersetzungDO).setBogenligaId(BOGENLIGA_ID);
-        verify(altsystemUebersetzungDO).setWert(WERT);
         verify(basicDAO, never()).insertEntity(any(),any());
-        // verify(basicDAO).updateEntity(UebersetzungMock, altsystemUebersetzungDO, ALTSYSTEMUEBERSETZUNG_DO_ID);
+        verify(basicDAO, times(1)).updateEntity(any(), any(), any());
     }
     @Test
     public void testFindByAltsystemID() {
