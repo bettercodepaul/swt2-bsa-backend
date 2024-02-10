@@ -1,24 +1,19 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
 import java.sql.SQLException;
-import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
-import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
-import de.bogenliga.application.business.altsystem.schuetze.mapper.AltsystemSchuetzeMapper;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDAO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
-import de.bogenliga.application.business.liga.api.types.LigaDO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -29,27 +24,30 @@ import static org.mockito.Mockito.*;
 
 public class AltsystemSchuetzeMapperTest {
 
-    private static final Long Id = 1L;
+    private static final Long CURRENTUSERID = 1L;
 
-
+    public AltsystemSchuetzeMapper altsystemSchuetzeMapper;
 
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private DsbMitgliedComponent dsbMitgliedComponent;
-
+    AltsystemUebersetzung altsystemUebersetzung;
     @Mock
-    private AltsystemUebersetzung altsystemUebersetzung;
-
-    @Mock
-    private AltsystemUebersetzungDAO altsystemUebersetzungDAO;
-
-    @Mock
-    private DsbMitgliedDO dsbMitgliedDO;
+    DsbMitgliedComponent dsbMitgliedComponent;
 
     @InjectMocks
-    private AltsystemSchuetzeMapper altsystemSchuetzeMapper;
+    AltsystemSchuetze altsystemSchuetze;
+
+
+    @Before
+    public void setUp() {
+        altsystemSchuetzeMapper = Mockito.mock(AltsystemSchuetzeMapper.class);
+        dsbMitgliedComponent = Mockito.mock(DsbMitgliedComponent.class);
+        altsystemUebersetzung = Mockito.mock(AltsystemUebersetzung.class);
+        altsystemSchuetze = new AltsystemSchuetze(altsystemSchuetzeMapper, dsbMitgliedComponent, altsystemUebersetzung);
+
+    }
 
 
     @Test
@@ -57,66 +55,134 @@ public class AltsystemSchuetzeMapperTest {
         // prepare test data
         // altsystem DO
         AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
-        altsystemSchuetzeDO.setRuecknr(1);
         altsystemSchuetzeDO.setName("Bammert, Marco");
-        altsystemSchuetzeDO.setMannschaft_id(387);
-
         // expectedResult
         DsbMitgliedDO expectedDO = new DsbMitgliedDO();
         expectedDO.setVorname("Marco");
         expectedDO.setNachname("Bammert");
+        expectedDO.setVereinsId(1L);
 
+        // configure mocks
+        AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
+        altsystemUebersetzungDO.setBogenligaId(1L);
+
+        when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
+
+        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(altsystemUebersetzung);
         // call test method
+        DsbMitgliedDO actual = altsystemSchuetzeMapper.toDO(new DsbMitgliedDO(), altsystemSchuetzeDO);
 
-        DsbMitgliedDO actual = new DsbMitgliedDO();
-        actual = altsystemSchuetzeMapper.toDO(actual, altsystemSchuetzeDO);
-
-        // assert result
         assertThat(actual.getVorname()).isEqualTo(expectedDO.getVorname());
         assertThat(actual.getNachname()).isEqualTo(expectedDO.getNachname());
-
     }
 
     @Test
     public void testGetIdentifier() throws SQLException {
-        // Mocking
-        AltsystemSchuetzeDO schuetze = new AltsystemSchuetzeDO();
-        schuetze.setName("Bammert, Marco");
-        schuetze.setMannschaft_id(387);
-        schuetze.setRuecknr(1);
+        // prepare test data
+        // altsystem DO
+        AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
+        altsystemSchuetzeDO.setName("Bammert, Marco");
 
+        // configure mocks
+        AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
+        altsystemUebersetzungDO.setBogenligaId(1L);
 
-        AltsystemSchuetzeDO schuetze_duplikat = new AltsystemSchuetzeDO();
-        schuetze_duplikat.setName("Bammert, Marco");
-        schuetze_duplikat.setMannschaft_id(456);
-        schuetze_duplikat.setRuecknr(1);
+        when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
 
+        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(altsystemUebersetzung);
+        // call test method
+        String identifier = altsystemSchuetzeMapper.getIdentifier(altsystemSchuetzeDO);
 
-        String identifier1 = altsystemSchuetzeMapper.getIdentifier(schuetze);
-        String identifier2 = altsystemSchuetzeMapper.getIdentifier(schuetze_duplikat);
+        String expectedIdentifier = "MarcoBammert1";
 
-        System.out.println(identifier2);
-        System.out.println(identifier1);
-
-        assertEquals(identifier1, identifier2);
+        assertThat(identifier.equals(expectedIdentifier));
     }
 
     @Test
-    public void testparseName() throws SQLException {
+    public void testGetDsbMitgliedDO() throws SQLException {
+        // prepare test data
+        // altsystem DO
+        AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
+        altsystemSchuetzeDO.setName("Bammert, Marco");
+
+        // configure mocks
+        AltsystemUebersetzungDO expected = new AltsystemUebersetzungDO();
+        expected.setBogenligaId(1L);
+        expected.setWert("MarcoBammert1");
+        expected.setKategorie(String.valueOf(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied));
+
+        String identifier = altsystemSchuetzeMapper.getIdentifier(altsystemSchuetzeDO);
+
+        // Mock-Konfiguration
+        when(altsystemSchuetzeMapper.getSchuetzeByIdentifier(any())).thenReturn(expected);
+
+        AltsystemUebersetzungDO actual = altsystemSchuetzeMapper.getSchuetzeByIdentifier(identifier);
+
+        assertEquals(expected.getUebersetzungId(), actual.getUebersetzungId());
+    }
+
+
+    @Test
+    public void testparseNameWithComa() throws SQLException {
         // Mocking
         AltsystemSchuetzeDO schuetze = new AltsystemSchuetzeDO();
         schuetze.setName("Bammert, Marco");
         schuetze.setMannschaft_id(387);
         schuetze.setRuecknr(1);
 
-        String[] schuetze_parsedName = altsystemSchuetzeMapper.parseName(schuetze);
-        String schuetze_vorname = schuetze_parsedName[0];
-        String schuetze_nachname = schuetze_parsedName[1];
+        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
 
-        String expected_vorname = "Marco";
-        String expected_nachname = "Bammert";
+        String[] parsedName = altsystemSchuetzeMapper.parseName(schuetze);
+        String schuetzeVorname = parsedName[1];
+        String schuetzeNachname = parsedName[0];
 
-        assertEquals(schuetze_vorname, expected_vorname);
-        assertEquals(schuetze_nachname, expected_nachname);
+        String expectedVorname = "Marco";
+        String expectedNachname = "Bammert";
+
+        assertEquals(expectedVorname, schuetzeVorname);
+        assertEquals(expectedNachname, schuetzeNachname);
     }
+
+    @Test
+    public void testParseNameWithoutComma() {
+        // Mocking
+        AltsystemSchuetzeDO schuetze = new AltsystemSchuetzeDO();
+        schuetze.setName("Bammert Marco");
+        schuetze.setMannschaft_id(387);
+        schuetze.setRuecknr(1);
+
+        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
+
+        String[] parsedName = altsystemSchuetzeMapper.parseName(schuetze);
+        String schuetzeVorname = parsedName[1];
+        String schuetzeNachname = parsedName[0];
+
+        String expectedVorname = "Marco";
+        String expectedNachname = "Bammert";
+
+        assertEquals(expectedVorname, schuetzeVorname);
+        assertEquals(expectedNachname, schuetzeNachname);
+    }
+
+    @Test
+    public void testParseNameWithMultipleSpace() {
+        // Mocking
+        AltsystemSchuetzeDO schuetze = new AltsystemSchuetzeDO();
+        schuetze.setName("Bammert   Marco");
+        schuetze.setMannschaft_id(387);
+        schuetze.setRuecknr(1);
+
+        AltsystemSchuetzeMapper altsystemSchuetzeMapper = new AltsystemSchuetzeMapper(mock(altsystemUebersetzung.getClass()));
+
+        String[] parsedName = altsystemSchuetzeMapper.parseName(schuetze);
+        String schuetzeVorname = parsedName[1];
+        String schuetzeNachname = parsedName[0];
+
+        String expectedVorname = "Marco";
+        String expectedNachname = "Bammert";
+
+        assertEquals(expectedVorname, schuetzeVorname);
+        assertEquals(expectedNachname, schuetzeNachname);
+    }
+
 }

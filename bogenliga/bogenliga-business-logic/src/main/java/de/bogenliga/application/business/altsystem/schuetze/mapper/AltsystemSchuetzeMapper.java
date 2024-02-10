@@ -2,17 +2,12 @@ package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
 import java.sql.SQLException;
 import org.springframework.stereotype.Component;
-import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
-import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
-import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
-import de.bogenliga.application.common.errorhandling.ErrorCode;
-import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
  * TODO [AL] class documentation
@@ -55,10 +50,9 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
      *
      * @param dsbMitgliedDO Das Zielobjekt vom Typ DsbMitgliedDO, zu dem Standardfelder hinzugefügt werden sollen.
      * @param currentDsbMitglied Die ID des aktuellen DsbMitglieds.
-     * @param altsystemDataObject Das Objekt mit den Daten des Schützen im Altsystem.
      * @return Ein Objekt vom Typ DsbMitgliedDO mit den hinzugefügten Standardfeldern.
      */
-    public DsbMitgliedDO addDefaultFields (DsbMitgliedDO dsbMitgliedDO, long currentDsbMitglied, AltsystemSchuetzeDO altsystemDataObject) {
+    public DsbMitgliedDO addDefaultFields (DsbMitgliedDO dsbMitgliedDO, long currentDsbMitglied) {
         // Standardwerte die nicht aus dem altSystem übernommen werden können
         dsbMitgliedDO.setId(currentDsbMitglied); // ??
         dsbMitgliedDO.setGeburtsdatum(null);
@@ -91,9 +85,9 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
         }
         // Fall 2: Name ist getrennt durch >= 1 Leerzeichen
         else {
-            schuetzeName = altsystemSchuetzeDO.getName().split(" ");
-            schuetzeName[0] = schuetzeName[0].replaceAll("\\s+", "");
-            schuetzeName[1] = schuetzeName[1].replaceAll("\\s+", "");
+            schuetzeName = altsystemSchuetzeDO.getName().split("\\s+");
+            schuetzeName[0] = schuetzeName[0].trim(); // Vorname ohne Leerzeichen am Anfang und Ende
+            schuetzeName[1] = schuetzeName[1].trim(); // Nachname ohne Leerzeichen am Anfang und Ende
         }
 
         return schuetzeName;
@@ -127,7 +121,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
      * @return Ein Objekt vom Typ AltsystemUebersetzungDO, das den Datensatz im Altsystem repräsentiert, der dem gesuchten DSB-Mitglied entspricht.
      * @throws SQLException Falls ein Fehler bei der Abfrage des Datensatzes aus der Datenbank auftritt.
      */
-    public AltsystemUebersetzungDO getDsbMitgliedDO(String dsbMitgliedIdentifier) throws SQLException {
+    public AltsystemUebersetzungDO getSchuetzeByIdentifier(String dsbMitgliedIdentifier) throws SQLException {
         // Suchen des entsprechenden Datensatzes im Altsystem anhand des Identifiers
         AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
 
