@@ -89,4 +89,22 @@ public class AltsystemUebersetzungsDAOTest {
         assertEquals(altsystemUebersetzungDO, result);
     }
 
+    @Test
+    public void testFindByWert() {
+        AltsystemUebersetzungKategorie altsystemUebersetzungKategorie = AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung;
+        AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
+        altsystemUebersetzungDO.setAltsystemId(ALTSYSTEM_ID);
+        altsystemUebersetzungDO.setBogenligaId(BOGENLIGA_ID);
+        altsystemUebersetzungDO.setKategorie(UEBERSETZUNG_KATEGORIE);
+        altsystemUebersetzungDO.setWert(WERT);
+
+        when(basicDAO.selectSingleEntity(any(), any(), any(), any())).thenReturn(altsystemUebersetzungDO);
+
+        AltsystemUebersetzungDO result = altsystemUebersetzungDAO.findByAltsystemID(altsystemUebersetzungKategorie, ALTSYSTEM_ID);
+
+        verify(basicDAO).selectSingleEntity(any(),any(),any(),any());
+
+        assertEquals(altsystemUebersetzungDO, result);
+    }
+
 }
