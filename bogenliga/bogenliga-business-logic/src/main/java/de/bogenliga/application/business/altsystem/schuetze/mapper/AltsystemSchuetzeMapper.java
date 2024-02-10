@@ -27,12 +27,22 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
-
+    /**
+     * Konvertiert die Daten eines Schützen aus dem Altsystem in ein Objekt vom Typ DsbMitgliedDO im neuen System.
+     *
+     * @param dsbMitgliedDO Das Zielobjekt vom Typ DsbMitgliedDO, in das die Daten konvertiert werden sollen.
+     * @param altsystemSchuetzeDO Das Objekt, das die Daten des Schützen im Altsystem enthält.
+     * @return Ein Objekt vom Typ DsbMitgliedDO, das die konvertierten Daten des Schützen im neuen System enthält.
+     * @throws SQLException Falls ein Fehler bei der Verarbeitung der Daten aus der Datenbank auftritt.
+     */
     public DsbMitgliedDO toDO(DsbMitgliedDO dsbMitgliedDO, AltsystemSchuetzeDO altsystemSchuetzeDO) throws SQLException {
-        // Parse Name um Vor- und Nachname zu trennen
+        // Namen des Schützen parsen, um Vor- und Nachnamen zu trennen
         String[] parsedName = parseName(altsystemSchuetzeDO);
+
+        // Vereins-ID im neuen System abrufe
         Long vereinID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId();
 
+        // Vor- und Nachnamen sowie Vereins-ID des Schützen setzen
         dsbMitgliedDO.setVorname(parsedName[1]);
         dsbMitgliedDO.setNachname(parsedName[0]);
         dsbMitgliedDO.setVereinsId(vereinID);
@@ -63,15 +73,16 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
      * @return Ein String-Array, das den Vor- und Nachnamen des Schützen enthält, wobei der Nachname an erster und der Vorname an zweiter Stelle steht.
      */
     public String[] parseName(AltsystemSchuetzeDO altsystemSchuetzeDO) {
+        // Parse Name um Vor- und Nachname zu trennen
         String[] schuetzeName;
 
-        //Fall 1: Name ist getrennt durch Komma + beliebig viele Leerzeichen
+        // Fall 1: Name ist getrennt durch Komma + beliebig viele Leerzeichen
         if (altsystemSchuetzeDO.getName().contains(",")) {
             schuetzeName = altsystemSchuetzeDO.getName().split(",");
             schuetzeName[0] = schuetzeName[0].replaceAll("\\s+", "");
             schuetzeName[1] = schuetzeName[1].replaceAll("\\s+", "");
         }
-        //Fall 2: Name ist getrennt durch >= 1 Leerzeichen
+        // Fall 2: Name ist getrennt durch >= 1 Leerzeichen
         else {
             schuetzeName = altsystemSchuetzeDO.getName().split(" ");
             schuetzeName[0] = schuetzeName[0].replaceAll("\\s+", "");
@@ -97,7 +108,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
                 altsystemSchuetzeDO.getMannschaft_id()).getBogenligaId();
 
         // Identifier "firstName"+"lastName"+"vereinId" aufbauen
-        String dsbMitgliedIdentifier = parsedName[0]+parsedName[1]+vereinId;
+        String dsbMitgliedIdentifier = parsedName[1]+parsedName[0]+vereinId;
 
         return dsbMitgliedIdentifier;
     }
@@ -110,6 +121,7 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
      * @throws SQLException Falls ein Fehler bei der Abfrage des Datensatzes aus der Datenbank auftritt.
      */
     public AltsystemUebersetzungDO getDsbMitgliedDO(String dsbMitgliedIdentifier) throws SQLException {
+        // Suchen des entsprechenden Datensatzes im Altsystem anhand des Identifiers
         AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
 
         return altsystemUebersetzungDO;
