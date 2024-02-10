@@ -67,6 +67,7 @@ public class AltsystemSchuetzeMapperTest {
         expectedDO.setNachname("Bammert");
 
         // call test method
+
         DsbMitgliedDO actual = new DsbMitgliedDO();
         actual = altsystemSchuetzeMapper.toDO(actual, altsystemSchuetzeDO);
 
@@ -74,5 +75,48 @@ public class AltsystemSchuetzeMapperTest {
         assertThat(actual.getVorname()).isEqualTo(expectedDO.getVorname());
         assertThat(actual.getNachname()).isEqualTo(expectedDO.getNachname());
 
+    }
+
+    @Test
+    public void testGetIdentifier() throws SQLException {
+        // Mocking
+        AltsystemSchuetzeDO schuetze = new AltsystemSchuetzeDO();
+        schuetze.setName("Bammert, Marco");
+        schuetze.setMannschaft_id(387);
+        schuetze.setRuecknr(1);
+
+
+        AltsystemSchuetzeDO schuetze_duplikat = new AltsystemSchuetzeDO();
+        schuetze_duplikat.setName("Bammert, Marco");
+        schuetze_duplikat.setMannschaft_id(456);
+        schuetze_duplikat.setRuecknr(1);
+
+
+        String identifier1 = altsystemSchuetzeMapper.getIdentifier(schuetze);
+        String identifier2 = altsystemSchuetzeMapper.getIdentifier(schuetze_duplikat);
+
+        System.out.println(identifier2);
+        System.out.println(identifier1);
+
+        assertEquals(identifier1, identifier2);
+    }
+
+    @Test
+    public void testparseName() throws SQLException {
+        // Mocking
+        AltsystemSchuetzeDO schuetze = new AltsystemSchuetzeDO();
+        schuetze.setName("Bammert, Marco");
+        schuetze.setMannschaft_id(387);
+        schuetze.setRuecknr(1);
+
+        String[] schuetze_parsedName = altsystemSchuetzeMapper.parseName(schuetze);
+        String schuetze_vorname = schuetze_parsedName[0];
+        String schuetze_nachname = schuetze_parsedName[1];
+
+        String expected_vorname = "Marco";
+        String expected_nachname = "Bammert";
+
+        assertEquals(schuetze_vorname, expected_vorname);
+        assertEquals(schuetze_nachname, expected_nachname);
     }
 }
