@@ -50,7 +50,14 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
         return dsbMitgliedDO;
     }
 
-
+    /**
+     * Fügt Standardfelder zu einem DsbMitgliedDO-Objekt hinzu, die nicht aus dem Altsystem übernommen werden können.
+     *
+     * @param dsbMitgliedDO Das Zielobjekt vom Typ DsbMitgliedDO, zu dem Standardfelder hinzugefügt werden sollen.
+     * @param currentDsbMitglied Die ID des aktuellen DsbMitglieds.
+     * @param altsystemDataObject Das Objekt mit den Daten des Schützen im Altsystem.
+     * @return Ein Objekt vom Typ DsbMitgliedDO mit den hinzugefügten Standardfeldern.
+     */
     public DsbMitgliedDO addDefaultFields (DsbMitgliedDO dsbMitgliedDO, long currentDsbMitglied, AltsystemSchuetzeDO altsystemDataObject) {
         // Standardwerte die nicht aus dem altSystem übernommen werden können
         dsbMitgliedDO.setId(currentDsbMitglied); // ??
