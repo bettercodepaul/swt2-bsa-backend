@@ -1,19 +1,13 @@
 package de.bogenliga.application.services.v1.olddbimport;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class OldDbImportTest {
 
@@ -25,9 +19,7 @@ public class OldDbImportTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);  // Initialisieren Sie die Mock-Objekte
-
-        oldDbImport = mock(OldDbImport.class);
+        oldDbImport = new OldDbImport();
     }
 
     @AfterEach
@@ -37,16 +29,12 @@ public class OldDbImportTest {
 
     @Test
     public void testExecuteScript() {
-        OldDbImport oldDbImport = mock(OldDbImport.class);
-
         String scriptFilePath = "path/to/script.sql";
         oldDbImport.executeScriptWrapper(scriptFilePath, TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
     }
 
     @Test
     public void testCreateTable() {
-        OldDbImport oldDbImport = mock(OldDbImport.class);
-
         String tableName = "some_table";
         String createTableQuery = oldDbImport.createTableWrapper(tableName);
         assertNotNull(createTableQuery);
@@ -54,8 +42,6 @@ public class OldDbImportTest {
 
     @Test
     public void testInsertTable() {
-        OldDbImport oldDbImport = mock(OldDbImport.class);
-
         String tableName = "some_table";
         boolean[] tables = new boolean[8];
         String insertQuery = "INSERT INTO some_table VALUES (?, ?, ?)";
@@ -65,8 +51,6 @@ public class OldDbImportTest {
 
     @Test
     public void testSync() {
-        OldDbImport oldDbImport = mock(OldDbImport.class);
-
         oldDbImport.sync();
     }
 }
