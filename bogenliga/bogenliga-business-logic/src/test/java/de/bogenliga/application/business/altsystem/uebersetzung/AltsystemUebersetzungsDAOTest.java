@@ -87,6 +87,7 @@ public class AltsystemUebersetzungsDAOTest {
         verify(basicDAO).selectSingleEntity(any(),any(),any(),any());
 
         assertEquals(altsystemUebersetzungDO, result);
+        assertEquals(altsystemUebersetzungDO.getAltsystemId(), result.getAltsystemId());
     }
 
     @Test
@@ -100,10 +101,11 @@ public class AltsystemUebersetzungsDAOTest {
 
         when(basicDAO.selectSingleEntity(any(), any(), any(), any())).thenReturn(altsystemUebersetzungDO);
 
-        AltsystemUebersetzungDO result = altsystemUebersetzungDAO.findByAltsystemID(altsystemUebersetzungKategorie, ALTSYSTEM_ID);
+        AltsystemUebersetzungDO result = altsystemUebersetzungDAO.findByWert(altsystemUebersetzungKategorie, WERT);
 
         verify(basicDAO).selectSingleEntity(any(),any(),any(),any());
 
+        assertEquals(altsystemUebersetzungDO.getWert(), result.getWert());
         assertEquals(altsystemUebersetzungDO, result);
     }
 
