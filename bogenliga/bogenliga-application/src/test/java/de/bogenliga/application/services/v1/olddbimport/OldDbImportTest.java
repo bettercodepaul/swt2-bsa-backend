@@ -1,13 +1,14 @@
 package de.bogenliga.application.services.v1.olddbimport;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.sql.SQLException;
+import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.contains;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class OldDbImportTest {
 
@@ -29,15 +30,29 @@ public class OldDbImportTest {
 
     @Test
     public void testExecuteScript() {
-        String scriptFilePath = "path/to/script.sql";
-        oldDbImport.executeScriptWrapper(scriptFilePath, TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
+        OldDbImport oldDbImport = new OldDbImport(); // Tatsächliche Instanz erstellen
+
+        String scriptFilePath = "script.sql";
+        Assertions.assertTrue(() -> {
+            try {
+                oldDbImport.executeScriptWrapper(scriptFilePath, TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
     }
+
+
 
     @Test
     public void testCreateTable() {
         String tableName = "some_table";
         String createTableQuery = oldDbImport.createTableWrapper(tableName);
-        assertNotNull(createTableQuery);
+        assertThat(createTableQuery)
+                .isNotEmpty()
+                .contains("altsystem");
     }
 
     @Test
