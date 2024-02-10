@@ -16,32 +16,66 @@ import static org.mockito.Mockito.*;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class AltsystemSchuetzeTest {
+    // Constants for Mock Data
+    private static final Long CURRENTUSERID = 1L;
+
+    public AltsystemSchuetzeMapper altsystemSchuetzeMapper;
+
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
+    @Mock
+    AltsystemUebersetzung altsystemUebersetzung;
+    @Mock
+    DsbMitgliedComponent dsbMitgliedComponent;
+
+    @InjectMocks
+    AltsystemSchuetze altsystemSchuetze;
 
 
-//    @Test
-//    public void testCreate() throws SQLException {
-//        // Mock-Objekte für die Abhängigkeiten erstellen
-//        AltsystemSchuetzeMapper altsystemSchuetzeMapper = mock(AltsystemSchuetzeMapper.class);
-//        DsbMitgliedComponent dsbMitgliedComponent = mock(DsbMitgliedComponent.class);
-//        AltsystemUebersetzung altsystemUebersetzung = mock(AltsystemUebersetzung.class);
-//        AltsystemSchuetzeDO altsystemSchuetzeDO = mock(AltsystemSchuetzeDO.class);
-//
-//        // call test method
-//        DsbMitgliedDO actual = new DsbMitgliedDO();
-//        altsystemSchuetzeMapper.toDO(actual, altsystemSchuetzeDO);
-//
-//        // Mocks konfigurieren
-//        when(altsystemSchuetzeMapper.toDO(any(), any())).thenReturn(actual);
-//        when(altsystemSchuetzeMapper.addDefaultFields(actual, CURRENTUSERID)).thenReturn(actual);
-//        when(dsbMitgliedComponent.create(actual, CURRENTUSERID)).thenReturn(actual);
-//
-//        // Testaufruf
-//        altsystemSchuetze.create(mock(AltsystemSchuetzeDO.class), CURRENTUSERID);
-//
-//        // Test dass alle Methoden aufgerufen wurden
-//        verify(altsystemSchuetzeMapper).toDO(new DsbMitgliedDO(), altsystemSchuetzeDO);
-//        verify(altsystemSchuetzeMapper).addDefaultFields(actual, CURRENTUSERID);
-//        verify(dsbMitgliedComponent).create(actual, CURRENTUSERID);
-//    }
+    @Before
+    public void setUp() {
+        altsystemSchuetzeMapper = Mockito.mock(AltsystemSchuetzeMapper.class);
+        dsbMitgliedComponent = Mockito.mock(DsbMitgliedComponent.class);
+        altsystemUebersetzung = Mockito.mock(AltsystemUebersetzung.class);
+        altsystemSchuetze = new AltsystemSchuetze(altsystemSchuetzeMapper, dsbMitgliedComponent, altsystemUebersetzung);
 
+    }
+
+    @Test
+    public void testCreate() throws SQLException{
+        // prepare test data
+        // altsystem DO
+        AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
+        altsystemSchuetzeDO.setId(2L);
+        altsystemSchuetzeDO.setName("Bammert, Marco");
+
+        // Ergebnis Objekt
+        DsbMitgliedDO result = new DsbMitgliedDO();
+        result.setId(1L);
+        result.setVorname("Marco");
+        result.setNachname("Bammert");
+        result.setVereinsId(1L);
+
+        AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
+        altsystemUebersetzungDO.setAltsystemId(1L);
+        altsystemUebersetzungDO.setBogenligaId(1L);
+        altsystemUebersetzungDO.setWert("MarcoBammert1");
+
+        when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
+
+        // Mocks konfigurieren
+        when(altsystemSchuetzeMapper.toDO(any(), any())).thenReturn(result);
+        when(altsystemSchuetzeMapper.addDefaultFields(result, CURRENTUSERID)).thenReturn(result);
+        when(dsbMitgliedComponent.create(result, CURRENTUSERID)).thenReturn(result);
+
+        // Testaufruf
+        altsystemSchuetze.create(altsystemSchuetzeDO, CURRENTUSERID);
+
+        // Test dass alle Methoden aufgerufen wurden
+        verify(altsystemSchuetzeMapper).toDO(new DsbMitgliedDO(), altsystemSchuetzeDO);
+        verify(altsystemSchuetzeMapper).addDefaultFields(result, CURRENTUSERID);
+        verify(dsbMitgliedComponent).create(result, CURRENTUSERID);
+        verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getId(), result.getId(), "");
+    }
 }
