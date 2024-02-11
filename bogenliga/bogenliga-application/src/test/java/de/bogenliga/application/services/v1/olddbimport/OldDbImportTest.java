@@ -1,29 +1,23 @@
 package de.bogenliga.application.services.v1.olddbimport;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import java.sql.Statement;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 
 public class OldDbImportTest {
 
-    private static final String TEST_DB_URL = "jdbc:mysql://localhost:3306/testdb";
-    private static final String TEST_DB_USER = "testuser";
-    private static final String TEST_DB_PASSWORD = "testpassword";
-
     @Mock
     private OldDbImport oldDbImport;
+
     @Test
     public void testCreateTable() {
 
@@ -45,8 +39,60 @@ public class OldDbImportTest {
         assertNotNull(result);
     }
 
+    @Test
+    void executeScriptTest() {
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("temp_script", ".sql");
+            FileWriter writer = new FileWriter(tempFile);
+            writer.write("CREATE TABLE test_table (id INT);");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertNotNull(tempFile);
+
+        String tempFilePath = tempFile.getAbsolutePath();
+
+        OldDbImport.executeScriptWrapper(tempFilePath, "jdbc:h2:mem:testdb", "testuser", "testpassword");
+    }
+
+    @Test
+    public void testExportTable() throws SQLException, IOException {
+        Connection connection = DriverManager.getConnection("jdbc:h2:mem:testdb");
+        Statement statement = connection.createStatement();
+        statement.execute("CREATE TABLE test_table (id INT, value VARCHAR(255))");
+        statement.execute("CREATE TABLE ALTSYSTEM_test_table (id INT, value VARCHAR(255))");
+        statement.execute("INSERT INTO test_table (id, value) VALUES (1, 'testValue')");
+
+        String generatedSql = oldDbImport.exportTableWrapper(connection, "test_table");
+
+        System.out.println("Generated SQL: " + generatedSql);
+        assertTrue(generatedSql.contains("INSERT INTO altsystem_test_table VALUES (?, ?);"));
+    }
+
+    @Test
+    public void testSync() {
+        try {
+            oldDbImport.sync();
+        } catch (Exception e) {
+            fail("sync method threw an exception: " + e.getMessage());
+        }
+    }
+
+
     //@Test
-    //public void testSync() {
-    //    oldDbImport.sync();
+    //void testInsertTableIfBranch() {
+    //    String tableName = "acl";
+    //    boolean[] tables = new boolean[8];
+    //    tables[0] = true;
+    //    String insertQuery = "INSERT INTO some_table VALUES (?, ?, ?)";
+//
+    //    String result = oldDbImport.insertTableWrapper(tableName, tables, insertQuery);
+//
+    //    // Überprüfe, ob der Rückgabewert den erwarteten String enthält
+    //    assertEquals(oldDbImport.createTableWrapper(tableName) + insertQuery, result);
     //}
 }
+

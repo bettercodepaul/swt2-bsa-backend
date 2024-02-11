@@ -105,7 +105,6 @@ public class OldDbImport {
         catch (IOException | SQLException e){
             e.printStackTrace();
         }
-
     }
 
 
@@ -191,16 +190,19 @@ public class OldDbImport {
         return insertQuery;
     }
 
-    private static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
+    private static String exportTable(Connection connection, String tableName) throws SQLException, IOException {
+        String tempInsertQuery;
         String sql = "SELECT * FROM " + tableName + "";
         boolean[] tables = new boolean[8];
         for (int i = 0; i < tables.length; i++) {
             tables[i] = true;
         }
 
+        StringBuilder generatedSql;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
+            generatedSql = new StringBuilder();
             while (resultSet.next()) {
                 String insertSql = "INSERT INTO altsystem_" + tableName + " VALUES (";
                 for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
@@ -216,6 +218,7 @@ public class OldDbImport {
                     }
 
                     String insertQuery = insertStatement.toString();
+                    tempInsertQuery = insertQuery;
                     insertQuery = insertQuery.replace("com.mysql.cj.jdbc.ClientPreparedStatement: ", "");
 
                     insertQuery = insertTable(tableName, tables, insertQuery);
@@ -232,12 +235,14 @@ public class OldDbImport {
                         insertStatement.close();
                     }
                 }
+                generatedSql.append(tempInsertQuery);
             }
         }
+        return generatedSql.toString();
     }
-    public static String executeQueryWrapper(String query) {
+    /*public static String executeQueryWrapper(String query) {
         return OldDbImport.executeQuery(query);
-    }
+    }*/
 
     // Wrapper-Methode für die private Methode executeScript
     public static void executeScriptWrapper(String scriptFilePath, String jdbcUrl, String username, String password) {
@@ -245,8 +250,8 @@ public class OldDbImport {
     }
 
     // Wrapper-Methode für die private Methode exportTable
-    public static void exportTableWrapper(Connection connection, String tableName) throws SQLException, IOException {
-        OldDbImport.exportTable(connection, tableName);
+    public static String exportTableWrapper(Connection connection, String tableName) throws SQLException, IOException {
+        return OldDbImport.exportTable(connection, tableName);
     }
 
     // Wrapper-Methode für die private Methode createTable
