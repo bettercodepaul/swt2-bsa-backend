@@ -28,6 +28,11 @@ public class PasseDO extends CommonDataObject {
     private Integer pfeil6;
 
 
+    public PasseDO() {
+
+    }
+
+
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getPasseMannschaftId(), getPasseWettkampfId(), getPasseMatchNr(),
