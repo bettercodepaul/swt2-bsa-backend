@@ -31,9 +31,16 @@ public class AltsystemPasseMapper {
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
-    // pro Schütze und Match:
-    // Aufteilung der Ergebnispunkte auf durchschnittliche Punkte pro Passe, Restpunkte werden aufgeteilt
+    /**
+     Splits the points of an ergebnis-dataset to a 2-dimensional array which can be used to create the passe objects
+     @param anzahlPunkte number of points scored by one member in one match
+     @param anzahlSaetze number of sets played in a game
+     @return 2 dimensional array with the points per arrow
+     result[i][0] -> First arrow in a passe
+     result[i][1] -> Second arrow in a passe
+     */
     public int[][] getPassenpunkte (long anzahlPunkte, int anzahlSaetze) {
+
         int[][] punkte = new int[anzahlSaetze][2];
 
         // Aufteilung des Ergebnisses auf Ergebnis pro Pfeil
@@ -54,6 +61,13 @@ public class AltsystemPasseMapper {
         }
         return punkte;
     }
+
+    /**
+     Creates a list of Passe objects which represent the Ergebnis dataset from the legacy system
+     @param passen list in which the Passe objects should be stored
+     @param altsystemDataObject ergebnis data
+     @return list of Passe objects
+     */
     public List<PasseDO> toDO(List<PasseDO> passen, AltsystemErgebnisseDO altsystemDataObject) {
 
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
@@ -107,6 +121,24 @@ public class AltsystemPasseMapper {
             passen.add(passe);
         }
 
+        return passen;
+    }
+
+    /**
+     Recalculates the passen that have been previously created
+     Is called when a new Ergebnis-value is entered in the legacy system for an Ergebnis dataset which has previously been synchronized to the new system and should be updated
+     @param passen existing Passe objects
+     @param altsystemDataObject ergebnis data
+     @return List of Passe objects (updated)
+     */
+    public List<PasseDO> recalculatePassen(List<PasseDO> passen, AltsystemErgebnisseDO altsystemDataObject){
+
+        int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebnis(), passen.size());
+        for(int i = 0; i < passen.size(); i++){
+            PasseDO passe = passen.get(i);
+            passe.setPfeil1(punkte[i][0]);
+            passe.setPfeil2(punkte[i][1]);
+        }
         return passen;
     }
 }
