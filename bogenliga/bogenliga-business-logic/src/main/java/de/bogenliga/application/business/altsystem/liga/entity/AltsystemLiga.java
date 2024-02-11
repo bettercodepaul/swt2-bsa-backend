@@ -34,47 +34,48 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
+    /**
+     Create a new liga with given data of the legacy system.*
+     @param altsystemLigaDO data of the legacy system
+     @param currentUserId id of the user starting the synchronization
+     */
     @Override
-    public void create(AltsystemLigaDO altsystemDataObject, long currentUserId){
-        /**
-         Create a new liga with given data of the legacy system.*
-         @param AltsystemLigaDO data of the legacy system
-         @param currentUserId id of the user starting the synchronization
-         */
+    public void create(AltsystemLigaDO altsystemLigaDO, long currentUserId){
         // Map data to new object, add default fields
         LigaDO ligaDO = new LigaDO();
-        ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
+        ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemLigaDO);
         ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO, currentUserId);
 
         // Add data to table
         ligaDO = ligaComponent.create(ligaDO, currentUserId);
 
         // Add to translation table
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemDataObject.getId(), ligaDO.getId(), "");
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
     }
 
+    /**
+     Update existing Liga with given data of the legacy system.*
+     @param altsystemLigaDO data of the legacy system
+     @param currentUserId id of the user starting the synchronization
+     */
     @Override
-    public void update(AltsystemLigaDO altsystemDataObject, long currentUserId){
-        /**
-         Update existing Liga with given data of the legacy system.*
-         @param AltsystemErgebnisseDO data of the legacy system
-         @param currentUserId id of the user starting the synchronization
-         */
+    public void update(AltsystemLigaDO altsystemLigaDO, long currentUserId){
+
         // Get primary key from translation table
         AltsystemUebersetzungDO ligaUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Liga_Liga, altsystemDataObject.getId());
+                AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId());
 
         // Check if the translation data has been found
         if(ligaUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemDataObject.getId()));
+                    String.format("No result found for ID '%s'", altsystemLigaDO.getId()));
         }
 
         // Find data in table with corresponding id
         LigaDO ligaDO = ligaComponent.findById(ligaUebersetzung.getBogenligaId());
 
         // Map data to new object, don't add default fields
-        ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemDataObject);
+        ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemLigaDO);
 
         // Update data in table with given primary key
         ligaComponent.update(ligaDO, currentUserId);

@@ -36,77 +36,77 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
+    /**
+     Create match-Objects with given data of the legacy system.*
+     @param altsystemWettkampfdatenDO data of the legacy system
+     @param currentUserId id of the user starting the synchronization
+     */
     @Override
-    public void create(AltsystemWettkampfdatenDO altsystemDataObject, long currentUserId){
-        /**
-         Create match-Objects with given data of the legacy system.*
-         @param AltsystemWettkampfdatenDO data of the legacy system
-         @param currentUserId id of the user starting the synchronization
-         */
+    public void create(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
         // Daten sind im Altsystem redundant
         // Bearbeitung nur, falls Sec = 0 ist
-        if (altsystemDataObject.getSec() == 0){
-            List<WettkampfDO> wettkampfTage = altsystemWettkampftagMapper.getOrCreateWettkampftage(altsystemDataObject, currentUserId);
+        if (altsystemWettkampfdatenDO.getSec() == 0){
+            List<WettkampfDO> wettkampfTage = altsystemWettkampftagMapper.getOrCreateWettkampftage(altsystemWettkampfdatenDO, currentUserId);
 
             MatchDO[] match = new MatchDO[2];
             match[0] = new MatchDO();
             match[1] = new MatchDO();
-            match = altsystemMatchMapper.toDO(match, altsystemDataObject);
+            match = altsystemMatchMapper.toDO(match, altsystemWettkampfdatenDO);
             match = altsystemMatchMapper.addDefaultFields(match, wettkampfTage);
 
             match[0] = matchComponent.create(match[0], currentUserId);
             match[1] = matchComponent.create(match[1], currentUserId);
 
-            saveAnzahlSaetze(altsystemDataObject, match);
+            saveAnzahlSaetze(altsystemWettkampfdatenDO, match);
 
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemDataObject.getId(), match[0].getId(), String.valueOf(match[1].getId()));
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId(), match[0].getId(), String.valueOf(match[1].getId()));
         }
 
     }
 
+    /**
+     Update existing match-Objects with given data of the legacy system.*
+     @param altsystemWettkampfdatenDO data of the legacy system
+     @param currentUserId id of the user starting the synchronization
+     */
     @Override
-    public void update(AltsystemWettkampfdatenDO altsystemDataObject, long currentUserId){
-        /**
-         Update existing match-Objects with given data of the legacy system.*
-         @param AltsystemWettkampfdatenDO data of the legacy system
-         @param currentUserId id of the user starting the synchronization
-         */
+    public void update(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
         // Daten sind im Altsystem redundant
         // Bearbeitung nur, falls Sec = 0 ist
-        if (altsystemDataObject.getSec() == 0){
+        if (altsystemWettkampfdatenDO.getSec() == 0){
             // Zugehörige Matches aus Übersetzungstabelle holen
-            AltsystemUebersetzungDO wettkampfdatenUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemDataObject.getId());
+            AltsystemUebersetzungDO wettkampfdatenUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId());
             MatchDO[] match = new MatchDO[2];
             // Erstgenannte Mannschafts-ID ist im Feld "BogenligaId" gespeichert, zweitgenannte Mannschafts-ID im Feld Wert
             match[0] = matchComponent.findById(wettkampfdatenUebersetzung.getBogenligaId());
             match[1] = matchComponent.findById(Long.parseLong(wettkampfdatenUebersetzung.getWert()));
             // Mapping des Datensatzes
-            match = altsystemMatchMapper.toDO(match, altsystemDataObject);
+            match = altsystemMatchMapper.toDO(match, altsystemWettkampfdatenDO);
 
             // Matches updaten
             matchComponent.update(match[0], currentUserId);
             matchComponent.update(match[1], currentUserId);
 
             // Anzahl Sätze in Übersetzungstabelle updaten
-            saveAnzahlSaetze(altsystemDataObject, match);
+            saveAnzahlSaetze(altsystemWettkampfdatenDO, match);
         }
     }
 
 
-    public void saveAnzahlSaetze(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, MatchDO[] matchDOS){
-        /**
-         Writes the number of played sets in a match into the translation table*
-         @param AltsystemWettkampfdatenDO data of the legacy system
-         @param MatchDO[] created match objects
-         */
+    /**
+     Writes the number of played sets in a match into the translation table*
+     @param altsystemWettkampfdatenDO data of the legacy system
+     @param matchDO created match objects
+     */
+    public void saveAnzahlSaetze(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, MatchDO[] matchDO){
         int anzahlSaetze = 5;
         if (altsystemWettkampfdatenDO.getSatz4() == 0){
             anzahlSaetze = 3;
         } else if (altsystemWettkampfdatenDO.getSatz5() == 0){
             anzahlSaetze = 4;
         }
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDOS[0].getId(), 0L, String.valueOf(anzahlSaetze));
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDOS[1].getId(), 0L, String.valueOf(anzahlSaetze));
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDO[0].getId(), 0L, String.valueOf(anzahlSaetze));
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDO[1].getId(), 0L, String.valueOf(anzahlSaetze));
     }
 
 }
