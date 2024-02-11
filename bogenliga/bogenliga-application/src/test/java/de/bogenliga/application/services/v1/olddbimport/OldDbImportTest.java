@@ -80,19 +80,5 @@ public class OldDbImportTest {
             fail("sync method threw an exception: " + e.getMessage());
         }
     }
-
-
-    //@Test
-    //void testInsertTableIfBranch() {
-    //    String tableName = "acl";
-    //    boolean[] tables = new boolean[8];
-    //    tables[0] = true;
-    //    String insertQuery = "INSERT INTO some_table VALUES (?, ?, ?)";
-//
-    //    String result = oldDbImport.insertTableWrapper(tableName, tables, insertQuery);
-//
-    //    // Überprüfe, ob der Rückgabewert den erwarteten String enthält
-    //    assertEquals(oldDbImport.createTableWrapper(tableName) + insertQuery, result);
-    //}
 }
 

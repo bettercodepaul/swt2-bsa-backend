@@ -50,7 +50,7 @@ public class OldDbImport {
     private static String sqlQueryport = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPort'";
     private static String sqlQueryname = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBName'";
     public static void main (String [] args){
-        //sync();
+        sync();
 
        /*
         user = executeQuery(sqlQueryuser);
@@ -77,8 +77,7 @@ public class OldDbImport {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();}
 
         System.out.println("Configuration Value: " + configurationValue);
         return configurationValue;
@@ -98,9 +97,7 @@ public class OldDbImport {
             }
             finally{
                 if(connection != null && !connection.isClosed()){
-                    connection.close();
-                }
-            }
+                    connection.close();}}
         }
         catch (IOException | SQLException e){
             e.printStackTrace();
@@ -117,8 +114,7 @@ public class OldDbImport {
         try {
             port = parseInt(executeQuery(sqlQueryport));
         } catch (NumberFormatException e) {
-            System.err.println("string is keine zahl");
-        }
+            System.err.println("string is keine zahl");}
         name = executeQuery(sqlQueryname);
 
         try {
@@ -142,20 +138,16 @@ public class OldDbImport {
                     System.out.println(tableNames[i]);
                     exportTable(connection, tableNames[i]);
                 }
-
-
             }
             catch (IOException  | SQLException e) {
                 e.printStackTrace();
             }
             finally{
-
                 executeScript(sqlfile, URLT, userT, passwordT);
             }
         }
         catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();}
 
     }
 
@@ -240,6 +232,7 @@ public class OldDbImport {
         }
         return generatedSql.toString();
     }
+
     /*public static String executeQueryWrapper(String query) {
         return OldDbImport.executeQuery(query);
     }*/
