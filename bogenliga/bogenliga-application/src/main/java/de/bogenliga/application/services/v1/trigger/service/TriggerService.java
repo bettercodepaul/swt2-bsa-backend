@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.security.Principal;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +57,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RequestMapping("v1/trigger")
 
 public class TriggerService implements ServiceFacade {
-    private static final Map<String, Class<?>> tableNameToClass = getTableNameToClassMap();
+    static final Map<String, Class<?>> tableNameToClass = getTableNameToClassMap();
 
     private final Map<Class<?>, AltsystemEntity<?>> dataObjectToEntity;
 
