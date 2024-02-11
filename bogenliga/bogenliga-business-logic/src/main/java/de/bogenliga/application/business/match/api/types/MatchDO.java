@@ -71,6 +71,10 @@ public class MatchDO extends CommonDataObject {
         this.setStrafPunkteSatz5(strafPunkteSatz5);
     }
 
+    public MatchDO(){
+
+    }
+
 
     public Long getId() {
         return id;
