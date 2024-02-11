@@ -57,7 +57,6 @@ public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
         dsbMitgliedDO.setId(currentDsbMitglied); // ??
         dsbMitgliedDO.setGeburtsdatum(null);
         dsbMitgliedDO.setNationalitaet("D");
-        dsbMitgliedDO.setVereinsId(0L);
         dsbMitgliedDO.setUserId(null); // dsb_mitglied_benutzer_id
         dsbMitgliedDO.setKampfrichter(false);
 
