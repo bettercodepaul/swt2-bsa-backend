@@ -27,9 +27,16 @@ public class AltsystemMatchMapper {
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
-    public MatchDO[] toDO(MatchDO[] match, AltsystemWettkampfdatenDO altsystemDataObject) {
+    /**
+     Extracts data from the legacy dataset and stores them in MatchDO objects
+     Sets the values for two MatchDO objects. One for the home team, one for the opponent*
+     @param matchDO array of size 2 with empty matchDOs for the home team and opponent (size: 2)
+     @param altsystemDataObject legacy data to this match
+     @return modified array of MatchDO with mapped entities
+     */
+    public MatchDO[] toDO(MatchDO[] matchDO, AltsystemWettkampfdatenDO altsystemDataObject) {
         // Create a DataObject for the first team
-        MatchDO mannschaftDO = match[0];
+        MatchDO mannschaftDO = matchDO[0];
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getMannschaftId());
         mannschaftDO.setMannschaftId(mannschaftUebersetzung.getBogenligaId());
         mannschaftDO.setSatzpunkte((long) altsystemDataObject.getSatzPlus());
@@ -37,17 +44,23 @@ public class AltsystemMatchMapper {
         mannschaftDO.setNr((long) altsystemDataObject.getMatch());
 
         // Create a DataObject for the opponent
-        MatchDO gegnerDO = match[1];
+        MatchDO gegnerDO = matchDO[1];
         AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getGegnerId());
         gegnerDO.setMannschaftId(gegnerUebersetzung.getBogenligaId());
         gegnerDO.setSatzpunkte((long) altsystemDataObject.getSatzMinus());
         gegnerDO.setMatchpunkte((long) altsystemDataObject.getMatchMinus());
         gegnerDO.setNr((long) altsystemDataObject.getMatch());
 
-        return match;
+        return matchDO;
     }
 
 
+    /**
+     Adds fields to the new LigaDO which cannot be extracted from the legacy data and therefore must be set to a default value*
+     @param matchDO array of size 2 with the matchDOs for the home team and opponent (size: 2)
+     @param wettkampfTage list of WettkampfDOs existing for the Veranstaltung of the team
+     @return modified array of MatchDO
+     */
     public MatchDO[] addDefaultFields(MatchDO[] matchDO, List<WettkampfDO> wettkampfTage) {
         WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO[0], wettkampfTage);
         long matchCount = getMatchCountForWettkampf(wettkampfDO);
@@ -70,6 +83,12 @@ public class AltsystemMatchMapper {
         return matchDO;
     }
 
+    /**
+     Helper function to determine the corresponding Wettkampf for a match*
+     @param matchDO match for which a wettkampf should be determined
+     @param wettkampfTage list of all Wettkampf objects existing for the Veranstaltung of the Mannschaft
+     @return WettkampfDO of the corresponding Wettkampf
+     */
     public WettkampfDO getCurrentWettkampfTag(MatchDO matchDO, List<WettkampfDO> wettkampfTage){
         WettkampfDO currentWettkampfTag;
         // Bestimmen des zugehörigen Wettkampftages
@@ -85,6 +104,12 @@ public class AltsystemMatchMapper {
         return currentWettkampfTag;
     }
 
+    /**
+     Helper function to calculate the number of match-datasets existing for a Wettkampf
+     With the number of datasets the values for the fields Begegnung and Scheibennummer can be calculated*
+     @param wettkampfDO Dataobject of the corresponding Wettkampf
+     @return number of match-datasets (not number of actual matches, because for each match 2 datasets are stored)
+     */
     public int getMatchCountForWettkampf(WettkampfDO wettkampfDO){
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDO.getId());
         return matches.size();

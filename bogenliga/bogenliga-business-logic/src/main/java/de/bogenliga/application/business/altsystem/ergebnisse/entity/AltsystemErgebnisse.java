@@ -39,15 +39,15 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
-    @Override
-    public void create(AltsystemErgebnisseDO altsystemDataObject, long currentUserId){
     /**
      Create Passe-Objects with given data of the legacy system.*
-     @param AltsystemErgebnisseDO data of the legacy system
+     @param altsystemErgebnisseDO data of the legacy system
      @param currentUserId id of the user starting the synchronization
      */
+    @Override
+    public void create(AltsystemErgebnisseDO altsystemErgebnisseDO, long currentUserId){
         // Passen aus dem Ergebnis erstellen
-        List<PasseDO> passen = altsystemPasseMapper.toDO(new ArrayList<>(), altsystemDataObject);
+        List<PasseDO> passen = altsystemPasseMapper.toDO(new ArrayList<>(), altsystemErgebnisseDO);
 
         StringBuilder bld = new StringBuilder();
         for(PasseDO passe : passen){
@@ -60,18 +60,19 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
 
         // Ids der Passen in die Übersetzungstabelle schreiben
         String passeIdString = bld.toString();
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemDataObject.getId(), 0L, passeIdString);
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId(), 0L, passeIdString);
 
     }
+
+    /**
+     Update existing Passe-Objects with given data of the legacy system.*
+     @param altsystemErgebnisseDO data of the legacy system
+     @param currentUserId id of the user starting the synchronization
+     */
     @Override
-    public void update(AltsystemErgebnisseDO altsystemDataObject, long currentUserId){
-        /**
-         Update existing Passe-Objects with given data of the legacy system.*
-         @param AltsystemErgebnisseDO data of the legacy system
-         @param currentUserId id of the user starting the synchronization
-         */
+    public void update(AltsystemErgebnisseDO altsystemErgebnisseDO, long currentUserId){
         // Ids der zugehörigen Passen extrahieren
-        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemDataObject.getId());
+        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId());
         String passeIdString = uebersetzungDO.getWert().trim();
         String[] passeIds = passeIdString.split(";");
 
@@ -82,7 +83,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
         }
 
         // Änderugnen in die Data Objects übernehmen
-        passen = altsystemPasseMapper.toDO(passen, altsystemDataObject);
+        passen = altsystemPasseMapper.recalculatePassen(passen, altsystemErgebnisseDO);
 
         // Neues Data Object in die Tabelle schreiben
         for(PasseDO passe : passen){
