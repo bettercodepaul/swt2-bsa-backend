@@ -157,4 +157,43 @@ public class AltsystemPasseMapperTest{
                 .isInstanceOf(BusinessException.class);
 
     }
+
+    @Test
+    public void testRecalculatePassen(){
+        // Prepare Test data
+        AltsystemErgebnisseDO altsystemErgebnisDO = new AltsystemErgebnisseDO();
+        altsystemErgebnisDO.setId(5L);
+        altsystemErgebnisDO.setErgebnis(87);
+        altsystemErgebnisDO.setMatch(MATCH_NR);
+        altsystemErgebnisDO.setSchuetzeID(2L);
+
+        // Liste von existierenden Passen erstellen
+        List<PasseDO> passen = new LinkedList<>();
+        for(int i = 0; i < 5; i++){
+            PasseDO passe = new PasseDO();
+            passe.setPfeil1(10);
+            passe.setPfeil2(9);
+            passen.add(passe);
+        }
+
+        // Testfunktion aufrufen
+        passen = altsystemPasseMapper.recalculatePassen(passen, altsystemErgebnisDO);
+
+        // Prüfen dass die Punkte richtig auf die Passen verteilt wurden
+        PasseDO erstePasse = passen.get(0);
+        assertThat(erstePasse.getPfeil1()).isEqualTo(9);
+        assertThat(erstePasse.getPfeil2()).isEqualTo(9);
+        PasseDO zweitePasse = passen.get(1);
+        assertThat(zweitePasse.getPfeil1()).isEqualTo(9);
+        assertThat(zweitePasse.getPfeil2()).isEqualTo(9);
+        PasseDO drittePasse = passen.get(2);
+        assertThat(drittePasse.getPfeil1()).isEqualTo(9);
+        assertThat(drittePasse.getPfeil2()).isEqualTo(9);
+        PasseDO viertePasse = passen.get(3);
+        assertThat(viertePasse.getPfeil1()).isEqualTo(9);
+        assertThat(viertePasse.getPfeil2()).isEqualTo(8);
+        PasseDO fuenftePasse = passen.get(4);
+        assertThat(fuenftePasse.getPfeil1()).isEqualTo(8);
+        assertThat(fuenftePasse.getPfeil2()).isEqualTo(8);
+    }
 }

@@ -40,6 +40,12 @@ public class AltsystemWettkampftagMapper {
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
+    /**
+     Creates 4 Wettkampf Datasets for a Veranstaltung or immediately returns the datasets if they have already been previously created*
+     @param altsystemWettkampfdatenDO legacy data to a match
+     @param currentUserId user id of the user that should be set as Ausrichter of the Wettkampf
+     @return List of WettkampfDO (size 4)
+     */
     public List<WettkampfDO> getOrCreateWettkampftage(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
         List<WettkampfDO> wettkampfTage;
         long mannschaftID = altsystemWettkampfdatenDO.getMannschaftId();
@@ -57,6 +63,12 @@ public class AltsystemWettkampftagMapper {
         return wettkampfTage;
     }
 
+    /**
+     Creates 4 Wettkampf Datasets for a Veranstaltung (is called from method getOrCreateWettkampftage, if no WettkampfObjects have been previously found)*
+     @param veranstaltungId id of the veranstaltung
+     @param currentUserId user id of the user that should be set as Ausrichter of the Wettkampf
+     @return List of WettkampfDO (size 4)
+     */
     public List<WettkampfDO> createWettkampftage(long veranstaltungId, long currentUserId){
         List<WettkampfDO> wettkampfTage = new LinkedList<>();
         // VeranstaltungsDO auslesen
@@ -83,12 +95,13 @@ public class AltsystemWettkampftagMapper {
         return wettkampfTage;
     }
 
+    /**
+     Returns all dates for Competitions.
+     Dates are 01-11, 01-12, 01-01 and 01-02*
+     @param sportjahr year of the Veranstaltung
+     @return Array of dates
+     */
     public Date[] getWettkampfTermine(long sportjahr){
-        /**
-         Returns all dates for Competitions.*
-         @param sporjahr year of the Veranstaltung
-         @return Array of dates
-         */
         final int anzahlTermine = 4;
         Date[] termine = new Date[anzahlTermine];
         long vorjahr = sportjahr - 1;

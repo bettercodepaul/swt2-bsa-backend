@@ -35,9 +35,14 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
         this.regionenComponent = regionenComponent;
     }
 
+    /**
+     Converts the legacy data into a LigaDO*
+     @param ligaDO DataObject in which the new data should be stored
+     @param altsystemLigaDO data from the legacy system
+     @return LigaDO with values from altsystemLigaDO
+     */
     public LigaDO toDO(LigaDO ligaDO, AltsystemLigaDO altsystemLigaDO){
         String ligaName = altsystemLigaDO.getName();
-
         ligaDO.setName(ligaName);
 
         String key;
@@ -54,6 +59,12 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
         return ligaDO;
     }
 
+    /**
+     Adds fields to the new LigaDO which cannot be extracted from the legacy data and therefore must be set to a default value*
+     @param ligaDO DataObject in which the new data should be stored
+     @param currentDSBMitglied id of the member that should be responsible for the Liga (field LigaVerantwortlich)
+     @return LigaDO with default values
+     */
     public LigaDO addDefaultFields(LigaDO ligaDO, long currentDSBMitglied) {
         // Importierender Benutzer wird als Verantwortlicher gesetzt
         ligaDO.setLigaVerantwortlichId(currentDSBMitglied);
@@ -66,6 +77,11 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
         return ligaDO;
     }
 
+    /**
+     Helper function to get either the discipline Compound or Recurve in order to store them in the LigaDO*
+     @param key either "compound" or "recurve"
+     @return DisziplinDO for the specified discipline
+     */
     public DisziplinDO getDisziplinByKey(String key){
         DisziplinDO resultDO = null;
         // Auslesen aller vorhandenen Disziplinen
@@ -82,6 +98,10 @@ public class AltsystemLigaMapper implements ValueObjectMapper {
         return resultDO;
     }
 
+    /**
+     Helper function to get the RegionenDO for DSB in order to store its ID in the LigaDO*
+     @return RegionenDO for the DSB
+     */
     public RegionenDO getDsbDO(){
         // Funktion gibt den DSB als konkrete Region zurück
         // Dieser wird defaultmäßig für alle Ligen als Region gesetzt
