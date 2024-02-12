@@ -89,7 +89,7 @@ public class AltsystemVereinMapperTest {
 
 
     @Test
-    public void testParseNameZahl() {
+    public void testParseNameMitZahl() {
         //Initialisierung
         AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
         mannschaftsName.setName("BS Nürtingen 3");
@@ -103,7 +103,7 @@ public class AltsystemVereinMapperTest {
     }
 
     @Test
-    public void testParseNameBindestrich() {
+    public void testParseNameMitBindestrich() {
         //Initialisierung
         AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
         mannschaftsName.setName("BS-Nürtingen 3");
@@ -129,7 +129,7 @@ public class AltsystemVereinMapperTest {
         when(altsystemLigaMapper.getDsbDO()).thenReturn(regionenDO);
         //Testaufruf
         altsystemVereinMapper.addDefaultFields(vereinDO);
-        //Testet ob alle Methoden aufgerufen wurden.
+        //Testet, ob alle Methoden aufgerufen wurden.
         verify(altsystemLigaMapper).getDsbDO();
     }
 
