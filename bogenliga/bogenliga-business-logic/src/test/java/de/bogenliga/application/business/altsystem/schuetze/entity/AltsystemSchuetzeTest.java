@@ -52,7 +52,6 @@ public class AltsystemSchuetzeTest {
         altsystemUebersetzung = Mockito.mock(AltsystemUebersetzung.class);
         altsystemSchuetze = new AltsystemSchuetze(altsystemSchuetzeMapper, dsbMitgliedComponent, altsystemUebersetzung);
         altsystemUebersetzungDAO = Mockito.mock(AltsystemUebersetzungDAO.class);
-
     }
 
     @Test
