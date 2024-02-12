@@ -215,11 +215,22 @@ public class OldDbImport {
 
                     insertQuery = insertTable(tableName, tables, insertQuery);
 
-                    try (FileWriter fw = new FileWriter(sqlfile, true)) {
+                    FileWriter fw = null;
+                    try {
+                        fw = new FileWriter(sqlfile, true);
                         fw.write(insertQuery);
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("Fehler beim Filewriter");
+                    } finally {
+                        if (fw != null) {
+                            try {
+                                fw.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                System.out.println("Fehler beim Schließen des Filewriters");
+                            }
+                        }
                     }
 
                 } finally {
@@ -233,26 +244,22 @@ public class OldDbImport {
         return generatedSql.toString();
     }
 
-    /*public static String executeQueryWrapper(String query) {
+    public static String executeQueryWrapper(String query) {
         return OldDbImport.executeQuery(query);
-    }*/
+    }
 
-    // Wrapper-Methode für die private Methode executeScript
     public static void executeScriptWrapper(String scriptFilePath, String jdbcUrl, String username, String password) {
         OldDbImport.executeScript(scriptFilePath, jdbcUrl, username, password);
     }
 
-    // Wrapper-Methode für die private Methode exportTable
     public static String exportTableWrapper(Connection connection, String tableName) throws SQLException, IOException {
         return OldDbImport.exportTable(connection, tableName);
     }
 
-    // Wrapper-Methode für die private Methode createTable
     public static String createTableWrapper(String tableName) {
         return OldDbImport.createTable(tableName);
     }
 
-    // Wrapper-Methode für die private Methode insertTable
     public static String insertTableWrapper(String tableName, boolean[] tables, String insertQuery) {
         return OldDbImport.insertTable(tableName, tables, insertQuery);
     }
