@@ -58,6 +58,7 @@ public class AltsystemVereinMapperTest {
     }
 
 
+
     @Test
     public void testParseIdentifier() {
 
@@ -74,8 +75,8 @@ public class AltsystemVereinMapperTest {
     }
 
     @Test
-    public void testParseName() {
-        //Initialisierung
+    public void testParseVereinName() {
+        //Initialisierung Testfall 0
         AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
         mannschaftsName.setName("BS Nürtingen");
         //Testaufruf
@@ -85,36 +86,84 @@ public class AltsystemVereinMapperTest {
         //Vergleich des results
         assertEquals(expectetName, parsedName);
 
-    }
 
-
-    @Test
-    public void testParseNameMitZahl() {
-        //Initialisierung
-        AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
-        mannschaftsName.setName("BS Nürtingen 3");
+        //Initialisierung Testfall 1
+        AltsystemMannschaftDO mannschaftsName1 = new AltsystemMannschaftDO();
+        mannschaftsName1.setName("BS Nürtingen 3");
         //Testaufruf
-        String parsedName = altsystemVereinMapper.parseVereinName(mannschaftsName);
+        String parsedName1 = altsystemVereinMapper.parseVereinName(mannschaftsName1);
         //result Name
-        String expectetName = "BS Nürtingen";
+        String expectetName1 = "BS Nürtingen";
         //Vergleich des results
-        assertEquals(expectetName, parsedName);
+        assertEquals(expectetName1, parsedName1);
 
-    }
 
-    @Test
-    public void testParseNameMitBindestrich() {
-        //Initialisierung
-        AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
-        mannschaftsName.setName("BS-Nürtingen 3");
+        //Initialisierung Testfall 2
+        AltsystemMannschaftDO mannschaftsName2 = new AltsystemMannschaftDO();
+        mannschaftsName2.setName("BS-Nürtingen 3");
         //Testaufruf
-        String parsedName = altsystemVereinMapper.parseVereinName(mannschaftsName);
+        String parsedName2 = altsystemVereinMapper.parseVereinName(mannschaftsName2);
         //result Name
-        String expectetName = "BS Nürtingen";
+        String expectetName2 = "BS Nürtingen";
         //Vergleich des results
-        assertEquals(expectetName, parsedName);
+        assertEquals(expectetName2, parsedName2);
+
+        //Initialisierung Testfall 3
+        AltsystemMannschaftDO mannschaftsName3 = new AltsystemMannschaftDO();
+        mannschaftsName3.setName("BSV Hausen i. K");
+        //Testaufruf
+        String parsedName3 = altsystemVereinMapper.parseVereinName(mannschaftsName3);
+        //result Name
+        String expectetName3 = "BSV Hausen i.K.";
+        //Vergleich des results
+        assertEquals(expectetName3, parsedName3);
+
+
+        //Initialisierung Testfall 4
+        AltsystemMannschaftDO mannschaftsName4 = new AltsystemMannschaftDO();
+        mannschaftsName4.setName("SVng Endersbach Strümpf");
+        //Testaufruf
+        String parsedName4 = altsystemVereinMapper.parseVereinName(mannschaftsName4);
+        //result Name
+        String expectetName4 = "SVng Endersbach Strümpfelbach";
+        //Vergleich des results
+        assertEquals(expectetName4, parsedName4);
+
+
+        //Initialisierung Testfall 5
+        AltsystemMannschaftDO mannschaftsName5 = new AltsystemMannschaftDO();
+        mannschaftsName5.setName("BWT Kichentellinsfurt");
+        //Testaufruf
+        String parsedName5 = altsystemVereinMapper.parseVereinName(mannschaftsName5);
+        //result Name
+        String expectetName5 = "BWT Kirchentellinsfurt";
+        //Vergleich des results
+        assertEquals(expectetName5, parsedName5);
+
+
+        //Initialisierung Testfall 6
+        AltsystemMannschaftDO mannschaftsName6 = new AltsystemMannschaftDO();
+        mannschaftsName6.setName("SV Weilheim Teck");
+        //Testaufruf
+        String parsedName6 = altsystemVereinMapper.parseVereinName(mannschaftsName6);
+        //result Name
+        String expectetName6 = "SV Tell Weilheim";
+        //Vergleich des results
+        assertEquals(expectetName6, parsedName6);
+
+
+        //Initialisierung Testfall 7
+        AltsystemMannschaftDO mannschaftsName7 = new AltsystemMannschaftDO();
+        mannschaftsName7.setName("BSV Hausen i. K");
+        //Testaufruf
+        String parsedName7 = altsystemVereinMapper.parseVereinName(mannschaftsName7);
+        //result Name
+        String expectetName7 = "BSV Hausen i.K.";
+        //Vergleich des results
+        assertEquals(expectetName7, parsedName7);
 
     }
+
 
 
     @Test
