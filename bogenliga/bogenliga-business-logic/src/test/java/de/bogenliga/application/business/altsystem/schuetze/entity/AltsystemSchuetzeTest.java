@@ -1,10 +1,19 @@
 package de.bogenliga.application.business.altsystem.schuetze.entity;
 
 import java.sql.SQLException;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.altsystem.schuetze.mapper.AltsystemSchuetzeMapper;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import static org.mockito.ArgumentMatchers.any;
