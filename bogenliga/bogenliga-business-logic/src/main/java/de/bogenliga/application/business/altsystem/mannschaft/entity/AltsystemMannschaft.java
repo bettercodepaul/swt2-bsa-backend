@@ -12,7 +12,6 @@ import de.bogenliga.application.business.altsystem.verein.entity.AltsystemVerein
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.altsystem.AltsystemEntity;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
