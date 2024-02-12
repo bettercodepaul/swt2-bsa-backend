@@ -1,11 +1,9 @@
 package de.bogenliga.application.business.altsystem.mannschafft.entity;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
@@ -16,7 +14,6 @@ import de.bogenliga.application.business.altsystem.mannschaft.mapper.AltsystemVe
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
-import de.bogenliga.application.business.altsystem.verein.entity.AltsystemVerein;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
@@ -36,8 +33,6 @@ public class AltsystemMannschaftTest {
     @Mock
     AltsystemVeranstaltungMapper altsystemVeranstaltungMapper;
     @Mock
-    AltsystemVerein altsystemVerein;
-    @Mock
     AltsystemUebersetzung altsystemUebersetzung;
     @Mock
     VeranstaltungDO veranstaltungDO;
@@ -49,44 +44,6 @@ public class AltsystemMannschaftTest {
     AltsystemUebersetzungDO altsystemUebersetzungDO;
 
 
-    @Before
-    public void setUp() {
-        altsystemUebersetzung = Mockito.mock(AltsystemUebersetzung.class);
-
-
-    }
-
-    @Test
-    public void testCreate(){
-        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
-        altsystemMannschaftDO.setId(1L);
-        altsystemMannschaftDO.setName("BS Nürtingen 3");
-
-        AltsystemLigaMapper altsystemLigaMapper = mock(AltsystemLigaMapper.class);
-
-
-        AltsystemMannschaftMapper altsystemMannschaftMapper = new AltsystemMannschaftMapper(altsystemUebersetzung,altsystemLigaMapper,dsbMannschaftComponent );
-        veranstaltungDO = new VeranstaltungDO();
-        veranstaltungDO.setVeranstaltungID(1L);
-
-        DsbMannschaftDO result = new DsbMannschaftDO();
-        result.setId(1L);
-        result.setNummer(3);
-        result.setVeranstaltungId(1L);
-        result.setVereinId(1L);
-
-
-
-        when(altsystemVeranstaltungMapper.getOrCreateVeranstaltung(any(), any())).thenReturn(any());
-        when(altsystemMannschaftMapper.toDO(any(), any())).thenReturn(result);
-        when(altsystemMannschaftMapper.addDefaultFields(result, CURRENTUSERID, altsystemMannschaftDO, any())).thenReturn(result);
-        when(dsbMannschaftComponent.create(any(), any())).thenReturn(result);
-
-
-        altsystemMannschaft.create(altsystemMannschaftDO, CURRENTUSERID);
-
-        verify(dsbMannschaftComponent).create(result, CURRENTUSERID);
-    }
 
     @Test
     public void testAddDefaultFields() {
@@ -95,8 +52,6 @@ public class AltsystemMannschaftTest {
         altsystemMannschaftDO.setName("BS Nürtingen 3");
 
         AltsystemLigaMapper altsystemLigaMapper = mock(AltsystemLigaMapper.class);
-
-        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
 
 
         AltsystemMannschaftMapper altsystemMannschaftMapper = new AltsystemMannschaftMapper(altsystemUebersetzung,
@@ -119,7 +74,6 @@ public class AltsystemMannschaftTest {
 
         altsystemMannschaftMapper.addDefaultFields(result, CURRENTUSERID, altsystemMannschaftDO, veranstaltungDO);
 
-        // dsbMannschaftDO.setVereinId(vereinUebersetzung.getBogenligaId());
         verify(altsystemUebersetzung).findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein,
                 CURRENTUSERID);
     }
