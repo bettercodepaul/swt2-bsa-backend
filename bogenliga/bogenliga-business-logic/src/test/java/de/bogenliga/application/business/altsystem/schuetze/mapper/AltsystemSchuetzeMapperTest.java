@@ -1,13 +1,6 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
 import java.sql.SQLException;
-import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
-import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
-import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
-import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,15 +9,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
+import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
+import de.bogenliga.application.business.dsbmitglied.api.DsbMitgliedComponent;
+import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
 public class AltsystemSchuetzeMapperTest {
-
-    private static final Long CURRENTUSERID = 1L;
 
     public AltsystemSchuetzeMapper altsystemSchuetzeMapper;
 
@@ -77,7 +74,7 @@ public class AltsystemSchuetzeMapperTest {
     }
 
     @Test
-    public void testGetIdentifier() throws SQLException {
+    public void testGetIdentifier() {
         // prepare test data
         // altsystem DO
         AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
@@ -95,7 +92,7 @@ public class AltsystemSchuetzeMapperTest {
 
         String expectedIdentifier = "MarcoBammert1";
 
-        assertThat(identifier.equals(expectedIdentifier));
+        assertThat(identifier).isEqualTo(expectedIdentifier);
     }
 
     @Test
@@ -123,7 +120,7 @@ public class AltsystemSchuetzeMapperTest {
 
 
     @Test
-    public void testparseNameWithComa() throws SQLException {
+    public void testparseNameWithComa() {
         // Mocking
         AltsystemSchuetzeDO schuetze = new AltsystemSchuetzeDO();
         schuetze.setName("Bammert, Marco");
