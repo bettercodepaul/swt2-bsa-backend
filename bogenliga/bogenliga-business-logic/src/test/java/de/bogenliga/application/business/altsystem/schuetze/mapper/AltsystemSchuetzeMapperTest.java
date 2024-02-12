@@ -23,6 +23,9 @@ import static org.mockito.Mockito.*;
 
 public class AltsystemSchuetzeMapperTest {
 
+    private static final Long CURRENTUSERID = 1L;
+
+
     public AltsystemSchuetzeMapper altsystemSchuetzeMapper;
 
     @Rule
