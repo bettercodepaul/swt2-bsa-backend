@@ -135,6 +135,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
         char[] identifierOld = altsystemDataObject.getMannr().toCharArray();
         int[] need = {2, 3, 6, 7, 8, 9};
+
         StringBuilder builder = new StringBuilder();
         for (int index : need) {
             if (index >= 0 && index < identifierOld.length) {
@@ -149,9 +150,12 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
     public VereinDO getVereinDO(String vereinIdentifier){
 
         VereinDO identifierDO = null;
+        //Alle vorhandenen Vereine in eine Liste
         List<VereinDO> vereinDOS = vereinComponent.findAll();
+        //Durchsucht Liste nach angegebenen Verein
         for (VereinDO vereinDO : vereinDOS){
             String verIdentifier = vereinDO.getDsbIdentifier();
+            //Wenn Verein vorhanden dann VereinDO zurueck. Sonst ID von DO NULL.
             if(verIdentifier.equals(vereinIdentifier)){
                 identifierDO = vereinDO;
                 break;
