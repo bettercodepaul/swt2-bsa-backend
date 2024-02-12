@@ -45,7 +45,6 @@ public class AltsystemSchuetzeTest {
     @Test
     public void testCreate() throws SQLException{
         // prepare test data
-        // altsystem DO
         AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
         altsystemSchuetzeDO.setId(2L);
         altsystemSchuetzeDO.setName("Bammert, Marco");
@@ -72,7 +71,7 @@ public class AltsystemSchuetzeTest {
         // Testaufruf
         altsystemSchuetze.create(altsystemSchuetzeDO, CURRENTUSERID);
 
-        // Test dass alle Methoden aufgerufen wurden
+        // Teste dass alle Methoden aufgerufen wurden
         verify(altsystemSchuetzeMapper).toDO(new DsbMitgliedDO(), altsystemSchuetzeDO);
         verify(altsystemSchuetzeMapper).addDefaultFields(result, CURRENTUSERID);
         verify(dsbMitgliedComponent).create(result, CURRENTUSERID);
