@@ -2,12 +2,12 @@ package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
 import java.sql.SQLException;
 import org.springframework.stereotype.Component;
+import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
-import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.dsbmitglied.api.types.DsbMitgliedDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
 
 /**
  * TODO [AL] class documentation
@@ -15,8 +15,8 @@ import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUeberse
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 @Component
-public class AltsystemSchuetzeMapper  implements ValueObjectMapper {
-    private AltsystemUebersetzung altsystemUebersetzung;
+public class AltsystemSchuetzeMapper implements ValueObjectMapper {
+    private final AltsystemUebersetzung altsystemUebersetzung;
 
     public AltsystemSchuetzeMapper(AltsystemUebersetzung altsystemUebersetzung) {
         this.altsystemUebersetzung = altsystemUebersetzung;
