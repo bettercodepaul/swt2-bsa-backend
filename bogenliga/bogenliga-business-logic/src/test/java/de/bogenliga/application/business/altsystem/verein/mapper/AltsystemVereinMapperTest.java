@@ -162,6 +162,26 @@ public class AltsystemVereinMapperTest {
         //Vergleich des results
         assertEquals(expectetName7, parsedName7);
 
+        //Initialisierung Testfall 8
+        AltsystemMannschaftDO mannschaftsName8 = new AltsystemMannschaftDO();
+        mannschaftsName8.setName("BoAbt. 1. SV Fasanenhof 2");
+        //Testaufruf
+        String parsedName8 = altsystemVereinMapper.parseVereinName(mannschaftsName8);
+        //result Name
+        String expectetName8 = "BoAbt 1. SV Fasanenhof";
+        //Vergleich des results
+        assertEquals(expectetName8, parsedName8);
+
+        //Initialisierung Testfall 9
+        AltsystemMannschaftDO mannschaftsName9 = new AltsystemMannschaftDO();
+        mannschaftsName9.setName("BSG Odenheim e.V.");
+        //Testaufruf
+        String parsedName9 = altsystemVereinMapper.parseVereinName(mannschaftsName9);
+        //result Name
+        String expectetName9 = "BSG Odenheim e.V.";
+        //Vergleich des results
+        assertEquals(expectetName9, parsedName9);
+
     }
 
 
