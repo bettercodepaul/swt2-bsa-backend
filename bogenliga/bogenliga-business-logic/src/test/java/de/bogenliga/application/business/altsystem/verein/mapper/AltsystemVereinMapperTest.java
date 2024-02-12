@@ -133,6 +133,4 @@ public class AltsystemVereinMapperTest {
         verify(altsystemLigaMapper).getDsbDO();
     }
 
-
-
 }
