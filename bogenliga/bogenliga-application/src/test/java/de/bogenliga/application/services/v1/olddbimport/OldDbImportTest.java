@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.mockito.Mock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -40,7 +40,7 @@ public class OldDbImportTest {
     }
 
     @Test
-    void executeScriptTest() {
+    public void executeScriptTest() {
         File tempFile = null;
         try {
             tempFile = File.createTempFile("temp_script", ".sql");
