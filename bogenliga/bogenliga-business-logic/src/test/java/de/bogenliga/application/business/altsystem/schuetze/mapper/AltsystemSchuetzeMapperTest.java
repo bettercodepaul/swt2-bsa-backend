@@ -26,8 +26,6 @@ public class AltsystemSchuetzeMapperTest {
     private static final Long CURRENTUSERID = 1L;
 
 
-    public AltsystemSchuetzeMapper altsystemSchuetzeMapper;
-
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
 
@@ -37,17 +35,8 @@ public class AltsystemSchuetzeMapperTest {
     DsbMitgliedComponent dsbMitgliedComponent;
 
     @InjectMocks
-    AltsystemSchuetze altsystemSchuetze;
+    AltsystemSchuetzeMapper altsystemSchuetzeMapper;
 
-
-    @Before
-    public void setUp() {
-        altsystemSchuetzeMapper = Mockito.mock(AltsystemSchuetzeMapper.class);
-        dsbMitgliedComponent = Mockito.mock(DsbMitgliedComponent.class);
-        altsystemUebersetzung = Mockito.mock(AltsystemUebersetzung.class);
-        altsystemSchuetze = new AltsystemSchuetze(altsystemSchuetzeMapper, dsbMitgliedComponent, altsystemUebersetzung);
-
-    }
 
 
     @Test
@@ -103,22 +92,22 @@ public class AltsystemSchuetzeMapperTest {
         // prepare test data
         // altsystem DO
         AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
+        altsystemSchuetzeDO.setId(1L);
         altsystemSchuetzeDO.setName("Bammert, Marco");
 
         // configure mocks
         AltsystemUebersetzungDO expected = new AltsystemUebersetzungDO();
-        expected.setBogenligaId(1L);
+        expected.setAltsystemId(1L);
         expected.setWert("MarcoBammert1");
-        expected.setKategorie(String.valueOf(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied));
 
-        String identifier = altsystemSchuetzeMapper.getIdentifier(altsystemSchuetzeDO);
+        String identifier = "MarcoBammert1";
 
         // Mock-Konfiguration
-        when(altsystemSchuetzeMapper.getSchuetzeByIdentifier(any())).thenReturn(expected);
+        when(altsystemUebersetzung.findByWert(any(), any())).thenReturn(expected);
 
-        AltsystemUebersetzungDO actual = altsystemSchuetzeMapper.getSchuetzeByIdentifier(identifier);
+        altsystemSchuetzeMapper.getSchuetzeByIdentifier(identifier);
 
-        assertEquals(expected.getUebersetzungId(), actual.getUebersetzungId());
+        verify(altsystemUebersetzung).findByWert(any(), any());
     }
 
 
@@ -190,6 +179,7 @@ public class AltsystemSchuetzeMapperTest {
     public void testAddDefaultFields() {
         //actual
         DsbMitgliedDO mitglied = new DsbMitgliedDO();
+        mitglied.setId(1L);
         mitglied.setVorname("Marco");
         mitglied.setNachname("Bammert");
         mitglied.setVereinsId(1L);
@@ -198,11 +188,21 @@ public class AltsystemSchuetzeMapperTest {
         DsbMitgliedDO expected = new DsbMitgliedDO();
         expected.setVorname("Marco");
         expected.setNachname("Bammert");
+        expected.setId(1L);
+        expected.setGeburtsdatum(null);
+        expected.setNationalitaet("D");
+        expected.setUserId(null);
+        expected.setKampfrichter(false);
+
+        //when(altsystemSchuetzeMapper.addDefaultFields(mitglied, 1L)).thenReturn(mitglied);
 
         altsystemSchuetzeMapper.addDefaultFields(mitglied, CURRENTUSERID);
 
-        assertEquals(expected.getNationalitaet(), mitglied.getNationalitaet());
+
+        assertEquals(expected.getId(), mitglied.getId());
         assertEquals(expected.getGeburtsdatum(), mitglied.getGeburtsdatum());
+        assertEquals(expected.getNationalitaet(), mitglied.getNationalitaet());
         assertEquals(expected.getUserId(), mitglied.getUserId());
+        assertEquals(expected.getKampfrichter(), mitglied.getKampfrichter());
     }
 }
