@@ -47,6 +47,13 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
 
     @Override
     public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
+        /**
+         * Creates a new entry for the AltsystemMannschaftDO in the system, including the associated DsbMannschaftDO.
+         *
+         * @param altsystemDataObject The AltsystemMannschaftDO object to be created.
+         * @param currentUserId The ID of the current user performing the operation.
+         */
+
         DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO();
         //Vereinmethede aufrufen
         altsystemVerein.create(altsystemDataObject, currentUserId);
@@ -68,6 +75,13 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
 
     @Override
     public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
+        /**
+         * Updates the information of the AltsystemMannschaftDO in the system, including the associated DsbMannschaftDO.
+         *
+         * @param altsystemDataObject The AltsystemMannschaftDO object containing the updated information.
+         * @param currentUserId The ID of the current user performing the update operation.
+         * @throws BusinessException If no corresponding entry is found in the translation table for the provided AltsystemMannschaftDO ID.
+         */
         //Verein Methode Aufrufen
         altsystemVerein.update(altsystemDataObject, currentUserId);
         //In der uebersetzungstabele anhand der AltsystemID die NeusystemID herausfinden.

@@ -31,8 +31,17 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
 
     public VereinDO toDO(VereinDO vereinDO, AltsystemMannschaftDO altsystemDataObject) {
+        /**
+         * Converts an AltsystemMannschaftDO to a VereinDO by setting the name and identifier.
+         *
+         * @param vereinDO The target VereinDO object where the data will be set.
+         * @param altsystemDataObject The source AltsystemMannschaftDO object from which data will be extracted.
+         * @return The VereinDO with data set from the AltsystemMannschaftDO.
+         */
 
+        //ParseName aufrufen und Name setzten
         vereinDO.setName(parseName(altsystemDataObject));
+        //ParseIdentifire aufrufen und Neuer Identifire setzten
         vereinDO.setDsbIdentifier(parseIdentifier(altsystemDataObject));
 
         return vereinDO;
@@ -40,6 +49,14 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
     public VereinDO addDefaultFields(VereinDO vereinDO){
 
+        /**
+         * Adds default fields to the VereinDO, such as setting the region based on mapping.
+         *
+         * @param vereinDO The VereinDO object to which default fields will be added.
+         * @return The VereinDO with default fields set.
+         */
+
+        //region herausfinden und setzten
         RegionenDO dsbDO = altsystemLigaMapper.getDsbDO();
         vereinDO.setRegionId(dsbDO.getId());
 
@@ -49,6 +66,12 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
 
     public String parseName(AltsystemMannschaftDO altsystemMannschaftDO) {
+        /**
+         * Parses and normalizes the name from the AltsystemMannschaftDO to handle specific formatting.
+         *
+         * @param altsystemMannschaftDO The AltsystemMannschaftDO object from which the name will be parsed.
+         * @return The parsed and normalized name with corrected formatting.
+         */
 
         char[] nameOld = altsystemMannschaftDO.getName().toCharArray();
         String nameNew = "";
@@ -106,7 +129,6 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
             nameNew = nameNew.substring(0, nameNew.length() - 1);
         }
 
-
         // Spezielle Überprüfung für bestimmte Namen und Ausgabe des normalisierten Namens
         if (nameNew.equals("SVgg Endersb.  Strümpf") || nameNew.equals("SVng Endersbach Strümpf")) {
             nameNew = "SVng Endersbach Strümpfelbach";
@@ -132,10 +154,18 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
     }
 
     public String parseIdentifier(AltsystemMannschaftDO altsystemDataObject){
+        /**
+         * Parses the identifier from the AltsystemMannschaftDO to extract specific positions.
+         *
+         * @param altsystemDataObject The AltsystemMannschaftDO object from which the identifier will be parsed.
+         * @return The parsed identifier based on specific positions.
+         */
 
+        //Mannschaftsnummer in Array
         char[] identifierOld = altsystemDataObject.getMannr().toCharArray();
+        //Die Stellen des Identifirers die gebraucht werden.
         int[] need = {2, 3, 6, 7, 8, 9};
-
+        //String an den Stellen zusammenbauen
         StringBuilder builder = new StringBuilder();
         for (int index : need) {
             if (index >= 0 && index < identifierOld.length) {
@@ -148,6 +178,13 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
     }
 
     public VereinDO getVereinDO(String vereinIdentifier){
+
+        /**
+         * Retrieves a VereinDO based on the provided identifier.
+         *
+         * @param vereinIdentifier The identifier used to search for the VereinDO.
+         * @return The found VereinDO if it exists, or a VereinDO with a null ID if not found.
+         */
 
         VereinDO identifierDO = null;
         //Alle vorhandenen Vereine in eine Liste
