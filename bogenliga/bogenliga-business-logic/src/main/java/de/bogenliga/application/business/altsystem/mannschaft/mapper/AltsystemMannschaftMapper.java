@@ -8,6 +8,7 @@ import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUeberse
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
 import de.bogenliga.application.common.errorhandling.ErrorCode;
 import de.bogenliga.application.common.errorhandling.exception.BusinessException;
@@ -22,7 +23,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
 
     private final AltsystemUebersetzung altsystemUebersetzung;
 
-    private final DsbMannschaftComponent dsbMannschaftComponent;
+
 
 
 
@@ -30,16 +31,12 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
                                      AltsystemLigaMapper altsystemLigaMapper,
                                      DsbMannschaftComponent dsbMannschaftComponent) {
         this.altsystemUebersetzung = altsystemUebersetzung;
-        this.dsbMannschaftComponent = dsbMannschaftComponent;
     }
 
 
-    public DsbMannschaftDO toDO(DsbMannschaftDO dsbMannschaftDO, AltsystemMannschaftDO altsystemMannschaftDO){
+    public DsbMannschaftDO toDO(AltsystemMannschaftDO altsystemMannschaftDO, DsbMannschaftDO dsbMannschaftDO){
 
         String currentName = altsystemMannschaftDO.getName();
-        if (currentName == null){
-            return null;
-        }
 
         int nameLong = currentName.length() - 1;
         char lastChar = altsystemMannschaftDO.getName().charAt(nameLong);
@@ -48,9 +45,10 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
         String num = "1234567890";
 
 
-        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>")) {
+        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
             return null;
         }
+
         if (num.contains(lastCharAsString)){
             mannNr = Integer.parseInt(lastCharAsString);
         } else {
@@ -63,7 +61,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
     }
 
 
-    public DsbMannschaftDO addDefaultFields ( DsbMannschaftDO dsbMannschaftDO, long currentDSBMitglied,  AltsystemMannschaftDO altsystemDataObject){
+    public DsbMannschaftDO addDefaultFields (DsbMannschaftDO dsbMannschaftDO, long currentDSBMitglied, AltsystemMannschaftDO altsystemDataObject, VeranstaltungDO veranstaltungDO){
 
         dsbMannschaftDO.setBenutzerId(currentDSBMitglied);
 
@@ -80,22 +78,9 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
         dsbMannschaftDO.setVereinId(vereinId);
 
 
-        AltsystemUebersetzungDO veranstaltungUebersetzung = altsystemUebersetzung.findByAltsystemID(
-                AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, altsystemDataObject.getId());
-
-        if(veranstaltungUebersetzung == null){
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemDataObject.getId()));
-        }
-
-        long veranstaltungId = Long.parseLong(String.valueOf(veranstaltungUebersetzung));
-        dsbMannschaftDO.setVeranstaltungId(veranstaltungId);
+        dsbMannschaftDO.setVeranstaltungId(veranstaltungDO.getVeranstaltungID());
 
         return dsbMannschaftDO;
     }
-
-
-
-
 
 }

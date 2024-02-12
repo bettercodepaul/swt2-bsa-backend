@@ -38,13 +38,13 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
 
 
     @Override
-    public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) throws SQLException {
+    public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
         VereinDO vereinDO = new VereinDO();
 
         String parsedIdentifier = altsystemVereinMapper.parseIdentifier(altsystemDataObject);
         VereinDO vorhanden = altsystemVereinMapper.getVereinDO(parsedIdentifier);
 
-        if (vorhanden == null){
+        if (vorhanden.getId() == null){
             vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
             vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
             vereinComponent.create(vereinDO, currentUserId);
@@ -58,7 +58,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
 
 
     @Override
-    public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) throws SQLException {
+    public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
 
         AltsystemUebersetzungDO vereinUebersetzung = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemDataObject.getId());

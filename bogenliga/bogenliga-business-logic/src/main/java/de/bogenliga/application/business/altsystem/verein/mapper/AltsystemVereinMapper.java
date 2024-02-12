@@ -24,7 +24,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
 
 
-    public AltsystemVereinMapper(VereinComponent vereinComponent, AltsystemUebersetzung altsystemUebersetzung, AltsystemLigaMapper altsystemLigaMapper) {
+    public AltsystemVereinMapper(VereinComponent vereinComponent,  AltsystemLigaMapper altsystemLigaMapper) {
         this.vereinComponent = vereinComponent;
         this.altsystemLigaMapper = altsystemLigaMapper;
     }
@@ -56,16 +56,13 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         String num = "1234567890";
 
         String currentName = new String(nameOld);
-        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
-            return null;
-        }
 
         // Iteriere über den alten Namen und überprüfe jedes Zeichen auf inkorrekte Formatierung, ersetze entsprechend
         for (int i = 0; i < nameOld.length; i++) {
 
             // Speichere das aktuelle Zeichen am Index, um getString().charAt()-Aufrufe zu minimieren (für bessere Speichereffizienz)
             if (i + 1 < altsystemMannschaftDO.getName().length()) {
-                // Wenn ein Punkt ohne nachfolgendem Leerzeichen kommt, füge ein Leerzeichen hinzu
+                // Wenn ein Punkt ohne nachfolgenden Leerzeichen kommt, füge ein Leerzeichen hinzu
                 if (altsystemMannschaftDO.getName().charAt(i) == '.' && altsystemMannschaftDO.getName().charAt(
                         i + 1) != ' ') {
                     nameNew += ". ";
@@ -129,8 +126,6 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
             nameNew = "BSV Hausen i.K.";
         }
 
-
-
         // Gibt das Vereinsobjekt zurück
         return nameNew;
 
@@ -141,9 +136,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         char[] identifierOld = altsystemDataObject.getMannr().toCharArray();
         int[] need = {2, 3, 6, 7, 8, 9};
         StringBuilder builder = new StringBuilder();
-
         for (int index : need) {
-
             if (index >= 0 && index < identifierOld.length) {
                 builder.append(identifierOld[index]);
             }
@@ -156,18 +149,18 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
     public VereinDO getVereinDO(String vereinIdentifier){
 
         VereinDO identifierDO = null;
-        List<VereinDO> vereinDOS = vereinComponent.findBySearch(vereinIdentifier);
+        List<VereinDO> vereinDOS = vereinComponent.findAll();
         for (VereinDO vereinDO : vereinDOS){
             String verIdentifier = vereinDO.getDsbIdentifier();
             if(verIdentifier.equals(vereinIdentifier)){
                 identifierDO = vereinDO;
                 break;
             } else {
-                return null;
+                identifierDO.setId(null);
+                break;
             }
         }
         return identifierDO;
     }
-
 
 }
