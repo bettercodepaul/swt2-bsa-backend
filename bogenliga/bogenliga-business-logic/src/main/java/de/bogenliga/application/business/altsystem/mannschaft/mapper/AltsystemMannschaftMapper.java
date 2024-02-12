@@ -74,9 +74,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
                     String.format("No result found for ID '%s'", altsystemDataObject.getId()));
         }
 
-        long vereinId = Long.parseLong(String.valueOf(vereinUebersetzung));
-        dsbMannschaftDO.setVereinId(vereinId);
-
+        dsbMannschaftDO.setVereinId(vereinUebersetzung.getBogenligaId());
 
         dsbMannschaftDO.setVeranstaltungId(veranstaltungDO.getVeranstaltungID());
 
