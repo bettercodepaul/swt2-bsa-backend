@@ -100,7 +100,7 @@ public class AltsystemVereinTest {
         VereinDO result = new VereinDO();
         result.setId(1L);
 
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId())).thenReturn(altsystemUebersetzungDO).thenReturn(altsystemUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId())).thenReturn(altsystemUebersetzungDO);
         when(vereinComponent.findById(altsystemUebersetzungDO.getBogenligaId())).thenReturn(result);
         when(altsystemVereinMapper.toDO(result, altsystemMannschaftDO)).thenReturn(result);
         when(vereinComponent.update(result, CURRENTUSERID)).thenReturn(result);
