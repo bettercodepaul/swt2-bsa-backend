@@ -194,15 +194,10 @@ public class AltsystemSchuetzeMapperTest {
         mitglied.setNachname("Bammert");
         mitglied.setVereinsId(1L);
 
-
         //expected
         DsbMitgliedDO expected = new DsbMitgliedDO();
         expected.setVorname("Marco");
         expected.setNachname("Bammert");
-        expected.setUserId(null);
-        expected.setKampfrichter(null);
-
-        when(altsystemSchuetzeMapper.addDefaultFields(mitglied, CURRENTUSERID)).thenReturn(mitglied);
 
         altsystemSchuetzeMapper.addDefaultFields(mitglied, CURRENTUSERID);
 
