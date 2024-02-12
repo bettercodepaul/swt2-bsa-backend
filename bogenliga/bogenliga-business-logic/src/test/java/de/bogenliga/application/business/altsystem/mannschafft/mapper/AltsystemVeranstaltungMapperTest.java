@@ -1,4 +1,4 @@
-package de.bogenliga.application.business.altsystem.mannschafft;
+package de.bogenliga.application.business.altsystem.mannschafft.mapper;
 
 import java.sql.Date;
 import java.util.ArrayList;
