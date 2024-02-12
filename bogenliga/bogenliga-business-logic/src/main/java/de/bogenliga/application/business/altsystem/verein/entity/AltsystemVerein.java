@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.altsystem.verein.entity;
 
-import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;

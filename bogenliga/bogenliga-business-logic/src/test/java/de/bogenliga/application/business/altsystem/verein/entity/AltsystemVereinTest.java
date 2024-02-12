@@ -9,6 +9,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzungKategorie;
 import de.bogenliga.application.business.altsystem.verein.mapper.AltsystemVereinMapper;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
@@ -71,7 +72,6 @@ public class AltsystemVereinTest {
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
         altsystemMannschaftDO.setId(2L);
 
-
         VereinDO result = new VereinDO();
         result.setId(1L);
 
@@ -87,6 +87,21 @@ public class AltsystemVereinTest {
 
     }
 
+    @Test
+    public void testUpdate(){
+        AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
+        altsystemMannschaftDO.setId(2L);
 
+        AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
+        altsystemUebersetzungDO.setAltsystemId(3L);
+        altsystemUebersetzungDO.setBogenligaId(1L);
+
+        VereinDO result = new VereinDO();
+        result.setId(1L);
+
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Liga_Liga, altsystemMannschaftDO.getId())).thenReturn(altsystemUebersetzungDO).thenReturn(altsystemUebersetzungDO);
+        when(vereinComponent.findById(altsystemUebersetzungDO.getBogenligaId())).thenReturn(result);
+        when(vereinComponent.update(result, CURRENTUSERID)).thenReturn(result);
+    }
 
 }
