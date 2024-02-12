@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
-import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
+
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import de.bogenliga.application.common.component.mapping.ValueObjectMapper;
+import de.bogenliga.application.common.errorhandling.ErrorCode;
+import de.bogenliga.application.common.errorhandling.exception.BusinessException;
 
 /**
  * TODO [AL] class documentation
@@ -40,7 +42,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
          */
 
         //ParseName aufrufen und Name setzten
-        vereinDO.setName(parseName(altsystemDataObject));
+        vereinDO.setName(parseVereinName(altsystemDataObject));
         //ParseIdentifire aufrufen und Neuer Identifire setzten
         vereinDO.setDsbIdentifier(parseIdentifier(altsystemDataObject));
 
@@ -65,7 +67,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
     }
 
 
-    public String parseName(AltsystemMannschaftDO altsystemMannschaftDO) {
+    public String parseVereinName(AltsystemMannschaftDO altsystemMannschaftDO) {
         /**
          * Parses and normalizes the name from the AltsystemMannschaftDO to handle specific formatting.
          *
@@ -197,8 +199,8 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
                 identifierDO = vereinDO;
                 break;
             } else {
-                identifierDO.setId(null);
-                break;
+                throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                        String.format("No result found for ID '%s'", verIdentifier));
             }
         }
         return identifierDO;

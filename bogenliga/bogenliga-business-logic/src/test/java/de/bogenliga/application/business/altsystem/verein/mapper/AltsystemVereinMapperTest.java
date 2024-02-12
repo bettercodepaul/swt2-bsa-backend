@@ -79,7 +79,7 @@ public class AltsystemVereinMapperTest {
         AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
         mannschaftsName.setName("BS Nürtingen");
         //Testaufruf
-        String parsedName = altsystemVereinMapper.parseName(mannschaftsName);
+        String parsedName = altsystemVereinMapper.parseVereinName(mannschaftsName);
         //result Name
         String expectetName = "BS Nürtingen";
         //Vergleich des results
@@ -94,7 +94,7 @@ public class AltsystemVereinMapperTest {
         AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
         mannschaftsName.setName("BS Nürtingen 3");
         //Testaufruf
-        String parsedName = altsystemVereinMapper.parseName(mannschaftsName);
+        String parsedName = altsystemVereinMapper.parseVereinName(mannschaftsName);
         //result Name
         String expectetName = "BS Nürtingen";
         //Vergleich des results
@@ -108,7 +108,7 @@ public class AltsystemVereinMapperTest {
         AltsystemMannschaftDO mannschaftsName = new AltsystemMannschaftDO();
         mannschaftsName.setName("BS-Nürtingen 3");
         //Testaufruf
-        String parsedName = altsystemVereinMapper.parseName(mannschaftsName);
+        String parsedName = altsystemVereinMapper.parseVereinName(mannschaftsName);
         //result Name
         String expectetName = "BS Nürtingen";
         //Vergleich des results
