@@ -10,6 +10,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
+import de.bogenliga.application.business.altsystem.verein.entity.AltsystemVerein;
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -36,6 +37,30 @@ public class AltsystemVereinMapperTest {
     public AltsystemVereinMapper altsystemVereinMapper;
 
 
+
+
+    @Test
+    public void testToDO() {
+        // Erstellen der benötigten Objekte und Mocks
+        AltsystemMannschaftDO altsystemDataObject = new AltsystemMannschaftDO();
+        altsystemDataObject.setId(1L);
+        altsystemDataObject.setName("BS Nürtingen");
+        altsystemDataObject.setMannr("12WT564444");
+
+        VereinDO vereinDO = new VereinDO();
+
+        // Mocken der Abhängigkeiten
+        altsystemVereinMapper.parseVereinName(altsystemDataObject);
+        altsystemVereinMapper.parseIdentifier(altsystemDataObject);
+
+
+        // Aufruf der zu testenden Methode
+        altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
+
+        // Überprüfen, ob die Daten korrekt gesetzt wurden
+        assertEquals("BS Nürtingen", vereinDO.getName());
+        assertEquals("WT4444", vereinDO.getDsbIdentifier());
+    }
 
     @Test
     public void testGetVereinDO() {

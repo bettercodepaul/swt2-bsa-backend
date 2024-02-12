@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.mapper.AltsystemLigaMapper;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
-
 import de.bogenliga.application.business.regionen.api.types.RegionenDO;
 import de.bogenliga.application.business.vereine.api.VereinComponent;
 import de.bogenliga.application.business.vereine.api.types.VereinDO;
@@ -43,7 +42,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
         //ParseName aufrufen und Name setzten
         vereinDO.setName(parseVereinName(altsystemDataObject));
-        //ParseIdentifire aufrufen und Neuer Identifire setzten
+        //ParseIdentifire aufrufen und neuer Identifire setzten
         vereinDO.setDsbIdentifier(parseIdentifier(altsystemDataObject));
 
         return vereinDO;
