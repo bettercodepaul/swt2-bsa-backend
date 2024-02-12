@@ -185,4 +185,29 @@ public class AltsystemSchuetzeMapperTest {
         assertEquals(expectedNachname, schuetzeNachname);
     }
 
+
+    @Test
+    public void testAddDefaultFields() {
+        //actual
+        DsbMitgliedDO mitglied = new DsbMitgliedDO();
+        mitglied.setVorname("Marco");
+        mitglied.setNachname("Bammert");
+        mitglied.setVereinsId(1L);
+
+
+        //expected
+        DsbMitgliedDO expected = new DsbMitgliedDO();
+        expected.setVorname("Marco");
+        expected.setNachname("Bammert");
+        expected.setUserId(null);
+        expected.setKampfrichter(null);
+
+        when(altsystemSchuetzeMapper.addDefaultFields(mitglied, CURRENTUSERID)).thenReturn(mitglied);
+
+        altsystemSchuetzeMapper.addDefaultFields(mitglied, CURRENTUSERID);
+
+        assertEquals(expected.getNationalitaet(), mitglied.getNationalitaet());
+        assertEquals(expected.getGeburtsdatum(), mitglied.getGeburtsdatum());
+        assertEquals(expected.getUserId(), mitglied.getUserId());
+    }
 }
