@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-public class OldDbImportTest extends DriverStub {
+public class OldDbImportTest {
     @InjectMocks
     private OldDbImport oldDbImport;
 
