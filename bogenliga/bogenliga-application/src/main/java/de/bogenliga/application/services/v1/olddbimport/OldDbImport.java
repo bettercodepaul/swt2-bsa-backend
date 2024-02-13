@@ -32,9 +32,11 @@ public class OldDbImport {
     private static final String DROPSTATMENT = "DROP TABLE IF EXISTS altsystem_";
 
     // JDBC-URL
-    private static final String URL = "jdbc:mysql://" + host + ":" + port + "/" + name;
+    private static String URL = "jdbc:mysql://" + host + ":" + port + "/" + name;
 
     private static String sqlfile ="temptable.sql";
+
+    private static String directoryPath = "";
 
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
 
@@ -49,6 +51,9 @@ public class OldDbImport {
     private static String sqlQuerypw = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPasswort'";
     private static String sqlQueryport = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPort'";
     private static String sqlQueryname = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBName'";
+
+    public static boolean executeScriptEnabled = true;
+
     public static void main (String [] args){
         sync();
 
@@ -66,6 +71,19 @@ public class OldDbImport {
         */
     }
 
+    public static void setConnectionInfo(String url, String user, String password) {
+        URLT = url;
+        userT = user;
+        passwordT = password;
+    }
+
+    public static String getURL(){
+        return URL;
+    }
+
+    public static void setURL(String url){
+        URL = url;
+    }
     private static String executeQuery(String query) {
         String configurationValue = "";
         try (Connection connection = DriverManager.getConnection(URLT, userT, passwordT);
@@ -107,47 +125,42 @@ public class OldDbImport {
 
     public static void sync(){
 
-        user = executeQuery(sqlQueryuser);
-        host = executeQuery(sqlQueryhost);
-        password = executeQuery(sqlQuerypw);
+        user = executeQueryWrapper(sqlQueryuser);
+        host = executeQueryWrapper(sqlQueryhost);
+        password = executeQueryWrapper(sqlQuerypw);
 
         try {
-            port = parseInt(executeQuery(sqlQueryport));
+            port = parseInt(executeQueryWrapper(sqlQueryport));
         } catch (NumberFormatException e) {
             System.err.println("string is keine zahl");}
-        name = executeQuery(sqlQueryname);
+        name = executeQueryWrapper(sqlQueryname);
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+        File file = new File(directoryPath,  sqlfile);
 
-            File file = new File(sqlfile);
-
-            if (file.exists() && file.isFile()) {
-                if (file.delete()) {
-                    System.out.println("Datei 'temptable.sql' wurde gelöscht.");
-                } else {
-                    System.out.println("Fehler beim Löschen der Datei 'temptable.sql'.");
-                    return;
-                }
-            }
-
-            // Connection herstellen
-            try (Connection connection = DriverManager.getConnection(URL, user, password)) {
-
-                for (int i = 0; i < tableNames.length; i++) {
-                    System.out.println(tableNames[i]);
-                    exportTable(connection, tableNames[i]);
-                }
-            }
-            catch (IOException  | SQLException e) {
-                e.printStackTrace();
-            }
-            finally{
-                executeScript(sqlfile, URLT, userT, passwordT);
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                System.out.println("Datei " + sqlfile + " wurde gelöscht.");
+            } else {
+                System.out.println("Fehler beim Löschen der Datei 'temptable.sql'.");
+                return;
             }
         }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();}
+
+        // Connection herstellen
+        try (Connection connection = DriverManager.getConnection(URL, user, password)) {
+
+            for (int i = 0; i < tableNames.length; i++) {
+                System.out.println(tableNames[i]);
+                exportTable(connection, tableNames[i]);
+            }
+        }
+        catch (IOException  | SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if (executeScriptEnabled) {
+                executeScript(sqlfile, URLT, userT, passwordT);
+            }        }
 
     }
 
