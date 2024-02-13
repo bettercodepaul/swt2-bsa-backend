@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -74,17 +73,17 @@ public class OldDbImportTest {
         tempSQLFile.setAccessible(true);
         tempSQLFile.set(null, testFilePath);
 
-        oldDbImport.setConnectionInfo(url, user, password);
+        OldDbImport.setConnectionInfo(url, user, password);
 
         try (MockedStatic<DriverManager> mocked = mockStatic(DriverManager.class)) {
             mocked.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
                     .thenReturn(mockConnection);
 
-            oldDbImport.sync();
+            OldDbImport.sync();
         }
         assertTrue(tempTestFile.exists());
 
-        tempTestFile.delete();
+        tempTestFile.deleteOnExit();
 
         OldDbImport.executeScriptEnabled = true;
     }
@@ -96,7 +95,7 @@ public class OldDbImportTest {
         String user = "sa";
         String password = "";
 
-        oldDbImport.setConnectionInfo(url, user, password);
+        OldDbImport.setConnectionInfo(url, user, password);
         try (Connection connection = DriverManager.getConnection(url, user, password);
              Statement statement = connection.createStatement()) {
 
@@ -105,7 +104,7 @@ public class OldDbImportTest {
 
             String query = "SELECT configuration_value FROM configuration WHERE configuration_key = 'key'";
 
-            String result = oldDbImport.executeQueryWrapper(query);
+            String result = OldDbImport.executeQueryWrapper(query);
             assertEquals("expectedResult", result);
         }
     }
@@ -125,13 +124,12 @@ public class OldDbImportTest {
         statement.execute("INSERT INTO test_table (id, column_value) VALUES (1, 'testValue')");
         statement.execute("CREATE TABLE altsystem_test_table (id INT, column_value VARCHAR(255))");
 
-        String generatedSql = oldDbImport.exportTableWrapper(connection, "test_table");
+        String generatedSql = OldDbImport.exportTableWrapper(connection, "test_table");
 
         System.out.println(testFilePath);
         System.out.println(generatedSql);
 
         assertTrue(generatedSql.contains("INSERT INTO altsystem_test_table VALUES"));
-        assertThat(generatedSql.contains("testValue"));
 
         connection.close();
         Files.deleteIfExists(Paths.get(testFilePath));
@@ -142,7 +140,7 @@ public class OldDbImportTest {
     public void testCreateTable() {
 
         String tableName = "some_table";
-        String createTableQuery = oldDbImport.createTableWrapper(tableName);
+        String createTableQuery = OldDbImport.createTableWrapper(tableName);
         assertThat(createTableQuery)
                 .isNotEmpty()
                 .contains("altsystem");
@@ -155,7 +153,7 @@ public class OldDbImportTest {
         String tableName = "some_table";
         boolean[] tables = new boolean[8];
         String insertQuery = "INSERT INTO some_table VALUES (?, ?, ?)";
-        String result = oldDbImport.insertTableWrapper(tableName, tables, insertQuery);
+        String result = OldDbImport.insertTableWrapper(tableName, tables, insertQuery);
         assertNotNull(result);
     }
 
