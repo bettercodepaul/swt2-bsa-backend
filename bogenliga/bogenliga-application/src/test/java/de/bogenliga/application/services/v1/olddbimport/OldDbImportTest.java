@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,37 +30,60 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-public class OldDbImportTest {
+public class OldDbImportTest extends DriverStub {
     @InjectMocks
     private OldDbImport oldDbImport;
-    @Mock
-    private Connection mockConnection;
-    @Mock
-    private PreparedStatement mockStatement;
-    @Mock
-    private ResultSet mockResultSet;
 
     private static String originalURL;
 
+    private Connection connection;
+
+    private static final String TEST_DB_URL = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1";
+    private static final String TEST_DB_USER = "sa";
+    private static final String TEST_DB_PASSWORD = "";
+
+    Map<String, String> tableDefinitions = OldDbImport.getTableDefinitions();
+
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException, ClassNotFoundException {
+
         originalURL = OldDbImport.getURL();
+
+        Class.forName("org.h2.Driver");
+
+        connection = DriverManager.getConnection(TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(
+                    "CREATE TABLE CONFIGURATION (configuration_key VARCHAR(255), configuration_value VARCHAR(255))");
+            statement.execute(
+                    "INSERT INTO CONFIGURATION (configuration_key, configuration_value) VALUES ('Benutzer', 'sa'), ('Host', 'localhost'), ('Passwort', ''), ('Port', '5432'), ('Name', 'test')");
+            for (Map.Entry<String, String> entry : tableDefinitions.entrySet()) {
+                String tableName = entry.getKey();
+                String createTableSql = entry.getValue();
+                statement.execute(createTableSql);
+                System.out.println("Tabelle " + tableName + " wurde erfolgreich erstellt.");
+            }
+        }
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("DROP ALL OBJECTS DELETE FILES");
+        }
+        if (connection != null) {
+            connection.close(); // Verbindung schließen
+        }
         OldDbImport.setURL(originalURL);
     }
+
     @Test
     public void testSync() throws Exception {
 
-        String url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
-        String user = "sa";
-        String password = "";
         OldDbImport.executeScriptEnabled = false;
 
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        OldDbImport.setConnectionInfo(TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
 
         Field urlField = OldDbImport.class.getDeclaredField("URL");
         urlField.setAccessible(true);
@@ -73,15 +98,11 @@ public class OldDbImportTest {
         tempSQLFile.setAccessible(true);
         tempSQLFile.set(null, testFilePath);
 
-        OldDbImport.setConnectionInfo(url, user, password);
+        when(DriverManager.getConnection(anyString(), anyString(), anyString())).thenReturn(connection);
+        System.out.println(connection.getMetaData());
+        String generatedSql = OldDbImport.sync();
 
-        try (MockedStatic<DriverManager> mocked = mockStatic(DriverManager.class)) {
-            mocked.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
-                    .thenReturn(mockConnection);
-
-            OldDbImport.sync();
-        }
-        assertTrue(tempTestFile.exists());
+        assertThat(generatedSql).contains("INSERT INTO altsystem_");
 
         tempTestFile.deleteOnExit();
 
@@ -91,22 +112,17 @@ public class OldDbImportTest {
     @Test
     public void testExecuteQuery() throws SQLException {
 
-        String url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
-        String user = "sa";
-        String password = "";
 
-        OldDbImport.setConnectionInfo(url, user, password);
-        try (Connection connection = DriverManager.getConnection(url, user, password);
-             Statement statement = connection.createStatement()) {
+        OldDbImport.setConnectionInfo(TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
+        Statement statement = connection.createStatement();
 
-            statement.execute("CREATE TABLE configuration (configuration_key VARCHAR(255), configuration_value VARCHAR(255))");
-            statement.execute("INSERT INTO configuration (configuration_key, configuration_value) VALUES ('key', 'expectedResult')");
+        statement.execute("INSERT INTO configuration (configuration_key, configuration_value) VALUES ('key', 'expectedResult')");
 
-            String query = "SELECT configuration_value FROM configuration WHERE configuration_key = 'key'";
+        String query = "SELECT configuration_value FROM configuration WHERE configuration_key = 'key'";
 
-            String result = OldDbImport.executeQueryWrapper(query);
-            assertEquals("expectedResult", result);
-        }
+        String result = OldDbImport.executeQueryWrapper(query);
+        assertEquals("expectedResult", result);
+
     }
     @Test
     public void testExportTable() throws Exception {
@@ -118,7 +134,6 @@ public class OldDbImportTest {
         sqlfileField.setAccessible(true);
         sqlfileField.set(null, testFilePath);
 
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:testdb");
         Statement statement = connection.createStatement();
         statement.execute("CREATE TABLE test_table (id INT, column_value VARCHAR(255))");
         statement.execute("INSERT INTO test_table (id, column_value) VALUES (1, 'testValue')");
@@ -131,7 +146,6 @@ public class OldDbImportTest {
 
         assertTrue(generatedSql.contains("INSERT INTO altsystem_test_table VALUES"));
 
-        connection.close();
         Files.deleteIfExists(Paths.get(testFilePath));
         System.out.println("deleted");
     }
@@ -174,7 +188,7 @@ public class OldDbImportTest {
 
         String tempFilePath = tempFile.getAbsolutePath();
 
-        OldDbImport.executeScriptWrapper(tempFilePath, "jdbc:h2:mem:testdb", "testuser", "testpassword");
+        OldDbImport.executeScriptWrapper(tempFilePath, TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
     }
 
 

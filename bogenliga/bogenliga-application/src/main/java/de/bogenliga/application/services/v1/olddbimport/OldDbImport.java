@@ -123,7 +123,9 @@ public class OldDbImport {
     }
 
 
-    public static void sync(){
+    public static String sync() {
+
+        StringBuilder generatedSql = new StringBuilder();
 
         user = executeQueryWrapper(sqlQueryuser);
         host = executeQueryWrapper(sqlQueryhost);
@@ -142,7 +144,7 @@ public class OldDbImport {
                 System.out.println("Datei " + sqlfile + " wurde gelöscht.");
             } else {
                 System.out.println("Fehler beim Löschen der Datei 'temptable.sql'.");
-                return;
+                return null;
             }
         }
 
@@ -151,8 +153,8 @@ public class OldDbImport {
 
             for (int i = 0; i < tableNames.length; i++) {
                 System.out.println(tableNames[i]);
-                exportTable(connection, tableNames[i]);
-            }
+                String tableSql = exportTable(connection, tableNames[i]);
+                generatedSql.append(tableSql);            }
         }
         catch (IOException  | SQLException e) {
             e.printStackTrace();
@@ -160,8 +162,9 @@ public class OldDbImport {
         finally{
             if (executeScriptEnabled) {
                 executeScript(sqlfile, URLT, userT, passwordT);
-            }        }
-
+            }
+        }
+        return generatedSql.toString();
     }
 
 
@@ -257,6 +260,9 @@ public class OldDbImport {
         return generatedSql.toString();
     }
 
+    public static Map<String, String> getTableDefinitions() {
+        return new HashMap<>(TABLE_DEFINITIONS);
+    }
     public static String executeQueryWrapper(String query) {
         return OldDbImport.executeQuery(query);
     }
