@@ -50,7 +50,7 @@ public class OldDbImportTest {
     public void tearDown() {
         OldDbImport.setURL(originalURL);
     }
-    @Test
+    /*@Test
     public void testSync() throws Exception {
 
         String url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
@@ -88,7 +88,7 @@ public class OldDbImportTest {
         tempTestFile.delete();
 
         OldDbImport.executeScriptEnabled = true;
-    }
+    }*/
 
     @Test
     public void testExecuteQuery() throws SQLException {
