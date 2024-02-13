@@ -429,19 +429,6 @@ public class UserRoleComponentImplTest {
     }
 
 
-    @Test
-    public void signIn() {
-        // prepare test data
-
-        // configure mocks
-
-        // call test method
-
-        // assert result
-
-        // verify invocations
-    }
-
 
     // tests for create
     @Test
