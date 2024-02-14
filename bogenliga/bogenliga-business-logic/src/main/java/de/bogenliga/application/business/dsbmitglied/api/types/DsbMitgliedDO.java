@@ -25,6 +25,13 @@ public class DsbMitgliedDO extends CommonDataObject implements DataObject {
     private String mitgliedsnummer;
     private Long vereinsId;
     private Long userId;
+
+
+    public Boolean getKampfrichter() {
+        return kampfrichter;
+    }
+
+
     private Boolean kampfrichter;
 
     /**
