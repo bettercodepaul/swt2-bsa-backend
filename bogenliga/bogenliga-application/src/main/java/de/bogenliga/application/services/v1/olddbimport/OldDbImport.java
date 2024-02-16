@@ -21,7 +21,7 @@ import static java.lang.Integer.parseInt;
 public class OldDbImport {
     private static final Logger LOG = LoggerFactory.getLogger(OldDbImport.class);
 
-    // Verbindungsinformationen
+    // Verbindungsinformationen der My SQL Datenbank
     private static String host = "";
     private static int port = 0;
     private static String name = "";
@@ -31,7 +31,7 @@ public class OldDbImport {
 
     private static final String DROPSTATMENT = "DROP TABLE IF EXISTS altsystem_";
 
-    // JDBC-URL
+    // JDBC-URL der My SQL Datenbank
     private static String URL = "jdbc:mysql://" + host + ":" + port + "/" + name;
 
     private static String sqlfile ="temptable.sql";
@@ -41,11 +41,12 @@ public class OldDbImport {
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
 
 
-    //TEST GET FROM LOGIN CREDENTIALS FROM ENV
+    //GET LOGIN CREDENTIALS FROM ENV for Postgresql DB
     private static String URLT = System.getenv("DB_URL");
     private static String userT = System.getenv("DB_user");
     private static String passwordT = System.getenv("DB_password");
 
+    //SQL Querys for Database Credentials for MY SQL Database from Postgres Database "configuration" Table
     private static String sqlQueryuser = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBBenutzer'";
     private static String sqlQueryhost = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBHost'";
     private static String sqlQuerypw = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPasswort'";
@@ -65,7 +66,7 @@ public class OldDbImport {
         try {
             port = parseInt(executeQuery(sqlQueryport));
         } catch (NumberFormatException e) {
-            System.err.println("string is keine zahl");
+            System.err.println("Es wurde ein String anstatt einer Zahl übergeben");
         }
         name = executeQuery(sqlQueryname);
         */
@@ -101,7 +102,7 @@ public class OldDbImport {
         return configurationValue;
     }
 
-    // Hilfsmethode zum Abrufen des Konfigurationswerts anhand des Schlüssels
+
 
 
     private static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
