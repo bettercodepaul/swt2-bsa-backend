@@ -1,62 +1,111 @@
 package de.bogenliga.application.services.v1.olddbimport;
 
-/**
-
- TODO [AL] class documentation*
- @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
- */
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import de.bogenliga.application.common.configuration.DatabaseConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.lang.Integer.parseInt;
 
 
-/*
 public class OldDbImport {
     private static final Logger LOG = LoggerFactory.getLogger(OldDbImport.class);
 
-    // Verbindungsinformationen
-    static String host = "mysql2f19.netcup.net";
-    private static int port = 3306;
-    private static String dbName = "k74918_bogenliga";
-    private static String user = "k74918_bsapp_ro";
-    private static String password = "BsApp@100%";
+    // Verbindungsinformationen der My SQL Datenbank
+    private static String host = "";
+    private static int port = 0;
+    private static String name = "";
+    private static String user = "";
+    private static String password = "";
 
-    private static DatabaseConfiguration databaseConfiguration;
 
     private static final String DROPSTATMENT = "DROP TABLE IF EXISTS altsystem_";
 
-    // JDBC-URL
-    private static final String URL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+    // JDBC-URL der My SQL Datenbank
+    private static String URL = "jdbc:mysql://" + host + ":" + port + "/" + name;
 
     private static String sqlfile ="temptable.sql";
 
+    private static String directoryPath = "";
+
     private static String[] tableNames = {"acl", "ergebniss", "liga", "mannschaft", "saison", "schuetze", "users", "wettkampfdaten"};
+
+
+    //GET LOGIN CREDENTIALS FROM ENV for Postgresql DB
+    private static String URLT = System.getenv("DB_URL");
+    private static String userT = System.getenv("DB_user");
+    private static String passwordT = System.getenv("DB_password");
+
+    //SQL Querys for Database Credentials for MY SQL Database from Postgres Database "configuration" Table
+    private static String sqlQueryuser = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBBenutzer'";
+    private static String sqlQueryhost = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBHost'";
+    private static String sqlQuerypw = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPasswort'";
+    private static String sqlQueryport = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBPort'";
+    private static String sqlQueryname = "SELECT configuration_value FROM configuration WHERE configuration_key = 'OLDDBName'";
+
+    public static boolean executeScriptEnabled = true;
+
     public static void main (String [] args){
         sync();
 
-       /* getDataScource() databaseConfiguration.getHost(), databseConfiguration.getHost(), databaseConfiguration.getpassword()
+       /*
+        user = executeQuery(sqlQueryuser);
+        host = executeQuery(sqlQueryhost);
+        password = executeQuery(sqlQuerypw);
 
-        PostgresqlTransactionManager manager = new PostgresqlTransactionManager(databaseConfiguration);
-        DataSource dataSource = manager.getDataSource(); */
+        try {
+            port = parseInt(executeQuery(sqlQueryport));
+        } catch (NumberFormatException e) {
+            System.err.println("Es wurde ein String anstatt einer Zahl übergeben");
+        }
+        name = executeQuery(sqlQueryname);
+        */
+    }
 
-   // }
+    public static void setConnectionInfo(String url, String user, String password) {
+        URLT = url;
+        userT = user;
+        passwordT = password;
+    }
+
+    public static String getURL(){
+        return URL;
+    }
+
+    public static void setURL(String url){
+        URL = url;
+    }
+    private static String executeQuery(String query) {
+        String configurationValue = "";
+        try (Connection connection = DriverManager.getConnection(URLT, userT, passwordT);
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                configurationValue = resultSet.getString("configuration_value");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();}
+
+        System.out.println("Configuration Value: " + configurationValue);
+        return configurationValue;
+    }
 
 
-/*
-    public static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
+
+
+    private static void executeScript(String scriptFilePath, String jdbcUrl, String username, String password) {
         try{
             String script=new String(Files.readAllBytes(Paths.get(scriptFilePath)));
             Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
@@ -67,52 +116,57 @@ public class OldDbImport {
             }
             finally{
                 if(connection != null && !connection.isClosed()){
-                    connection.close();
-                }
-            }
+                    connection.close();}}
         }
         catch (IOException | SQLException e){
             e.printStackTrace();
         }
-
     }
 
 
-    public static void sync(){
+    public static String sync() {
+
+        StringBuilder generatedSql = new StringBuilder();
+
+        user = executeQueryWrapper(sqlQueryuser);
+        host = executeQueryWrapper(sqlQueryhost);
+        password = executeQueryWrapper(sqlQuerypw);
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            port = parseInt(executeQueryWrapper(sqlQueryport));
+        } catch (NumberFormatException e) {
+            System.err.println("string is keine zahl");}
+        name = executeQueryWrapper(sqlQueryname);
 
-            File file = new File(sqlfile);
 
-            if (file.exists() && file.isFile()) {
-                if (file.delete()) {
-                    System.out.println("Datei 'temptable.sql' wurde gelöscht.");
-                } else {
-                    System.out.println("Fehler beim Löschen der Datei 'temptable.sql'.");
-                    return;
-                }
+        File file = new File(directoryPath,  sqlfile);
+
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                System.out.println("Datei " + sqlfile + " wurde gelöscht.");
+            } else {
+                System.out.println("Fehler beim Löschen der Datei 'temptable.sql'.");
+                return null;
             }
-
-            // Connection herstellen
-            try (Connection connection = DriverManager.getConnection(URL, user, password)) {
-
-                for (int i = 0; i < tableNames.length; i++) {
-                    System.out.println(tableNames[i]);
-                    exportTable(connection, tableNames[i]);
-                }
-
-
-            }
-            catch (IOException  | SQLException e) {
-                e.printStackTrace();
-            }
-            finally{
-                executeScript("temptable.sql", "jdbc:postgresql://localhost:5432/swt2", "swt2","swt2" );           }
         }
-        catch (ClassNotFoundException e) {
+
+        // Connection herstellen
+        try (Connection connection = DriverManager.getConnection(URL, user, password)) {
+
+            for (int i = 0; i < tableNames.length; i++) {
+                System.out.println(tableNames[i]);
+                String tableSql = exportTable(connection, tableNames[i]);
+                generatedSql.append(tableSql);            }
+        }
+        catch (IOException  | SQLException e) {
             e.printStackTrace();
         }
-
+        finally{
+            if (executeScriptEnabled) {
+                executeScript(sqlfile, URLT, userT, passwordT);
+            }
+        }
+        return generatedSql.toString();
     }
 
 
@@ -146,16 +200,19 @@ public class OldDbImport {
         return insertQuery;
     }
 
-    private static void exportTable(Connection connection, String tableName) throws SQLException, IOException {
+    private static String exportTable(Connection connection, String tableName) throws SQLException, IOException {
+        String tempInsertQuery;
         String sql = "SELECT * FROM " + tableName + "";
         boolean[] tables = new boolean[8];
         for (int i = 0; i < tables.length; i++) {
             tables[i] = true;
         }
 
+        StringBuilder generatedSql;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
+            generatedSql = new StringBuilder();
             while (resultSet.next()) {
                 String insertSql = "INSERT INTO altsystem_" + tableName + " VALUES (";
                 for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
@@ -171,15 +228,27 @@ public class OldDbImport {
                     }
 
                     String insertQuery = insertStatement.toString();
+                    tempInsertQuery = insertQuery;
                     insertQuery = insertQuery.replace("com.mysql.cj.jdbc.ClientPreparedStatement: ", "");
 
                     insertQuery = insertTable(tableName, tables, insertQuery);
 
-                    try (FileWriter fw = new FileWriter(sqlfile, true)) {
+                    FileWriter fw = null;
+                    try {
+                        fw = new FileWriter(sqlfile, true);
                         fw.write(insertQuery);
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("Fehler beim Filewriter");
+                    } finally {
+                        if (fw != null) {
+                            try {
+                                fw.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                System.out.println("Fehler beim Schließen des Filewriters");
+                            }
+                        }
                     }
 
                 } finally {
@@ -187,8 +256,32 @@ public class OldDbImport {
                         insertStatement.close();
                     }
                 }
+                generatedSql.append(tempInsertQuery);
             }
         }
+        return generatedSql.toString();
     }
 
-}*/
+    public static Map<String, String> getTableDefinitions() {
+        return new HashMap<>(TABLE_DEFINITIONS);
+    }
+    public static String executeQueryWrapper(String query) {
+        return OldDbImport.executeQuery(query);
+    }
+
+    public static void executeScriptWrapper(String scriptFilePath, String jdbcUrl, String username, String password) {
+        OldDbImport.executeScript(scriptFilePath, jdbcUrl, username, password);
+    }
+
+    public static String exportTableWrapper(Connection connection, String tableName) throws SQLException, IOException {
+        return OldDbImport.exportTable(connection, tableName);
+    }
+
+    public static String createTableWrapper(String tableName) {
+        return OldDbImport.createTable(tableName);
+    }
+
+    public static String insertTableWrapper(String tableName, boolean[] tables, String insertQuery) {
+        return OldDbImport.insertTable(tableName, tables, insertQuery);
+    }
+}
