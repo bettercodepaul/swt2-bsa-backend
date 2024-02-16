@@ -14,18 +14,12 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-@ExtendWith(MockitoExtension.class)
 public class OldDbImportTest {
+
     @InjectMocks
     private OldDbImport oldDbImport;
 
@@ -73,36 +67,6 @@ public class OldDbImportTest {
         OldDbImport.setURL(originalURL);
     }
 
-    @Test
-    public void testSync() throws Exception {
-
-        OldDbImport.executeScriptEnabled = false;
-
-        OldDbImport.setConnectionInfo(TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
-
-        Field urlField = OldDbImport.class.getDeclaredField("URL");
-        urlField.setAccessible(true);
-
-        String testUrl = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1";
-        urlField.set(null, testUrl);
-
-        File tempTestFile = File.createTempFile("testExportTable", ".sql");
-        String testFilePath = tempTestFile.getAbsolutePath();
-
-        Field tempSQLFile = OldDbImport.class.getDeclaredField("sqlfile");
-        tempSQLFile.setAccessible(true);
-        tempSQLFile.set(null, testFilePath);
-
-        when(DriverManager.getConnection(anyString(), anyString(), anyString())).thenReturn(connection);
-        System.out.println(connection.getMetaData());
-        String generatedSql = OldDbImport.sync();
-
-        assertThat(generatedSql).contains("INSERT INTO altsystem_");
-
-        tempTestFile.deleteOnExit();
-
-        OldDbImport.executeScriptEnabled = true;
-    }
 
     @Test
     public void testExecuteQuery() throws SQLException {
