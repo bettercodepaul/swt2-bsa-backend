@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.trigger.service;
 
 import java.security.Principal;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +57,7 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RequestMapping("v1/trigger")
 
 public class TriggerService implements ServiceFacade {
-    private static final Map<String, Class<?>> tableNameToClass = getTableNameToClassMap();
+    static final Map<String, Class<?>> tableNameToClass = getTableNameToClassMap();
 
     private final Map<Class<?>, AltsystemEntity<?>> dataObjectToEntity;
 
@@ -95,9 +94,6 @@ public class TriggerService implements ServiceFacade {
 
     private static Map<String, Class<?>> getTableNameToClassMap() {
         Map<String, Class<?>> result = new LinkedHashMap<>();
-
-        // FIXME: Use real entities
-        result.put("altsystem_TEST", AltsystemDO.class);
 
         result.put("altsystem_liga", AltsystemLigaDO.class);
         result.put("altsystem_saison", AltsystemSaisonDO.class);
@@ -199,8 +195,8 @@ public class TriggerService implements ServiceFacade {
                         oldClass, oldTableName, new HashMap<>(), LOGGER
                 ), sqlQuery, triggerDO.getAltsystemId());
 
-                AltsystemEntity entity = dataObjectToEntity.get(retrievedObject.getClass());
-                changes.add(new TriggerChange<>(triggerComponent, triggerDO, retrievedObject, null, triggerDO.getCreatedByUserId()));
+                AltsystemEntity<?> entity = dataObjectToEntity.get(retrievedObject.getClass());
+                changes.add(new TriggerChange(triggerComponent, triggerDO, retrievedObject, entity, triggerDO.getCreatedByUserId()));
             } catch (TechnicalException e) {
                 LOGGER.error("Failed to load old model for " + oldTableName, e);
             }
@@ -259,8 +255,7 @@ public class TriggerService implements ServiceFacade {
             );
             TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
 
-            // FIXME: use entity instead of null
-            changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, null, triggeringUserId));
+            changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));
         }
 
         return changes;
