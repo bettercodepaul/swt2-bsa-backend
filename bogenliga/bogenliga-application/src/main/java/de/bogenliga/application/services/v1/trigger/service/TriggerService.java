@@ -158,19 +158,20 @@ public class TriggerService implements ServiceFacade {
     }
 
     public void syncData(long triggeringUserId) {
-        LOGGER.debug("Importing tables from old database");
+        LOGGER.info("Importing tables from old database");
         OldDbImport.sync();
 
         Timestamp lastSync = getMigrationTimestamp();
 
-        LOGGER.debug("Computing changes");
+        LOGGER.info("Computing changes");
         List<TriggerChange<?>> changes = computeAllChanges(triggeringUserId, lastSync);
-        LOGGER.debug("Computed {} changes", changes.size());
+        LOGGER.info("Computed {} changes", changes.size());
 
         for (TriggerChange<?> change : changes) {
             boolean success = change.tryMigration();
             LOGGER.debug("Migrated {} (Success: {})", change.getAltsystemDataObject(), success);
         }
+        LOGGER.info("Was nettes :)");
 
         //Updated den Timestamp nach dem sync
         setMigrationTimestamp(new Timestamp(System.currentTimeMillis()));
