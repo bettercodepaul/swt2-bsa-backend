@@ -125,6 +125,7 @@ public class OldDbImport {
             System.err.println("string is keine zahl");}
         name = executeQueryWrapper(sqlQueryname);
 
+        setURL("jdbc:mysql://" + host + ":" + port + "/" + name);
 
         File file = new File(directoryPath,  sqlfile);
 
