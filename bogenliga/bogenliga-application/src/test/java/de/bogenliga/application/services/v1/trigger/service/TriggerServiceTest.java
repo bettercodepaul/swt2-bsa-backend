@@ -90,7 +90,7 @@ public class TriggerServiceTest {
 		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
 
 		// configure mocks
-		when(triggerComponent.findAll()).thenReturn(expectedDOList);
+		when(triggerComponent.findAllLimited()).thenReturn(expectedDOList);
 
 		// call test method
 		final List<TriggerDTO> actual = triggerServiceTest.findAll();
@@ -117,7 +117,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerComponent, times(1)).findAll();
+		verify(triggerComponent, times(1)).findAllLimited();
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class TriggerServiceTest {
 		when(basicDAO.selectSingleEntity(any(), anyString(), any())).thenReturn(new AltsystemLigaDO());
 
 		// call test method
-		final List<TriggerChange<?>> actual = triggerServiceTest.loadUnprocessedChanges();
+		final List<TriggerChange<?>> actual = triggerServiceTest.loadUnprocessedChanges(1);
 
 		// assert result
 		Java6Assertions.assertThat(actual)

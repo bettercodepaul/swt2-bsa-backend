@@ -122,7 +122,7 @@ public class TriggerService implements ServiceFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @RequiresPermission(UserPermission.CAN_MODIFY_STAMMDATEN)
     public List<TriggerDTO> findAll() {
-        final List<TriggerDO> triggerDOList = triggerComponent.findAll();
+        final List<TriggerDO> triggerDOList = triggerComponent.findAllLimited();
 
         return triggerDOList.stream().map(TriggerDTOMapper.toDTO).collect(Collectors.toList());
     }
@@ -180,12 +180,13 @@ public class TriggerService implements ServiceFacade {
     /**
      * Reads all unprocessed changes from altsystem_aenderung.
      */
-    List<TriggerChange<?>> loadUnprocessedChanges() {
+    List<TriggerChange<?>> loadUnprocessedChanges(final long triggeringUserId) {
         List<TriggerChange<?>> changes = new ArrayList<>();
 
         List<TriggerDO> changeObjects = triggerComponent.findAllUnprocessed();
 
         for (TriggerDO triggerDO : changeObjects) {
+            triggerDO.setCreatedByUserId(triggeringUserId);
             String oldTableName = triggerDO.getKategorie();
             Class<?> oldClass = tableNameToClass.get(oldTableName);
             String sqlQuery = "SELECT * FROM " + oldTableName + " WHERE id = ?";
@@ -211,7 +212,7 @@ public class TriggerService implements ServiceFacade {
      * updated and newly created models.
      */
     List<TriggerChange<?>> computeAllChanges(final long triggeringUserId, Timestamp lastSync) {
-        List<TriggerChange<?>> changes = loadUnprocessedChanges();
+        List<TriggerChange<?>> changes = loadUnprocessedChanges(triggeringUserId);
 
         for (String oldTableName : tableNameToClass.keySet()) {
             try {
