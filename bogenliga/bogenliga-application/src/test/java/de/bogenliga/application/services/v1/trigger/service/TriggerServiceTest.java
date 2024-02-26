@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
 import de.bogenliga.application.business.liga.api.LigaComponent;
 import de.bogenliga.application.business.trigger.api.TriggerComponent;
 import de.bogenliga.application.business.trigger.api.types.TriggerChangeOperation;
@@ -76,7 +77,7 @@ public class TriggerServiceTest {
 	}
 
 	private static AltsystemDO createRawAltsystemDO(Timestamp createdAt, Timestamp updatedAt) {
-		final AltsystemDO rawDO = new AltsystemDO() {};
+		final AltsystemDO rawDO = new AltsystemLigaDO();
 		rawDO.setCreatedAt(createdAt);
 		rawDO.setUpdatedAt(updatedAt);
 		return rawDO;
@@ -89,7 +90,7 @@ public class TriggerServiceTest {
 		final List<TriggerDO> expectedDOList = Collections.singletonList(expectedDO);
 
 		// configure mocks
-		when(triggerComponent.findAll()).thenReturn(expectedDOList);
+		when(triggerComponent.findAllLimited()).thenReturn(expectedDOList);
 
 		// call test method
 		final List<TriggerDTO> actual = triggerServiceTest.findAll();
@@ -116,7 +117,7 @@ public class TriggerServiceTest {
 				.isEqualTo(expectedDO.getRunAtUtc());
 
 		// verify invocations
-		verify(triggerComponent, times(1)).findAll();
+		verify(triggerComponent, times(1)).findAllLimited();
 	}
 
 	@Test
@@ -128,9 +129,10 @@ public class TriggerServiceTest {
 
 		// configure mocks
 		when(triggerComponent.findAllUnprocessed()).thenReturn(expectedDOList);
+		when(basicDAO.selectSingleEntity(any(), anyString(), any())).thenReturn(new AltsystemLigaDO());
 
 		// call test method
-		final List<TriggerChange<?>> actual = triggerServiceTest.loadUnprocessedChanges();
+		final List<TriggerChange<?>> actual = triggerServiceTest.loadUnprocessedChanges(1);
 
 		// assert result
 		Java6Assertions.assertThat(actual)
@@ -148,22 +150,29 @@ public class TriggerServiceTest {
 	@Test
 	public void testComputeAllChanges() {
 		// prepare test data
-		final TriggerDO unprocessedTrigger = getTriggerDO();
-		unprocessedTrigger.setCreatedByUserId(1L);
-
-		// configure mocks
-		final List<TriggerDO> unprocessedTriggers = Collections.singletonList(unprocessedTrigger);
-		when(triggerComponent.findAllUnprocessed()).thenReturn(unprocessedTriggers);
-
 		Timestamp earlier = Timestamp.valueOf(LocalDateTime.of(2024, 1, 2, 0, 0));
 		Timestamp later = Timestamp.valueOf(LocalDateTime.of(2024, 1, 3, 0, 0));
+
+		final TriggerDO unprocessedTrigger = getTriggerDO();
+		unprocessedTrigger.setCreatedByUserId(1L);
+		final List<TriggerDO> unprocessedTriggers = Collections.singletonList(unprocessedTrigger);
+
+		final AltsystemDO unprocessedDO = createRawAltsystemDO(
+				later,
+				later
+		);
+
+		// configure mocks
+		when(triggerComponent.findAllUnprocessed()).thenReturn(unprocessedTriggers);
+		when(basicDAO.selectSingleEntity(any(), anyString(), any())).thenReturn(unprocessedDO);
 
 		final AltsystemDO expectedDO = createRawAltsystemDO(
 				later,
 				later
 		);
 		final List<Object> expectedDOs = Collections.singletonList(expectedDO);
-		when(basicDAO.selectEntityList(any(), anyString())).thenReturn(expectedDOs);
+		final String sqlQuery = "SELECT * FROM altsystem_liga";
+		when(basicDAO.selectEntityList(any(), eq(sqlQuery))).thenReturn(expectedDOs);
 
 		// call test method
 		final List<TriggerChange<?>> actual = triggerServiceTest.computeAllChanges(1L, earlier);
@@ -181,7 +190,7 @@ public class TriggerServiceTest {
 
 		// verify invocations
 		verify(triggerComponent, times(1)).findAllUnprocessed();
-		verify(basicDAO, times(1)).selectEntityList(any(), anyString());
+		verify(basicDAO, times(1)).selectEntityList(any(), eq(sqlQuery));
 	}
 
 	@Test
