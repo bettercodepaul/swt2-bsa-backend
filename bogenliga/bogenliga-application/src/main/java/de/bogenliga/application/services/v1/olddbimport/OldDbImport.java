@@ -56,7 +56,7 @@ public class OldDbImport {
     public static boolean executeScriptEnabled = true;
 
     public static void main (String [] args){
-
+      //this function is only for testing
     }
 
     public static void setConnectionInfo(String url, String user, String password) {
