@@ -56,20 +56,7 @@ public class OldDbImport {
     public static boolean executeScriptEnabled = true;
 
     public static void main (String [] args){
-        sync();
 
-       /*
-        user = executeQuery(sqlQueryuser);
-        host = executeQuery(sqlQueryhost);
-        password = executeQuery(sqlQuerypw);
-
-        try {
-            port = parseInt(executeQuery(sqlQueryport));
-        } catch (NumberFormatException e) {
-            System.err.println("Es wurde ein String anstatt einer Zahl übergeben");
-        }
-        name = executeQuery(sqlQueryname);
-        */
     }
 
     public static void setConnectionInfo(String url, String user, String password) {
