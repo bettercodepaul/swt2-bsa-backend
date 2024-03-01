@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import de.bogenliga.application.business.altsystem.sync.OldDbImport;
 import org.assertj.core.api.Java6Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,6 +60,8 @@ public class TriggerServiceTest {
 	private LigaComponent ligaComponent;
 	@Mock
 	private MigrationTimestampDAO migrationTimestampDAO;
+	@Mock
+	private OldDbImport oldDBImport;
 
 	@InjectMocks
 	private TriggerService triggerServiceTest;

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -56,6 +55,49 @@ public class BasicDAO implements DataAccessObject {
     BasicDAO(TransactionManager transactionManager, QueryRunner queryRunner) {
         this.transactionManager = transactionManager;
         run = queryRunner;
+    }
+
+    /**
+     * Runs a query that is given to the methode. This is neccessary to
+     * insert data from an unknown entity
+     *
+     * Since this is not ideal it would be good to have inserts into tables of entities instead
+     *
+     */
+    public void executeQuery(String query){
+        boolean error = false;
+        boolean activeTX = false;
+
+        try {
+            if (transactionManager.isActive()) {
+                activeTX = true;
+            } else {
+                transactionManager.begin();
+            }
+
+             run.update(getConnection(), query);
+
+        } catch (SQLException e) {
+            error = true;
+            throw new TechnicalException(ErrorCode.DATABASE_ERROR, e);
+
+        } finally {
+            try {
+                if (!activeTX) {
+                    // leaving business code with commit only when no sub-TX is
+                    // active, in case of an error just rollback transaction
+                    if (error) {
+                        transactionManager.rollback();
+                    } else {
+                        transactionManager.commit();
+                    }
+                }
+            } finally {
+                if (!activeTX) {
+                    transactionManager.release();
+                }
+            }
+        }
     }
 
 

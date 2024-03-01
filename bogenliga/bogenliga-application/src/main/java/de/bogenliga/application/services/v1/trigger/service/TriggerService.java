@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ import de.bogenliga.application.common.component.dao.BusinessEntityConfiguration
 import de.bogenliga.application.common.errorhandling.exception.TechnicalException;
 import de.bogenliga.application.common.service.ServiceFacade;
 import de.bogenliga.application.common.service.UserProvider;
-import de.bogenliga.application.services.v1.olddbimport.OldDbImport;
+import de.bogenliga.application.business.altsystem.sync.OldDbImport;
 import de.bogenliga.application.services.v1.trigger.mapper.TriggerDTOMapper;
 import de.bogenliga.application.services.v1.trigger.model.TriggerChange;
 import de.bogenliga.application.services.v1.trigger.model.TriggerDTO;
@@ -55,7 +56,6 @@ import de.bogenliga.application.springconfiguration.security.types.UserPermissio
 @RestController
 @CrossOrigin
 @RequestMapping("v1/trigger")
-
 public class TriggerService implements ServiceFacade {
     static final Map<String, Class<?>> tableNameToClass = getTableNameToClassMap();
 
@@ -68,6 +68,7 @@ public class TriggerService implements ServiceFacade {
     private final TriggerComponent triggerComponent;
 
     private final MigrationTimestampDAO migrationTimestampDAO;
+    private final OldDbImport oldDBImport;
 
     @Autowired
     public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
@@ -76,12 +77,14 @@ public class TriggerService implements ServiceFacade {
                           final AltsystemMannschaft altsystemMannschaft,
                           final AltsystemSchuetze altsystemSchuetze,
                           final AltsystemWettkampfdaten altsystemWettkampfdaten,
-                          final AltsystemErgebnisse altsystemErgebnisse
+                          final AltsystemErgebnisse altsystemErgebnisse,
+                          final OldDbImport oldDBImport
     ) {
         this.basicDao = basicDao;
         this.triggerDAO = triggerDAO;
         this.triggerComponent = triggerComponent;
         this.migrationTimestampDAO = migrationTimestampDAO;
+        this.oldDBImport = oldDBImport;
 
         dataObjectToEntity = new HashMap<>();
         dataObjectToEntity.put(AltsystemLigaDO.class, altsystemLiga);
@@ -159,7 +162,7 @@ public class TriggerService implements ServiceFacade {
 
     public void syncData(long triggeringUserId) {
         LOGGER.info("Importing tables from old database");
-        OldDbImport.sync();
+        oldDBImport.sync();
 
         Timestamp lastSync = getMigrationTimestamp();
 
