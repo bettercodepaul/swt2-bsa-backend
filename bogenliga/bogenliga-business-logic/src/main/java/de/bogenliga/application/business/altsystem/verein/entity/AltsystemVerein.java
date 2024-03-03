@@ -56,7 +56,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
             e.printStackTrace();
         }
         // Schaut, ob Verein bereits vorhanden ist
-        if (vorhanden == null){
+        if (vorhanden == null || vorhanden.getId() == null){
             //Führt mapper aus
             vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
             vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
