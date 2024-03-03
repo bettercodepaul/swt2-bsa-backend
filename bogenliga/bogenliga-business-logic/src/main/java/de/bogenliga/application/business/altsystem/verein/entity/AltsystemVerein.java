@@ -57,11 +57,11 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
             //Create in Neue Tabele
             vereinComponent.create(vereinDO, currentUserId);
             //Create in Uebersetzungstabele
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vereinDO.getId().longValue(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (Long) altsystemDataObject.getId(), vereinDO.getId().longValue(), "");
 
         }else {
             //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (int) altsystemDataObject.getId(), vorhanden.getId().longValue(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (Long) altsystemDataObject.getId(), vorhanden.getId().longValue(), "");
         }
 
     }
