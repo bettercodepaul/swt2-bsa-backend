@@ -28,11 +28,11 @@ import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
  */
 public class AltsystemPasseMapperTest{
 
-    private static final long MATCH_ID = 4L;
-    private static final long MATCH_NR = 1L;
-    private static final long WETTKAMPF_ID = 17L;
-    private static final long DSBMITGLIED_ID = 10L;
-    private static final long MANNSCHAFT_ID = 5L;
+    private static final Long MATCH_ID = 4L;
+    private static final Long MATCH_NR = 1L;
+    private static final Long WETTKAMPF_ID = 17L;
+    private static final Long DSBMITGLIED_ID = 10L;
+    private static final Long MANNSCHAFT_ID = 5L;
 
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
