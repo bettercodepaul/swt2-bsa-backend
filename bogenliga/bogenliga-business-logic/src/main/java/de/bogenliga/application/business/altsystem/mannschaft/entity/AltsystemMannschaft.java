@@ -93,7 +93,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
         //Wenn die Mannschaft noch nicht in der Uebersetzungstabele vorhanden ist Exception
         if(mannschaftUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemDataObject.getId()));
+                    String.format("No result found for mannschaftUebersetzung in Update ID'%s'", altsystemDataObject.getId()));
         }
         //Dataobjekt der Mannschaft suchen und zurückgeben
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftUebersetzung.getBogenligaId());
