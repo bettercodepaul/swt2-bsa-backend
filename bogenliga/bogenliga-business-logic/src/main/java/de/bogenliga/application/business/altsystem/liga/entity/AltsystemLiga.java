@@ -67,7 +67,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         // Check if the translation data has been found
         if(ligaUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemLigaDO.getId()));
+                    String.format("No result found for ligaUebersetzung in update ID '%s'", altsystemLigaDO.getId()));
         }
 
         // Find data in table with corresponding id
