@@ -74,7 +74,7 @@ public class AltsystemUebersetzungDAO {
             .compose()
             .toString();
 
-    public void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, long altsystemID, long bogenligaID, String wert) {
+    public void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, Long altsystemID, Long bogenligaID, String wert) {
         AltsystemUebersetzungDO uebersetzungDO = findByAltsystemID(kategorie, altsystemID);
 
         if (uebersetzungDO == null){
