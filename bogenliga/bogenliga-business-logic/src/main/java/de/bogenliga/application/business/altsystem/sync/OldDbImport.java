@@ -56,7 +56,12 @@ public class OldDbImport {
 
         TABLE_DEFINITIONS = new HashMap<>();
         TABLE_DEFINITIONS.put("acl","CREATE TABLE altsystem_acl (ID INT PRIMARY KEY, users_ID INT, liga_ID INT, created_at timestamp, updated_at timestamp)");
-        TABLE_DEFINITIONS.put("ergebniss","CREATE TABLE altsystem_ergebniss (schuetze_ID INT, match INT,  ergebniss INT, created_at timestamp, updated_at timestamp, PRIMARY KEY(schuetze_ID ,match))");
+
+        // die Tabellendefinition "ergebniss" im Altsystem umfasst keine ID - wir benötigen aber einen Schlüssel
+        // für die weitere die Verarbeitung.
+        // Daher definieren wir die ID zusätzlich, und lassen sie beim Insert automatisch erzeugen.
+        // in der Verarbeitung wird dann die ID wie ein Attribut des Altsystems genutzt
+        TABLE_DEFINITIONS.put("ergebniss","CREATE TABLE altsystem_ergebniss (ID INT PRIMARY KEY, schuetze_ID INT, match INT,  ergebniss INT, created_at timestamp, updated_at timestamp)");
         TABLE_DEFINITIONS.put("liga","CREATE TABLE altsystem_liga (ID INT PRIMARY KEY, subdom VARCHAR(255), name VARCHAR(255), id_nextLiga INT, secret VARCHAR(255), created_at timestamp, updated_at timestamp)");
         TABLE_DEFINITIONS.put("mannschaft","CREATE TABLE altsystem_mannschaft (ID INT PRIMARY KEY, liga_ID INT, manNr VARCHAR(255), name VARCHAR(255), saison_ID INT, created_at timestamp, updated_at timestamp)");
         TABLE_DEFINITIONS.put("saison","CREATE TABLE altsystem_saison (ID INT PRIMARY KEY, name VARCHAR(255), oderNr INT, aktuell INT, created_at timestamp, updated_at timestamp)");
