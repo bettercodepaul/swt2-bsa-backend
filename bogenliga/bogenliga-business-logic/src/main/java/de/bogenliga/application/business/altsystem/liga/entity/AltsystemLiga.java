@@ -48,11 +48,6 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
 
         // Add data to table
         ligaDO = ligaComponent.create(ligaDO, currentUserId);
-// TODO: hiere muss auch ein Objekt Veranstaltung und mehrere Wettkampftage erzeigt werden
-
-
-
-// TODO als ID sollte im folgenden DS die ID vder Veranstaltung weitergegeben werden
         // Add to translation table
         altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
     }
