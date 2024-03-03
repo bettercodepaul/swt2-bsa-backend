@@ -57,10 +57,17 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
             bld.append(passe.getId());
             bld.append(";");
         }
-
         // Ids der Passen in die Übersetzungstabelle schreiben
         String passeIdString = bld.toString();
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId(), 0L, passeIdString);
+
+        // die Tabelle ergebniss hat keine ID - der Primary Key besteht aus SchutzenID + Match
+        StringBuilder bld_altsystemID = new StringBuilder();
+        bld_altsystemID.append(altsystemErgebnisseDO.getSchuetzeID().toString());
+        bld_altsystemID.append(altsystemErgebnisseDO.getMatch().toString());
+
+        Long ergebnissId_uebersetzung = Long.valueOf(bld_altsystemID.toString());
+
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Ergebnis_Passen,ergebnissId_uebersetzung , 0L, passeIdString);
 
     }
 
@@ -71,8 +78,14 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
      */
     @Override
     public void update(AltsystemErgebnisseDO altsystemErgebnisseDO, long currentUserId){
+        // die Tabelle ergebniss hat keine ID - der Primary Key besteht aus SchutzenID + Match
+        StringBuilder bld_altsystemID = new StringBuilder();
+        bld_altsystemID.append(altsystemErgebnisseDO.getSchuetzeID().toString());
+        bld_altsystemID.append(altsystemErgebnisseDO.getMatch().toString());
+        Long ergebnissId_uebersetzung = Long.valueOf(bld_altsystemID.toString());
+
         // Ids der zugehörigen Passen extrahieren
-        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, altsystemErgebnisseDO.getId());
+        AltsystemUebersetzungDO uebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Ergebnis_Passen, ergebnissId_uebersetzung);
         String passeIdString = uebersetzungDO.getWert().trim();
         String[] passeIds = passeIdString.split(";");
 
