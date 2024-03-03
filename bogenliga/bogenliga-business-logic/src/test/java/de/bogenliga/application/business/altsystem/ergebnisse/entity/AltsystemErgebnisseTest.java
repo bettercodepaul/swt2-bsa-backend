@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class AltsystemErgebnisseTest {
-    private static final long CURRENTUSERID = 1L;
+    private static final Long CURRENTUSERID = 1L;
 
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
@@ -46,7 +46,7 @@ public class AltsystemErgebnisseTest {
         altsystemErgebnisseDO.setId(1L);
         altsystemErgebnisseDO.setSchuetzeID(1L);
         altsystemErgebnisseDO.setErgebnis(47);
-        altsystemErgebnisseDO.setMatch(4);
+        altsystemErgebnisseDO.setMatch(4L);
 
         List<PasseDO> passen = new LinkedList<>();
         PasseDO testPasse = new PasseDO();
@@ -70,7 +70,7 @@ public class AltsystemErgebnisseTest {
         altsystemErgebnisseDO.setId(1L);
         altsystemErgebnisseDO.setSchuetzeID(1L);
         altsystemErgebnisseDO.setErgebnis(47);
-        altsystemErgebnisseDO.setMatch(4);
+        altsystemErgebnisseDO.setMatch(4L);
 
         // Uebersetzung DO
         AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();
