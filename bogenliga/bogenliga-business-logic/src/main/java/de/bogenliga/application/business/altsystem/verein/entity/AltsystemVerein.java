@@ -45,20 +45,20 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
          * @param currentUserId The ID of the current user performing the operation.
          */
 
+        // wir mappen mal den Namen und den DSB Identifier aus den Alsystemdaten
         VereinDO vereinDO = new VereinDO();
+        vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
         //parsed den Identifier
-        String parsedIdentifier = altsystemVereinMapper.parseIdentifier(altsystemDataObject);
 
+        // Schaut, ob Verein bereits vorhanden ist
         VereinDO vorhanden = null;
         try{
-            vorhanden = altsystemVereinMapper.getVereinDO(parsedIdentifier);
+            vorhanden = altsystemVereinMapper.getVereinDO(vereinDO.getName(), vereinDO.getDsbIdentifier());
         }catch(Exception e){
             e.printStackTrace();
         }
-        // Schaut, ob Verein bereits vorhanden ist
         if (vorhanden == null || vorhanden.getId() == null){
             //Führt mapper aus
-            vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
             vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
             //Create in Neue Tabele
             vereinComponent.create(vereinDO, currentUserId);
