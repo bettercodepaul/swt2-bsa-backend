@@ -58,9 +58,8 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
             e.printStackTrace();
         }
         Long dsbMitgliedId = null;
-
         // Wenn der Identifier noch nicht in der Übersetzungstabelle vorhanden ist
-        if (schuetzeUebersetzung == null) {
+        if (schuetzeUebersetzung == null || schuetzeUebersetzung.getBogenligaId() == null) {
             // Daten des Schützen in das Objekt für das neue System übertragen
             dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
             dsbMitgliedDO = altsystemSchuetzeMapper.addDefaultFields(dsbMitgliedDO, currentUserId);
