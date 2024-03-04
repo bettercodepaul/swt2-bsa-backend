@@ -43,7 +43,7 @@ public class AltsystemErgebnisseTest {
     public void testCreate() {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
-        altsystemErgebnisseDO.setId(1L);
+        altsystemErgebnisseDO.setId(14L);
         altsystemErgebnisseDO.setSchuetzeID(1L);
         altsystemErgebnisseDO.setErgebnis(47);
         altsystemErgebnisseDO.setMatch(4L);
@@ -67,7 +67,7 @@ public class AltsystemErgebnisseTest {
     public void testUpdate() {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
-        altsystemErgebnisseDO.setId(1L);
+        altsystemErgebnisseDO.setId(14L);
         altsystemErgebnisseDO.setSchuetzeID(1L);
         altsystemErgebnisseDO.setErgebnis(47);
         altsystemErgebnisseDO.setMatch(4L);
