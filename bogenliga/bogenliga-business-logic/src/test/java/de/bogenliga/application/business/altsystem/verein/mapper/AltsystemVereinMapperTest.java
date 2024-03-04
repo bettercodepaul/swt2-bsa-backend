@@ -73,7 +73,7 @@ public class AltsystemVereinMapperTest {
         );
 
         // Setze das Mock-Verhalten für findBySearch
-        when(vereinComponent.findBySearch(anyString(), anyString())).thenReturn(mockVereinDOS);
+        when(vereinComponent.findBySearch(anyString())).thenReturn(mockVereinDOS);
 
         // Führt die Methode aus
         VereinDO result = altsystemVereinMapper.getVereinDO(vereinName, vereinIdentifier);
