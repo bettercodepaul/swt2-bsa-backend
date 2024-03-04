@@ -53,7 +53,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         // Informationen zum Schützen im neuen System anhand des Identifiers abrufen
         AltsystemUebersetzungDO schuetzeUebersetzung = null;
         try {
-            schuetzeUebersetzung = altsystemSchuetzeMapper.getSchuetzeByIdentifier(parsedIdentifier);
+            schuetzeUebersetzung = altsystemSchuetzeMapper.getSchuetzeByIdentifier(altsystemSchuetzeDO.getId());
         }catch(Exception e){
             e.printStackTrace();
         }
