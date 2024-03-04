@@ -48,9 +48,15 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
         VereinDO vereinDO = new VereinDO();
         //parsed den Identifier
         String parsedIdentifier = altsystemVereinMapper.parseIdentifier(altsystemDataObject);
-        VereinDO vorhanden = altsystemVereinMapper.getVereinDO(parsedIdentifier);
+
+        VereinDO vorhanden = null;
+        try{
+            vorhanden = altsystemVereinMapper.getVereinDO(parsedIdentifier);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         // Schaut, ob Verein bereits vorhanden ist
-        if (vorhanden.getId() == null){
+        if (vorhanden == null || vorhanden.getId() == null){
             //Führt mapper aus
             vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
             vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
