@@ -57,7 +57,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
         }catch(Exception e){
             e.printStackTrace();
         }
-        if (vorhanden == null || vorhanden.getId() == null){
+        if (  vorhanden == null ){
             //Führt mapper aus
             vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
             //Create in Neue Tabele

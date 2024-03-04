@@ -61,7 +61,7 @@ public class OldDbImport {
         // für die weitere die Verarbeitung.
         // Daher definieren wir die ID zusätzlich, und lassen sie beim Insert automatisch erzeugen.
         // in der Verarbeitung wird dann die ID wie ein Attribut des Altsystems genutzt
-        TABLE_DEFINITIONS.put("ergebniss","CREATE TABLE altsystem_ergebniss (ID INT PRIMARY KEY generated always as identity, schuetze_ID INT, match INT,  ergebniss INT, created_at timestamp, updated_at timestamp)");
+        TABLE_DEFINITIONS.put("ergebniss","CREATE TABLE altsystem_ergebniss (ID INT GENERATED ALWAYS AS IDENTITY, schuetze_ID INT, match INT,  ergebniss INT, created_at timestamp, updated_at timestamp)");
         TABLE_DEFINITIONS.put("liga","CREATE TABLE altsystem_liga (ID INT PRIMARY KEY, subdom VARCHAR(255), name VARCHAR(255), id_nextLiga INT, secret VARCHAR(255), created_at timestamp, updated_at timestamp)");
         TABLE_DEFINITIONS.put("mannschaft","CREATE TABLE altsystem_mannschaft (ID INT PRIMARY KEY, liga_ID INT, manNr VARCHAR(255), name VARCHAR(255), saison_ID INT, created_at timestamp, updated_at timestamp)");
         TABLE_DEFINITIONS.put("saison","CREATE TABLE altsystem_saison (ID INT PRIMARY KEY, name VARCHAR(255), oderNr INT, aktuell INT, created_at timestamp, updated_at timestamp)");
@@ -123,6 +123,7 @@ public class OldDbImport {
 
     private String exportTable(Connection connection, String tableName) throws SQLException {
         String tempInsertQuery;
+        String insertSql;
         String sql = "SELECT * FROM " + tableName + "";
         boolean[] tables = new boolean[8];
         for (int i = 0; i < tables.length; i++) {
@@ -135,7 +136,12 @@ public class OldDbImport {
 
             generatedSql = new StringBuilder();
             while (resultSet.next()) {
-                String insertSql = "INSERT INTO altsystem_" + tableName + " VALUES (";
+                if (tableName == "ergebniss") {
+                    insertSql = "INSERT INTO altsystem_" + tableName + " VALUES ( default,";
+                }
+                else {
+                    insertSql = "INSERT INTO altsystem_" + tableName + " VALUES (";
+                }
                 for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
                     insertSql += "?, ";
                 }
