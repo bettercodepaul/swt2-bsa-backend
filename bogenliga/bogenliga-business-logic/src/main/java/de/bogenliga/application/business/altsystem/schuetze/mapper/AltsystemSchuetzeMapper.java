@@ -119,9 +119,9 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
      * @return Ein Objekt vom Typ AltsystemUebersetzungDO, das den Datensatz im Altsystem repräsentiert, der dem gesuchten DSB-Mitglied entspricht.
      * @throws SQLException Falls ein Fehler bei der Abfrage des Datensatzes aus der Datenbank auftritt.
      */
-    public AltsystemUebersetzungDO getSchuetzeByIdentifier(String dsbMitgliedIdentifier) throws SQLException {
-        // Suchen des entsprechenden Datensatzes im Altsystem anhand des Identifiers
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
+    public AltsystemUebersetzungDO getSchuetzeByIdentifier(Long dsbMitgliedIdentifier) throws SQLException {
+        // Suchen des entsprechenden Datensatzes im Altsystem anhand der Altsystem ID
+        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
 
         return altsystemUebersetzungDO;
     }

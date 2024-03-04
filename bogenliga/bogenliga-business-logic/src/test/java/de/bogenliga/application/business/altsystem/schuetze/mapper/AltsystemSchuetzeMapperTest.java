@@ -105,7 +105,7 @@ public class AltsystemSchuetzeMapperTest {
         // Mock-Konfiguration
         when(altsystemUebersetzung.findByWert(any(), any())).thenReturn(expected);
 
-        altsystemSchuetzeMapper.getSchuetzeByIdentifier(identifier);
+        altsystemSchuetzeMapper.getSchuetzeByIdentifier(altsystemSchuetzeDO.getId());
 
         verify(altsystemUebersetzung).findByWert(any(), any());
     }
