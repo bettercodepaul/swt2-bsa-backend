@@ -103,11 +103,11 @@ public class AltsystemSchuetzeMapperTest {
         String identifier = "MarcoBammert1";
 
         // Mock-Konfiguration
-        when(altsystemUebersetzung.findByWert(any(), any())).thenReturn(expected);
+        when(altsystemUebersetzung.findByAltsystemID(any(), anyLong())).thenReturn(expected);
 
         altsystemSchuetzeMapper.getSchuetzeByIdentifier(altsystemSchuetzeDO.getId());
 
-        verify(altsystemUebersetzung).findByWert(any(), any());
+        verify(altsystemUebersetzung).findByAltsystemID(any(), anyLong());
     }
 
 
