@@ -50,17 +50,17 @@ public class AltsystemVereinTest {
         resultNull.setId(null);
         VereinDO result = new VereinDO();
         result.setId(1L);
+        result.setName("TestVerein");
+        result.setDsbIdentifier("WT4424");
 
-        when(altsystemVereinMapper.parseIdentifier(any())).thenReturn("WT4424");
-        when(altsystemVereinMapper.getVereinDO("WT4424")).thenReturn(resultNull);
+        when(altsystemVereinMapper.getVereinDO(anyString(), anyString())).thenReturn(resultNull);
         when(altsystemVereinMapper.toDO(any(), any())).thenReturn(result);
         when(altsystemVereinMapper.addDefaultFields(result)).thenReturn(result);
         when(vereinComponent.create(result, CURRENTUSERID)).thenReturn(result);
 
         altsystemVerein.create(altsystemMannschaftDO, CURRENTUSERID);
 
-        verify(altsystemVereinMapper).parseIdentifier(altsystemMannschaftDO);
-        verify(altsystemVereinMapper).getVereinDO("WT4424");
+        verify(altsystemVereinMapper).getVereinDO("TestVerein", "WT4424");
         verify(altsystemVereinMapper).toDO(new VereinDO(), altsystemMannschaftDO);
         verify(altsystemVereinMapper).addDefaultFields(result);
         verify(vereinComponent).create(result, CURRENTUSERID);
@@ -75,15 +75,17 @@ public class AltsystemVereinTest {
 
         VereinDO result = new VereinDO();
         result.setId(1L);
+        result.setName("TestVerein");
+        result.setDsbIdentifier("WT4424");
 
-        when(altsystemVereinMapper.parseIdentifier(any())).thenReturn("WT4424");
-        when(altsystemVereinMapper.getVereinDO("WT4424")).thenReturn(result);
+        when(altsystemVereinMapper.toDO(any(), any())).thenReturn(result);
+        when(altsystemVereinMapper.getVereinDO(anyString(), anyString())).thenReturn(null);
+        when(altsystemVereinMapper.addDefaultFields(result)).thenReturn(result);
 
 
         altsystemVerein.create(altsystemMannschaftDO, CURRENTUSERID);
 
-        verify(altsystemVereinMapper).parseIdentifier(altsystemMannschaftDO);
-        verify(altsystemVereinMapper).getVereinDO("WT4424");
+        verify(altsystemVereinMapper).getVereinDO("TestVerein", "WT4424");
         verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId(), result.getId(), "");
 
     }
