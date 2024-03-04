@@ -51,7 +51,12 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         String parsedIdentifier = altsystemSchuetzeMapper.getIdentifier(altsystemSchuetzeDO);
 
         // Informationen zum Schützen im neuen System anhand des Identifiers abrufen
-        AltsystemUebersetzungDO schuetzeUebersetzung = altsystemSchuetzeMapper.getSchuetzeByIdentifier(parsedIdentifier);
+        AltsystemUebersetzungDO schuetzeUebersetzung = null;
+        try {
+            schuetzeUebersetzung = altsystemSchuetzeMapper.getSchuetzeByIdentifier(parsedIdentifier);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         Long dsbMitgliedId = null;
 
         // Wenn der Identifier noch nicht in der Übersetzungstabelle vorhanden ist
