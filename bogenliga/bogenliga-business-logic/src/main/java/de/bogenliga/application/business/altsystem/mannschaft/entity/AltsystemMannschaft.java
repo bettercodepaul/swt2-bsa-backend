@@ -54,7 +54,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
          */
 
         DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO();
-        //Vereinmethede aufrufen
+        //Vereinmethode aufrufen, falls der Verein existiert wird kein neuer angelegt
         altsystemVerein.create(altsystemDataObject, currentUserId);
         //Veranstalltung der zugehörigen Mannschaft abrufen und zurückgeben
         VeranstaltungDO veranstaltungDO = altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemDataObject, currentUserId);
@@ -64,7 +64,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
         dsbMannschaftDO = altsystemMannschaftMapper.addDefaultFields(dsbMannschaftDO, currentUserId, altsystemDataObject, veranstaltungDO);
 
         //In die Mannschafts Tabele schreiben
-        dsbMannschaftComponent.create(dsbMannschaftDO, currentUserId);
+        dsbMannschaftDO = dsbMannschaftComponent.create(dsbMannschaftDO, currentUserId);
 
         //Altsystem ID und Neusystem ID in die Uebersetzungstabele schreiben.
         altsystemUebersetzung.updateOrInsertUebersetzung(

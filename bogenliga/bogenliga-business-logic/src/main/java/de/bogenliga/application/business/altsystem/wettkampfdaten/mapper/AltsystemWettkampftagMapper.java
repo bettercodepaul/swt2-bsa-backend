@@ -48,7 +48,7 @@ public class AltsystemWettkampftagMapper {
      */
     public List<WettkampfDO> getOrCreateWettkampftage(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
         List<WettkampfDO> wettkampfTage;
-        long mannschaftID = altsystemWettkampfdatenDO.getMannschaftId();
+        long mannschaftID = altsystemWettkampfdatenDO.getMannschaft();
         // Aus Übersetzungstabelle Veranstaltung für Mannschaft auslesen
         long veranstaltungID = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Veranstaltung, mannschaftID).getBogenligaId();
 
