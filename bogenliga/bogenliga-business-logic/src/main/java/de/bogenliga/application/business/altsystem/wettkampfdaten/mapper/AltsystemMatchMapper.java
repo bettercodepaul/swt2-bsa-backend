@@ -1,6 +1,9 @@
 package de.bogenliga.application.business.altsystem.wettkampfdaten.mapper;
 
 import java.util.List;
+
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
@@ -20,10 +23,12 @@ import de.bogenliga.application.business.wettkampf.api.types.WettkampfDO;
 public class AltsystemMatchMapper {
 
     private final MatchComponent matchComponent;
+    private final VeranstaltungComponent veranstaltungComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
     @Autowired
-    public AltsystemMatchMapper(MatchComponent matchComponent, AltsystemUebersetzung altsystemUebersetzung){
+    public AltsystemMatchMapper(MatchComponent matchComponent, VeranstaltungComponent veranstaltungComponent, AltsystemUebersetzung altsystemUebersetzung){
         this.matchComponent = matchComponent;
+        this.veranstaltungComponent = veranstaltungComponent;
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
@@ -62,11 +67,14 @@ public class AltsystemMatchMapper {
      @return modified array of MatchDO
      */
     public MatchDO[] addDefaultFields(MatchDO[] matchDO, List<WettkampfDO> wettkampfTage) {
+
         WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO[0], wettkampfTage);
+        matchDO[1].setNr(matchDO[0].getNr());
+
         long matchCount = getMatchCountForWettkampf(wettkampfDO);
         // Scheibennummer und aktuelle Begegnung anhand der Anzahl aller Matches errechnen
-        long currentBegegnung = ((matchCount / 2) % 4) + 1;
-        long currentScheibenNummer = (matchCount % 8) + 1;
+        long currentBegegnung = ((matchCount / 2)) + 1;
+        long currentScheibenNummer = (matchCount) + 1;
 
         for(int i = 0; i < 2; i++){
             // Defaultfelder setzen
@@ -91,17 +99,22 @@ public class AltsystemMatchMapper {
      */
     public WettkampfDO getCurrentWettkampfTag(MatchDO matchDO, List<WettkampfDO> wettkampfTage){
         WettkampfDO currentWettkampfTag;
+
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfTage.get(0).getWettkampfVeranstaltungsId());
+
         // Bestimmen des zugehörigen Wettkampftages
-        if(matchDO.getNr() <= 7){
-            currentWettkampfTag = wettkampfTage.get(0);
-        } else if (matchDO.getNr() <= 14){
-            currentWettkampfTag = wettkampfTage.get(1);
-        } else if (matchDO.getNr() <= 21){
-            currentWettkampfTag = wettkampfTage.get(2);
-        } else {
-            currentWettkampfTag = wettkampfTage.get(3);
-        }
-        return currentWettkampfTag;
+       int  currentIndexWettkampfTag = (int) (matchDO.getNr() / veranstaltungDO.getVeranstaltungGroesse());
+       if(currentIndexWettkampfTag< wettkampfTage.size()-1) {
+           currentWettkampfTag = wettkampfTage.get(currentIndexWettkampfTag);
+       }
+       else{
+           currentWettkampfTag = wettkampfTage.get(wettkampfTage.size()-1);
+       }
+       matchDO.setNr(matchDO.getNr() % (veranstaltungDO.getVeranstaltungGroesse()-1));
+       if (matchDO.getNr() == 0){
+           matchDO.setNr(Long.valueOf(veranstaltungDO.getVeranstaltungGroesse()-1));
+       }
+       return currentWettkampfTag;
     }
 
     /**
