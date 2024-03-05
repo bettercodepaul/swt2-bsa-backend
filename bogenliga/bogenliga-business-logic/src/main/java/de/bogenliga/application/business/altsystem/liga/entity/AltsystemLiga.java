@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.altsystem.liga.entity;
 
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
@@ -46,10 +47,26 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemLigaDO);
         ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO, currentUserId);
 
+
+        // Schaut, ob Verein bereits vorhanden ist
+        LigaDO vorhanden = null;
+        try{
+            vorhanden = ligaComponent.findBySearch(ligaDO.getName()).get(0);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        if (  vorhanden == null ){
+            //neue Liga anlegen
+            ligaDO = ligaComponent.create(ligaDO, currentUserId);
+            // Add to translation table
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
+
+        }else {
+            //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, (Long) altsystemLigaDO.getId(), vorhanden.getId().longValue(), "");
+        }
+
         // Add data to table
-        ligaDO = ligaComponent.create(ligaDO, currentUserId);
-        // Add to translation table
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
     }
 
     /**

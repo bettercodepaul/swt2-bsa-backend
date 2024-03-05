@@ -2,6 +2,8 @@ package de.bogenliga.application.business.altsystem.uebersetzung;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,8 +78,11 @@ public class AltsystemUebersetzungDAO {
 
     public void updateOrInsertUebersetzung(AltsystemUebersetzungKategorie kategorie, Long altsystemID, Long bogenligaID, String wert) {
         AltsystemUebersetzungDO uebersetzungDO = null;
-        uebersetzungDO = findByAltsystemID(kategorie, altsystemID);
-
+        try{
+            uebersetzungDO = findByAltsystemID(kategorie, altsystemID);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         if (uebersetzungDO == null){
             String kategorieLabel = kategorie.label;
             uebersetzungDO = new AltsystemUebersetzungDO();
