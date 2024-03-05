@@ -83,6 +83,7 @@ public class AltsystemWettkampftagMapper {
             // Werte in DO setzen
             wettkampfDO.setWettkampfTag(i);
             wettkampfDO.setWettkampfDatum(wettkampfTermine[(int) i - 1]);
+            wettkampfDO.setWettkampfBeginn("9:00");
             wettkampfDO.setWettkampfVeranstaltungsId(veranstaltungId);
             wettkampfDO.setWettkampfDisziplinId(ligaDO.getDisziplinId());
             wettkampfDO.setWettkampfTypId(veranstaltungDO.getVeranstaltungWettkampftypID());
