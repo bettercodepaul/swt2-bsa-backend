@@ -45,7 +45,7 @@ public class AltsystemMatchMapper {
 
         // Create a DataObject for the opponent
         MatchDO gegnerDO = matchDO[1];
-        AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getGegnerId());
+        AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getGegner());
         gegnerDO.setMannschaftId(gegnerUebersetzung.getBogenligaId());
         gegnerDO.setSatzpunkte((long) altsystemDataObject.getSatzMinus());
         gegnerDO.setMatchpunkte((long) altsystemDataObject.getMatchMinus());

@@ -13,7 +13,7 @@ public class AltsystemSchuetzeDO extends AltsystemDO {
     private int ruecknr;
     private String name;
 
-    public long getMannschaft_id() {
+    public int getMannschaft_id() {
         return mannschaft_id;
     }
 
