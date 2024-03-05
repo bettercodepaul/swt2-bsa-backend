@@ -79,7 +79,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
 
         // Informationen zur Mannschaft des Schützen aus dem Altsystem abrufen
         AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
-                altsystemSchuetzeDO.getMannschaft_id());
+                Long.valueOf(altsystemSchuetzeDO.getMannschaft_id()));
 
         // Übersetzung der Mannschaftsdaten und Speichern in der Übersetzungstabelle
         altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Schuetze_Mannschaft, altsystemSchuetzeDO.getId(),

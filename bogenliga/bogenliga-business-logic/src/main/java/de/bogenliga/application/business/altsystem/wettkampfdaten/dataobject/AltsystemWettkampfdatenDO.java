@@ -11,7 +11,7 @@ public class AltsystemWettkampfdatenDO extends AltsystemDO {
 
     private int ligaID;
     private long mannschaft;
-    private long gegnerId;
+    private long gegner;
     private int match;
     private int satzPlus;
     private int satzMinus;
@@ -42,12 +42,12 @@ public class AltsystemWettkampfdatenDO extends AltsystemDO {
         this.mannschaft = mannschaft;
     }
 
-    public long getGegnerId() {
-        return gegnerId;
+    public long getGegner() {
+        return gegner;
     }
 
-    public void setGegnerId(long gegnerId) {
-        this.gegnerId = gegnerId;
+    public void setGegner(long gegner) {
+        this.gegner = gegner;
     }
 
     public int getMatch() {

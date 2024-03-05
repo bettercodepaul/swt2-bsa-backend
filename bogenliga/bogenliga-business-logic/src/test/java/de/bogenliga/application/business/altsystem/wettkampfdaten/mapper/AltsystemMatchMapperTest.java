@@ -61,8 +61,8 @@ public class AltsystemMatchMapperTest {
         AltsystemWettkampfdatenDO altsystemWettkampfdatenDO = new AltsystemWettkampfdatenDO();
         altsystemWettkampfdatenDO.setId(1L);
         altsystemWettkampfdatenDO.setLigaID(3);
-        altsystemWettkampfdatenDO.setMannschaftId(4);
-        altsystemWettkampfdatenDO.setGegnerId(5);
+        altsystemWettkampfdatenDO.setMannschaft(4);
+        altsystemWettkampfdatenDO.setGegner(5);
         altsystemWettkampfdatenDO.setMatch(10);
         altsystemWettkampfdatenDO.setSatzPlus(6);
         altsystemWettkampfdatenDO.setSatzMinus(2);
@@ -99,8 +99,8 @@ public class AltsystemMatchMapperTest {
 
 
         // configure mocks
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemWettkampfdatenDO.getMannschaftId())).thenReturn(mannschaftUebersetzung);
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemWettkampfdatenDO.getGegnerId())).thenReturn(gegnerUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemWettkampfdatenDO.getMannschaft())).thenReturn(mannschaftUebersetzung);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemWettkampfdatenDO.getGegner())).thenReturn(gegnerUebersetzung);
 
         // call test method
         MatchDO[] actual = new MatchDO[2];
