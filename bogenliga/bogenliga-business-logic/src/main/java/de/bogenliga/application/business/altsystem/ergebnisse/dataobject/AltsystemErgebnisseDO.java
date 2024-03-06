@@ -9,30 +9,28 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
  */
 public class AltsystemErgebnisseDO extends AltsystemDO {
 
-    private Long schuetze_id;
-    private Long match;
-    private Long ergebnis;
+    private int schuetze_id;
+    private int match;
+    private int ergebniss;
 
 
-    public Long getMatch() {
-        return match;
-    }
-    public void setMatch(long match) {
-        this.match = match;
-    }
-    public Long getSchuetze_Id() {
-        return schuetze_id;
-    }
+    public int getSchuetze_Id() { return schuetze_id; }
 
-    public void setSchuetze_Id(Long schuetze_id) {
+    public void setSchuetze_Id( int schuetze_id) {
         this.schuetze_id = schuetze_id;
     }
-
-    public Long getErgebnis() {
-        return ergebnis;
+    public int getMatch() {
+        return match;
+    }
+    public void setMatch(int match) {
+        this.match = match;
     }
 
-    public void setErgebnis(int ergebnis) {
-        this.ergebnis = Long.valueOf(ergebnis);
+    public int getErgebnis() {
+        return ergebniss;
+    }
+
+    public void setErgebnis(int ergebniss) {
+        this.ergebniss = (ergebniss);
     }
 }

@@ -57,7 +57,7 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
      */
     public DsbMitgliedDO addDefaultFields (DsbMitgliedDO dsbMitgliedDO, long currentDsbMitglied) {
         // Standardwerte die nicht aus dem altSystem übernommen werden können
-        dsbMitgliedDO.setGeburtsdatum(new Date(1111,11,11));
+        dsbMitgliedDO.setGeburtsdatum(new Date(2000,11,11));
         dsbMitgliedDO.setNationalitaet("D");
         dsbMitgliedDO.setUserId(null); // dsb_mitglied_benutzer_id
         dsbMitgliedDO.setKampfrichter(false);

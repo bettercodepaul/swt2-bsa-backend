@@ -29,7 +29,7 @@ import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 public class AltsystemPasseMapperTest{
 
     private static final Long MATCH_ID = 4L;
-    private static final Long MATCH_NR = 1L;
+    private static final int MATCH_NR = 1;
     private static final Long WETTKAMPF_ID = 17L;
     private static final Long DSBMITGLIED_ID = 10L;
     private static final Long MANNSCHAFT_ID = 5L;
@@ -48,7 +48,7 @@ public class AltsystemPasseMapperTest{
         List<MatchDO> matches = new LinkedList<>();
         MatchDO matchDO = new MatchDO();
         matchDO.setId(MATCH_ID);
-        matchDO.setNr(MATCH_NR);
+        matchDO.setNr(Long.valueOf(MATCH_NR));
         matchDO.setWettkampfId(WETTKAMPF_ID);
         matchDO.setMannschaftId(MANNSCHAFT_ID);
         matches.add(matchDO);
@@ -62,7 +62,7 @@ public class AltsystemPasseMapperTest{
         altsystemErgebnisDO.setId(5L);
         altsystemErgebnisDO.setErgebnis(77);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetze_Id(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2);
 
         // Prepare mocks
         // Schütze Übersetzung
@@ -127,7 +127,7 @@ public class AltsystemPasseMapperTest{
         altsystemErgebnisDO.setId(5L);
         altsystemErgebnisDO.setErgebnis(78);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetze_Id(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2);
 
         // Prepare mocks
         // Schütze Übersetzung
@@ -165,7 +165,7 @@ public class AltsystemPasseMapperTest{
         altsystemErgebnisDO.setId(5L);
         altsystemErgebnisDO.setErgebnis(87);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetze_Id(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2);
 
         // Liste von existierenden Passen erstellen
         List<PasseDO> passen = new LinkedList<>();

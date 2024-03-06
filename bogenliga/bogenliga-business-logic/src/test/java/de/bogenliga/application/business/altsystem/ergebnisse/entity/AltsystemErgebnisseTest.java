@@ -44,9 +44,9 @@ public class AltsystemErgebnisseTest {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
         altsystemErgebnisseDO.setId(14L);
-        altsystemErgebnisseDO.setSchuetze_Id(1L);
+        altsystemErgebnisseDO.setSchuetze_Id(1);
         altsystemErgebnisseDO.setErgebnis(47);
-        altsystemErgebnisseDO.setMatch(4L);
+        altsystemErgebnisseDO.setMatch(4);
 
         List<PasseDO> passen = new LinkedList<>();
         PasseDO testPasse = new PasseDO();
@@ -68,9 +68,9 @@ public class AltsystemErgebnisseTest {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
         altsystemErgebnisseDO.setId(14L);
-        altsystemErgebnisseDO.setSchuetze_Id(1L);
+        altsystemErgebnisseDO.setSchuetze_Id(1);
         altsystemErgebnisseDO.setErgebnis(47);
-        altsystemErgebnisseDO.setMatch(4L);
+        altsystemErgebnisseDO.setMatch(4);
 
         // Uebersetzung DO
         AltsystemUebersetzungDO altsystemUebersetzungDO = new AltsystemUebersetzungDO();

@@ -192,7 +192,7 @@ public class AltsystemSchuetzeMapperTest {
         expected.setVorname("Marco");
         expected.setNachname("Bammert");
         expected.setId(1L);
-        expected.setGeburtsdatum(new Date(1111,11,11));
+        expected.setGeburtsdatum(new Date(2000,11,11));
         expected.setNationalitaet("D");
         expected.setUserId(null);
         expected.setKampfrichter(false);
