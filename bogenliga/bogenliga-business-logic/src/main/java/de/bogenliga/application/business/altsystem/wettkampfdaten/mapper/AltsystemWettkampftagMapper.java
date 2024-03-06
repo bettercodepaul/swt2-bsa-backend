@@ -3,6 +3,8 @@ package de.bogenliga.application.business.altsystem.wettkampfdaten.mapper;
 import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import de.bogenliga.application.business.match.api.types.MatchDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
