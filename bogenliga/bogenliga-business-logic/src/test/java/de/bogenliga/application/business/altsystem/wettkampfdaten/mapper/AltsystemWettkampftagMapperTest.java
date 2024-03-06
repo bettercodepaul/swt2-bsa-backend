@@ -85,7 +85,7 @@ public class AltsystemWettkampftagMapperTest {
         // prepare test data
         // altsystem WettkampfdatenDO
         AltsystemWettkampfdatenDO altsystemWettkampfdatenDO = new AltsystemWettkampfdatenDO();
-        altsystemWettkampfdatenDO.setMannschaftId(2L);
+        altsystemWettkampfdatenDO.setMannschaft(2L);
         // liga uebersetzung
         AltsystemUebersetzungDO mannschaftUebersetzung = new AltsystemUebersetzungDO();
         mannschaftUebersetzung.setBogenligaId(VERANSTALTUNG_ID);
@@ -115,7 +115,7 @@ public class AltsystemWettkampftagMapperTest {
         // prepare test data
         // altsystem WettkampfdatenDO
         AltsystemWettkampfdatenDO altsystemWettkampfdatenDO = new AltsystemWettkampfdatenDO();
-        altsystemWettkampfdatenDO.setMannschaftId(2L);
+        altsystemWettkampfdatenDO.setMannschaft(2L);
         // liga uebersetzung
         AltsystemUebersetzungDO mannschaftUebersetzung = new AltsystemUebersetzungDO();
         mannschaftUebersetzung.setBogenligaId(VERANSTALTUNG_ID);
