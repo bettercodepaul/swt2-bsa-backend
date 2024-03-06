@@ -1,5 +1,6 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
+import java.sql.Date;
 import java.sql.SQLException;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -191,7 +192,7 @@ public class AltsystemSchuetzeMapperTest {
         expected.setVorname("Marco");
         expected.setNachname("Bammert");
         expected.setId(1L);
-        expected.setGeburtsdatum(null);
+        expected.setGeburtsdatum(new Date(1111,11,11));
         expected.setNationalitaet("D");
         expected.setUserId(null);
         expected.setKampfrichter(false);

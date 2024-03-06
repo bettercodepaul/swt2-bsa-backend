@@ -2,6 +2,9 @@ package de.bogenliga.application.business.altsystem.wettkampfdaten.mapper;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
+import de.bogenliga.application.business.veranstaltung.api.types.VeranstaltungDO;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -30,6 +33,8 @@ public class AltsystemMatchMapperTest {
     @Mock
     private MatchComponent matchComponent;
     @Mock
+    private VeranstaltungComponent veranstaltungComponent;
+    @Mock
     private AltsystemUebersetzung altsystemUebersetzung;
     @InjectMocks
     private AltsystemMatchMapper altsystemMatchMapper;
@@ -49,6 +54,7 @@ public class AltsystemMatchMapperTest {
             WettkampfDO wettkampfDO = new WettkampfDO();
             wettkampfDO.setId(i + 1);
             wettkampfDO.setWettkampfTag(i + 1);
+            wettkampfDO.setWettkampfVeranstaltungsId(1L);
             wettkaempfe.add(wettkampfDO);
         }
         return wettkaempfe;
@@ -125,6 +131,10 @@ public class AltsystemMatchMapperTest {
         // existing matches for Wettkampf
         List<MatchDO> matches = getMockMatches();
         List<WettkampfDO> wettkaempfe = getMockWettkaempfe();
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        // configure mocks
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
 
         // configure mocks
         when(matchComponent.findByWettkampfId(anyLong())).thenReturn(matches);
@@ -157,6 +167,10 @@ public class AltsystemMatchMapperTest {
     public void getFirstWettkampfTag(){
         MatchDO matchDO = new MatchDO();
         matchDO.setNr(7L);
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        // configure mocks
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(1L);
@@ -166,6 +180,10 @@ public class AltsystemMatchMapperTest {
     public void getSecondWettkampfTag(){
         MatchDO matchDO = new MatchDO();
         matchDO.setNr(14L);
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        // configure mocks
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(2L);
@@ -175,6 +193,11 @@ public class AltsystemMatchMapperTest {
     public void getThirdWettkampfTag(){
         MatchDO matchDO = new MatchDO();
         matchDO.setNr(21L);
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        // configure mocks
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
+
         WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(3L);
@@ -184,6 +207,10 @@ public class AltsystemMatchMapperTest {
     public void getLastWettkampfTag(){
         MatchDO matchDO = new MatchDO();
         matchDO.setNr(28L);
+        VeranstaltungDO veranstaltungDO = new VeranstaltungDO();
+        veranstaltungDO.setVeranstaltungGroesse(8);
+        // configure mocks
+        when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
         WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(4L);

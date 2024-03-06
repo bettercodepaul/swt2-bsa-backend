@@ -62,7 +62,7 @@ public class AltsystemPasseMapperTest{
         altsystemErgebnisDO.setId(5L);
         altsystemErgebnisDO.setErgebnis(77);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetzeID(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2L);
 
         // Prepare mocks
         // Schütze Übersetzung
@@ -127,7 +127,7 @@ public class AltsystemPasseMapperTest{
         altsystemErgebnisDO.setId(5L);
         altsystemErgebnisDO.setErgebnis(78);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetzeID(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2L);
 
         // Prepare mocks
         // Schütze Übersetzung
@@ -165,7 +165,7 @@ public class AltsystemPasseMapperTest{
         altsystemErgebnisDO.setId(5L);
         altsystemErgebnisDO.setErgebnis(87);
         altsystemErgebnisDO.setMatch(MATCH_NR);
-        altsystemErgebnisDO.setSchuetzeID(2L);
+        altsystemErgebnisDO.setSchuetze_Id(2L);
 
         // Liste von existierenden Passen erstellen
         List<PasseDO> passen = new LinkedList<>();
