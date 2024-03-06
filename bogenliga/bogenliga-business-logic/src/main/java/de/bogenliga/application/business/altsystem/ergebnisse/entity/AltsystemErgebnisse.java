@@ -46,6 +46,13 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
      */
     @Override
     public void create(AltsystemErgebnisseDO altsystemErgebnisseDO, long currentUserId){
+        //wir erzeugen nur dann Daten, wenn das Ergebnis >0 ist
+        //sonst wurde dieser Schütze im Match nicht eingesetzt
+
+        if (altsystemErgebnisseDO.getErgebnis()==0)
+            return;
+
+
         // Passen aus dem Ergebnis erstellen
         List<PasseDO> passen = altsystemPasseMapper.toDO(new ArrayList<>(), altsystemErgebnisseDO);
 
