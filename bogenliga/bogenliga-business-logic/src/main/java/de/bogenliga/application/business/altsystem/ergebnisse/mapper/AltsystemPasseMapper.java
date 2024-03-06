@@ -72,7 +72,7 @@ public class AltsystemPasseMapper {
 
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
         AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
-                altsystemDataObject.getSchuetzeID());
+                altsystemDataObject.getSchuetzeId());
 
         // Exception, falls es für den Schützen kein zugehöriges DSB Mitglied gibt
         if (schuetzeUebersetzung == null){
@@ -80,7 +80,7 @@ public class AltsystemPasseMapper {
         }
 
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_Mannschaft,
-                altsystemDataObject.getSchuetzeID());
+                altsystemDataObject.getSchuetzeId());
 
         // Exception, falls zu dem Schützen keine zugehörige Mannschaft gespeichert wurde
         if (mannschaftUebersetzung == null){
