@@ -131,7 +131,9 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
     }
 
     public MannschaftsmitgliedDO buildMannschaftsMitglied (Long altsystemMannschaftID, Long rueckenNummer, DsbMitgliedDO dsbMitgliedDO){
+        //Mannschaft ID aus Altsystem übersetzen
         AltsystemUebersetzungDO UebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemMannschaftID);
+        //DO zusammenstellen
         MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(
                 null,   //tech ID
                 UebersetzungMannschaftDO.getBogenligaId(),  // BSAPP Mannschaft ID
@@ -140,7 +142,6 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
                 dsbMitgliedDO.getVorname(),
                 dsbMitgliedDO.getNachname(),
                 rueckenNummer);
-
 
         return mannschaftsmitgliedDO;
     }
