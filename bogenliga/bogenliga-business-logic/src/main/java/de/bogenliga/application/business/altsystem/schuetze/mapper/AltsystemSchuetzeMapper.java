@@ -1,6 +1,9 @@
 package de.bogenliga.application.business.altsystem.schuetze.mapper;
 
+import java.sql.Date;
 import java.sql.SQLException;
+
+import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
 import de.bogenliga.application.business.altsystem.uebersetzung.AltsystemUebersetzung;
@@ -54,10 +57,11 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
      */
     public DsbMitgliedDO addDefaultFields (DsbMitgliedDO dsbMitgliedDO, long currentDsbMitglied) {
         // Standardwerte die nicht aus dem altSystem übernommen werden können
-        dsbMitgliedDO.setGeburtsdatum(null);
+        dsbMitgliedDO.setGeburtsdatum(new Date(111,11,11));
         dsbMitgliedDO.setNationalitaet("D");
         dsbMitgliedDO.setUserId(null); // dsb_mitglied_benutzer_id
         dsbMitgliedDO.setKampfrichter(false);
+        dsbMitgliedDO.setMitgliedsnummer(dsbMitgliedDO.getNachname()+dsbMitgliedDO.getVorname()+dsbMitgliedDO.getVereinsId().toString());
 
         return dsbMitgliedDO;
     }
@@ -126,5 +130,19 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
         return altsystemUebersetzungDO;
     }
 
+    public MannschaftsmitgliedDO buildMannschaftsMitglied (Long altsystemMannschaftID, Long rueckenNummer, DsbMitgliedDO dsbMitgliedDO){
+        AltsystemUebersetzungDO UebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemMannschaftID);
+        MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(
+                null,   //tech ID
+                UebersetzungMannschaftDO.getBogenligaId(),  // BSAPP Mannschaft ID
+                dsbMitgliedDO.getId(),
+                1,  // dsb Mitlgied eingesetzt
+                dsbMitgliedDO.getVorname(),
+                dsbMitgliedDO.getNachname(),
+                rueckenNummer);
+
+
+        return mannschaftsmitgliedDO;
+    }
 
 }
