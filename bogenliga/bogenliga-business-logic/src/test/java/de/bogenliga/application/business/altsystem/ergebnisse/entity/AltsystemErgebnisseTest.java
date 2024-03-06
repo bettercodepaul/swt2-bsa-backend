@@ -44,7 +44,7 @@ public class AltsystemErgebnisseTest {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
         altsystemErgebnisseDO.setId(14L);
-        altsystemErgebnisseDO.setSchuetzeID(1L);
+        altsystemErgebnisseDO.setSchuetze_Id(1L);
         altsystemErgebnisseDO.setErgebnis(47);
         altsystemErgebnisseDO.setMatch(4L);
 
@@ -68,7 +68,7 @@ public class AltsystemErgebnisseTest {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
         altsystemErgebnisseDO.setId(14L);
-        altsystemErgebnisseDO.setSchuetzeID(1L);
+        altsystemErgebnisseDO.setSchuetze_Id(1L);
         altsystemErgebnisseDO.setErgebnis(47);
         altsystemErgebnisseDO.setMatch(4L);
 

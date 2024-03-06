@@ -62,7 +62,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
 
         // die Tabelle ergebniss hat keine ID - der Primary Key besteht aus SchutzenID + Match
         StringBuilder bld_altsystemID = new StringBuilder();
-        bld_altsystemID.append(altsystemErgebnisseDO.getSchuetzeId().toString());
+        bld_altsystemID.append(altsystemErgebnisseDO.getSchuetze_Id().toString());
         bld_altsystemID.append(altsystemErgebnisseDO.getMatch().toString());
 
         Long ergebnissId_uebersetzung = Long.valueOf(bld_altsystemID.toString());
@@ -80,7 +80,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
     public void update(AltsystemErgebnisseDO altsystemErgebnisseDO, long currentUserId){
         // die Tabelle ergebniss hat keine ID - der Primary Key besteht aus SchutzenID + Match
         StringBuilder bld_altsystemID = new StringBuilder();
-        bld_altsystemID.append(altsystemErgebnisseDO.getSchuetzeId().toString());
+        bld_altsystemID.append(altsystemErgebnisseDO.getSchuetze_Id().toString());
         bld_altsystemID.append(altsystemErgebnisseDO.getMatch().toString());
         Long ergebnissId_uebersetzung = Long.valueOf(bld_altsystemID.toString());
 

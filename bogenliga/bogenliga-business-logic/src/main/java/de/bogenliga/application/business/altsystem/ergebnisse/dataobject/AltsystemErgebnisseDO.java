@@ -20,11 +20,11 @@ public class AltsystemErgebnisseDO extends AltsystemDO {
     public void setMatch(long match) {
         this.match = match;
     }
-    public Long getSchuetzeId() {
+    public Long getSchuetze_Id() {
         return schuetze_id;
     }
 
-    public void setSchuetzeID(Long schuetzeId) {
+    public void setSchuetze_Id(Long schuetze_id) {
         this.schuetze_id = schuetze_id;
     }
 
