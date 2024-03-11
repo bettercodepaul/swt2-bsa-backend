@@ -87,9 +87,9 @@ public class TriggerService implements ServiceFacade {
         this.oldDBImport = oldDBImport;
 
         dataObjectToEntity = new HashMap<>();
-//        dataObjectToEntity.put(AltsystemSaisonDO.class, altsystemSaison);
- //       dataObjectToEntity.put(AltsystemLigaDO.class, altsystemLiga);
-//        dataObjectToEntity.put(AltsystemMannschaftDO.class, altsystemMannschaft);
+        dataObjectToEntity.put(AltsystemSaisonDO.class, altsystemSaison);
+        dataObjectToEntity.put(AltsystemLigaDO.class, altsystemLiga);
+        dataObjectToEntity.put(AltsystemMannschaftDO.class, altsystemMannschaft);
         dataObjectToEntity.put(AltsystemSchuetzeDO.class, altsystemSchuetze);
         dataObjectToEntity.put(AltsystemWettkampfdatenDO.class, altsystemWettkampfdaten);
         dataObjectToEntity.put(AltsystemErgebnisseDO.class, altsystemErgebnisse);
@@ -98,9 +98,9 @@ public class TriggerService implements ServiceFacade {
     private static Map<String, Class<?>> getTableNameToClassMap() {
         Map<String, Class<?>> result = new LinkedHashMap<>();
 
-//        result.put("altsystem_saison", AltsystemSaisonDO.class);
-//        result.put("altsystem_liga", AltsystemLigaDO.class);
-//        result.put("altsystem_mannschaft", AltsystemMannschaftDO.class);
+        result.put("altsystem_saison", AltsystemSaisonDO.class);
+        result.put("altsystem_liga", AltsystemLigaDO.class);
+        result.put("altsystem_mannschaft", AltsystemMannschaftDO.class);
         result.put("altsystem_schuetze", AltsystemSchuetzeDO.class);
         result.put("altsystem_wettkampfdaten", AltsystemWettkampfdatenDO.class);
         result.put("altsystem_ergebniss", AltsystemErgebnisseDO.class);
@@ -162,8 +162,7 @@ public class TriggerService implements ServiceFacade {
 
     public void syncData(long triggeringUserId) {
         LOGGER.info("Importing tables from old database");
-// TODO böse böse-  wieder einsetzen!!!...
-       // oldDBImport.sync();
+        oldDBImport.sync();
 
         Timestamp lastSync = getMigrationTimestamp();
 
