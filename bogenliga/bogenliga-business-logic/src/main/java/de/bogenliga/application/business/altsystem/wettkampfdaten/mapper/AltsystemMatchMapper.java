@@ -71,10 +71,24 @@ public class AltsystemMatchMapper {
         WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO[0], wettkampfTage);
         matchDO[1].setNr(matchDO[0].getNr());
 
+        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfTage.get(0).getWettkampfVeranstaltungsId());
+
         long matchCount = getMatchCountForWettkampf(wettkampfDO);
+        // für den Fall, dass noch keine Matches existieren - dann ist die Vorbelegung so, dass
+        // Scheibe =1 und Begegnung =1 herauskommmen.
+        if (matchCount==0L) {
+            matchCount = 1L;
+        }
         // Scheibennummer und aktuelle Begegnung anhand der Anzahl aller Matches errechnen
-        long currentBegegnung = ((matchCount / 2)) + 1;
-        long currentScheibenNummer = (matchCount) + 1;
+        Long currentScheibenNummer = (Long) (matchCount % veranstaltungDO.getVeranstaltungGroesse());
+        // für den Fall, dass wir genau bei Scheibe = Vielfaches der Veranstaltungsgröße herauskommen
+        // setzen wir Scheibe = 8 (max)
+        if (currentScheibenNummer==0L) {
+            currentScheibenNummer = 8L;
+        }
+        Long currentBegegnung = (currentScheibenNummer+1)/2;
+
+
 
         for(int i = 0; i < 2; i++){
             // Defaultfelder setzen
