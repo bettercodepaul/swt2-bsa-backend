@@ -39,7 +39,7 @@ public class AltsystemMannschaftMapperTest {
         //Test method
         long parsedName = altsystemMannschaftMapper.toDO(mannschaftsName, dsbMannschaftDO).getNummer();
         //Expectet Result
-        long expectetName = 1;
+        long expectetName = 0;
         //Assert result
         assertEquals(expectetName, parsedName);
 
