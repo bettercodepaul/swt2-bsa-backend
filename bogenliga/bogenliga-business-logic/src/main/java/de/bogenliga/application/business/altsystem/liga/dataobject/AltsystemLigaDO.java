@@ -8,8 +8,8 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class AltsystemLigaDO extends AltsystemDO {
-    private String name;
-    private Long idNextLiga;
+    private String name = null;
+    private Long idNextLiga = 0L;
 
     public void setName(String name){
         this.name = name;

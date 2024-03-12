@@ -54,19 +54,20 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
          */
 
         DsbMannschaftDO dsbMannschaftDO = new DsbMannschaftDO();
-        //Vereinmethode aufrufen, falls der Verein existiert wird kein neuer angelegt
+        //Verein-Methode aufrufen, falls der Verein existiert, wird kein neuer angelegt
         altsystemVerein.create(altsystemDataObject, currentUserId);
-        //Veranstalltung der zugehörigen Mannschaft abrufen und zurückgeben
+        //Veranstaltung der zugehörigen Mannschaft abrufen und zurückgeben
         VeranstaltungDO veranstaltungDO = altsystemVeranstaltungMapper.getOrCreateVeranstaltung(altsystemDataObject, currentUserId);
 
         //Mapper ausführen
         dsbMannschaftDO = altsystemMannschaftMapper.toDO(altsystemDataObject, dsbMannschaftDO);
         dsbMannschaftDO = altsystemMannschaftMapper.addDefaultFields(dsbMannschaftDO, currentUserId, altsystemDataObject, veranstaltungDO);
+        dsbMannschaftDO.setBenutzerId(currentUserId);
 
-        //In die Mannschafts Tabele schreiben
+        //In die Mannschaftstabelle schreiben
         dsbMannschaftDO = dsbMannschaftComponent.create(dsbMannschaftDO, currentUserId);
 
-        //Altsystem ID und Neusystem ID in die Uebersetzungstabele schreiben.
+        //Altsystem ID und Neusystem ID in die Uebersetzungstabelle schreiben.
         altsystemUebersetzung.updateOrInsertUebersetzung(
                 AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
                 (Long) altsystemDataObject.getId(),
@@ -90,7 +91,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(
                 AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getId());
 
-        //Wenn die Mannschaft noch nicht in der Uebersetzungstabele vorhanden ist Exception
+        //Wenn die Mannschaft noch nicht in der Uebersetzungstabelle vorhanden ist Exception
         if(mannschaftUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
                     String.format("No result found for mannschaftUebersetzung in Update ID'%s'", altsystemDataObject.getId()));

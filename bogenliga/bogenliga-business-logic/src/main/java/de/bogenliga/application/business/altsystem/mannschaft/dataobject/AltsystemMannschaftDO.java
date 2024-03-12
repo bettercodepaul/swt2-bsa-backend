@@ -5,10 +5,10 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
 
 public class AltsystemMannschaftDO extends AltsystemDO {
 
-    private int liga_id;
-    private String mannr;
-    private String name;
-    private int saison_id;
+    private int liga_id = 0;
+    private String mannr = null;
+    private String name = null;
+    private int saison_id = 0;
 
     public int getLiga_id() {
         return liga_id;

@@ -45,6 +45,12 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         //ParseIdentifire aufrufen und neuer Identifire setzten
         vereinDO.setDsbIdentifier(parseIdentifier(altsystemDataObject));
 
+        // wenn der Name des Vereisn leer ist oder der Name "leer" oder "fehlender Verein" ist
+        // dann kopieren wir den Dsb Identifier in den Namen...
+        if (vereinDO.getName() == "" || vereinDO.getName() == "leer" || vereinDO.getName() == "fehlender Verein" ){
+            vereinDO.setName( vereinDO.getName()+"Verein"+vereinDO.getDsbIdentifier());
+        }
+
         return vereinDO;
     }
 
