@@ -9,21 +9,21 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
  */
 public class AltsystemWettkampfdatenDO extends AltsystemDO {
 
-    private int ligaID;
-    private long mannschaft;
-    private long gegner;
-    private int match;
-    private int satzPlus;
-    private int satzMinus;
-    private int matchPlus;
-    private int matchMinus;
-    private int satz1;
-    private int satz2;
-    private int satz3;
-    private int satz4;
-    private int satz5;
-    private int saisonID;
-    private int sec;
+    private int ligaID = 0;
+    private long mannschaft = 0L;
+    private long gegner = 0L;
+    private int match = 0;
+    private int satzPlus = 0;
+    private int satzMinus = 0;
+    private int matchPlus = 0;
+    private int matchMinus = 0;
+    private int satz1 = 0;
+    private int satz2 = 0;
+    private int satz3 = 0;
+    private int satz4 = 0;
+    private int satz5 = 0;
+    private int saisonID = 0;
+    private int sec = 0;
 
 
     public int getLigaID() {

@@ -55,7 +55,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         }catch(Exception e){
             e.printStackTrace();
         }
-        if (  vorhanden == null ){
+        if (  vorhanden == null || vorhanden.getId() == null ){
             //neue Liga anlegen
             ligaDO = ligaComponent.create(ligaDO, currentUserId);
             // Add to translation table

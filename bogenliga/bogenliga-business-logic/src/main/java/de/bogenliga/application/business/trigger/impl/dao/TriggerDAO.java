@@ -40,6 +40,7 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_BE_STATUS_ID = "changeStatusId";
     private static final String TRIGGER_BE_NACHRICHT = "nachricht";
     private static final String TRIGGER_BE_RUNATUTC = "runAtUtc";
+    private static final String TRIGGER_BE_CREATEUSER = "createdByUserId";
 
     private static final String TRIGGER_TABLE_ID = "aenderung_id";
     private static final String TRIGGER_TABLE_KATEGORIE = "kategorie";
@@ -50,6 +51,7 @@ public class TriggerDAO implements DataAccessObject {
     private static final String TRIGGER_TABLE_STATUS_ID = "status";
     private static final String TRIGGER_TABLE_NACHRICHT = "nachricht";
     private static final String TRIGGER_TABLE_RUNATUTC = "run_at_utc";
+    private static final String TRIGGER_TABLE_CREATEUSER = "created_by";
 
     private static final BusinessEntityConfiguration<TriggerBE> TRIGGER = new BusinessEntityConfiguration<>(
             TriggerBE.class, TABLE, getColumsToFieldsMapWithJoin(), LOGGER);
@@ -116,6 +118,7 @@ public class TriggerDAO implements DataAccessObject {
         columnsToFieldMap.put(TRIGGER_TABLE_STATUS_ID, TRIGGER_BE_STATUS_ID);
         columnsToFieldMap.put(TRIGGER_TABLE_NACHRICHT, TRIGGER_BE_NACHRICHT);
         columnsToFieldMap.put(TRIGGER_TABLE_RUNATUTC, TRIGGER_BE_RUNATUTC);
+        columnsToFieldMap.put(TRIGGER_TABLE_CREATEUSER, TRIGGER_BE_CREATEUSER);
 
         columnsToFieldMap.putAll(BasicDAO.getTechnicalColumnsToFieldsMap());
         return columnsToFieldMap;
