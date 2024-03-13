@@ -1,6 +1,7 @@
 package de.bogenliga.application.business.altsystem.schuetze.entity;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
@@ -69,10 +70,16 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
             dsbMitgliedDO = altsystemSchuetzeMapper.toDO(dsbMitgliedDO, altsystemSchuetzeDO);
             dsbMitgliedDO = altsystemSchuetzeMapper.addDefaultFields(dsbMitgliedDO, currentUserId);
 
-            // Daten des Schützen in die Datenbank im neuen System einfügen und die ID erhalten
-            dsbMitgliedDO = dsbMitgliedComponent.create(dsbMitgliedDO, currentUserId);
-            dsbMitgliedId = dsbMitgliedDO.getId();
+            List<DsbMitgliedDO> dsbMitgliedexist = dsbMitgliedComponent.findBySearch(dsbMitgliedDO.getMitgliedsnummer());
 
+            if (dsbMitgliedexist.isEmpty()) {
+                // Daten des Schützen in die Datenbank im neuen System einfügen und die ID erhalten
+                dsbMitgliedDO = dsbMitgliedComponent.create(dsbMitgliedDO, currentUserId);
+                dsbMitgliedId = dsbMitgliedDO.getId();
+            }
+            else{
+                dsbMitgliedDO = dsbMitgliedexist.get(0);
+            }
             //Schuetze als Mannschaftsmitglied eintragen
             MannschaftsmitgliedDO mannschaftsmitgliedDO = altsystemSchuetzeMapper.buildMannschaftsMitglied( Long.valueOf(altsystemSchuetzeDO.getMannschaft_id()), Long.valueOf(altsystemSchuetzeDO.getRuecknr()), dsbMitgliedDO);
             mannschaftsmitgliedDO = mannschaftsmitgliedComponent.create(mannschaftsmitgliedDO, currentUserId);
