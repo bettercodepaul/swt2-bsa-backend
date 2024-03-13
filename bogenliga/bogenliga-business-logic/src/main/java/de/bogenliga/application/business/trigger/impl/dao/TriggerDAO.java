@@ -196,6 +196,7 @@ public class TriggerDAO implements DataAccessObject {
         created.setChangeStatusId(raw.getChangeStatusId());
         created.setNachricht(raw.getNachricht());
         created.setRunAtUtc(raw.getRunAtUtc());
+        created.setCreatedByUserId(raw.getCreatedByUserId());
 
         Long operationId = raw.getChangeOperation().getId();
         Long statusId = raw.getChangeStatus().getId();
