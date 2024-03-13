@@ -1,6 +1,5 @@
 package de.bogenliga.application.business.altsystem.liga.entity;
 
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.liga.dataobject.AltsystemLigaDO;
@@ -63,7 +62,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
 
         }else {
             //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, (Long) altsystemLigaDO.getId(), vorhanden.getId().longValue(), "");
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), vorhanden.getId(), "");
         }
 
         // Add data to table

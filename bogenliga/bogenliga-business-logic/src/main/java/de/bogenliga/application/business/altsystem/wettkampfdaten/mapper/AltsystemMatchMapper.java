@@ -126,7 +126,7 @@ public class AltsystemMatchMapper {
        }
        matchDO.setNr(matchDO.getNr() % (veranstaltungDO.getVeranstaltungGroesse()-1));
        if (matchDO.getNr() == 0){
-           matchDO.setNr(Long.valueOf(veranstaltungDO.getVeranstaltungGroesse()-1));
+           matchDO.setNr(veranstaltungDO.getVeranstaltungGroesse()-1L);
        }
        return currentWettkampfTag;
     }

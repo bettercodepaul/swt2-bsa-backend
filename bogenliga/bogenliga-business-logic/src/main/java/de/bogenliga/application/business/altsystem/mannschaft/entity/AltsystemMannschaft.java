@@ -70,15 +70,15 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
         //Altsystem ID und Neusystem ID in die Uebersetzungstabelle schreiben.
         altsystemUebersetzung.updateOrInsertUebersetzung(
                 AltsystemUebersetzungKategorie.Mannschaft_Mannschaft,
-                (Long) altsystemDataObject.getId(),
-                dsbMannschaftDO.getId().longValue(),
+                altsystemDataObject.getId(),
+                dsbMannschaftDO.getId(),
                 "");
     }
 
 
     @Override
     public void update(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
-        /**
+        /*
          * Updates the information of the AltsystemMannschaftDO in the system, including the associated DsbMannschaftDO.
          *
          * @param altsystemDataObject The AltsystemMannschaftDO object containing the updated information.
