@@ -40,7 +40,7 @@ public class AltsystemVereinTest {
     AltsystemVerein altsystemVerein;
 
     @Test
-    public void testCreateManschaftNichtVorhanden() {
+    public void testCreateMannschaftNichtVorhanden() {
 
 
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
@@ -56,7 +56,7 @@ public class AltsystemVereinTest {
         when(altsystemVereinMapper.getVereinDO(anyString(), anyString())).thenReturn(null);
         when(altsystemVereinMapper.toDO(any(), any())).thenReturn(result);
         when(altsystemVereinMapper.addDefaultFields(result)).thenReturn(result);
-        when(vereinComponent.create(result, CURRENTUSERID)).thenReturn(result);
+        when(vereinComponent.create(any(), anyLong())).thenReturn(result);
         doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), anyLong(), anyLong(), anyString());
 
         altsystemVerein.create(altsystemMannschaftDO, CURRENTUSERID);
@@ -80,9 +80,9 @@ public class AltsystemVereinTest {
         result.setDsbIdentifier("WT4424");
 
         when(altsystemVereinMapper.toDO(any(), any())).thenReturn(result);
-        when(altsystemVereinMapper.getVereinDO(anyString(), anyString())).thenReturn(null);
+        when(altsystemVereinMapper.getVereinDO(anyString(), anyString())).thenReturn(result);
         when(altsystemVereinMapper.addDefaultFields(result)).thenReturn(result);
-
+        when(vereinComponent.create(any(), anyLong())).thenReturn(result);
 
         altsystemVerein.create(altsystemMannschaftDO, CURRENTUSERID);
 
