@@ -130,11 +130,11 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
-        checkDsbMannschaftDO(dsbMannschaftDO, currentDsbMannschaftId);
+    public DsbMannschaftDO create(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
+        checkDsbMannschaftDO(dsbMannschaftDO, currentUserId);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
-        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentDsbMannschaftId);
+        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.create(dsbMannschaftBE, currentUserId);
 
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
@@ -142,27 +142,27 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
 
 
     @Override
-    public DsbMannschaftDO update(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
-        checkDsbMannschaftDO(dsbMannschaftDO, currentDsbMannschaftId);
+    public DsbMannschaftDO update(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
+        checkDsbMannschaftDO(dsbMannschaftDO, currentUserId);
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
         checkSortierung(dsbMannschaftDO); //To avoid corruption of the Sortierung
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
-        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentDsbMannschaftId);
+        final DsbMannschaftBE persistedDsbMannschaftBE = dsbMannschaftDAO.update(dsbMannschaftBE, currentUserId);
 
         return fillName(DsbMannschaftMapper.toDsbMannschaftDO.apply(persistedDsbMannschaftBE));
     }
 
 
     @Override
-    public void delete(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
+    public void delete(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
         Preconditions.checkNotNull(dsbMannschaftDO, PRECONDITION_MSG_DSBMANNSCHAFT);
         Preconditions.checkArgument(dsbMannschaftDO.getId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_ID);
-        Preconditions.checkArgument(currentDsbMannschaftId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
 
         final DsbMannschaftBE dsbMannschaftBE = DsbMannschaftMapper.toDsbMannschaftBE.apply(dsbMannschaftDO);
 
-        dsbMannschaftDAO.delete(dsbMannschaftBE, currentDsbMannschaftId);
+        dsbMannschaftDAO.delete(dsbMannschaftBE, currentUserId);
 
     }
 
@@ -196,9 +196,9 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     }
 
 
-    private void checkDsbMannschaftDO(final DsbMannschaftDO dsbMannschaftDO, final long currentDsbMannschaftId) {
+    private void checkDsbMannschaftDO(final DsbMannschaftDO dsbMannschaftDO, final long currentUserId) {
         Preconditions.checkNotNull(dsbMannschaftDO, PRECONDITION_MSG_DSBMANNSCHAFT);
-        Preconditions.checkArgument(currentDsbMannschaftId >= 0, PRECONDITION_MSG_CURRENT_DSBMANNSCHAFT);
+        Preconditions.checkArgument(currentUserId >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);
         Preconditions.checkArgument(dsbMannschaftDO.getVereinId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_VEREIN_ID);
         Preconditions.checkArgument(dsbMannschaftDO.getNummer() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_NUMMER);
         Preconditions.checkArgument(dsbMannschaftDO.getBenutzerId() >= 0, PRECONDITION_MSG_DSBMANNSCHAFT_BENUTZER_ID);

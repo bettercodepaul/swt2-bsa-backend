@@ -166,8 +166,8 @@ public class DsbMannschaftDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the created dsbmitglied entry
      */
-    public DsbMannschaftBE create(final DsbMannschaftBE dsbMannschaftBE, final long currentDsbMannschaftId) {
-        basicDao.setCreationAttributes(dsbMannschaftBE, currentDsbMannschaftId);
+    public DsbMannschaftBE create(final DsbMannschaftBE dsbMannschaftBE, final long currentUserId) {
+        basicDao.setCreationAttributes(dsbMannschaftBE, currentUserId);
 
         return basicDao.insertEntity(MANNSCHAFT, dsbMannschaftBE);
     }
@@ -181,8 +181,8 @@ public class DsbMannschaftDAO implements DataAccessObject {
      *
      * @return Business Entity corresponding to the updated dsbmitglied entry
      */
-    public DsbMannschaftBE update(final DsbMannschaftBE dsbMannschaftBE, final long currentDsbMannschaftId) {
-        basicDao.setModificationAttributes(dsbMannschaftBE, currentDsbMannschaftId);
+    public DsbMannschaftBE update(final DsbMannschaftBE dsbMannschaftBE, final long currentUserId) {
+        basicDao.setModificationAttributes(dsbMannschaftBE, currentUserId);
 
         return basicDao.updateEntity(MANNSCHAFT, dsbMannschaftBE, MANNSCHAFT_BE_ID);
     }
@@ -194,8 +194,8 @@ public class DsbMannschaftDAO implements DataAccessObject {
      * @param dsbMannschaftBE
      * @param currentDsbMannschaftId
      */
-    public void delete(final DsbMannschaftBE dsbMannschaftBE, final long currentDsbMannschaftId) {
-        basicDao.setModificationAttributes(dsbMannschaftBE, currentDsbMannschaftId);
+    public void delete(final DsbMannschaftBE dsbMannschaftBE, final long currentUserId) {
+        basicDao.setModificationAttributes(dsbMannschaftBE, currentUserId);
 
         basicDao.deleteEntity(MANNSCHAFT, dsbMannschaftBE, MANNSCHAFT_BE_ID);
     }
