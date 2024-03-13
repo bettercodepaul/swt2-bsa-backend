@@ -47,7 +47,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
 
         // wenn der Name des Vereisn leer ist oder der Name "leer" oder "fehlender Verein" ist
         // dann kopieren wir den Dsb Identifier in den Namen...
-        if (vereinDO.getName() == "" || vereinDO.getName() == "leer" || vereinDO.getName() == "fehlender Verein" ){
+        if (vereinDO.getName().isEmpty() || vereinDO.getName().equals("leer") || vereinDO.getName().equals("fehlender Verein") ){
             vereinDO.setName( vereinDO.getName()+"Verein"+vereinDO.getDsbIdentifier());
         }
 

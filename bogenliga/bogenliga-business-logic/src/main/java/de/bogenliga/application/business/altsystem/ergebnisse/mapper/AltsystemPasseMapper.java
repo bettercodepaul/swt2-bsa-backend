@@ -92,7 +92,7 @@ public class AltsystemPasseMapper {
 
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
         AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
-                Long.valueOf(altsystemDataObject.getSchuetze_Id()));
+                altsystemDataObject.getSchuetze_Id());
 
         // Exception, falls es für den Schützen kein zugehöriges DSB Mitglied gibt
         if (schuetzeUebersetzung == null){
@@ -100,7 +100,7 @@ public class AltsystemPasseMapper {
         }
 
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_Mannschaft,
-                Long.valueOf(altsystemDataObject.getSchuetze_Id()));
+                altsystemDataObject.getSchuetze_Id());
 
         // Exception, falls zu dem Schützen keine zugehörige Mannschaft gespeichert wurde
         if (mannschaftUebersetzung == null){
@@ -124,7 +124,7 @@ public class AltsystemPasseMapper {
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDoCurrent.getId());
         MatchDO match = null;
         for (MatchDO currentMatch : matches){
-            if(currentMatch.getNr() == matchNr && currentMatch.getMannschaftId()==dsbMannschaftDO.getId()){
+            if(currentMatch.getNr() == matchNr && currentMatch.getMannschaftId().equals(dsbMannschaftDO.getId())){
                 match = currentMatch;
                 break;
             }
@@ -187,7 +187,7 @@ public class AltsystemPasseMapper {
 
 
         // Bestimmen des zugehörigen Wettkampftages
-        int  currentIndexWettkampfTag = (int) (matchnr / veranstaltungsgroesse);
+        int  currentIndexWettkampfTag = matchnr / veranstaltungsgroesse;
         if(currentIndexWettkampfTag< wettkampfTage.size()-1) {
             currentWettkampfTag = wettkampfTage.get(currentIndexWettkampfTag);
         }
