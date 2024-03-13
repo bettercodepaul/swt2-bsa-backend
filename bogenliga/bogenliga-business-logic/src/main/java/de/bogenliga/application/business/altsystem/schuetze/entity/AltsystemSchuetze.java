@@ -82,7 +82,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
             }
             //Schuetze als Mannschaftsmitglied eintragen
             MannschaftsmitgliedDO mannschaftsmitgliedDO = altsystemSchuetzeMapper.buildMannschaftsMitglied( Long.valueOf(altsystemSchuetzeDO.getMannschaft_id()), Long.valueOf(altsystemSchuetzeDO.getRuecknr()), dsbMitgliedDO);
-            mannschaftsmitgliedDO = mannschaftsmitgliedComponent.create(mannschaftsmitgliedDO, currentUserId);
+            mannschaftsmitgliedComponent.create(mannschaftsmitgliedDO, currentUserId);
             // wir erzeugen keinen Eintrag in der Übersetzungstabelle, da die Ergebnisse mit IDs von Mannschaft und Schutze abgelegt werden
             // wir benötigen die ID im weiteren Verlauf nicht
         }

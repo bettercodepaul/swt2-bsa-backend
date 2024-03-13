@@ -125,25 +125,21 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
      */
     public AltsystemUebersetzungDO getSchuetzeByIdentifier(Long dsbMitgliedIdentifier) throws SQLException {
         // Suchen des entsprechenden Datensatzes im Altsystem anhand der Altsystem ID
-        AltsystemUebersetzungDO altsystemUebersetzungDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
-
-        return altsystemUebersetzungDO;
+        return altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
     }
 
     public MannschaftsmitgliedDO buildMannschaftsMitglied (Long altsystemMannschaftID, Long rueckenNummer, DsbMitgliedDO dsbMitgliedDO){
         //Mannschaft ID aus Altsystem übersetzen
-        AltsystemUebersetzungDO UebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemMannschaftID);
+        AltsystemUebersetzungDO uebersetzungMannschaftDO = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemMannschaftID);
         //DO zusammenstellen
-        MannschaftsmitgliedDO mannschaftsmitgliedDO = new MannschaftsmitgliedDO(
+        return new MannschaftsmitgliedDO(
                 null,   //tech ID
-                UebersetzungMannschaftDO.getBogenligaId(),  // BSAPP Mannschaft ID
+                uebersetzungMannschaftDO.getBogenligaId(),  // BSAPP Mannschaft ID
                 dsbMitgliedDO.getId(),
                 1,  // dsb Mitlgied eingesetzt
                 dsbMitgliedDO.getVorname(),
                 dsbMitgliedDO.getNachname(),
                 rueckenNummer);
-
-        return mannschaftsmitgliedDO;
     }
 
 }

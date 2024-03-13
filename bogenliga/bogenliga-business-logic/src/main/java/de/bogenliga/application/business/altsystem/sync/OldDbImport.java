@@ -136,7 +136,7 @@ public class OldDbImport {
 
             generatedSql = new StringBuilder();
             while (resultSet.next()) {
-                if (tableName == "ergebniss") {
+                if (tableName.equals("ergebniss")) {
                     insertSql = "INSERT INTO altsystem_" + tableName + " VALUES ( default,";
                 }
                 else {
