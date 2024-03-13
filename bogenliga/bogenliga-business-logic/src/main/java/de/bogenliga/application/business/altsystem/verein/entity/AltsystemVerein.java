@@ -60,8 +60,8 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
         if (  vorhanden == null ){
             //Führt mapper aus
             vereinDO = altsystemVereinMapper.addDefaultFields(vereinDO);
-            //Create in Neue Tabele
-            vereinComponent.create(vereinDO, currentUserId);
+            //Create in Verein Tabelle
+            vereinDO = vereinComponent.create(vereinDO, currentUserId);
             //Create in Uebersetzungstabele
             altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, (Long) altsystemDataObject.getId(), vereinDO.getId().longValue(), "");
 
