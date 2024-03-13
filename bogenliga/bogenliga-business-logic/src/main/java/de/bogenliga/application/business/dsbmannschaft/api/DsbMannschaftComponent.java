@@ -71,7 +71,7 @@ public interface DsbMannschaftComponent extends ComponentFacade {
      * @return persisted version of the dsbmannschaft
      */
 
-    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long currentDsbMannschaftId);
+    DsbMannschaftDO create(DsbMannschaftDO dsbMannschaftDO, long userId);
 
 
     /**
