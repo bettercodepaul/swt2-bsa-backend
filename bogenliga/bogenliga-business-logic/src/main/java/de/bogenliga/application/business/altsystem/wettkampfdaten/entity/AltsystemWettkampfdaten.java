@@ -55,7 +55,7 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
             match = altsystemMatchMapper.addDefaultFields(match, wettkampfTage);
 
             match[0] = matchComponent.create(match[0], currentUserId);
-            match[1] = matchComponent.create(match[1], currentUserId);
+//            match[1] = matchComponent.create(match[1], currentUserId);
 
             saveAnzahlSaetze(altsystemWettkampfdatenDO, match);
 

@@ -3,7 +3,6 @@ package de.bogenliga.application.business.altsystem.uebersetzung;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.bogenliga.application.business.vereine.api.types.VereinDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
