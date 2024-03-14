@@ -5,6 +5,9 @@ import java.util.List;
 
 import de.bogenliga.application.business.mannschaftsmitglied.api.MannschaftsmitgliedComponent;
 import de.bogenliga.application.business.mannschaftsmitglied.api.types.MannschaftsmitgliedDO;
+import de.bogenliga.application.business.user.impl.business.UserRoleComponentImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.schuetze.dataobject.AltsystemSchuetzeDO;
@@ -29,6 +32,8 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
     private final DsbMitgliedComponent dsbMitgliedComponent;
     private final MannschaftsmitgliedComponent mannschaftsmitgliedComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AltsystemSchuetze.class);
 
 
     @Autowired
@@ -61,7 +66,7 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         try {
             schuetzeUebersetzung = altsystemSchuetzeMapper.getSchuetzeByIdentifier(altsystemSchuetzeDO.getId());
         }catch(Exception e){
-            e.printStackTrace();
+            LOGGER.debug(String.valueOf(e));
         }
         Long dsbMitgliedId = null;
         // Wenn der Identifier noch nicht in der Übersetzungstabelle vorhanden ist
