@@ -40,7 +40,7 @@ public class AltsystemVereinTest {
     AltsystemVerein altsystemVerein;
 
     @Test
-    public void testCreateManschaftVorhanden() {
+    public void testCreateMannschaftNichtVorhanden() {
 
 
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
@@ -50,17 +50,18 @@ public class AltsystemVereinTest {
         resultNull.setId(null);
         VereinDO result = new VereinDO();
         result.setId(1L);
+        result.setName("TestVerein");
+        result.setDsbIdentifier("WT4424");
 
-        when(altsystemVereinMapper.parseIdentifier(any())).thenReturn("WT4424");
-        when(altsystemVereinMapper.getVereinDO("WT4424")).thenReturn(resultNull);
+        when(altsystemVereinMapper.getVereinDO(anyString(), anyString())).thenReturn(null);
         when(altsystemVereinMapper.toDO(any(), any())).thenReturn(result);
         when(altsystemVereinMapper.addDefaultFields(result)).thenReturn(result);
-        when(vereinComponent.create(result, CURRENTUSERID)).thenReturn(result);
+        when(vereinComponent.create(any(), anyLong())).thenReturn(result);
+        doNothing().when(altsystemUebersetzung).updateOrInsertUebersetzung(any(), anyLong(), anyLong(), anyString());
 
         altsystemVerein.create(altsystemMannschaftDO, CURRENTUSERID);
 
-        verify(altsystemVereinMapper).parseIdentifier(altsystemMannschaftDO);
-        verify(altsystemVereinMapper).getVereinDO("WT4424");
+        verify(altsystemVereinMapper).getVereinDO("TestVerein", "WT4424");
         verify(altsystemVereinMapper).toDO(new VereinDO(), altsystemMannschaftDO);
         verify(altsystemVereinMapper).addDefaultFields(result);
         verify(vereinComponent).create(result, CURRENTUSERID);
@@ -69,21 +70,23 @@ public class AltsystemVereinTest {
     }
 
     @Test
-    public void testCreateManschaftNichtVorhanden() {
+    public void testCreateManschaftVorhanden() {
         AltsystemMannschaftDO altsystemMannschaftDO = new AltsystemMannschaftDO();
         altsystemMannschaftDO.setId(2L);
 
         VereinDO result = new VereinDO();
         result.setId(1L);
+        result.setName("TestVerein");
+        result.setDsbIdentifier("WT4424");
 
-        when(altsystemVereinMapper.parseIdentifier(any())).thenReturn("WT4424");
-        when(altsystemVereinMapper.getVereinDO("WT4424")).thenReturn(result);
-
+        when(altsystemVereinMapper.toDO(any(), any())).thenReturn(result);
+        when(altsystemVereinMapper.getVereinDO(anyString(), anyString())).thenReturn(result);
+        when(altsystemVereinMapper.addDefaultFields(result)).thenReturn(result);
+        when(vereinComponent.create(any(), anyLong())).thenReturn(result);
 
         altsystemVerein.create(altsystemMannschaftDO, CURRENTUSERID);
 
-        verify(altsystemVereinMapper).parseIdentifier(altsystemMannschaftDO);
-        verify(altsystemVereinMapper).getVereinDO("WT4424");
+        verify(altsystemVereinMapper).getVereinDO("TestVerein", "WT4424");
         verify(altsystemUebersetzung).updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Mannschaft_Verein, altsystemMannschaftDO.getId(), result.getId(), "");
 
     }

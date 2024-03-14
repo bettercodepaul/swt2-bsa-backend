@@ -406,6 +406,9 @@ public class DsbMannschaftService implements ServiceFacade {
                                               @PathVariable("MannschaftId") final long mannschaftId,
                                               final Principal principal) {
 
+        final long userId = UserProvider.getCurrentUserId(principal);
+
+
         Preconditions.checkArgument(veranstaltungsId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
         Preconditions.checkArgument(mannschaftId >= 0, PRECONDITION_MSG_ID_NEGATIVE);
 
@@ -413,7 +416,7 @@ public class DsbMannschaftService implements ServiceFacade {
 
         dsbMannschaftDO.setVeranstaltungId(veranstaltungsId);
 
-        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, mannschaftId);
+        DsbMannschaftDO neueMannschaft = dsbMannschaftComponent.create(dsbMannschaftDO, userId);
         dsbMannschaftComponent.copyMitgliederFromMannschaft(mannschaftId, neueMannschaft.getId());
 
 

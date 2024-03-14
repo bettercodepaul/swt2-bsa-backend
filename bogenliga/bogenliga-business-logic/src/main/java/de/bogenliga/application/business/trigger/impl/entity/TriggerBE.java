@@ -11,7 +11,7 @@ import de.bogenliga.application.common.component.entity.CommonBusinessEntity;
  *
  * @author Maximilian Fronmueller
  */
-public class TriggerBE extends RawTriggerBE {
+public class TriggerBE extends RawTriggerBE implements BusinessEntity{
     private TriggerChangeOperation changeOperation;
     private TriggerChangeStatus changeStatus;
 

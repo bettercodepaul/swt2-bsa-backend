@@ -247,7 +247,8 @@ public final class SQL {
             }
 
             sql.append(" (");
-            final Field[] fields = insertObj.getClass().getDeclaredFields();
+            final Field[] fields = getAllFields(insertObj);
+
 
             appendFieldsToInsertStatement(insertObj, columnToFieldMapping, sql, values, para, fields);
 
@@ -448,8 +449,7 @@ public final class SQL {
                 final String fName = field.getName();
 
                 if (!VERSION.equals(fName)) {
-                    final String getterName = retrieveGetterName(field, fName);
-                    final Method getter = insertObj.getClass().getDeclaredMethod(getterName);
+                    final Method getter = getGetterMethod(insertObj, field, fName);
                     Object value = getter.invoke(insertObj);
 
                     if (fName.equals("id") || Objects.isNull(value)) {

@@ -51,7 +51,7 @@ public class AltsystemSaisonTest {
         verify(altsystemUebersetzung).updateOrInsertUebersetzung(
                 AltsystemUebersetzungKategorie.Saison_Sportjahr,
                 altsystemSaisonDOMock.getId(),
-                0,
+                0L,
                 SPORTJAHR_AS_STRING
         );
     }
@@ -75,7 +75,7 @@ public class AltsystemSaisonTest {
         verify(altsystemUebersetzung).updateOrInsertUebersetzung(
                 AltsystemUebersetzungKategorie.Saison_Sportjahr,
                 altsystemSaisonDOMock.getId(),
-                0,
+                0L,
                 SPORTJAHR_AS_STRING
         );
 
@@ -99,7 +99,7 @@ public class AltsystemSaisonTest {
         verify(altsystemUebersetzung, never()).updateOrInsertUebersetzung(
                 any(),
                 anyLong(),
-                anyInt(),
+                anyLong(),
                 anyString()
         );
 

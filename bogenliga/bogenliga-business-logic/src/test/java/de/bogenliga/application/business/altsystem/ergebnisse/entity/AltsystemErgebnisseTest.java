@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
  * @author Andre Lehnert, eXXcellent solutions consulting & software gmbh
  */
 public class AltsystemErgebnisseTest {
-    private static final long CURRENTUSERID = 1L;
+    private static final Long CURRENTUSERID = 1L;
 
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
@@ -43,8 +43,8 @@ public class AltsystemErgebnisseTest {
     public void testCreate() {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
-        altsystemErgebnisseDO.setId(1L);
-        altsystemErgebnisseDO.setSchuetzeID(1L);
+        altsystemErgebnisseDO.setId(14L);
+        altsystemErgebnisseDO.setSchuetze_Id(1L);
         altsystemErgebnisseDO.setErgebnis(47);
         altsystemErgebnisseDO.setMatch(4);
 
@@ -67,8 +67,8 @@ public class AltsystemErgebnisseTest {
     public void testUpdate() {
         // Altsystem Data Object
         AltsystemErgebnisseDO altsystemErgebnisseDO = new AltsystemErgebnisseDO();
-        altsystemErgebnisseDO.setId(1L);
-        altsystemErgebnisseDO.setSchuetzeID(1L);
+        altsystemErgebnisseDO.setId(14L);
+        altsystemErgebnisseDO.setSchuetze_Id(1L);
         altsystemErgebnisseDO.setErgebnis(47);
         altsystemErgebnisseDO.setMatch(4);
 

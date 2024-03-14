@@ -45,6 +45,12 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         //ParseIdentifire aufrufen und neuer Identifire setzten
         vereinDO.setDsbIdentifier(parseIdentifier(altsystemDataObject));
 
+        // wenn der Name des Vereisn leer ist oder der Name "leer" oder "fehlender Verein" ist
+        // dann kopieren wir den Dsb Identifier in den Namen...
+        if (vereinDO.getName().isEmpty() || vereinDO.getName().equals("leer") || vereinDO.getName().equals("fehlender Verein") ){
+            vereinDO.setName( vereinDO.getName()+"Verein"+vereinDO.getDsbIdentifier());
+        }
+
         return vereinDO;
     }
 
@@ -178,7 +184,7 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
         return vereinIdentifier;
     }
 
-    public VereinDO getVereinDO(String vereinIdentifier){
+    public VereinDO getVereinDO(String vereinName, String vereinIdentifier){
 
         /**
          * Retrieves a VereinDO based on the provided identifier.
@@ -187,22 +193,25 @@ public class AltsystemVereinMapper implements ValueObjectMapper {
          * @return The found VereinDO if it exists, or a VereinDO with a null ID if not found.
          */
 
-        VereinDO identifierDO = null;
+        VereinDO identifiedDO = null;
+
         //Alle vorhandenen Vereine in eine Liste
-        List<VereinDO> vereinDOS = vereinComponent.findAll();
-        //Durchsucht Liste nach angegebenen Verein
-        for (VereinDO vereinDO : vereinDOS){
-            String verIdentifier = vereinDO.getDsbIdentifier();
-            //Wenn Verein vorhanden dann VereinDO zurueck. Sonst ID von DO NULL.
-            if(verIdentifier.equals(vereinIdentifier)){
-                identifierDO = vereinDO;
-                break;
-            } else {
-                throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                        String.format("No result found for ID '%s'", verIdentifier));
-            }
+        //wir suchen erst die Vereine mit identischem DSB Identifier
+        List<VereinDO> vereinDOS = vereinComponent.findBySearch(vereinIdentifier);
+        if (vereinDOS.isEmpty()){
+            //wenn wir keinen Verein mit identischem Identifier finden, dann suchen wir nach gleichen Namen
+            // der Name ist in der VereinTabelle ein unique Attribut - daher können wir da nichts Doppeltes anlegen
+            vereinDOS = vereinComponent.findBySearch(vereinName);
         }
-        return identifierDO;
+        //Durchsucht Liste nach angegebenen Verein
+        if (vereinDOS.isEmpty()){
+                throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
+                        String.format("No result found for Name '%s' or DSB-ID '%s'",vereinName ,vereinIdentifier));
+        }
+        // den ersten Treffer geben wir zurück
+        //ggf. könnten wir hier noch prüfen, ob wir mehr als einen Treffer haben - aber wir gehen primär mal nicht davon aus.
+        identifiedDO = vereinDOS.get(0);
+        return identifiedDO;
     }
 
 }

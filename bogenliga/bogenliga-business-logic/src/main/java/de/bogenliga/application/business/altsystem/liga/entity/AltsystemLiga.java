@@ -46,11 +46,26 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         ligaDO = altsystemLigaMapper.toDO(ligaDO, altsystemLigaDO);
         ligaDO = altsystemLigaMapper.addDefaultFields(ligaDO, currentUserId);
 
-        // Add data to table
-        ligaDO = ligaComponent.create(ligaDO, currentUserId);
 
-        // Add to translation table
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
+        // Schaut, ob Verein bereits vorhanden ist
+        LigaDO vorhanden = null;
+        try{
+            vorhanden = ligaComponent.checkExistsLigaName(ligaDO.getName());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        if (  vorhanden == null || vorhanden.getId() == null ){
+            //neue Liga anlegen
+            ligaDO = ligaComponent.create(ligaDO, currentUserId);
+            // Add to translation table
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), ligaDO.getId(), "");
+
+        }else {
+            //Wenn der Verein bereits vorhanden ist, wird nur in die Ueberstzungstabele geschrieben
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Liga_Liga, altsystemLigaDO.getId(), vorhanden.getId(), "");
+        }
+
+        // Add data to table
     }
 
     /**
@@ -68,7 +83,7 @@ public class AltsystemLiga implements AltsystemEntity<AltsystemLigaDO> {
         // Check if the translation data has been found
         if(ligaUebersetzung == null){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR,
-                    String.format("No result found for ID '%s'", altsystemLigaDO.getId()));
+                    String.format("No result found for ligaUebersetzung in update altsystem-ID '%s'", altsystemLigaDO.getId()));
         }
 
         // Find data in table with corresponding id
