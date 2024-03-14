@@ -43,24 +43,17 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
      */
     @Override
     public void create(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
-        // Daten sind im Altsystem redundant
-        // Bearbeitung nur, falls Sec = 0 ist
-        if (altsystemWettkampfdatenDO.getSec() == 0){
             List<WettkampfDO> wettkampfTage = altsystemWettkampftagMapper.getOrCreateWettkampftage(altsystemWettkampfdatenDO, currentUserId);
 
-            MatchDO[] match = new MatchDO[2];
-            match[0] = new MatchDO();
-            match[1] = new MatchDO();
-            match = altsystemMatchMapper.toDO(match, altsystemWettkampfdatenDO);
-            match = altsystemMatchMapper.addDefaultFields(match, wettkampfTage);
+            MatchDO matchDO = new MatchDO();
+            matchDO = altsystemMatchMapper.toDO(matchDO, altsystemWettkampfdatenDO);
+            matchDO = altsystemMatchMapper.addDefaultFields(matchDO, wettkampfTage);
 
-            match[0] = matchComponent.create(match[0], currentUserId);
-            match[1] = matchComponent.create(match[1], currentUserId);
+            matchDO = matchComponent.create(matchDO, currentUserId);
 
-            saveAnzahlSaetze(altsystemWettkampfdatenDO, match);
+            saveAnzahlSaetze(altsystemWettkampfdatenDO, matchDO);
 
-            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId(), match[0].getId(), String.valueOf(match[1].getId()));
-        }
+            altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId(), matchDO.getId(), null);
 
     }
 
@@ -71,25 +64,19 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
      */
     @Override
     public void update(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
-        // Daten sind im Altsystem redundant
-        // Bearbeitung nur, falls Sec = 0 ist
-        if (altsystemWettkampfdatenDO.getSec() == 0){
-            // Zugehörige Matches aus Übersetzungstabelle holen
+        // Zugehörige Matches aus Übersetzungstabelle holen
             AltsystemUebersetzungDO wettkampfdatenUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId());
-            MatchDO[] match = new MatchDO[2];
+            MatchDO matchDO = new MatchDO();
             // Erstgenannte Mannschafts-ID ist im Feld "BogenligaId" gespeichert, zweitgenannte Mannschafts-ID im Feld Wert
-            match[0] = matchComponent.findById(wettkampfdatenUebersetzung.getBogenligaId());
-            match[1] = matchComponent.findById(Long.parseLong(wettkampfdatenUebersetzung.getWert()));
+            matchDO = matchComponent.findById(wettkampfdatenUebersetzung.getBogenligaId());
             // Mapping des Datensatzes
-            match = altsystemMatchMapper.toDO(match, altsystemWettkampfdatenDO);
+            matchDO = altsystemMatchMapper.toDO(matchDO, altsystemWettkampfdatenDO);
 
             // Matches updaten
-            matchComponent.update(match[0], currentUserId);
-            matchComponent.update(match[1], currentUserId);
+            matchComponent.update(matchDO, currentUserId);
 
             // Anzahl Sätze in Übersetzungstabelle updaten
-            saveAnzahlSaetze(altsystemWettkampfdatenDO, match);
-        }
+            saveAnzahlSaetze(altsystemWettkampfdatenDO, matchDO);
     }
 
 
@@ -98,15 +85,14 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
      @param altsystemWettkampfdatenDO data of the legacy system
      @param matchDO created match objects
      */
-    public void saveAnzahlSaetze(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, MatchDO[] matchDO){
+    public void saveAnzahlSaetze(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, MatchDO matchDO){
         int anzahlSaetze = 5;
         if (altsystemWettkampfdatenDO.getSatz4() == 0){
             anzahlSaetze = 3;
         } else if (altsystemWettkampfdatenDO.getSatz5() == 0){
             anzahlSaetze = 4;
         }
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDO[0].getId(), 0L, String.valueOf(anzahlSaetze));
-        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDO[1].getId(), 0L, String.valueOf(anzahlSaetze));
+        altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Match_Saetze, matchDO.getId(), 0L, String.valueOf(anzahlSaetze));
     }
 
 }

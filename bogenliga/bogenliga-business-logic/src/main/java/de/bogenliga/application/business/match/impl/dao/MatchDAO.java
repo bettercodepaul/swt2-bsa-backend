@@ -30,7 +30,7 @@ public class MatchDAO implements DataAccessObject {
     private static final String MATCH_BE_NR = "nr";
     private static final String MATCH_BE_WETTKAMPF_ID = "wettkampfId";
     private static final String MATCH_BE_MANNSCHAFT_ID = "mannschaftId";
-    private static final String MATCH_BE_SCHEIBENNUMMER = "scheibenNummer";
+    private static final String MATCH_BE_SCHEIBENNUMMER = "matchScheibennummer";
     private static final String MATCH_BE_BEGEGNUNG = "begegnung";
     private static final String MATCH_BE_MATCHPUNKTE = "matchpunkte";
     private static final String MATCH_BE_SATZPUNKTE = "satzpunkte";

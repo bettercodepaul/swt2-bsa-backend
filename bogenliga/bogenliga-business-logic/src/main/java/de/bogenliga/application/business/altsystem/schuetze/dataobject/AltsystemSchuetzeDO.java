@@ -9,11 +9,11 @@ import de.bogenliga.application.common.altsystem.AltsystemDO;
  */
 public class AltsystemSchuetzeDO extends AltsystemDO {
 
-    private int mannschaft_id;
-    private int ruecknr;
-    private String name;
+    private int mannschaft_id = 0;
+    private int ruecknr = 0;
+    private String name = null;
 
-    public long getMannschaft_id() {
+    public int getMannschaft_id() {
         return mannschaft_id;
     }
 
