@@ -1,5 +1,8 @@
 package de.bogenliga.application.business.altsystem.verein.entity;
 
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
@@ -25,6 +28,8 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
     private final AltsystemVereinMapper altsystemVereinMapper;
     private final VereinComponent vereinComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AltsystemSchuetze.class);
 
 
     @Autowired
@@ -55,7 +60,7 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
         try{
             vorhanden = altsystemVereinMapper.getVereinDO(vereinDO.getName(), vereinDO.getDsbIdentifier());
         }catch(Exception e){
-            e.printStackTrace();
+            LOGGER.debug(String.valueOf(e));
         }
         if (  vorhanden == null ){
             //Führt mapper aus
