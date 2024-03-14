@@ -191,7 +191,7 @@ public class AltsystemPasseMapper {
         List<WettkampfDO> wettkampfTage = wettkampfComponent.findAllByVeranstaltungId(veranstaltungsId);
 
         // Bestimmen des zugehörigen Wettkampftages
-        int  currentIndexWettkampfTag = matchnr / veranstaltungsgroesse;
+        int  currentIndexWettkampfTag = (matchnr-1) / (veranstaltungsgroesse-1);
         if(currentIndexWettkampfTag< wettkampfTage.size()-1) {
             currentWettkampfTag = wettkampfTage.get(currentIndexWettkampfTag);
         }
@@ -200,6 +200,5 @@ public class AltsystemPasseMapper {
         }
         return currentWettkampfTag;
     }
-
 
 }
