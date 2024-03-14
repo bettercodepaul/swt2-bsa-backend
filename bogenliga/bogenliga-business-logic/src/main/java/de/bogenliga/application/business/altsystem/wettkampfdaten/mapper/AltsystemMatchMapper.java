@@ -39,22 +39,14 @@ public class AltsystemMatchMapper {
      @param altsystemDataObject legacy data to this match
      @return modified array of MatchDO with mapped entities
      */
-    public MatchDO[] toDO(MatchDO[] matchDO, AltsystemWettkampfdatenDO altsystemDataObject) {
-        // Create a DataObject for the first team
-        MatchDO mannschaftDO = matchDO[0];
+    public MatchDO toDO(MatchDO matchDO, AltsystemWettkampfdatenDO altsystemDataObject) {
+        // Create a DataObject for the match
         AltsystemUebersetzungDO mannschaftUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getMannschaft());
-        mannschaftDO.setMannschaftId(mannschaftUebersetzung.getBogenligaId());
-        mannschaftDO.setSatzpunkte((long) altsystemDataObject.getSatzPlus());
-        mannschaftDO.setMatchpunkte((long) altsystemDataObject.getMatchPlus());
-        mannschaftDO.setNr((long) altsystemDataObject.getMatch());
+        matchDO.setMannschaftId(mannschaftUebersetzung.getBogenligaId());
+        matchDO.setSatzpunkte((long) altsystemDataObject.getSatzPlus());
+        matchDO.setMatchpunkte((long) altsystemDataObject.getMatchPlus());
+        matchDO.setNr((long) altsystemDataObject.getMatch());
 
-        // Create a DataObject for the opponent
-        MatchDO gegnerDO = matchDO[1];
-        AltsystemUebersetzungDO gegnerUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemDataObject.getGegner());
-        gegnerDO.setMannschaftId(gegnerUebersetzung.getBogenligaId());
-        gegnerDO.setSatzpunkte((long) altsystemDataObject.getSatzMinus());
-        gegnerDO.setMatchpunkte((long) altsystemDataObject.getMatchMinus());
-        gegnerDO.setNr((long) altsystemDataObject.getMatch());
 
         return matchDO;
     }
@@ -66,44 +58,31 @@ public class AltsystemMatchMapper {
      @param wettkampfTage list of WettkampfDOs existing for the Veranstaltung of the team
      @return modified array of MatchDO
      */
-    public MatchDO[] addDefaultFields(MatchDO[] matchDO, List<WettkampfDO> wettkampfTage) {
+    public MatchDO addDefaultFields(MatchDO matchDO, List<WettkampfDO> wettkampfTage) {
 
-        WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO[0], wettkampfTage);
-        matchDO[1].setNr(matchDO[0].getNr());
+        WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO, wettkampfTage);
 
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfTage.get(0).getWettkampfVeranstaltungsId());
 
         long matchCount = getMatchCountForWettkampf(wettkampfDO);
-        Long currentScheibenNummer = 0L;
-        Long currentBegegnung = 0L;
+        Long currentScheibenNummer;
+        Long currentBegegnung;
         // für den Fall, dass noch keine Matches existieren - dann ist die Vorbelegung so, dass
         // Scheibe =1 und Begegnung =1 herauskommmen.
         // Scheibennummer und aktuelle Begegnung anhand der Anzahl aller Matches errechnen
-        currentScheibenNummer = (matchCount % veranstaltungDO.getVeranstaltungGroesse());
-        // für den Fall, dass wir genau bei Scheibe = Vielfaches der Veranstaltungsgröße herauskommen
-        // setzen wir Scheibe = 8 (max)
-        if (!(currentScheibenNummer ==0L) ) {
-            //das hatten wir oben schon.... jetzt müssen wir was dazuzählen...
-            currentScheibenNummer+= 1L;
-        }
-        else  {
-            currentScheibenNummer = 1L;
-        }
+        currentScheibenNummer = (matchCount % veranstaltungDO.getVeranstaltungGroesse())+1;
         currentBegegnung = (currentScheibenNummer + 1) / 2;
 
-
-        for(int i = 0; i < 2; i++){
-            // Defaultfelder setzen
-            matchDO[i].setWettkampfId(wettkampfDO.getId());
-            matchDO[i].setMatchScheibennummer(currentScheibenNummer + i);
-            matchDO[i].setBegegnung(currentBegegnung);
-            // Alle Strafpunkte auf 0 setzen
-            matchDO[i].setStrafPunkteSatz1(0L);
-            matchDO[i].setStrafPunkteSatz2(0L);
-            matchDO[i].setStrafPunkteSatz3(0L);
-            matchDO[i].setStrafPunkteSatz4(0L);
-            matchDO[i].setStrafPunkteSatz5(0L);
-        }
+        // Defaultfelder setzen
+        matchDO.setWettkampfId(wettkampfDO.getId());
+        matchDO.setMatchScheibennummer(currentScheibenNummer);
+        matchDO.setBegegnung(currentBegegnung);
+        // Alle Strafpunkte auf 0 setzen
+        matchDO.setStrafPunkteSatz1(0L);
+        matchDO.setStrafPunkteSatz2(0L);
+        matchDO.setStrafPunkteSatz3(0L);
+        matchDO.setStrafPunkteSatz4(0L);
+        matchDO.setStrafPunkteSatz5(0L);
         return matchDO;
     }
 

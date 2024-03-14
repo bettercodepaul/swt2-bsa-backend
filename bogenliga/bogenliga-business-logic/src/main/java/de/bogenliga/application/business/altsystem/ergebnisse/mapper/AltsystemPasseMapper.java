@@ -88,7 +88,7 @@ public class AltsystemPasseMapper {
     public List<PasseDO> toDO(List<PasseDO> passen, AltsystemErgebnisseDO altsystemDataObject) {
         List<WettkampfDO> wettkampfTage;
         WettkampfDO wettkampfDoCurrent;
-        int matchNr = 0;
+        int matchNr;
 
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
         AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
@@ -114,11 +114,13 @@ public class AltsystemPasseMapper {
 
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftUebersetzung.getBogenligaId());
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
-        wettkampfTage = wettkampfComponent.findAllByVeranstaltungId(dsbMannschaftDO.getVeranstaltungId());
 
-        wettkampfDoCurrent= getCurrentWettkampfTag(altsystemDataObject.getMatch(), veranstaltungDO.getVeranstaltungGroesse(),  wettkampfTage);
+        wettkampfDoCurrent= getCurrentWettkampfTag(altsystemDataObject.getMatch(), veranstaltungDO.getVeranstaltungGroesse(),  dsbMannschaftDO.getVeranstaltungId());
         // matchNr umrechnen auf Match am Wettkampftag
         matchNr = altsystemDataObject.getMatch() % (veranstaltungDO.getVeranstaltungGroesse()-1);
+        if (matchNr == 0){
+            matchNr= veranstaltungDO.getVeranstaltungGroesse()-1;
+        }
 
 
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDoCurrent.getId());
@@ -132,7 +134,7 @@ public class AltsystemPasseMapper {
 
         // Exception, falls kein passendes Match gefunden wurde
         if (match == null){
-            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "Match not found");
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "When creating Passen Match for Mannschaft %s and MatchNr %s not found",dsbMannschaftDO.getId(),matchNr);
         }
 
         // findet für das Match die Anzahl der Sätze über Value in der Übersetzungstabelle
@@ -179,12 +181,14 @@ public class AltsystemPasseMapper {
      Helper function to determine the corresponding Wettkampf for a match*
      @param matchnr - Nummer des Machtes gem. Alsystem-Notation - d.h. alle Matches durcjlaufend über alle Wettkampftage nummeriert
      @param veranstaltungsgroesse Anzahl der Mannschaften in der Liga - 1 = Anzahl der Matches je Wettkampftag
-     @param wettkampfTage list of all Wettkampf objects existing for the Veranstaltung of the Mannschaft
+     @param veranstaltungsId references the Veranstaltung of the Wettkampf
      @return WettkampfDO of the corresponding Wettkampf
      */
-    public WettkampfDO getCurrentWettkampfTag(int matchnr, int veranstaltungsgroesse, List<WettkampfDO> wettkampfTage){
+    public WettkampfDO getCurrentWettkampfTag(int matchnr, int veranstaltungsgroesse,  Long veranstaltungsId){
+
         WettkampfDO currentWettkampfTag;
 
+        List<WettkampfDO> wettkampfTage = wettkampfComponent.findAllByVeranstaltungId(veranstaltungsId);
 
         // Bestimmen des zugehörigen Wettkampftages
         int  currentIndexWettkampfTag = matchnr / veranstaltungsgroesse;

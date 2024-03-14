@@ -101,7 +101,7 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
             passen.add(passeComponent.findById(Long.parseLong(passeIds[i])));
         }
 
-        // Änderugnen in die Data Objects übernehmen
+        // Änderungen in die Data Objects übernehmen
         passen = altsystemPasseMapper.recalculatePassen(passen, altsystemErgebnisseDO);
 
         // Neues Data Object in die Tabelle schreiben
