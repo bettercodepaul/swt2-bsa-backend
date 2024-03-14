@@ -98,13 +98,18 @@ public class AltsystemMatchMapper {
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfTage.get(0).getWettkampfVeranstaltungsId());
 
         // Bestimmen des zugehörigen Wettkampftages
-       int  currentIndexWettkampfTag = (int) (matchDO.getNr() / veranstaltungDO.getVeranstaltungGroesse());
+       int  currentIndexWettkampfTag = (int) ((matchDO.getNr()-1) / (veranstaltungDO.getVeranstaltungGroesse()-1));
+       //die Abbildung muss sein:
+        // 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12 - 13 - 14 - 15...
+        // 0 - 0 - 0 - 0 - 0 - 0 - 0 - 1 - 1 - 1  - 1  - 1  - 1  - 1  - 2...
        if(currentIndexWettkampfTag< wettkampfTage.size()-1) {
            currentWettkampfTag = wettkampfTage.get(currentIndexWettkampfTag);
        }
        else{
            currentWettkampfTag = wettkampfTage.get(wettkampfTage.size()-1);
        }
+
+       // hier wird die MatchNr überschrieben....
        matchDO.setNr(matchDO.getNr() % (veranstaltungDO.getVeranstaltungGroesse()-1));
        if (matchDO.getNr() == 0){
            matchDO.setNr(veranstaltungDO.getVeranstaltungGroesse()-1L);

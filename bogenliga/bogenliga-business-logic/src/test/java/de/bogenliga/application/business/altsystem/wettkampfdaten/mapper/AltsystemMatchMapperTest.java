@@ -90,40 +90,28 @@ public class AltsystemMatchMapperTest {
         gegnerUebersetzung.setBogenligaId(12L);
 
         // expectedResult
-        MatchDO[] expected = new MatchDO[2];
-        expected[0] = new MatchDO();
-        expected[0].setMannschaftId(mannschaftUebersetzung.getBogenligaId());
-        expected[0].setSatzpunkte((long) altsystemWettkampfdatenDO.getSatzPlus());
-        expected[0].setMatchpunkte((long) altsystemWettkampfdatenDO.getMatchPlus());
-        expected[0].setNr((long) altsystemWettkampfdatenDO.getMatch());
+        MatchDO expected = new MatchDO();
+        expected = new MatchDO();
+        expected.setMannschaftId(mannschaftUebersetzung.getBogenligaId());
+        expected.setSatzpunkte((long) altsystemWettkampfdatenDO.getSatzPlus());
+        expected.setMatchpunkte((long) altsystemWettkampfdatenDO.getMatchPlus());
+        expected.setNr((long) altsystemWettkampfdatenDO.getMatch());
 
-        expected[1] = new MatchDO();
-        expected[1].setMannschaftId(gegnerUebersetzung.getBogenligaId());
-        expected[1].setSatzpunkte((long) altsystemWettkampfdatenDO.getSatzMinus());
-        expected[1].setMatchpunkte((long) altsystemWettkampfdatenDO.getMatchMinus());
-        expected[1].setNr((long) altsystemWettkampfdatenDO.getMatch());
 
 
         // configure mocks
         when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemWettkampfdatenDO.getMannschaft())).thenReturn(mannschaftUebersetzung);
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, altsystemWettkampfdatenDO.getGegner())).thenReturn(gegnerUebersetzung);
 
         // call test method
-        MatchDO[] actual = new MatchDO[2];
-        actual[0] = new MatchDO();
-        actual[1] = new MatchDO();
+        MatchDO actual = new MatchDO();
         actual = altsystemMatchMapper.toDO(actual, altsystemWettkampfdatenDO);
 
         // assert result
-        assertThat(actual[0].getMannschaftId()).isEqualTo(expected[0].getMannschaftId());
-        assertThat(actual[0].getSatzpunkte()).isEqualTo(expected[0].getSatzpunkte());
-        assertThat(actual[0].getMatchpunkte()).isEqualTo(expected[0].getMatchpunkte());
-        assertThat(actual[0].getNr()).isEqualTo(expected[0].getNr());
+        assertThat(actual.getMannschaftId()).isEqualTo(expected.getMannschaftId());
+        assertThat(actual.getSatzpunkte()).isEqualTo(expected.getSatzpunkte());
+        assertThat(actual.getMatchpunkte()).isEqualTo(expected.getMatchpunkte());
+        assertThat(actual.getNr()).isEqualTo(expected.getNr());
 
-        assertThat(actual[1].getMannschaftId()).isEqualTo(expected[1].getMannschaftId());
-        assertThat(actual[1].getSatzpunkte()).isEqualTo(expected[1].getSatzpunkte());
-        assertThat(actual[1].getMatchpunkte()).isEqualTo(expected[1].getMatchpunkte());
-        assertThat(actual[1].getNr()).isEqualTo(expected[1].getNr());
     }
 
     @Test
@@ -141,25 +129,20 @@ public class AltsystemMatchMapperTest {
 
 
         // call test method
-        MatchDO[] actual = new MatchDO[2];
-        actual[0] = new MatchDO();
-        actual[0].setNr(14L);
-        actual[1] = new MatchDO();
+        MatchDO actual = new MatchDO();
+        actual.setNr(14L);
         actual = altsystemMatchMapper.addDefaultFields(actual, wettkaempfe);
 
         // assert result
-        for(MatchDO match : actual){
-            assertThat(match.getWettkampfId()).isEqualTo(2L);
-            assertThat(match.getBegegnung()).isEqualTo(2L);
-            assertThat(match.getStrafPunkteSatz1()).isEqualTo(0L);
-            assertThat(match.getStrafPunkteSatz2()).isEqualTo(0L);
-            assertThat(match.getStrafPunkteSatz3()).isEqualTo(0L);
-            assertThat(match.getStrafPunkteSatz4()).isEqualTo(0L);
-            assertThat(match.getStrafPunkteSatz5()).isEqualTo(0L);
-        }
+        assertThat(actual.getWettkampfId()).isEqualTo(2L);
+        assertThat(actual.getBegegnung()).isEqualTo(3L);
+        assertThat(actual.getStrafPunkteSatz1()).isEqualTo(0L);
+        assertThat(actual.getStrafPunkteSatz2()).isEqualTo(0L);
+        assertThat(actual.getStrafPunkteSatz3()).isEqualTo(0L);
+        assertThat(actual.getStrafPunkteSatz4()).isEqualTo(0L);
+        assertThat(actual.getStrafPunkteSatz5()).isEqualTo(0L);
 
-        assertThat(actual[0].getMatchScheibennummer()).isEqualTo((matches.size() % 8) );
-        assertThat(actual[1].getMatchScheibennummer()).isEqualTo((matches.size() % 8)+1 );
+        assertThat(actual.getMatchScheibennummer()).isEqualTo(((matches.size() % 8)+1) );
 
     }
 

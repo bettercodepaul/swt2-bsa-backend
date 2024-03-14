@@ -43,9 +43,6 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
      */
     @Override
     public void create(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
-        // Daten sind im Altsystem redundant
-        // Bearbeitung nur, falls Sec = 0 ist
-        if (altsystemWettkampfdatenDO.getSec() == 0){
             List<WettkampfDO> wettkampfTage = altsystemWettkampftagMapper.getOrCreateWettkampftage(altsystemWettkampfdatenDO, currentUserId);
 
             MatchDO matchDO = new MatchDO();
@@ -57,7 +54,6 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
             saveAnzahlSaetze(altsystemWettkampfdatenDO, matchDO);
 
             altsystemUebersetzung.updateOrInsertUebersetzung(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId(), matchDO.getId(), null);
-        }
 
     }
 
@@ -68,10 +64,7 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
      */
     @Override
     public void update(AltsystemWettkampfdatenDO altsystemWettkampfdatenDO, long currentUserId){
-        // Daten sind im Altsystem redundant
-        // Bearbeitung nur, falls Sec = 0 ist
-        if (altsystemWettkampfdatenDO.getSec() == 0){
-            // Zugehörige Matches aus Übersetzungstabelle holen
+        // Zugehörige Matches aus Übersetzungstabelle holen
             AltsystemUebersetzungDO wettkampfdatenUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Wettkampfergebnis_Match, altsystemWettkampfdatenDO.getId());
             MatchDO matchDO = new MatchDO();
             // Erstgenannte Mannschafts-ID ist im Feld "BogenligaId" gespeichert, zweitgenannte Mannschafts-ID im Feld Wert
@@ -84,7 +77,6 @@ public class AltsystemWettkampfdaten implements AltsystemEntity<AltsystemWettkam
 
             // Anzahl Sätze in Übersetzungstabelle updaten
             saveAnzahlSaetze(altsystemWettkampfdatenDO, matchDO);
-        }
     }
 
 
