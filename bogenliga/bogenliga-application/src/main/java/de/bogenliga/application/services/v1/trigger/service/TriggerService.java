@@ -238,10 +238,6 @@ public class TriggerService implements ServiceFacade {
         ), sqlQuery);
 
         List<TriggerChange<T>> changes = new ArrayList<>();
-
-        List<Thread> threads = new ArrayList<>();
-
-
         for (T retrievedObject : allTableObjects) {
             TriggerChangeOperation operation = determineOperationFromTimestamp(retrievedObject, lastSync);
 
@@ -262,23 +258,11 @@ public class TriggerService implements ServiceFacade {
                     null,
                     null
             );
-            Thread thread = new Thread(() -> {
-                // Override the run method of the Runnable interface
-                TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
-                changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));
+            TriggerDO createdTriggerChange = triggerComponent.create(triggerDO, triggeringUserId);
 
-            });
-            threads.add(thread);
-            thread.run();
+            changes.add(new TriggerChange<>(triggerComponent, createdTriggerChange, retrievedObject, entity, triggeringUserId));
         }
 
-        try {
-            for (Thread thread : threads) {
-                thread.join();
-            }
-        } catch (Exception e) {
-            LOGGER.error("Failed to join Threads during Data-Migration: " + oldTableName, e);
-        }
         return changes;
     }
 
