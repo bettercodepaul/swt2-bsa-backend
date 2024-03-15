@@ -14,6 +14,7 @@ public class CompetitionClassDTOMapper implements DataTransferObjectMapper {
 
     private CompetitionClassDTOMapper() {
         // Empty constructor
+        // Comment Text
     }
 
     /**
