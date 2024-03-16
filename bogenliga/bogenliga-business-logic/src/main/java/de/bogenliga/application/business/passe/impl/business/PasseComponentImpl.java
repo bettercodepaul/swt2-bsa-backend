@@ -15,7 +15,6 @@ import de.bogenliga.application.business.passe.impl.entity.PasseBE;
 import de.bogenliga.application.business.passe.impl.mapper.PasseMapper;
 import de.bogenliga.application.common.validation.Preconditions;
 
-
 /**
  * @author Kay Scheerer
  */
