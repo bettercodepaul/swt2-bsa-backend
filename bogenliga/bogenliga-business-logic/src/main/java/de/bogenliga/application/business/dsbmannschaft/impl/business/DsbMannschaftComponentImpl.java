@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Philip Dengler
@@ -71,7 +70,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
     public List<DsbMannschaftDO> findAll() {
         final List<DsbMannschaftBE> dsbMannschaftBeList = dsbMannschaftDAO.findAll();
         return this.fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
     @Override
@@ -84,7 +83,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
     @Override
@@ -97,7 +96,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
     @Override
@@ -110,7 +109,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         }
 
         return fillAllNames(dsbMannschaftBeList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
     }
 
 
@@ -174,7 +173,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
      * @return the same Mannschaften as given but with their names filled.
      */
     private List<DsbMannschaftDO> fillAllNames(List<DsbMannschaftDO> mannschaften){
-        return mannschaften.stream().map(this::fillName).collect(Collectors.toList());
+        return mannschaften.stream().map(this::fillName).toList();
     }
 
     /**
@@ -288,7 +287,7 @@ public class DsbMannschaftComponentImpl implements DsbMannschaftComponent, DsbMa
         final List<DsbMannschaftBE> lastMannschaftList = dsbMannschaftDAO.findAllByVeranstaltungsId(lastVeranstaltungId);
 
         List<DsbMannschaftDO> lastMListDO = fillAllNames(lastMannschaftList.stream()
-                .map(DsbMannschaftMapper.toDsbMannschaftDO).collect(Collectors.toList()));
+                .map(DsbMannschaftMapper.toDsbMannschaftDO).toList());
 
         // creates a new database entry for every Mannschaft with the current VeranstaltungId
         List<DsbMannschaftDO> addedMannschaftenList = new ArrayList<>();
