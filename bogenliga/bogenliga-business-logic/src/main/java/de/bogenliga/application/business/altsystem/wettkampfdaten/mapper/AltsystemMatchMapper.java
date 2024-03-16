@@ -60,9 +60,12 @@ public class AltsystemMatchMapper {
      */
     public MatchDO addDefaultFields(MatchDO matchDO, List<WettkampfDO> wettkampfTage) {
 
-        WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO, wettkampfTage);
-
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfTage.get(0).getWettkampfVeranstaltungsId());
+
+        WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO.getNr(), veranstaltungDO.getVeranstaltungGroesse(),wettkampfTage);
+
+        // hier wird die MatchNr überschrieben....
+         matchDO.setNr(getCurrentBsappMatch(matchDO.getNr(),  veranstaltungDO.getVeranstaltungGroesse()));
 
         long matchCount = getMatchCountForWettkampf(wettkampfDO);
         Long currentScheibenNummer;
@@ -88,17 +91,16 @@ public class AltsystemMatchMapper {
 
     /**
      Helper function to determine the corresponding Wettkampf for a match*
-     @param matchDO match for which a wettkampf should be determined
+     @param matchNummer Nummer des aktuellen Matches for which a wettkampf should be determined
+     @param veranstaltungsgroesse Anzahl der Mannschaften n dieser Veranstaltung
      @param wettkampfTage list of all Wettkampf objects existing for the Veranstaltung of the Mannschaft
      @return WettkampfDO of the corresponding Wettkampf
      */
-    public WettkampfDO getCurrentWettkampfTag(MatchDO matchDO, List<WettkampfDO> wettkampfTage){
+    public WettkampfDO getCurrentWettkampfTag(Long matchNummer, int veranstaltungsgroesse, List<WettkampfDO> wettkampfTage){
         WettkampfDO currentWettkampfTag;
 
-        VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfTage.get(0).getWettkampfVeranstaltungsId());
-
         // Bestimmen des zugehörigen Wettkampftages
-       int  currentIndexWettkampfTag = (int) ((matchDO.getNr()-1) / (veranstaltungDO.getVeranstaltungGroesse()-1));
+       int  currentIndexWettkampfTag = (int) ((matchNummer-1) / (veranstaltungsgroesse-1));
        //die Abbildung muss sein:
         // 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12 - 13 - 14 - 15...
         // 0 - 0 - 0 - 0 - 0 - 0 - 0 - 1 - 1 - 1  - 1  - 1  - 1  - 1  - 2...
@@ -109,14 +111,17 @@ public class AltsystemMatchMapper {
            currentWettkampfTag = wettkampfTage.get(wettkampfTage.size()-1);
        }
 
-       // hier wird die MatchNr überschrieben....
-       matchDO.setNr(matchDO.getNr() % (veranstaltungDO.getVeranstaltungGroesse()-1));
-       if (matchDO.getNr() == 0){
-           matchDO.setNr(veranstaltungDO.getVeranstaltungGroesse()-1L);
-       }
-       return currentWettkampfTag;
+        return currentWettkampfTag;
     }
 
+    public Long getCurrentBsappMatch(Long matchNummer, int veranstaltungsGroesse){
+        Long matchNr;
+        matchNr = (matchNummer % (veranstaltungsGroesse-1L));
+        if (matchNr == 0L){
+            matchNr =  (veranstaltungsGroesse-1L);
+        }
+        return matchNr;
+    }
     /**
      Helper function to calculate the number of match-datasets existing for a Wettkampf
      With the number of datasets the values for the fields Begegnung and Scheibennummer can be calculated*

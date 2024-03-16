@@ -154,7 +154,7 @@ public class AltsystemMatchMapperTest {
         veranstaltungDO.setVeranstaltungGroesse(8);
         // configure mocks
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
-        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
+        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO.getNr(), veranstaltungDO.getVeranstaltungGroesse(), getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(1L);
     }
@@ -167,7 +167,7 @@ public class AltsystemMatchMapperTest {
         veranstaltungDO.setVeranstaltungGroesse(8);
         // configure mocks
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
-        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
+        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO.getNr(), veranstaltungDO.getVeranstaltungGroesse(), getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(2L);
     }
@@ -181,7 +181,7 @@ public class AltsystemMatchMapperTest {
         // configure mocks
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
 
-        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
+        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO.getNr(), veranstaltungDO.getVeranstaltungGroesse(), getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(3L);
     }
@@ -194,7 +194,7 @@ public class AltsystemMatchMapperTest {
         veranstaltungDO.setVeranstaltungGroesse(8);
         // configure mocks
         when(veranstaltungComponent.findById(anyLong())).thenReturn(veranstaltungDO);
-        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO, getMockWettkaempfe());
+        WettkampfDO wettkampfDO = altsystemMatchMapper.getCurrentWettkampfTag(matchDO.getNr(), veranstaltungDO.getVeranstaltungGroesse(), getMockWettkaempfe());
 
         assertThat(wettkampfDO.getWettkampfTag()).isEqualTo(4L);
     }

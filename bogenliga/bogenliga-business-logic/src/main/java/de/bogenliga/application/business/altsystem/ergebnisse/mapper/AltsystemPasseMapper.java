@@ -2,6 +2,7 @@ package de.bogenliga.application.business.altsystem.ergebnisse.mapper;
 
 import java.util.List;
 
+import de.bogenliga.application.business.altsystem.wettkampfdaten.mapper.AltsystemMatchMapper;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
 import de.bogenliga.application.business.dsbmannschaft.api.types.DsbMannschaftDO;
 import de.bogenliga.application.business.veranstaltung.api.VeranstaltungComponent;
@@ -33,6 +34,7 @@ public class AltsystemPasseMapper {
     private final WettkampfComponent wettkampfComponent;
     private final VeranstaltungComponent veranstaltungComponent;
     private final DsbMannschaftComponent dsbMannschaftComponent;
+    private final AltsystemMatchMapper altsystemMatchMapper;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
     @Autowired
@@ -40,11 +42,13 @@ public class AltsystemPasseMapper {
                                 final VeranstaltungComponent veranstaltungComponent,
                                 final WettkampfComponent wettkampfComponent,
                                 final DsbMannschaftComponent dsbMannschaftComponent,
+                                final AltsystemMatchMapper altsystemMatchMapper,
                                 final AltsystemUebersetzung altsystemUebersetzung){
         this.matchComponent = matchComponent;
         this.veranstaltungComponent = veranstaltungComponent;
         this.wettkampfComponent = wettkampfComponent;
         this.dsbMannschaftComponent = dsbMannschaftComponent;
+        this.altsystemMatchMapper = altsystemMatchMapper;
         this.altsystemUebersetzung = altsystemUebersetzung;
     }
 
@@ -88,7 +92,7 @@ public class AltsystemPasseMapper {
     public List<PasseDO> toDO(List<PasseDO> passen, AltsystemErgebnisseDO altsystemDataObject) {
         List<WettkampfDO> wettkampfTage;
         WettkampfDO wettkampfDoCurrent;
-        int matchNr;
+        Long matchNr;
 
         // Übersetzungstabelle schuetzeID --> DSBMitglied bzw. Mannschaft
         AltsystemUebersetzungDO schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,
@@ -115,14 +119,16 @@ public class AltsystemPasseMapper {
         DsbMannschaftDO dsbMannschaftDO = dsbMannschaftComponent.findById(mannschaftUebersetzung.getBogenligaId());
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(dsbMannschaftDO.getVeranstaltungId());
 
-        wettkampfDoCurrent= getCurrentWettkampfTag(altsystemDataObject.getMatch(), veranstaltungDO.getVeranstaltungGroesse(),  dsbMannschaftDO.getVeranstaltungId());
+        wettkampfTage = wettkampfComponent.findAllByVeranstaltungId(veranstaltungDO.getVeranstaltungID());
+
+        // für die folgenden beiden Rechnungen nutzen wir Funktionen aus dem AltsystemMatchMapper
+        // es ist wichtig, dass die Bestimmung identisch erfolgt - wir wollen ja auf das gleiche Match abbilden
+        wettkampfDoCurrent= altsystemMatchMapper.getCurrentWettkampfTag(Long.valueOf(altsystemDataObject.getMatch()), veranstaltungDO.getVeranstaltungGroesse(),  wettkampfTage);
         // matchNr umrechnen auf Match am Wettkampftag
-        matchNr = altsystemDataObject.getMatch() % (veranstaltungDO.getVeranstaltungGroesse()-1);
-        if (matchNr == 0){
-            matchNr= veranstaltungDO.getVeranstaltungGroesse()-1;
-        }
+        matchNr = altsystemMatchMapper.getCurrentBsappMatch(Long.valueOf(altsystemDataObject.getMatch()), veranstaltungDO.getVeranstaltungGroesse());
 
-
+        //Liste der bereits angelegten Matches prüfen und den richten Eintrag auswählen
+        //dazu müssen Match-Nr. und Mannschaft gleich sein...
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDoCurrent.getId());
         MatchDO match = null;
         for (MatchDO currentMatch : matches){
@@ -177,28 +183,5 @@ public class AltsystemPasseMapper {
         return passen;
     }
 
-    /**
-     Helper function to determine the corresponding Wettkampf for a match*
-     @param matchnr - Nummer des Machtes gem. Alsystem-Notation - d.h. alle Matches durcjlaufend über alle Wettkampftage nummeriert
-     @param veranstaltungsgroesse Anzahl der Mannschaften in der Liga - 1 = Anzahl der Matches je Wettkampftag
-     @param veranstaltungsId references the Veranstaltung of the Wettkampf
-     @return WettkampfDO of the corresponding Wettkampf
-     */
-    public WettkampfDO getCurrentWettkampfTag(int matchnr, int veranstaltungsgroesse,  Long veranstaltungsId){
-
-        WettkampfDO currentWettkampfTag;
-
-        List<WettkampfDO> wettkampfTage = wettkampfComponent.findAllByVeranstaltungId(veranstaltungsId);
-
-        // Bestimmen des zugehörigen Wettkampftages
-        int  currentIndexWettkampfTag = (matchnr-1) / (veranstaltungsgroesse-1);
-        if(currentIndexWettkampfTag< wettkampfTage.size()-1) {
-            currentWettkampfTag = wettkampfTage.get(currentIndexWettkampfTag);
-        }
-        else{
-            currentWettkampfTag = wettkampfTage.get(wettkampfTage.size()-1);
-        }
-        return currentWettkampfTag;
-    }
 
 }
