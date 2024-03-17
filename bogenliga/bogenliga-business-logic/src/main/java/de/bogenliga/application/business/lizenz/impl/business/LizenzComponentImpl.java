@@ -271,7 +271,7 @@ public class LizenzComponentImpl implements LizenzComponent {
     }
 
     void generateLizenzPage(Document doc, String verein, String lizenz, String schuetzename,
-                                    String schuetzevorname, String liga, String sportjahr) {
+                            String schuetzevorname, String liga, String sportjahr) {
         final Table tableHead = new Table(UnitValue.createPercentArray(1), true);
         final Table secondTable = new Table(UnitValue.createPercentArray(1), true);
         final Table thirdTable = new Table(UnitValue.createPercentArray(1), true);
