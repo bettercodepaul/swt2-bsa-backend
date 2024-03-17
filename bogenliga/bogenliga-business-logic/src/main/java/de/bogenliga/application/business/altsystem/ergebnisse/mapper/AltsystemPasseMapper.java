@@ -138,31 +138,41 @@ public class AltsystemPasseMapper {
             }
         }
 
-        // Exception, falls kein passendes Match gefunden wurde
-        if (match == null){
+        // Exception, falls kein passendes Match gefunden wurde und ein Ergebnis >0 zu speichern ist
+        if (match == null && altsystemDataObject.getErgebnis()>0 ){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "When creating Passen Match for Mannschaft %s and MatchNr %s not found",dsbMannschaftDO.getId(),matchNr);
         }
-
-        // findet für das Match die Anzahl der Sätze über Value in der Übersetzungstabelle
-        AltsystemUebersetzungDO satzUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Match_Saetze, match.getId());
-        int anzahlSaetze = Integer.parseInt(satzUebersetzung.getWert());
-
-        int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebnis(), anzahlSaetze);
-
-        for(int i = 0; i < anzahlSaetze; i++){
-            PasseDO passe = new PasseDO();
-            passe.setPasseLfdnr((long) (i + 1));
-            passe.setPasseDsbMitgliedId(schuetzeUebersetzung.getBogenligaId());
-            passe.setPasseMannschaftId(match.getMannschaftId());
-            passe.setPasseMatchNr(match.getNr());
-            passe.setPasseMatchId(match.getId());
-            passe.setPasseWettkampfId(match.getWettkampfId());
-            passe.setPfeil1(punkte[i][0]);
-            passe.setPfeil2(punkte[i][1]);
-            passen.add(passe);
+        //keine Exception wenn Ergebnis = 0 ist
+        //bei Gero werden alle Kombinationen von Schützen und Match in der Ergebnis-Tabelle abgelegt
+        //in der Tabelle Wettkampf stehen aber nur Kombinationen für Schütze, die geschossen haben
+        // da fehlen dann bei uns die Einträge in der Match-Tabelle
+        else if (match == null && altsystemDataObject.getErgebnis()==0) {
+            // wir geben ein leeres Feld zurück - hier müssen keine Daten angelegt werden.
+            return passen;
         }
+        //wir haben das Match gefunden und legen dazu die Pfeilwerte an
+        else {
+            // findet für das Match die Anzahl der Sätze über Value in der Übersetzungstabelle
+            AltsystemUebersetzungDO satzUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Match_Saetze, match.getId());
+            int anzahlSaetze = Integer.parseInt(satzUebersetzung.getWert());
 
-        return passen;
+            int[][] punkte = getPassenpunkte(altsystemDataObject.getErgebnis(), anzahlSaetze);
+
+            for (int i = 0; i < anzahlSaetze; i++) {
+                PasseDO passe = new PasseDO();
+                passe.setPasseLfdnr((long) (i + 1));
+                passe.setPasseDsbMitgliedId(schuetzeUebersetzung.getBogenligaId());
+                passe.setPasseMannschaftId(match.getMannschaftId());
+                passe.setPasseMatchNr(match.getNr());
+                passe.setPasseMatchId(match.getId());
+                passe.setPasseWettkampfId(match.getWettkampfId());
+                passe.setPfeil1(punkte[i][0]);
+                passe.setPfeil2(punkte[i][1]);
+                passen.add(passe);
+            }
+
+            return passen;
+        }
     }
 
     /**
