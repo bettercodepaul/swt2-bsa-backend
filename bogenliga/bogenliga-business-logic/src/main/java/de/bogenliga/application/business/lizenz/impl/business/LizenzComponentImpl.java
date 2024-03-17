@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,16 +117,15 @@ public class LizenzComponentImpl implements LizenzComponent {
     @Override
     public List<LizenzDO> findByDsbMitgliedId(long id) {
         final List<LizenzBE> lizenzBEList = lizenzDAO.findByDsbMitgliedId(id);
-        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
-                Collectors.toList());
+        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).toList();
 
     }
+
 
     @Override
     public List<LizenzDO> findAll() {
         final List<LizenzBE> lizenzBEList = this.lizenzDAO.findAll();
-        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).collect(
-                Collectors.toList());
+        return lizenzBEList.stream().map(LizenzMapper.toLizenzDO).toList();
     }
 
 
