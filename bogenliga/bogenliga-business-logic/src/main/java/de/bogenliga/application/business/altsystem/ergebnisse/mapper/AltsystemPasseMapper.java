@@ -130,23 +130,24 @@ public class AltsystemPasseMapper {
         //Liste der bereits angelegten Matches prüfen und den richten Eintrag auswählen
         //dazu müssen Match-Nr. und Mannschaft gleich sein...
         List<MatchDO> matches = matchComponent.findByWettkampfId(wettkampfDoCurrent.getId());
-        MatchDO match = null;
+        MatchDO match = new MatchDO();
+        match.setId(0L);
         for (MatchDO currentMatch : matches){
-            if(currentMatch.getNr() == matchNr && currentMatch.getMannschaftId().equals(dsbMannschaftDO.getId())){
+            if(currentMatch.getNr().equals(matchNr) && currentMatch.getMannschaftId().equals(dsbMannschaftDO.getId())){
                 match = currentMatch;
                 break;
             }
         }
 
         // Exception, falls kein passendes Match gefunden wurde und ein Ergebnis >0 zu speichern ist
-        if (match == null && altsystemDataObject.getErgebnis()>0 ){
+        if (match.getId()== 0L && altsystemDataObject.getErgebnis()>0 ){
             throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND_ERROR, "When creating Passen Match for Mannschaft %s and MatchNr %s not found",dsbMannschaftDO.getId(),matchNr);
         }
-        //keine Exception wenn Ergebnis = 0 ist
+        //keine Exception, wenn das Ergebnis = 0 ist
         //bei Gero werden alle Kombinationen von Schützen und Match in der Ergebnis-Tabelle abgelegt
         //in der Tabelle Wettkampf stehen aber nur Kombinationen für Schütze, die geschossen haben
         // da fehlen dann bei uns die Einträge in der Match-Tabelle
-        else if (match == null && altsystemDataObject.getErgebnis()==0) {
+        else if (match.getId()== 0L && altsystemDataObject.getErgebnis()==0) {
             // wir geben ein leeres Feld zurück - hier müssen keine Daten angelegt werden.
             return passen;
         }
