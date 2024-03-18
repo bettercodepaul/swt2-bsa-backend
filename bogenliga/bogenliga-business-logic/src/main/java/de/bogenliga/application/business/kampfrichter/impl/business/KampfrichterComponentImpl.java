@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.kampfrichter.impl.business;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.kampfrichter.api.KampfrichterComponent;
@@ -43,19 +42,19 @@ public class KampfrichterComponentImpl implements KampfrichterComponent {
     @Override
     public List<KampfrichterDO> findAll() {
         final List<KampfrichterBE> kampfrichterBEList = kampfrichterDAO.findAll();
-        return kampfrichterBEList.stream().map(KampfrichterMapper.toKampfrichterDO).collect(Collectors.toList());
+        return kampfrichterBEList.stream().map(KampfrichterMapper.toKampfrichterDO).toList();
     }
 
     @Override
     public List<KampfrichterDO> findByWettkampfidNotInWettkampftag(final long wettkampfId){
         final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidNotInWettkampftag(wettkampfId);
-        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
+        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).toList();
     }
 
     @Override
     public List<KampfrichterDO> findByWettkampfidInWettkampftag(final long wettkampfId){
         final List<KampfrichterExtendedBE> kampfrichterExtendedBEList= kampfrichterDAO.findByWettkampfidInWettkampftag(wettkampfId);
-        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).collect(Collectors.toList());
+        return kampfrichterExtendedBEList.stream().map(KampfrichterMapper.toKampfrichterDOExtended).toList();
     }
 
     @Override
