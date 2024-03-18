@@ -61,12 +61,21 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
         // Identifier für den zu vegleichenden Schützen generieren
         String parsedIdentifier = altsystemSchuetzeMapper.getIdentifier(altsystemSchuetzeDO);
 
-        // Informationen zum Schützen im neuen System anhand des Identifiers abrufen
+        // Informationen zum Schützen im neuen System anhand der Altsystem-ID abrufen
         AltsystemUebersetzungDO schuetzeUebersetzung = null;
         try {
-            schuetzeUebersetzung = altsystemSchuetzeMapper.getSchuetzeByIdentifier(altsystemSchuetzeDO.getId());
+            schuetzeUebersetzung = altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, altsystemSchuetzeDO.getId());
         }catch(Exception e){
             LOGGER.debug(String.valueOf(e));
+        }
+        // für den Fall, dass wir zur altsystem_id keine Übersetzung finden, suchen wir noch nach der küsntlich erzeugten
+        // die DSB-mitlgiedsID - auch die muss ja eindeutig sein...
+        if (schuetzeUebersetzung == null) {
+            try {
+                schuetzeUebersetzung = altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, parsedIdentifier);
+            } catch (Exception e) {
+                LOGGER.debug(String.valueOf(e));
+            }
         }
         Long dsbMitgliedId = null;
         // Wenn der Identifier noch nicht in der Übersetzungstabelle vorhanden ist
@@ -80,11 +89,11 @@ public class AltsystemSchuetze implements AltsystemEntity<AltsystemSchuetzeDO> {
             if (dsbMitgliedexist.isEmpty()) {
                 // Daten des Schützen in die Datenbank im neuen System einfügen und die ID erhalten
                 dsbMitgliedDO = dsbMitgliedComponent.create(dsbMitgliedDO, currentUserId);
-                dsbMitgliedId = dsbMitgliedDO.getId();
             }
             else{
                 dsbMitgliedDO = dsbMitgliedexist.get(0);
             }
+            dsbMitgliedId = dsbMitgliedDO.getId();
             //Schuetze als Mannschaftsmitglied eintragen
             MannschaftsmitgliedDO mannschaftsmitgliedDO = altsystemSchuetzeMapper.buildMannschaftsMitglied( Long.valueOf(altsystemSchuetzeDO.getMannschaft_id()), Long.valueOf(altsystemSchuetzeDO.getRuecknr()), dsbMitgliedDO);
             mannschaftsmitgliedComponent.create(mannschaftsmitgliedDO, currentUserId);
