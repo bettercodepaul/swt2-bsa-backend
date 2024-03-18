@@ -375,7 +375,7 @@ public class UserService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_SYSTEMDATEN)
     public List<UserRoleDTO> findAll() {
         final List<UserRoleDO> userRoleDOList = userRoleComponent.findAll();
-        return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
+        return userRoleDOList.stream().map(UserRoleDTOMapper.toDTO).toList();
     }
 
     @GetMapping(value = "/search/{searchstring}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -384,7 +384,7 @@ public class UserService implements ServiceFacade {
         Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_SEARCHTERM);
 
         final List<UserRoleDO> result = userRoleComponent.findBySearch(searchTerm);
-        return result.stream().map(UserRoleDTOMapper.toDTO).collect(Collectors.toList());
+        return result.stream().map(UserRoleDTOMapper.toDTO).toList();
     }
 
 
