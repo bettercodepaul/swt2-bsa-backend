@@ -62,7 +62,7 @@ public class LigatabelleService implements ServiceFacade {
 
         final List<LigatabelleDO> ligatabelleDOList = ligatabelleComponent.getLigatabelleVeranstaltung(id);
 
-        return ligatabelleDOList.stream().map(LigatabelleDTOMapper.toDTO).collect(Collectors.toList());
+        return ligatabelleDOList.stream().map(LigatabelleDTOMapper.toDTO).toList();
     }
 
     /**
@@ -81,7 +81,7 @@ public class LigatabelleService implements ServiceFacade {
 
         final List<LigatabelleDO> ligatabelleDOList = ligatabelleComponent.getLigatabelleWettkampf(id);
 
-        return ligatabelleDOList.stream().map(LigatabelleDTOMapper.toDTO).collect(Collectors.toList());
+        return ligatabelleDOList.stream().map(LigatabelleDTOMapper.toDTO).toList();
     }
 
 
