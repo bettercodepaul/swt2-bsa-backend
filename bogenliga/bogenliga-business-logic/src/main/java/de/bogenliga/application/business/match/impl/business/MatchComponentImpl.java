@@ -219,7 +219,7 @@ public class MatchComponentImpl implements MatchComponent {
         checkPreconditions(mannschaftId, PRECONDITION_MSG_MANNSCHAFT_ID);
 
         final List<MatchBE> matchBEList = matchDAO.findByMannschaftId(mannschaftId);
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+        return matchBEList.stream().map(MatchMapper.toMatchDO).toList();
     }
 
 
