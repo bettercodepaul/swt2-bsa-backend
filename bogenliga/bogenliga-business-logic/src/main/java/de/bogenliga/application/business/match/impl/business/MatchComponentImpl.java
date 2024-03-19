@@ -2,7 +2,6 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -58,7 +57,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private WettkampfComponent wettkampfComponent;
     private final LigamatchDAO ligamatchDAO;
-    private long platzhalterId = 99;
+    private final long platzhalterId = 99;
 
 
     /**
