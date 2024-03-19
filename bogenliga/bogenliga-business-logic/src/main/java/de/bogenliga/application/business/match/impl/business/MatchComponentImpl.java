@@ -229,15 +229,13 @@ public class MatchComponentImpl implements MatchComponent {
         this.checkMatch(matchDO);
 
         try {
-            // Check if the Mannschaft of this match is a Platzhalter
+            // Check if the Mannschaft of this match is an Platzhalter
             DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
             if (checkForVereinsID.getVereinId() == platzhalterId) {
                 matchDO.setMatchpunkte(0L);
                 matchDO.setSatzpunkte(0L);
             }
-        }catch (NullPointerException ignored) {
-            System.out.println(ignored);
-        }
+        }catch (NullPointerException ignored) {}
 
         MatchBE matchBE = matchDAO.create(MatchMapper.toMatchBE.apply(matchDO), currentUserId);
         return MatchMapper.toMatchDO.apply(matchBE);
