@@ -211,7 +211,7 @@ public class MatchComponentImpl implements MatchComponent {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
 
         final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+        return matchBEList.stream().map(MatchMapper.toMatchDO).toList();
     }
 
     @Override
