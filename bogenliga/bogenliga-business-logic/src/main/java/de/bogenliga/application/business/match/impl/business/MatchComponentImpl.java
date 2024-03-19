@@ -123,7 +123,7 @@ public class MatchComponentImpl implements MatchComponent {
     public List<LigamatchDO> getLigamatchDOsByWettkampfId(Long wettkampfId) {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
         final List<LigamatchBE> ligaMatches = ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
-        return ligaMatches.stream().map(LigamatchMapper.toLigamatchDO).collect(Collectors.toList());
+        return ligaMatches.stream().map(LigamatchMapper.toLigamatchDO).toList();
     }
 
     /**
