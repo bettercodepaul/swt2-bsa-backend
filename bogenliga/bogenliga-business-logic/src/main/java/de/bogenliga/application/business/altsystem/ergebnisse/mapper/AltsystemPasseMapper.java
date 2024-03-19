@@ -123,9 +123,9 @@ public class AltsystemPasseMapper {
 
         // für die folgenden beiden Rechnungen nutzen wir Funktionen aus dem AltsystemMatchMapper
         // es ist wichtig, dass die Bestimmung identisch erfolgt - wir wollen ja auf das gleiche Match abbilden
-        wettkampfDoCurrent= altsystemMatchMapper.getCurrentWettkampfTag(Long.valueOf(altsystemDataObject.getMatch()), veranstaltungDO.getVeranstaltungGroesse(),  wettkampfTage);
+        wettkampfDoCurrent= altsystemMatchMapper.getCurrentWettkampfTag(Long.valueOf(altsystemDataObject.getMatch()), wettkampfTage);
         // matchNr umrechnen auf Match am Wettkampftag
-        matchNr = altsystemMatchMapper.getCurrentBsappMatch(Long.valueOf(altsystemDataObject.getMatch()), veranstaltungDO.getVeranstaltungGroesse());
+        matchNr = altsystemMatchMapper.getCurrentBsappMatch(Long.valueOf(altsystemDataObject.getMatch()));
 
         //Liste der bereits angelegten Matches prüfen und den richten Eintrag auswählen
         //dazu müssen Match-Nr. und Mannschaft gleich sein...
