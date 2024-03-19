@@ -94,7 +94,7 @@ public class MatchComponentImpl implements MatchComponent {
     @Override
     public List<MatchDO> findAll() {
         final List<MatchBE> matchBEList = matchDAO.findAll();
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+        return matchBEList.stream().map(MatchMapper.toMatchDO).toList();
     }
 
 
