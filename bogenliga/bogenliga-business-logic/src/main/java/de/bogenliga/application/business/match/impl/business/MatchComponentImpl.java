@@ -229,7 +229,7 @@ public class MatchComponentImpl implements MatchComponent {
         this.checkMatch(matchDO);
 
         try {
-            // Check if the Mannschaft of this match is an Platzhalter
+            // Check if the Mannschaft of this match is a Platzhalter
             DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
             if (checkForVereinsID.getVereinId() == platzhalterId) {
                 matchDO.setMatchpunkte(0L);
