@@ -62,10 +62,10 @@ public class AltsystemMatchMapper {
 
         VeranstaltungDO veranstaltungDO = veranstaltungComponent.findById(wettkampfTage.get(0).getWettkampfVeranstaltungsId());
 
-        WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO.getNr(), veranstaltungDO.getVeranstaltungGroesse(),wettkampfTage);
+        WettkampfDO wettkampfDO = getCurrentWettkampfTag(matchDO.getNr(),wettkampfTage);
 
         // hier wird die MatchNr überschrieben....
-         matchDO.setNr(getCurrentBsappMatch(matchDO.getNr(),  veranstaltungDO.getVeranstaltungGroesse()));
+         matchDO.setNr(getCurrentBsappMatch(matchDO.getNr()));
 
         long matchCount = getMatchCountForWettkampf(wettkampfDO);
         Long currentScheibenNummer;
@@ -92,15 +92,16 @@ public class AltsystemMatchMapper {
     /**
      Helper function to determine the corresponding Wettkampf for a match*
      @param matchNummer Nummer des aktuellen Matches for which a wettkampf should be determined
-     @param veranstaltungsgroesse Anzahl der Mannschaften n dieser Veranstaltung
      @param wettkampfTage list of all Wettkampf objects existing for the Veranstaltung of the Mannschaft
      @return WettkampfDO of the corresponding Wettkampf
      */
-    public WettkampfDO getCurrentWettkampfTag(Long matchNummer, int veranstaltungsgroesse, List<WettkampfDO> wettkampfTage){
+    public WettkampfDO getCurrentWettkampfTag(Long matchNummer, List<WettkampfDO> wettkampfTage){
         WettkampfDO currentWettkampfTag;
 
         // Bestimmen des zugehörigen Wettkampftages
-       int  currentIndexWettkampfTag = (int) ((matchNummer-1) / (veranstaltungsgroesse-1));
+        // im ALtsystemn werden die Matches immer auf eine festen Divisor verteilt
+        //zweiter Wettkampftag beginnt immer mit 8..., 3. mit 15, 4. mit 22
+       int  currentIndexWettkampfTag = (int) ((matchNummer-1) / (7));
        //die Abbildung muss sein:
         // 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12 - 13 - 14 - 15...
         // 0 - 0 - 0 - 0 - 0 - 0 - 0 - 1 - 1 - 1  - 1  - 1  - 1  - 1  - 2...
@@ -114,11 +115,13 @@ public class AltsystemMatchMapper {
         return currentWettkampfTag;
     }
 
-    public Long getCurrentBsappMatch(Long matchNummer, int veranstaltungsGroesse){
+    public Long getCurrentBsappMatch(Long matchNummer){
+    // im ALtsystemn werden die Matches immer auf eine festen Divisor verteilt
+        //zweiter Wettkampftag beginnt immer mit 8..., 3. mit 15, 4. mit 22
         Long matchNr;
-        matchNr = (matchNummer % (veranstaltungsGroesse-1L));
+        matchNr = (matchNummer % (7L));
         if (matchNr == 0L){
-            matchNr =  (veranstaltungsGroesse-1L);
+            matchNr =  (7L);
         }
         return matchNr;
     }
