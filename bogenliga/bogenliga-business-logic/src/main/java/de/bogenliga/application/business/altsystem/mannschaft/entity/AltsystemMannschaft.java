@@ -46,7 +46,7 @@ public class AltsystemMannschaft implements AltsystemEntity<AltsystemMannschaftD
 
     @Override
     public void create(AltsystemMannschaftDO altsystemDataObject, long currentUserId) {
-        /**
+        /*
          * Creates a new entry for the AltsystemMannschaftDO in the system, including the associated DsbMannschaftDO.
          *
          * @param altsystemDataObject The AltsystemMannschaftDO object to be created.
