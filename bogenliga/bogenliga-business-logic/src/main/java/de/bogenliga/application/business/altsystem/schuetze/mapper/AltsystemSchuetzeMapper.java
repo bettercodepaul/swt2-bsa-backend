@@ -116,17 +116,6 @@ public class AltsystemSchuetzeMapper implements ValueObjectMapper {
         return dsbMitgliedIdentifier;
     }
 
-    /**
-     * Diese Funktion sucht anhand des DSB-Mitglieder-Identifiers nach einem entsprechenden Datensatz im Altsystem.
-     *
-     * @param dsbMitgliedIdentifier Der Identifier des DSB-Mitglieds, nach dem gesucht werden soll.
-     * @return Ein Objekt vom Typ AltsystemUebersetzungDO, das den Datensatz im Altsystem repräsentiert, der dem gesuchten DSB-Mitglied entspricht.
-     * @throws SQLException Falls ein Fehler bei der Abfrage des Datensatzes aus der Datenbank auftritt.
-     */
-    public AltsystemUebersetzungDO getSchuetzeByIdentifier(Long dsbMitgliedIdentifier) throws SQLException {
-        // Suchen des entsprechenden Datensatzes im Altsystem anhand der Altsystem ID
-        return altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied, dsbMitgliedIdentifier);
-    }
 
     public MannschaftsmitgliedDO buildMannschaftsMitglied (Long altsystemMannschaftID, Long rueckenNummer, DsbMitgliedDO dsbMitgliedDO){
         //Mannschaft ID aus Altsystem übersetzen
