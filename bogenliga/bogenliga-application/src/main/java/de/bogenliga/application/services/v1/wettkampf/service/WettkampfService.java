@@ -74,7 +74,7 @@ public class WettkampfService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfDTO> findAll() {
         final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findAll();
-        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
+        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
     }
 
 
@@ -107,7 +107,7 @@ public class WettkampfService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfDTO> findAllWettkaempfeByMannschaftsId(@PathVariable("id") final long id) {
         final List<WettkampfDO> wettkampfDoList = wettkampfComponent.findAllWettkaempfeByMannschaftsId(id);
-        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).collect(Collectors.toList());
+        return wettkampfDoList.stream().map(WettkampfDTOMapper.toDTO).toList();
     }
 
 
