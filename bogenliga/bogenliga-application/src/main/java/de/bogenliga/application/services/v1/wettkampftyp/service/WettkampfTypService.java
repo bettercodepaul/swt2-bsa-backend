@@ -1,7 +1,6 @@
 package de.bogenliga.application.services.v1.wettkampftyp.service;
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class WettkampfTypService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<WettkampfTypDTO> findAll() {
         final List<WettkampfTypDO> wettkampftypDoList = wettkampftypComponent.findAll();
-        return wettkampftypDoList.stream().map(WettkampfTypDTOMapper.toDTO).collect(Collectors.toList());
+        return wettkampftypDoList.stream().map(WettkampfTypDTOMapper.toDTO).toList();
     }
 
     /**
