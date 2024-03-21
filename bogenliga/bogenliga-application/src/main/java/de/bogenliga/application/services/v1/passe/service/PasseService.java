@@ -57,7 +57,7 @@ public class PasseService implements ServiceFacade {
     public List<PasseDTO> findAll(){
         final List<PasseDO> passeDOList = passeComponent.findAll();
 
-        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).toList();
     }
 
 
@@ -79,7 +79,7 @@ public class PasseService implements ServiceFacade {
         LOG.debug("Received 'findByMatchId' request with matchId: '{}'", matchId);
 
         final List<PasseDO> passeDOList = this.passeComponent.findByMatchId(matchId);
-        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).toList();
     }
 
     @GetMapping(value = "findByWettkampfId/wettkampfid={wettkampfId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,7 +90,7 @@ public class PasseService implements ServiceFacade {
         LOG.debug("Received 'findByWettkampfId' request with wettkampfId: '{}'", wettkampfId);
 
         final List<PasseDO> passeDOList = this.passeComponent.findByWettkampfId(wettkampfId);
-        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).toList();
     }
 
     @PostMapping(
@@ -134,7 +134,7 @@ public class PasseService implements ServiceFacade {
         LOG.debug("Received 'findAllByWettkampfIdAndDsbMitgliedId' request with WettkampfId: '{}' and DsbMitgliedId: '{}'", wettkampfId, dsbMitgliedId);
 
         final List<PasseDO> passeDOList = this.passeComponent.findByWettkampfIdAndMitgliedId(wettkampfId, dsbMitgliedId);
-        return passeDOList.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+        return passeDOList.stream().map(PasseDTOMapper.toDTO).toList();
 
     }
 
