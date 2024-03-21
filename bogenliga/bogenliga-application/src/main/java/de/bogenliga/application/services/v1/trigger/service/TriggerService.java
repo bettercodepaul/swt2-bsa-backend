@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -70,6 +72,8 @@ public class TriggerService implements ServiceFacade {
     private final MigrationTimestampDAO migrationTimestampDAO;
     private final OldDbImport oldDBImport;
 
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+
     @Autowired
     public TriggerService(final BasicDAO basicDao, final TriggerDAO triggerDAO, final TriggerComponent triggerComponent, final MigrationTimestampDAO migrationTimestampDAO,
                           final AltsystemLiga altsystemLiga,
@@ -113,12 +117,14 @@ public class TriggerService implements ServiceFacade {
     public int startTheSync(final Principal principal) {
         final long triggeringUserId = UserProvider.getCurrentUserId(principal);
 
-        try {
-            syncData(triggeringUserId);
-        } catch(Exception e) {
-            LOGGER.debug("Could not sync data.", e);
-            return 0;
-        }
+        executorService.submit(() -> {
+            try {
+                syncData(triggeringUserId);
+            } catch (Exception e) {
+                LOGGER.debug("Could not sync data.", e);
+            }
+        });
+
         return 1;
     }
     @GetMapping(
