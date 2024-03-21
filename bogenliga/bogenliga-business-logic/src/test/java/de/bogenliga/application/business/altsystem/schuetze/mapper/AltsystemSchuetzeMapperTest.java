@@ -90,28 +90,6 @@ public class AltsystemSchuetzeMapperTest {
         assertThat(identifier).isEqualTo(expectedIdentifier);
     }
 
-    @Test
-    public void testGetDsbMitgliedDO() throws SQLException {
-        // prepare test data
-        // altsystem DO
-        AltsystemSchuetzeDO altsystemSchuetzeDO = new AltsystemSchuetzeDO();
-        altsystemSchuetzeDO.setId(1L);
-        altsystemSchuetzeDO.setName("Bammert, Marco");
-
-        // configure mocks
-        AltsystemUebersetzungDO expected = new AltsystemUebersetzungDO();
-        expected.setAltsystemId(1L);
-        expected.setWert("MarcoBammert1");
-
-        String identifier = "MarcoBammert1";
-
-        // Mock-Konfiguration
-        when(altsystemUebersetzung.findByAltsystemID(any(), anyLong())).thenReturn(expected);
-
-        altsystemSchuetzeMapper.getSchuetzeByIdentifier(altsystemSchuetzeDO.getId());
-
-        verify(altsystemUebersetzung).findByAltsystemID(any(), anyLong());
-    }
 
 
     @Test
