@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.dsbmannschaft.service;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
 import org.slf4j.Logger;
