@@ -1,7 +1,6 @@
 package de.bogenliga.application.business.dsbmitglied.impl.business;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.bogenliga.application.business.lizenz.impl.dao.LizenzDAO;
 import de.bogenliga.application.business.lizenz.impl.entity.LizenzBE;
@@ -57,7 +56,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     @Override
     public List<DsbMitgliedDO> findAll() {
         final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findAll();
-        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
+        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).toList();
     }
 
 
@@ -65,7 +64,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     public List<DsbMitgliedDO> findAllByTeamId(final long id) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_MANNSCHAFT_ID);
         final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findAllByTeamId(id);
-        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
+        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).toList();
     }
 
 
@@ -73,7 +72,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
     public List<DsbMitgliedDO> findAllNotInTeam(long id, long vereinId) {
         Preconditions.checkArgument(id >= 0, PRECONDITION_MSG_DSBMITGLIED_MANNSCHAFT_ID);
         final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findAllNotInTeamId(id, vereinId);
-        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
+        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).toList();
     }
 
 
@@ -98,7 +97,7 @@ public class DsbMitgliedComponentImpl implements DsbMitgliedComponent {
         Preconditions.checkNotNull(searchTerm, PRECONDITION_MSG_DSBMITGLIED_SEARCHTERM);
 
         final List<DsbMitgliedBE> dsbMitgliedBEList = dsbMitgliedDAO.findBySearch(searchTerm);
-        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).collect(Collectors.toList());
+        return dsbMitgliedBEList.stream().map(DsbMitgliedMapper.toDsbMitgliedDO).toList();
     }
 
     /*
