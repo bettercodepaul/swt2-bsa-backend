@@ -90,7 +90,8 @@ public class AltsystemSchuetzeTest {
         mannschaftUebersetzungDO.setBogenligaId(2L);
 
         when(altsystemSchuetzeMapper.getIdentifier(any())).thenReturn("MarcoBammert1");
-        when(altsystemSchuetzeMapper.getSchuetzeByIdentifier(anyLong())).thenReturn(schuetzeUebersetzungDO);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,2L)).thenReturn(schuetzeUebersetzungDO);
+        when(altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,"MarcoBammert1")).thenReturn(schuetzeUebersetzungDO);
         when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(mannschaftUebersetzungDO);
         when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(mannschaftUebersetzungDO);
 
@@ -128,15 +129,15 @@ public class AltsystemSchuetzeTest {
         altsystemUebersetzungDO.setBogenligaId(2L);
 
         when(altsystemSchuetzeMapper.getIdentifier(any())).thenReturn("MarcoBammert1");
-        when(altsystemSchuetzeMapper.getSchuetzeByIdentifier(anyLong())).thenReturn(null);
+        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,2L)).thenReturn(null);
+        when(altsystemUebersetzung.findByWert(AltsystemUebersetzungKategorie.Schuetze_DSBMitglied,"MarcoBammert1")).thenReturn(null);
         when(altsystemSchuetzeMapper.toDO(any(), any())).thenReturn(result);
         when(altsystemSchuetzeMapper.addDefaultFields(result, CURRENTUSERID)).thenReturn(result);
         when(dsbMitgliedComponent.create(result, CURRENTUSERID)).thenReturn(result);
         when(altsystemSchuetzeMapper.buildMannschaftsMitglied(anyLong(), anyLong(), any())).thenReturn(mannschaftresult);
         when(mannschaftsmitgliedComponent.create(any(), anyLong())).thenReturn(mannschaftresult);
 
-        when(altsystemUebersetzung.findByAltsystemID(any(), any())).thenReturn(altsystemUebersetzungDO);
-        when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(altsystemMannschaftUebersetzungDO);
+         when(altsystemUebersetzung.findByAltsystemID(AltsystemUebersetzungKategorie.Mannschaft_Mannschaft, 22L)).thenReturn(altsystemMannschaftUebersetzungDO);
 
         // Mocks konfigurieren
         // Testaufruf
