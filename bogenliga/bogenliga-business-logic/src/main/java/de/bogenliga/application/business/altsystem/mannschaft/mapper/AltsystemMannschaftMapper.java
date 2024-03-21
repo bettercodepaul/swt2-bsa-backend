@@ -56,7 +56,7 @@ public class AltsystemMannschaftMapper implements ValueObjectMapper {
         // wenn keine Manschaftsnummer als Teil des Vereinsnamen auftaucht
         // dann vergeben wir die 0 - die wird von den Anwendern nicht selbst vergeben
         // so sind wir auf der sicheren Seite, weil die 1 mehrfach vergeben wurde.
-        if (currentName.equals("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
+        if (currentName.contains("fehlender Verein") || currentName.equals("<leer>") || currentName == null) {
             mannNr = 0;
         }
         else {
