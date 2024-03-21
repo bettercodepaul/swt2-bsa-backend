@@ -55,6 +55,11 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
         vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
         //parsed den Identifier
 
+        //prüfen ob der Verein ein leerer Verein ist
+        if (vereinDO.getName().contains("fehlender Verein")){
+            //es ist der leere Verein- wir müssen auf unseren "Standard umlenken...
+            vereinDO.setDsbIdentifier("Platzhalter");
+        }
         // Schaut, ob Verein bereits vorhanden ist
         VereinDO vorhanden = null;
         try{

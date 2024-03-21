@@ -3,7 +3,6 @@ package de.bogenliga.application.services.v1.lizenz.service;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,7 @@ public class LizenzService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<LizenzDTO> findAll() {
         final List<LizenzDO> lizenzDOList = lizenzComponent.findAll();
-        return lizenzDOList.stream().map(LizenzDTOMapper.toDTO).collect(Collectors.toList());
+        return lizenzDOList.stream().map(LizenzDTOMapper.toDTO).toList();
     }
 
 
@@ -86,7 +85,7 @@ public class LizenzService implements ServiceFacade {
             logger.debug("Created Empty response");
         }
 
-        return lizenzDOlist.stream().map(LizenzDTOMapper.toDTO).collect(Collectors.toList());
+        return lizenzDOlist.stream().map(LizenzDTOMapper.toDTO).toList();
     }
 
 
