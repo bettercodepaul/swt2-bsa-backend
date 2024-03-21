@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * I´m a REST resource and handle configuration CRUD requests over the HTTP protocol.
@@ -84,7 +83,7 @@ public class RoleService implements ServiceFacade {
     @RequiresPermission(UserPermission.CAN_READ_DEFAULT)
     public List<RoleDTO> findAll() {
         final List<RoleDO> roleDOList = roleComponent.findAll();
-        return roleDOList.stream().map(RoleDTOMapper.toDTO).collect(Collectors.toList());
+        return roleDOList.stream().map(RoleDTOMapper.toDTO).toList();
     }
 
 
