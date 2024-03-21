@@ -50,6 +50,11 @@ public class AltsystemErgebnisse implements AltsystemEntity<AltsystemErgebnisseD
         // Passen aus dem Ergebnis erstellen
         List<PasseDO> passen = altsystemPasseMapper.toDO(new ArrayList<>(), altsystemErgebnisseDO);
 
+        //wenn wir nichts zurückbekommen, soll nichts angelegt werden....
+        if (passen.isEmpty() ){
+            return;
+        }
+
         StringBuilder bld = new StringBuilder();
         for(PasseDO passe : passen){
             // Passe ins neue System schreiben
