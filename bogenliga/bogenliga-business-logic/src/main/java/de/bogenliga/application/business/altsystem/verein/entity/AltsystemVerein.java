@@ -1,5 +1,8 @@
 package de.bogenliga.application.business.altsystem.verein.entity;
 
+import de.bogenliga.application.business.altsystem.schuetze.entity.AltsystemSchuetze;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.altsystem.mannschaft.dataobject.AltsystemMannschaftDO;
@@ -26,6 +29,8 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
     private final VereinComponent vereinComponent;
     private final AltsystemUebersetzung altsystemUebersetzung;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AltsystemSchuetze.class);
+
 
     @Autowired
     public AltsystemVerein (final AltsystemVereinMapper altsystemVereinMapper, final VereinComponent vereinComponent,
@@ -50,12 +55,17 @@ public class AltsystemVerein implements AltsystemEntity<AltsystemMannschaftDO> {
         vereinDO = altsystemVereinMapper.toDO(vereinDO, altsystemDataObject);
         //parsed den Identifier
 
+        //prüfen ob der Verein ein leerer Verein ist
+        if (vereinDO.getName().contains("fehlender Verein")){
+            //es ist der leere Verein- wir müssen auf unseren "Standard umlenken...
+            vereinDO.setDsbIdentifier("Platzhalter");
+        }
         // Schaut, ob Verein bereits vorhanden ist
         VereinDO vorhanden = null;
         try{
             vorhanden = altsystemVereinMapper.getVereinDO(vereinDO.getName(), vereinDO.getDsbIdentifier());
         }catch(Exception e){
-            e.printStackTrace();
+            LOGGER.debug(String.valueOf(e));
         }
         if (  vorhanden == null ){
             //Führt mapper aus

@@ -60,7 +60,7 @@ public class SchuetzenstatistikService implements ServiceFacade {
 
         final List<SchuetzenstatistikDO> schuetzenstatistikDOList = schuetzenstatistikComponent.getSchuetzenstatistikVeranstaltung(veranstaltungId, vereinId);
 
-        return schuetzenstatistikDOList.stream().map(SchuetzenstatistikDTOMapper.toDTO).collect(Collectors.toList());
+        return schuetzenstatistikDOList.stream().map(SchuetzenstatistikDTOMapper.toDTO).toList();
     }
 
     /**
@@ -79,7 +79,7 @@ public class SchuetzenstatistikService implements ServiceFacade {
 
         final List<SchuetzenstatistikDO> schuetzenstatistikDOList = schuetzenstatistikComponent.getSchuetzenstatistikWettkampf(wettkampfId, vereinId);
 
-        return schuetzenstatistikDOList.stream().map(SchuetzenstatistikDTOMapper.toDTO).collect(Collectors.toList());
+        return schuetzenstatistikDOList.stream().map(SchuetzenstatistikDTOMapper.toDTO).toList();
     }
 
 
