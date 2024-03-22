@@ -80,7 +80,7 @@ public class AltsystemUebersetzungDAO {
         try{
             uebersetzungDO = findByAltsystemID(kategorie, altsystemID);
         }catch(Exception e){
-            e.printStackTrace();
+            LOGGER.debug(String.valueOf(e));
         }
         if (uebersetzungDO == null){
             String kategorieLabel = kategorie.label;
