@@ -2,6 +2,7 @@ package de.bogenliga.application.business.competitionclass.impl.business;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.competitionclass.api.CompetitionClassComponent;
@@ -50,8 +51,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
     public List<CompetitionClassDO> findAll() {
         final List<CompetitionClassBE> competitionClassBEList = competitionClassDAO.findAll();
 
-        return competitionClassBEList.stream().map(CompetitionClassMapper.toCompetitionClassDO).collect(
-                Collectors.toList());
+        return competitionClassBEList.stream().map(CompetitionClassMapper.toCompetitionClassDO).toList();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CompetitionClassComponentImpl implements CompetitionClassComponent 
         return competitionClassBEList
                 .stream()
                     .map(CompetitionClassMapper.toCompetitionClassDO)
-                        .collect(Collectors.toList());
+                        .toList();
     }
 
     @Override

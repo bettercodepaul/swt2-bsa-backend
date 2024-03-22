@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.naming.NoPermissionException;
 import de.bogenliga.application.business.ligamatch.impl.entity.LigamatchBE;
@@ -156,7 +155,7 @@ public class MatchService implements ServiceFacade {
     public List<MatchDTO> findAll(){
         final List<MatchDO> matchDOList = matchComponent.findAll();
 
-        return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).toList();
     }
 
     /**
@@ -288,7 +287,7 @@ public class MatchService implements ServiceFacade {
         LOG.debug("Receive 'findAllByMannschaftId' request with ID '{}'", id);
 
         List<MatchDO> matchDOList = matchComponent.findByMannschaftId(id);
-        return matchDOList.stream().map(MatchDTOMapper.toDTO).collect(Collectors.toList());
+        return matchDOList.stream().map(MatchDTOMapper.toDTO).toList();
     }
 
 
@@ -503,7 +502,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -553,7 +552,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -597,7 +596,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -674,7 +673,7 @@ public class MatchService implements ServiceFacade {
                 ))
                 .sorted(Comparator.comparing(MatchDO::getMatchScheibennummer))
                 .map(MatchDO::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -810,8 +809,8 @@ public class MatchService implements ServiceFacade {
             List<LigapasseBE> ligapasseBEList = passeComponent.getLigapassenByLigamatchId(matchId);
 
 
-            List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).collect(Collectors.toList());
-            List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).collect(Collectors.toList());
+            List<PasseDO> passeDOs = ligapasseBEList.stream().map(LigapasseToPasseMapper.ligapasseToPasseDO).toList();
+            List<PasseDTO> passeDTOs = passeDOs.stream().map(PasseDTOMapper.toDTO).toList();
 
 
             for (int i = 0; i < passeDTOs.size(); i++){

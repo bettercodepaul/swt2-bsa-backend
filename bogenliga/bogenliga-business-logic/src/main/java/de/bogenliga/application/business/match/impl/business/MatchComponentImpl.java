@@ -2,7 +2,6 @@ package de.bogenliga.application.business.match.impl.business;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bogenliga.application.business.dsbmannschaft.api.DsbMannschaftComponent;
@@ -58,7 +57,7 @@ public class MatchComponentImpl implements MatchComponent {
     private final VereinComponent vereinComponent;
     private WettkampfComponent wettkampfComponent;
     private final LigamatchDAO ligamatchDAO;
-    private long platzhalterId = 99;
+    private final long platzhalterId = 99;
 
 
     /**
@@ -94,7 +93,7 @@ public class MatchComponentImpl implements MatchComponent {
     @Override
     public List<MatchDO> findAll() {
         final List<MatchBE> matchBEList = matchDAO.findAll();
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+        return matchBEList.stream().map(MatchMapper.toMatchDO).toList();
     }
 
 
@@ -123,7 +122,7 @@ public class MatchComponentImpl implements MatchComponent {
     public List<LigamatchDO> getLigamatchDOsByWettkampfId(Long wettkampfId) {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
         final List<LigamatchBE> ligaMatches = ligamatchDAO.findLigamatchesByWettkampfId(wettkampfId);
-        return ligaMatches.stream().map(LigamatchMapper.toLigamatchDO).collect(Collectors.toList());
+        return ligaMatches.stream().map(LigamatchMapper.toLigamatchDO).toList();
     }
 
     /**
@@ -211,7 +210,7 @@ public class MatchComponentImpl implements MatchComponent {
         checkPreconditions(wettkampfId, PRECONDITION_MSG_WETTKAMPF_ID);
 
         final List<MatchBE> matchBEList = matchDAO.findByWettkampfId(wettkampfId);
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+        return matchBEList.stream().map(MatchMapper.toMatchDO).toList();
     }
 
     @Override
@@ -219,7 +218,7 @@ public class MatchComponentImpl implements MatchComponent {
         checkPreconditions(mannschaftId, PRECONDITION_MSG_MANNSCHAFT_ID);
 
         final List<MatchBE> matchBEList = matchDAO.findByMannschaftId(mannschaftId);
-        return matchBEList.stream().map(MatchMapper.toMatchDO).collect(Collectors.toList());
+        return matchBEList.stream().map(MatchMapper.toMatchDO).toList();
     }
 
 
@@ -230,7 +229,7 @@ public class MatchComponentImpl implements MatchComponent {
         this.checkMatch(matchDO);
 
         try {
-            // Check if the Mannschaft of this match is an Platzhalter
+            // Check if the Mannschaft of this match is a Platzhalter
             DsbMannschaftDO checkForVereinsID = dsbMannschaftComponent.findById(matchDO.getMannschaftId());
             if (checkForVereinsID.getVereinId() == platzhalterId) {
                 matchDO.setMatchpunkte(0L);
