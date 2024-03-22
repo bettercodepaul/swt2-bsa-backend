@@ -36,7 +36,7 @@ public class LigaService implements ServiceFacade {
 
     private final LigaComponent ligaComponent;
 
-    private static Logger logger = LogManager.getLogger(LigaService.class);
+
 
 
 
