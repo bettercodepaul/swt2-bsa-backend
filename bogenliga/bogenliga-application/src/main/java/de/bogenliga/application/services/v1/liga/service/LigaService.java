@@ -2,8 +2,7 @@ package de.bogenliga.application.services.v1.liga.service;
 
 import java.security.Principal;
 import java.util.List;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,9 @@ public class LigaService implements ServiceFacade {
 
     private final LigaComponent ligaComponent;
 
-    private static Logger logger = LogManager.getLogger(LigaService.class);
+
+
+
 
 
     /**
@@ -168,7 +169,7 @@ public class LigaService implements ServiceFacade {
                           final Principal principal) {
 
 
-        logger.info("Es kommt etwas an");
+
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
         final long currentDsbMitglied = UserProvider.getCurrentUserId(principal);
 
