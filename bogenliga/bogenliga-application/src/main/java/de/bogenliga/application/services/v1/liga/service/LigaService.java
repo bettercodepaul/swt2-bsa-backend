@@ -2,6 +2,7 @@ package de.bogenliga.application.services.v1.liga.service;
 
 import java.security.Principal;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public class LigaService implements ServiceFacade {
     private static final String PRECONDITION_MSG_LIGA_VERANTWORTLICH_ID_NEG = "Verantwortlich id can not be negative";
 
     private final LigaComponent ligaComponent;
+
 
 
 
@@ -163,6 +165,7 @@ public class LigaService implements ServiceFacade {
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER, UserPermission.CAN_MODIFY_STAMMDATEN})
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
+
 
 
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
