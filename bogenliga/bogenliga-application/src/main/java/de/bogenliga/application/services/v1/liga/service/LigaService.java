@@ -35,6 +35,8 @@ public class LigaService implements ServiceFacade {
 
     private final LigaComponent ligaComponent;
 
+    private static Logger logger = LogManager.getLogger(LigaService.class);
+
 
 
     /**
@@ -163,6 +165,7 @@ public class LigaService implements ServiceFacade {
     @RequiresOnePermissions(perm = {UserPermission.CAN_MODIFY_STAMMDATEN_LIGALEITER, UserPermission.CAN_MODIFY_STAMMDATEN})
     public LigaDTO update(@RequestBody final LigaDTO ligaDTO,
                           final Principal principal) {
+
 
 
         final LigaDO newLigaDO = LigaDTOMapper.toDO.apply(ligaDTO);
