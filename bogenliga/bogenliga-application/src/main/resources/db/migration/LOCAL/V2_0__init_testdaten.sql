@@ -1,3 +1,5 @@
+
+
 INSERT INTO benutzer(
 benutzer_id,
 benutzer_email,
@@ -5,12 +7,14 @@ benutzer_salt,
 benutzer_password
 )
 VALUES
--- password = admin
+/*-- password = admin
        (1,
         'admin@bogenliga.de',
         'a9a2ef3c5a023acd2fc79ebd9c638e0ebb62db9c65fa42a6ca43d5d957a4bdf5413c8fc08ed8faf7204ba0fd5805ca638220b84d07c0690aed16ab3a2413142d',
         '0d31dec64a1029ea473fb10628bfa327be135d34f8013e7238f32c019bd0663a7feca101fd86ccee1339e79db86c5494b6e635bb5e21456f40a6722952c53079'),
--- password = moderator
+*/
+  -- password = moderator
+
        (2,
         'moderator@bogenliga.de',
         'dbed56d612f8fc8397a79a9e63cc67236ac63027e092adda7b02cbe7c65a4916683a572d71d3cefbcdcf86ee42136b1882ce75b189b1fe3a1457cc72ced3c6ea',
@@ -173,18 +177,19 @@ INSERT INTO veranstaltung (-- Recurve Ligen
                            veranstaltung_name,
                            veranstaltung_sportjahr,
                            veranstaltung_ligaleiter_id,
+                           veranstaltung_liga_id,
                            veranstaltung_meldedeadline)
 VALUES
-(0, 1, 'Würtembergliga', 2018, 2, '2017-10-31'),
-(1, 1, 'Landesliga Nord', 2018, 2, '2017-10-31'),
-(2, 1, 'Landesliga Süd', 2018, 2, '2017-10-31'),
-(3, 1, 'Relegation Landesliga Nord', 2018, 2, '2017-10-31'),
-(4, 1, 'Relegation Landesliga Süd', 2018, 2, '2017-10-31'),
-(5, 1, 'Bezirksoberliga Neckar', 2018, 2, '2017-10-31'),
-(6, 1, 'Bezirksliga A Neckar', 2018, 2, '2017-10-31'),
-(7, 1, 'Bezirksoberliga Oberschwaben', 2018, 2, '2017-10-31'),
-(8, 1, 'Bezirksliga A Oberschwaben', 2018, 2, '2017-10-31'),
-(9, 1, 'Bezirksliga B Oberschwaben', 2018, 2, '2017-10-31')
+(0, 1, 'Würtembergliga 2018', 2018, 7,2, '2017-10-31'),
+(1, 1, 'Landesliga Nord 2018', 2018, 7,3, '2017-10-31'),
+(2, 1, 'Landesliga Süd 2018', 2018, 7,4, '2017-10-31'),
+(3, 1, 'Relegation Landesliga Nord 2019', 2019, 7,3, '2017-10-31'),
+(4, 1, 'Relegation Landesliga Süd 2019', 2019, 7,4, '2017-10-31'),
+(5, 1, 'Bezirksoberliga Neckar 2019', 2019, 7,5, '2017-10-31'),
+(6, 1, 'Bezirksliga A Neckar 2020', 2020, 7,6, '2017-10-31'),
+(7, 1, 'Bezirksoberliga Oberschwaben 2024', 2024, 7,5, '2017-10-31'),
+(8, 1, 'Bezirksliga A Oberschwaben 2024', 2024, 7,6, '2017-10-31'),
+(9, 1, 'Bezirksliga B Oberschwaben 2024', 2024, 7,7, '2017-10-31')
 ;
 
 INSERT INTO veranstaltung (-- Compound Ligen
@@ -193,46 +198,49 @@ INSERT INTO veranstaltung (-- Compound Ligen
                            veranstaltung_name,
                            veranstaltung_sportjahr,
                            veranstaltung_ligaleiter_id,
+                           veranstaltung_liga_id,
                            veranstaltung_meldedeadline)
 VALUES
-(20, 1, 'Bawü Compound Finale', 2018, 2, '2017-10-31'),
-(21, 1, 'Württembergliga Compound', 2018, 2, '2017-10-31'),
-(22, 1, 'Landesliga A Compound', 2018, 2, '2017-10-31'),
-(23, 1, 'Landesliga B Compound', 2018, 2, '2017-10-31')
+(20, 1, 'Bawü Compound Finale 2021', 2021, 2,1, '2017-10-31'),
+(21, 1, 'Württembergliga Compound 2021', 2021, 2,2, '2017-10-31'),
+(22, 1, 'Landesliga A Compound 2021', 2021, 2,6, '2017-10-31'),
+(23, 1, 'Landesliga B Compound 2021', 2021, 2,7, '2017-10-31')
 ;
 
 INSERT INTO wettkampf ( -- Recurve Ligen
   wettkampf_id,
   wettkampf_veranstaltung_id,
   wettkampf_datum,
-  wettkampf_ort,
+  wettkampf_strasse,
+  wettkampf_plz,
+  wettkampf_ortsname,
   wettkampf_beginn,
   wettkampf_tag,
   wettkampf_disziplin_id,
   wettkampf_wettkampftyp_id)
 VALUES
-(38, 0, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(30, 0, '2017-11-19', 'Sporthalle, 88454 Hochdorf/Riss', '13:30', 1, 0, 0),
-(31, 0, '2017-12-09', 'Franz-Baum Bogenhalle, 73642 Welzheim', '13:30', 2, 0, 0),
-(32, 0, '2018-01-14', 'Bogenhalle am Schützenhaus, Gurgelbergweg, 88499 Altheim-Waldhausen', '13:30', 3, 0, 1),
-(33, 0, '2018-02-03', 'Franz-Baum Bogenhalle, 73642 Welzheim', '09:30', 4, 0, 1),
-(34, 1, '2019-11-19', 'Sporthalle, 88454 Hochdorf/Riss', '13:30', 1, 0, 0),
-(35, 1, '2019-12-09', 'Franz-Baum Bogenhalle, 73642 Welzheim', '13:30', 2, 0, 0),
-(36, 1, '2020-01-14', 'Bogenhalle am Schützenhaus, Gurgelbergweg, 88499 Altheim-Waldhausen', '13:30', 3, 0, 1),
-(37, 1, '2020-02-03', 'Franz-Baum Bogenhalle, 73642 Welzheim', '09:30', 4, 0, 1),
-(39, 1, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(40, 2, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(41, 3, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(42, 4, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(43, 5, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(44, 6, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(45, 7, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(46, 8, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(47, 9, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(48, 20, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(49, 21, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(50, 22, '1900-01-01', ' - ', ' - ', 0, 0, 0),
-(51, 23, '1900-01-01', ' - ', ' - ', 0, 0, 0)
+(38, 0, '1900-01-01', ' - ', ' - ', ' - ', ' - ', 0, 0, 0),
+(30, 0, '2017-11-19', 'Sporthalle', '88454', 'Hochdorf/Riss', '13:30', 1, 0, 0),
+(31, 0, '2017-12-09', 'Franz-Baum Bogenhalle', '73642', 'Welzheim', '13:30', 2, 0, 0),
+(32, 0, '2018-01-14', 'Bogenhalle, Gurgelbergweg', '88499', 'Altheim-Waldhausen', '13:30', 3, 0, 1),
+(33, 0, '2018-02-03', 'Franz-Baum Bogenhalle', '73642', ' Welzheim', '09:30', 4, 0, 1),
+(34, 1, '2019-11-19', 'Sporthalle', '88454', 'Hochdorf/Riss', '13:30', 1, 0, 0),
+(35, 1, '2019-12-09', 'Franz-Baum Bogenhalle', '73642', 'Welzheim', '13:30', 2, 0, 0),
+(36, 1, '2020-01-14', 'Bogenhalle, Gurgelbergweg', '88499', 'Altheim-Waldhausen', '13:30', 3, 0, 1),
+(37, 1, '2020-02-03', 'Franz-Baum Bogenhalle', '73642', 'Welzheim', '09:30', 4, 0, 1),
+(39, 1, '1900-01-01', ' - ', ' - ', ' - ', ' - ', 0, 0, 0),
+(40, 2, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(41, 3, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(42, 4, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(43, 5, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(44, 6, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(45, 7, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(46, 8, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(47, 9, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(48, 20, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(49, 21, '1900-01-01',' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(50, 22, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0),
+(51, 23, '1900-01-01', ' - ', ' - ', ' - ', ' - ',  0, 0, 0)
 ;
 
 INSERT INTO mannschaft (mannschaft_id,
@@ -417,23 +425,13 @@ INSERT INTO benutzer_rolle(
   benutzer_rolle_benutzer_id,
   benutzer_rolle_rolle_id
 )
-/*VALUES (1, 1), -- admin
+VALUES -- (1, 1) -- admin im all-skript enthalten
        (2, 2), -- ligaleiter
-       (3, 2),
-       (4, 2), -- ligaleiter
-       (4, 3),
-       (5, 4), -- ausrichter
-       (1, 4),
-       (2, 5),
-       (3, 5),
-       (5, 5)
-;*/
-VALUES (1, 1), -- admin
-       (2, 2), -- ligaleiter
+       (2, 9), -- ligaleiter
        (3, 6),
-       (4, 2), -- ligaleiter
-       (4, 3),
-       (5, 4), -- ausrichter
+       (4, 9), -- ligaleiter
+       (4, 6),
+       (5, 6), -- ausrichter
        (1, 4),
        (2, 5),
        (3, 5),

@@ -1006,24 +1006,41 @@ INSERT INTO recht(
     recht_id,
     recht_name
 )
-VALUES (0,'CAN_READ_DEFAULT'),
-       (1,'CAN_READ_STAMMDATEN'),
-       (2,'CAN_MODIFY_STAMMDATEN'),
-       (3,'CAN_DELETE_STAMMDATEN'),
-       (4,'CAN_READ_SYSTEMDATEN'),
-       (5,'CAN_MODIFY_SYSTEMDATEN'),
-       (6,'CAN_DELETE_SYSTEMDATEN'),
-       (7,'CAN_READ_WETTKAMPF'),
-       (8,'CAN_MODIFY_WETTKAMPF'),
-       (9,'CAN_READ_MY_VEREIN'),
-       (10,'CAN_MODIFY_MY_VEREIN'),
-       (11,'CAN_READ_MY_VERANSTALTUNG'),
-       (12,'CAN_MODIFY_MY_VERANSTALTUNG'),
-       (13,'CAN_READ_MY_ORT'),
-       (14,'CAN_MODIFY_MY_ORT'),
-       (15,'CAN_READ_SPORTJAHR'),
-       (16,'CAN_MODIFY_SPORTJAHR'),
-       (17,'CAN_OPERATE_SPOTTING')
+VALUES
+     (0,'CAN_READ_DEFAULT'),
+     (1,'CAN_READ_STAMMDATEN'),
+     (2,'CAN_MODIFY_STAMMDATEN'),
+     (3,'CAN_DELETE_STAMMDATEN'),
+     (4,'CAN_READ_SYSTEMDATEN'),
+     (5,'CAN_MODIFY_SYSTEMDATEN'),
+     (6,'CAN_DELETE_SYSTEMDATEN'),
+     (7,'CAN_READ_WETTKAMPF'),
+     (8,'CAN_MODIFY_WETTKAMPF'),
+     (9,'CAN_READ_MY_VEREIN'),
+     (10,'CAN_MODIFY_MY_VEREIN'),
+     (11,'CAN_READ_MY_VERANSTALTUNG'),
+     (12,'CAN_MODIFY_MY_VERANSTALTUNG'),
+     (13,'CAN_READ_MY_ORT'),
+     (14,'CAN_MODIFY_MY_ORT'),
+     (15,'CAN_READ_SPORTJAHR'),
+     (16,'CAN_MODIFY_SPORTJAHR'),
+     (17,'CAN_OPERATE_SPOTTING'),
+     (18,'CAN_CREATE_STAMMDATEN'),
+     (19,'CAN_CREATE_SYSTEMDATEN'),
+     (20,'CAN_CREATE_WETTKAMPF'),
+     (21,'CAN_READ_DSBMITGLIEDER'),
+     (22,'CAN_CREATE_DSBMITGLIEDER'),
+     (23,'CAN_MODIFY_DSBMITGLIEDER'),
+     (24,'CAN_DELETE_DSBMITGLIEDER'),
+     (25,'CAN_CREATE_MANNSCHAFT'),
+     (26,'CAN_CREATE_VEREIN_DSBMITGLIEDER'),
+     (27,'CAN_MODIFY_VEREIN_DSBMITGLIEDER'),
+     (28,'CAN_DELETE_MANNSCHAFT'),
+     (29,'CAN_MODIFY_MANNSCHAFT'),
+     (31,'CAN_MODIFY_SYSTEMDATEN_LIGALEITER'),
+     (32,'CAN_CREATE_SYSTEMDATEN_LIGALEITER'),
+     (33,'CAN_CREATE_STAMMDATEN_LIGALEITER'),
+     (34,'CAN_MODIFY_STAMMDATEN_LIGALEITER')
 ;
 
 DELETE from benutzer_rolle;
@@ -1050,83 +1067,19 @@ INSERT INTO rolle_recht(
     rolle_recht_rolle_id,
     rolle_recht_recht_id
 )
-VALUES (1, 0), -- admin = all permissions (technical and business)
-       (1, 1),
-       (1, 2),
-       (1, 3),
-       (1, 4),
-       (1, 5),
-       (1, 6),
-       (1, 7),
-       (1, 8),
-       (1, 9),
-       (1, 10),
-       (1, 11),
-       (1, 12),
-       (1, 13),
-       (1, 14),
-       (1, 15),
-       (1, 16),
-       (2, 0), -- LIGALEITER
-       (2, 1),
-       (2, 7),
-       (2, 11),
-       (2, 12),
-       (3, 0), -- KAMPFRICHTER
-       (3, 7),
-       (3, 11),
-       (4, 0), -- Ausrichter
-       (4, 1),
-       (4, 7),
-       (4, 13),
-       (4, 14),
-       (4, 15),
-       (5, 0), -- SPORTLEITER
-       (5, 7),
-       (5, 9),
-       (5, 10),
-       (5, 15),
-       (6, 0), -- USER
-       (7, 0), -- TECHNISCHER-USER
-       (7, 17),
-       (8, 0), -- DEFAULT
-       (9, 0) --MODERATOR      (8, 0) -- DEFAULT
-;
-
-INSERT INTO rolle_recht(
-    rolle_recht_rolle_id,
-    rolle_recht_recht_id
-)
-VALUES  (9, 7),
-        (9, 8),
-        (9, 17)
-;
-
-INSERT INTO recht(
-    recht_id,
-    recht_name
-)
 VALUES
-    (18,'CAN_CREATE_STAMMDATEN'),
-    (19,'CAN_CREATE_SYSTEMDATEN'),
-    (20,'CAN_CREATE_WETTKAMPF')
-;
-INSERT INTO rolle_recht(
-    rolle_recht_rolle_id,
-    rolle_recht_recht_id
-)
-VALUES (1, 18),
-       (1, 19),
-       (1, 20);
-
-/* Zuordnung von Rechten löschen */
-DELETE from rolle_recht
-where rolle_recht_rolle_id in (101, 102, 103, 104, 105, 106)
-;
-
-/* Rollen löschen*/
-DELETE from rolle
-where rolle_id in (101, 102, 103, 104, 105, 106)
+    (1,0),(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),
+    (1,15),(1,16),(1,17),(1,18),(1,19),(1,21),(1,22),(1,23),
+    (1,24),(1,25),(1,28),(1,29),
+    (2,0),(2,1),(2,4),(2,7),(2,8),(2,10),(2,11),(2,12),
+    (2,21),(2,22),(2,23),(2,25),(2,29),(2,31),(2,32),(2,33),(2,34),
+    (3,0),(3,1),(3,4),(3,7),(3,11),(3,21),
+    (4,0),(4,1),(4,4),(4,7),(4,13),(4,14),(4,21),
+    (5,0),(5,1),(5,4),(5,7),(5,9),(5,10),(5,15),(5,21),(5,26),(5,27),
+    (6,0),
+    (7,0),(7,17),
+    (8,0),
+    (9,0),(9,7),(9,8),(9,17)
 ;
 
 /* Neue Spalte korrekt befüllen - im ersten Schritt sind alle existierenden Benutzer == Gero */
@@ -1170,74 +1123,6 @@ COMMIT;
 DROP FUNCTION initRueckennummern();
 DROP SEQUENCE rNrSeq;
 
-
-
-INSERT INTO recht(
-    recht_id,
-    recht_name
-)
-VALUES
-    (21,'CAN_READ_DSBMITGLIEDER'),
-    (22,'CAN_CREATE_DSBMITGLIEDER'),
-    (23,'CAN_MODIFY_DSBMITGLIEDER'),
-    (24,'CAN_DELETE_DSBMITGLIEDER'),
-    (25, 'CAN_CREATE_MANNSCHAFT'),
-    (26, 'CAN_CREATE_VEREIN_DSBMITGLIEDER'),
-    (27, 'CAN_MODIFY_VEREIN_DSBMITGLIEDER')
-;
-
-INSERT INTO rolle_recht(
-    rolle_recht_rolle_id,
-    rolle_recht_recht_id
-)
-VALUES (1, 18),
-       (1, 17),
-       (1, 21),
-       (1, 22),
-       (1, 23),
-       (1, 24),
-       (1, 25),
-       (2,8),
-       (2,4),
-       (2,11),
-       (2,12),
-       (2,21),
-       (2,22),
-       (2,23),
-       (2,25),
-       (3,4),
-       (3,1),
-       (3,7),
-       (3,21),
-       (4,4),
-       (4,21),
-       (4,13),
-       (4,14),
-       (5,4),
-       (5,1),
-       (5,21),
-       (5,26),
-       (5,27);
-
-delete from rolle_recht
-where rolle_recht_rolle_id = 1 and rolle_recht_recht_id BETWEEN 9 and 14;
-
-INSERT INTO recht(
-    recht_id,
-    recht_name
-)
-VALUES
-    (28, 'CAN_DELETE_MANNSCHAFT'),
-    (29, 'CAN_MODIFY_MANNSCHAFT')
-;
-
-INSERT INTO rolle_recht(
-    rolle_recht_rolle_id,
-    rolle_recht_recht_id
-)
-VALUES (1, 28),
-       (1, 29),
-       (2, 29);
 
 
 
@@ -1298,32 +1183,6 @@ VALUES('SMTPPasswort','Passwort bitte ändern')
 ON CONFLICT (configuration_key) DO
     NOTHING;
 
--------V13
---create new permissions specific for role 'LIGALEITER' use only
-INSERT INTO recht (recht_id, recht_name)
-VALUES(31, 'CAN_MODIFY_SYSTEMDATEN_LIGALEITER');
-
-INSERT INTO recht (recht_id, recht_name)
-VALUES(32, 'CAN_CREATE_SYSTEMDATEN_LIGALEITER');
-
-INSERT INTO recht (recht_id, recht_name)
-VALUES(33, 'CAN_CREATE_STAMMDATEN_LIGALEITER');
-
-INSERT INTO recht (recht_id, recht_name)
-VALUES(34, 'CAN_MODIFY_STAMMDATEN_LIGALEITER');
-
---assign new permissions to role 'LIGALEITER'
-INSERT INTO rolle_recht (rolle_recht_rolle_id, rolle_recht_recht_id)
-VALUES (2, 31);
-
-INSERT INTO rolle_recht (rolle_recht_rolle_id, rolle_recht_recht_id)
-VALUES (2, 32);
-
-INSERT INTO rolle_recht (rolle_recht_rolle_id, rolle_recht_recht_id)
-VALUES (2, 33);
-
-INSERT INTO rolle_recht (rolle_recht_rolle_id, rolle_recht_recht_id)
-VALUES (2, 34);
 
 -- V19
 INSERT INTO configuration (configuration_key, configuration_value)
@@ -1380,36 +1239,36 @@ SELECT veranstaltung.veranstaltung_id                                           
         sum(COALESCE(passe.passe_ringzahl_pfeil4, 0::numeric)) +
         sum(COALESCE(passe.passe_ringzahl_pfeil5, 0::numeric)) +
         sum(COALESCE(passe.passe_ringzahl_pfeil6, 0::numeric))) / (sum(
-                                                                           CASE
-                                                                               WHEN passe.passe_ringzahl_pfeil1 IS NOT NULL
-                                                                                   THEN 1
-                                                                               ELSE 0
-                                                                               END) + sum(
-                                                                           CASE
-                                                                               WHEN passe.passe_ringzahl_pfeil2 IS NOT NULL
-                                                                                   THEN 1
-                                                                               ELSE 0
-                                                                               END) + sum(
-                                                                           CASE
-                                                                               WHEN passe.passe_ringzahl_pfeil3 IS NOT NULL
-                                                                                   THEN 1
-                                                                               ELSE 0
-                                                                               END) + sum(
-                                                                           CASE
-                                                                               WHEN passe.passe_ringzahl_pfeil4 IS NOT NULL
-                                                                                   THEN 1
-                                                                               ELSE 0
-                                                                               END) + sum(
-                                                                           CASE
-                                                                               WHEN passe.passe_ringzahl_pfeil5 IS NOT NULL
-                                                                                   THEN 1
-                                                                               ELSE 0
-                                                                               END) + sum(
-                                                                           CASE
-                                                                               WHEN passe.passe_ringzahl_pfeil6 IS NOT NULL
-                                                                                   THEN 1
-                                                                               ELSE 0
-                                                                               END))::numeric             AS schuetzenstatistik_pfeilpunkte_schnitt
+                 CASE
+                     WHEN passe.passe_ringzahl_pfeil1 IS NOT NULL
+                         THEN 1
+                     ELSE 0
+                     END) + sum(
+                 CASE
+                     WHEN passe.passe_ringzahl_pfeil2 IS NOT NULL
+                         THEN 1
+                     ELSE 0
+                     END) + sum(
+                 CASE
+                     WHEN passe.passe_ringzahl_pfeil3 IS NOT NULL
+                         THEN 1
+                     ELSE 0
+                     END) + sum(
+                 CASE
+                     WHEN passe.passe_ringzahl_pfeil4 IS NOT NULL
+                         THEN 1
+                     ELSE 0
+                     END) + sum(
+                 CASE
+                     WHEN passe.passe_ringzahl_pfeil5 IS NOT NULL
+                         THEN 1
+                     ELSE 0
+                     END) + sum(
+                 CASE
+                     WHEN passe.passe_ringzahl_pfeil6 IS NOT NULL
+                         THEN 1
+                     ELSE 0
+                     END))::numeric             AS schuetzenstatistik_pfeilpunkte_schnitt
 FROM match,
      veranstaltung,
      wettkampf,
@@ -1446,36 +1305,36 @@ ORDER BY ((sum(COALESCE(passe.passe_ringzahl_pfeil1, 0::numeric)) +
            sum(COALESCE(passe.passe_ringzahl_pfeil4, 0::numeric)) +
            sum(COALESCE(passe.passe_ringzahl_pfeil5, 0::numeric)) +
            sum(COALESCE(passe.passe_ringzahl_pfeil6, 0::numeric))) / (sum(
-                                                                              CASE
-                                                                                  WHEN passe.passe_ringzahl_pfeil1 IS NOT NULL
-                                                                                      THEN 1
-                                                                                  ELSE 0
-                                                                                  END) + sum(
-                                                                              CASE
-                                                                                  WHEN passe.passe_ringzahl_pfeil2 IS NOT NULL
-                                                                                      THEN 1
-                                                                                  ELSE 0
-                                                                                  END) + sum(
-                                                                              CASE
-                                                                                  WHEN passe.passe_ringzahl_pfeil3 IS NOT NULL
-                                                                                      THEN 1
-                                                                                  ELSE 0
-                                                                                  END) + sum(
-                                                                              CASE
-                                                                                  WHEN passe.passe_ringzahl_pfeil4 IS NOT NULL
-                                                                                      THEN 1
-                                                                                  ELSE 0
-                                                                                  END) + sum(
-                                                                              CASE
-                                                                                  WHEN passe.passe_ringzahl_pfeil5 IS NOT NULL
-                                                                                      THEN 1
-                                                                                  ELSE 0
-                                                                                  END) + sum(
-                                                                              CASE
-                                                                                  WHEN passe.passe_ringzahl_pfeil6 IS NOT NULL
-                                                                                      THEN 1
-                                                                                  ELSE 0
-                                                                                  END))::numeric) DESC;
+                                  CASE
+                                      WHEN passe.passe_ringzahl_pfeil1 IS NOT NULL
+                                          THEN 1
+                                      ELSE 0
+                                      END) + sum(
+                                  CASE
+                                      WHEN passe.passe_ringzahl_pfeil2 IS NOT NULL
+                                          THEN 1
+                                      ELSE 0
+                                      END) + sum(
+                                  CASE
+                                      WHEN passe.passe_ringzahl_pfeil3 IS NOT NULL
+                                          THEN 1
+                                      ELSE 0
+                                      END) + sum(
+                                  CASE
+                                      WHEN passe.passe_ringzahl_pfeil4 IS NOT NULL
+                                          THEN 1
+                                      ELSE 0
+                                      END) + sum(
+                                  CASE
+                                      WHEN passe.passe_ringzahl_pfeil5 IS NOT NULL
+                                          THEN 1
+                                      ELSE 0
+                                      END) + sum(
+                                  CASE
+                                      WHEN passe.passe_ringzahl_pfeil6 IS NOT NULL
+                                          THEN 1
+                                      ELSE 0
+                                      END))::numeric) DESC;
 
 alter table schuetzenstatistik
     owner to swt2;
@@ -1655,20 +1514,21 @@ VALUES
     (12, 'SV Kirchberg', 'XXWT4241XX', 5)
 ;
 
+
 INSERT INTO dsb_mitglied (
     dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum,
     dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id,
     dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_by, version
 )
 VALUES
-    (0, 'Gero', 'Gras', '2021.01.01', 'DE', 'WT007', 2, null, '2023-06-30 14:16:57.048792', 0, null, 0)
- ON CONFLICT DO NOTHING;
-
+    (0, 'Gero', 'Gras', '2021.01.01', 'DE', 'WT007', 2, NULL, '2023-06-30 14:16:57.048792', 0, null, 0)
+    ON CONFLICT DO NOTHING;
 
 
 INSERT INTO benutzer(
     benutzer_id,
     benutzer_email,
+    benutzer_dsb_mitglied_id,
     benutzer_salt,
     benutzer_password
 )
@@ -1676,9 +1536,17 @@ VALUES
 -- password = admin
 (1,
  'admin@bogenliga.de',
+ 0,
  'a9a2ef3c5a023acd2fc79ebd9c638e0ebb62db9c65fa42a6ca43d5d957a4bdf5413c8fc08ed8faf7204ba0fd5805ca638220b84d07c0690aed16ab3a2413142d',
  '0d31dec64a1029ea473fb10628bfa327be135d34f8013e7238f32c019bd0663a7feca101fd86ccee1339e79db86c5494b6e635bb5e21456f40a6722952c53079')
-ON CONFLICT DO NOTHING;
+    ON CONFLICT DO NOTHING;
+
+
+INSERT INTO benutzer_rolle(
+    benutzer_rolle_benutzer_id,
+    benutzer_rolle_rolle_id
+)
+VALUES (1, 1); -- admin
 
 
 
@@ -1743,16 +1611,10 @@ INSERT INTO dsb_mitglied (
     dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_by, version
 )
 VALUES
-    (1, 'Platzhaltermitglied_Vorname1', 'Platzhaltermitlgied_Nachname1', '2021-06-30', 'DE', 69696969, 99, null, '2023-06-30 14:16:57.048792', 0, null, 0),
-    (2, 'Platzhaltermitglied_Vorname2', 'Platzhaltermitglied_Nachname2', '2021-06-30', 'DE', 69696970, 99, null, '2023-06-30 14:16:57.048792', 0, null, 0),
-    (3, 'Platzhaltermitglied_Vorname3', 'PlatzhaltermitgliedS_Nachname3', '2021-06-30', 'DE', 69696971, 99, null, '2023-06-30 14:16:57.048792', 0, null, 0)
+    (1, 'Platzhaltermitglied_Vorname1', 'Platzhaltermitlgied_Nachname1', '2021-06-30', 'DE', 'Platzhalter1', 99, null, '2023-06-30 14:16:57.048792', 0, null, 0),
+    (2, 'Platzhaltermitglied_Vorname2', 'Platzhaltermitglied_Nachname2', '2021-06-30', 'DE', 'Platzhalter2', 99, null, '2023-06-30 14:16:57.048792', 0, null, 0),
+    (3, 'Platzhaltermitglied_Vorname3', 'PlatzhaltermitgliedS_Nachname3', '2021-06-30', 'DE', 'Platzhalter3', 99, null, '2023-06-30 14:16:57.048792', 0, null, 0)
 ON CONFLICT DO NOTHING;
-
-
-INSERT INTO rolle_recht(
-    rolle_recht_rolle_id,
-    rolle_recht_recht_id
-) VALUES ( 2, 10);
 
 
 --V59

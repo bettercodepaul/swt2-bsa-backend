@@ -38,7 +38,7 @@ INSERT INTO public.dsb_mitglied (dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitg
 INSERT INTO public.dsb_mitglied (dsb_mitglied_id, dsb_mitglied_vorname, dsb_mitglied_nachname, dsb_mitglied_geburtsdatum, dsb_mitglied_nationalitaet, dsb_mitglied_mitgliedsnummer, dsb_mitglied_verein_id, dsb_mitglied_benutzer_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version) VALUES (1003, 'SWT2_Vorname1', 'SWT2_Nachname1', '1994-06-15', 'DE', 'SWT2_Mitgliedsnummer1', 1000, null, '2021-01-28 21:05:05.580670', 0, '2021-01-28 21:37:48.757403', 0, 6) ON CONFLICT DO NOTHING;
 
 --insert test data into table liga
-INSERT INTO public.liga (liga_id, liga_region_id, liga_name, liga_uebergeordnet, liga_verantwortlich, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version) VALUES (1000, 1000, 'SWT2_Liga', null, 1, '2021-01-28 20:49:53.144871', 0, '2021-01-28 22:11:12.685431', null, 5);
+INSERT INTO public.liga (liga_id, liga_region_id, liga_name, liga_uebergeordnet, liga_verantwortlich, liga_disziplin_id, liga_detail, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version) VALUES (1000, 1000, 'SWT2_Liga', null, 1, 0, 'SWT2_Liga', '2021-01-28 20:49:53.144871', 0, '2021-01-28 22:11:12.685431', null, 5);
 
 --insert test data into table ligatabelle
 /*
