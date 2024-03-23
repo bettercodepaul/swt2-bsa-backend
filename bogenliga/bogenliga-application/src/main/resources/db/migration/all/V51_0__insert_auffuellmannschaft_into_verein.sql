@@ -1,2 +1,0 @@
-INSERT INTO verein (verein_id, verein_name, verein_dsb_identifier, verein_region_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version)
-VALUES (9999, 'Auffüllmannschaft', 'Auffüllmannschaft', 1000, '2023-05-02 14:16:57.048792', 0, null, null, 0) ON CONFLICT DO NOTHING;
