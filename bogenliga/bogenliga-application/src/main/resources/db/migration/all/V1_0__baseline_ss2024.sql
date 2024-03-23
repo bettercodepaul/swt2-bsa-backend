@@ -1439,7 +1439,7 @@ WHERE NOT EXISTS (
 ;
 --V38
 INSERT INTO configuration (configuration_key, configuration_value)
-VALUES('aktives-Sportjahr','2024')
+VALUES('aktives-Sportjahr','2022')
 ON CONFLICT (configuration_key) DO NOTHING;
 
 -- V40
