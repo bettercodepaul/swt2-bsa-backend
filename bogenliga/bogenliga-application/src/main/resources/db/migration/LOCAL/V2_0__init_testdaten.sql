@@ -180,9 +180,9 @@ INSERT INTO veranstaltung (-- Recurve Ligen
                            veranstaltung_liga_id,
                            veranstaltung_meldedeadline)
 VALUES
-(0, 1, 'Würtembergliga 2018', 2018, 7,2, '2017-10-31'),
+(0, 1, 'Würtembergliga', 2018, 7,2, '2017-10-31'),
 (1, 1, 'Landesliga Nord 2018', 2018, 7,3, '2017-10-31'),
-(2, 1, 'Landesliga Süd 2018', 2018, 7,4, '2017-10-31'),
+(2, 1, 'Landesliga Süd', 2018, 7,4, '2017-10-31'),
 (3, 1, 'Relegation Landesliga Nord 2019', 2019, 7,3, '2017-10-31'),
 (4, 1, 'Relegation Landesliga Süd 2019', 2019, 7,4, '2017-10-31'),
 (5, 1, 'Bezirksoberliga Neckar 2019', 2019, 7,5, '2017-10-31'),
