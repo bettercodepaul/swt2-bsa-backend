@@ -430,7 +430,7 @@ VALUES -- (1, 1) -- admin im all-skript enthalten
        (2, 9), -- ligaleiter
        (3, 6),
        (4, 9), -- ligaleiter
-       (4, 6),
+       (4, 4),
        (5, 6), -- ausrichter
        (1, 4),
        (2, 5),
