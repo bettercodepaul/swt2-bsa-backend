@@ -11,8 +11,10 @@ Delete from benutzer where benutzer_id >0;
 Delete from benutzer where benutzer_id =0;
 DELETE from verein where verein_id >0;
 DELETE from verein where verein_id =0;
+DELETE from region where region_id >999;
 Delete from dsb_mitglied where dsb_mitglied_id >1;
 
+INSERT INTO public.region (region_id, region_name, region_kuerzel, region_typ, region_uebergeordnet, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version) VALUES (1000, 'SWT2_Region', 'SWT_RK', 'KREIS', null, '2021-01-28 20:49:06.337792', 0, null, null, 0);
 
 
 INSERT INTO public.verein (verein_id, verein_name, verein_dsb_identifier, verein_region_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, verein_website, verein_description, verein_icon) VALUES (0, 'SGes Gerstetten', '32WT525401', 6, '2024-03-23 10:48:56.692210', 0, null, null, 0, null, null, null);
