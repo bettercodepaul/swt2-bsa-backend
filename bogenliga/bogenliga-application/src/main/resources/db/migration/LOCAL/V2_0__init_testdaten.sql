@@ -5,28 +5,14 @@ DELETE from Mannschaftsmitglied where mannschaftsmitglied_id >0;
 Delete from Mannschaft where mannschaft_id >0;
 DELETE FROM  veranstaltung where veranstaltung_id >0;
 delete from liga where liga_id >0;
-DELETE from verein where verein_id >0;
 delete from benutzer_login_verlauf where benutzer_login_verlauf_benutzer_id >0;
 DELETE from benutzer_rolle where benutzer_rolle_benutzer_id >0;
 Delete from benutzer where benutzer_id >0;
 Delete from benutzer where benutzer_id =0;
-Delete from dsb_mitglied where dsb_mitglied_id >1;
-
-
-
-DELETE from PASSE where passe_id > 0;
-DELETE from Match where match_id > 0;
-DELETE from wettkampf where wettkampf_id >0;
-DELETE from Mannschaftsmitglied where mannschaftsmitglied_id >0;
-Delete from Mannschaft where mannschaft_id >0;
-DELETE FROM  veranstaltung where veranstaltung_id >0;
-delete from liga where liga_id >0;
 DELETE from verein where verein_id >0;
-delete from benutzer_login_verlauf where benutzer_login_verlauf_benutzer_id >0;
-DELETE from benutzer_rolle where benutzer_rolle_benutzer_id >0;
-Delete from benutzer where benutzer_id >0;
-Delete from benutzer where benutzer_id =0;
+DELETE from verein where verein_id =0;
 Delete from dsb_mitglied where dsb_mitglied_id >1;
+
 
 
 INSERT INTO public.verein (verein_id, verein_name, verein_dsb_identifier, verein_region_id, created_at_utc, created_by, last_modified_at_utc, last_modified_by, version, verein_website, verein_description, verein_icon) VALUES (0, 'SGes Gerstetten', '32WT525401', 6, '2024-03-23 10:48:56.692210', 0, null, null, 0, null, null, null);
