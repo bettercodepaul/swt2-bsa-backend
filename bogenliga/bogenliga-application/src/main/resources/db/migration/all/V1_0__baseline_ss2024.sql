@@ -479,25 +479,28 @@ CREATE TRIGGER tr_veranstaltung_update_version
 CREATE SEQUENCE sq_wettkampf_id START WITH 1200 INCREMENT BY 1;
 
 CREATE TABLE wettkampf (
-  wettkampf_veranstaltung_id    DECIMAL(19,0) NOT NULL, --bezug zum Sportjahr
-  wettkampf_datum               DATE NOT NULL, -- Termin der Durchführung
-  wettkampf_strasse             VARCHAR (30),     -- The street for the "Wettkampf Tag" will be stored in this column
-  wettkampf_plz                 VARCHAR (10),         -- The plz for the "Wettkampf Tag" will be stored in this column
-  wettkampf_ortsname            VARCHAR (25),    -- The city name for the "Wettkampf Tag" will be stored in this column
-  wettkampf_ortsinfo            VARCHAR (200),   -- Some additional adress information for the "Wettkampf Tag" will be stored in this column
-  wettkampf_id                  DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_wettkampf_id'), -- DECIMAL(19,0) = unsigned long
-  wettkampf_beginn              VARCHAR(5) NOT NULL, -- Uhrzeit im Format hh:mm
-  wettkampf_tag                 DECIMAL(1,0) NOT NULL, -- Liga hat 4 Wettkampftage, sonst 1
-  wettkampf_disziplin_id        DECIMAL(19,0) NOT NULL,
-  wettkampf_wettkampftyp_id     DECIMAL(19,0) NOT NULL,
-  WettkampfAusrichter           DECIMAL (19,0), -- Benutzer-id des Ausrichters soll bei Gelegenheit umbenannt werden (_id fehlt)
-  Offlinetoken                  VARCHAR (200),
+                           wettkampf_id                  DECIMAL(19,0) NOT NULL    DEFAULT nextval('sq_wettkampf_id'), -- DECIMAL(19,0) = unsigned long
+                           wettkampf_veranstaltung_id    DECIMAL(19,0) NOT NULL, --bezug zum Sportjahr
+                           wettkampf_datum               DATE NOT NULL, -- Termin der Durchführung
+                           wettkampf_beginn              VARCHAR(5) NOT NULL, -- Uhrzeit im Format hh:mm
+                           wettkampf_tag                 DECIMAL(1,0) NOT NULL, -- Liga hat 4 Wettkampftage, sonst 1
+                           wettkampf_disziplin_id        DECIMAL(19,0) NOT NULL,
+                           wettkampf_wettkampftyp_id     DECIMAL(19,0) NOT NULL,
+
+                           created_at_utc        TIMESTAMP        NOT NULL    DEFAULT (now() AT TIME ZONE 'utc'),
+                           created_by            DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+                           last_modified_at_utc  TIMESTAMP        NULL        DEFAULT NULL,
+                           last_modified_by      DECIMAL(19,0)    NULL        DEFAULT NULL,
+                           version               DECIMAL(19,0)    NOT NULL    DEFAULT 0,
+
+                           wettkampfausrichter           DECIMAL (19,0), -- Benutzer-id des Ausrichters soll bei Gelegenheit umbenannt werden (_id fehlt)
+                           wettkampf_strasse             VARCHAR (30),     -- The street for the "Wettkampf Tag" will be stored in this column
+                           wettkampf_plz                 VARCHAR (10),         -- The plz for the "Wettkampf Tag" will be stored in this column
+                           wettkampf_ortsname            VARCHAR (25),    -- The city name for the "Wettkampf Tag" will be stored in this column
+                           wettkampf_ortsinfo            VARCHAR (200),   -- Some additional adress information for the "Wettkampf Tag" will be stored in this column
+                           offlinetoken                  VARCHAR (200),
+
   -- technical columns to track the lifecycle of each row
-  created_at_utc        TIMESTAMP        NOT NULL    DEFAULT (now() AT TIME ZONE 'utc'),
-  created_by            DECIMAL(19,0)    NOT NULL    DEFAULT 0,
-  last_modified_at_utc  TIMESTAMP        NULL        DEFAULT NULL,
-  last_modified_by      DECIMAL(19,0)    NULL        DEFAULT NULL,
-  version               DECIMAL(19,0)    NOT NULL    DEFAULT 0,
 
 
   -- primary key (pk)
